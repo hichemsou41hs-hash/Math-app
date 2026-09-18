@@ -16,14 +16,34 @@ st.set_page_config(page_title="المناقشة البيانية", page_icon="�
 st.markdown("""
     <style>
     .stApp { background-color: #0F172A; color: white; }
-    .stTextInput label { color: #00E5FF !important; font-size: 18px !important; font-weight: bold !important; }
-    .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px;}
+    
+    /* تنسيق العناوين بألوان مخصصة وقوية */
+    .title-hes { text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap; margin-bottom: 0px;}
+    .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 30px;}
+    
+    /* فرض اتجاه الكتابة من اليمين لليسار في العناوين لتظهر الحروف اللاتينية يساراً */
+    .stTextInput label { 
+        color: #00E5FF !important; 
+        font-size: 18px !important; 
+        font-weight: bold !important; 
+        direction: rtl !important; 
+        text-align: right !important;
+        display: block;
+    }
+    
+    .stTextInput > div > div > input { 
+        background-color: #1E293B; 
+        color: white; 
+        border: 1px solid #00E5FF; 
+        font-size: 18px;
+        direction: ltr !important; /* الكتابة الرياضية من اليسار */
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# استخدام span داخلي لفرض اللون الأصفر الذهبي بقوة على متصفح Streamlit
-st.markdown("<h1 style='text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap;'>الأستاذ سوايسية هشام</h1>", unsafe_allow_html=True)
-st.markdown("<h2 style='text-align: center; margin-top: -15px; margin-bottom: 30px;'><span style='color: #FFD700 !important; font-size: 30px; font-weight: bold;'>المناقشة البيانية</span></h2>", unsafe_allow_html=True)
+# العناوين باستخدام div لتفادي فرض Streamlit للون الأبيض
+st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>", unsafe_allow_html=True)
+st.markdown("<div class='title-dis'>المناقشة البيانية</div>", unsafe_allow_html=True)
 
 def fmt(val):
     if val == float('inf'): return "+∞"
@@ -43,9 +63,11 @@ x_sym, m_sym = sp.symbols('x m')
 
 col1, col2 = st.columns(2)
 with col1:
-    f_input = st.text_input("أدخل الدالة f(x):", value="x+1+e^(-x)")
+    # تعديل الجملة لتصبح الحروف على اليسار
+    f_input = st.text_input("أدخل عبارة الدالة f(x):", value="x+1+e^(-x)")
 with col2:
-    g_input = st.text_input("أدخل معادلة المستقيم y (مثال: m, x+m, m*x):", value="m*x+1")
+    # تعديل الجملة لتصبح الحروف على اليسار
+    g_input = st.text_input("أدخل معادلة المستقيم بدلالة m:", value="m*x+1")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
@@ -446,7 +468,7 @@ if valid_input:
     plt.close(fig)
 
     # ---------------------------------------------------------
-    # 10. حلقة الأنيميشن
+    # 10. حلقة الأنيميشن مع التوقف الذكي
     # ---------------------------------------------------------
     if st.session_state.auto_play:
         is_critical_now = any(abs(st.session_state.m_anim - mc) < 1e-4 for mc in m_critical)
