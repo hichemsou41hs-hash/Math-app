@@ -5,24 +5,33 @@ import sympy as sp
 import time
 import warnings
 
-# تجاهل التحذيرات الرياضية (مثل اللوغاريتم لعدد سالب)
+# تجاهل التحذيرات الرياضية
 warnings.filterwarnings("ignore")
 
 # ---------------------------------------------------------
-# 1. إعدادات الصفحة والتصميم
+# 1. إعدادات الصفحة والتصميم (الألوان المدروسة نفسياً)
 # ---------------------------------------------------------
 st.set_page_config(page_title="المناقشة البيانية", page_icon="📈", layout="centered")
 
 st.markdown("""
     <style>
-    .stApp { background-color: #1A2F24; color: white; }
+    /* خلفية زرقاء داكنة جداً للتركيز (Midnight Blue) */
+    .stApp { background-color: #0F172A; color: white; }
     h1, h2, h3, p, span { color: white !important; }
-    .stTextInput > div > div > input { background-color: #2A4034; color: white; border: 1px solid #FFC000; font-size: 18px;}
+    
+    /* تنسيق خانات الإدخال */
+    .stTextInput > div > div > input { 
+        background-color: #1E293B; 
+        color: white; 
+        border: 1px solid #00E5FF; 
+        font-size: 18px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='text-align: center; color: #FFC000 !important; font-size: 40px;'>الأستاذ سوايسية هشام</h1>", unsafe_allow_html=True)
-st.markdown("<h2 style='text-align: center; color: white !important; font-size: 30px;'>المناقشة البيانية</h2>", unsafe_allow_html=True)
+# عنوان الأستاذ في سطر واحد وبلون ذهبي مميز
+st.markdown("<h1 style='text-align: center; color: #FFD700 !important; font-size: 32px; font-weight: bold; white-space: nowrap;'>الأستاذ سوايسية هشام</h1>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center; color: #00E5FF !important; font-size: 26px; margin-top: -15px;'>المناقشة البيانية</h2>", unsafe_allow_html=True)
 
 # ---------------------------------------------------------
 # 2. إدارة حالة الأنيميشن
@@ -56,7 +65,7 @@ except:
     valid_input = False
 
 if valid_input:
-    # إصلاح مشكلة ظهور log بدلاً من ln في العرض
+    # عرض العبارات بـ LaTeX بشكل أنيق
     f_latex = sp.latex(f_expr).replace(r"\log", r"\ln")
     g_latex = sp.latex(g_expr).replace(r"\log", r"\ln")
     st.latex(rf"\begin{{cases}} f(x) = {f_latex} \\ y = {g_latex} \end{{cases}}")
@@ -66,7 +75,6 @@ if valid_input:
     
     x_vals = np.linspace(-8, 8, 2000)
     
-    # حساب قيم الدالة مع تجاهل الأخطاء خارج مجموعة التعريف
     with np.errstate(divide='ignore', invalid='ignore'):
         y_vals = f_func(x_vals)
     
@@ -108,7 +116,6 @@ if valid_input:
     m_critical = np.unique(m_critical)
     m_critical = np.sort(m_critical)
 
-    # خوارزمية ذكية وآمنة لحساب الحلول (لا تتأثر بمجموعة التعريف)
     def get_roots_text(m_test, is_critical):
         with np.errstate(divide='ignore', invalid='ignore'):
             y_g = g_func(x_vals, m_test)
@@ -137,7 +144,6 @@ if valid_input:
                                 
         raw_roots = [(x_vals[c], "single") for c in crossings] + [(x_vals[t], "double") for t in tangents]
         
-        # تصفية الحلول المكررة بسبب التقريب
         all_roots = []
         for r, t in raw_roots:
             if not any(abs(r - fr) < 0.15 for fr, ft in all_roots):
@@ -189,8 +195,8 @@ if valid_input:
         intervals.append((float('-inf'), float('inf'), "m ∈ ℝ", get_roots_text(0, False)))
 
     def generate_html_table(current_m):
-        html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; color:white; background-color:#111;'>"
-        html += "<tr style='color:#FFC000; border-bottom:1px solid #444;'><th>الإشارة وعدد الحلول</th><th dir='ltr'>المجال / القيمة</th></tr>"
+        html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; color:white; background-color:#1E293B;'>"
+        html += "<tr style='color:#FFD700; border-bottom:1px solid #334155;'><th>الإشارة وعدد الحلول</th><th dir='ltr'>المجال / القيمة</th></tr>"
         
         for low, high, text, sol_text in intervals:
             is_active = False
@@ -201,7 +207,8 @@ if valid_input:
                 elif high == float('inf') and current_m > low + 0.15: is_active = True
                 elif low + 0.15 <= current_m <= high - 0.15: is_active = True
 
-            row_style = "border: 3px solid #FFC000; background-color: #2A4034; font-weight:bold;" if is_active else "border-bottom: 1px solid #333;"
+            # تنسيق السطر المضيء بلون ذهبي
+            row_style = "border: 3px solid #FFD700; background-color: #334155; font-weight:bold;" if is_active else "border-bottom: 1px solid #334155;"
             html += f"<tr style='{row_style} padding: 10px;'> <td style='padding:8px;'>{sol_text}</td> <td style='padding:8px;' dir='ltr'>{text}</td> </tr>"
         html += "</table>"
         return html
@@ -226,33 +233,40 @@ if valid_input:
         m_val = st.slider("تحكم يدوي:", -8.0, 8.0, 0.0, 0.1)
 
     # ---------------------------------------------------------
-    # 7. الرسم الفوري
+    # 7. الرسم الفوري (تكبير حجم المنحنى)
     # ---------------------------------------------------------
-    fig, ax = plt.subplots(figsize=(7, 4.5))
-    fig.patch.set_facecolor('#1A2F24')
-    ax.set_facecolor('#1A2F24')
+    # تكبير أبعاد الرسم (figsize) ليكون أوضح على الشاشة
+    fig, ax = plt.subplots(figsize=(10, 6.5))
+    
+    fig.patch.set_facecolor('#0F172A') # أزرق ليلي
+    ax.set_facecolor('#0F172A')
     ax.tick_params(colors='white')
     
     for spine in ax.spines.values(): spine.set_edgecolor('none')
-    ax.axhline(0, color='white', linewidth=1.5) 
-    ax.axvline(0, color='white', linewidth=1.5) 
+    ax.axhline(0, color='#9CA3AF', linewidth=1.5) 
+    ax.axvline(0, color='#9CA3AF', linewidth=1.5) 
     
-    ax.plot(x_vals, y_vals, color='#00FFFF', linewidth=2.5, label='C_f')
+    # رسم المنحنى بلون سماوي مشع وسمك أكبر
+    ax.plot(x_vals, y_vals, color='#00E5FF', linewidth=3, label='C_f')
     
     with np.errstate(divide='ignore', invalid='ignore'):
         y_g_plot = g_func(x_vals, m_val)
     if np.isscalar(y_g_plot):
         y_g_plot = np.full_like(x_vals, y_g_plot, dtype=float)
     
-    ax.plot(x_vals, y_g_plot, color='#FFC000', linestyle='--', linewidth=2.5, label=f'y = {m_val:.1f}' if g_input=='m' else 'y(m)')
+    # المستقيم المتحرك بلون ذهبي واضح
+    ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f'y = {m_val:.1f}' if g_input=='m' else 'y(m)')
 
     ax.set_ylim(-6, 8)
     ax.grid(True, color='#ffffff', linestyle='-', alpha=0.1)
     
-    legend = ax.legend(facecolor='#111', edgecolor='#444', loc='upper right')
+    legend = ax.legend(facecolor='#1E293B', edgecolor='#334155', loc='upper right')
     for text in legend.get_texts(): text.set_color("white")
     
-    st.pyplot(fig)
+    fig.tight_layout() # لتقليل الحواف البيضاء وجعل الرسم أكبر
+    
+    # عرض الرسم بعرض الشاشة الكامل (use_container_width=True)
+    st.pyplot(fig, use_container_width=True)
     st.markdown(generate_html_table(m_val), unsafe_allow_html=True)
     plt.close(fig)
 
