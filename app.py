@@ -63,10 +63,8 @@ x_sym, m_sym = sp.symbols('x m')
 
 col1, col2 = st.columns(2)
 with col1:
-    # تعديل الجملة لتصبح الحروف على اليسار
     f_input = st.text_input("أدخل عبارة الدالة f(x):", value="x+1+e^(-x)")
 with col2:
-    # تعديل الجملة لتصبح الحروف على اليسار
     g_input = st.text_input("أدخل معادلة المستقيم بدلالة m:", value="m*x+1")
 
 try:
