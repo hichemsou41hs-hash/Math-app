@@ -17,11 +17,9 @@ st.markdown("""
     <style>
     .stApp { background-color: #0F172A; color: white; }
     
-    /* تنسيق العناوين بألوان مخصصة وقوية */
     .title-hes { text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap; margin-bottom: 0px;}
     .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 30px;}
     
-    /* فرض اتجاه الكتابة من اليمين لليسار في العناوين لتظهر الحروف اللاتينية يساراً */
     .stTextInput label { 
         color: #00E5FF !important; 
         font-size: 18px !important; 
@@ -36,12 +34,11 @@ st.markdown("""
         color: white; 
         border: 1px solid #00E5FF; 
         font-size: 18px;
-        direction: ltr !important; /* الكتابة الرياضية من اليسار */
+        direction: ltr !important; 
     }
     </style>
 """, unsafe_allow_html=True)
 
-# العناوين باستخدام div لتفادي فرض Streamlit للون الأبيض
 st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>", unsafe_allow_html=True)
 st.markdown("<div class='title-dis'>المناقشة البيانية</div>", unsafe_allow_html=True)
 
@@ -317,9 +314,6 @@ if valid_input:
             
         final_table_data.append((math_html, sol_text, g)) 
 
-    # ---------------------------------------------------------
-    # 7. بناء هيكل الجدول التفاعلي
-    # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
         html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>الإشارة وعدد الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
@@ -343,7 +337,7 @@ if valid_input:
         return html
 
     # ---------------------------------------------------------
-    # 8. أزرار التحكم
+    # 6. أزرار التحكم
     # ---------------------------------------------------------
     st.write("") 
     col1, col2 = st.columns(2)
@@ -363,110 +357,113 @@ if valid_input:
         m_val = st.slider("تحكم يدوي:", -8.0, 8.0, 0.0, 0.1, format="%g")
 
     # ---------------------------------------------------------
-    # 9. الرسم الفوري وتعيين المقاربات ونقاط التقاطع
+    # 7. الرسم والجدول مع استخدام حاوية صارمة (Placeholder)
     # ---------------------------------------------------------
-    fig, ax = plt.subplots(figsize=(10, 6.5))
+    # هذه هي اللمسة السحرية التي ستدمر أي احتمال لظهور جدولين
+    display_container = st.empty() 
     
-    fig.patch.set_facecolor('#0F172A')
-    ax.set_facecolor('#0F172A')
-    ax.tick_params(colors='white')
-    
-    for spine in ax.spines.values(): spine.set_edgecolor('none')
-    ax.axhline(0, color='#9CA3AF', linewidth=1.5) 
-    ax.axvline(0, color='#9CA3AF', linewidth=1.5) 
-    
-    for asym in unique_asymptotes:
-        if asym['type'] == 'v':
-            ax.axvline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
-            ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', va='top')
-        elif asym['type'] == 'h':
-            ax.axhline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
-            ax.text(7.5, asym['val'] + 0.25, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', ha='right')
-        elif asym['type'] == 'o':
-            y_asym = asym['a'] * x_vals + asym['b']
-            ax.plot(x_vals, y_asym, color='#FF3366', linestyle=':', linewidth=2.5)
-            x_text = 5
-            y_text = asym['a'] * x_text + asym['b']
-            if y_text > 7 or y_text < -5.5:
-                x_text = -5
-                y_text = asym['a'] * x_text + asym['b']
-            ax.text(x_text, y_text + 0.5, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', ha='center', va='bottom', rotation=np.degrees(np.arctan(asym['a'])) * 0.6)
-    
-    ax.plot(x_vals, y_vals, color='#00E5FF', linewidth=3, label='C_f')
-    
-    with np.errstate(divide='ignore', invalid='ignore'):
-        y_g_plot = g_func(x_vals, m_val)
-    if np.isscalar(y_g_plot):
-        y_g_plot = np.full_like(x_vals, y_g_plot, dtype=float)
-    
-    m_val_str = str(int(m_val)) if int(m_val)==m_val else str(round(m_val, 2))
-    if g_input.strip() == 'm':
-        m_eq_label = f"y = {m_val_str}"
-    else:
-        rep_str = f"({m_val_str})" if m_val < 0 else m_val_str
-        m_eq_label = "y = " + g_input.replace('m', rep_str).replace('*', '')
+    with display_container.container():
+        fig, ax = plt.subplots(figsize=(10, 6.5))
+        fig.patch.set_facecolor('#0F172A')
+        ax.set_facecolor('#0F172A')
+        ax.tick_params(colors='white')
         
-    ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f"${m_eq_label}$")
-    
-    diff_plot = y_vals - y_g_plot
-    intersect_x = []
-    for i in range(len(diff_plot)-1):
-        if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
-            if diff_plot[i] * diff_plot[i+1] < 0:
-                denom = diff_plot[i+1] - diff_plot[i]
-                xi = x_vals[i] - diff_plot[i] * (x_vals[i+1] - x_vals[i]) / denom if denom != 0 else x_vals[i]
-                intersect_x.append(float(xi))
-            elif diff_plot[i] == 0:
-                intersect_x.append(float(x_vals[i]))
-                
-    abs_diff = np.abs(diff_plot)
-    for i in range(1, len(abs_diff)-1):
-        if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
-            if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1]:
-                if abs_diff[i] < 0.15: 
-                    intersect_x.append(float(x_vals[i]))
-
-    unique_intersect_x = []
-    for ix in intersect_x:
-        if not any(abs(ix - uix) < 0.1 for uix in unique_intersect_x):
-            unique_intersect_x.append(ix)
-
-    intersect_y = []
-    for ix in unique_intersect_x:
+        for spine in ax.spines.values(): spine.set_edgecolor('none')
+        ax.axhline(0, color='#9CA3AF', linewidth=1.5) 
+        ax.axvline(0, color='#9CA3AF', linewidth=1.5) 
+        
+        for asym in unique_asymptotes:
+            if asym['type'] == 'v':
+                ax.axvline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
+                ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', va='top')
+            elif asym['type'] == 'h':
+                ax.axhline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
+                ax.text(7.5, asym['val'] + 0.25, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', ha='right')
+            elif asym['type'] == 'o':
+                y_asym = asym['a'] * x_vals + asym['b']
+                ax.plot(x_vals, y_asym, color='#FF3366', linestyle=':', linewidth=2.5)
+                x_text = 5
+                y_text = asym['a'] * x_text + asym['b']
+                if y_text > 7 or y_text < -5.5:
+                    x_text = -5
+                    y_text = asym['a'] * x_text + asym['b']
+                ax.text(x_text, y_text + 0.5, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', ha='center', va='bottom', rotation=np.degrees(np.arctan(asym['a'])) * 0.6)
+        
+        ax.plot(x_vals, y_vals, color='#00E5FF', linewidth=3, label='C_f')
+        
+        with np.errstate(divide='ignore', invalid='ignore'):
+            y_g_plot = g_func(x_vals, m_val)
+        if np.isscalar(y_g_plot):
+            y_g_plot = np.full_like(x_vals, y_g_plot, dtype=float)
+        
+        m_val_str = str(int(m_val)) if int(m_val)==m_val else str(round(m_val, 2))
         if g_input.strip() == 'm':
-            intersect_y.append(m_val)
+            m_eq_label = f"y = {m_val_str}"
         else:
-            yt = g_func(ix, m_val)
-            intersect_y.append(float(yt) if not np.isscalar(yt) else yt)
+            rep_str = f"({m_val_str})" if m_val < 0 else m_val_str
+            m_eq_label = "y = " + g_input.replace('m', rep_str).replace('*', '')
+            
+        ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f"${m_eq_label}$")
+        
+        diff_plot = y_vals - y_g_plot
+        intersect_x = []
+        for i in range(len(diff_plot)-1):
+            if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
+                if diff_plot[i] * diff_plot[i+1] < 0:
+                    denom = diff_plot[i+1] - diff_plot[i]
+                    xi = x_vals[i] - diff_plot[i] * (x_vals[i+1] - x_vals[i]) / denom if denom != 0 else x_vals[i]
+                    intersect_x.append(float(xi))
+                elif diff_plot[i] == 0:
+                    intersect_x.append(float(x_vals[i]))
+                    
+        abs_diff = np.abs(diff_plot)
+        for i in range(1, len(abs_diff)-1):
+            if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
+                if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1]:
+                    if abs_diff[i] < 0.15: 
+                        intersect_x.append(float(x_vals[i]))
 
-    if unique_intersect_x:
-        ax.scatter(unique_intersect_x, intersect_y, color='#FF0000', s=120, zorder=5, edgecolor='white', linewidth=2, label='نقاط التقاطع')
+        unique_intersect_x = []
+        for ix in intersect_x:
+            if not any(abs(ix - uix) < 0.1 for uix in unique_intersect_x):
+                unique_intersect_x.append(ix)
 
-    if g_input.strip() == 'm':
-        ax.text(-7.5, m_val + 0.25, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='left', va='bottom')
-    else:
-        y_text_m = g_func(4, m_val)
-        if -5.5 <= y_text_m <= 7:
-            ax.text(4, y_text_m + 0.5, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='center', va='bottom')
+        intersect_y = []
+        for ix in unique_intersect_x:
+            if g_input.strip() == 'm':
+                intersect_y.append(m_val)
+            else:
+                yt = g_func(ix, m_val)
+                intersect_y.append(float(yt) if not np.isscalar(yt) else yt)
+
+        if unique_intersect_x:
+            ax.scatter(unique_intersect_x, intersect_y, color='#FF0000', s=120, zorder=5, edgecolor='white', linewidth=2, label='نقاط التقاطع')
+
+        if g_input.strip() == 'm':
+            ax.text(-7.5, m_val + 0.25, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='left', va='bottom')
         else:
-            y_text_m2 = g_func(-4, m_val)
-            if -5.5 <= y_text_m2 <= 7:
-                 ax.text(-4, y_text_m2 + 0.5, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='center', va='bottom')
+            y_text_m = g_func(4, m_val)
+            if -5.5 <= y_text_m <= 7:
+                ax.text(4, y_text_m + 0.5, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='center', va='bottom')
+            else:
+                y_text_m2 = g_func(-4, m_val)
+                if -5.5 <= y_text_m2 <= 7:
+                     ax.text(-4, y_text_m2 + 0.5, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='center', va='bottom')
 
-    ax.set_ylim(-6, 8)
-    ax.grid(True, color='#ffffff', linestyle='-', alpha=0.1)
-    
-    legend = ax.legend(facecolor='#1E293B', edgecolor='#334155', loc='upper right', fontsize=12)
-    for text in legend.get_texts(): text.set_color("white")
-    
-    fig.tight_layout()
-    
-    st.pyplot(fig, use_container_width=True)
-    st.markdown(generate_html_table(m_val), unsafe_allow_html=True)
-    plt.close(fig)
+        ax.set_ylim(-6, 8)
+        ax.grid(True, color='#ffffff', linestyle='-', alpha=0.1)
+        
+        legend = ax.legend(facecolor='#1E293B', edgecolor='#334155', loc='upper right', fontsize=12)
+        for text in legend.get_texts(): text.set_color("white")
+        
+        fig.tight_layout()
+        
+        st.pyplot(fig, use_container_width=True)
+        st.markdown(generate_html_table(m_val), unsafe_allow_html=True)
+        plt.close(fig)
 
     # ---------------------------------------------------------
-    # 10. حلقة الأنيميشن مع التوقف الذكي
+    # 8. حلقة الأنيميشن 
     # ---------------------------------------------------------
     if st.session_state.auto_play:
         is_critical_now = any(abs(st.session_state.m_anim - mc) < 1e-4 for mc in m_critical)
