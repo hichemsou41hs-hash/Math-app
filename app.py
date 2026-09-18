@@ -17,7 +17,13 @@ st.markdown("""
     <style>
     /* خلفية زرقاء داكنة جداً للتركيز (Midnight Blue) */
     .stApp { background-color: #0F172A; color: white; }
-    h1, h2, h3, p, span { color: white !important; }
+    
+    /* تلوين عناوين خانات الإدخال بالسماوي */
+    .stTextInput label { 
+        color: #00E5FF !important; 
+        font-size: 18px !important; 
+        font-weight: bold !important; 
+    }
     
     /* تنسيق خانات الإدخال */
     .stTextInput > div > div > input { 
@@ -30,11 +36,22 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # عنوان الأستاذ في سطر واحد وبلون ذهبي مميز
-st.markdown("<h1 style='text-align: center; color: #FFD700 !important; font-size: 32px; font-weight: bold; white-space: nowrap;'>الأستاذ سوايسية هشام</h1>", unsafe_allow_html=True)
-st.markdown("<h2 style='text-align: center; color: #00E5FF !important; font-size: 26px; margin-top: -15px;'>المناقشة البيانية</h2>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #FFD700 !important; font-size: 36px; font-weight: bold; white-space: nowrap;'>الأستاذ سوايسية هشام</h1>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center; color: #00E5FF !important; font-size: 26px; margin-top: -15px; margin-bottom: 30px;'>المناقشة البيانية</h2>", unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# 2. إدارة حالة الأنيميشن
+# 2. دالة تنسيق الأرقام (لإزالة .0 من الأعداد الصحيحة)
+# ---------------------------------------------------------
+def fmt(val):
+    if val == float('inf'): return "+∞"
+    if val == float('-inf'): return "-∞"
+    # إذا كان العدد صحيحاً (مثلا 2.0) نرجعه بدون فاصلة (2)
+    if int(val) == val:
+        return str(int(val))
+    return str(val)
+
+# ---------------------------------------------------------
+# 3. إدارة حالة الأنيميشن
 # ---------------------------------------------------------
 if 'auto_play' not in st.session_state:
     st.session_state.auto_play = False
@@ -42,7 +59,7 @@ if 'm_anim' not in st.session_state:
     st.session_state.m_anim = -5.0
 
 # ---------------------------------------------------------
-# 3. إدخال الدالة ومعادلة المناقشة
+# 4. إدخال الدالة ومعادلة المناقشة
 # ---------------------------------------------------------
 x_sym, m_sym = sp.symbols('x m')
 
@@ -50,7 +67,7 @@ col1, col2 = st.columns(2)
 with col1:
     f_input = st.text_input("أدخل الدالة f(x):", value="ln(x+1)-x")
 with col2:
-    g_input = st.text_input("أدخل معادلة المستقيم y (مثال: m, x+m, m*x):", value="2*m+1")
+    g_input = st.text_input("أدخل معادلة المستقيم y (مثال: m, x+m, m*x):", value="-m")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
@@ -65,10 +82,10 @@ except:
     valid_input = False
 
 if valid_input:
-    # عرض العبارات بـ LaTeX بشكل أنيق
+    # عرض العبارات بـ LaTeX بشكل أنيق وبلون ذهبي
     f_latex = sp.latex(f_expr).replace(r"\log", r"\ln")
     g_latex = sp.latex(g_expr).replace(r"\log", r"\ln")
-    st.latex(rf"\begin{{cases}} f(x) = {f_latex} \\ y = {g_latex} \end{{cases}}")
+    st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {f_latex} \\ y = {g_latex} \end{{cases}}")
 
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
@@ -84,7 +101,7 @@ if valid_input:
         y_vals = np.full_like(x_vals, y_vals, dtype=float)
 
     # ---------------------------------------------------------
-    # 4. الحساب الدقيق للقيم الحدية
+    # 5. الحساب الدقيق للقيم الحدية
     # ---------------------------------------------------------
     m_critical = []
     
@@ -180,23 +197,23 @@ if valid_input:
         return " و ".join(desc)
 
     # ---------------------------------------------------------
-    # 5. بناء هيكل الجدول التفاعلي
+    # 6. بناء هيكل الجدول التفاعلي (باستخدام الدالة fmt)
     # ---------------------------------------------------------
     intervals = []
     if len(m_critical) > 0:
-        intervals.append((float('-inf'), m_critical[0], f"m ∈ ]-∞, {m_critical[0]}[", get_roots_text(m_critical[0] - 1, False)))
+        intervals.append((float('-inf'), m_critical[0], f"m ∈ ]-∞, {fmt(m_critical[0])}[", get_roots_text(m_critical[0] - 1, False)))
         for i in range(len(m_critical)):
-            intervals.append((m_critical[i], m_critical[i], f"m = {m_critical[i]}", get_roots_text(m_critical[i], True)))
+            intervals.append((m_critical[i], m_critical[i], f"m = {fmt(m_critical[i])}", get_roots_text(m_critical[i], True)))
             if i < len(m_critical) - 1:
                 mid = (m_critical[i] + m_critical[i+1]) / 2.0
-                intervals.append((m_critical[i], m_critical[i+1], f"m ∈ ]{m_critical[i]}, {m_critical[i+1]}[", get_roots_text(mid, False)))
-        intervals.append((m_critical[-1], float('inf'), f"m ∈ ]{m_critical[-1]}, +∞[", get_roots_text(m_critical[-1] + 1, False)))
+                intervals.append((m_critical[i], m_critical[i+1], f"m ∈ ]{fmt(m_critical[i])}, {fmt(m_critical[i+1])}[", get_roots_text(mid, False)))
+        intervals.append((m_critical[-1], float('inf'), f"m ∈ ]{fmt(m_critical[-1])}, +∞[", get_roots_text(m_critical[-1] + 1, False)))
     else:
         intervals.append((float('-inf'), float('inf'), "m ∈ ℝ", get_roots_text(0, False)))
 
     def generate_html_table(current_m):
-        html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; color:white; background-color:#1E293B;'>"
-        html += "<tr style='color:#FFD700; border-bottom:1px solid #334155;'><th>الإشارة وعدد الحلول</th><th dir='ltr'>المجال / القيمة</th></tr>"
+        html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:19px; background-color:#1E293B;'>"
+        html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>الإشارة وعدد الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
         
         for low, high, text, sol_text in intervals:
             is_active = False
@@ -207,15 +224,19 @@ if valid_input:
                 elif high == float('inf') and current_m > low + 0.15: is_active = True
                 elif low + 0.15 <= current_m <= high - 0.15: is_active = True
 
-            # تنسيق السطر المضيء بلون ذهبي
+            # تلوين النصوص داخل الجدول لكسر اللون الأبيض
             row_style = "border: 3px solid #FFD700; background-color: #334155; font-weight:bold;" if is_active else "border-bottom: 1px solid #334155;"
-            html += f"<tr style='{row_style} padding: 10px;'> <td style='padding:8px;'>{sol_text}</td> <td style='padding:8px;' dir='ltr'>{text}</td> </tr>"
+            text_color_sol = "#00E5FF" if is_active else "#A5F3FC"  # لون سماوي
+            text_color_m = "#FFD700" if is_active else "#FEF08A"    # لون ذهبي
+
+            html += f"<tr style='{row_style}'> <td style='padding:12px; color:{text_color_sol};'>{sol_text}</td> <td style='padding:12px; color:{text_color_m};' dir='ltr'>{text}</td> </tr>"
         html += "</table>"
         return html
 
     # ---------------------------------------------------------
-    # 6. أزرار التحكم
+    # 7. أزرار التحكم
     # ---------------------------------------------------------
+    st.write("") # مسافة صغيرة
     col1, col2 = st.columns(2)
     with col1:
         if st.button("تشغيل المناقشة آلياً ▶️"):
@@ -230,15 +251,15 @@ if valid_input:
     if st.session_state.auto_play:
         m_val = round(st.session_state.m_anim, 2)
     else:
-        m_val = st.slider("تحكم يدوي:", -8.0, 8.0, 0.0, 0.1)
+        # شريط التمرير (بخاصية format لإزالة الفاصلة من الصفر تلقائياً)
+        m_val = st.slider("تحكم يدوي:", -8.0, 8.0, 0.0, 0.1, format="%g")
 
     # ---------------------------------------------------------
-    # 7. الرسم الفوري (تكبير حجم المنحنى)
+    # 8. الرسم الفوري (تكبير حجم المنحنى)
     # ---------------------------------------------------------
-    # تكبير أبعاد الرسم (figsize) ليكون أوضح على الشاشة
     fig, ax = plt.subplots(figsize=(10, 6.5))
     
-    fig.patch.set_facecolor('#0F172A') # أزرق ليلي
+    fig.patch.set_facecolor('#0F172A')
     ax.set_facecolor('#0F172A')
     ax.tick_params(colors='white')
     
@@ -246,7 +267,6 @@ if valid_input:
     ax.axhline(0, color='#9CA3AF', linewidth=1.5) 
     ax.axvline(0, color='#9CA3AF', linewidth=1.5) 
     
-    # رسم المنحنى بلون سماوي مشع وسمك أكبر
     ax.plot(x_vals, y_vals, color='#00E5FF', linewidth=3, label='C_f')
     
     with np.errstate(divide='ignore', invalid='ignore'):
@@ -254,24 +274,24 @@ if valid_input:
     if np.isscalar(y_g_plot):
         y_g_plot = np.full_like(x_vals, y_g_plot, dtype=float)
     
-    # المستقيم المتحرك بلون ذهبي واضح
-    ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f'y = {m_val:.1f}' if g_input=='m' else 'y(m)')
+    # استخدام دالة fmt لتنسيق تسمية المستقيم في الرسم
+    m_label = fmt(m_val)
+    ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f'y = {m_label}' if g_input=='m' else 'y(m)')
 
     ax.set_ylim(-6, 8)
     ax.grid(True, color='#ffffff', linestyle='-', alpha=0.1)
     
-    legend = ax.legend(facecolor='#1E293B', edgecolor='#334155', loc='upper right')
+    legend = ax.legend(facecolor='#1E293B', edgecolor='#334155', loc='upper right', fontsize=12)
     for text in legend.get_texts(): text.set_color("white")
     
-    fig.tight_layout() # لتقليل الحواف البيضاء وجعل الرسم أكبر
+    fig.tight_layout()
     
-    # عرض الرسم بعرض الشاشة الكامل (use_container_width=True)
     st.pyplot(fig, use_container_width=True)
     st.markdown(generate_html_table(m_val), unsafe_allow_html=True)
     plt.close(fig)
 
     # ---------------------------------------------------------
-    # 8. حلقة الأنيميشن
+    # 9. حلقة الأنيميشن
     # ---------------------------------------------------------
     if st.session_state.auto_play:
         time.sleep(0.05) 
