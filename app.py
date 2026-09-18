@@ -22,9 +22,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("<h1 style='text-align: center; color: #FFD700 !important; font-size: 36px; font-weight: bold; white-space: nowrap;'>الأستاذ سوايسية هشام</h1>", unsafe_allow_html=True)
-st.markdown("<h2 style='text-align: center; color: #00E5FF !important; font-size: 26px; margin-top: -15px; margin-bottom: 30px;'>المناقشة البيانية</h2>", unsafe_allow_html=True)
+# تعديل لون "المناقشة البيانية" إلى الأصفر الذهبي كما طلبت
+st.markdown("<h2 style='text-align: center; color: #FFD700 !important; font-size: 26px; margin-top: -15px; margin-bottom: 30px;'>المناقشة البيانية</h2>", unsafe_allow_html=True)
 
-# دالة التنسيق باستخدام رموز نقية
 def fmt(val):
     if val == float('inf'): return "+∞"
     if val == float('-inf'): return "-∞"
@@ -101,7 +101,6 @@ if valid_input:
                 b_lim = sp.limit(f_expr - a_lim * x_sym, x_sym, direction)
                 if b_lim.is_real and np.isfinite(float(b_lim)):
                     a_val, b_val = float(a_lim), float(b_lim)
-                    
                     a_str = str(int(abs(a_val))) if int(abs(a_val))==abs(a_val) else str(abs(a_val))
                     if a_str == "1": a_str = ""
                     sign_a = "-" if a_val < 0 else ""
@@ -112,7 +111,6 @@ if valid_input:
                         sign_b = "+" if b_val > 0 else "-"
                         b_str = str(int(abs(b_val))) if int(abs(b_val))==abs(b_val) else str(abs(b_val))
                         eq = f"y={sign_a}{a_str}x {sign_b} {b_str}"
-                        
                     asymptotes.append({'type': 'o', 'a': a_val, 'b': b_val, 'label': eq})
         except: pass
         
@@ -288,7 +286,6 @@ if valid_input:
         include_L = (g[0][0] == g[0][1]) 
         include_H = (g[-1][0] == g[-1][1]) 
 
-        # بناء النص الرياضي بشكل أنيق وبدون مسافات زائدة
         if L == float('-inf') and H == float('inf'):
             math_html = "<i>m</i> ∈ ℝ"
         elif L == H:
@@ -301,7 +298,7 @@ if valid_input:
         final_table_data.append((math_html, sol_text, g)) 
 
     # ---------------------------------------------------------
-    # 7. بناء هيكل الجدول التفاعلي (مع منع كسر السطر وتصغير الخط)
+    # 7. بناء هيكل الجدول التفاعلي
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
@@ -321,7 +318,6 @@ if valid_input:
             text_color_sol = "#00E5FF" if is_active else "#A5F3FC"  
             text_color_m = "#FFD700" if is_active else "#FEF08A"    
 
-            # أضفنا (white-space: nowrap) لمنع الرجوع للسطر وتصغير الخط إلى 18px مع عائلة الخطوط الكلاسيكية
             html += f"<tr style='{row_style}'> <td style='padding:10px; color:{text_color_sol};'>{sol_text}</td> <td style='padding:10px; color:{text_color_m}; font-family: \"Times New Roman\", Times, serif; font-size: 18px; white-space: nowrap;' dir='ltr'>{math_html}</td> </tr>"
         html += "</table>"
         return html
@@ -347,7 +343,7 @@ if valid_input:
         m_val = st.slider("تحكم يدوي:", -8.0, 8.0, 0.0, 0.1, format="%g")
 
     # ---------------------------------------------------------
-    # 9. الرسم الفوري وتعيين المقاربات
+    # 9. الرسم الفوري وتعيين المقاربات ونقاط التقاطع
     # ---------------------------------------------------------
     fig, ax = plt.subplots(figsize=(10, 6.5))
     
@@ -363,11 +359,9 @@ if valid_input:
         if asym['type'] == 'v':
             ax.axvline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
             ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', va='top')
-            
         elif asym['type'] == 'h':
             ax.axhline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
             ax.text(7.5, asym['val'] + 0.25, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', ha='right')
-            
         elif asym['type'] == 'o':
             y_asym = asym['a'] * x_vals + asym['b']
             ax.plot(x_vals, y_asym, color='#FF3366', linestyle=':', linewidth=2.5)
@@ -378,8 +372,10 @@ if valid_input:
                 y_text = asym['a'] * x_text + asym['b']
             ax.text(x_text, y_text + 0.5, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', ha='center', va='bottom', rotation=np.degrees(np.arctan(asym['a'])) * 0.6)
     
+    # رسم الدالة
     ax.plot(x_vals, y_vals, color='#00E5FF', linewidth=3, label='C_f')
     
+    # رسم مستقيم المناقشة
     with np.errstate(divide='ignore', invalid='ignore'):
         y_g_plot = g_func(x_vals, m_val)
     if np.isscalar(y_g_plot):
@@ -394,6 +390,43 @@ if valid_input:
         
     ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f"${m_eq_label}$")
     
+    # استخراج ورسم نقاط التقاطع باللون الأحمر الفاقع
+    diff_plot = y_vals - y_g_plot
+    intersect_x = []
+    for i in range(len(diff_plot)-1):
+        if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
+            if diff_plot[i] * diff_plot[i+1] < 0:
+                denom = diff_plot[i+1] - diff_plot[i]
+                xi = x_vals[i] - diff_plot[i] * (x_vals[i+1] - x_vals[i]) / denom if denom != 0 else x_vals[i]
+                intersect_x.append(float(xi))
+            elif diff_plot[i] == 0:
+                intersect_x.append(float(x_vals[i]))
+                
+    abs_diff = np.abs(diff_plot)
+    for i in range(1, len(abs_diff)-1):
+        if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
+            if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1]:
+                if abs_diff[i] < 0.15: 
+                    intersect_x.append(float(x_vals[i]))
+
+    unique_intersect_x = []
+    for ix in intersect_x:
+        if not any(abs(ix - uix) < 0.1 for uix in unique_intersect_x):
+            unique_intersect_x.append(ix)
+
+    intersect_y = []
+    for ix in unique_intersect_x:
+        if g_input.strip() == 'm':
+            intersect_y.append(m_val)
+        else:
+            yt = g_func(ix, m_val)
+            intersect_y.append(float(yt) if not np.isscalar(yt) else yt)
+
+    # رسم النقاط بشكل بارز (أحمر كبير مع حواف بيضاء)
+    if unique_intersect_x:
+        ax.scatter(unique_intersect_x, intersect_y, color='#FF0000', s=120, zorder=5, edgecolor='white', linewidth=2, label='نقاط التقاطع')
+
+    # كتابة معادلة المستقيم بجواره
     if g_input.strip() == 'm':
         ax.text(-7.5, m_val + 0.25, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='left', va='bottom')
     else:
@@ -418,11 +451,29 @@ if valid_input:
     plt.close(fig)
 
     # ---------------------------------------------------------
-    # 10. حلقة الأنيميشن
+    # 10. حلقة الأنيميشن مع التوقف الذكي للتلميذ
     # ---------------------------------------------------------
     if st.session_state.auto_play:
-        time.sleep(0.05) 
-        st.session_state.m_anim += 0.2 
-        if st.session_state.m_anim > 6.0:
+        is_critical_now = any(abs(st.session_state.m_anim - mc) < 1e-4 for mc in m_critical)
+        
+        # التوقف لمدة ثانية ونصف عند القيم الحرجة ليشاهد التلميذ التقاطعات بوضوح!
+        if is_critical_now:
+            time.sleep(1.5) 
+        else:
+            time.sleep(0.05) 
+            
+        step = 0.15 
+        next_m = st.session_state.m_anim + step
+        
+        # ضمان وقوف المستقيم تماماً عند القيمة الحرجة وعدم تجاوزها
+        for mc in m_critical:
+            if st.session_state.m_anim < mc - 1e-4 and next_m >= mc - 1e-4:
+                next_m = float(mc)
+                break
+                
+        st.session_state.m_anim = next_m
+        
+        if st.session_state.m_anim > 8.0:
             st.session_state.auto_play = False
+            
         st.rerun()
