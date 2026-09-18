@@ -25,8 +25,8 @@ st.markdown("<h1 style='text-align: center; color: #FFD700 !important; font-size
 st.markdown("<h2 style='text-align: center; color: #00E5FF !important; font-size: 26px; margin-top: -15px; margin-bottom: 30px;'>المناقشة البيانية</h2>", unsafe_allow_html=True)
 
 def fmt(val):
-    if val == float('inf'): return "+∞"
-    if val == float('-inf'): return "-∞"
+    if val == float('inf'): return "+\infty"
+    if val == float('-inf'): return "-\infty"
     if int(val) == val: return str(int(val))
     return str(val)
 
@@ -42,9 +42,9 @@ x_sym, m_sym = sp.symbols('x m')
 
 col1, col2 = st.columns(2)
 with col1:
-    f_input = st.text_input("أدخل الدالة f(x):", value="ln(x+1)-x")
+    f_input = st.text_input("أدخل الدالة f(x):", value="x+1+e^(-x)")
 with col2:
-    g_input = st.text_input("أدخل معادلة المستقيم y (مثال: m, x+m, m*x):", value="-m*x")
+    g_input = st.text_input("أدخل معادلة المستقيم y (مثال: m, x+m, m*x):", value="m*x+1")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
@@ -249,39 +249,84 @@ if valid_input:
             
         return " و ".join(desc)
 
-    intervals = []
+    # ---------------------------------------------------------
+    # 5. استخراج المجالات الخام
+    # ---------------------------------------------------------
+    raw_intervals = []
     if len(m_critical) > 0:
-        intervals.append((float('-inf'), m_critical[0], f"m ∈ ]-∞, {fmt(m_critical[0])}[", get_roots_text(m_critical[0] - 1, False)))
+        raw_intervals.append((float('-inf'), m_critical[0], get_roots_text(m_critical[0] - 1, False)))
         for i in range(len(m_critical)):
-            intervals.append((m_critical[i], m_critical[i], f"m = {fmt(m_critical[i])}", get_roots_text(m_critical[i], True)))
+            raw_intervals.append((m_critical[i], m_critical[i], get_roots_text(m_critical[i], True)))
             if i < len(m_critical) - 1:
                 mid = (m_critical[i] + m_critical[i+1]) / 2.0
-                intervals.append((m_critical[i], m_critical[i+1], f"m ∈ ]{fmt(m_critical[i])}, {fmt(m_critical[i+1])}[", get_roots_text(mid, False)))
-        intervals.append((m_critical[-1], float('inf'), f"m ∈ ]{fmt(m_critical[-1])}, +∞[", get_roots_text(m_critical[-1] + 1, False)))
+                raw_intervals.append((m_critical[i], m_critical[i+1], get_roots_text(mid, False)))
+        raw_intervals.append((m_critical[-1], float('inf'), get_roots_text(m_critical[-1] + 1, False)))
     else:
-        intervals.append((float('-inf'), float('inf'), "m ∈ ℝ", get_roots_text(0, False)))
+        raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0, False)))
 
+    # ---------------------------------------------------------
+    # 6. دمج المجالات المتشابهة (اللمسة الاحترافية الجديدة)
+    # ---------------------------------------------------------
+    merged_intervals = []
+    if raw_intervals:
+        current_group = [raw_intervals[0]]
+        for item in raw_intervals[1:]:
+            if item[2] == current_group[-1][2]: # إذا كان النص (الحلول) مطابقاً للمجال السابق
+                current_group.append(item)
+            else:
+                merged_intervals.append(current_group)
+                current_group = [item]
+        merged_intervals.append(current_group)
+
+    final_table_data = []
+    for g in merged_intervals:
+        sol_text = g[0][2]
+        L = g[0][0]
+        H = g[-1][1]
+        
+        include_L = (g[0][0] == g[0][1]) # هل الحد الأدنى نقطة مغلقة مشمولة؟
+        include_H = (g[-1][0] == g[-1][1]) # هل الحد الأعلى نقطة مغلقة مشمولة؟
+
+        if L == float('-inf') and H == float('inf'):
+            text = "m \in \mathbb{R}"
+        elif L == H:
+            text = f"m = {fmt(L)}"
+        else:
+            left_bracket = "[" if include_L else "]"
+            right_bracket = "]" if include_H else "["
+            text = f"m \in {left_bracket}{fmt(L)}, {fmt(H)}{right_bracket}"
+            
+        final_table_data.append((text, sol_text, g)) # نحتفظ بالمجالات الخام (g) من أجل الإضاءة لاحقاً
+
+    # ---------------------------------------------------------
+    # 7. بناء هيكل الجدول التفاعلي
+    # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:19px; background-color:#1E293B;'>"
         html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>الإشارة وعدد الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
         
-        for low, high, text, sol_text in intervals:
+        for text, sol_text, g in final_table_data:
             is_active = False
-            if low == high: 
-                if abs(current_m - low) < 0.15: is_active = True
-            else: 
-                if low == float('-inf') and current_m < high - 0.15: is_active = True
-                elif high == float('inf') and current_m > low + 0.15: is_active = True
-                elif low + 0.15 <= current_m <= high - 0.15: is_active = True
+            # نتحقق مما إذا كانت m تقع في أي مجال من المجالات الفرعية المدمجة لإضاءة السطر
+            for low, high, _ in g:
+                if low == high:
+                    if abs(current_m - low) < 0.15: is_active = True
+                else:
+                    if low == float('-inf') and current_m < high - 0.15: is_active = True
+                    elif high == float('inf') and current_m > low + 0.15: is_active = True
+                    elif low + 0.15 <= current_m <= high - 0.15: is_active = True
 
             row_style = "border: 3px solid #FFD700; background-color: #334155; font-weight:bold;" if is_active else "border-bottom: 1px solid #334155;"
             text_color_sol = "#00E5FF" if is_active else "#A5F3FC"  
             text_color_m = "#FFD700" if is_active else "#FEF08A"    
 
-            html += f"<tr style='{row_style}'> <td style='padding:12px; color:{text_color_sol};'>{sol_text}</td> <td style='padding:12px; color:{text_color_m};' dir='ltr'>{text}</td> </tr>"
+            html += f"<tr style='{row_style}'> <td style='padding:12px; color:{text_color_sol};'>{sol_text}</td> <td style='padding:12px; color:{text_color_m};' dir='ltr'>${text}$</td> </tr>"
         html += "</table>"
         return html
 
+    # ---------------------------------------------------------
+    # 8. أزرار التحكم
+    # ---------------------------------------------------------
     st.write("") 
     col1, col2 = st.columns(2)
     with col1:
@@ -300,7 +345,7 @@ if valid_input:
         m_val = st.slider("تحكم يدوي:", -8.0, 8.0, 0.0, 0.1, format="%g")
 
     # ---------------------------------------------------------
-    # 7. الرسم الفوري وتعيين المقاربات
+    # 9. الرسم الفوري وتعيين المقاربات
     # ---------------------------------------------------------
     fig, ax = plt.subplots(figsize=(10, 6.5))
     
@@ -312,22 +357,18 @@ if valid_input:
     ax.axhline(0, color='#9CA3AF', linewidth=1.5) 
     ax.axvline(0, color='#9CA3AF', linewidth=1.5) 
     
-    # رسم المقاربات مع كتابة معادلاتها بجوارها
     for asym in unique_asymptotes:
         if asym['type'] == 'v':
             ax.axvline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
-            # كتابة المعادلة بجوار المقارب العمودي
             ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', va='top')
             
         elif asym['type'] == 'h':
             ax.axhline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
-            # كتابة المعادلة بجوار المقارب الأفقي
             ax.text(7.5, asym['val'] + 0.25, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', ha='right')
             
         elif asym['type'] == 'o':
             y_asym = asym['a'] * x_vals + asym['b']
             ax.plot(x_vals, y_asym, color='#FF3366', linestyle=':', linewidth=2.5)
-            # كتابة المعادلة بجوار المقارب المائل بشكل ذكي ومائل
             x_text = 5
             y_text = asym['a'] * x_text + asym['b']
             if y_text > 7 or y_text < -5.5:
@@ -342,7 +383,6 @@ if valid_input:
     if np.isscalar(y_g_plot):
         y_g_plot = np.full_like(x_vals, y_g_plot, dtype=float)
     
-    # كتابة معادلة مستقيم المناقشة (المتحرك) بجواره
     m_label_str = fmt(m_val)
     if g_input.strip() == 'm':
         m_eq_label = f"y = {m_label_str}"
@@ -352,7 +392,6 @@ if valid_input:
         
     ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f"${m_eq_label}$")
     
-    # وضع النص بجوار المستقيم المتحرك
     if g_input.strip() == 'm':
         ax.text(-7.5, m_val + 0.25, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='left', va='bottom')
     else:
@@ -377,7 +416,7 @@ if valid_input:
     plt.close(fig)
 
     # ---------------------------------------------------------
-    # 8. حلقة الأنيميشن
+    # 10. حلقة الأنيميشن
     # ---------------------------------------------------------
     if st.session_state.auto_play:
         time.sleep(0.05) 
