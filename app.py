@@ -76,7 +76,6 @@ if valid_input:
     if np.isscalar(y_vals):
         y_vals = np.full_like(x_vals, y_vals, dtype=float)
 
-    # قطع المنحنى عند المقاربات العمودية لتفادي الخطوط الوهمية
     dy = np.abs(np.diff(y_vals))
     jump_idx = np.where(dy > 10)[0]
     for idx in jump_idx:
@@ -88,16 +87,13 @@ if valid_input:
     # ---------------------------------------------------------
     asymptotes = []
     
-    # أ. المقاربات الأفقية والمائلة
     for direction in [sp.oo, -sp.oo]:
         try:
-            # التحقق من المقارب الأفقي
             lim_h = sp.limit(f_expr, x_sym, direction)
             if lim_h.is_real and np.isfinite(float(lim_h)):
                 asymptotes.append({'type': 'h', 'val': float(lim_h), 'label': f"y={fmt(float(lim_h))}"})
                 continue
                 
-            # التحقق من المقارب المائل
             a_lim = sp.limit(f_expr / x_sym, x_sym, direction)
             if a_lim.is_real and a_lim != 0 and np.isfinite(float(a_lim)):
                 b_lim = sp.limit(f_expr - a_lim * x_sym, x_sym, direction)
@@ -118,7 +114,6 @@ if valid_input:
                     asymptotes.append({'type': 'o', 'a': a_val, 'b': b_val, 'label': eq})
         except: pass
         
-    # ب. المقاربات العمودية (أصفار المقام)
     try:
         n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
         if d_expr != 1:
@@ -128,7 +123,6 @@ if valid_input:
                     asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={fmt(float(r))}"})
     except: pass
     
-    # ج. المقاربات العمودية (ما بداخل اللوغاريتم)
     try:
         for log_expr in f_expr.atoms(sp.log):
             arg = log_expr.args[0]
@@ -138,7 +132,6 @@ if valid_input:
                     asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={fmt(float(r))}"})
     except: pass
 
-    # إزالة المقاربات المكررة
     unique_asymptotes = []
     seen_labels = set()
     for asym in asymptotes:
@@ -146,9 +139,6 @@ if valid_input:
             seen_labels.add(asym['label'])
             unique_asymptotes.append(asym)
 
-    # ---------------------------------------------------------
-    # 4. محرك اكتشاف القيم الحرجة للمناقشة
-    # ---------------------------------------------------------
     m_critical = []
     try:
         pivot_x_sols = sp.solve(sp.diff(g_expr, m_sym), x_sym)
@@ -259,9 +249,6 @@ if valid_input:
             
         return " و ".join(desc)
 
-    # ---------------------------------------------------------
-    # 5. بناء هيكل الجدول التفاعلي
-    # ---------------------------------------------------------
     intervals = []
     if len(m_critical) > 0:
         intervals.append((float('-inf'), m_critical[0], f"m ∈ ]-∞, {fmt(m_critical[0])}[", get_roots_text(m_critical[0] - 1, False)))
@@ -295,9 +282,6 @@ if valid_input:
         html += "</table>"
         return html
 
-    # ---------------------------------------------------------
-    # 6. أزرار التحكم
-    # ---------------------------------------------------------
     st.write("") 
     col1, col2 = st.columns(2)
     with col1:
@@ -328,27 +312,57 @@ if valid_input:
     ax.axhline(0, color='#9CA3AF', linewidth=1.5) 
     ax.axvline(0, color='#9CA3AF', linewidth=1.5) 
     
-    # 7.1 رسم المقاربات بلون مميز (زهري فاقع)
+    # رسم المقاربات مع كتابة معادلاتها بجوارها
     for asym in unique_asymptotes:
         if asym['type'] == 'v':
-            ax.axvline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5, label=f"${asym['label']}$")
+            ax.axvline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
+            # كتابة المعادلة بجوار المقارب العمودي
+            ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', va='top')
+            
         elif asym['type'] == 'h':
-            ax.axhline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5, label=f"${asym['label']}$")
+            ax.axhline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
+            # كتابة المعادلة بجوار المقارب الأفقي
+            ax.text(7.5, asym['val'] + 0.25, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', ha='right')
+            
         elif asym['type'] == 'o':
             y_asym = asym['a'] * x_vals + asym['b']
-            ax.plot(x_vals, y_asym, color='#FF3366', linestyle=':', linewidth=2.5, label=f"${asym['label']}$")
+            ax.plot(x_vals, y_asym, color='#FF3366', linestyle=':', linewidth=2.5)
+            # كتابة المعادلة بجوار المقارب المائل بشكل ذكي ومائل
+            x_text = 5
+            y_text = asym['a'] * x_text + asym['b']
+            if y_text > 7 or y_text < -5.5:
+                x_text = -5
+                y_text = asym['a'] * x_text + asym['b']
+            ax.text(x_text, y_text + 0.5, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', ha='center', va='bottom', rotation=np.degrees(np.arctan(asym['a'])) * 0.6)
     
-    # 7.2 رسم منحنى الدالة
     ax.plot(x_vals, y_vals, color='#00E5FF', linewidth=3, label='C_f')
     
-    # 7.3 رسم مستقيم المناقشة
     with np.errstate(divide='ignore', invalid='ignore'):
         y_g_plot = g_func(x_vals, m_val)
     if np.isscalar(y_g_plot):
         y_g_plot = np.full_like(x_vals, y_g_plot, dtype=float)
     
-    m_label = fmt(m_val)
-    ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f'$y = {m_label}$' if g_input=='m' else '$y(m)$')
+    # كتابة معادلة مستقيم المناقشة (المتحرك) بجواره
+    m_label_str = fmt(m_val)
+    if g_input.strip() == 'm':
+        m_eq_label = f"y = {m_label_str}"
+    else:
+        rep_str = f"({m_label_str})" if m_val < 0 else m_label_str
+        m_eq_label = "y = " + g_input.replace('m', rep_str).replace('*', '')
+        
+    ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f"${m_eq_label}$")
+    
+    # وضع النص بجوار المستقيم المتحرك
+    if g_input.strip() == 'm':
+        ax.text(-7.5, m_val + 0.25, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='left', va='bottom')
+    else:
+        y_text_m = g_func(4, m_val)
+        if -5.5 <= y_text_m <= 7:
+            ax.text(4, y_text_m + 0.5, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='center', va='bottom')
+        else:
+            y_text_m2 = g_func(-4, m_val)
+            if -5.5 <= y_text_m2 <= 7:
+                 ax.text(-4, y_text_m2 + 0.5, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='center', va='bottom')
 
     ax.set_ylim(-6, 8)
     ax.grid(True, color='#ffffff', linestyle='-', alpha=0.1)
