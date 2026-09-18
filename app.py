@@ -9,7 +9,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # ---------------------------------------------------------
-# 1. إعدادات الصفحة والتصميم 
+# 1. إعدادات الصفحة والتصميم
 # ---------------------------------------------------------
 st.set_page_config(page_title="المناقشة البيانية", page_icon="📈", layout="centered")
 
@@ -66,8 +66,7 @@ if valid_input:
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
-    # استخدام 2001 نقطة لضمان وجود الصفر تماماً في المصفوفة
-    x_vals = np.linspace(-8, 8, 2001)
+    x_vals = np.linspace(-8, 8, 3000)
     
     with np.errstate(divide='ignore', invalid='ignore'):
         y_vals = f_func(x_vals)
@@ -77,12 +76,80 @@ if valid_input:
     if np.isscalar(y_vals):
         y_vals = np.full_like(x_vals, y_vals, dtype=float)
 
+    # قطع المنحنى عند المقاربات العمودية لتفادي الخطوط الوهمية
+    dy = np.abs(np.diff(y_vals))
+    jump_idx = np.where(dy > 10)[0]
+    for idx in jump_idx:
+        y_vals[idx] = np.nan
+        y_vals[idx+1] = np.nan
+
     # ---------------------------------------------------------
-    # 3. محرك اكتشاف القيم الحرجة (المحدث كلياً)
+    # 3. محرك اكتشاف المقاربات (Asymptotes Analyzer)
+    # ---------------------------------------------------------
+    asymptotes = []
+    
+    # أ. المقاربات الأفقية والمائلة
+    for direction in [sp.oo, -sp.oo]:
+        try:
+            # التحقق من المقارب الأفقي
+            lim_h = sp.limit(f_expr, x_sym, direction)
+            if lim_h.is_real and np.isfinite(float(lim_h)):
+                asymptotes.append({'type': 'h', 'val': float(lim_h), 'label': f"y={fmt(float(lim_h))}"})
+                continue
+                
+            # التحقق من المقارب المائل
+            a_lim = sp.limit(f_expr / x_sym, x_sym, direction)
+            if a_lim.is_real and a_lim != 0 and np.isfinite(float(a_lim)):
+                b_lim = sp.limit(f_expr - a_lim * x_sym, x_sym, direction)
+                if b_lim.is_real and np.isfinite(float(b_lim)):
+                    a_val, b_val = float(a_lim), float(b_lim)
+                    
+                    a_str = fmt(abs(a_val))
+                    if a_str == "1": a_str = ""
+                    sign_a = "-" if a_val < 0 else ""
+                    
+                    if b_val == 0:
+                        eq = f"y={sign_a}{a_str}x"
+                    else:
+                        sign_b = "+" if b_val > 0 else "-"
+                        b_str = fmt(abs(b_val))
+                        eq = f"y={sign_a}{a_str}x {sign_b} {b_str}"
+                        
+                    asymptotes.append({'type': 'o', 'a': a_val, 'b': b_val, 'label': eq})
+        except: pass
+        
+    # ب. المقاربات العمودية (أصفار المقام)
+    try:
+        n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
+        if d_expr != 1:
+            roots = sp.solve(d_expr, x_sym)
+            for r in roots:
+                if r.is_real:
+                    asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={fmt(float(r))}"})
+    except: pass
+    
+    # ج. المقاربات العمودية (ما بداخل اللوغاريتم)
+    try:
+        for log_expr in f_expr.atoms(sp.log):
+            arg = log_expr.args[0]
+            roots = sp.solve(arg, x_sym)
+            for r in roots:
+                if r.is_real:
+                    asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={fmt(float(r))}"})
+    except: pass
+
+    # إزالة المقاربات المكررة
+    unique_asymptotes = []
+    seen_labels = set()
+    for asym in asymptotes:
+        if asym['label'] not in seen_labels:
+            seen_labels.add(asym['label'])
+            unique_asymptotes.append(asym)
+
+    # ---------------------------------------------------------
+    # 4. محرك اكتشاف القيم الحرجة للمناقشة
     # ---------------------------------------------------------
     m_critical = []
-    
-    # أ. اكتشاف نقطة الدوران وحساب المماس عندها
     try:
         pivot_x_sols = sp.solve(sp.diff(g_expr, m_sym), x_sym)
         for px in pivot_x_sols:
@@ -95,7 +162,6 @@ if valid_input:
                     m_critical.append(round(float(m_sol), 2))
     except: pass
     
-    # ب. اكتشاف الذروات والمقاربات
     try:
         m_sols = sp.solve(f_expr - g_expr, m_sym)
         if m_sols:
@@ -104,13 +170,11 @@ if valid_input:
             with np.errstate(divide='ignore', invalid='ignore'):
                 H_vals = H_func(x_vals)
             
-            # دراسة النهايات (المقاربات)
             try:
                 m_critical.append(round(float(H_func(-1000)), 1))
                 m_critical.append(round(float(H_func(1000)), 1))
             except: pass
             
-            # الذروات العادية
             if not np.isscalar(H_vals):
                 dH = np.diff(H_vals)
                 ext_idx = np.where(np.diff(np.sign(dH)) != 0)[0] + 1
@@ -120,7 +184,6 @@ if valid_input:
                             m_critical.append(round(float(H_vals[idx]), 2))
     except: pass
     
-    # ج. التقاطع العادي مع محور التراتيب
     try:
         m_0_sols = sp.solve(f_expr.subs(x_sym, 0) - g_expr.subs(x_sym, 0), m_sym)
         for m_sol in m_0_sols:
@@ -131,9 +194,6 @@ if valid_input:
     m_critical = np.unique(m_critical)
     m_critical = np.sort(m_critical)
 
-    # ---------------------------------------------------------
-    # 4. خوارزمية استنتاج الحلول 
-    # ---------------------------------------------------------
     def get_roots_text(m_test, is_critical):
         with np.errstate(divide='ignore', invalid='ignore'):
             y_g = g_func(x_vals, m_test)
@@ -154,7 +214,6 @@ if valid_input:
         if np.isfinite(diff[-1]) and diff[-1] == 0:
             crossings.append(len(diff)-1)
         
-        # اكتشاف المماسات بدقة
         abs_diff = np.abs(diff)
         for i in range(1, len(abs_diff)-1):
             if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
@@ -257,7 +316,7 @@ if valid_input:
         m_val = st.slider("تحكم يدوي:", -8.0, 8.0, 0.0, 0.1, format="%g")
 
     # ---------------------------------------------------------
-    # 7. الرسم الفوري 
+    # 7. الرسم الفوري وتعيين المقاربات
     # ---------------------------------------------------------
     fig, ax = plt.subplots(figsize=(10, 6.5))
     
@@ -269,15 +328,27 @@ if valid_input:
     ax.axhline(0, color='#9CA3AF', linewidth=1.5) 
     ax.axvline(0, color='#9CA3AF', linewidth=1.5) 
     
+    # 7.1 رسم المقاربات بلون مميز (زهري فاقع)
+    for asym in unique_asymptotes:
+        if asym['type'] == 'v':
+            ax.axvline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5, label=f"${asym['label']}$")
+        elif asym['type'] == 'h':
+            ax.axhline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5, label=f"${asym['label']}$")
+        elif asym['type'] == 'o':
+            y_asym = asym['a'] * x_vals + asym['b']
+            ax.plot(x_vals, y_asym, color='#FF3366', linestyle=':', linewidth=2.5, label=f"${asym['label']}$")
+    
+    # 7.2 رسم منحنى الدالة
     ax.plot(x_vals, y_vals, color='#00E5FF', linewidth=3, label='C_f')
     
+    # 7.3 رسم مستقيم المناقشة
     with np.errstate(divide='ignore', invalid='ignore'):
         y_g_plot = g_func(x_vals, m_val)
     if np.isscalar(y_g_plot):
         y_g_plot = np.full_like(x_vals, y_g_plot, dtype=float)
     
     m_label = fmt(m_val)
-    ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f'y = {m_label}' if g_input=='m' else 'y(m)')
+    ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f'$y = {m_label}$' if g_input=='m' else '$y(m)$')
 
     ax.set_ylim(-6, 8)
     ax.grid(True, color='#ffffff', linestyle='-', alpha=0.1)
