@@ -9,57 +9,34 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # ---------------------------------------------------------
-# 1. إعدادات الصفحة والتصميم (الألوان المدروسة نفسياً)
+# 1. إعدادات الصفحة والتصميم 
 # ---------------------------------------------------------
 st.set_page_config(page_title="المناقشة البيانية", page_icon="📈", layout="centered")
 
 st.markdown("""
     <style>
-    /* خلفية زرقاء داكنة جداً للتركيز (Midnight Blue) */
     .stApp { background-color: #0F172A; color: white; }
-    
-    /* تلوين عناوين خانات الإدخال بالسماوي */
-    .stTextInput label { 
-        color: #00E5FF !important; 
-        font-size: 18px !important; 
-        font-weight: bold !important; 
-    }
-    
-    /* تنسيق خانات الإدخال */
-    .stTextInput > div > div > input { 
-        background-color: #1E293B; 
-        color: white; 
-        border: 1px solid #00E5FF; 
-        font-size: 18px;
-    }
+    .stTextInput label { color: #00E5FF !important; font-size: 18px !important; font-weight: bold !important; }
+    .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px;}
     </style>
 """, unsafe_allow_html=True)
 
-# عنوان الأستاذ في سطر واحد وبلون ذهبي مميز
 st.markdown("<h1 style='text-align: center; color: #FFD700 !important; font-size: 36px; font-weight: bold; white-space: nowrap;'>الأستاذ سوايسية هشام</h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; color: #00E5FF !important; font-size: 26px; margin-top: -15px; margin-bottom: 30px;'>المناقشة البيانية</h2>", unsafe_allow_html=True)
 
-# ---------------------------------------------------------
-# 2. دالة تنسيق الأرقام (لإزالة .0 من الأعداد الصحيحة)
-# ---------------------------------------------------------
 def fmt(val):
     if val == float('inf'): return "+∞"
     if val == float('-inf'): return "-∞"
-    # إذا كان العدد صحيحاً (مثلا 2.0) نرجعه بدون فاصلة (2)
-    if int(val) == val:
-        return str(int(val))
+    if int(val) == val: return str(int(val))
     return str(val)
 
-# ---------------------------------------------------------
-# 3. إدارة حالة الأنيميشن
-# ---------------------------------------------------------
 if 'auto_play' not in st.session_state:
     st.session_state.auto_play = False
 if 'm_anim' not in st.session_state:
     st.session_state.m_anim = -5.0
 
 # ---------------------------------------------------------
-# 4. إدخال الدالة ومعادلة المناقشة
+# 2. إدخال الدالة ومعادلة المناقشة
 # ---------------------------------------------------------
 x_sym, m_sym = sp.symbols('x m')
 
@@ -67,7 +44,7 @@ col1, col2 = st.columns(2)
 with col1:
     f_input = st.text_input("أدخل الدالة f(x):", value="ln(x+1)-x")
 with col2:
-    g_input = st.text_input("أدخل معادلة المستقيم y (مثال: m, x+m, m*x):", value="-m")
+    g_input = st.text_input("أدخل معادلة المستقيم y (مثال: m, x+m, m*x):", value="-m*x")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
@@ -82,7 +59,6 @@ except:
     valid_input = False
 
 if valid_input:
-    # عرض العبارات بـ LaTeX بشكل أنيق وبلون ذهبي
     f_latex = sp.latex(f_expr).replace(r"\log", r"\ln")
     g_latex = sp.latex(g_expr).replace(r"\log", r"\ln")
     st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {f_latex} \\ y = {g_latex} \end{{cases}}")
@@ -90,7 +66,8 @@ if valid_input:
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
-    x_vals = np.linspace(-8, 8, 2000)
+    # استخدام 2001 نقطة لضمان وجود الصفر تماماً في المصفوفة
+    x_vals = np.linspace(-8, 8, 2001)
     
     with np.errstate(divide='ignore', invalid='ignore'):
         y_vals = f_func(x_vals)
@@ -101,10 +78,24 @@ if valid_input:
         y_vals = np.full_like(x_vals, y_vals, dtype=float)
 
     # ---------------------------------------------------------
-    # 5. الحساب الدقيق للقيم الحدية
+    # 3. محرك اكتشاف القيم الحرجة (المحدث كلياً)
     # ---------------------------------------------------------
     m_critical = []
     
+    # أ. اكتشاف نقطة الدوران وحساب المماس عندها
+    try:
+        pivot_x_sols = sp.solve(sp.diff(g_expr, m_sym), x_sym)
+        for px in pivot_x_sols:
+            if np.isreal(complex(px)):
+                px_val = float(px)
+                df = sp.diff(f_expr, x_sym)
+                dg = sp.diff(g_expr, x_sym)
+                m_pivot = sp.solve(df.subs(x_sym, px) - dg.subs(x_sym, px), m_sym)
+                for m_sol in m_pivot:
+                    m_critical.append(round(float(m_sol), 2))
+    except: pass
+    
+    # ب. اكتشاف الذروات والمقاربات
     try:
         m_sols = sp.solve(f_expr - g_expr, m_sym)
         if m_sols:
@@ -112,17 +103,24 @@ if valid_input:
             H_func = sp.lambdify(x_sym, H_expr, 'numpy')
             with np.errstate(divide='ignore', invalid='ignore'):
                 H_vals = H_func(x_vals)
-            if np.iscomplexobj(H_vals):
-                H_vals = np.where(np.isreal(H_vals), H_vals.real, np.nan)
             
-            dH = np.diff(H_vals)
-            ext_idx = np.where(np.diff(np.sign(dH)) != 0)[0] + 1
-            for idx in ext_idx:
-                if np.isfinite(H_vals[idx]) and np.isfinite(H_vals[idx-1]):
-                    if abs(H_vals[idx] - H_vals[idx-1]) < 3.0: 
-                        m_critical.append(round(float(H_vals[idx]), 2))
+            # دراسة النهايات (المقاربات)
+            try:
+                m_critical.append(round(float(H_func(-1000)), 1))
+                m_critical.append(round(float(H_func(1000)), 1))
+            except: pass
+            
+            # الذروات العادية
+            if not np.isscalar(H_vals):
+                dH = np.diff(H_vals)
+                ext_idx = np.where(np.diff(np.sign(dH)) != 0)[0] + 1
+                for idx in ext_idx:
+                    if np.isfinite(H_vals[idx]) and np.isfinite(H_vals[idx-1]):
+                        if abs(H_vals[idx] - H_vals[idx-1]) < 3.0: 
+                            m_critical.append(round(float(H_vals[idx]), 2))
     except: pass
     
+    # ج. التقاطع العادي مع محور التراتيب
     try:
         m_0_sols = sp.solve(f_expr.subs(x_sym, 0) - g_expr.subs(x_sym, 0), m_sym)
         for m_sol in m_0_sols:
@@ -133,6 +131,9 @@ if valid_input:
     m_critical = np.unique(m_critical)
     m_critical = np.sort(m_critical)
 
+    # ---------------------------------------------------------
+    # 4. خوارزمية استنتاج الحلول 
+    # ---------------------------------------------------------
     def get_roots_text(m_test, is_critical):
         with np.errstate(divide='ignore', invalid='ignore'):
             y_g = g_func(x_vals, m_test)
@@ -150,14 +151,17 @@ if valid_input:
                 elif diff[i] == 0:
                     crossings.append(i)
         
-        if is_critical:
-            abs_diff = np.abs(diff)
-            for i in range(1, len(abs_diff)-1):
-                if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
-                    if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1]:
-                        if abs_diff[i] < 0.2:
-                            if not any(abs(i - c) < 20 for c in crossings):
-                                tangents.append(i)
+        if np.isfinite(diff[-1]) and diff[-1] == 0:
+            crossings.append(len(diff)-1)
+        
+        # اكتشاف المماسات بدقة
+        abs_diff = np.abs(diff)
+        for i in range(1, len(abs_diff)-1):
+            if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
+                if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1]:
+                    if abs_diff[i] < 0.1: 
+                        if not any(abs(i - c) < 20 for c in crossings):
+                            tangents.append(i)
                                 
         raw_roots = [(x_vals[c], "single") for c in crossings] + [(x_vals[t], "double") for t in tangents]
         
@@ -181,23 +185,23 @@ if valid_input:
         if neg_d == 1: desc.append("حل مضاعف سالب")
         if zero_d == 1: desc.append("حل مضاعف معدوم")
         
-        if pos_s == 1 and neg_s == 1 and len(desc)==0:
-            desc.append("حلان مختلفان في الإشارة")
-        else:
-            if pos_s == 1: desc.append("حل موجب")
-            elif pos_s == 2: desc.append("حلان موجبان")
-            elif pos_s > 2: desc.append(f"{pos_s} حلول موجبة")
-            
-            if neg_s == 1: desc.append("حل سالب")
-            elif neg_s == 2: desc.append("حلان سالبان")
-            elif neg_s > 2: desc.append(f"{neg_s} حلول سالبة")
-            
-            if zero_s == 1: desc.append("حل معدوم")
+        if pos_s == 1: desc.append("حل موجب")
+        elif pos_s == 2: desc.append("حلان موجبان")
+        elif pos_s > 2: desc.append(f"{pos_s} حلول موجبة")
         
+        if neg_s == 1: desc.append("حل سالب")
+        elif neg_s == 2: desc.append("حلان سالبان")
+        elif neg_s > 2: desc.append(f"{neg_s} حلول سالبة")
+        
+        if zero_s == 1: desc.append("حل معدوم")
+        
+        if pos_s == 1 and neg_s == 1 and len(desc) == 2:
+            return "حلان مختلفان في الإشارة"
+            
         return " و ".join(desc)
 
     # ---------------------------------------------------------
-    # 6. بناء هيكل الجدول التفاعلي (باستخدام الدالة fmt)
+    # 5. بناء هيكل الجدول التفاعلي
     # ---------------------------------------------------------
     intervals = []
     if len(m_critical) > 0:
@@ -224,19 +228,18 @@ if valid_input:
                 elif high == float('inf') and current_m > low + 0.15: is_active = True
                 elif low + 0.15 <= current_m <= high - 0.15: is_active = True
 
-            # تلوين النصوص داخل الجدول لكسر اللون الأبيض
             row_style = "border: 3px solid #FFD700; background-color: #334155; font-weight:bold;" if is_active else "border-bottom: 1px solid #334155;"
-            text_color_sol = "#00E5FF" if is_active else "#A5F3FC"  # لون سماوي
-            text_color_m = "#FFD700" if is_active else "#FEF08A"    # لون ذهبي
+            text_color_sol = "#00E5FF" if is_active else "#A5F3FC"  
+            text_color_m = "#FFD700" if is_active else "#FEF08A"    
 
             html += f"<tr style='{row_style}'> <td style='padding:12px; color:{text_color_sol};'>{sol_text}</td> <td style='padding:12px; color:{text_color_m};' dir='ltr'>{text}</td> </tr>"
         html += "</table>"
         return html
 
     # ---------------------------------------------------------
-    # 7. أزرار التحكم
+    # 6. أزرار التحكم
     # ---------------------------------------------------------
-    st.write("") # مسافة صغيرة
+    st.write("") 
     col1, col2 = st.columns(2)
     with col1:
         if st.button("تشغيل المناقشة آلياً ▶️"):
@@ -251,11 +254,10 @@ if valid_input:
     if st.session_state.auto_play:
         m_val = round(st.session_state.m_anim, 2)
     else:
-        # شريط التمرير (بخاصية format لإزالة الفاصلة من الصفر تلقائياً)
         m_val = st.slider("تحكم يدوي:", -8.0, 8.0, 0.0, 0.1, format="%g")
 
     # ---------------------------------------------------------
-    # 8. الرسم الفوري (تكبير حجم المنحنى)
+    # 7. الرسم الفوري 
     # ---------------------------------------------------------
     fig, ax = plt.subplots(figsize=(10, 6.5))
     
@@ -274,7 +276,6 @@ if valid_input:
     if np.isscalar(y_g_plot):
         y_g_plot = np.full_like(x_vals, y_g_plot, dtype=float)
     
-    # استخدام دالة fmt لتنسيق تسمية المستقيم في الرسم
     m_label = fmt(m_val)
     ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f'y = {m_label}' if g_input=='m' else 'y(m)')
 
@@ -291,7 +292,7 @@ if valid_input:
     plt.close(fig)
 
     # ---------------------------------------------------------
-    # 9. حلقة الأنيميشن
+    # 8. حلقة الأنيميشن
     # ---------------------------------------------------------
     if st.session_state.auto_play:
         time.sleep(0.05) 
