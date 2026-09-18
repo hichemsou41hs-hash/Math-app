@@ -24,10 +24,10 @@ st.markdown("""
 st.markdown("<h1 style='text-align: center; color: #FFD700 !important; font-size: 36px; font-weight: bold; white-space: nowrap;'>الأستاذ سوايسية هشام</h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; color: #00E5FF !important; font-size: 26px; margin-top: -15px; margin-bottom: 30px;'>المناقشة البيانية</h2>", unsafe_allow_html=True)
 
-# دالة التنسيق مع رموز رياضية HTML Entities متوافقة
+# دالة التنسيق باستخدام رموز نقية
 def fmt(val):
-    if val == float('inf'): return "+&infin;"
-    if val == float('-inf'): return "-&infin;"
+    if val == float('inf'): return "+∞"
+    if val == float('-inf'): return "-∞"
     if int(val) == val: return str(int(val))
     return str(val)
 
@@ -84,7 +84,7 @@ if valid_input:
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 3. محرك اكتشاف المقاربات 
+    # 3. محرك اكتشاف المقاربات
     # ---------------------------------------------------------
     asymptotes = []
     
@@ -92,7 +92,6 @@ if valid_input:
         try:
             lim_h = sp.limit(f_expr, x_sym, direction)
             if lim_h.is_real and np.isfinite(float(lim_h)):
-                # نستخدم formatting العادي للرسم لأنه لا يدعم HTML Entities
                 val_str = "+∞" if lim_h == sp.oo else ("-∞" if lim_h == -sp.oo else str(int(lim_h) if int(lim_h)==lim_h else float(lim_h)))
                 asymptotes.append({'type': 'h', 'val': float(lim_h), 'label': f"y={val_str}"})
                 continue
@@ -255,7 +254,7 @@ if valid_input:
         return " و ".join(desc)
 
     # ---------------------------------------------------------
-    # 5. استخراج المجالات الخام
+    # 5. استخراج المجالات الخام ودمجها
     # ---------------------------------------------------------
     raw_intervals = []
     if len(m_critical) > 0:
@@ -269,9 +268,6 @@ if valid_input:
     else:
         raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0, False)))
 
-    # ---------------------------------------------------------
-    # 6. دمج المجالات وبناء الصياغة الرياضية (Math Typography)
-    # ---------------------------------------------------------
     merged_intervals = []
     if raw_intervals:
         current_group = [raw_intervals[0]]
@@ -292,23 +288,23 @@ if valid_input:
         include_L = (g[0][0] == g[0][1]) 
         include_H = (g[-1][0] == g[-1][1]) 
 
-        # بناء النص الرياضي باستخدام HTML Entities متوافقة وشكل LaTeX
+        # بناء النص الرياضي بشكل أنيق وبدون مسافات زائدة
         if L == float('-inf') and H == float('inf'):
-            math_html = "<i>m</i> &isin; &#8477;"
+            math_html = "<i>m</i> ∈ ℝ"
         elif L == H:
             math_html = f"<i>m</i> = {fmt(L)}"
         else:
             left_bracket = "[" if include_L else "]"
             right_bracket = "]" if include_H else "["
-            math_html = f"<i>m</i> &isin; {left_bracket} {fmt(L)} ; {fmt(H)} {right_bracket}"
+            math_html = f"<i>m</i> ∈ {left_bracket}{fmt(L)}; {fmt(H)}{right_bracket}"
             
         final_table_data.append((math_html, sol_text, g)) 
 
     # ---------------------------------------------------------
-    # 7. بناء هيكل الجدول التفاعلي
+    # 7. بناء هيكل الجدول التفاعلي (مع منع كسر السطر وتصغير الخط)
     # ---------------------------------------------------------
     def generate_html_table(current_m):
-        html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:19px; background-color:#1E293B;'>"
+        html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
         html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>الإشارة وعدد الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
         
         for math_html, sol_text, g in final_table_data:
@@ -325,8 +321,8 @@ if valid_input:
             text_color_sol = "#00E5FF" if is_active else "#A5F3FC"  
             text_color_m = "#FFD700" if is_active else "#FEF08A"    
 
-            # تطبيق خط الرياضيات الجميل (Cambria Math) على خانة المجالات لتبدو مثل LaTeX
-            html += f"<tr style='{row_style}'> <td style='padding:12px; color:{text_color_sol};'>{sol_text}</td> <td style='padding:12px; color:{text_color_m}; font-family: \"Cambria Math\", \"Times New Roman\", serif; font-size: 22px; letter-spacing: 1px;' dir='ltr'>{math_html}</td> </tr>"
+            # أضفنا (white-space: nowrap) لمنع الرجوع للسطر وتصغير الخط إلى 18px مع عائلة الخطوط الكلاسيكية
+            html += f"<tr style='{row_style}'> <td style='padding:10px; color:{text_color_sol};'>{sol_text}</td> <td style='padding:10px; color:{text_color_m}; font-family: \"Times New Roman\", Times, serif; font-size: 18px; white-space: nowrap;' dir='ltr'>{math_html}</td> </tr>"
         html += "</table>"
         return html
 
