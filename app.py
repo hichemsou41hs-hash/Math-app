@@ -24,10 +24,10 @@ st.markdown("""
 st.markdown("<h1 style='text-align: center; color: #FFD700 !important; font-size: 36px; font-weight: bold; white-space: nowrap;'>الأستاذ سوايسية هشام</h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; color: #00E5FF !important; font-size: 26px; margin-top: -15px; margin-bottom: 30px;'>المناقشة البيانية</h2>", unsafe_allow_html=True)
 
-# استخدام رموز Unicode الحقيقية بدلاً من LaTeX
+# دالة التنسيق مع رموز رياضية HTML Entities متوافقة
 def fmt(val):
-    if val == float('inf'): return "+∞"
-    if val == float('-inf'): return "-∞"
+    if val == float('inf'): return "+&infin;"
+    if val == float('-inf'): return "-&infin;"
     if int(val) == val: return str(int(val))
     return str(val)
 
@@ -84,7 +84,7 @@ if valid_input:
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 3. محرك اكتشاف المقاربات
+    # 3. محرك اكتشاف المقاربات 
     # ---------------------------------------------------------
     asymptotes = []
     
@@ -92,7 +92,9 @@ if valid_input:
         try:
             lim_h = sp.limit(f_expr, x_sym, direction)
             if lim_h.is_real and np.isfinite(float(lim_h)):
-                asymptotes.append({'type': 'h', 'val': float(lim_h), 'label': f"y={fmt(float(lim_h))}"})
+                # نستخدم formatting العادي للرسم لأنه لا يدعم HTML Entities
+                val_str = "+∞" if lim_h == sp.oo else ("-∞" if lim_h == -sp.oo else str(int(lim_h) if int(lim_h)==lim_h else float(lim_h)))
+                asymptotes.append({'type': 'h', 'val': float(lim_h), 'label': f"y={val_str}"})
                 continue
                 
             a_lim = sp.limit(f_expr / x_sym, x_sym, direction)
@@ -101,7 +103,7 @@ if valid_input:
                 if b_lim.is_real and np.isfinite(float(b_lim)):
                     a_val, b_val = float(a_lim), float(b_lim)
                     
-                    a_str = fmt(abs(a_val))
+                    a_str = str(int(abs(a_val))) if int(abs(a_val))==abs(a_val) else str(abs(a_val))
                     if a_str == "1": a_str = ""
                     sign_a = "-" if a_val < 0 else ""
                     
@@ -109,7 +111,7 @@ if valid_input:
                         eq = f"y={sign_a}{a_str}x"
                     else:
                         sign_b = "+" if b_val > 0 else "-"
-                        b_str = fmt(abs(b_val))
+                        b_str = str(int(abs(b_val))) if int(abs(b_val))==abs(b_val) else str(abs(b_val))
                         eq = f"y={sign_a}{a_str}x {sign_b} {b_str}"
                         
                     asymptotes.append({'type': 'o', 'a': a_val, 'b': b_val, 'label': eq})
@@ -121,7 +123,8 @@ if valid_input:
             roots = sp.solve(d_expr, x_sym)
             for r in roots:
                 if r.is_real:
-                    asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={fmt(float(r))}"})
+                    r_str = str(int(r)) if int(r)==r else str(float(r))
+                    asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={r_str}"})
     except: pass
     
     try:
@@ -130,7 +133,8 @@ if valid_input:
             roots = sp.solve(arg, x_sym)
             for r in roots:
                 if r.is_real:
-                    asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={fmt(float(r))}"})
+                    r_str = str(int(r)) if int(r)==r else str(float(r))
+                    asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={r_str}"})
     except: pass
 
     unique_asymptotes = []
@@ -266,7 +270,7 @@ if valid_input:
         raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0, False)))
 
     # ---------------------------------------------------------
-    # 6. دمج المجالات المتشابهة بنصوص صريحة بدون LaTeX
+    # 6. دمج المجالات وبناء الصياغة الرياضية (Math Typography)
     # ---------------------------------------------------------
     merged_intervals = []
     if raw_intervals:
@@ -288,17 +292,17 @@ if valid_input:
         include_L = (g[0][0] == g[0][1]) 
         include_H = (g[-1][0] == g[-1][1]) 
 
-        # استخدام نصوص Unicode العادية هنا
+        # بناء النص الرياضي باستخدام HTML Entities متوافقة وشكل LaTeX
         if L == float('-inf') and H == float('inf'):
-            text = "m ∈ ℝ"
+            math_html = "<i>m</i> &isin; &#8477;"
         elif L == H:
-            text = f"m = {fmt(L)}"
+            math_html = f"<i>m</i> = {fmt(L)}"
         else:
             left_bracket = "[" if include_L else "]"
             right_bracket = "]" if include_H else "["
-            text = f"m ∈ {left_bracket}{fmt(L)}, {fmt(H)}{right_bracket}"
+            math_html = f"<i>m</i> &isin; {left_bracket} {fmt(L)} ; {fmt(H)} {right_bracket}"
             
-        final_table_data.append((text, sol_text, g)) 
+        final_table_data.append((math_html, sol_text, g)) 
 
     # ---------------------------------------------------------
     # 7. بناء هيكل الجدول التفاعلي
@@ -307,7 +311,7 @@ if valid_input:
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:19px; background-color:#1E293B;'>"
         html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>الإشارة وعدد الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
         
-        for text, sol_text, g in final_table_data:
+        for math_html, sol_text, g in final_table_data:
             is_active = False
             for low, high, _ in g:
                 if low == high:
@@ -321,8 +325,8 @@ if valid_input:
             text_color_sol = "#00E5FF" if is_active else "#A5F3FC"  
             text_color_m = "#FFD700" if is_active else "#FEF08A"    
 
-            # إزالة علامة $ من حول المتغير text
-            html += f"<tr style='{row_style}'> <td style='padding:12px; color:{text_color_sol};'>{sol_text}</td> <td style='padding:12px; color:{text_color_m};' dir='ltr'>{text}</td> </tr>"
+            # تطبيق خط الرياضيات الجميل (Cambria Math) على خانة المجالات لتبدو مثل LaTeX
+            html += f"<tr style='{row_style}'> <td style='padding:12px; color:{text_color_sol};'>{sol_text}</td> <td style='padding:12px; color:{text_color_m}; font-family: \"Cambria Math\", \"Times New Roman\", serif; font-size: 22px; letter-spacing: 1px;' dir='ltr'>{math_html}</td> </tr>"
         html += "</table>"
         return html
 
@@ -385,11 +389,11 @@ if valid_input:
     if np.isscalar(y_g_plot):
         y_g_plot = np.full_like(x_vals, y_g_plot, dtype=float)
     
-    m_label_str = fmt(m_val)
+    m_val_str = str(int(m_val)) if int(m_val)==m_val else str(round(m_val, 2))
     if g_input.strip() == 'm':
-        m_eq_label = f"y = {m_label_str}"
+        m_eq_label = f"y = {m_val_str}"
     else:
-        rep_str = f"({m_label_str})" if m_val < 0 else m_label_str
+        rep_str = f"({m_val_str})" if m_val < 0 else m_val_str
         m_eq_label = "y = " + g_input.replace('m', rep_str).replace('*', '')
         
     ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f"${m_eq_label}$")
