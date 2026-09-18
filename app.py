@@ -21,9 +21,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='text-align: center; color: #FFD700 !important; font-size: 36px; font-weight: bold; white-space: nowrap;'>الأستاذ سوايسية هشام</h1>", unsafe_allow_html=True)
-# تعديل لون "المناقشة البيانية" إلى الأصفر الذهبي كما طلبت
-st.markdown("<h2 style='text-align: center; color: #FFD700 !important; font-size: 26px; margin-top: -15px; margin-bottom: 30px;'>المناقشة البيانية</h2>", unsafe_allow_html=True)
+# استخدام span داخلي لفرض اللون الأصفر الذهبي بقوة على متصفح Streamlit
+st.markdown("<h1 style='text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap;'>الأستاذ سوايسية هشام</h1>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center; margin-top: -15px; margin-bottom: 30px;'><span style='color: #FFD700 !important; font-size: 30px; font-weight: bold;'>المناقشة البيانية</span></h2>", unsafe_allow_html=True)
 
 def fmt(val):
     if val == float('inf'): return "+∞"
@@ -372,10 +372,8 @@ if valid_input:
                 y_text = asym['a'] * x_text + asym['b']
             ax.text(x_text, y_text + 0.5, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', ha='center', va='bottom', rotation=np.degrees(np.arctan(asym['a'])) * 0.6)
     
-    # رسم الدالة
     ax.plot(x_vals, y_vals, color='#00E5FF', linewidth=3, label='C_f')
     
-    # رسم مستقيم المناقشة
     with np.errstate(divide='ignore', invalid='ignore'):
         y_g_plot = g_func(x_vals, m_val)
     if np.isscalar(y_g_plot):
@@ -390,7 +388,6 @@ if valid_input:
         
     ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f"${m_eq_label}$")
     
-    # استخراج ورسم نقاط التقاطع باللون الأحمر الفاقع
     diff_plot = y_vals - y_g_plot
     intersect_x = []
     for i in range(len(diff_plot)-1):
@@ -422,11 +419,9 @@ if valid_input:
             yt = g_func(ix, m_val)
             intersect_y.append(float(yt) if not np.isscalar(yt) else yt)
 
-    # رسم النقاط بشكل بارز (أحمر كبير مع حواف بيضاء)
     if unique_intersect_x:
         ax.scatter(unique_intersect_x, intersect_y, color='#FF0000', s=120, zorder=5, edgecolor='white', linewidth=2, label='نقاط التقاطع')
 
-    # كتابة معادلة المستقيم بجواره
     if g_input.strip() == 'm':
         ax.text(-7.5, m_val + 0.25, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='left', va='bottom')
     else:
@@ -451,12 +446,11 @@ if valid_input:
     plt.close(fig)
 
     # ---------------------------------------------------------
-    # 10. حلقة الأنيميشن مع التوقف الذكي للتلميذ
+    # 10. حلقة الأنيميشن
     # ---------------------------------------------------------
     if st.session_state.auto_play:
         is_critical_now = any(abs(st.session_state.m_anim - mc) < 1e-4 for mc in m_critical)
         
-        # التوقف لمدة ثانية ونصف عند القيم الحرجة ليشاهد التلميذ التقاطعات بوضوح!
         if is_critical_now:
             time.sleep(1.5) 
         else:
@@ -465,7 +459,6 @@ if valid_input:
         step = 0.15 
         next_m = st.session_state.m_anim + step
         
-        # ضمان وقوف المستقيم تماماً عند القيمة الحرجة وعدم تجاوزها
         for mc in m_critical:
             if st.session_state.m_anim < mc - 1e-4 and next_m >= mc - 1e-4:
                 next_m = float(mc)
