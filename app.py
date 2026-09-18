@@ -3,6 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sympy as sp
 import time
+import warnings
+
+# تجاهل التحذيرات الرياضية (مثل اللوغاريتم لعدد سالب)
+warnings.filterwarnings("ignore")
 
 # ---------------------------------------------------------
 # 1. إعدادات الصفحة والتصميم
@@ -21,7 +25,7 @@ st.markdown("<h1 style='text-align: center; color: #FFC000 !important; font-size
 st.markdown("<h2 style='text-align: center; color: white !important; font-size: 30px;'>المناقشة البيانية</h2>", unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# 2. إدارة حالة الأنيميشن (لجعل الحركة أوتوماتيكية وسريعة)
+# 2. إدارة حالة الأنيميشن
 # ---------------------------------------------------------
 if 'auto_play' not in st.session_state:
     st.session_state.auto_play = False
@@ -29,15 +33,15 @@ if 'm_anim' not in st.session_state:
     st.session_state.m_anim = -5.0
 
 # ---------------------------------------------------------
-# 3. إدخال الدالة ومعادلة المناقشة (أفقية، مائلة، دورانية)
+# 3. إدخال الدالة ومعادلة المناقشة
 # ---------------------------------------------------------
 x_sym, m_sym = sp.symbols('x m')
 
 col1, col2 = st.columns(2)
 with col1:
-    f_input = st.text_input("أدخل الدالة f(x):", value="e^(-x+1)-x+1")
+    f_input = st.text_input("أدخل الدالة f(x):", value="ln(x+1)-x")
 with col2:
-    g_input = st.text_input("أدخل معادلة المستقيم y (مثال: m, x+m, m*x):", value="m")
+    g_input = st.text_input("أدخل معادلة المستقيم y (مثال: m, x+m, m*x):", value="2*m+1")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
@@ -52,14 +56,19 @@ except:
     valid_input = False
 
 if valid_input:
-    # عرض العبارات بـ LaTeX بشكل أنيق
-    st.latex(rf"\begin{{cases}} f(x) = {sp.latex(f_expr)} \\ y = {sp.latex(g_expr)} \end{{cases}}")
+    # إصلاح مشكلة ظهور log بدلاً من ln في العرض
+    f_latex = sp.latex(f_expr).replace(r"\log", r"\ln")
+    g_latex = sp.latex(g_expr).replace(r"\log", r"\ln")
+    st.latex(rf"\begin{{cases}} f(x) = {f_latex} \\ y = {g_latex} \end{{cases}}")
 
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
     x_vals = np.linspace(-8, 8, 2000)
-    y_vals = f_func(x_vals)
+    
+    # حساب قيم الدالة مع تجاهل الأخطاء خارج مجموعة التعريف
+    with np.errstate(divide='ignore', invalid='ignore'):
+        y_vals = f_func(x_vals)
     
     if np.iscomplexobj(y_vals):
         y_vals = np.where(np.isreal(y_vals), y_vals.real, np.nan)
@@ -67,58 +76,72 @@ if valid_input:
         y_vals = np.full_like(x_vals, y_vals, dtype=float)
 
     # ---------------------------------------------------------
-    # 4. الحساب الدقيق للقيم الحدية لكل أنواع المناقشة وإشاراتها
+    # 4. الحساب الدقيق للقيم الحدية
     # ---------------------------------------------------------
     m_critical = []
     
-    # 1. الذروات وتغير عدد الحلول (عن طريق حل المعادلة بالنسبة لـ m)
     try:
         m_sols = sp.solve(f_expr - g_expr, m_sym)
         if m_sols:
             H_expr = m_sols[0]
             H_func = sp.lambdify(x_sym, H_expr, 'numpy')
-            H_vals = H_func(x_vals)
+            with np.errstate(divide='ignore', invalid='ignore'):
+                H_vals = H_func(x_vals)
             if np.iscomplexobj(H_vals):
                 H_vals = np.where(np.isreal(H_vals), H_vals.real, np.nan)
             
             dH = np.diff(H_vals)
             ext_idx = np.where(np.diff(np.sign(dH)) != 0)[0] + 1
             for idx in ext_idx:
-                if abs(H_vals[idx] - H_vals[idx-1]) < 3.0: # لتفادي المقاربات العمودية
-                    m_critical.append(round(float(H_vals[idx]), 1))
+                if np.isfinite(H_vals[idx]) and np.isfinite(H_vals[idx-1]):
+                    if abs(H_vals[idx] - H_vals[idx-1]) < 3.0: 
+                        m_critical.append(round(float(H_vals[idx]), 2))
     except: pass
     
-    # 2. نقطة تقاطع المنحنى مع محور التراتيب (تغير إشارة الحلول)
     try:
         m_0_sols = sp.solve(f_expr.subs(x_sym, 0) - g_expr.subs(x_sym, 0), m_sym)
         for m_sol in m_0_sols:
-            m_critical.append(round(float(m_sol), 1))
+            m_critical.append(round(float(m_sol), 2))
     except: pass
 
     m_critical = [m for m in m_critical if np.isfinite(m) and abs(m) < 20]
     m_critical = np.unique(m_critical)
     m_critical = np.sort(m_critical)
 
-    # خوارزمية ذكية جداً لاستنتاج عدد الحلول وإشارتها
+    # خوارزمية ذكية وآمنة لحساب الحلول (لا تتأثر بمجموعة التعريف)
     def get_roots_text(m_test, is_critical):
-        y_g = g_func(x_vals, m_test)
-        if np.isscalar(y_g):
-            y_g = np.full_like(x_vals, y_g, dtype=float)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            y_g = g_func(x_vals, m_test)
+            if np.isscalar(y_g):
+                y_g = np.full_like(x_vals, y_g, dtype=float)
+            diff = y_vals - y_g
             
-        diff = y_vals - y_g
-        crossings = list(np.where(np.diff(np.sign(diff)))[0])
+        crossings = []
         tangents = []
         
-        # التقاط الحلول المضاعفة بدقة
+        for i in range(len(diff)-1):
+            if np.isfinite(diff[i]) and np.isfinite(diff[i+1]):
+                if diff[i] * diff[i+1] < 0:
+                    crossings.append(i)
+                elif diff[i] == 0:
+                    crossings.append(i)
+        
         if is_critical:
             abs_diff = np.abs(diff)
-            minima = np.where((abs_diff[1:-1] < abs_diff[:-2]) & (abs_diff[1:-1] < abs_diff[2:]))[0] + 1
-            for idx in minima:
-                if abs_diff[idx] < 0.2:
-                    if not any(abs(idx - c) < 20 for c in crossings):
-                        tangents.append(idx)
-                        
-        all_roots = [(x_vals[c], "single") for c in crossings] + [(x_vals[t], "double") for t in tangents]
+            for i in range(1, len(abs_diff)-1):
+                if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
+                    if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1]:
+                        if abs_diff[i] < 0.2:
+                            if not any(abs(i - c) < 20 for c in crossings):
+                                tangents.append(i)
+                                
+        raw_roots = [(x_vals[c], "single") for c in crossings] + [(x_vals[t], "double") for t in tangents]
+        
+        # تصفية الحلول المكررة بسبب التقريب
+        all_roots = []
+        for r, t in raw_roots:
+            if not any(abs(r - fr) < 0.15 for fr, ft in all_roots):
+                all_roots.append((r, t))
         
         if len(all_roots) == 0: return "لا توجد حلول"
         
@@ -184,7 +207,7 @@ if valid_input:
         return html
 
     # ---------------------------------------------------------
-    # 6. أزرار التحكم والأنيميشن السريع
+    # 6. أزرار التحكم
     # ---------------------------------------------------------
     col1, col2 = st.columns(2)
     with col1:
@@ -216,8 +239,8 @@ if valid_input:
     
     ax.plot(x_vals, y_vals, color='#00FFFF', linewidth=2.5, label='C_f')
     
-    # رسم مستقيم المناقشة التفاعلي
-    y_g_plot = g_func(x_vals, m_val)
+    with np.errstate(divide='ignore', invalid='ignore'):
+        y_g_plot = g_func(x_vals, m_val)
     if np.isscalar(y_g_plot):
         y_g_plot = np.full_like(x_vals, y_g_plot, dtype=float)
     
@@ -234,11 +257,11 @@ if valid_input:
     plt.close(fig)
 
     # ---------------------------------------------------------
-    # 8. حلقة الأنيميشن (المحرك المسرع)
+    # 8. حلقة الأنيميشن
     # ---------------------------------------------------------
     if st.session_state.auto_play:
-        time.sleep(0.05) # زمن انتظار أقل لحركة أسرع
-        st.session_state.m_anim += 0.2 # قفزة أكبر في قيمة m
+        time.sleep(0.05) 
+        st.session_state.m_anim += 0.2 
         if st.session_state.m_anim > 6.0:
             st.session_state.auto_play = False
         st.rerun()
