@@ -24,9 +24,10 @@ st.markdown("""
 st.markdown("<h1 style='text-align: center; color: #FFD700 !important; font-size: 36px; font-weight: bold; white-space: nowrap;'>الأستاذ سوايسية هشام</h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; color: #00E5FF !important; font-size: 26px; margin-top: -15px; margin-bottom: 30px;'>المناقشة البيانية</h2>", unsafe_allow_html=True)
 
+# استخدام رموز Unicode الحقيقية بدلاً من LaTeX
 def fmt(val):
-    if val == float('inf'): return "+\infty"
-    if val == float('-inf'): return "-\infty"
+    if val == float('inf'): return "+∞"
+    if val == float('-inf'): return "-∞"
     if int(val) == val: return str(int(val))
     return str(val)
 
@@ -83,7 +84,7 @@ if valid_input:
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 3. محرك اكتشاف المقاربات (Asymptotes Analyzer)
+    # 3. محرك اكتشاف المقاربات
     # ---------------------------------------------------------
     asymptotes = []
     
@@ -265,13 +266,13 @@ if valid_input:
         raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0, False)))
 
     # ---------------------------------------------------------
-    # 6. دمج المجالات المتشابهة (اللمسة الاحترافية الجديدة)
+    # 6. دمج المجالات المتشابهة بنصوص صريحة بدون LaTeX
     # ---------------------------------------------------------
     merged_intervals = []
     if raw_intervals:
         current_group = [raw_intervals[0]]
         for item in raw_intervals[1:]:
-            if item[2] == current_group[-1][2]: # إذا كان النص (الحلول) مطابقاً للمجال السابق
+            if item[2] == current_group[-1][2]: 
                 current_group.append(item)
             else:
                 merged_intervals.append(current_group)
@@ -284,19 +285,20 @@ if valid_input:
         L = g[0][0]
         H = g[-1][1]
         
-        include_L = (g[0][0] == g[0][1]) # هل الحد الأدنى نقطة مغلقة مشمولة؟
-        include_H = (g[-1][0] == g[-1][1]) # هل الحد الأعلى نقطة مغلقة مشمولة؟
+        include_L = (g[0][0] == g[0][1]) 
+        include_H = (g[-1][0] == g[-1][1]) 
 
+        # استخدام نصوص Unicode العادية هنا
         if L == float('-inf') and H == float('inf'):
-            text = "m \in \mathbb{R}"
+            text = "m ∈ ℝ"
         elif L == H:
             text = f"m = {fmt(L)}"
         else:
             left_bracket = "[" if include_L else "]"
             right_bracket = "]" if include_H else "["
-            text = f"m \in {left_bracket}{fmt(L)}, {fmt(H)}{right_bracket}"
+            text = f"m ∈ {left_bracket}{fmt(L)}, {fmt(H)}{right_bracket}"
             
-        final_table_data.append((text, sol_text, g)) # نحتفظ بالمجالات الخام (g) من أجل الإضاءة لاحقاً
+        final_table_data.append((text, sol_text, g)) 
 
     # ---------------------------------------------------------
     # 7. بناء هيكل الجدول التفاعلي
@@ -307,7 +309,6 @@ if valid_input:
         
         for text, sol_text, g in final_table_data:
             is_active = False
-            # نتحقق مما إذا كانت m تقع في أي مجال من المجالات الفرعية المدمجة لإضاءة السطر
             for low, high, _ in g:
                 if low == high:
                     if abs(current_m - low) < 0.15: is_active = True
@@ -320,7 +321,8 @@ if valid_input:
             text_color_sol = "#00E5FF" if is_active else "#A5F3FC"  
             text_color_m = "#FFD700" if is_active else "#FEF08A"    
 
-            html += f"<tr style='{row_style}'> <td style='padding:12px; color:{text_color_sol};'>{sol_text}</td> <td style='padding:12px; color:{text_color_m};' dir='ltr'>${text}$</td> </tr>"
+            # إزالة علامة $ من حول المتغير text
+            html += f"<tr style='{row_style}'> <td style='padding:12px; color:{text_color_sol};'>{sol_text}</td> <td style='padding:12px; color:{text_color_m};' dir='ltr'>{text}</td> </tr>"
         html += "</table>"
         return html
 
