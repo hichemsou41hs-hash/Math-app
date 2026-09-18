@@ -2,101 +2,151 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 import sympy as sp
+import pandas as pd
 
 # إعدادات الصفحة
-st.set_page_config(page_title="المناقشة البيانية", page_icon="📈", layout="centered")
+st.set_page_config(page_title="المناقشة البيانية الشاملة", page_icon="📈", layout="centered")
 
-st.title("📈 تطبيق المناقشة البيانية للدوال")
-st.write("أدخل الدوال بصيغة رياضية طبيعية (مثال: x^2 - 4 أو e^x أو ln(x)).")
+st.title("📈 تطبيق المناقشة البيانية الشاملة")
+st.write("أدخل الدالة، وسيقوم التطبيق برسمها واستنتاج جدول المناقشة الأفقية f(x) = m أوتوماتيكياً!")
 
 # تعريف المتغيرات الرمزية
-x_sym, m_sym = sp.symbols('x m')
+x_sym = sp.Symbol('x')
 
-# خانات الإدخال
-f_input = st.text_input("أدخل عبارة الدالة f(x):", value="e^x - x + 1")
-m_input = st.text_input("أدخل معادلة المناقشة (مثال: m, x+m, m*x):", value="m")
+# خانة الإدخال
+f_input = st.text_input("أدخل عبارة الدالة f(x) (مثال: e^x - x + 1 أو x^2 - 4):", value="e^x - x + 1")
 
 # معالجة المدخلات
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
     transformations = (standard_transformations + (implicit_multiplication_application,))
-    
-    # تعريف الثوابت والدوال الرياضية الشائعة ليتعرف عليها التطبيق
     local_dict = {'e': sp.E, 'pi': sp.pi, 'ln': sp.log}
     
     f_expr_str = f_input.replace('^', '**')
-    m_expr_str = m_input.replace('^', '**')
-
     f_expr = parse_expr(f_expr_str, local_dict=local_dict, transformations=transformations)
-    m_expr = parse_expr(m_expr_str, local_dict=local_dict, transformations=transformations)
     
-    # عرض العبارات بـ LaTeX
-    st.write("العبارات التي تم التعرف عليها:")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.latex(rf"f(x) = {sp.latex(f_expr)}")
-    with col2:
-        st.latex(rf"y = {sp.latex(m_expr)}")
-        
+    st.write("الدالة المدروسة:")
+    st.latex(rf"f(x) = {sp.latex(f_expr)}")
     valid_input = True
 except Exception as e:
-    st.error("⚠️ صيغة غير صالحة. يرجى التأكد من كتابة العبارات بشكل صحيح.")
+    st.error("⚠️ صيغة غير صالحة. يرجى التأكد من الكتابة.")
     valid_input = False
 
 if valid_input:
-    # شريط تمرير (Slider) لقيمة الوسيط m
-    st.write("---")
-    st.write("### 🎛️ التحكم في المناقشة البيانية")
-    m_val = st.slider("غيّر قيمة الوسيط (m):", min_value=-10.0, max_value=10.0, value=0.0, step=0.5)
+    # تحويل الدالة للرسم والحساب
+    f_func = sp.lambdify(x_sym, f_expr, 'numpy')
+    x_vals = np.linspace(-10, 10, 2000)
+    y_vals = f_func(x_vals)
+    
+    # تنظيف القيم المركبة إن وجدت
+    if np.iscomplexobj(y_vals):
+        y_vals = np.where(np.isreal(y_vals), y_vals.real, np.nan)
+    if np.isscalar(y_vals):
+        y_vals = np.full_like(x_vals, y_vals, dtype=float)
 
+    # ---------------------------------------------------------
+    # خوارزمية استنتاج جدول المناقشة البيانية (النقاط الحدية)
+    # ---------------------------------------------------------
+    m_critical = []
+    
+    # 1. إيجاد f(0) الفاصل بين الحلول الموجبة والسالبة
     try:
-        # تحويل الدالة f(x)
-        f_func = sp.lambdify(x_sym, f_expr, 'numpy')
+        y_at_0 = float(f_func(0.0))
+        if np.isfinite(y_at_0):
+            m_critical.append(np.round(y_at_0, 2))
+    except:
+        pass
+
+    # 2. إيجاد القيم الحدية (الذروات حيث تنعدم المشتقة تقريبياً)
+    dy = np.diff(y_vals)
+    extrema_indices = np.where(np.diff(np.sign(dy)))[0] + 1
+    for idx in extrema_indices:
+        val = np.round(y_vals[idx], 2)
+        if np.isfinite(val):
+            m_critical.append(val)
+
+    # ترتيب وحذف القيم المكررة
+    m_critical = np.unique(m_critical)
+    m_critical = np.sort(m_critical)
+
+    # دالة لحساب عدد الحلول وإشارتها عند قيمة m معينة
+    def get_roots_info(m_test, is_critical):
+        y_shifted = y_vals - m_test
+        crossings = np.where(np.diff(np.sign(y_shifted)))[0]
+        roots = [x_vals[c] for c in crossings]
         
-        # تعويض قيمة m في معادلة المناقشة لتصبح دالة في x فقط
-        m_expr_sub = m_expr.subs(m_sym, m_val)
-        m_func = sp.lambdify(x_sym, m_expr_sub, 'numpy')
+        # التقاط الحل المضاعف عند القيم الحدية
+        if is_critical:
+            abs_y = np.abs(y_shifted)
+            minima = np.where((abs_y[1:-1] < abs_y[:-2]) & (abs_y[1:-1] < abs_y[2:]))[0] + 1
+            for idx in minima:
+                if abs_y[idx] < 0.15:
+                    if not any(abs(x_vals[idx] - r) < 0.2 for r in roots):
+                        roots.append(x_vals[idx])
+                        
+        pos = sum(1 for r in roots if r > 0.05)
+        neg = sum(1 for r in roots if r < -0.05)
+        zero = sum(1 for r in roots if abs(r) <= 0.05)
         
-        # إعداد مجال الحساب
-        x_vals = np.linspace(-10, 10, 400)
-        
-        # حساب قيم y للدالة f(x)
-        y_vals = f_func(x_vals)
-        
-        # تجاهل الأعداد المركبة إن وجدت (مثل جذر عدد سالب أو ln لعدد سالب)
-        if np.iscomplexobj(y_vals):
-            y_vals = np.where(np.isreal(y_vals), y_vals.real, np.nan)
+        total = pos + neg + zero
+        if total == 0: return "لا توجد حلول"
+        if is_critical and total == 1:
+            if pos == 1: return "حل مضاعف موجب"
+            if neg == 1: return "حل مضاعف سالب"
+            if zero == 1: return "حل مضاعف معدوم"
             
-        if np.isscalar(y_vals):
-            y_vals = np.full_like(x_vals, y_vals, dtype=float)
-            
-        # حساب قيم y لمستقيم المناقشة
-        y_m_vals = m_func(x_vals)
-        if np.isscalar(y_m_vals):
-            y_m_vals = np.full_like(x_vals, y_m_vals, dtype=float)
-            
-        # الرسم
-        fig, ax = plt.subplots(figsize=(8, 6))
+        if pos == 1 and neg == 0 and zero == 0: return "حل وحيد موجب"
+        if pos == 0 and neg == 1 and zero == 0: return "حل وحيد سالب"
+        if pos == 0 and neg == 0 and zero == 1: return "حل وحيد معدوم"
+        if pos == 2 and neg == 0 and zero == 0: return "حلان موجبان"
+        if pos == 0 and neg == 2 and zero == 0: return "حلان سالبان"
+        if pos == 1 and neg == 1 and zero == 0: return "حلان مختلفان في الإشارة"
         
-        # رسم الدالة
-        ax.plot(x_vals, y_vals, label=f'$f(x)$', color='#1f77b4', linewidth=2.5)
+        desc = f"يوجد {total} حلول"
+        if pos>0 or neg>0: desc += f" ({pos} موجب، {neg} سالب)"
+        return desc
+
+    # بناء مجالات الجدول
+    table_data = []
+    if len(m_critical) > 0:
+        table_data.append({"المجال (قيم m)": f"m ∈ ] -∞ , {m_critical[0]} [", "الإشارة وعدد الحلول": get_roots_info(m_critical[0] - 1, False)})
         
-        # رسم مستقيم المناقشة باللون الأحمر المتقطع
-        ax.plot(x_vals, y_m_vals, label=f'$y = {sp.latex(m_expr_sub)}$ (m={m_val})', color='red', linestyle='--', linewidth=2)
-        
-        # إعدادات المحاور
-        ax.axhline(0, color='black', linewidth=1.5) 
-        ax.axvline(0, color='black', linewidth=1.5) 
-        
-        # تقييد مجال الرؤية (y-axis) ليكون متناسقاً
-        ax.set_ylim(-10, 15) 
-        
-        ax.grid(True, linestyle=':', alpha=0.7)
-        ax.legend(fontsize=12)
-        ax.set_xlabel('$x$')
-        ax.set_ylabel('$y$')
-        
-        st.pyplot(fig)
-        
-    except Exception as e:
-        st.error(f"⚠️ حدث خطأ أثناء الرسم: {e}")
+        for i in range(len(m_critical)):
+            table_data.append({"المجال (قيم m)": f"m = {m_critical[i]}", "الإشارة وعدد الحلول": get_roots_info(m_critical[i], True)})
+            if i < len(m_critical) - 1:
+                mid = (m_critical[i] + m_critical[i+1]) / 2.0
+                table_data.append({"المجال (قيم m)": f"m ∈ ] {m_critical[i]} , {m_critical[i+1]} [", "الإشارة وعدد الحلول": get_roots_info(mid, False)})
+                
+        table_data.append({"المجال (قيم m)": f"m ∈ ] {m_critical[-1]} , +∞ [", "الإشارة وعدد الحلول": get_roots_info(m_critical[-1] + 1, False)})
+    else:
+        table_data.append({"المجال (قيم m)": "m ∈ ] -∞ , +∞ [", "الإشارة وعدد الحلول": get_roots_info(0, False)})
+
+    # ---------------------------------------------------------
+    # عرض الجدول والرسم
+    # ---------------------------------------------------------
+    st.write("---")
+    st.markdown("<h3 style='text-align: center; color: #f39c12;'>جدول المناقشة البيانية الأفقية</h3>", unsafe_allow_html=True)
+    
+    # عرض الجدول بتنسيق أنيق
+    df = pd.DataFrame(table_data)
+    st.table(df.style.set_properties(**{'text-align': 'center', 'font-size': '16px', 'background-color': '#2e2e2e', 'color': 'white'}))
+
+    # شريط التحكم التفاعلي
+    st.write("---")
+    st.write("### 🎛️ جرب المناقشة بنفسك للتحقق")
+    m_val = st.slider("حرك المستقيم (m):", min_value=-10.0, max_value=15.0, value=0.0, step=0.25)
+
+    # الرسم البياني
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.plot(x_vals, y_vals, label=f'$f(x)$', color='#1f77b4', linewidth=2.5)
+    ax.axhline(m_val, label=f'$y = m$ (m={m_val})', color='red', linestyle='--', linewidth=2)
+    
+    ax.axhline(0, color='black', linewidth=1.5) 
+    ax.axvline(0, color='black', linewidth=1.5) 
+    ax.set_ylim(-10, 15) 
+    ax.grid(True, linestyle=':', alpha=0.7)
+    ax.legend(fontsize=12)
+    ax.set_xlabel('$x$')
+    ax.set_ylabel('$y$')
+    
+    st.pyplot(fig)
