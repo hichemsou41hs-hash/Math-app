@@ -7,13 +7,13 @@ import sympy as sp
 st.set_page_config(page_title="المناقشة البيانية", page_icon="📈", layout="centered")
 
 st.title("📈 تطبيق المناقشة البيانية للدوال")
-st.write("أدخل الدوال بصيغة رياضية طبيعية (مثال: x^2 - 4 أو 2x+1).")
+st.write("أدخل الدوال بصيغة رياضية طبيعية (مثال: x^2 - 4 أو e^x أو ln(x)).")
 
 # تعريف المتغيرات الرمزية
 x_sym, m_sym = sp.symbols('x m')
 
 # خانات الإدخال
-f_input = st.text_input("أدخل عبارة الدالة f(x):", value="x^2 - 4")
+f_input = st.text_input("أدخل عبارة الدالة f(x):", value="e^x - x + 1")
 m_input = st.text_input("أدخل معادلة المناقشة (مثال: m, x+m, m*x):", value="m")
 
 # معالجة المدخلات
@@ -21,11 +21,14 @@ try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
     transformations = (standard_transformations + (implicit_multiplication_application,))
     
+    # تعريف الثوابت والدوال الرياضية الشائعة ليتعرف عليها التطبيق
+    local_dict = {'e': sp.E, 'pi': sp.pi, 'ln': sp.log}
+    
     f_expr_str = f_input.replace('^', '**')
     m_expr_str = m_input.replace('^', '**')
 
-    f_expr = parse_expr(f_expr_str, transformations=transformations)
-    m_expr = parse_expr(m_expr_str, transformations=transformations)
+    f_expr = parse_expr(f_expr_str, local_dict=local_dict, transformations=transformations)
+    m_expr = parse_expr(m_expr_str, local_dict=local_dict, transformations=transformations)
     
     # عرض العبارات بـ LaTeX
     st.write("العبارات التي تم التعرف عليها:")
@@ -59,13 +62,18 @@ if valid_input:
         
         # حساب قيم y للدالة f(x)
         y_vals = f_func(x_vals)
+        
+        # تجاهل الأعداد المركبة إن وجدت (مثل جذر عدد سالب أو ln لعدد سالب)
+        if np.iscomplexobj(y_vals):
+            y_vals = np.where(np.isreal(y_vals), y_vals.real, np.nan)
+            
         if np.isscalar(y_vals):
-            y_vals = np.full_like(x_vals, y_vals)
+            y_vals = np.full_like(x_vals, y_vals, dtype=float)
             
         # حساب قيم y لمستقيم المناقشة
         y_m_vals = m_func(x_vals)
         if np.isscalar(y_m_vals):
-            y_m_vals = np.full_like(x_vals, y_m_vals)
+            y_m_vals = np.full_like(x_vals, y_m_vals, dtype=float)
             
         # الرسم
         fig, ax = plt.subplots(figsize=(8, 6))
