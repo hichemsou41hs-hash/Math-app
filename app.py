@@ -19,18 +19,38 @@ st.markdown("""
     .stTextInput label { color: #00E5FF !important; font-size: 18px !important; font-weight: bold !important; direction: rtl !important; text-align: right !important; display: block;}
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     
-    /* تنسيق أزرار لوحة المفاتيح لتكون متناسقة */
+    /* ---------------------------------------------------
+       السر هنا: استخدام Flexbox لإجبار الأزرار على البقاء في سطر واحد
+       --------------------------------------------------- */
+    
+    /* استهداف الحاويات التي تضعها Streamlit للأعمدة */
+    div[data-testid="column"] {
+        flex: 1 1 0px !important; 
+        min-width: 0 !important; /* هذا يمنع العمود من التوسع وكسر السطر */
+        padding: 0 2px !important; /* تقليل المسافة بين الأزرار */
+    }
+    
+    /* إجبار الحاوية الأفقية على عدم كسر السطر (no-wrap) */
+    div[data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
+        margin-bottom: 5px !important;
+    }
+
+    /* تصميم أزرار لوحة المفاتيح لتكون متناسقة */
     div[data-testid="stExpander"] div[data-testid="stButton"] > button {
-        width: 100%;
+        width: 100% !important;
+        height: 45px !important;
+        padding: 0 !important;
         font-size: 18px !important;
         font-weight: bold;
         background-color: #1E293B;
         color: #00E5FF;
         border: 1px solid #334155;
+        border-radius: 5px !important;
     }
     div[data-testid="stExpander"] div[data-testid="stButton"] > button:active {
-        background-color: #00E5FF;
-        color: #1E293B;
+        background-color: #00E5FF !important;
+        color: #1E293B !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -63,26 +83,45 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         elif char == 'C': st.session_state[target] = ""
         else: st.session_state[target] += char
 
-    # استخدام تصميم بسيط ومضمون للوحة المفاتيح
-    c1, c2, c3, c4 = st.columns(4)
-    c1.button("x", on_click=k_click, args=("x",), use_container_width=True)
-    c2.button("m", on_click=k_click, args=("m",), use_container_width=True)
-    c3.button("e", on_click=k_click, args=("e",), use_container_width=True)
-    c4.button("⌫", on_click=k_click, args=("⌫",), use_container_width=True)
+    # استخدام 6 أعمدة لإعطاء شكل مشابه للآلة الحاسبة، مع CSS الذي يمنع الانهيار
+    c1, c2, c3, c4, c5, c6 = st.columns(6)
+    c1.button("x", on_click=k_click, args=("x",), key="kx")
+    c2.button("y", on_click=k_click, args=("y",), key="ky")
+    c3.button("e", on_click=k_click, args=("e",), key="ke")
+    c4.button("7", on_click=k_click, args=("7",), key="k7")
+    c5.button("8", on_click=k_click, args=("8",), key="k8")
+    c6.button("9", on_click=k_click, args=("9",), key="k9")
 
-    c1, c2, c3, c4 = st.columns(4)
-    c1.button("ln(", on_click=k_click, args=("ln(",), use_container_width=True)
-    c2.button("sqrt(", on_click=k_click, args=("sqrt(",), use_container_width=True)
-    c3.button("abs(", on_click=k_click, args=("abs(",), use_container_width=True)
-    c4.button("^2", on_click=k_click, args=("^2",), use_container_width=True)
+    c1, c2, c3, c4, c5, c6 = st.columns(6)
+    c1.button("m", on_click=k_click, args=("m",), key="km")
+    c2.button("π", on_click=k_click, args=("pi",), key="kpi")
+    c3.button("ln", on_click=k_click, args=("ln(",), key="kln")
+    c4.button("4", on_click=k_click, args=("4",), key="k4")
+    c5.button("5", on_click=k_click, args=("5",), key="k5")
+    c6.button("6", on_click=k_click, args=("6",), key="k6")
 
-    c1, c2, c3, c4 = st.columns(4)
-    c1.button("+", on_click=k_click, args=("+",), use_container_width=True)
-    c2.button("-", on_click=k_click, args=("-",), use_container_width=True)
-    c3.button("*", on_click=k_click, args=("*",), use_container_width=True)
-    c4.button("/", on_click=k_click, args=("/",), use_container_width=True)
+    c1, c2, c3, c4, c5, c6 = st.columns(6)
+    c1.button("^2", on_click=k_click, args=("^2",), key="ksq")
+    c2.button("√", on_click=k_click, args=("sqrt(",), key="ksqrt")
+    c3.button("|x|", on_click=k_click, args=("abs(",), key="kabs")
+    c4.button("1", on_click=k_click, args=("1",), key="k1")
+    c5.button("2", on_click=k_click, args=("2",), key="k2")
+    c6.button("3", on_click=k_click, args=("3",), key="k3")
+
+    c1, c2, c3, c4, c5, c6 = st.columns(6)
+    c1.button("(", on_click=k_click, args=("(",), key="kop")
+    c2.button(")", on_click=k_click, args=(")",), key="kcp")
+    c3.button("⌫", on_click=k_click, args=("⌫",), key="kdel")
+    c4.button("0", on_click=k_click, args=("0",), key="k0")
+    c5.button(".", on_click=k_click, args=(".",), key="kdot")
+    c6.button("C", on_click=k_click, args=("C",), key="kclear")
     
-    st.button("مسح الكل (Clear)", on_click=k_click, args=("C",), use_container_width=True)
+    c1, c2, c3, c4 = st.columns(4)
+    c1.button("+", on_click=k_click, args=("+",), key="kplus")
+    c2.button("-", on_click=k_click, args=("-",), key="kminus")
+    c3.button("*", on_click=k_click, args=("*",), key="kmul")
+    c4.button("/", on_click=k_click, args=("/",), key="kdiv")
+
 
 # ---------------------------------------------------------
 # 3. إدخال الدالة ومعادلة المناقشة
