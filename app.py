@@ -20,75 +20,62 @@ st.markdown("""
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     
     /* ---------------------------------------------------
-       1. إجبار الأعمدة على البقاء أفقية في شاشات الهواتف
+       السر النهائي: إجبار الأعمدة بقوة قصوى لتظل أفقية في الهاتف
        --------------------------------------------------- */
-    div[data-testid="stExpander"] div[data-testid="stHorizontalBlock"] {
+    html body div[data-testid="stExpanderDetails"] div[data-testid="stHorizontalBlock"] {
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
-        gap: 5px !important;
-        margin-bottom: 5px !important;
-    }
-    
-    div[data-testid="stExpander"] div[data-testid="column"] {
-        width: 16.66% !important;
-        flex: 1 1 0px !important;
-        min-width: 0 !important;
-        padding: 0 !important;
-    }
-    
-    @media (max-width: 768px) {
-        div[data-testid="stExpander"] div[data-testid="stHorizontalBlock"] {
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
-        }
-        div[data-testid="stExpander"] div[data-testid="column"] {
-            width: 16.66% !important;
-            flex: 1 1 0px !important;
-            min-width: 0 !important;
-        }
-    }
-
-    /* ---------------------------------------------------
-       2. تصميم الأزرار لتشبه لوحة مفاتيح حقيقية 
-       --------------------------------------------------- */
-    div[data-testid="stExpander"] div[data-testid="stButton"] > button {
         width: 100% !important;
-        height: 50px !important;
+        gap: 4px !important;
+        margin-bottom: 4px !important;
+    }
+    
+    html body div[data-testid="stExpanderDetails"] div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        width: 16.666% !important;
+        min-width: 16.666% !important;
+        max-width: 16.666% !important;
+        flex: 0 0 16.666% !important;
         padding: 0 !important;
         margin: 0 !important;
-        border-radius: 8px !important;
+        display: block !important;
+    }
+
+    /* تصميم الأزرار ليظهر كلوحة مفاتيح صلبة */
+    html body div[data-testid="stExpanderDetails"] div[data-testid="stButton"] > button {
+        width: 100% !important;
+        height: 48px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-radius: 6px !important;
         background-color: #334155 !important;
         color: #A5F3FC !important;
-        font-size: 20px !important;
+        font-size: 18px !important;
         font-family: 'Times New Roman', serif !important;
         font-weight: bold !important;
         border: none !important;
         box-shadow: 0 4px 0 #090e1a !important;
-        transition: transform 0.1s, box-shadow 0.1s !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
+        transition: none !important;
     }
     
-    /* حركة الزر عند الضغط (لإعطاء إحساس ميكانيكي) */
-    div[data-testid="stExpander"] div[data-testid="stButton"] > button:active {
+    html body div[data-testid="stExpanderDetails"] div[data-testid="stButton"] > button:active {
         transform: translateY(4px) !important;
         box-shadow: 0 0 0 #090e1a !important;
         background-color: #00E5FF !important;
         color: #0F172A !important;
     }
 
-    /* زر المسح الكلي (أعطيناه نوع Primary ليتميز باللون الأحمر) */
-    div[data-testid="stExpander"] div[data-testid="stButton"] > button[kind="primary"] {
+    /* زر المسح الكلي الأحمر */
+    html body div[data-testid="stExpanderDetails"] button[kind="primary"] {
         background-color: #ef4444 !important;
         color: white !important;
         box-shadow: 0 4px 0 #7f1d1d !important;
         margin-top: 5px !important;
     }
-    div[data-testid="stExpander"] div[data-testid="stButton"] > button[kind="primary"]:active {
+    html body div[data-testid="stExpanderDetails"] button[kind="primary"]:active {
         background-color: #dc2626 !important;
         box-shadow: 0 0 0 #7f1d1d !important;
+        transform: translateY(4px) !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -112,63 +99,35 @@ if 'f_val' not in st.session_state: st.session_state.f_val = "ln(x)-ln(x+1)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m*x+1"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
+def k_click(char):
+    target = "f_val" if st.session_state.kbd_target == "f" else "g_val"
+    if char == 'DEL':
+        st.session_state[target] = st.session_state[target][:-1]
+    elif char == 'CLR':
+        st.session_state[target] = ""
+    else:
+        st.session_state[target] += char
+
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
-    st.radio("توجيه الإدخال إلى:", ["الدالة f(x)", "المستقيم بدلالة m"], key="target_selector", horizontal=True)
-    st.session_state.kbd_target = "f" if st.session_state.target_selector == "الدالة f(x)" else "g"
+    t_sel = st.radio("توجيه الإدخال إلى:", ["الدالة f(x)", "المستقيم بدلالة m"], horizontal=True)
+    st.session_state.kbd_target = "f" if t_sel == "الدالة f(x)" else "g"
     
-    def k_click(char):
-        target = "f_val" if st.session_state.kbd_target == "f" else "g_val"
-        if char == 'DEL':
-            st.session_state[target] = st.session_state[target][:-1]
-        elif char == 'CLR':
-            st.session_state[target] = ""
-        else:
-            st.session_state[target] += char
-
-    st.write("") # مسافة بسيطة
+    st.write("")
     
-    # بناء اللوحة بصفوف وأعمدة بايثون الأصلية لمنع الـ Actualise
-    r1 = st.columns(6)
-    r1[0].button("𝑥", on_click=k_click, args=("x",), key="kx")
-    r1[1].button("𝑦", on_click=k_click, args=("y",), key="ky")
-    r1[2].button("𝑒", on_click=k_click, args=("e",), key="ke")
-    r1[3].button("7", on_click=k_click, args=("7",), key="k7")
-    r1[4].button("8", on_click=k_click, args=("8",), key="k8")
-    r1[5].button("9", on_click=k_click, args=("9",), key="k9")
+    # بناء اللوحة بصفوف وأعمدة بايثون الأصلية لتفادي الـ Actualise
+    keys = [
+        [("𝑥", "x"), ("𝑦", "y"), ("𝑒", "e"), ("7", "7"), ("8", "8"), ("9", "9")],
+        [("𝑚", "m"), ("𝜋", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
+        [("□²", "^2"), ("√", "sqrt("), ("|□|", "abs("), ("1", "1"), ("2", "2"), ("3", "3")],
+        [("<", "<"), (">", ">"), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
+        [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
+    ]
+    
+    for r_idx, row in enumerate(keys):
+        cols = st.columns(6)
+        for c_idx, (label, val) in enumerate(row):
+            cols[c_idx].button(label, key=f"kb_{r_idx}_{c_idx}", on_click=k_click, args=(val,))
 
-    r2 = st.columns(6)
-    r2[0].button("𝑚", on_click=k_click, args=("m",), key="km")
-    r2[1].button("𝜋", on_click=k_click, args=("pi",), key="kpi")
-    r2[2].button("ln", on_click=k_click, args=("ln(",), key="kln")
-    r2[3].button("4", on_click=k_click, args=("4",), key="k4")
-    r2[4].button("5", on_click=k_click, args=("5",), key="k5")
-    r2[5].button("6", on_click=k_click, args=("6",), key="k6")
-
-    r3 = st.columns(6)
-    r3[0].button("□²", on_click=k_click, args=("^2",), key="ksq")
-    r3[1].button("√", on_click=k_click, args=("sqrt(",), key="ksqrt")
-    r3[2].button("|□|", on_click=k_click, args=("abs(",), key="kabs")
-    r3[3].button("1", on_click=k_click, args=("1",), key="k1")
-    r3[4].button("2", on_click=k_click, args=("2",), key="k2")
-    r3[5].button("3", on_click=k_click, args=("3",), key="k3")
-
-    r4 = st.columns(6)
-    r4[0].button("<", on_click=k_click, args=("<",), key="klt")
-    r4[1].button(">", on_click=k_click, args=(">",), key="kgt")
-    r4[2].button("=", on_click=k_click, args=("=",), key="keq")
-    r4[3].button("0", on_click=k_click, args=("0",), key="k0")
-    r4[4].button(".", on_click=k_click, args=(".",), key="kdot")
-    r4[5].button("⌫", on_click=k_click, args=("DEL",), key="kdel")
-
-    r5 = st.columns(6)
-    r5[0].button("(", on_click=k_click, args=("(",), key="kop")
-    r5[1].button(")", on_click=k_click, args=(")",), key="kcp")
-    r5[2].button("+", on_click=k_click, args=("+",), key="kplus")
-    r5[3].button("-", on_click=k_click, args=("-",), key="kminus")
-    r5[4].button("×", on_click=k_click, args=("*",), key="kmul")
-    r5[5].button("÷", on_click=k_click, args=("/",), key="kdiv")
-
-    # زر المسح الكلي (type="primary" يجعله مميزاً ويلتقطه الـ CSS لتلوينه بالأحمر)
     st.button("مسح الكل (Clear)", on_click=k_click, args=("CLR",), use_container_width=True, type="primary")
 
 # ---------------------------------------------------------
@@ -190,7 +149,7 @@ try:
     g_expr = parse_expr(st.session_state.g_val.replace('^', '**'), local_dict=local_dict, transformations=transformations)
     valid_input = True
 except:
-    st.error("⚠️ صيغة غير صالحة.")
+    st.error("⚠️ صيغة غير صالحة أو الخانة فارغة.")
     valid_input = False
 
 if valid_input:
