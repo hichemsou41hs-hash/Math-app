@@ -8,16 +8,29 @@ import warnings
 # تجاهل التحذيرات الرياضية
 warnings.filterwarnings("ignore")
 
-# 1. إعدادات الصفحة
+# ---------------------------------------------------------
+# 1. إعدادات الصفحة والتصميم
+# ---------------------------------------------------------
 st.set_page_config(page_title="المناقشة البيانية", page_icon="📈", layout="centered")
 
 st.markdown("""
     <style>
     .stApp { background-color: #0F172A; color: white; }
+    
     .title-hes { text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap; margin-bottom: 0px;}
-    .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 30px;}
+    .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 20px;}
+    
     .stTextInput label { color: #00E5FF !important; font-size: 18px !important; font-weight: bold !important; direction: rtl !important; text-align: right !important; display: block;}
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
+    
+    /* تصميم لوحة المفاتيح */
+    div[data-testid="stExpander"] { background-color: #1E293B; border: 1px solid #FFD700; border-radius: 10px; }
+    div[data-testid="stExpander"] summary p { font-size: 18px !important; font-weight: bold; color: #FFD700; }
+    
+    div[data-testid="stButton"] > button {
+        background-color: #1E293B; color: #00E5FF; font-weight: bold; border: 1px solid #00E5FF; border-radius: 8px; font-size: 18px !important;
+    }
+    div[data-testid="stButton"] > button:hover { color: #FFD700; border-color: #FFD700; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -30,23 +43,70 @@ def fmt(val):
     if int(val) == val: return str(int(val))
     return str(val)
 
-if 'auto_play' not in st.session_state:
-    st.session_state.auto_play = False
-if 'm_anim' not in st.session_state:
-    st.session_state.m_anim = -5.0
+# ---------------------------------------------------------
+# 2. إدارة حالة التطبيق ولوحة المفاتيح
+# ---------------------------------------------------------
+if 'auto_play' not in st.session_state: st.session_state.auto_play = False
+if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
 
+# ربط الخانات بـ session_state للتحكم بها من الأزرار
+if 'f_val' not in st.session_state: st.session_state.f_val = "ln(x)-ln(x+1)"
+if 'g_val' not in st.session_state: st.session_state.g_val = "m*x+1"
+if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "الدالة f(x)"
+
+with st.expander("⌨️ إظهار لوحة المفاتيح الرياضية", expanded=False):
+    st.radio("توجيه الإدخال إلى:", ["الدالة f(x)", "المستقيم بدلالة m"], key="kbd_target", horizontal=True)
+    
+    def kbd_click(char):
+        target = "f_val" if st.session_state.kbd_target == "الدالة f(x)" else "g_val"
+        if char == '⌫':
+            st.session_state[target] = st.session_state[target][:-1]
+        elif char == 'C':
+            st.session_state[target] = ""
+        else:
+            st.session_state[target] += char
+
+    # الصف الأول
+    c1, c2, c3, c4, c5 = st.columns(5)
+    c1.button("x", on_click=kbd_click, args=("x",), key="kx", use_container_width=True)
+    c2.button("m", on_click=kbd_click, args=("m",), key="km", use_container_width=True)
+    c3.button("e^(", on_click=kbd_click, args=("e^(",), key="ke", use_container_width=True)
+    c4.button("ln(", on_click=kbd_click, args=("ln(",), key="kln", use_container_width=True)
+    c5.button("⌫", on_click=kbd_click, args=("⌫",), key="kdel", use_container_width=True)
+
+    # الصف الثاني
+    c1, c2, c3, c4, c5 = st.columns(5)
+    c1.button("+", on_click=kbd_click, args=("+",), key="kplus", use_container_width=True)
+    c2.button("-", on_click=kbd_click, args=("-",), key="kminus", use_container_width=True)
+    c3.button("*", on_click=kbd_click, args=("*",), key="kmul", use_container_width=True)
+    c4.button("/", on_click=kbd_click, args=("/",), key="kdiv", use_container_width=True)
+    c5.button("C", on_click=kbd_click, args=("C",), key="kclear", use_container_width=True)
+
+    # الصف الثالث
+    c1, c2, c3, c4, c5 = st.columns(5)
+    c1.button("^2", on_click=kbd_click, args=("^2",), key="k2", use_container_width=True)
+    c2.button("sqrt(", on_click=kbd_click, args=("sqrt(",), key="ksqrt", use_container_width=True)
+    c3.button("pi", on_click=kbd_click, args=("pi",), key="kpi", use_container_width=True)
+    c4.button("(", on_click=kbd_click, args=("(",), key="kop", use_container_width=True)
+    c5.button(")", on_click=kbd_click, args=(")",), key="kcp", use_container_width=True)
+
+# ---------------------------------------------------------
+# 3. إدخال الدالة ومعادلة المناقشة
+# ---------------------------------------------------------
 x_sym, m_sym = sp.symbols('x m')
 
 col1, col2 = st.columns(2)
 with col1:
-    f_input = st.text_input("أدخل عبارة الدالة f(x):", value="ln(x)-ln(x+1)")
+    f_input = st.text_input("أدخل عبارة الدالة f(x):", key="f_val")
 with col2:
-    g_input = st.text_input("أدخل معادلة المستقيم بدلالة m:", value="m*x+1")
+    g_input = st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
     transformations = (standard_transformations + (implicit_multiplication_application,))
-    local_dict = {'e': sp.E, 'pi': sp.pi, 'ln': sp.log}
+    # إضافة sqrt و abs للقاموس للتعرف عليها
+    local_dict = {'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs}
+    
     f_expr = parse_expr(f_input.replace('^', '**'), local_dict=local_dict, transformations=transformations)
     g_expr = parse_expr(g_input.replace('^', '**'), local_dict=local_dict, transformations=transformations)
     valid_input = True
@@ -79,11 +139,10 @@ if valid_input:
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 3. المقاربات (مع اختبار مجموعة التعريف)
+    # 4. المقاربات (مع اختبار مجموعة التعريف)
     # ---------------------------------------------------------
     asymptotes = []
     
-    # المقاربات الأفقية والمائلة
     for direction in [sp.oo, -sp.oo]:
         try:
             lim_h = sp.limit(f_expr, x_sym, direction)
@@ -109,7 +168,6 @@ if valid_input:
                     asymptotes.append({'type': 'o', 'a': a_val, 'b': b_val, 'label': eq})
         except: pass
         
-    # المقاربات العمودية المرشحة
     candidate_v_asymptotes = []
     try:
         n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
@@ -129,21 +187,16 @@ if valid_input:
                     candidate_v_asymptotes.append(float(r))
     except: pass
 
-    # اختبار القرب (هل الدالة معرفة بجوار المقارب؟)
     for r in set(candidate_v_asymptotes):
         is_valid = False
-        # نختبر نقطة قريبة جدا من اليمين ومن اليسار
         for test_pt in [r + 1e-5, r - 1e-5]:
             try:
-                # إذا لم يكن الناتج عدد مركب (أي الدالة معرفة)
                 val = complex(f_func(test_pt))
                 if val.imag == 0 and not np.isnan(val.real):
                     is_valid = True
                     break
             except:
                 pass
-        
-        # إذا كانت الدالة معرفة بجوار المقارب، نضيفه للقائمة النهائية
         if is_valid:
             r_str = str(int(r)) if int(r)==r else str(float(r))
             asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={r_str}"})
