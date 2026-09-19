@@ -16,25 +16,22 @@ st.markdown("""
     .stApp { background-color: #0F172A; color: white; }
     .title-hes { text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap; margin-bottom: 0px;}
     .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 30px;}
-    .stTextInput label { color: #00E5FF !important; font-size: 18px !important; font-weight: bold !important; direction: rtl !important; text-align: right !important; display: block;}
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     
     /* =========================================================
        الحل الجذري للوحة المفاتيح: إجبار الهاتف على عرض الشبكة
        ========================================================= */
        
-    /* 1. استهداف الصفوف التي تحتوي على 6 أعمدة تحديدا (لوحة المفاتيح) وتحويلها لشبكة صلبة */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) {
         display: grid !important;
         grid-template-columns: repeat(6, 1fr) !important;
         gap: 6px !important;
-        background-color: #1E293B !important; /* خلفية توحد شكل اللوحة */
+        background-color: #1E293B !important; 
         padding: 6px !important;
         border-radius: 8px !important;
         margin-bottom: 2px !important;
     }
     
-    /* 2. إلغاء تأثيرات Streamlit العمودية على هذه الأعمدة */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) > div[data-testid="column"] {
         width: 100% !important;
         min-width: 0 !important;
@@ -44,7 +41,6 @@ st.markdown("""
         display: block !important;
     }
 
-    /* 3. تصميم الأزرار داخل هذه الشبكة لتصبح مربعة واحترافية كبرنامج GeoGebra */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button {
         width: 100% !important;
         height: 50px !important;
@@ -57,11 +53,10 @@ st.markdown("""
         font-family: 'Times New Roman', serif !important;
         font-weight: bold !important;
         border: 1px solid #475569 !important;
-        box-shadow: 0 4px 0 #090e1a !important; /* ظل ميكانيكي */
+        box-shadow: 0 4px 0 #090e1a !important; 
         transition: all 0.1s !important;
     }
     
-    /* 4. تأثير الضغط (الحركة الميكانيكية للزر بدون تحديث الصفحة) */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button:active {
         transform: translateY(4px) !important;
         box-shadow: 0 0 0 #090e1a !important;
@@ -69,7 +64,6 @@ st.markdown("""
         color: #0F172A !important;
     }
 
-    /* 5. تصميم زر المسح الكلي (الزر الأحمر) */
     button[kind="primary"] {
         width: 100% !important;
         height: 50px !important;
@@ -105,14 +99,14 @@ def fmt(val):
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
 
-if 'f_val' not in st.session_state: st.session_state.f_val = "ln(x+1)-x+e"
+if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(x)/x"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
-    # استخدام علامة التوجيه \u200E لضمان بقاء الرموز على اليسار
-    st.radio("توجيه الإدخال إلى:", ["الدالة \u200Ef(x)\u200E", "المستقيم بدلالة \u200Em\u200E"], key="target_selector", horizontal=True)
-    st.session_state.kbd_target = "f" if st.session_state.target_selector == "الدالة \u200Ef(x)\u200E" else "g"
+    # استخدام أكواد التوجيه المتقدمة لمنع إنعكاس الأقواس والرموز
+    t_sel = st.radio("توجيه الإدخال إلى:", ["الدالة \u202Af(x)\u202C", "المستقيم بدلالة \u202Am\u202C"], horizontal=True)
+    st.session_state.kbd_target = "f" if t_sel == "الدالة \u202Af(x)\u202C" else "g"
     
     def k_click(char):
         target = "f_val" if st.session_state.kbd_target == "f" else "g_val"
@@ -123,41 +117,44 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         else:
             st.session_state[target] += char
 
-    # مصفوفة الأزرار - مقسمة إلى صفوف ذات 6 عناصر إجبارياً لكي يكتشفها الـ CSS
+    # إضافة زر الكسر والأسية بدلاً من الأكبر والأصغر
     keys = [
         [("𝑥", "x"), ("𝑦", "y"), ("𝑒", "e"), ("7", "7"), ("8", "8"), ("9", "9")],
         [("𝑚", "m"), ("𝜋", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
         [("□²", "^2"), ("√", "sqrt("), ("|□|", "abs("), ("1", "1"), ("2", "2"), ("3", "3")],
-        [("<", "<"), (">", ">"), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
+        [("□/□", "() / ()"), ("𝑒^{□}", "e^("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
         [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
     ]
     
-    # بناء اللوحة بأزرار Streamlit الموثوقة والسريعة
     for r_idx, row in enumerate(keys):
-        cols = st.columns(6) # الـ CSS سيمنع هذه الأعمدة من التكدس وسيبقيها 6
+        cols = st.columns(6) 
         for c_idx, (label, val) in enumerate(row):
             cols[c_idx].button(label, key=f"kb_{r_idx}_{c_idx}", on_click=k_click, args=(val,))
 
-    # زر المسح الكلي المميز
     st.button("مسح الكل (Clear)", on_click=k_click, args=("CLR",), use_container_width=True, type="primary")
 
 # ---------------------------------------------------------
-# 3. إدخال الدالة ومعادلة المناقشة
+# 3. إدخال الدالة ومعادلة المناقشة (بشكل سليم 100%)
 # ---------------------------------------------------------
 x_sym, m_sym = sp.symbols('x m')
 
 col1, col2 = st.columns(2)
 with col1:
-    st.text_input("أدخل عبارة الدالة \u200Ef(x)\u200E:", key="f_val")
+    # إجبار المتصفح بالـ HTML على وضع f(x) على اليسار
+    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 18px; font-weight: bold; margin-bottom: 5px;'>أدخل عبارة الدالة <span style='direction: ltr; unicode-bidi: bidi-override;'>f(x)</span>:</div>", unsafe_allow_html=True)
+    st.text_input("f_label", key="f_val", label_visibility="collapsed")
 with col2:
-    st.text_input("أدخل معادلة المستقيم بدلالة \u200Em\u200E:", key="g_val")
+    # إجبار المتصفح بالـ HTML على وضع m على اليسار
+    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 18px; font-weight: bold; margin-bottom: 5px;'>أدخل معادلة المستقيم بدلالة <span style='direction: ltr; unicode-bidi: bidi-override;'>m</span>:</div>", unsafe_allow_html=True)
+    st.text_input("g_label", key="g_val", label_visibility="collapsed")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
     transformations = (standard_transformations + (implicit_multiplication_application,))
     local_dict = {'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs}
-    f_expr = parse_expr(st.session_state.f_val.replace('^', '**'), local_dict=local_dict, transformations=transformations)
-    g_expr = parse_expr(st.session_state.g_val.replace('^', '**'), local_dict=local_dict, transformations=transformations)
+    # تم إضافة evaluate=False لمنع التبسيط التلقائي وحذف المجاهيل
+    f_expr = parse_expr(st.session_state.f_val.replace('^', '**'), local_dict=local_dict, transformations=transformations, evaluate=False)
+    g_expr = parse_expr(st.session_state.g_val.replace('^', '**'), local_dict=local_dict, transformations=transformations, evaluate=False)
     valid_input = True
 except:
     st.error("⚠️ صيغة غير صالحة أو الخانة فارغة.")
@@ -171,7 +168,7 @@ if valid_input:
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
-    # دقة فائقة (40 ألف نقطة) ليحاذي المقارب وينزل لأسفل الشاشة
+    # دقة فائقة جداً (40 ألف نقطة) ليحاذي المقارب وينزل لأسفل الشاشة
     x_vals = np.linspace(-8, 8, 40000)
     
     with np.errstate(divide='ignore', invalid='ignore'):
@@ -541,9 +538,9 @@ if valid_input:
             if is_critical_now:
                 time.sleep(2.0) 
             else:
-                time.sleep(0.01) # سرعة قصوى للحركة العادية
+                time.sleep(0.01)
                 
-            step = 0.3 # خطوة واسعة لزيادة السرعة
+            step = 0.3 
             next_m = st.session_state.m_anim + step
             
             for mc in m_critical:
