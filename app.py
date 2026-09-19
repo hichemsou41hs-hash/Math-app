@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import sympy as sp
 import time
 import warnings
-import streamlit.components.v1 as components
 
 # تجاهل التحذيرات الرياضية
 warnings.filterwarnings("ignore")
@@ -19,6 +18,63 @@ st.markdown("""
     .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 30px;}
     .stTextInput label { color: #00E5FF !important; font-size: 18px !important; font-weight: bold !important; direction: rtl !important; text-align: right !important; display: block;}
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
+    
+    /* ---------------------------------------------------
+       تصميم لوحة المفاتيح: المحافظة على العرض الأفقي للهاتف
+       --------------------------------------------------- */
+    
+    /* استهداف الأعمدة (st.columns) داخل لوحة المفاتيح فقط لمنعها من التكدس عمودياً في الهاتف */
+    div[data-testid="stExpander"] div[data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 4px !important;
+        margin-bottom: 4px !important;
+    }
+    
+    div[data-testid="stExpander"] div[data-testid="column"] {
+        width: auto !important;
+        flex: 1 1 0px !important;
+        min-width: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* تصميم أزرار لوحة المفاتيح لتشبه الآلة الحاسبة العلمية */
+    div[data-testid="stExpander"] div[data-testid="stButton"] > button {
+        width: 100% !important;
+        height: 45px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-radius: 6px !important;
+        background-color: #334155 !important;
+        color: #A5F3FC !important;
+        font-size: 18px !important;
+        font-family: 'Times New Roman', serif !important;
+        font-weight: bold !important;
+        border: none !important;
+        box-shadow: 0 3px 0 #090e1a !important;
+        transition: all 0.1s !important;
+    }
+    
+    /* تأثير الضغط (الحركة للأسفل) */
+    div[data-testid="stExpander"] div[data-testid="stButton"] > button:active {
+        transform: translateY(3px) !important;
+        box-shadow: 0 0 0 #090e1a !important;
+        background-color: #00E5FF !important;
+        color: #0F172A !important;
+    }
+
+    /* تلوين زر مسح الكل (الزر الأساسي Primary) */
+    div[data-testid="stExpander"] div[data-testid="stButton"] > button[kind="primary"] {
+        background-color: #ef4444 !important;
+        color: white !important;
+        box-shadow: 0 3px 0 #7f1d1d !important;
+        margin-top: 5px !important;
+    }
+    div[data-testid="stExpander"] div[data-testid="stButton"] > button[kind="primary"]:active {
+        background-color: #dc2626 !important;
+        box-shadow: 0 0 0 #7f1d1d !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -32,7 +88,7 @@ def fmt(val):
     return str(val)
 
 # ---------------------------------------------------------
-# 2. إدارة حالة التطبيق
+# 2. إدارة حالة التطبيق ولوحة المفاتيح
 # ---------------------------------------------------------
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
@@ -41,156 +97,65 @@ if 'f_val' not in st.session_state: st.session_state.f_val = "ln(x)-ln(x+1)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m*x+1"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
-# ---------------------------------------------------------
-# 3. لوحة المفاتيح المدمجة كـ HTML/JS Component مستقل تماماً
-# ---------------------------------------------------------
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
-    
-    # اختيار وجهة الكتابة
     st.radio("توجيه الإدخال إلى:", ["الدالة f(x)", "المستقيم بدلالة m"], key="target_selector", horizontal=True)
-    if st.session_state.target_selector == "الدالة f(x)":
-        st.session_state.kbd_target = "f"
-    else:
-        st.session_state.kbd_target = "g"
-
-    # دالة المعالجة التي يستدعيها الـ JS
-    def process_keypress(key_val):
+    st.session_state.kbd_target = "f" if st.session_state.target_selector == "الدالة f(x)" else "g"
+    
+    def k_click(char):
         target = "f_val" if st.session_state.kbd_target == "f" else "g_val"
-        if key_val == 'DEL':
+        if char == 'DEL':
             st.session_state[target] = st.session_state[target][:-1]
-        elif key_val == 'CLR':
+        elif char == 'CLR':
             st.session_state[target] = ""
         else:
-            st.session_state[target] += key_val
+            st.session_state[target] += char
 
-    # إذا تم إرسال مفتاح من مكون الـ HTML
-    if 'key_pressed' in st.session_state and st.session_state.key_pressed:
-         process_keypress(st.session_state.key_pressed)
-         # تفريغ الحالة حتى لا يتكرر الضغط
-         st.session_state.key_pressed = None
-         st.rerun()
+    # بناء اللوحة باستخدام صفوف الأعمدة المعتمدة (الـ CSS سيمنع كسرها في الهاتف)
+    r1 = st.columns(6)
+    r1[0].button("𝑥", on_click=k_click, args=("x",), key="k_x")
+    r1[1].button("𝑦", on_click=k_click, args=("y",), key="k_y")
+    r1[2].button("𝑒", on_click=k_click, args=("e",), key="k_e")
+    r1[3].button("7", on_click=k_click, args=("7",), key="k_7")
+    r1[4].button("8", on_click=k_click, args=("8",), key="k_8")
+    r1[5].button("9", on_click=k_click, args=("9",), key="k_9")
 
-    # كود HTML/CSS/JS للوحة المفاتيح.
-    # هذا يضمن عرض شبكة 6x5 لا تنكسر أبداً.
-    html_keyboard = """
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <style>
-        body { margin: 0; padding: 0; background-color: #0F172A; }
-        .keyboard {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 5px;
-            background-color: #1E293B;
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid #334155;
-            box-sizing: border-box;
-            width: 100%;
-        }
-        .key {
-            background-color: #334155;
-            color: #A5F3FC;
-            border: none;
-            border-radius: 6px;
-            height: 50px;
-            font-size: 18px;
-            font-family: 'Times New Roman', serif;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 3px 0 #090e1a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            user-select: none;
-            transition: transform 0.1s, box-shadow 0.1s;
-        }
-        .key:active {
-            transform: translateY(3px);
-            box-shadow: 0 0 0 #090e1a;
-            background-color: #00E5FF;
-            color: #0F172A;
-        }
-        .key.num { background-color: #475569; color: white; }
-        .key.del { background-color: #ef4444; color: white; box-shadow: 0 3px 0 #7f1d1d; }
-        .key.del:active { background-color: #dc2626; box-shadow: 0 0 0 #7f1d1d; }
-        .key.clr { 
-            grid-column: span 6; 
-            background-color: #f97316; 
-            color: white; 
-            box-shadow: 0 3px 0 #9a3412; 
-            margin-top: 5px;
-        }
-        .key.clr:active { box-shadow: 0 0 0 #9a3412; }
-    </style>
-    </head>
-    <body>
-        <div class="keyboard">
-            <button class="key" onclick="sendKey('x')">𝑥</button>
-            <button class="key" onclick="sendKey('y')">𝑦</button>
-            <button class="key" onclick="sendKey('e')">𝑒</button>
-            <button class="key num" onclick="sendKey('7')">7</button>
-            <button class="key num" onclick="sendKey('8')">8</button>
-            <button class="key num" onclick="sendKey('9')">9</button>
+    r2 = st.columns(6)
+    r2[0].button("𝑚", on_click=k_click, args=("m",), key="k_m")
+    r2[1].button("𝜋", on_click=k_click, args=("pi",), key="k_pi")
+    r2[2].button("ln", on_click=k_click, args=("ln(",), key="k_ln")
+    r2[3].button("4", on_click=k_click, args=("4",), key="k_4")
+    r2[4].button("5", on_click=k_click, args=("5",), key="k_5")
+    r2[5].button("6", on_click=k_click, args=("6",), key="k_6")
 
-            <button class="key" onclick="sendKey('m')">𝑚</button>
-            <button class="key" onclick="sendKey('pi')">𝜋</button>
-            <button class="key" onclick="sendKey('ln(')">ln</button>
-            <button class="key num" onclick="sendKey('4')">4</button>
-            <button class="key num" onclick="sendKey('5')">5</button>
-            <button class="key num" onclick="sendKey('6')">6</button>
+    r3 = st.columns(6)
+    r3[0].button("□²", on_click=k_click, args=("^2",), key="k_sq")
+    r3[1].button("√", on_click=k_click, args=("sqrt(",), key="k_sqrt")
+    r3[2].button("|□|", on_click=k_click, args=("abs(",), key="k_abs")
+    r3[3].button("1", on_click=k_click, args=("1",), key="k_1")
+    r3[4].button("2", on_click=k_click, args=("2",), key="k_2")
+    r3[5].button("3", on_click=k_click, args=("3",), key="k_3")
 
-            <button class="key" onclick="sendKey('^2')">□²</button>
-            <button class="key" onclick="sendKey('sqrt(')">√</button>
-            <button class="key" onclick="sendKey('abs(')">|□|</button>
-            <button class="key num" onclick="sendKey('1')">1</button>
-            <button class="key num" onclick="sendKey('2')">2</button>
-            <button class="key num" onclick="sendKey('3')">3</button>
+    r4 = st.columns(6)
+    r4[0].button("<", on_click=k_click, args=("<",), key="k_lt")
+    r4[1].button(">", on_click=k_click, args=(">",), key="k_gt")
+    r4[2].button("=", on_click=k_click, args=("=",), key="k_eq")
+    r4[3].button("0", on_click=k_click, args=("0",), key="k_0")
+    r4[4].button(".", on_click=k_click, args=(".",), key="k_dot")
+    r4[5].button("⌫", on_click=k_click, args=("DEL",), key="k_del")
 
-            <button class="key" onclick="sendKey('<')">&lt;</button>
-            <button class="key" onclick="sendKey('>')">&gt;</button>
-            <button class="key" onclick="sendKey('=')">=</button>
-            <button class="key num" onclick="sendKey('0')">0</button>
-            <button class="key num" onclick="sendKey('.')">.</button>
-            <button class="key del" onclick="sendKey('DEL')">⌫</button>
+    r5 = st.columns(6)
+    r5[0].button("(", on_click=k_click, args=("(",), key="k_op")
+    r5[1].button(")", on_click=k_click, args=(")",), key="k_cp")
+    r5[2].button("+", on_click=k_click, args=("+",), key="k_plus")
+    r5[3].button("-", on_click=k_click, args=("-",), key="k_minus")
+    r5[4].button("×", on_click=k_click, args=("*",), key="k_mul")
+    r5[5].button("÷", on_click=k_click, args=("/",), key="k_div")
 
-            <button class="key" onclick="sendKey('(')">(</button>
-            <button class="key" onclick="sendKey(')')">)</button>
-            <button class="key" onclick="sendKey('+')">+</button>
-            <button class="key" onclick="sendKey('-')">-</button>
-            <button class="key" onclick="sendKey('*')">*</button>
-            <button class="key" onclick="sendKey('/')">/</button>
-
-            <button class="key clr" onclick="sendKey('CLR')">مسح الكل (Clear)</button>
-        </div>
-
-        <script>
-            function sendKey(val) {
-                // إرسال قيمة المفتاح إلى Streamlit عبر parent.postMessage
-                window.parent.postMessage({
-                    type: 'streamlit:setComponentValue',
-                    value: val
-                }, '*');
-            }
-        </script>
-    </body>
-    </html>
-    """
-    
-    # دمج الـ HTML المخصص واستقبال النتيجة
-    clicked_key = components.html(html_keyboard, height=350, scrolling=False)
-    
-    # خدعة لالتقاط الضغطة (مكون الـ html يعيد القيمة عندما تتغير)
-    # ملاحظة: مكونات HTML في Streamlit تحتاج أحياناً إلى إعادة تحميل الصفحة لتعمل بشكل مثالي، 
-    # لذلك سنقوم بتحديث الخانات يدويا في حالة عدم استجابة المكون مباشرة
-    if clicked_key is not None:
-         st.session_state.key_pressed = clicked_key
-         st.rerun()
-
+    # زر المسح الكلي (بنوع Primary ليأخذ اللون الأحمر من الـ CSS)
+    st.button("مسح الكل (Clear)", on_click=k_click, args=("CLR",), use_container_width=True, type="primary")
 
 # ---------------------------------------------------------
-# 4. إدخال الدالة ومعادلة المناقشة
+# 3. إدخال الدالة ومعادلة المناقشة
 # ---------------------------------------------------------
 x_sym, m_sym = sp.symbols('x m')
 
@@ -236,7 +201,7 @@ if valid_input:
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 5. المقاربات (مع اختبار مجموعة التعريف)
+    # 4. المقاربات (مع اختبار مجموعة التعريف)
     # ---------------------------------------------------------
     asymptotes = []
     for direction in [sp.oo, -sp.oo]:
