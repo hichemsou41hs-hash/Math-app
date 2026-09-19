@@ -14,25 +14,78 @@ st.set_page_config(page_title="المناقشة البيانية", page_icon="�
 st.markdown("""
     <style>
     .stApp { background-color: #0F172A; color: white; }
-    .title-hes { text-align: center; color: #FFFFFF !important; font-size: 34px; font-weight: bold; margin-bottom: 0px;}
-    .title-dis { text-align: center; color: #FFD700 !important; font-size: 26px; font-weight: bold; margin-top: -5px; margin-bottom: 20px;}
+    .title-hes { text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap; margin-bottom: 0px;}
+    .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 30px;}
     .stTextInput label { color: #00E5FF !important; font-size: 18px !important; font-weight: bold !important; direction: rtl !important; text-align: right !important; display: block;}
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     
-    /* تحسين مظهر أزرار لوحة المفاتيح لتكون مريحة بالهاتف */
-    .stButton > button {
-        width: 100% !important;
-        height: 45px !important;
+    /* =========================================================
+       الحل الجذري للوحة المفاتيح: إجبار الهاتف على عرض الشبكة
+       ========================================================= */
+       
+    /* 1. استهداف الصفوف التي تحتوي على 6 أعمدة تحديدا (لوحة المفاتيح) وتحويلها لشبكة صلبة */
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) {
+        display: grid !important;
+        grid-template-columns: repeat(6, 1fr) !important;
+        gap: 6px !important;
+        background-color: #1E293B !important; /* خلفية توحد شكل اللوحة */
+        padding: 6px !important;
         border-radius: 8px !important;
+        margin-bottom: 2px !important;
+    }
+    
+    /* 2. إلغاء تأثيرات Streamlit العمودية على هذه الأعمدة */
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) > div[data-testid="column"] {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        flex: none !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+
+    /* 3. تصميم الأزرار داخل هذه الشبكة لتصبح مربعة واحترافية كبرنامج GeoGebra */
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button {
+        width: 100% !important;
+        height: 50px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-radius: 6px !important;
         background-color: #334155 !important;
-        color: #A5F3FC !important;
-        font-size: 17px !important;
+        color: #00E5FF !important;
+        font-size: 18px !important;
+        font-family: 'Times New Roman', serif !important;
         font-weight: bold !important;
         border: 1px solid #475569 !important;
+        box-shadow: 0 4px 0 #090e1a !important; /* ظل ميكانيكي */
+        transition: all 0.1s !important;
     }
-    .stButton > button:active {
+    
+    /* 4. تأثير الضغط (الحركة الميكانيكية للزر بدون تحديث الصفحة) */
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button:active {
+        transform: translateY(4px) !important;
+        box-shadow: 0 0 0 #090e1a !important;
         background-color: #00E5FF !important;
         color: #0F172A !important;
+    }
+
+    /* 5. تصميم زر المسح الكلي (الزر الأحمر) */
+    button[kind="primary"] {
+        width: 100% !important;
+        height: 50px !important;
+        background-color: #ef4444 !important;
+        color: white !important;
+        font-size: 18px !important;
+        font-weight: bold !important;
+        border-radius: 8px !important;
+        box-shadow: 0 4px 0 #7f1d1d !important;
+        border: none !important;
+        margin-top: 5px !important;
+    }
+    button[kind="primary"]:active {
+        transform: translateY(4px) !important;
+        box-shadow: 0 0 0 #7f1d1d !important;
+        background-color: #dc2626 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -47,46 +100,56 @@ def fmt(val):
     return str(val)
 
 # ---------------------------------------------------------
-# 2. إدارة حالة التطبيق
+# 2. إدارة حالة التطبيق ولوحة المفاتيح
 # ---------------------------------------------------------
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
+
 if 'f_val' not in st.session_state: st.session_state.f_val = "ln(x+1)-x+e"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
-def add_to_input(val):
-    target = "f_val" if st.session_state.kbd_target == "فقط f(x)" else "g_val"
-    if val == 'DEL':
-        st.session_state[target] = st.session_state[target][:-1]
-    elif val == 'CLR':
-        st.session_state[target] = ""
-    else:
-        st.session_state[target] += val
-
-with st.expander("⌨️ لوحة المفاتيح الرياضية السريعة", expanded=False):
-    st.session_state.kbd_target = st.radio("إضافة إلى:", ["فقط f(x)", "معادلة المستقيم m"], horizontal=True)
+with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
+    st.radio("توجيه الإدخال إلى:", ["الدالة f(x)", "المستقيم بدلالة m"], key="target_selector", horizontal=True)
+    st.session_state.kbd_target = "f" if st.session_state.target_selector == "الدالة f(x)" else "g"
     
-    # صفوف أزرار منظمة لا تتكسر في الهاتف
-    r1 = [("𝑥", "x"), ("𝑦", "y"), ("𝑒", "e"), ("ln", "ln("), ("+", "+"), ("-", "-")]
-    r2 = [("𝑚", "m"), ("𝜋", "pi"), ("√", "sqrt("), ("^2", "^2"), ("×", "*"), ("÷", "/")]
-    r3 = [("(", "("), (")", ")"), ("<", "<"), (">", ">"), ("=", "="), (".", ".")]
-    r4 = [("7", "7"), ("8", "8"), ("9", "9"), ("4", "4"), ("5", "5"), ("6", "6")]
-    r5 = [("1", "1"), ("2", "2"), ("3", "3"), ("0", "0"), ("⌫ حذف", "DEL"), ("🧹 مسح", "CLR")]
+    def k_click(char):
+        target = "f_val" if st.session_state.kbd_target == "f" else "g_val"
+        if char == 'DEL':
+            st.session_state[target] = st.session_state[target][:-1]
+        elif char == 'CLR':
+            st.session_state[target] = ""
+        else:
+            st.session_state[target] += char
 
-    for row in [r1, r2, r3, r4, r5]:
-        cols = st.columns(len(row))
-        for idx, (lbl, val) in enumerate(row):
-            cols[idx].button(lbl, key=f"btn_{val}_{idx}", on_click=add_to_input, args=(val,))
+    # مصفوفة الأزرار - مقسمة إلى صفوف ذات 6 عناصر إجبارياً لكي يكتشفها الـ CSS
+    keys = [
+        [("𝑥", "x"), ("𝑦", "y"), ("𝑒", "e"), ("7", "7"), ("8", "8"), ("9", "9")],
+        [("𝑚", "m"), ("𝜋", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
+        [("□²", "^2"), ("√", "sqrt("), ("|□|", "abs("), ("1", "1"), ("2", "2"), ("3", "3")],
+        [("<", "<"), (">", ">"), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
+        [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
+    ]
+    
+    # بناء اللوحة بأزرار Streamlit الموثوقة والسريعة
+    for r_idx, row in enumerate(keys):
+        cols = st.columns(6) # الـ CSS سيمنع هذه الأعمدة من التكدس وسيبقيها 6
+        for c_idx, (label, val) in enumerate(row):
+            cols[c_idx].button(label, key=f"kb_{r_idx}_{c_idx}", on_click=k_click, args=(val,))
+
+    # زر المسح الكلي المميز
+    st.button("مسح الكل (Clear)", on_click=k_click, args=("CLR",), use_container_width=True, type="primary")
 
 # ---------------------------------------------------------
-# 3. إدخال الدوال
+# 3. إدخال الدالة ومعادلة المناقشة
 # ---------------------------------------------------------
+x_sym, m_sym = sp.symbols('x m')
+
 col1, col2 = st.columns(2)
 with col1:
-    st.text_input("الدالة f(x):", key="f_val")
+    st.text_input("أدخل عبارة الدالة f(x):", key="f_val")
 with col2:
-    st.text_input("المستقيم g(x):", key="g_val")
+    st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
@@ -104,26 +167,29 @@ if valid_input:
     g_latex = sp.latex(g_expr).replace(r"\log", r"\ln")
     st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {f_latex} \\ y = {g_latex} \end{{cases}}")
 
-    f_func = sp.lambdify(x_sym := sp.symbols('x'), f_expr, 'numpy')
-    g_func = sp.lambdify((x_sym, m_sym := sp.symbols('m')), g_expr, 'numpy')
+    f_func = sp.lambdify(x_sym, f_expr, 'numpy')
+    g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
-    # رفع دقة الرسم لتجنب التقصير عند المقاربات (8000 نقطة بدلا من 3000)
-    x_vals = np.linspace(-8, 8, 8000)
+    # رفعنا دقة النقاط بشكل هائل جداً إلى 40 ألف نقطة حتى ينزل المنحنى بمحاذاة المقارب لمسافة طويلة
+    x_vals = np.linspace(-8, 8, 40000)
+    
     with np.errstate(divide='ignore', invalid='ignore'):
         y_vals = f_func(x_vals)
     
-    if np.iscomplexobj(y_vals): y_vals = np.where(np.isreal(y_vals), y_vals.real, np.nan)
-    if np.isscalar(y_vals): y_vals = np.full_like(x_vals, y_vals, dtype=float)
+    if np.iscomplexobj(y_vals):
+        y_vals = np.where(np.isreal(y_vals), y_vals.real, np.nan)
+    if np.isscalar(y_vals):
+        y_vals = np.full_like(x_vals, y_vals, dtype=float)
 
-    # رفع عتبة التقطيع لتسمح للمنحنى بالخروج تماما من الشاشة قبل القطع
+    # تم رفع عتبة القص لتتجاهل النزول الحاد وتسمح للمنحنى بالخروج خارج الشاشة
     dy = np.abs(np.diff(y_vals))
-    jump_idx = np.where(dy > 80)[0] 
+    jump_idx = np.where(dy > 50)[0] 
     for idx in jump_idx:
         y_vals[idx] = np.nan
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 4. حساب المقاربات والقيّم المميزة
+    # 4. المقاربات (مع اختبار مجموعة التعريف)
     # ---------------------------------------------------------
     asymptotes = []
     for direction in [sp.oo, -sp.oo]:
@@ -133,6 +199,7 @@ if valid_input:
                 val_str = "+∞" if lim_h == sp.oo else ("-∞" if lim_h == -sp.oo else str(int(lim_h) if int(lim_h)==lim_h else float(lim_h)))
                 asymptotes.append({'type': 'h', 'val': float(lim_h), 'label': f"y={val_str}"})
                 continue
+                
             a_lim = sp.limit(f_expr / x_sym, x_sym, direction)
             if a_lim.is_real and a_lim != 0 and np.isfinite(float(a_lim)):
                 b_lim = sp.limit(f_expr - a_lim * x_sym, x_sym, direction)
@@ -141,22 +208,32 @@ if valid_input:
                     a_str = str(int(abs(a_val))) if int(abs(a_val))==abs(a_val) else str(abs(a_val))
                     if a_str == "1": a_str = ""
                     sign_a = "-" if a_val < 0 else ""
-                    b_str = f" {('+' if b_val>0 else '-')} {str(int(abs(b_val))) if int(abs(b_val))==abs(b_val) else str(abs(b_val))}" if b_val != 0 else ""
-                    asymptotes.append({'type': 'o', 'a': a_val, 'b': b_val, 'label': f"y={sign_a}{a_str}x{b_str}"})
+                    if b_val == 0:
+                        eq = f"y={sign_a}{a_str}x"
+                    else:
+                        sign_b = "+" if b_val > 0 else "-"
+                        b_str = str(int(abs(b_val))) if int(abs(b_val))==abs(b_val) else str(abs(b_val))
+                        eq = f"y={sign_a}{a_str}x {sign_b} {b_str}"
+                    asymptotes.append({'type': 'o', 'a': a_val, 'b': b_val, 'label': eq})
         except: pass
         
     candidate_v_asymptotes = []
     try:
         n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
         if d_expr != 1:
-            for r in sp.solve(d_expr, x_sym):
-                if r.is_real: candidate_v_asymptotes.append(float(r))
+            roots = sp.solve(d_expr, x_sym)
+            for r in roots:
+                if r.is_real:
+                    candidate_v_asymptotes.append(float(r))
     except: pass
     
     try:
         for log_expr in f_expr.atoms(sp.log):
-            for r in sp.solve(log_expr.args[0], x_sym):
-                if r.is_real: candidate_v_asymptotes.append(float(r))
+            arg = log_expr.args[0]
+            roots = sp.solve(arg, x_sym)
+            for r in roots:
+                if r.is_real:
+                    candidate_v_asymptotes.append(float(r))
     except: pass
 
     for r in set(candidate_v_asymptotes):
@@ -164,12 +241,17 @@ if valid_input:
         for test_pt in [r + 1e-5, r - 1e-5]:
             try:
                 val = complex(f_func(test_pt))
-                if val.imag == 0 and not np.isnan(val.real): is_valid = True; break
-            except: pass
+                if val.imag == 0 and not np.isnan(val.real):
+                    is_valid = True
+                    break
+            except:
+                pass
         if is_valid:
-            asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={fmt(r)}"})
+            r_str = str(int(r)) if int(r)==r else str(float(r))
+            asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={r_str}"})
 
-    unique_asymptotes, seen_labels = [], set()
+    unique_asymptotes = []
+    seen_labels = set()
     for asym in asymptotes:
         if asym['label'] not in seen_labels:
             seen_labels.add(asym['label'])
@@ -177,56 +259,92 @@ if valid_input:
 
     m_critical = []
     try:
-        for px in sp.solve(sp.diff(g_expr, m_sym), x_sym):
+        pivot_x_sols = sp.solve(sp.diff(g_expr, m_sym), x_sym)
+        for px in pivot_x_sols:
             if np.isreal(complex(px)):
-                for m_sol in sp.solve(sp.diff(f_expr, x_sym).subs(x_sym, px) - sp.diff(g_expr, x_sym).subs(x_sym, px), m_sym):
+                px_val = float(px)
+                df = sp.diff(f_expr, x_sym)
+                dg = sp.diff(g_expr, x_sym)
+                m_pivot = sp.solve(df.subs(x_sym, px) - dg.subs(x_sym, px), m_sym)
+                for m_sol in m_pivot:
                     m_critical.append(round(float(m_sol), 2))
     except: pass
     
     try:
         m_sols = sp.solve(f_expr - g_expr, m_sym)
         if m_sols:
-            H_func = sp.lambdify(x_sym, m_sols[0], 'numpy')
-            m_critical.extend([round(float(H_func(-1000)), 1), round(float(H_func(1000)), 1)])
+            H_expr = m_sols[0]
+            H_func = sp.lambdify(x_sym, H_expr, 'numpy')
+            with np.errstate(divide='ignore', invalid='ignore'):
+                H_vals = H_func(x_vals)
+            try:
+                m_critical.append(round(float(H_func(-1000)), 1))
+                m_critical.append(round(float(H_func(1000)), 1))
+            except: pass
+            if not np.isscalar(H_vals):
+                dH = np.diff(H_vals)
+                ext_idx = np.where(np.diff(np.sign(dH)) != 0)[0] + 1
+                for idx in ext_idx:
+                    if np.isfinite(H_vals[idx]) and np.isfinite(H_vals[idx-1]):
+                        if abs(H_vals[idx] - H_vals[idx-1]) < 3.0: 
+                            m_critical.append(round(float(H_vals[idx]), 2))
+    except: pass
+    
+    try:
+        m_0_sols = sp.solve(f_expr.subs(x_sym, 0) - g_expr.subs(x_sym, 0), m_sym)
+        for m_sol in m_0_sols:
+            m_critical.append(round(float(m_sol), 2))
     except: pass
 
-    m_critical = np.unique([m for m in m_critical if np.isfinite(m) and abs(m) < 20])
-    m_critical.sort()
+    m_critical = [m for m in m_critical if np.isfinite(m) and abs(m) < 20]
+    m_critical = np.unique(m_critical)
+    m_critical = np.sort(m_critical)
 
-    def get_roots_text(m_test):
+    def get_roots_text(m_test, is_critical):
         with np.errstate(divide='ignore', invalid='ignore'):
             y_g = g_func(x_vals, m_test)
-            if np.isscalar(y_g): y_g = np.full_like(x_vals, y_g, dtype=float)
+            if np.isscalar(y_g):
+                y_g = np.full_like(x_vals, y_g, dtype=float)
             diff = y_vals - y_g
             
-        crossings, tangents = [], []
+        crossings = []
+        tangents = []
         for i in range(len(diff)-1):
             if np.isfinite(diff[i]) and np.isfinite(diff[i+1]):
-                if diff[i] * diff[i+1] < 0: crossings.append(i)
-                elif diff[i] == 0: crossings.append(i)
+                if diff[i] * diff[i+1] < 0:
+                    crossings.append(i)
+                elif diff[i] == 0:
+                    crossings.append(i)
+        if np.isfinite(diff[-1]) and diff[-1] == 0:
+            crossings.append(len(diff)-1)
         
         abs_diff = np.abs(diff)
         for i in range(1, len(abs_diff)-1):
             if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
-                if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1] and abs_diff[i] < 0.1:
-                    if not any(abs(i - c) < 20 for c in crossings): tangents.append(i)
+                if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1]:
+                    if abs_diff[i] < 0.1: 
+                        if not any(abs(i - c) < 20 for c in crossings):
+                            tangents.append(i)
                                 
         raw_roots = [(x_vals[c], "single") for c in crossings] + [(x_vals[t], "double") for t in tangents]
         all_roots = []
         for r, t in raw_roots:
-            if not any(abs(r - fr) < 0.15 for fr, ft in all_roots): all_roots.append((r, t))
+            if not any(abs(r - fr) < 0.15 for fr, ft in all_roots):
+                all_roots.append((r, t))
         
         if len(all_roots) == 0: return "لا توجد حلول"
         
+        desc = []
         pos_s = sum(1 for r, t in all_roots if r > 0.05 and t == "single")
         neg_s = sum(1 for r, t in all_roots if r < -0.05 and t == "single")
         zero_s = sum(1 for r, t in all_roots if abs(r) <= 0.05 and t == "single")
         pos_d = sum(1 for r, t in all_roots if r > 0.05 and t == "double")
         neg_d = sum(1 for r, t in all_roots if r < -0.05 and t == "double")
+        zero_d = sum(1 for r, t in all_roots if abs(r) <= 0.05 and t == "double")
         
-        desc = []
         if pos_d == 1: desc.append("حل مضاعف موجب")
         if neg_d == 1: desc.append("حل مضاعف سالب")
+        if zero_d == 1: desc.append("حل مضاعف معدوم")
         if pos_s == 1: desc.append("حل موجب")
         elif pos_s == 2: desc.append("حلان موجبان")
         elif pos_s > 2: desc.append(f"{pos_s} حلول موجبة")
@@ -235,42 +353,54 @@ if valid_input:
         elif neg_s > 2: desc.append(f"{neg_s} حلول سالبة")
         if zero_s == 1: desc.append("حل معدوم")
         
-        if pos_s == 1 and neg_s == 1 and len(desc) == 2: return "حلان مختلفان في الإشارة"
+        if pos_s == 1 and neg_s == 1 and len(desc) == 2:
+            return "حلان مختلفان في الإشارة"
         return " و ".join(desc)
 
     raw_intervals = []
     if len(m_critical) > 0:
-        raw_intervals.append((float('-inf'), m_critical[0], get_roots_text(m_critical[0] - 1)))
+        raw_intervals.append((float('-inf'), m_critical[0], get_roots_text(m_critical[0] - 1, False)))
         for i in range(len(m_critical)):
-            raw_intervals.append((m_critical[i], m_critical[i], get_roots_text(m_critical[i])))
+            raw_intervals.append((m_critical[i], m_critical[i], get_roots_text(m_critical[i], True)))
             if i < len(m_critical) - 1:
-                raw_intervals.append((m_critical[i], m_critical[i+1], get_roots_text((m_critical[i] + m_critical[i+1]) / 2.0)))
-        raw_intervals.append((m_critical[-1], float('inf'), get_roots_text(m_critical[-1] + 1)))
+                mid = (m_critical[i] + m_critical[i+1]) / 2.0
+                raw_intervals.append((m_critical[i], m_critical[i+1], get_roots_text(mid, False)))
+        raw_intervals.append((m_critical[-1], float('inf'), get_roots_text(m_critical[-1] + 1, False)))
     else:
-        raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0)))
+        raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0, False)))
 
     merged_intervals = []
     if raw_intervals:
         current_group = [raw_intervals[0]]
         for item in raw_intervals[1:]:
-            if item[2] == current_group[-1][2]: current_group.append(item)
-            else: merged_intervals.append(current_group); current_group = [item]
+            if item[2] == current_group[-1][2]: 
+                current_group.append(item)
+            else:
+                merged_intervals.append(current_group)
+                current_group = [item]
         merged_intervals.append(current_group)
 
     final_table_data = []
     for g in merged_intervals:
-        sol_text, L, H = g[0][2], g[0][0], g[-1][1]
-        include_L, include_H = (g[0][0] == g[0][1]), (g[-1][0] == g[-1][1]) 
+        sol_text = g[0][2]
+        L = g[0][0]
+        H = g[-1][1]
+        include_L = (g[0][0] == g[0][1]) 
+        include_H = (g[-1][0] == g[-1][1]) 
 
-        if L == float('-inf') and H == float('inf'): math_html = "<i>m</i> ∈ ℝ"
-        elif L == H: math_html = f"<i>m</i> = {fmt(L)}"
+        if L == float('-inf') and H == float('inf'):
+            math_html = "<i>m</i> ∈ ℝ"
+        elif L == H:
+            math_html = f"<i>m</i> = {fmt(L)}"
         else:
-            math_html = f"<i>m</i> ∈ {('[' if include_L else ']')}{fmt(L)}; {fmt(H)}{(']' if include_H else '[')}"
+            left_bracket = "[" if include_L else "]"
+            right_bracket = "]" if include_H else "["
+            math_html = f"<i>m</i> ∈ {left_bracket}{fmt(L)}; {fmt(H)}{right_bracket}"
         final_table_data.append((math_html, sol_text, g)) 
 
     def generate_html_table(current_m):
-        html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:17px; background-color:#1E293B;'>"
-        html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:8px;'>الإشارة وعدد الحلول</th> <th dir='ltr' style='color:white; padding:8px;'>المجال / القيمة</th> </tr>"
+        html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
+        html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>الإشارة وعدد الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
         for math_html, sol_text, g in final_table_data:
             is_active = False
             for low, high, _ in g:
@@ -282,7 +412,9 @@ if valid_input:
                     elif low + 0.15 <= current_m <= high - 0.15: is_active = True
 
             row_style = "border: 3px solid #FFD700; background-color: #334155; font-weight:bold;" if is_active else "border-bottom: 1px solid #334155;"
-            html += f"<tr style='{row_style}'> <td style='padding:8px; color:{('#00E5FF' if is_active else '#A5F3FC')};'>{sol_text}</td> <td style='padding:8px; color:{('#FFD700' if is_active else '#FEF08A')};' dir='ltr'>{math_html}</td> </tr>"
+            text_color_sol = "#00E5FF" if is_active else "#A5F3FC"  
+            text_color_m = "#FFD700" if is_active else "#FEF08A"    
+            html += f"<tr style='{row_style}'> <td style='padding:10px; color:{text_color_sol};'>{sol_text}</td> <td style='padding:10px; color:{text_color_m}; font-family: \"Times New Roman\", Times, serif; font-size: 18px; white-space: nowrap;' dir='ltr'>{math_html}</td> </tr>"
         html += "</table>"
         return html
 
@@ -301,7 +433,7 @@ if valid_input:
     placeholder = st.empty()
 
     def update_view(m_val):
-        fig, ax = plt.subplots(figsize=(10, 6))
+        fig, ax = plt.subplots(figsize=(10, 6.5))
         fig.patch.set_facecolor('#0F172A')
         ax.set_facecolor('#0F172A')
         ax.tick_params(colors='white')
@@ -316,35 +448,77 @@ if valid_input:
                 ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', va='top')
             elif asym['type'] == 'h':
                 ax.axhline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
+                ax.text(7.5, asym['val'] + 0.25, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', ha='right')
             elif asym['type'] == 'o':
-                ax.plot(x_vals, asym['a'] * x_vals + asym['b'], color='#FF3366', linestyle=':', linewidth=2.5)
+                y_asym = asym['a'] * x_vals + asym['b']
+                ax.plot(x_vals, y_asym, color='#FF3366', linestyle=':', linewidth=2.5)
+                x_text = 5
+                y_text = asym['a'] * x_text + asym['b']
+                if y_text > 7 or y_text < -5.5:
+                    x_text = -5
+                    y_text = asym['a'] * x_text + asym['b']
+                ax.text(x_text, y_text + 0.5, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', ha='center', va='bottom', rotation=np.degrees(np.arctan(asym['a'])) * 0.6)
         
         ax.plot(x_vals, y_vals, color='#00E5FF', linewidth=3, label='C_f')
         
         with np.errstate(divide='ignore', invalid='ignore'):
             y_g_plot = g_func(x_vals, m_val)
-        if np.isscalar(y_g_plot): y_g_plot = np.full_like(x_vals, y_g_plot, dtype=float)
+        if np.isscalar(y_g_plot):
+            y_g_plot = np.full_like(x_vals, y_g_plot, dtype=float)
         
         m_val_str = str(int(m_val)) if int(m_val)==m_val else str(round(m_val, 2))
-        m_eq_label = f"y = {m_val_str}" if st.session_state.g_val.strip() == 'm' else "y = " + st.session_state.g_val.replace('m', f"({m_val_str})" if m_val < 0 else m_val_str).replace('*', '')
-        
+        if st.session_state.g_val.strip() == 'm':
+            m_eq_label = f"y = {m_val_str}"
+        else:
+            rep_str = f"({m_val_str})" if m_val < 0 else m_val_str
+            m_eq_label = "y = " + st.session_state.g_val.replace('m', rep_str).replace('*', '')
+            
         ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f"${m_eq_label}$")
         
         diff_plot = y_vals - y_g_plot
         intersect_x = []
         for i in range(len(diff_plot)-1):
-            if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]) and diff_plot[i] * diff_plot[i+1] < 0:
-                denom = diff_plot[i+1] - diff_plot[i]
-                xi = x_vals[i] - diff_plot[i] * (x_vals[i+1] - x_vals[i]) / denom if denom != 0 else x_vals[i]
-                intersect_x.append(float(xi))
-        
+            if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
+                if diff_plot[i] * diff_plot[i+1] < 0:
+                    denom = diff_plot[i+1] - diff_plot[i]
+                    xi = x_vals[i] - diff_plot[i] * (x_vals[i+1] - x_vals[i]) / denom if denom != 0 else x_vals[i]
+                    intersect_x.append(float(xi))
+                elif diff_plot[i] == 0:
+                    intersect_x.append(float(x_vals[i]))
+                    
+        abs_diff = np.abs(diff_plot)
+        for i in range(1, len(abs_diff)-1):
+            if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
+                if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1]:
+                    if abs_diff[i] < 0.15: 
+                        intersect_x.append(float(x_vals[i]))
+
         unique_intersect_x = []
         for ix in intersect_x:
-            if not any(abs(ix - uix) < 0.1 for uix in unique_intersect_x): unique_intersect_x.append(ix)
+            if not any(abs(ix - uix) < 0.1 for uix in unique_intersect_x):
+                unique_intersect_x.append(ix)
+
+        intersect_y = []
+        for ix in unique_intersect_x:
+            if st.session_state.g_val.strip() == 'm':
+                intersect_y.append(m_val)
+            else:
+                yt = g_func(ix, m_val)
+                intersect_y.append(float(yt) if not np.isscalar(yt) else yt)
 
         if unique_intersect_x:
-            intersect_y = [m_val if st.session_state.g_val.strip() == 'm' else float(g_func(ix, m_val)) for ix in unique_intersect_x]
-            ax.scatter(unique_intersect_x, intersect_y, color='#FF0000', s=120, zorder=5, edgecolor='white', linewidth=2)
+            ax.scatter(unique_intersect_x, intersect_y, color='#FF0000', s=120, zorder=5, edgecolor='white', linewidth=2, label='نقاط التقاطع')
+
+        if st.session_state.g_val.strip() == 'm':
+            ax.text(-7.5, m_val + 0.25, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='left', va='bottom')
+        else:
+            y_text_m = g_func(4, m_val)
+            if -5.5 <= y_text_m <= 7:
+                ax.text(4, y_text_m + 0.5, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='center', va='bottom')
+            else:
+                y_text_m2 = g_func(-4, m_val)
+                if -5.5 <= y_text_m2 <= 7:
+                     ax.text(-4, y_text_m2 + 0.5, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='center', va='bottom')
 
         ax.set_ylim(-6, 8)
         ax.grid(True, color='#ffffff', linestyle='-', alpha=0.1)
@@ -359,15 +533,27 @@ if valid_input:
 
     if st.session_state.auto_play:
         while st.session_state.auto_play and st.session_state.m_anim <= 8.0:
-            update_view(round(st.session_state.m_anim, 2))
-            is_crit = any(abs(st.session_state.m_anim - mc) < 1e-4 for mc in m_critical)
-            time.sleep(1.5 if is_crit else 0.05)
+            m_val = round(st.session_state.m_anim, 2)
+            update_view(m_val)
             
-            next_m = st.session_state.m_anim + 0.15
+            is_critical_now = any(abs(st.session_state.m_anim - mc) < 1e-4 for mc in m_critical)
+            if is_critical_now:
+                time.sleep(1.5) 
+            else:
+                time.sleep(0.05) 
+                
+            step = 0.15 
+            next_m = st.session_state.m_anim + step
+            
             for mc in m_critical:
                 if st.session_state.m_anim < mc - 1e-4 and next_m >= mc - 1e-4:
-                    next_m = float(mc); break
+                    next_m = float(mc)
+                    break
+            
             st.session_state.m_anim = next_m
+            
         st.session_state.auto_play = False
+
     else:
-        update_view(st.slider("تحكم يدوي بميل المستقيم m:", -8.0, 8.0, 0.0, 0.1, format="%g", key="manual_m"))
+        m_val = st.slider("تحكم يدوي:", -8.0, 8.0, 0.0, 0.1, format="%g", key="manual_m")
+        update_view(m_val)
