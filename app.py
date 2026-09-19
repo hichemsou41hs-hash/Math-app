@@ -110,8 +110,9 @@ if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
-    st.radio("توجيه الإدخال إلى:", ["الدالة f(x)", "المستقيم بدلالة m"], key="target_selector", horizontal=True)
-    st.session_state.kbd_target = "f" if st.session_state.target_selector == "الدالة f(x)" else "g"
+    # استخدام علامة التوجيه \u200E لضمان بقاء الرموز على اليسار
+    st.radio("توجيه الإدخال إلى:", ["الدالة \u200Ef(x)\u200E", "المستقيم بدلالة \u200Em\u200E"], key="target_selector", horizontal=True)
+    st.session_state.kbd_target = "f" if st.session_state.target_selector == "الدالة \u200Ef(x)\u200E" else "g"
     
     def k_click(char):
         target = "f_val" if st.session_state.kbd_target == "f" else "g_val"
@@ -147,9 +148,9 @@ x_sym, m_sym = sp.symbols('x m')
 
 col1, col2 = st.columns(2)
 with col1:
-    st.text_input("أدخل عبارة الدالة f(x):", key="f_val")
+    st.text_input("أدخل عبارة الدالة \u200Ef(x)\u200E:", key="f_val")
 with col2:
-    st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
+    st.text_input("أدخل معادلة المستقيم بدلالة \u200Em\u200E:", key="g_val")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
@@ -531,17 +532,12 @@ if valid_input:
             st.markdown(generate_html_table(m_val), unsafe_allow_html=True)
         plt.close(fig)
 
-    # ---------------------------------------------------------
-    # 5. الأنيميشن: الحركة السريعة والتوقف عند القيم الحرجة
-    # ---------------------------------------------------------
     if st.session_state.auto_play:
         while st.session_state.auto_play and st.session_state.m_anim <= 8.0:
             m_val = round(st.session_state.m_anim, 2)
             update_view(m_val)
             
             is_critical_now = any(abs(st.session_state.m_anim - mc) < 1e-4 for mc in m_critical)
-            
-            # توقف أطول بوضوح عند تغير عدد أو إشارة الحلول
             if is_critical_now:
                 time.sleep(2.0) 
             else:
