@@ -18,7 +18,7 @@ st.markdown("""
     .title-hes { text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap; margin-bottom: 0px;}
     .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 30px;}
     
-    /* إخفاء العناوين الافتراضية لخانات الإدخال (f_label و g_label) من الجذور */
+    /* إخفاء العناوين الافتراضية لخانات الإدخال من الجذور لتظل الشاشة نظيفة */
     div[data-testid="stTextInput"] > label {
         display: none !important;
         height: 0px !important;
@@ -71,16 +71,20 @@ st.markdown("""
         transition: all 0.1s !important;
     }
     
-    /* إجبار الرموز على الظهور بحجمها الطبيعي ومنع ظهور النقاط المزعجة (...) تماما */
+    /* 
+       السر هنا: تصغير الخط، استخدام خط عريض Arial، والسماح بتعدد الأسطر
+       لكي يظهر زر الكسر بشكل مربعين فوق بعضهما
+    */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button * {
-        font-size: 17px !important; /* حجم واضح جدا */
-        font-family: 'Times New Roman', serif !important;
-        font-weight: bold !important;
+        font-size: 15px !important; /* تصغير الخط كما طلبت */
+        font-family: Arial, Helvetica, sans-serif !important; /* خط ساطع وواضح جدا */
+        font-weight: 900 !important; /* تغليظ الخط لتوضيح cos و sin */
         margin: 0 !important;
         padding: 0 !important;
-        overflow: visible !important; /* السماح بظهور الكلمة كاملة */
-        text-overflow: clip !important; /* إلغاء النقاط */
-        white-space: nowrap !important;
+        overflow: visible !important; 
+        text-overflow: clip !important; 
+        white-space: pre-line !important; /* السماح بنزول السطر في زر الكسر */
+        line-height: 1.1 !important; /* تقارب الأسطر ليعطي شكل الكسر الحقيقي */
     }
     
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button:active {
@@ -137,7 +141,7 @@ if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
-    # إرجاع الكتابة בדיוק كما كانت في الكود السابق والناجح
+    # توجيه الإدخال بالشكل العربي السليم
     t_sel = st.radio("توجيه الإدخال إلى:", ["الدالة \u200Ef(x)\u200E", "المستقيم بدلالة \u200Em\u200E"], horizontal=True)
     st.session_state.kbd_target = "f" if t_sel == "الدالة \u200Ef(x)\u200E" else "g"
     
@@ -150,12 +154,12 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         else:
             st.session_state[target] += char
 
-    # مصفوفة الأزرار المحدثة مع زر الكسر (مربعين) وزر الأسية (النقاط فوق الأس)
+    # مصفوفة الأزرار المحدثة مع زر الكسر (مربعين فوق بعض)
     keys = [
-        [("𝑥", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
-        [("𝑚", "m"), ("𝜋", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
-        [("□/□", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
-        [("e^...", "e^("), ("|□|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
+        [("x", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
+        [("m", "m"), ("π", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
+        [("□\n—\n□", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
+        [("e^□", "e^("), ("|□|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
         [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
     ]
     
@@ -174,10 +178,10 @@ x_sym, m_sym = sp.symbols('x m')
 col1, col2 = st.columns(2)
 with col1:
     st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 17px; font-weight: bold; margin-bottom: 5px;'>أدخل عبارة الدالة <span style='direction: ltr; display: inline-block;'>f(x)</span>:</div>", unsafe_allow_html=True)
-    st.text_input("f_input_hidden", key="f_val")
+    st.text_input("hidden_f", key="f_val", label_visibility="collapsed")
 with col2:
     st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 17px; font-weight: bold; margin-bottom: 5px;'>أدخل معادلة المستقيم <span style='direction: ltr; display: inline-block;'>m</span>:</div>", unsafe_allow_html=True)
-    st.text_input("g_input_hidden", key="g_val")
+    st.text_input("hidden_g", key="g_val", label_visibility="collapsed")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
