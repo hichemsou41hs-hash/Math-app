@@ -16,6 +16,7 @@ st.markdown("""
     .stApp { background-color: #0F172A; color: white; }
     .title-hes { text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap; margin-bottom: 0px;}
     .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 30px;}
+    .stTextInput label { color: #00E5FF !important; font-size: 18px !important; font-weight: bold !important; direction: rtl !important; text-align: right !important; display: block;}
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     
     /* =========================================================
@@ -49,7 +50,7 @@ st.markdown("""
         border-radius: 6px !important;
         background-color: #334155 !important;
         color: #00E5FF !important;
-        font-size: 18px !important;
+        font-size: 17px !important; /* حجم خط مناسب للأزرار الجديدة */
         font-family: 'Times New Roman', serif !important;
         font-weight: bold !important;
         border: 1px solid #475569 !important;
@@ -104,9 +105,9 @@ if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
-    # استخدام أكواد التوجيه المتقدمة لمنع إنعكاس الأقواس والرموز
-    t_sel = st.radio("توجيه الإدخال إلى:", ["الدالة \u202Af(x)\u202C", "المستقيم بدلالة \u202Am\u202C"], horizontal=True)
-    st.session_state.kbd_target = "f" if t_sel == "الدالة \u202Af(x)\u202C" else "g"
+    # استخدام علامة التوجيه \u200E لضمان بقاء الرموز على اليسار ومنع قلب الأقواس
+    t_sel = st.radio("توجيه الإدخال إلى:", ["الدالة \u200Ef(x)\u200E", "المستقيم بدلالة \u200Em\u200E"], horizontal=True)
+    st.session_state.kbd_target = "f" if t_sel == "الدالة \u200Ef(x)\u200E" else "g"
     
     def k_click(char):
         target = "f_val" if st.session_state.kbd_target == "f" else "g_val"
@@ -117,12 +118,12 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         else:
             st.session_state[target] += char
 
-    # إضافة زر الكسر والأسية بدلاً من الأكبر والأصغر
+    # مصفوفة الأزرار الجديدة (مع زر الكسر ■/■ والدوال المثلثية والأسية)
     keys = [
-        [("𝑥", "x"), ("𝑦", "y"), ("𝑒", "e"), ("7", "7"), ("8", "8"), ("9", "9")],
+        [("𝑥", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
         [("𝑚", "m"), ("𝜋", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
-        [("□²", "^2"), ("√", "sqrt("), ("|□|", "abs("), ("1", "1"), ("2", "2"), ("3", "3")],
-        [("□/□", "() / ()"), ("𝑒^{□}", "e^("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
+        [("■/■", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
+        [("e^{...}", "e^("), ("|□|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
         [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
     ]
     
@@ -134,27 +135,26 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
     st.button("مسح الكل (Clear)", on_click=k_click, args=("CLR",), use_container_width=True, type="primary")
 
 # ---------------------------------------------------------
-# 3. إدخال الدالة ومعادلة المناقشة (بشكل سليم 100%)
+# 3. إدخال الدالة ومعادلة المناقشة
 # ---------------------------------------------------------
 x_sym, m_sym = sp.symbols('x m')
 
 col1, col2 = st.columns(2)
 with col1:
-    # إجبار المتصفح بالـ HTML على وضع f(x) على اليسار
-    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 18px; font-weight: bold; margin-bottom: 5px;'>أدخل عبارة الدالة <span style='direction: ltr; unicode-bidi: bidi-override;'>f(x)</span>:</div>", unsafe_allow_html=True)
-    st.text_input("f_label", key="f_val", label_visibility="collapsed")
+    st.text_input("أدخل عبارة الدالة \u200Ef(x)\u200E:", key="f_val")
 with col2:
-    # إجبار المتصفح بالـ HTML على وضع m على اليسار
-    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 18px; font-weight: bold; margin-bottom: 5px;'>أدخل معادلة المستقيم بدلالة <span style='direction: ltr; unicode-bidi: bidi-override;'>m</span>:</div>", unsafe_allow_html=True)
-    st.text_input("g_label", key="g_val", label_visibility="collapsed")
+    st.text_input("أدخل معادلة المستقيم بدلالة \u200Em\u200E:", key="g_val")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
     transformations = (standard_transformations + (implicit_multiplication_application,))
-    local_dict = {'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs}
-    # تم إضافة evaluate=False لمنع التبسيط التلقائي وحذف المجاهيل
-    f_expr = parse_expr(st.session_state.f_val.replace('^', '**'), local_dict=local_dict, transformations=transformations, evaluate=False)
-    g_expr = parse_expr(st.session_state.g_val.replace('^', '**'), local_dict=local_dict, transformations=transformations, evaluate=False)
+    local_dict = {'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
+    
+    # استخدام سياق الإيقاف لمنع التبسيط التلقائي (مثل x*ln(x)/x إلى ln(x))
+    with sp.evaluate(False):
+        f_expr = parse_expr(st.session_state.f_val.replace('^', '**'), local_dict=local_dict, transformations=transformations, evaluate=False)
+        g_expr = parse_expr(st.session_state.g_val.replace('^', '**'), local_dict=local_dict, transformations=transformations, evaluate=False)
+        
     valid_input = True
 except:
     st.error("⚠️ صيغة غير صالحة أو الخانة فارغة.")
@@ -168,7 +168,7 @@ if valid_input:
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
-    # دقة فائقة جداً (40 ألف نقطة) ليحاذي المقارب وينزل لأسفل الشاشة
+    # دقة فائقة (40 ألف نقطة) ليحاذي المقارب وينزل لأسفل الشاشة
     x_vals = np.linspace(-8, 8, 40000)
     
     with np.errstate(divide='ignore', invalid='ignore'):
