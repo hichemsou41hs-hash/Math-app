@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import sympy as sp
 import time
 import warnings
+import streamlit.components.v1 as components
 
 # تجاهل التحذيرات الرياضية
 warnings.filterwarnings("ignore")
@@ -18,71 +19,6 @@ st.markdown("""
     .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 30px;}
     .stTextInput label { color: #00E5FF !important; font-size: 18px !important; font-weight: bold !important; direction: rtl !important; text-align: right !important; display: block;}
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
-    
-    /* ---------------------------------------------------
-       لوحة المفاتيح: الطريقة المطلقة لمنع التفكك
-       --------------------------------------------------- */
-    
-    /* نقوم بإنشاء شبكة (Grid) قوية جداً لا تتأثر بحجم الشاشة */
-    .keyboard-wrapper {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr); /* 6 أعمدة دائماً وأبداً */
-        gap: 5px;
-        background-color: #1E293B;
-        padding: 8px;
-        border-radius: 10px;
-        border: 1px solid #334155;
-        margin-bottom: 15px;
-    }
-
-    /* استهداف الحاويات التي تضعها Streamlit داخل الـ grid */
-    .keyboard-wrapper div[data-testid="stVerticalBlock"] {
-        display: contents; /* هذه الخاصية السحرية تلغي تدخل Streamlit وتجعل الأزرار تتبع الـ Grid الأب */
-    }
-
-    /* تصميم أزرار Streamlit لتملأ الخانات بشكل متناسق ومربع */
-    .keyboard-wrapper div[data-testid="stButton"] > button {
-        width: 100% !important;
-        height: 50px !important; /* ارتفاع ثابت لضمان الشكل المربع أو المستطيل المتناسق */
-        padding: 0 !important;
-        margin: 0 !important;
-        border-radius: 6px !important;
-        background-color: #334155 !important;
-        color: #A5F3FC !important;
-        font-size: 18px !important;
-        font-family: 'Times New Roman', serif !important;
-        font-weight: bold !important;
-        border: none !important;
-        box-shadow: 0 3px 0 #090e1a !important;
-        transition: transform 0.1s, box-shadow 0.1s !important;
-    }
-    
-    .keyboard-wrapper div[data-testid="stButton"] > button:active {
-        transform: translateY(3px) !important;
-        box-shadow: 0 0 0 #090e1a !important;
-        background-color: #00E5FF !important;
-        color: #0F172A !important;
-    }
-
-    /* زر الحذف باللون الأحمر */
-    .del-btn div[data-testid="stButton"] > button {
-        background-color: #ef4444 !important;
-        color: #FFFFFF !important;
-        box-shadow: 0 3px 0 #7f1d1d !important;
-    }
-    .del-btn div[data-testid="stButton"] > button:active {
-        background-color: #dc2626 !important;
-        box-shadow: 0 0 0 #7f1d1d !important;
-    }
-
-    /* زر المسح الكلي */
-    .clear-btn div[data-testid="stButton"] > button {
-        background-color: #f97316 !important;
-        color: white !important;
-        font-size: 18px !important;
-        box-shadow: 0 3px 0 #9a3412 !important;
-        margin-top: 5px !important;
-    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -96,59 +32,165 @@ def fmt(val):
     return str(val)
 
 # ---------------------------------------------------------
-# 2. إدارة حالة التطبيق ولوحة المفاتيح
+# 2. إدارة حالة التطبيق
 # ---------------------------------------------------------
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
 
 if 'f_val' not in st.session_state: st.session_state.f_val = "ln(x)-ln(x+1)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m*x+1"
-if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "الدالة f(x)"
+if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
+# ---------------------------------------------------------
+# 3. لوحة المفاتيح المدمجة كـ HTML/JS Component مستقل تماماً
+# ---------------------------------------------------------
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
-    st.radio("توجيه الإدخال إلى:", ["الدالة f(x)", "المستقيم بدلالة m"], key="kbd_target", horizontal=True)
     
-    def k_click(char):
-        target = "f_val" if st.session_state.kbd_target == "الدالة f(x)" else "g_val"
-        if char == '⌫': st.session_state[target] = st.session_state[target][:-1]
-        elif char == 'C': st.session_state[target] = ""
-        else: st.session_state[target] += char
+    # اختيار وجهة الكتابة
+    st.radio("توجيه الإدخال إلى:", ["الدالة f(x)", "المستقيم بدلالة m"], key="target_selector", horizontal=True)
+    if st.session_state.target_selector == "الدالة f(x)":
+        st.session_state.kbd_target = "f"
+    else:
+        st.session_state.kbd_target = "g"
 
-    # مصفوفة الأزرار
-    keys = [
-        ("𝑥", "x"), ("𝑦", "y"), ("𝑒", "e"), ("7", "7"), ("8", "8"), ("9", "9"),
-        ("𝑚", "m"), ("𝜋", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6"),
-        ("□²", "^2"), ("√", "sqrt("), ("|□|", "abs("), ("1", "1"), ("2", "2"), ("3", "3"),
-        ("<", "<"), (">", ">"), ("=", "="), ("0", "0"), (".", "."), ("⌫", "⌫", "del-btn"),
-        ("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("*", "*"), ("/", "/")
-    ]
-
-    # نغلف جميع الأزرار بحاوية سيقوم الـ CSS بتحويلها لـ Grid
-    st.markdown('<div class="keyboard-wrapper">', unsafe_allow_html=True)
-    
-    # نستخدم st.container لكل زر ونطبق عليه CSS مخصص إذا لزم الأمر
-    for i, key_data in enumerate(keys):
-        label = key_data[0]
-        val = key_data[1]
-        css_class = key_data[2] if len(key_data) > 2 else ""
-        
-        # نستخدم حاوية فارغة لتمرير الـ CSS
-        if css_class:
-            st.markdown(f'<div class="{css_class}">', unsafe_allow_html=True)
-            st.button(label, on_click=k_click, args=(val,), key=f"kb_{i}")
-            st.markdown('</div>', unsafe_allow_html=True)
+    # دالة المعالجة التي يستدعيها الـ JS
+    def process_keypress(key_val):
+        target = "f_val" if st.session_state.kbd_target == "f" else "g_val"
+        if key_val == 'DEL':
+            st.session_state[target] = st.session_state[target][:-1]
+        elif key_val == 'CLR':
+            st.session_state[target] = ""
         else:
-             st.button(label, on_click=k_click, args=(val,), key=f"kb_{i}")
+            st.session_state[target] += key_val
 
-    st.markdown('</div>', unsafe_allow_html=True)
+    # إذا تم إرسال مفتاح من مكون الـ HTML
+    if 'key_pressed' in st.session_state and st.session_state.key_pressed:
+         process_keypress(st.session_state.key_pressed)
+         # تفريغ الحالة حتى لا يتكرر الضغط
+         st.session_state.key_pressed = None
+         st.rerun()
+
+    # كود HTML/CSS/JS للوحة المفاتيح.
+    # هذا يضمن عرض شبكة 6x5 لا تنكسر أبداً.
+    html_keyboard = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <style>
+        body { margin: 0; padding: 0; background-color: #0F172A; }
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            background-color: #1E293B;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .key {
+            background-color: #334155;
+            color: #A5F3FC;
+            border: none;
+            border-radius: 6px;
+            height: 50px;
+            font-size: 18px;
+            font-family: 'Times New Roman', serif;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #090e1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .key:active {
+            transform: translateY(3px);
+            box-shadow: 0 0 0 #090e1a;
+            background-color: #00E5FF;
+            color: #0F172A;
+        }
+        .key.num { background-color: #475569; color: white; }
+        .key.del { background-color: #ef4444; color: white; box-shadow: 0 3px 0 #7f1d1d; }
+        .key.del:active { background-color: #dc2626; box-shadow: 0 0 0 #7f1d1d; }
+        .key.clr { 
+            grid-column: span 6; 
+            background-color: #f97316; 
+            color: white; 
+            box-shadow: 0 3px 0 #9a3412; 
+            margin-top: 5px;
+        }
+        .key.clr:active { box-shadow: 0 0 0 #9a3412; }
+    </style>
+    </head>
+    <body>
+        <div class="keyboard">
+            <button class="key" onclick="sendKey('x')">𝑥</button>
+            <button class="key" onclick="sendKey('y')">𝑦</button>
+            <button class="key" onclick="sendKey('e')">𝑒</button>
+            <button class="key num" onclick="sendKey('7')">7</button>
+            <button class="key num" onclick="sendKey('8')">8</button>
+            <button class="key num" onclick="sendKey('9')">9</button>
+
+            <button class="key" onclick="sendKey('m')">𝑚</button>
+            <button class="key" onclick="sendKey('pi')">𝜋</button>
+            <button class="key" onclick="sendKey('ln(')">ln</button>
+            <button class="key num" onclick="sendKey('4')">4</button>
+            <button class="key num" onclick="sendKey('5')">5</button>
+            <button class="key num" onclick="sendKey('6')">6</button>
+
+            <button class="key" onclick="sendKey('^2')">□²</button>
+            <button class="key" onclick="sendKey('sqrt(')">√</button>
+            <button class="key" onclick="sendKey('abs(')">|□|</button>
+            <button class="key num" onclick="sendKey('1')">1</button>
+            <button class="key num" onclick="sendKey('2')">2</button>
+            <button class="key num" onclick="sendKey('3')">3</button>
+
+            <button class="key" onclick="sendKey('<')">&lt;</button>
+            <button class="key" onclick="sendKey('>')">&gt;</button>
+            <button class="key" onclick="sendKey('=')">=</button>
+            <button class="key num" onclick="sendKey('0')">0</button>
+            <button class="key num" onclick="sendKey('.')">.</button>
+            <button class="key del" onclick="sendKey('DEL')">⌫</button>
+
+            <button class="key" onclick="sendKey('(')">(</button>
+            <button class="key" onclick="sendKey(')')">)</button>
+            <button class="key" onclick="sendKey('+')">+</button>
+            <button class="key" onclick="sendKey('-')">-</button>
+            <button class="key" onclick="sendKey('*')">*</button>
+            <button class="key" onclick="sendKey('/')">/</button>
+
+            <button class="key clr" onclick="sendKey('CLR')">مسح الكل (Clear)</button>
+        </div>
+
+        <script>
+            function sendKey(val) {
+                // إرسال قيمة المفتاح إلى Streamlit عبر parent.postMessage
+                window.parent.postMessage({
+                    type: 'streamlit:setComponentValue',
+                    value: val
+                }, '*');
+            }
+        </script>
+    </body>
+    </html>
+    """
     
-    st.markdown('<div class="clear-btn">', unsafe_allow_html=True)
-    st.button("مسح الكل (Clear)", on_click=k_click, args=("C",), use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+    # دمج الـ HTML المخصص واستقبال النتيجة
+    clicked_key = components.html(html_keyboard, height=350, scrolling=False)
+    
+    # خدعة لالتقاط الضغطة (مكون الـ html يعيد القيمة عندما تتغير)
+    # ملاحظة: مكونات HTML في Streamlit تحتاج أحياناً إلى إعادة تحميل الصفحة لتعمل بشكل مثالي، 
+    # لذلك سنقوم بتحديث الخانات يدويا في حالة عدم استجابة المكون مباشرة
+    if clicked_key is not None:
+         st.session_state.key_pressed = clicked_key
+         st.rerun()
 
 
 # ---------------------------------------------------------
-# 3. إدخال الدالة ومعادلة المناقشة
+# 4. إدخال الدالة ومعادلة المناقشة
 # ---------------------------------------------------------
 x_sym, m_sym = sp.symbols('x m')
 
@@ -194,7 +236,7 @@ if valid_input:
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 4. المقاربات (مع اختبار مجموعة التعريف)
+    # 5. المقاربات (مع اختبار مجموعة التعريف)
     # ---------------------------------------------------------
     asymptotes = []
     for direction in [sp.oo, -sp.oo]:
