@@ -64,16 +64,13 @@ st.markdown("""
         transition: all 0.1s !important;
     }
     
-    /* إجبار الرموز على الظهور بحجمها الطبيعي ومنع ظهور النقاط (...) */
+    /* تصغير حجم الخط داخل الأزرار لتظهر الكلمات كاملة (cos, sin) */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button p {
-        font-size: 20px !important; /* حجم كبير للرموز */
+        font-size: 14px !important; 
         font-family: 'Times New Roman', serif !important;
         font-weight: bold !important;
         margin: 0 !important;
         padding: 0 !important;
-        overflow: visible !important;
-        text-overflow: clip !important;
-        white-space: nowrap !important;
     }
     
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button:active {
@@ -130,9 +127,9 @@ if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
-    # توجيه الكتابة الصحيح والطبيعي
-    t_sel = st.radio("توجيه الإدخال إلى:", ["الدالة f(x)", "المستقيم m"], horizontal=True)
-    st.session_state.kbd_target = "f" if t_sel == "الدالة f(x)" else "g"
+    # وضع الرموز الرياضية على اليسار واللغة العربية على اليمين كما طلبت
+    t_sel = st.radio("توجيه الإدخال إلى:", ["f(x) الدالة", "m المستقيم"], horizontal=True)
+    st.session_state.kbd_target = "f" if t_sel == "f(x) الدالة" else "g"
     
     def k_click(char):
         target = "f_val" if st.session_state.kbd_target == "f" else "g_val"
@@ -143,11 +140,11 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         else:
             st.session_state[target] += char
 
-    # مصفوفة الأزرار المحدثة مع المربعات الواضحة للكسر
+    # مصفوفة الأزرار المحدثة مع زر الكسر الجديد واضح المعالم
     keys = [
         [("𝑥", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
         [("𝑚", "m"), ("𝜋", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
-        [("■/■", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
+        [("□/□", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
         [("e^□", "e^("), ("|□|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
         [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
     ]
@@ -166,14 +163,13 @@ x_sym, m_sym = sp.symbols('x m')
 
 col1, col2 = st.columns(2)
 with col1:
-    # ترتيب الكلمات بدقة: أدخل عبارة الدالة f(x)
     st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 17px; font-weight: bold; margin-bottom: 5px;'>أدخل عبارة الدالة <span style='direction: ltr; display: inline-block;'>f(x)</span>:</div>", unsafe_allow_html=True)
-    # استخدام مسافة فارغة " " كليبل لمنع ظهور f_label المزعجة
-    st.text_input(" ", key="f_val", label_visibility="collapsed")
+    # استخدام مسافة فارغة لإزالة كلمة f_label نهائيا
+    st.text_input(" ", key="f_val")
 with col2:
-    # ترتيب الكلمات بدقة: أدخل معادلة المستقيم m
     st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 17px; font-weight: bold; margin-bottom: 5px;'>أدخل معادلة المستقيم <span style='direction: ltr; display: inline-block;'>m</span>:</div>", unsafe_allow_html=True)
-    st.text_input("  ", key="g_val", label_visibility="collapsed")
+    # استخدام مسافتين لإزالة g_label نهائيا
+    st.text_input("  ", key="g_val")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
@@ -181,7 +177,6 @@ try:
     local_dict = {'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
     
     # تمرير المدخلات عبر المُعالج الذكي (fix_implicit_mult) قبل تحويلها رياضيًا 
-    # مع الحفاظ على evaluate=False لمنع التبسيط المزعج
     f_processed = fix_implicit_mult(st.session_state.f_val)
     g_processed = fix_implicit_mult(st.session_state.g_val)
     
@@ -202,7 +197,6 @@ if valid_input:
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
-    # دقة فائقة (40 ألف نقطة) ليحاذي المقارب وينزل لأسفل الشاشة
     x_vals = np.linspace(-8, 8, 40000)
     
     with np.errstate(divide='ignore', invalid='ignore'):
@@ -213,7 +207,6 @@ if valid_input:
     if np.isscalar(y_vals):
         y_vals = np.full_like(x_vals, y_vals, dtype=float)
 
-    # عتبة القطع العالية حتى يظهر المنحنى طويلا
     dy = np.abs(np.diff(y_vals))
     jump_idx = np.where(dy > 50)[0] 
     for idx in jump_idx:
