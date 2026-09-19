@@ -20,37 +20,96 @@ st.markdown("""
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     
     /* ---------------------------------------------------
-       السر هنا: استخدام Flexbox لإجبار الأزرار على البقاء في سطر واحد
+       لوحة المفاتيح: حل العبقرية باستخدام CSS Grid بدون أعمدة
        --------------------------------------------------- */
     
-    /* استهداف الحاويات التي تضعها Streamlit للأعمدة */
-    div[data-testid="column"] {
-        flex: 1 1 0px !important; 
-        min-width: 0 !important; /* هذا يمنع العمود من التوسع وكسر السطر */
-        padding: 0 2px !important; /* تقليل المسافة بين الأزرار */
-    }
-    
-    /* إجبار الحاوية الأفقية على عدم كسر السطر (no-wrap) */
-    div[data-testid="stHorizontalBlock"] {
-        flex-wrap: nowrap !important;
-        margin-bottom: 5px !important;
+    /* تحويل الحاوية الثانية داخل الإكسباندر إلى شبكة متراصة لا يمكن كسرها */
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) > div[data-testid="stVerticalBlock"] {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        justify-content: center !important;
+        background-color: #1E293B !important;
+        padding: 10px !important;
+        border-radius: 12px !important;
+        border: 1px solid #334155 !important;
     }
 
-    /* تصميم أزرار لوحة المفاتيح لتكون متناسقة */
-    div[data-testid="stExpander"] div[data-testid="stButton"] > button {
-        width: 100% !important;
-        height: 45px !important;
-        padding: 0 !important;
-        font-size: 18px !important;
-        font-weight: bold;
-        background-color: #1E293B;
-        color: #00E5FF;
-        border: 1px solid #334155;
-        border-radius: 5px !important;
+    /* تحديد عرض كل زر ليكون السدس (6 أعمدة) إجباريا */
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"] {
+        width: calc(16.66% - 6px) !important;
+        min-width: 40px !important;
     }
-    div[data-testid="stExpander"] div[data-testid="stButton"] > button:active {
+
+    /* التصميم العام لكل أزرار اللوحة */
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) div[data-testid="stButton"] > button {
+        width: 100% !important;
+        height: 50px !important;
+        padding: 0 !important;
+        border-radius: 8px !important;
+        background-color: #334155 !important;
+        color: #A5F3FC !important;
+        font-size: 20px !important;
+        font-family: 'Times New Roman', serif !important;
+        font-weight: bold !important;
+        border: none !important;
+        box-shadow: 0 4px 0 #090e1a !important;
+        transition: transform 0.1s, box-shadow 0.1s !important;
+    }
+    
+    /* تأثير الضغط (الحركة الميكانيكية للزر) */
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) div[data-testid="stButton"] > button:active {
+        transform: translateY(4px) !important;
+        box-shadow: 0 0 0 #090e1a !important;
         background-color: #00E5FF !important;
-        color: #1E293B !important;
+        color: #0F172A !important;
+    }
+
+    /* تلوين أزرار الأرقام لتبدو كآلة حاسبة علمية (رمادي فاتح) */
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(4) button,
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(5) button,
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(6) button,
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(10) button,
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(11) button,
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(12) button,
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(16) button,
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(17) button,
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(18) button,
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(22) button,
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(23) button {
+        background-color: #475569 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* زر الحذف باللون الأحمر */
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(24) button {
+        background-color: #ef4444 !important;
+        color: #FFFFFF !important;
+        box-shadow: 0 4px 0 #7f1d1d !important;
+    }
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(2) > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(24) button:active {
+        background-color: #dc2626 !important;
+        box-shadow: 0 0 0 #7f1d1d !important;
+    }
+
+    /* زر المسح الكلي أسفل اللوحة */
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(3) div[data-testid="stButton"] > button {
+        width: 100% !important;
+        background-color: #f97316 !important;
+        color: white !important;
+        font-size: 18px !important;
+        font-weight: bold !important;
+        border: none !important;
+        border-radius: 8px !important;
+        height: 45px !important;
+        box-shadow: 0 4px 0 #9a3412 !important;
+        margin-top: 5px !important;
+        transition: transform 0.1s, box-shadow 0.1s !important;
+    }
+    div[data-testid="stExpanderDetails"] > div[data-testid="stVerticalBlock"] > div[data-testid="element-container"]:nth-child(3) div[data-testid="stButton"] > button:active {
+        transform: translateY(4px) !important;
+        box-shadow: 0 0 0 #9a3412 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -65,7 +124,7 @@ def fmt(val):
     return str(val)
 
 # ---------------------------------------------------------
-# 2. إدارة حالة التطبيق ولوحة المفاتيح المبسطة
+# 2. إدارة حالة التطبيق ولوحة المفاتيح المدمجة
 # ---------------------------------------------------------
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
@@ -83,45 +142,46 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         elif char == 'C': st.session_state[target] = ""
         else: st.session_state[target] += char
 
-    # استخدام 6 أعمدة لإعطاء شكل مشابه للآلة الحاسبة، مع CSS الذي يمنع الانهيار
-    c1, c2, c3, c4, c5, c6 = st.columns(6)
-    c1.button("x", on_click=k_click, args=("x",), key="kx")
-    c2.button("y", on_click=k_click, args=("y",), key="ky")
-    c3.button("e", on_click=k_click, args=("e",), key="ke")
-    c4.button("7", on_click=k_click, args=("7",), key="k7")
-    c5.button("8", on_click=k_click, args=("8",), key="k8")
-    c6.button("9", on_click=k_click, args=("9",), key="k9")
+    # إنشاء 30 زراً متتابعا بدون أعمدة، والـ CSS سيتكفل برصّها في شبكة 6x5
+    kbd_container = st.container()
+    with kbd_container:
+        # الصف 1
+        st.button("𝑥", on_click=k_click, args=("x",), key="k_x")
+        st.button("𝑦", on_click=k_click, args=("y",), key="k_y")
+        st.button("𝑒", on_click=k_click, args=("e",), key="k_e")
+        st.button("7", on_click=k_click, args=("7",), key="k_7")
+        st.button("8", on_click=k_click, args=("8",), key="k_8")
+        st.button("9", on_click=k_click, args=("9",), key="k_9")
+        # الصف 2
+        st.button("𝑚", on_click=k_click, args=("m",), key="k_m")
+        st.button("𝜋", on_click=k_click, args=("pi",), key="k_pi")
+        st.button("ln", on_click=k_click, args=("ln(",), key="k_ln")
+        st.button("4", on_click=k_click, args=("4",), key="k_4")
+        st.button("5", on_click=k_click, args=("5",), key="k_5")
+        st.button("6", on_click=k_click, args=("6",), key="k_6")
+        # الصف 3
+        st.button("□²", on_click=k_click, args=("^2",), key="k_sq")
+        st.button("√", on_click=k_click, args=("sqrt(",), key="k_sqrt")
+        st.button("|□|", on_click=k_click, args=("abs(",), key="k_abs")
+        st.button("1", on_click=k_click, args=("1",), key="k_1")
+        st.button("2", on_click=k_click, args=("2",), key="k_2")
+        st.button("3", on_click=k_click, args=("3",), key="k_3")
+        # الصف 4
+        st.button("<", on_click=k_click, args=("<",), key="k_lt")
+        st.button(">", on_click=k_click, args=(">",), key="k_gt")
+        st.button("=", on_click=k_click, args=("=",), key="k_eq")
+        st.button("0", on_click=k_click, args=("0",), key="k_0")
+        st.button(".", on_click=k_click, args=(".",), key="k_dot")
+        st.button("⌫", on_click=k_click, args=("⌫",), key="k_del")
+        # الصف 5
+        st.button("(", on_click=k_click, args=("(",), key="k_op")
+        st.button(")", on_click=k_click, args=(")",), key="k_cp")
+        st.button("+", on_click=k_click, args=("+",), key="k_plus")
+        st.button("-", on_click=k_click, args=("-",), key="k_minus")
+        st.button("×", on_click=k_click, args=("*",), key="k_mul")
+        st.button("÷", on_click=k_click, args=("/",), key="k_div")
 
-    c1, c2, c3, c4, c5, c6 = st.columns(6)
-    c1.button("m", on_click=k_click, args=("m",), key="km")
-    c2.button("π", on_click=k_click, args=("pi",), key="kpi")
-    c3.button("ln", on_click=k_click, args=("ln(",), key="kln")
-    c4.button("4", on_click=k_click, args=("4",), key="k4")
-    c5.button("5", on_click=k_click, args=("5",), key="k5")
-    c6.button("6", on_click=k_click, args=("6",), key="k6")
-
-    c1, c2, c3, c4, c5, c6 = st.columns(6)
-    c1.button("^2", on_click=k_click, args=("^2",), key="ksq")
-    c2.button("√", on_click=k_click, args=("sqrt(",), key="ksqrt")
-    c3.button("|x|", on_click=k_click, args=("abs(",), key="kabs")
-    c4.button("1", on_click=k_click, args=("1",), key="k1")
-    c5.button("2", on_click=k_click, args=("2",), key="k2")
-    c6.button("3", on_click=k_click, args=("3",), key="k3")
-
-    c1, c2, c3, c4, c5, c6 = st.columns(6)
-    c1.button("(", on_click=k_click, args=("(",), key="kop")
-    c2.button(")", on_click=k_click, args=(")",), key="kcp")
-    c3.button("⌫", on_click=k_click, args=("⌫",), key="kdel")
-    c4.button("0", on_click=k_click, args=("0",), key="k0")
-    c5.button(".", on_click=k_click, args=(".",), key="kdot")
-    c6.button("C", on_click=k_click, args=("C",), key="kclear")
-    
-    c1, c2, c3, c4 = st.columns(4)
-    c1.button("+", on_click=k_click, args=("+",), key="kplus")
-    c2.button("-", on_click=k_click, args=("-",), key="kminus")
-    c3.button("*", on_click=k_click, args=("*",), key="kmul")
-    c4.button("/", on_click=k_click, args=("/",), key="kdiv")
-
+    st.button("مسح الكل (Clear)", on_click=k_click, args=("C",))
 
 # ---------------------------------------------------------
 # 3. إدخال الدالة ومعادلة المناقشة
