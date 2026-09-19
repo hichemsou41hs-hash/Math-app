@@ -5,95 +5,83 @@ import sympy as sp
 import time
 import warnings
 
+# تجاهل التحذيرات الرياضية
 warnings.filterwarnings("ignore")
 
-# ---------------------------------------------------------
-# 1. إعدادات الصفحة والتصميم
-# ---------------------------------------------------------
+# 1. إعدادات الصفحة
 st.set_page_config(page_title="المناقشة البيانية", page_icon="📈", layout="centered")
 
-# CSS متقدم لتصميم لوحة مفاتيح احترافية تشبه GeoGebra
 st.markdown("""
     <style>
     .stApp { background-color: #0F172A; color: white; }
-    
     .title-hes { text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap; margin-bottom: 0px;}
-    .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 20px;}
-    
+    .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 30px;}
     .stTextInput label { color: #00E5FF !important; font-size: 18px !important; font-weight: bold !important; direction: rtl !important; text-align: right !important; display: block;}
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     
-    /* تصميم حاوية لوحة المفاتيح */
+    /* تصميم لوحة المفاتيح المتقدم والاحترافي (CSS Grid) */
     .keyboard-container {
-        background-color: #e2dfdb; /* لون مشابه لـ geogebra */
-        padding: 10px;
-        border-radius: 12px;
-        max-width: 500px;
-        margin: auto;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        background-color: #d8d4d0;
+        padding: 8px;
+        border-radius: 10px;
+        max-width: 100%;
+        margin-bottom: 15px;
     }
     
-    /* تخطيط الأزرار باستخدام Grid */
     .keyboard-grid {
         display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 6px;
+        grid-template-columns: repeat(6, 1fr); /* 6 أعمدة متساوية إجبارياً */
+        gap: 5px; /* مسافة صغيرة بين الأزرار */
     }
     
-    /* تصميم الزر الأساسي */
-    .key-btn {
-        background-color: #f0eeeb; /* رمادي فاتح جدا */
+    /* إخفاء أزرار Streamlit العادية وجعلها شفافة تماما فوق التصميم الجديد */
+    .keyboard-grid div[data-testid="stButton"] > button {
+        background-color: transparent !important;
+        border: none !important;
+        color: transparent !important;
+        height: 50px !important;
+        width: 100% !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        position: absolute;
+        top: 0; left: 0; z-index: 10;
+    }
+    
+    /* التصميم المرئي للأزرار */
+    .key-visual {
+        background-color: #f2f0ee;
         color: #333;
-        border: none;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         border-radius: 8px;
-        padding: 12px 0;
-        font-size: 18px;
-        font-weight: bold;
         font-family: 'Times New Roman', serif;
-        cursor: pointer;
-        box-shadow: 0 2px 2px rgba(0,0,0,0.1);
-        text-align: center;
-        transition: background-color 0.1s;
+        font-size: 20px;
+        font-weight: bold;
+        box-shadow: 0px 2px 0px #b8b4b0;
+        position: relative;
     }
-    .key-btn:active { background-color: #d1cfcb; transform: translateY(2px); box-shadow: none; }
     
-    /* أزرار مميزة (الأرقام) */
-    .key-num { background-color: #ffffff; }
-    
-    /* أزرار العمليات */
-    .key-op { background-color: #e2dfdb; color: #555;}
-    
-    /* زر الحذف */
-    .key-del { background-color: #bfaea3; color: white; }
-    
-    /* أزرار المتغيرات والدوال */
-    .key-func { font-style: italic; }
-    
-    /* إخفاء أزرار streamlit الأصلية واستخدامها كخلفية تفاعلية */
-    div[data-testid="stButton"] > button {
-        height: 45px;
-        padding: 0;
-        font-size: 18px !important;
-        border-radius: 8px;
-        border: none;
-        background-color: #e2dfdb; /* توحيد لون الخلفية */
-        color: #333;
-        box-shadow: 0 2px 2px rgba(0,0,0,0.1);
+    /* حاوية الزر لتجمع الزر الشفاف مع التصميم المرئي */
+    .key-wrapper {
+        position: relative;
+        width: 100%;
+        height: 50px;
     }
-    div[data-testid="stButton"] > button:hover {
-        border: none;
-        color: #000;
+    
+    /* ألوان خاصة */
+    .num-key .key-visual { background-color: #ffffff; }
+    .del-key .key-visual { background-color: #c4b8b1; color: white; }
+    .op-key .key-visual { background-color: #e6e2de; }
+    
+    /* تفاعل عند الضغط */
+    div[data-testid="stButton"] > button:active + .key-visual {
+        transform: translateY(2px);
+        box-shadow: none;
         background-color: #d1cfcb;
     }
-    div[data-testid="stButton"] > button:active {
-        box-shadow: inset 0 2px 2px rgba(0,0,0,0.2);
-    }
     
-    /* تلوين بعض الأزرار عبر nth-child */
-    /* الأرقام */
-    div[data-testid="column"]:nth-child(n+4) div[data-testid="stButton"] > button { background-color: #ffffff; }
-    /* الحذف */
-    div[data-testid="column"]:nth-child(6) div[data-testid="stButton"]:first-child > button { background-color: #bfaea3; color: white; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -125,53 +113,25 @@ with st.expander("⌨️ لوحة المفاتيح الرياضية", expanded=F
         elif char == 'C': st.session_state[target] = ""
         else: st.session_state[target] += char
 
-    # بناء اللوحة بـ 6 أعمدة متقاربة
-    cols = st.columns(6, gap="small")
+    # مصفوفة الأزرار (الاسم المرئي، القيمة البرمجية، الصنف لتحديد اللون)
+    keys = [
+        ("𝑥", "x", "func-key"), ("𝑦", "y", "func-key"), ("𝑒", "e", "func-key"), ("7", "7", "num-key"), ("8", "8", "num-key"), ("9", "9", "num-key"),
+        ("𝑚", "m", "func-key"), ("𝜋", "pi", "func-key"), ("ln", "ln(", "func-key"), ("4", "4", "num-key"), ("5", "5", "num-key"), ("6", "6", "num-key"),
+        ("□²", "^2", "func-key"), ("√", "sqrt(", "func-key"), ("|□|", "abs(", "func-key"), ("1", "1", "num-key"), ("2", "2", "num-key"), ("3", "3", "num-key"),
+        ("<", "<", "op-key"), (">", ">", "op-key"), ("=", "=", "op-key"), ("0", "0", "num-key"), (".", ".", "num-key"), ("⌫", "⌫", "del-key"),
+        ("(", "(", "op-key"), (")", ")", "op-key"), ("+", "+", "op-key"), ("-", "-", "op-key"), ("*", "*", "op-key"), ("/", "/", "op-key")
+    ]
+
+    # بناء الشبكة بـ HTML داخل Streamlit لتجنب كسر الأعمدة في الهاتف
+    st.markdown("<div class='keyboard-container'><div class='keyboard-grid'>", unsafe_allow_html=True)
     
-    # الصف 1
-    cols[0].button("𝑥", on_click=k_click, args=("x",), use_container_width=True)
-    cols[1].button("𝑦", on_click=k_click, args=("y",), use_container_width=True)
-    cols[2].button("𝑒", on_click=k_click, args=("e",), use_container_width=True)
-    cols[3].button("7", on_click=k_click, args=("7",), use_container_width=True)
-    cols[4].button("8", on_click=k_click, args=("8",), use_container_width=True)
-    cols[5].button("9", on_click=k_click, args=("9",), use_container_width=True)
-
-    # الصف 2
-    cols = st.columns(6, gap="small")
-    cols[0].button("𝑚", on_click=k_click, args=("m",), use_container_width=True)
-    cols[1].button("𝜋", on_click=k_click, args=("pi",), use_container_width=True)
-    cols[2].button("ln", on_click=k_click, args=("ln(",), use_container_width=True)
-    cols[3].button("4", on_click=k_click, args=("4",), use_container_width=True)
-    cols[4].button("5", on_click=k_click, args=("5",), use_container_width=True)
-    cols[5].button("6", on_click=k_click, args=("6",), use_container_width=True)
-
-    # الصف 3
-    cols = st.columns(6, gap="small")
-    cols[0].button("□²", on_click=k_click, args=("^2",), use_container_width=True)
-    cols[1].button("√", on_click=k_click, args=("sqrt(",), use_container_width=True)
-    cols[2].button("|□|", on_click=k_click, args=("abs(",), use_container_width=True)
-    cols[3].button("1", on_click=k_click, args=("1",), use_container_width=True)
-    cols[4].button("2", on_click=k_click, args=("2",), use_container_width=True)
-    cols[5].button("3", on_click=k_click, args=("3",), use_container_width=True)
-
-    # الصف 4
-    cols = st.columns(6, gap="small")
-    cols[0].button("<", on_click=k_click, args=("<",), use_container_width=True)
-    cols[1].button(">", on_click=k_click, args=(">",), use_container_width=True)
-    cols[2].button("=", on_click=k_click, args=("=",), use_container_width=True)
-    cols[3].button("0", on_click=k_click, args=("0",), use_container_width=True)
-    cols[4].button(".", on_click=k_click, args=(".",), use_container_width=True)
-    cols[5].button("⌫", on_click=k_click, args=("⌫",), use_container_width=True)
-
-    # الصف 5
-    cols = st.columns(6, gap="small")
-    cols[0].button("(", on_click=k_click, args=("(",), use_container_width=True)
-    cols[1].button(")", on_click=k_click, args=(")",), use_container_width=True)
-    cols[2].button("+", on_click=k_click, args=("+",), use_container_width=True)
-    cols[3].button("-", on_click=k_click, args=("-",), use_container_width=True)
-    cols[4].button("*", on_click=k_click, args=("*",), use_container_width=True)
-    cols[5].button("/", on_click=k_click, args=("/",), use_container_width=True)
-    
+    # نستخدم الحيلة: نضع زر streamlit الشفاف فوق div مرسوم بالـ CSS
+    for label, val, cls in keys:
+        st.markdown(f"<div class='key-wrapper {cls}'>", unsafe_allow_html=True)
+        st.button(label, on_click=k_click, args=(val,), key=f"k_{label}_{val}")
+        st.markdown(f"<div class='key-visual'>{label}</div></div>", unsafe_allow_html=True)
+        
+    st.markdown("</div></div>", unsafe_allow_html=True)
     st.button("مسح الكل (Clear)", on_click=k_click, args=("C",), use_container_width=True)
 
 # ---------------------------------------------------------
@@ -224,7 +184,6 @@ if valid_input:
     # 4. المقاربات (مع اختبار مجموعة التعريف)
     # ---------------------------------------------------------
     asymptotes = []
-    
     for direction in [sp.oo, -sp.oo]:
         try:
             lim_h = sp.limit(f_expr, x_sym, direction)
