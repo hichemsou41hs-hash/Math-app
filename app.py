@@ -18,10 +18,10 @@ st.markdown("""
     .title-hes { text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap; margin-bottom: 0px;}
     .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 30px;}
     
-    /* جعل الكتابة باللغة العربية أعرض وأوضح */
+    /* تقليل حجم الخط العربي ليكون متناسقا مع الشاشة */
     label, p, div[data-testid="stRadio"] p, div[data-testid="stTextInput"] label p {
-        font-weight: 900 !important;
-        font-size: 19px !important;
+        font-weight: bold !important;
+        font-size: 17px !important;
         color: #00E5FF !important;
     }
 
@@ -59,7 +59,7 @@ st.markdown("""
         border-radius: 6px !important;
         background-color: #334155 !important;
         color: #00E5FF !important;
-        font-size: 17px !important; 
+        font-size: 19px !important; /* إرجاع حجم الرموز الرياضية لحجمها الطبيعي الواضح */
         font-family: 'Times New Roman', serif !important;
         font-weight: bold !important;
         border: 1px solid #475569 !important;
@@ -121,9 +121,9 @@ if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
-    # ترتيب الكتابة ليكون الرمز اللاتيني على اليسار والعربية على اليمين مع منع إنعكاس الأقواس
-    t_sel = st.radio("توجيه الإدخال إلى:", ["\u200Ef(x)\u200E الدالة", "\u200Em\u200E المستقيم بدلالة"], horizontal=True)
-    st.session_state.kbd_target = "f" if t_sel == "\u200Ef(x)\u200E الدالة" else "g"
+    # توجيه الكتابة ليكون الرمز اللاتيني على اليسار مع منع إنعكاس الأقواس
+    t_sel = st.radio("توجيه الإدخال إلى:", ["الدالة f(x)\u200E", "المستقيم m\u200E"], horizontal=True)
+    st.session_state.kbd_target = "f" if t_sel == "الدالة f(x)\u200E" else "g"
     
     def k_click(char):
         target = "f_val" if st.session_state.kbd_target == "f" else "g_val"
@@ -134,11 +134,11 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         else:
             st.session_state[target] += char
 
-    # مصفوفة الأزرار المحدثة مع المربعات الصغيرة للكسر ▫/▫
+    # مصفوفة الأزرار المحدثة
     keys = [
         [("𝑥", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
         [("𝑚", "m"), ("𝜋", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
-        [("▫ / ▫", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
+        [("□/□", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
         [("e^□", "e^("), ("|□|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
         [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
     ]
@@ -157,11 +157,12 @@ x_sym, m_sym = sp.symbols('x m')
 
 col1, col2 = st.columns(2)
 with col1:
-    # تنسيق العناوين لتكون الرموز على اليسار والعربية على اليمين
-    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 19px; font-weight: 900; margin-bottom: 5px;'>أدخل عبارة \u200Ef(x)\u200E الدالة:</div>", unsafe_allow_html=True)
+    # ترتيب الكلمات بدقة: أدخل عبارة الدالة f(x)
+    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 17px; font-weight: bold; margin-bottom: 5px;'>أدخل عبارة الدالة <span style='direction: ltr; display: inline-block;'>f(x)</span>:</div>", unsafe_allow_html=True)
     st.text_input("f_label", key="f_val", label_visibility="collapsed")
 with col2:
-    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 19px; font-weight: 900; margin-bottom: 5px;'>أدخل معادلة \u200Em\u200E المستقيم بدلالة:</div>", unsafe_allow_html=True)
+    # ترتيب الكلمات بدقة: أدخل معادلة المستقيم m
+    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 17px; font-weight: bold; margin-bottom: 5px;'>أدخل معادلة المستقيم <span style='direction: ltr; display: inline-block;'>m</span>:</div>", unsafe_allow_html=True)
     st.text_input("g_label", key="g_val", label_visibility="collapsed")
 
 try:
