@@ -5,7 +5,6 @@ import sympy as sp
 import time
 import warnings
 
-# تجاهل التحذيرات الرياضية
 warnings.filterwarnings("ignore")
 
 # ---------------------------------------------------------
@@ -13,6 +12,7 @@ warnings.filterwarnings("ignore")
 # ---------------------------------------------------------
 st.set_page_config(page_title="المناقشة البيانية", page_icon="📈", layout="centered")
 
+# CSS متقدم لتصميم لوحة مفاتيح احترافية تشبه GeoGebra
 st.markdown("""
     <style>
     .stApp { background-color: #0F172A; color: white; }
@@ -23,14 +23,77 @@ st.markdown("""
     .stTextInput label { color: #00E5FF !important; font-size: 18px !important; font-weight: bold !important; direction: rtl !important; text-align: right !important; display: block;}
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     
-    /* تصميم لوحة المفاتيح */
-    div[data-testid="stExpander"] { background-color: #1E293B; border: 1px solid #FFD700; border-radius: 10px; }
-    div[data-testid="stExpander"] summary p { font-size: 18px !important; font-weight: bold; color: #FFD700; }
-    
-    div[data-testid="stButton"] > button {
-        background-color: #1E293B; color: #00E5FF; font-weight: bold; border: 1px solid #00E5FF; border-radius: 8px; font-size: 18px !important;
+    /* تصميم حاوية لوحة المفاتيح */
+    .keyboard-container {
+        background-color: #e2dfdb; /* لون مشابه لـ geogebra */
+        padding: 10px;
+        border-radius: 12px;
+        max-width: 500px;
+        margin: auto;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
-    div[data-testid="stButton"] > button:hover { color: #FFD700; border-color: #FFD700; }
+    
+    /* تخطيط الأزرار باستخدام Grid */
+    .keyboard-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 6px;
+    }
+    
+    /* تصميم الزر الأساسي */
+    .key-btn {
+        background-color: #f0eeeb; /* رمادي فاتح جدا */
+        color: #333;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 0;
+        font-size: 18px;
+        font-weight: bold;
+        font-family: 'Times New Roman', serif;
+        cursor: pointer;
+        box-shadow: 0 2px 2px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: background-color 0.1s;
+    }
+    .key-btn:active { background-color: #d1cfcb; transform: translateY(2px); box-shadow: none; }
+    
+    /* أزرار مميزة (الأرقام) */
+    .key-num { background-color: #ffffff; }
+    
+    /* أزرار العمليات */
+    .key-op { background-color: #e2dfdb; color: #555;}
+    
+    /* زر الحذف */
+    .key-del { background-color: #bfaea3; color: white; }
+    
+    /* أزرار المتغيرات والدوال */
+    .key-func { font-style: italic; }
+    
+    /* إخفاء أزرار streamlit الأصلية واستخدامها كخلفية تفاعلية */
+    div[data-testid="stButton"] > button {
+        height: 45px;
+        padding: 0;
+        font-size: 18px !important;
+        border-radius: 8px;
+        border: none;
+        background-color: #e2dfdb; /* توحيد لون الخلفية */
+        color: #333;
+        box-shadow: 0 2px 2px rgba(0,0,0,0.1);
+    }
+    div[data-testid="stButton"] > button:hover {
+        border: none;
+        color: #000;
+        background-color: #d1cfcb;
+    }
+    div[data-testid="stButton"] > button:active {
+        box-shadow: inset 0 2px 2px rgba(0,0,0,0.2);
+    }
+    
+    /* تلوين بعض الأزرار عبر nth-child */
+    /* الأرقام */
+    div[data-testid="column"]:nth-child(n+4) div[data-testid="stButton"] > button { background-color: #ffffff; }
+    /* الحذف */
+    div[data-testid="column"]:nth-child(6) div[data-testid="stButton"]:first-child > button { background-color: #bfaea3; color: white; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -49,46 +112,67 @@ def fmt(val):
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
 
-# ربط الخانات بـ session_state للتحكم بها من الأزرار
 if 'f_val' not in st.session_state: st.session_state.f_val = "ln(x)-ln(x+1)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m*x+1"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "الدالة f(x)"
 
-with st.expander("⌨️ إظهار لوحة المفاتيح الرياضية", expanded=False):
-    st.radio("توجيه الإدخال إلى:", ["الدالة f(x)", "المستقيم بدلالة m"], key="kbd_target", horizontal=True)
+with st.expander("⌨️ لوحة المفاتيح الرياضية", expanded=False):
+    st.radio("الكتابة في:", ["الدالة f(x)", "المستقيم بدلالة m"], key="kbd_target", horizontal=True)
     
-    def kbd_click(char):
+    def k_click(char):
         target = "f_val" if st.session_state.kbd_target == "الدالة f(x)" else "g_val"
-        if char == '⌫':
-            st.session_state[target] = st.session_state[target][:-1]
-        elif char == 'C':
-            st.session_state[target] = ""
-        else:
-            st.session_state[target] += char
+        if char == '⌫': st.session_state[target] = st.session_state[target][:-1]
+        elif char == 'C': st.session_state[target] = ""
+        else: st.session_state[target] += char
 
-    # الصف الأول
-    c1, c2, c3, c4, c5 = st.columns(5)
-    c1.button("x", on_click=kbd_click, args=("x",), key="kx", use_container_width=True)
-    c2.button("m", on_click=kbd_click, args=("m",), key="km", use_container_width=True)
-    c3.button("e^(", on_click=kbd_click, args=("e^(",), key="ke", use_container_width=True)
-    c4.button("ln(", on_click=kbd_click, args=("ln(",), key="kln", use_container_width=True)
-    c5.button("⌫", on_click=kbd_click, args=("⌫",), key="kdel", use_container_width=True)
+    # بناء اللوحة بـ 6 أعمدة متقاربة
+    cols = st.columns(6, gap="small")
+    
+    # الصف 1
+    cols[0].button("𝑥", on_click=k_click, args=("x",), use_container_width=True)
+    cols[1].button("𝑦", on_click=k_click, args=("y",), use_container_width=True)
+    cols[2].button("𝑒", on_click=k_click, args=("e",), use_container_width=True)
+    cols[3].button("7", on_click=k_click, args=("7",), use_container_width=True)
+    cols[4].button("8", on_click=k_click, args=("8",), use_container_width=True)
+    cols[5].button("9", on_click=k_click, args=("9",), use_container_width=True)
 
-    # الصف الثاني
-    c1, c2, c3, c4, c5 = st.columns(5)
-    c1.button("+", on_click=kbd_click, args=("+",), key="kplus", use_container_width=True)
-    c2.button("-", on_click=kbd_click, args=("-",), key="kminus", use_container_width=True)
-    c3.button("*", on_click=kbd_click, args=("*",), key="kmul", use_container_width=True)
-    c4.button("/", on_click=kbd_click, args=("/",), key="kdiv", use_container_width=True)
-    c5.button("C", on_click=kbd_click, args=("C",), key="kclear", use_container_width=True)
+    # الصف 2
+    cols = st.columns(6, gap="small")
+    cols[0].button("𝑚", on_click=k_click, args=("m",), use_container_width=True)
+    cols[1].button("𝜋", on_click=k_click, args=("pi",), use_container_width=True)
+    cols[2].button("ln", on_click=k_click, args=("ln(",), use_container_width=True)
+    cols[3].button("4", on_click=k_click, args=("4",), use_container_width=True)
+    cols[4].button("5", on_click=k_click, args=("5",), use_container_width=True)
+    cols[5].button("6", on_click=k_click, args=("6",), use_container_width=True)
 
-    # الصف الثالث
-    c1, c2, c3, c4, c5 = st.columns(5)
-    c1.button("^2", on_click=kbd_click, args=("^2",), key="k2", use_container_width=True)
-    c2.button("sqrt(", on_click=kbd_click, args=("sqrt(",), key="ksqrt", use_container_width=True)
-    c3.button("pi", on_click=kbd_click, args=("pi",), key="kpi", use_container_width=True)
-    c4.button("(", on_click=kbd_click, args=("(",), key="kop", use_container_width=True)
-    c5.button(")", on_click=kbd_click, args=(")",), key="kcp", use_container_width=True)
+    # الصف 3
+    cols = st.columns(6, gap="small")
+    cols[0].button("□²", on_click=k_click, args=("^2",), use_container_width=True)
+    cols[1].button("√", on_click=k_click, args=("sqrt(",), use_container_width=True)
+    cols[2].button("|□|", on_click=k_click, args=("abs(",), use_container_width=True)
+    cols[3].button("1", on_click=k_click, args=("1",), use_container_width=True)
+    cols[4].button("2", on_click=k_click, args=("2",), use_container_width=True)
+    cols[5].button("3", on_click=k_click, args=("3",), use_container_width=True)
+
+    # الصف 4
+    cols = st.columns(6, gap="small")
+    cols[0].button("<", on_click=k_click, args=("<",), use_container_width=True)
+    cols[1].button(">", on_click=k_click, args=(">",), use_container_width=True)
+    cols[2].button("=", on_click=k_click, args=("=",), use_container_width=True)
+    cols[3].button("0", on_click=k_click, args=("0",), use_container_width=True)
+    cols[4].button(".", on_click=k_click, args=(".",), use_container_width=True)
+    cols[5].button("⌫", on_click=k_click, args=("⌫",), use_container_width=True)
+
+    # الصف 5
+    cols = st.columns(6, gap="small")
+    cols[0].button("(", on_click=k_click, args=("(",), use_container_width=True)
+    cols[1].button(")", on_click=k_click, args=(")",), use_container_width=True)
+    cols[2].button("+", on_click=k_click, args=("+",), use_container_width=True)
+    cols[3].button("-", on_click=k_click, args=("-",), use_container_width=True)
+    cols[4].button("*", on_click=k_click, args=("*",), use_container_width=True)
+    cols[5].button("/", on_click=k_click, args=("/",), use_container_width=True)
+    
+    st.button("مسح الكل (Clear)", on_click=k_click, args=("C",), use_container_width=True)
 
 # ---------------------------------------------------------
 # 3. إدخال الدالة ومعادلة المناقشة
@@ -104,9 +188,7 @@ with col2:
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
     transformations = (standard_transformations + (implicit_multiplication_application,))
-    # إضافة sqrt و abs للقاموس للتعرف عليها
     local_dict = {'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs}
-    
     f_expr = parse_expr(f_input.replace('^', '**'), local_dict=local_dict, transformations=transformations)
     g_expr = parse_expr(g_input.replace('^', '**'), local_dict=local_dict, transformations=transformations)
     valid_input = True
