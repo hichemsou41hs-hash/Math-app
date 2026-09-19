@@ -19,69 +19,56 @@ st.markdown("""
     .stTextInput label { color: #00E5FF !important; font-size: 18px !important; font-weight: bold !important; direction: rtl !important; text-align: right !important; display: block;}
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     
-    /* تصميم لوحة المفاتيح المتقدم والاحترافي (CSS Grid) */
-    .keyboard-container {
-        background-color: #d8d4d0;
-        padding: 8px;
-        border-radius: 10px;
-        max-width: 100%;
-        margin-bottom: 15px;
+    /* ---------------------------------------------------
+       السر هنا: إجبار الهاتف على إبقاء الأزرار في سطر واحد
+       --------------------------------------------------- */
+    div[data-testid="stExpander"] div[data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 6px !important;
+        margin-bottom: 6px !important;
     }
-    
-    .keyboard-grid {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr); /* 6 أعمدة متساوية إجبارياً */
-        gap: 5px; /* مسافة صغيرة بين الأزرار */
-    }
-    
-    /* إخفاء أزرار Streamlit العادية وجعلها شفافة تماما فوق التصميم الجديد */
-    .keyboard-grid div[data-testid="stButton"] > button {
-        background-color: transparent !important;
-        border: none !important;
-        color: transparent !important;
-        height: 50px !important;
-        width: 100% !important;
+    div[data-testid="stExpander"] div[data-testid="column"] {
+        flex: 1 1 0px !important; /* توزيع المساحة بالتساوي إجبارياً */
+        min-width: 0 !important;
         padding: 0 !important;
+    }
+    
+    /* تصميم أزرار لوحة المفاتيح لتصبح احترافية جداً */
+    div[data-testid="stExpander"] div[data-testid="stButton"] > button {
+        width: 100% !important;
+        height: 48px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-radius: 8px !important;
+        background-color: #1E293B !important;
+        color: #A5F3FC !important;
+        border: 1px solid #334155 !important;
+        font-size: 19px !important;
+        font-family: 'Times New Roman', serif !important;
+        font-weight: bold !important;
+        box-shadow: 0 4px 0 #090e1a !important; /* تأثير الزر ثلاثي الأبعاد */
+        transition: all 0.1s !important;
+    }
+    
+    /* تأثير الضغط على الزر */
+    div[data-testid="stExpander"] div[data-testid="stButton"] > button:active {
+        transform: translateY(4px) !important;
         box-shadow: none !important;
-        position: absolute;
-        top: 0; left: 0; z-index: 10;
+        background-color: #00E5FF !important;
+        color: #0F172A !important;
     }
     
-    /* التصميم المرئي للأزرار */
-    .key-visual {
-        background-color: #f2f0ee;
-        color: #333;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        font-family: 'Times New Roman', serif;
-        font-size: 20px;
-        font-weight: bold;
-        box-shadow: 0px 2px 0px #b8b4b0;
-        position: relative;
+    /* تلوين زر "مسح الكل" في الأسفل */
+    div[data-testid="stExpander"] > div > div > div:last-child div[data-testid="stButton"] > button {
+        background-color: #FF3366 !important;
+        color: white !important;
+        box-shadow: 0 4px 0 #801a33 !important;
     }
-    
-    /* حاوية الزر لتجمع الزر الشفاف مع التصميم المرئي */
-    .key-wrapper {
-        position: relative;
-        width: 100%;
-        height: 50px;
+    div[data-testid="stExpander"] > div > div > div:last-child div[data-testid="stButton"] > button:active {
+        background-color: #cc0033 !important;
     }
-    
-    /* ألوان خاصة */
-    .num-key .key-visual { background-color: #ffffff; }
-    .del-key .key-visual { background-color: #c4b8b1; color: white; }
-    .op-key .key-visual { background-color: #e6e2de; }
-    
-    /* تفاعل عند الضغط */
-    div[data-testid="stButton"] > button:active + .key-visual {
-        transform: translateY(2px);
-        box-shadow: none;
-        background-color: #d1cfcb;
-    }
-    
     </style>
 """, unsafe_allow_html=True)
 
@@ -105,33 +92,32 @@ if 'g_val' not in st.session_state: st.session_state.g_val = "m*x+1"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "الدالة f(x)"
 
 with st.expander("⌨️ لوحة المفاتيح الرياضية", expanded=False):
-    st.radio("الكتابة في:", ["الدالة f(x)", "المستقيم بدلالة m"], key="kbd_target", horizontal=True)
+    st.radio("توجيه الكتابة إلى:", ["الدالة f(x)", "المستقيم بدلالة m"], key="kbd_target", horizontal=True)
     
     def k_click(char):
         target = "f_val" if st.session_state.kbd_target == "الدالة f(x)" else "g_val"
-        if char == '⌫': st.session_state[target] = st.session_state[target][:-1]
-        elif char == 'C': st.session_state[target] = ""
-        else: st.session_state[target] += char
+        if char == '⌫': 
+            st.session_state[target] = st.session_state[target][:-1]
+        elif char == 'C': 
+            st.session_state[target] = ""
+        else: 
+            st.session_state[target] += char
 
-    # مصفوفة الأزرار (الاسم المرئي، القيمة البرمجية، الصنف لتحديد اللون)
-    keys = [
-        ("𝑥", "x", "func-key"), ("𝑦", "y", "func-key"), ("𝑒", "e", "func-key"), ("7", "7", "num-key"), ("8", "8", "num-key"), ("9", "9", "num-key"),
-        ("𝑚", "m", "func-key"), ("𝜋", "pi", "func-key"), ("ln", "ln(", "func-key"), ("4", "4", "num-key"), ("5", "5", "num-key"), ("6", "6", "num-key"),
-        ("□²", "^2", "func-key"), ("√", "sqrt(", "func-key"), ("|□|", "abs(", "func-key"), ("1", "1", "num-key"), ("2", "2", "num-key"), ("3", "3", "num-key"),
-        ("<", "<", "op-key"), (">", ">", "op-key"), ("=", "=", "op-key"), ("0", "0", "num-key"), (".", ".", "num-key"), ("⌫", "⌫", "del-key"),
-        ("(", "(", "op-key"), (")", ")", "op-key"), ("+", "+", "op-key"), ("-", "-", "op-key"), ("*", "*", "op-key"), ("/", "/", "op-key")
+    # مصفوفة الأزرار مرتبة بـ 6 أعمدة و 5 صفوف مثل الآلة الحاسبة العلمية
+    rows = [
+        [("𝑥", "x"), ("𝑦", "y"), ("𝑒", "e"), ("7", "7"), ("8", "8"), ("9", "9")],
+        [("𝑚", "m"), ("𝜋", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
+        [("□²", "^2"), ("√", "sqrt("), ("|□|", "abs("), ("1", "1"), ("2", "2"), ("3", "3")],
+        [("<", "<"), (">", ">"), ("=", "="), ("0", "0"), (".", "."), ("⌫", "⌫")],
+        [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("*", "*"), ("/", "/")]
     ]
 
-    # بناء الشبكة بـ HTML داخل Streamlit لتجنب كسر الأعمدة في الهاتف
-    st.markdown("<div class='keyboard-container'><div class='keyboard-grid'>", unsafe_allow_html=True)
-    
-    # نستخدم الحيلة: نضع زر streamlit الشفاف فوق div مرسوم بالـ CSS
-    for label, val, cls in keys:
-        st.markdown(f"<div class='key-wrapper {cls}'>", unsafe_allow_html=True)
-        st.button(label, on_click=k_click, args=(val,), key=f"k_{label}_{val}")
-        st.markdown(f"<div class='key-visual'>{label}</div></div>", unsafe_allow_html=True)
-        
-    st.markdown("</div></div>", unsafe_allow_html=True)
+    # رسم الأزرار
+    for r_idx, row in enumerate(rows):
+        cols = st.columns(6)
+        for c_idx, (label, val) in enumerate(row):
+            cols[c_idx].button(label, on_click=k_click, args=(val,), key=f"btn_{r_idx}_{c_idx}")
+            
     st.button("مسح الكل (Clear)", on_click=k_click, args=("C",), use_container_width=True)
 
 # ---------------------------------------------------------
@@ -184,6 +170,7 @@ if valid_input:
     # 4. المقاربات (مع اختبار مجموعة التعريف)
     # ---------------------------------------------------------
     asymptotes = []
+    
     for direction in [sp.oo, -sp.oo]:
         try:
             lim_h = sp.limit(f_expr, x_sym, direction)
