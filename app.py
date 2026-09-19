@@ -26,14 +26,20 @@ st.markdown("""
         padding: 0 !important;
     }
 
-    /* جعل الكتابة باللغة العربية أعرض وأوضح */
-    label, p, div[data-testid="stRadio"] p, div[data-testid="stTextInput"] label p {
+    /* تنسيق خيارات توجيه الإدخال (الراديو) لتكون العربية يمينا والرياضيات يسارا */
+    div[data-testid="stRadio"] label[data-baseweb="radio"] {
+        direction: rtl !important;
+    }
+    div[data-testid="stRadio"] p {
         font-weight: bold !important;
-        font-size: 17px !important;
+        font-size: 18px !important;
         color: #00E5FF !important;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
     }
 
-    .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
+    .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; text-align: left !important; }
     
     /* =========================================================
        الحل الجذري للوحة المفاتيح: إجبار الهاتف على عرض الشبكة
@@ -72,19 +78,17 @@ st.markdown("""
     }
     
     /* 
-       السر هنا: تصغير الخط، استخدام خط عريض Arial، والسماح بتعدد الأسطر
-       لكي يظهر زر الكسر بشكل مربعين فوق بعضهما
+       منع تقطيع الحروف: استخدام nowrap ليظهر cos و sin في سطر واحد دائما
     */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button * {
-        font-size: 15px !important; /* تصغير الخط كما طلبت */
-        font-family: Arial, Helvetica, sans-serif !important; /* خط ساطع وواضح جدا */
-        font-weight: 900 !important; /* تغليظ الخط لتوضيح cos و sin */
+        font-size: 16px !important; /* حجم رياضي مثالي */
+        font-family: Arial, Helvetica, sans-serif !important; 
+        font-weight: bold !important; 
         margin: 0 !important;
         padding: 0 !important;
-        overflow: visible !important; 
+        overflow: hidden !important; 
         text-overflow: clip !important; 
-        white-space: pre-line !important; /* السماح بنزول السطر في زر الكسر */
-        line-height: 1.1 !important; /* تقارب الأسطر ليعطي شكل الكسر الحقيقي */
+        white-space: nowrap !important; /* الأهم: يمنع نزول الحروف لسطر جديد */
     }
     
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button:active {
@@ -141,9 +145,10 @@ if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
-    # توجيه الإدخال بالشكل العربي السليم
-    t_sel = st.radio("توجيه الإدخال إلى:", ["الدالة \u200Ef(x)\u200E", "المستقيم بدلالة \u200Em\u200E"], horizontal=True)
-    st.session_state.kbd_target = "f" if t_sel == "الدالة \u200Ef(x)\u200E" else "g"
+    # استخدام HTML داخلي لجعل العربية على اليمين والرموز على أقصى اليسار بدون قلب الأقواس
+    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 18px; font-weight: bold;'>توجيه الإدخال إلى:</div>", unsafe_allow_html=True)
+    t_sel = st.radio("", ["الدالة f(x)", "المستقيم m"], horizontal=True, label_visibility="collapsed")
+    st.session_state.kbd_target = "f" if t_sel == "الدالة f(x)" else "g"
     
     def k_click(char):
         target = "f_val" if st.session_state.kbd_target == "f" else "g_val"
@@ -154,11 +159,11 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         else:
             st.session_state[target] += char
 
-    # مصفوفة الأزرار المحدثة مع زر الكسر (مربعين فوق بعض)
+    # مصفوفة الأزرار مع منع تعدد الأسطر للحفاظ على سلامة الكلمات
     keys = [
         [("x", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
         [("m", "m"), ("π", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
-        [("□\n—\n□", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
+        [("■ / ■", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
         [("e^□", "e^("), ("|□|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
         [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
     ]
@@ -177,10 +182,11 @@ x_sym, m_sym = sp.symbols('x m')
 
 col1, col2 = st.columns(2)
 with col1:
-    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 17px; font-weight: bold; margin-bottom: 5px;'>أدخل عبارة الدالة <span style='direction: ltr; display: inline-block;'>f(x)</span>:</div>", unsafe_allow_html=True)
+    # استخدام dir='ltr' إجباري للرموز لمنع انقلاب الأقواس (x)f
+    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 18px; font-weight: bold; margin-bottom: 5px;'>أدخل عبارة الدالة <span dir='ltr' style='display: inline-block; float: left;'>f(x)</span></div>", unsafe_allow_html=True)
     st.text_input("hidden_f", key="f_val", label_visibility="collapsed")
 with col2:
-    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 17px; font-weight: bold; margin-bottom: 5px;'>أدخل معادلة المستقيم <span style='direction: ltr; display: inline-block;'>m</span>:</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 18px; font-weight: bold; margin-bottom: 5px;'>أدخل معادلة المستقيم <span dir='ltr' style='display: inline-block; float: left;'>m</span></div>", unsafe_allow_html=True)
     st.text_input("hidden_g", key="g_val", label_visibility="collapsed")
 
 try:
