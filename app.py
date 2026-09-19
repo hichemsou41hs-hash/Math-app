@@ -18,28 +18,15 @@ st.markdown("""
     .title-hes { text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap; margin-bottom: 0px;}
     .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 30px;}
     
-    /* إخفاء العناوين الافتراضية لخانات الإدخال من الجذور لتظل الشاشة نظيفة */
-    div[data-testid="stTextInput"] > label {
-        display: none !important;
-        height: 0px !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    /* تنسيق خيارات توجيه الإدخال (الراديو) لتكون العربية يمينا والرياضيات يسارا */
-    div[data-testid="stRadio"] label[data-baseweb="radio"] {
-        direction: rtl !important;
-    }
-    div[data-testid="stRadio"] p {
+    /* تنسيق الخط العربي في العناوين ليكون مريحا وواضحا */
+    label, p, div[data-testid="stRadio"] p, div[data-testid="stTextInput"] label p {
         font-weight: bold !important;
-        font-size: 18px !important;
+        font-size: 17px !important;
         color: #00E5FF !important;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
     }
 
-    .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; text-align: left !important; }
+    .stTextInput label { direction: rtl !important; text-align: right !important; display: block;}
+    .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     
     /* =========================================================
        الحل الجذري للوحة المفاتيح: إجبار الهاتف على عرض الشبكة
@@ -77,18 +64,16 @@ st.markdown("""
         transition: all 0.1s !important;
     }
     
-    /* 
-       منع تقطيع الحروف: استخدام nowrap ليظهر cos و sin في سطر واحد دائما
-    */
-    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button * {
-        font-size: 16px !important; /* حجم رياضي مثالي */
+    /* تصغير خط لوحة المفاتيح لمنع التقطيع وظهور الكسر والدوال واضحة */
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button p {
+        font-size: 13px !important; /* تم تصغير الحجم كما طلبت لتظهر الكلمات كاملة */
         font-family: Arial, Helvetica, sans-serif !important; 
         font-weight: bold !important; 
         margin: 0 !important;
         padding: 0 !important;
         overflow: hidden !important; 
         text-overflow: clip !important; 
-        white-space: nowrap !important; /* الأهم: يمنع نزول الحروف لسطر جديد */
+        white-space: nowrap !important; /* منع نزول الحروف لسطر جديد */
     }
     
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button:active {
@@ -145,10 +130,9 @@ if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
-    # استخدام HTML داخلي لجعل العربية على اليمين والرموز على أقصى اليسار بدون قلب الأقواس
-    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 18px; font-weight: bold;'>توجيه الإدخال إلى:</div>", unsafe_allow_html=True)
-    t_sel = st.radio("", ["الدالة f(x)", "المستقيم m"], horizontal=True, label_visibility="collapsed")
-    st.session_state.kbd_target = "f" if t_sel == "الدالة f(x)" else "g"
+    # تغيير ترتيب الراديو ليصبح الرمز على اليسار والعربية على اليمين
+    t_sel = st.radio("توجيه الإدخال إلى:", ["f(x) الدالة", "m المستقيم بدلالة"], horizontal=True)
+    st.session_state.kbd_target = "f" if t_sel == "f(x) الدالة" else "g"
     
     def k_click(char):
         target = "f_val" if st.session_state.kbd_target == "f" else "g_val"
@@ -159,12 +143,12 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         else:
             st.session_state[target] += char
 
-    # مصفوفة الأزرار مع منع تعدد الأسطر للحفاظ على سلامة الكلمات
+    # مصفوفة الأزرار المحدثة بالحجم الصغير، مع زر الكسر والأسية المعدلة
     keys = [
         [("x", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
         [("m", "m"), ("π", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
-        [("■ / ■", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
-        [("e^□", "e^("), ("|□|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
+        [("■/■", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
+        [("e^...", "e^("), ("|□|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
         [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
     ]
     
@@ -180,20 +164,19 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
 # ---------------------------------------------------------
 x_sym, m_sym = sp.symbols('x m')
 
+# إرجاع العناوين تحت اللوحة كما كانت في النسخة السابقة السليمة
 col1, col2 = st.columns(2)
 with col1:
-    # استخدام dir='ltr' إجباري للرموز لمنع انقلاب الأقواس (x)f
-    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 18px; font-weight: bold; margin-bottom: 5px;'>أدخل عبارة الدالة <span dir='ltr' style='display: inline-block; float: left;'>f(x)</span></div>", unsafe_allow_html=True)
-    st.text_input("hidden_f", key="f_val", label_visibility="collapsed")
+    st.text_input("أدخل عبارة الدالة f(x):", key="f_val")
 with col2:
-    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 18px; font-weight: bold; margin-bottom: 5px;'>أدخل معادلة المستقيم <span dir='ltr' style='display: inline-block; float: left;'>m</span></div>", unsafe_allow_html=True)
-    st.text_input("hidden_g", key="g_val", label_visibility="collapsed")
+    st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
     transformations = (standard_transformations + (implicit_multiplication_application,))
     local_dict = {'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
     
+    # تمرير المدخلات عبر المُعالج الذكي قبل تحويلها رياضيًا 
     f_processed = fix_implicit_mult(st.session_state.f_val)
     g_processed = fix_implicit_mult(st.session_state.g_val)
     
