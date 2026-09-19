@@ -18,14 +18,21 @@ st.markdown("""
     .title-hes { text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap; margin-bottom: 0px;}
     .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 30px;}
     
-    /* تنسيق الخط العربي في العناوين ليكون مريحا وواضحا */
+    /* إخفاء العناوين الافتراضية لخانات الإدخال من الجذور لتظل الشاشة نظيفة */
+    div[data-testid="stTextInput"] > label {
+        display: none !important;
+        height: 0px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* جعل الكتابة باللغة العربية أعرض وأوضح */
     label, p, div[data-testid="stRadio"] p, div[data-testid="stTextInput"] label p {
         font-weight: bold !important;
         font-size: 17px !important;
         color: #00E5FF !important;
     }
 
-    .stTextInput label { direction: rtl !important; text-align: right !important; display: block;}
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     
     /* =========================================================
@@ -35,9 +42,9 @@ st.markdown("""
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) {
         display: grid !important;
         grid-template-columns: repeat(6, 1fr) !important;
-        gap: 6px !important;
+        gap: 5px !important; /* تقليل الفراغ بين الأزرار قليلا */
         background-color: #1E293B !important; 
-        padding: 6px !important;
+        padding: 5px !important;
         border-radius: 8px !important;
         margin-bottom: 2px !important;
     }
@@ -51,10 +58,11 @@ st.markdown("""
         display: block !important;
     }
 
+    /* تصميم الأزرار وإلغاء الفراغات الداخلية (Padding) */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button {
         width: 100% !important;
-        height: 50px !important;
-        padding: 0 !important;
+        height: 48px !important;
+        padding: 0px !important; /* الأهم: إلغاء الحشو الداخلي للزر */
         margin: 0 !important;
         border-radius: 6px !important;
         background-color: #334155 !important;
@@ -64,16 +72,19 @@ st.markdown("""
         transition: all 0.1s !important;
     }
     
-    /* تصغير خط لوحة المفاتيح لمنع التقطيع وظهور الكسر والدوال واضحة */
-    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button p {
-        font-size: 13px !important; /* تم تصغير الحجم كما طلبت لتظهر الكلمات كاملة */
-        font-family: Arial, Helvetica, sans-serif !important; 
-        font-weight: bold !important; 
+    /* اختراق الطبقات الداخلية للزر لمنع ظهور النقاط المزعجة (...) */
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button div,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button p,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button span {
+        font-size: 13px !important; /* تصغير الخط كما طلبت */
+        font-family: Arial, Helvetica, sans-serif !important; /* خط نحيف وواضح */
+        font-weight: normal !important; /* نزع التغليظ لكي تتسع الكلمات */
+        letter-spacing: -0.5px !important; /* تقريب الحروف من بعضها قليلا */
         margin: 0 !important;
         padding: 0 !important;
-        overflow: hidden !important; 
-        text-overflow: clip !important; 
-        white-space: nowrap !important; /* منع نزول الحروف لسطر جديد */
+        overflow: visible !important; /* السماح بظهور الكلمة كاملة */
+        text-overflow: clip !important; /* إيقاف النقاط (...) بقوة */
+        white-space: nowrap !important;
     }
     
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button:active {
@@ -130,7 +141,7 @@ if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
-    # تغيير ترتيب الراديو ليصبح الرمز على اليسار والعربية على اليمين
+    # توجيه الإدخال بالشكل العربي السليم
     t_sel = st.radio("توجيه الإدخال إلى:", ["f(x) الدالة", "m المستقيم بدلالة"], horizontal=True)
     st.session_state.kbd_target = "f" if t_sel == "f(x) الدالة" else "g"
     
@@ -143,12 +154,12 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         else:
             st.session_state[target] += char
 
-    # مصفوفة الأزرار المحدثة بالحجم الصغير، مع زر الكسر والأسية المعدلة
+    # مصفوفة الأزرار مع الرموز المصححة التي ستظهر كاملة الآن
     keys = [
         [("x", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
         [("m", "m"), ("π", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
-        [("■/■", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
-        [("e^...", "e^("), ("|□|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
+        [("□/□", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
+        [("e^□", "e^("), ("|□|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
         [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
     ]
     
@@ -164,19 +175,19 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
 # ---------------------------------------------------------
 x_sym, m_sym = sp.symbols('x m')
 
-# إرجاع العناوين تحت اللوحة كما كانت في النسخة السابقة السليمة
 col1, col2 = st.columns(2)
 with col1:
-    st.text_input("أدخل عبارة الدالة f(x):", key="f_val")
+    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 17px; font-weight: bold; margin-bottom: 5px;'>أدخل عبارة الدالة <span style='direction: ltr; display: inline-block;'>f(x)</span>:</div>", unsafe_allow_html=True)
+    st.text_input("hidden_f", key="f_val", label_visibility="collapsed")
 with col2:
-    st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
+    st.markdown("<div style='text-align: right; direction: rtl; color: #00E5FF; font-size: 17px; font-weight: bold; margin-bottom: 5px;'>أدخل معادلة المستقيم <span style='direction: ltr; display: inline-block;'>m</span>:</div>", unsafe_allow_html=True)
+    st.text_input("hidden_g", key="g_val", label_visibility="collapsed")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
     transformations = (standard_transformations + (implicit_multiplication_application,))
     local_dict = {'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
     
-    # تمرير المدخلات عبر المُعالج الذكي قبل تحويلها رياضيًا 
     f_processed = fix_implicit_mult(st.session_state.f_val)
     g_processed = fix_implicit_mult(st.session_state.g_val)
     
