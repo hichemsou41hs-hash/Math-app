@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import sympy as sp
 import time
 import warnings
+import re
 
 # تجاهل التحذيرات الرياضية
 warnings.filterwarnings("ignore")
@@ -50,7 +51,7 @@ st.markdown("""
         border-radius: 6px !important;
         background-color: #334155 !important;
         color: #00E5FF !important;
-        font-size: 17px !important; /* حجم خط مناسب للأزرار الجديدة */
+        font-size: 18px !important;
         font-family: 'Times New Roman', serif !important;
         font-weight: bold !important;
         border: 1px solid #475569 !important;
@@ -94,6 +95,13 @@ def fmt(val):
     if int(val) == val: return str(int(val))
     return str(val)
 
+# دالة ذكية لإضافة علامة الضرب المخفية بين المتغيرات والدوال (مثل xln(x) -> x*ln(x))
+def fix_implicit_mult(expr_str):
+    expr_str = expr_str.replace('^', '**')
+    expr_str = re.sub(r'([xy0-9])(ln|cos|sin|sqrt|abs|e|pi)', r'\1*\2', expr_str)
+    expr_str = re.sub(r'(e|pi)([xy0-9])', r'\1*\2', expr_str)
+    return expr_str
+
 # ---------------------------------------------------------
 # 2. إدارة حالة التطبيق ولوحة المفاتيح
 # ---------------------------------------------------------
@@ -105,7 +113,7 @@ if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
-    # استخدام علامة التوجيه \u200E لضمان بقاء الرموز على اليسار ومنع قلب الأقواس
+    # استخدام علامة التوجيه \u200E لضمان بقاء الرموز على اليسار دون التعديل على شكل الواجهة
     t_sel = st.radio("توجيه الإدخال إلى:", ["الدالة \u200Ef(x)\u200E", "المستقيم بدلالة \u200Em\u200E"], horizontal=True)
     st.session_state.kbd_target = "f" if t_sel == "الدالة \u200Ef(x)\u200E" else "g"
     
@@ -118,12 +126,12 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         else:
             st.session_state[target] += char
 
-    # مصفوفة الأزرار الجديدة (مع زر الكسر ■/■ والدوال المثلثية والأسية)
+    # مصفوفة الأزرار المحدثة مع زر الكسر الجديد وزر الأسية
     keys = [
         [("𝑥", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
         [("𝑚", "m"), ("𝜋", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
-        [("■/■", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
-        [("e^{...}", "e^("), ("|□|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
+        [("□ / □", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
+        [("e^□", "e^("), ("|□|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
         [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
     ]
     
@@ -141,6 +149,7 @@ x_sym, m_sym = sp.symbols('x m')
 
 col1, col2 = st.columns(2)
 with col1:
+    # استخدام الكتابة المباشرة والأنيقة مع توجيه سليم للأقواس
     st.text_input("أدخل عبارة الدالة \u200Ef(x)\u200E:", key="f_val")
 with col2:
     st.text_input("أدخل معادلة المستقيم بدلالة \u200Em\u200E:", key="g_val")
@@ -150,10 +159,14 @@ try:
     transformations = (standard_transformations + (implicit_multiplication_application,))
     local_dict = {'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
     
-    # استخدام سياق الإيقاف لمنع التبسيط التلقائي (مثل x*ln(x)/x إلى ln(x))
+    # تمرير المدخلات عبر المُعالج الذكي (fix_implicit_mult) قبل تحويلها رياضيًا 
+    # مع الحفاظ على evaluate=False لمنع التبسيط المزعج
+    f_processed = fix_implicit_mult(st.session_state.f_val)
+    g_processed = fix_implicit_mult(st.session_state.g_val)
+    
     with sp.evaluate(False):
-        f_expr = parse_expr(st.session_state.f_val.replace('^', '**'), local_dict=local_dict, transformations=transformations, evaluate=False)
-        g_expr = parse_expr(st.session_state.g_val.replace('^', '**'), local_dict=local_dict, transformations=transformations, evaluate=False)
+        f_expr = parse_expr(f_processed, local_dict=local_dict, transformations=transformations, evaluate=False)
+        g_expr = parse_expr(g_processed, local_dict=local_dict, transformations=transformations, evaluate=False)
         
     valid_input = True
 except:
