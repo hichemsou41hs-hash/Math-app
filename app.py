@@ -8,9 +8,7 @@ import warnings
 # تجاهل التحذيرات الرياضية
 warnings.filterwarnings("ignore")
 
-# ---------------------------------------------------------
 # 1. إعدادات الصفحة
-# ---------------------------------------------------------
 st.set_page_config(page_title="المناقشة البيانية", page_icon="📈", layout="centered")
 
 st.markdown("""
@@ -37,14 +35,11 @@ if 'auto_play' not in st.session_state:
 if 'm_anim' not in st.session_state:
     st.session_state.m_anim = -5.0
 
-# ---------------------------------------------------------
-# 2. إدخال الدالة ومعادلة المناقشة
-# ---------------------------------------------------------
 x_sym, m_sym = sp.symbols('x m')
 
 col1, col2 = st.columns(2)
 with col1:
-    f_input = st.text_input("أدخل عبارة الدالة f(x):", value="x+1+e^(-x)")
+    f_input = st.text_input("أدخل عبارة الدالة f(x):", value="ln(x)-ln(x+1)")
 with col2:
     g_input = st.text_input("أدخل معادلة المستقيم بدلالة m:", value="m*x+1")
 
@@ -84,9 +79,11 @@ if valid_input:
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 3. المقاربات والقيم الحرجة
+    # 3. المقاربات (مع اختبار مجموعة التعريف)
     # ---------------------------------------------------------
     asymptotes = []
+    
+    # المقاربات الأفقية والمائلة
     for direction in [sp.oo, -sp.oo]:
         try:
             lim_h = sp.limit(f_expr, x_sym, direction)
@@ -112,14 +109,15 @@ if valid_input:
                     asymptotes.append({'type': 'o', 'a': a_val, 'b': b_val, 'label': eq})
         except: pass
         
+    # المقاربات العمودية المرشحة
+    candidate_v_asymptotes = []
     try:
         n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
         if d_expr != 1:
             roots = sp.solve(d_expr, x_sym)
             for r in roots:
                 if r.is_real:
-                    r_str = str(int(r)) if int(r)==r else str(float(r))
-                    asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={r_str}"})
+                    candidate_v_asymptotes.append(float(r))
     except: pass
     
     try:
@@ -128,9 +126,27 @@ if valid_input:
             roots = sp.solve(arg, x_sym)
             for r in roots:
                 if r.is_real:
-                    r_str = str(int(r)) if int(r)==r else str(float(r))
-                    asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={r_str}"})
+                    candidate_v_asymptotes.append(float(r))
     except: pass
+
+    # اختبار القرب (هل الدالة معرفة بجوار المقارب؟)
+    for r in set(candidate_v_asymptotes):
+        is_valid = False
+        # نختبر نقطة قريبة جدا من اليمين ومن اليسار
+        for test_pt in [r + 1e-5, r - 1e-5]:
+            try:
+                # إذا لم يكن الناتج عدد مركب (أي الدالة معرفة)
+                val = complex(f_func(test_pt))
+                if val.imag == 0 and not np.isnan(val.real):
+                    is_valid = True
+                    break
+            except:
+                pass
+        
+        # إذا كانت الدالة معرفة بجوار المقارب، نضيفه للقائمة النهائية
+        if is_valid:
+            r_str = str(int(r)) if int(r)==r else str(float(r))
+            asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={r_str}"})
 
     unique_asymptotes = []
     seen_labels = set()
@@ -300,9 +316,6 @@ if valid_input:
         html += "</table>"
         return html
 
-    # ---------------------------------------------------------
-    # 4. أزرار التحكم
-    # ---------------------------------------------------------
     st.write("") 
     col1, col2 = st.columns(2)
     with col1:
@@ -315,10 +328,6 @@ if valid_input:
             st.session_state.auto_play = False
             st.rerun()
 
-    # ---------------------------------------------------------
-    # 5. بناء واجهة الرسم والجدول داخل حاوية فارغة (st.empty) 
-    # ---------------------------------------------------------
-    # هذا يضمن أن يتم استبدال المحتوى في كل مرة وليس إضافته
     placeholder = st.empty()
 
     def update_view(m_val):
@@ -420,9 +429,6 @@ if valid_input:
             st.markdown(generate_html_table(m_val), unsafe_allow_html=True)
         plt.close(fig)
 
-    # ---------------------------------------------------------
-    # 6. التحكم بالأنيميشن والرسم المستمر
-    # ---------------------------------------------------------
     if st.session_state.auto_play:
         while st.session_state.auto_play and st.session_state.m_anim <= 8.0:
             m_val = round(st.session_state.m_anim, 2)
