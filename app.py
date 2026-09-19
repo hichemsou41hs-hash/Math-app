@@ -170,7 +170,7 @@ if valid_input:
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
-    # رفعنا دقة النقاط بشكل هائل جداً إلى 40 ألف نقطة حتى ينزل المنحنى بمحاذاة المقارب لمسافة طويلة
+    # دقة فائقة (40 ألف نقطة) ليحاذي المقارب وينزل لأسفل الشاشة
     x_vals = np.linspace(-8, 8, 40000)
     
     with np.errstate(divide='ignore', invalid='ignore'):
@@ -181,7 +181,7 @@ if valid_input:
     if np.isscalar(y_vals):
         y_vals = np.full_like(x_vals, y_vals, dtype=float)
 
-    # تم رفع عتبة القص لتتجاهل النزول الحاد وتسمح للمنحنى بالخروج خارج الشاشة
+    # عتبة القطع العالية حتى يظهر المنحنى طويلا
     dy = np.abs(np.diff(y_vals))
     jump_idx = np.where(dy > 50)[0] 
     for idx in jump_idx:
@@ -531,18 +531,23 @@ if valid_input:
             st.markdown(generate_html_table(m_val), unsafe_allow_html=True)
         plt.close(fig)
 
+    # ---------------------------------------------------------
+    # 5. الأنيميشن: الحركة السريعة والتوقف عند القيم الحرجة
+    # ---------------------------------------------------------
     if st.session_state.auto_play:
         while st.session_state.auto_play and st.session_state.m_anim <= 8.0:
             m_val = round(st.session_state.m_anim, 2)
             update_view(m_val)
             
             is_critical_now = any(abs(st.session_state.m_anim - mc) < 1e-4 for mc in m_critical)
+            
+            # توقف أطول بوضوح عند تغير عدد أو إشارة الحلول
             if is_critical_now:
-                time.sleep(1.5) 
+                time.sleep(2.0) 
             else:
-                time.sleep(0.05) 
+                time.sleep(0.01) # سرعة قصوى للحركة العادية
                 
-            step = 0.15 
+            step = 0.3 # خطوة واسعة لزيادة السرعة
             next_m = st.session_state.m_anim + step
             
             for mc in m_critical:
