@@ -18,7 +18,6 @@ st.markdown("""
     .title-hes { text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap; margin-bottom: 0px;}
     .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 30px;}
     
-    /* تنسيق الخط العربي في العناوين ليكون مريحا وواضحا */
     label, p, div[data-testid="stRadio"] p, div[data-testid="stTextInput"] label p {
         font-weight: bold !important;
         font-size: 17px !important;
@@ -51,7 +50,6 @@ st.markdown("""
         display: block !important;
     }
 
-    /* تصميم الأزرار وإلغاء الفراغات الداخلية */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button {
         width: 100% !important;
         height: 48px !important;
@@ -109,11 +107,18 @@ st.markdown("""
 st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>", unsafe_allow_html=True)
 st.markdown("<div class='title-dis'>المناقشة البيانية</div>", unsafe_allow_html=True)
 
+# دالة تنسيق آمنة تحميك نهائيا من خطأ OverflowError
 def fmt(val):
-    if val == float('inf'): return "+∞"
-    if val == float('inf'): return "-∞"
-    if int(val) == val: return str(int(val))
-    return str(val)
+    if val == float('inf') or val == sp.oo: return "+∞"
+    if val == float('-inf') or val == -sp.oo: return "-∞"
+    try:
+        f_val = float(val)
+        if not np.isfinite(f_val): return str(val)
+        if abs(f_val) > 1e6: return str(f_val)
+        if int(f_val) == f_val: return str(int(f_val))
+        return str(round(f_val, 2))
+    except:
+        return str(val)
 
 # دالة ذكية لإضافة علامة الضرب المخفية بين المتغيرات والدوال
 def fix_implicit_mult(expr_str):
@@ -128,8 +133,8 @@ def fix_implicit_mult(expr_str):
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
 
-if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(x)/x"
-if 'g_val' not in st.session_state: st.session_state.g_val = "m"
+if 'f_val' not in st.session_state: st.session_state.f_val = "ln(x)/(x+1)"
+if 'g_val' not in st.session_state: st.session_state.g_val = "m+2"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
@@ -143,13 +148,12 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         elif char == 'CLR':
             st.session_state[target] = ""
         else:
-            # إضافة الرمز بسلاسة
             st.session_state[target] += char
 
     keys = [
         [("x", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
         [("m", "m"), ("π", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
-        [("□/□", "()/()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
+        [("□/□", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
         [("e^□", "e^("), ("|□|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
         [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
     ]
