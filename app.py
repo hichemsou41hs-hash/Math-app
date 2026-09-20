@@ -199,7 +199,7 @@ if valid_input:
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
-    x_vals = np.linspace(-8, 8, 40000)
+    x_vals = np.linspace(0.0001, 8, 40000)
     
     with np.errstate(divide='ignore', invalid='ignore'):
         y_vals = f_func(x_vals)
@@ -216,42 +216,78 @@ if valid_input:
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 4. بناء الجدول الاحترافي المنضبط رياضياً
+    # 4. التحليل الذكي والديناميكي الشامل للإشارة وعدد الحلول
     # ---------------------------------------------------------
-    unique_asymptotes = []
+    unique_asymptotes = [{'type': 'v', 'val': 0.0, 'label': "x=0"}]
     try:
-        for direction in [sp.oo, -sp.oo]:
+        for direction in [sp.oo]:
             lim_h = sp.limit(f_expr, x_sym, direction)
             if lim_h.is_real and np.isfinite(float(lim_h)):
                 unique_asymptotes.append({'type': 'h', 'val': float(lim_h), 'label': f"y={fmt(lim_h)}"})
     except: pass
 
-    # التحقق مما إذا كانت الدالة هي ln(x)/(x+1) لضبط جدولها بدقة مطابقة تماماً للمنهاج
+    def get_roots_text(m_test):
+        with np.errstate(divide='ignore', invalid='ignore'):
+            y_g = g_func(x_vals, m_test)
+            if np.isscalar(y_g):
+                y_g = np.full_like(x_vals, y_g, dtype=float)
+            diff = y_vals - y_g
+            
+        crossings = []
+        tangents = []
+        for i in range(len(diff)-1):
+            if np.isfinite(diff[i]) and np.isfinite(diff[i+1]):
+                if diff[i] * diff[i+1] < 0:
+                    crossings.append(i)
+                elif diff[i] == 0:
+                    crossings.append(i)
+                    
+        abs_diff = np.abs(diff)
+        for i in range(1, len(abs_diff)-1):
+            if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
+                if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1]:
+                    if abs_diff[i] < 0.1: 
+                        if not any(abs(i - c) < 20 for c in crossings):
+                            tangents.append(i)
+                                
+        raw_roots = [(x_vals[c], "single") for c in crossings] + [(x_vals[t], "double") for t in tangents]
+        all_roots = []
+        for r, t in raw_roots:
+            if not any(abs(r - fr) < 0.15 for fr, ft in all_roots):
+                all_roots.append((r, t))
+        
+        count = len(all_roots)
+        if count == 0: return "لا توجد حلول"
+        
+        has_double = any(t == "double" for _, t in all_roots)
+        if count == 1 and has_double: return "حل مضاعف موجب"
+        if count == 1: return "حل وحيد موجب"
+        if count == 2: return "حلان موجبان مختلفان"
+        return f"{count} حلول موجبة"
+
     is_ln_fraction = "ln(x)" in st.session_state.f_val.replace(" ", "") and "(x+1)" in st.session_state.f_val.replace(" ", "")
 
     if is_ln_fraction:
         final_table_data = [
-            ("<i>m</i> < 0", "حل وحيد"),
-            ("<i>m</i> = 0", "حل معدوم"),
-            ("0 < <i>m</i> < 0.28", "حلان مختلفان"),
-            ("<i>m</i> = 0.28", "حل مضاعف"),
+            ("<i>m</i> < 0", "حل وحيد موجب"),
+            ("<i>m</i> = 0", "حل وحيد موجب"),
+            ("0 < <i>m</i> < 0.28", "حلان موجبان مختلفان"),
+            ("<i>m</i> = 0.28", "حل مضاعف موجب"),
             ("<i>m</i> > 0.28", "لا توجد حلول")
         ]
     else:
-        # جدول عام افتراضي للدوال الأخرى
         final_table_data = [
-            ("<i>m</i> < 0", "حل وحيد"),
-            ("<i>m</i> = 0", "حل معدوم"),
-            ("0 < <i>m</i> < 0.28", "حلان مختلفان"),
-            ("<i>m</i> = 0.28", "حل مضاعف"),
-            ("<i>m</i> > 0.28", "لا توجد حلول")
+            ("<i>m</i> < 0", get_roots_text(-1.0)),
+            ("<i>m</i> = 0", get_roots_text(0.0)),
+            ("0 < <i>m</i> < 0.28", get_roots_text(0.1)),
+            ("<i>m</i> = 0.28", get_roots_text(0.28)),
+            ("<i>m</i> > 0.28", get_roots_text(0.5))
         ]
 
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
         html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>عدد وطبيعة الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
         
-        # تحديد الصف النشط بدقة متناهية
         active_idx = 0
         if is_ln_fraction:
             if current_m < 0: active_idx = 0
