@@ -120,6 +120,9 @@ def fmt(val):
         return str(val)
 
 def fix_implicit_mult(expr_str):
+    # حماية الكود من الأقواس الفارغة التي تسبب TypeError
+    if "()" in expr_str:
+        expr_str = expr_str.replace("()", "(1)")
     expr_str = expr_str.replace('^', '**')
     expr_str = re.sub(r'([xy0-9])(ln|cos|sin|sqrt|abs|e|pi)', r'\1*\2', expr_str)
     expr_str = re.sub(r'(e|pi)([xy0-9])', r'\1*\2', expr_str)
@@ -151,7 +154,7 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
     keys = [
         [("x", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
         [("m", "m"), ("π", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
-        [("□/□", "() / ()"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
+        [("□/□", "/"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
         [("e^□", "e^("), ("|□|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
         [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
     ]
@@ -192,11 +195,10 @@ except:
     valid_input = False
 
 if valid_input:
-    # العرض الرياضي الحي والاحترافي للكسر (بسط ومقام فوق بعضهما بخط أفقي)
+    # إرجاع شكل النتيجة الرياضية كما كانت (باللون الأصفر المألوف)
     f_latex = sp.latex(f_expr).replace(r"\log", r"\ln")
     g_latex = sp.latex(g_expr).replace(r"\log", r"\ln")
-    st.markdown("<div style='text-align: right; color: #94A3B8; font-size: 14px; margin-bottom: -15px;'>المعاينة الرياضية للكسر:</div>", unsafe_allow_html=True)
-    st.latex(rf"\color{{#00E5FF}} f(x) = {f_latex} \quad,\quad y = {g_latex}")
+    st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {f_latex} \\ y = {g_latex} \end{{cases}}")
 
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
