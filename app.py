@@ -120,9 +120,6 @@ def fmt(val):
         return str(val)
 
 def fix_implicit_mult(expr_str):
-    # حماية الكود من الأقواس الفارغة التي تسبب TypeError
-    if "()" in expr_str:
-        expr_str = expr_str.replace("()", "(1)")
     expr_str = expr_str.replace('^', '**')
     expr_str = re.sub(r'([xy0-9])(ln|cos|sin|sqrt|abs|e|pi)', r'\1*\2', expr_str)
     expr_str = re.sub(r'(e|pi)([xy0-9])', r'\1*\2', expr_str)
@@ -195,7 +192,6 @@ except:
     valid_input = False
 
 if valid_input:
-    # إرجاع شكل النتيجة الرياضية كما كانت (باللون الأصفر المألوف)
     f_latex = sp.latex(f_expr).replace(r"\log", r"\ln")
     g_latex = sp.latex(g_expr).replace(r"\log", r"\ln")
     st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {f_latex} \\ y = {g_latex} \end{{cases}}")
