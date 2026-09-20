@@ -28,7 +28,7 @@ st.markdown("""
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     
     /* =========================================================
-       الحل الجذري للوحة المفاتيح: إجبار الهاتف على عرض الشبكة
+       الحل الجذري للوحة المفاتيح
        ========================================================= */
        
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) {
@@ -120,6 +120,8 @@ def fmt(val):
         return str(val)
 
 def fix_implicit_mult(expr_str):
+    if "()" in expr_str:
+        expr_str = expr_str.replace("()", "(1)")
     expr_str = expr_str.replace('^', '**')
     expr_str = re.sub(r'([xy0-9])(ln|cos|sin|sqrt|abs|e|pi)', r'\1*\2', expr_str)
     expr_str = re.sub(r'(e|pi)([xy0-9])', r'\1*\2', expr_str)
@@ -131,7 +133,7 @@ def fix_implicit_mult(expr_str):
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
 
-if 'f_val' not in st.session_state: st.session_state.f_val = "ln(x)/(x+1)"
+if 'f_val' not in st.session_state: st.session_state.f_val = "x*e**(x+1)/(x+1)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -199,11 +201,13 @@ if valid_input:
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
-    x_vals = np.linspace(0.0001, 8, 40000)
+    # 40001 نقطة تضمن المرور تماما بالقيمة x=0 لضمان دقة الحل المعدوم
+    x_vals = np.linspace(-8, 8, 40001)
     
     with np.errstate(divide='ignore', invalid='ignore'):
         y_vals = f_func(x_vals)
     
+    # تحويل القيم التخيلية الناتجة عن اللوغاريتم في الجهة السالبة إلى NaN لتجاهلها
     if np.iscomplexobj(y_vals):
         y_vals = np.where(np.isreal(y_vals), y_vals.real, np.nan)
     if np.isscalar(y_vals):
@@ -216,15 +220,40 @@ if valid_input:
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 4. التحليل الذكي للجدول
+    # 4. الرادار الذكي لتصنيف إشارة الحلول وعدّدها
     # ---------------------------------------------------------
-    unique_asymptotes = [{'type': 'v', 'val': 0.0, 'label': "x=0"}]
+    unique_asymptotes = []
+    m_critical = []
+    
+    # أ. رصد التقاطع مع محور التراتيب (f(0))
     try:
-        for direction in [sp.oo]:
+        val_0 = float(f_expr.subs(x_sym, 0))
+        if np.isfinite(val_0): m_critical.append(round(val_0, 2))
+    except: pass
+    
+    # ب. رصد المقاربات الأفقية
+    try:
+        for direction in [sp.oo, -sp.oo]:
             lim_h = sp.limit(f_expr, x_sym, direction)
             if lim_h.is_real and np.isfinite(float(lim_h)):
                 unique_asymptotes.append({'type': 'h', 'val': float(lim_h), 'label': f"y={fmt(lim_h)}"})
+                m_critical.append(round(float(lim_h), 2))
     except: pass
+
+    # ج. رصد القيم الحدية (المشتقة تنعدم)
+    try:
+        df_expr = sp.diff(f_expr, x_sym)
+        crit_pts = sp.solve(df_expr, x_sym)
+        for cp in crit_pts:
+            if cp.is_real:
+                val_cp = float(f_expr.subs(x_sym, cp))
+                if np.isfinite(val_cp):
+                    m_critical.append(round(val_cp, 2))
+    except: pass
+
+    m_critical = [m for m in m_critical if np.isfinite(m)]
+    m_critical = np.unique(m_critical)
+    m_critical = np.sort(m_critical)
 
     def get_roots_text(m_test):
         with np.errstate(divide='ignore', invalid='ignore'):
@@ -259,36 +288,57 @@ if valid_input:
         count = len(all_roots)
         if count == 0: return "لا توجد حلول"
         
-        has_double = any(t == "double" for _, t in all_roots)
-        if count == 1 and has_double: return "حل مضاعف موجب"
-        if count == 1: return "حل وحيد موجب"
-        if count == 2: return "حلان موجبان مختلفان"
-        return f"{count} حلول موجبة"
+        # تصنيف الإشارة بدقة (معدوم، موجب، سالب)
+        desc = []
+        pos_s = sum(1 for r, t in all_roots if r > 0.05 and t == "single")
+        neg_s = sum(1 for r, t in all_roots if r < -0.05 and t == "single")
+        zero_s = sum(1 for r, t in all_roots if abs(r) <= 0.05 and t == "single")
+        pos_d = sum(1 for r, t in all_roots if r > 0.05 and t == "double")
+        neg_d = sum(1 for r, t in all_roots if r < -0.05 and t == "double")
+        zero_d = sum(1 for r, t in all_roots if abs(r) <= 0.05 and t == "double")
 
-    is_ln_fraction = "ln(x)" in st.session_state.f_val.replace(" ", "") and "(x+1)" in st.session_state.f_val.replace(" ", "")
+        if pos_d == 1: desc.append("حل مضاعف موجب")
+        if neg_d == 1: desc.append("حل مضاعف سالب")
+        if zero_d == 1: desc.append("حل مضاعف معدوم")
 
-    if is_ln_fraction:
-        raw_intervals = [
-            (float('-inf'), 0.0, "حل وحيد موجب", True),
-            (0.0, 0.0, "حل وحيد موجب", True),
-            (0.0, 0.28, "حلان موجبان مختلفان", False),
-            (0.28, 0.28, "حل مضاعف موجب", True),
-            (0.28, float('inf'), "لا توجد حلول", False)
-        ]
+        if pos_s == 1: desc.append("حل وحيد موجب")
+        elif pos_s == 2: desc.append("حلان موجبان")
+        elif pos_s > 2: desc.append(f"{pos_s} حلول موجبة")
+
+        if neg_s == 1: desc.append("حل وحيد سالب")
+        elif neg_s == 2: desc.append("حلان سالبان")
+        elif neg_s > 2: desc.append(f"{neg_s} حلول سالبة")
+
+        if zero_s == 1: desc.append("حل معدوم")
+
+        if pos_s == 1 and neg_s == 1 and len(desc) == 2:
+            return "حلان مختلفان في الإشارة"
+        elif pos_s == 1 and zero_s == 1 and len(desc) == 2:
+            return "حل معدوم و حل موجب"
+        elif neg_s == 1 and zero_s == 1 and len(desc) == 2:
+            return "حل معدوم و حل سالب"
+
+        if len(desc) == 0: return f"{count} حلول"
+        return " و ".join(desc)
+
+    raw_intervals = []
+    if len(m_critical) > 0:
+        raw_intervals.append((float('-inf'), m_critical[0], get_roots_text(m_critical[0] - 1.0)))
+        for i in range(len(m_critical)):
+            raw_intervals.append((m_critical[i], m_critical[i], get_roots_text(m_critical[i])))
+            if i < len(m_critical) - 1:
+                mid = (m_critical[i] + m_critical[i+1]) / 2.0
+                raw_intervals.append((m_critical[i], m_critical[i+1], get_roots_text(mid)))
+        raw_intervals.append((m_critical[-1], float('inf'), get_roots_text(m_critical[-1] + 1.0)))
     else:
-        raw_intervals = [
-            (float('-inf'), 0.0, get_roots_text(-1.0), True),
-            (0.0, 0.0, get_roots_text(0.0), True),
-            (0.0, 0.28, get_roots_text(0.1), False),
-            (0.28, 0.28, get_roots_text(0.28), True),
-            (0.28, float('inf'), get_roots_text(0.5), False)
-        ]
+        raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0.0)))
 
+    # دمج المجالات ذات نفس النتيجة
     merged_intervals = []
     if raw_intervals:
-        cur_L, cur_H, cur_text, _ = raw_intervals[0]
+        cur_L, cur_H, cur_text = raw_intervals[0][0], raw_intervals[0][1], raw_intervals[0][2]
         for item in raw_intervals[1:]:
-            l, h, txt, _ = item
+            l, h, txt = item[0], item[1], item[2]
             if txt == cur_text:
                 cur_H = h
             else:
@@ -301,7 +351,7 @@ if valid_input:
         if L == float('-inf') and H == float('inf'):
             math_html = "<i>m</i> ∈ ℝ"
         elif L == float('-inf'):
-            math_html = f"<i>m</i> ≤ {fmt(H)}"
+            math_html = f"<i>m</i> < {fmt(H)}"
         elif H == float('inf'):
             math_html = f"<i>m</i> > {fmt(L)}"
         elif L == H:
@@ -320,11 +370,11 @@ if valid_input:
             if L == H:
                 if abs(current_m - L) <= 0.03: is_active = True
             elif L == float('-inf'):
-                if current_m <= H + 0.03: is_active = True
+                if current_m <= H - 0.03: is_active = True
             elif H == float('inf'):
-                if current_m >= L - 0.03: is_active = True
+                if current_m >= L + 0.03: is_active = True
             else:
-                if L - 0.03 <= current_m <= H + 0.03: is_active = True
+                if L + 0.03 <= current_m <= H - 0.03: is_active = True
             if is_active:
                 active_idx = idx
 
@@ -342,7 +392,7 @@ if valid_input:
     with col1:
         if st.button("تشغيل المناقشة آلياً ▶️"):
             st.session_state.auto_play = True
-            st.session_state.m_anim = -2.0
+            st.session_state.m_anim = -3.0
             st.rerun()
     with col2:
         if st.button("إيقاف ⏹️"):
@@ -423,11 +473,11 @@ if valid_input:
         plt.close(fig)
 
     if st.session_state.auto_play:
-        while st.session_state.auto_play and st.session_state.m_anim <= 3.0:
+        while st.session_state.auto_play and st.session_state.m_anim <= 4.0:
             m_val = round(st.session_state.m_anim, 2)
             update_view(m_val)
             
-            is_critical_now = any(abs(st.session_state.m_anim - mc) < 0.05 for mc in [0.0, 0.28])
+            is_critical_now = any(abs(st.session_state.m_anim - mc) < 0.05 for mc in m_critical)
             if is_critical_now:
                 time.sleep(2.0) 
             else:
@@ -436,7 +486,7 @@ if valid_input:
             step = 0.1 
             next_m = st.session_state.m_anim + step
             
-            for mc in [0.0, 0.28]:
+            for mc in m_critical:
                 if st.session_state.m_anim < mc - 1e-4 and next_m >= mc - 1e-4:
                     next_m = float(mc)
                     break
@@ -446,5 +496,5 @@ if valid_input:
         st.session_state.auto_play = False
 
     else:
-        m_val = st.slider("تحكم يدوي:", -2.0, 3.0, 0.0, 0.05, format="%g", key="manual_m")
+        m_val = st.slider("تحكم يدوي:", -3.0, 4.0, 0.0, 0.05, format="%g", key="manual_m")
         update_view(m_val)
