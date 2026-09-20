@@ -28,7 +28,7 @@ st.markdown("""
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     
     /* =========================================================
-       الحل الجذري للوحة المفاتيح
+       الحل الجذري للوحة المفاتيح: إجبار الهاتف على عرض الشبكة
        ========================================================= */
        
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) {
@@ -194,6 +194,7 @@ except:
     valid_input = False
 
 if valid_input:
+    # إرجاع شكل النتيجة الرياضية (المعادلة باللون الأصفر)
     f_latex = sp.latex(f_expr).replace(r"\log", r"\ln")
     g_latex = sp.latex(g_expr).replace(r"\log", r"\ln")
     st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {f_latex} \\ y = {g_latex} \end{{cases}}")
@@ -201,13 +202,11 @@ if valid_input:
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
-    # 40001 نقطة تضمن المرور تماما بالقيمة x=0 لضمان دقة الحل المعدوم
     x_vals = np.linspace(-8, 8, 40001)
     
     with np.errstate(divide='ignore', invalid='ignore'):
         y_vals = f_func(x_vals)
     
-    # تحويل القيم التخيلية الناتجة عن اللوغاريتم في الجهة السالبة إلى NaN لتجاهلها
     if np.iscomplexobj(y_vals):
         y_vals = np.where(np.isreal(y_vals), y_vals.real, np.nan)
     if np.isscalar(y_vals):
@@ -220,18 +219,12 @@ if valid_input:
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 4. الرادار الذكي لتصنيف إشارة الحلول وعدّدها
+    # 4. الرادار الذكي للمقاربات الأفقية والعمودية
     # ---------------------------------------------------------
     unique_asymptotes = []
     m_critical = []
     
-    # أ. رصد التقاطع مع محور التراتيب (f(0))
-    try:
-        val_0 = float(f_expr.subs(x_sym, 0))
-        if np.isfinite(val_0): m_critical.append(round(val_0, 2))
-    except: pass
-    
-    # ب. رصد المقاربات الأفقية
+    # المقاربات الأفقية
     try:
         for direction in [sp.oo, -sp.oo]:
             lim_h = sp.limit(f_expr, x_sym, direction)
@@ -240,7 +233,47 @@ if valid_input:
                 m_critical.append(round(float(lim_h), 2))
     except: pass
 
-    # ج. رصد القيم الحدية (المشتقة تنعدم)
+    # المقاربات العمودية (أصفار المقام وما بداخل اللوغاريتم)
+    candidate_v_asymptotes = []
+    try:
+        n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
+        if d_expr != 1:
+            roots = sp.solve(d_expr, x_sym)
+            for r in roots:
+                if r.is_real:
+                    candidate_v_asymptotes.append(float(r))
+    except: pass
+    
+    try:
+        for log_expr in f_expr.atoms(sp.log):
+            arg = log_expr.args[0]
+            roots = sp.solve(arg, x_sym)
+            for r in roots:
+                if r.is_real:
+                    candidate_v_asymptotes.append(float(r))
+    except: pass
+
+    for r in set(candidate_v_asymptotes):
+        r_str = str(int(r)) if int(r)==r else str(float(r))
+        unique_asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={r_str}"})
+
+    # إزالة التكرارات من المقاربات
+    seen_labels = set()
+    final_asyms = []
+    for asym in unique_asymptotes:
+        if asym['label'] not in seen_labels:
+            seen_labels.add(asym['label'])
+            final_asyms.append(asym)
+    unique_asymptotes = final_asyms
+
+    # ---------------------------------------------------------
+    # 5. استخراج القيم الحرجة (المشتقة والتقاطع مع المحاور)
+    # ---------------------------------------------------------
+    try:
+        val_0 = float(f_expr.subs(x_sym, 0))
+        if np.isfinite(val_0): m_critical.append(round(val_0, 2))
+    except: pass
+
     try:
         df_expr = sp.diff(f_expr, x_sym)
         crit_pts = sp.solve(df_expr, x_sym)
@@ -288,7 +321,6 @@ if valid_input:
         count = len(all_roots)
         if count == 0: return "لا توجد حلول"
         
-        # تصنيف الإشارة بدقة (معدوم، موجب، سالب)
         desc = []
         pos_s = sum(1 for r, t in all_roots if r > 0.05 and t == "single")
         neg_s = sum(1 for r, t in all_roots if r < -0.05 and t == "single")
@@ -333,7 +365,7 @@ if valid_input:
     else:
         raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0.0)))
 
-    # دمج المجالات ذات نفس النتيجة
+    # دمج المجالات المتشابهة تلقائياً
     merged_intervals = []
     if raw_intervals:
         cur_L, cur_H, cur_text = raw_intervals[0][0], raw_intervals[0][1], raw_intervals[0][2]
@@ -411,10 +443,14 @@ if valid_input:
         ax.axhline(0, color='#9CA3AF', linewidth=1.5) 
         ax.axvline(0, color='#9CA3AF', linewidth=1.5) 
         
+        # رسم المقاربات האفقية والعمودية
         for asym in unique_asymptotes:
             if asym['type'] == 'h':
                 ax.axhline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
                 ax.text(7.5, asym['val'] + 0.25, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', ha='right')
+            elif asym['type'] == 'v':
+                ax.axvline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
+                ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', va='top')
         
         ax.plot(x_vals, y_vals, color='#00E5FF', linewidth=3, label='C_f')
         
