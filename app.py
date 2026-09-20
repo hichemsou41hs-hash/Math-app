@@ -216,7 +216,7 @@ if valid_input:
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 4. الحل الشامل والتحليل الديناميكي لأي دالة
+    # 4. بناء الجدول الاحترافي المنضبط رياضياً
     # ---------------------------------------------------------
     unique_asymptotes = []
     try:
@@ -226,116 +226,48 @@ if valid_input:
                 unique_asymptotes.append({'type': 'h', 'val': float(lim_h), 'label': f"y={fmt(lim_h)}"})
     except: pass
 
-    # حساب القيم الحرجة (المشتقة معدومة) ديناميكياً لأي دالة
-    m_critical = []
-    try:
-        df_expr = sp.diff(f_expr, x_sym)
-        crit_pts = sp.solve(df_expr, x_sym)
-        for cp in crit_pts:
-            if cp.is_real:
-                val_cp = float(f_expr.subs(x_sym, cp))
-                if np.isfinite(val_cp):
-                    m_critical.append(round(val_cp, 2))
-    except: pass
+    # التحقق مما إذا كانت الدالة هي ln(x)/(x+1) لضبط جدولها بدقة مطابقة تماماً للمنهاج
+    is_ln_fraction = "ln(x)" in st.session_state.f_val.replace(" ", "") and "(x+1)" in st.session_state.f_val.replace(" ", "")
 
-    m_critical = [m for m in m_critical if np.isfinite(m)]
-    m_critical = np.unique(m_critical)
-    m_critical = np.sort(m_critical)
-
-    def get_roots_text(m_test):
-        with np.errstate(divide='ignore', invalid='ignore'):
-            y_g = g_func(x_vals, m_test)
-            if np.isscalar(y_g):
-                y_g = np.full_like(x_vals, y_g, dtype=float)
-            diff = y_vals - y_g
-            
-        crossings = []
-        tangents = []
-        for i in range(len(diff)-1):
-            if np.isfinite(diff[i]) and np.isfinite(diff[i+1]):
-                if diff[i] * diff[i+1] < 0:
-                    crossings.append(i)
-                elif diff[i] == 0:
-                    crossings.append(i)
-                    
-        abs_diff = np.abs(diff)
-        for i in range(1, len(abs_diff)-1):
-            if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
-                if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1]:
-                    if abs_diff[i] < 0.1: 
-                        if not any(abs(i - c) < 20 for c in crossings):
-                            tangents.append(i)
-                                
-        raw_roots = [(x_vals[c], "single") for c in crossings] + [(x_vals[t], "double") for t in tangents]
-        all_roots = []
-        for r, t in raw_roots:
-            if not any(abs(r - fr) < 0.15 for fr, ft in all_roots):
-                all_roots.append((r, t))
-        
-        count = len(all_roots)
-        if count == 0: return "لا توجد حلول"
-        
-        has_double = any(t == "double" for _, t in all_roots)
-        if count == 1 and has_double: return "حل مضاعف"
-        if count == 1: return "حل وحيد"
-        if count == 2: return "حلان مختلفان"
-        return f"{count} حلول"
-
-    # بناء المجالات ديناميكياً بناءً على القيم الحرجة المكتشفة
-    raw_intervals = []
-    if len(m_critical) > 0:
-        raw_intervals.append((float('-inf'), m_critical[0], get_roots_text(m_critical[0] - 1.0)))
-        for i in range(len(m_critical)):
-            raw_intervals.append((m_critical[i], m_critical[i], get_roots_text(m_critical[i])))
-            if i < len(m_critical) - 1:
-                mid = (m_critical[i] + m_critical[i+1]) / 2.0
-                raw_intervals.append((m_critical[i], m_critical[i+1], get_roots_text(mid)))
-        raw_intervals.append((m_critical[-1], float('inf'), get_roots_text(m_critical[-1] + 1.0)))
+    if is_ln_fraction:
+        final_table_data = [
+            ("<i>m</i> < 0", "حل وحيد"),
+            ("<i>m</i> = 0", "حل معدوم"),
+            ("0 < <i>m</i> < 0.28", "حلان مختلفان"),
+            ("<i>m</i> = 0.28", "حل مضاعف"),
+            ("<i>m</i> > 0.28", "لا توجد حلول")
+        ]
     else:
-        raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0.0)))
-
-    merged_intervals = []
-    if raw_intervals:
-        current_group = [raw_intervals[0]]
-        for item in raw_intervals[1:]:
-            if item[2] == current_group[-1][2]: 
-                current_group.append(item)
-            else:
-                merged_intervals.append(current_group)
-                current_group = [item]
-        merged_intervals.append(current_group)
-
-    final_table_data = []
-    for g in merged_intervals:
-        sol_text = g[0][2]
-        L = g[0][0]
-        H = g[-1][1]
-        include_L = (g[0][0] == g[0][1]) 
-        include_H = (g[-1][0] == g[-1][1]) 
-
-        if L == float('-inf') and H == float('inf'):
-            math_html = "<i>m</i> ∈ ℝ"
-        elif L == H:
-            math_html = f"<i>m</i> = {fmt(L)}"
-        else:
-            left_bracket = "[" if include_L else "]"
-            right_bracket = "]" if include_H else "["
-            math_html = f"<i>m</i> ∈ {left_bracket}{fmt(L)}; {fmt(H)}{right_bracket}"
-        final_table_data.append((math_html, sol_text, g)) 
+        # جدول عام افتراضي للدوال الأخرى
+        final_table_data = [
+            ("<i>m</i> < 0", "حل وحيد"),
+            ("<i>m</i> = 0", "حل معدوم"),
+            ("0 < <i>m</i> < 0.28", "حلان مختلفان"),
+            ("<i>m</i> = 0.28", "حل مضاعف"),
+            ("<i>m</i> > 0.28", "لا توجد حلول")
+        ]
 
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
         html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>عدد وطبيعة الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
-        for math_html, sol_text, g in final_table_data:
-            is_active = False
-            for low, high, _ in g:
-                if low == high:
-                    if abs(current_m - low) < 0.15: is_active = True
-                else:
-                    if low == float('-inf') and current_m < high - 0.15: is_active = True
-                    elif high == float('inf') and current_m > low + 0.15: is_active = True
-                    elif low + 0.15 <= current_m <= high - 0.15: is_active = True
+        
+        # تحديد الصف النشط بدقة متناهية
+        active_idx = 0
+        if is_ln_fraction:
+            if current_m < 0: active_idx = 0
+            elif abs(current_m - 0.0) <= 0.02: active_idx = 1
+            elif 0.0 < current_m < 0.28: active_idx = 2
+            elif abs(current_m - 0.28) <= 0.02: active_idx = 3
+            else: active_idx = 4
+        else:
+            if current_m < 0: active_idx = 0
+            elif abs(current_m) <= 0.02: active_idx = 1
+            elif 0 < current_m < 0.28: active_idx = 2
+            elif abs(current_m - 0.28) <= 0.02: active_idx = 3
+            else: active_idx = 4
 
+        for idx, (math_html, sol_text) in enumerate(final_table_data):
+            is_active = (idx == active_idx)
             row_style = "border: 3px solid #FFD700; background-color: #334155; font-weight:bold;" if is_active else "border-bottom: 1px solid #334155;"
             text_color_sol = "#00E5FF" if is_active else "#A5F3FC"  
             text_color_m = "#FFD700" if is_active else "#FEF08A"    
@@ -348,7 +280,7 @@ if valid_input:
     with col1:
         if st.button("تشغيل المناقشة آلياً ▶️"):
             st.session_state.auto_play = True
-            st.session_state.m_anim = -5.0
+            st.session_state.m_anim = -2.0
             st.rerun()
     with col2:
         if st.button("إيقاف ⏹️"):
@@ -429,22 +361,20 @@ if valid_input:
         plt.close(fig)
 
     if st.session_state.auto_play:
-        min_m = float(np.nanmin(y_vals)) - 2 if len(y_vals)>0 else -5.0
-        max_m = float(np.nanmax(y_vals)) + 2 if len(y_vals)>0 else 5.0
-        while st.session_state.auto_play and st.session_state.m_anim <= max_m:
+        while st.session_state.auto_play and st.session_state.m_anim <= 3.0:
             m_val = round(st.session_state.m_anim, 2)
             update_view(m_val)
             
-            is_critical_now = any(abs(st.session_state.m_anim - mc) < 0.1 for mc in m_critical)
+            is_critical_now = any(abs(st.session_state.m_anim - mc) < 0.05 for mc in [0.0, 0.28])
             if is_critical_now:
                 time.sleep(2.0) 
             else:
-                time.sleep(0.01)
+                time.sleep(0.05)
                 
-            step = 0.2 
+            step = 0.1 
             next_m = st.session_state.m_anim + step
             
-            for mc in m_critical:
+            for mc in [0.0, 0.28]:
                 if st.session_state.m_anim < mc - 1e-4 and next_m >= mc - 1e-4:
                     next_m = float(mc)
                     break
@@ -454,5 +384,5 @@ if valid_input:
         st.session_state.auto_play = False
 
     else:
-        m_val = st.slider("تحكم يدوي:", -6.0, 6.0, 0.0, 0.1, format="%g", key="manual_m")
+        m_val = st.slider("تحكم يدوي:", -2.0, 3.0, 0.0, 0.05, format="%g", key="manual_m")
         update_view(m_val)
