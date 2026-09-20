@@ -192,9 +192,11 @@ except:
     valid_input = False
 
 if valid_input:
+    # العرض الرياضي الحي والاحترافي للكسر (بسط ومقام فوق بعضهما بخط أفقي)
     f_latex = sp.latex(f_expr).replace(r"\log", r"\ln")
     g_latex = sp.latex(g_expr).replace(r"\log", r"\ln")
-    st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {f_latex} \\ y = {g_latex} \end{{cases}}")
+    st.markdown("<div style='text-align: right; color: #94A3B8; font-size: 14px; margin-bottom: -15px;'>المعاينة الرياضية للكسر:</div>", unsafe_allow_html=True)
+    st.latex(rf"\color{{#00E5FF}} f(x) = {f_latex} \quad,\quad y = {g_latex}")
 
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
@@ -216,7 +218,7 @@ if valid_input:
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 4. تحليل الحلول ودمج المجالات المتشابهة تلقائياً
+    # 4. التحليل الذكي للجدول
     # ---------------------------------------------------------
     unique_asymptotes = [{'type': 'v', 'val': 0.0, 'label': "x=0"}]
     try:
@@ -284,7 +286,6 @@ if valid_input:
             (0.28, float('inf'), get_roots_text(0.5), False)
         ]
 
-    # خوارزمية دمج المجالات ذات نفس النتيجة تماماً
     merged_intervals = []
     if raw_intervals:
         cur_L, cur_H, cur_text, _ = raw_intervals[0]
