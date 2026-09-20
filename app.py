@@ -216,7 +216,7 @@ if valid_input:
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 4. التحليل الذكي والديناميكي الشامل للإشارة وعدد الحلول
+    # 4. تحليل الحلول ودمج المجالات المتشابهة تلقائياً
     # ---------------------------------------------------------
     unique_asymptotes = [{'type': 'v', 'val': 0.0, 'label': "x=0"}]
     try:
@@ -268,41 +268,68 @@ if valid_input:
     is_ln_fraction = "ln(x)" in st.session_state.f_val.replace(" ", "") and "(x+1)" in st.session_state.f_val.replace(" ", "")
 
     if is_ln_fraction:
-        final_table_data = [
-            ("<i>m</i> < 0", "حل وحيد موجب"),
-            ("<i>m</i> = 0", "حل وحيد موجب"),
-            ("0 < <i>m</i> < 0.28", "حلان موجبان مختلفان"),
-            ("<i>m</i> = 0.28", "حل مضاعف موجب"),
-            ("<i>m</i> > 0.28", "لا توجد حلول")
+        raw_intervals = [
+            (float('-inf'), 0.0, "حل وحيد موجب", True),
+            (0.0, 0.0, "حل وحيد موجب", True),
+            (0.0, 0.28, "حلان موجبان مختلفان", False),
+            (0.28, 0.28, "حل مضاعف موجب", True),
+            (0.28, float('inf'), "لا توجد حلول", False)
         ]
     else:
-        final_table_data = [
-            ("<i>m</i> < 0", get_roots_text(-1.0)),
-            ("<i>m</i> = 0", get_roots_text(0.0)),
-            ("0 < <i>m</i> < 0.28", get_roots_text(0.1)),
-            ("<i>m</i> = 0.28", get_roots_text(0.28)),
-            ("<i>m</i> > 0.28", get_roots_text(0.5))
+        raw_intervals = [
+            (float('-inf'), 0.0, get_roots_text(-1.0), True),
+            (0.0, 0.0, get_roots_text(0.0), True),
+            (0.0, 0.28, get_roots_text(0.1), False),
+            (0.28, 0.28, get_roots_text(0.28), True),
+            (0.28, float('inf'), get_roots_text(0.5), False)
         ]
+
+    # خوارزمية دمج المجالات ذات نفس النتيجة تماماً
+    merged_intervals = []
+    if raw_intervals:
+        cur_L, cur_H, cur_text, _ = raw_intervals[0]
+        for item in raw_intervals[1:]:
+            l, h, txt, _ = item
+            if txt == cur_text:
+                cur_H = h
+            else:
+                merged_intervals.append((cur_L, cur_H, cur_text))
+                cur_L, cur_H, cur_text = l, h, txt
+        merged_intervals.append((cur_L, cur_H, cur_text))
+
+    final_table_data = []
+    for L, H, sol_text in merged_intervals:
+        if L == float('-inf') and H == float('inf'):
+            math_html = "<i>m</i> ∈ ℝ"
+        elif L == float('-inf'):
+            math_html = f"<i>m</i> ≤ {fmt(H)}"
+        elif H == float('inf'):
+            math_html = f"<i>m</i> > {fmt(L)}"
+        elif L == H:
+            math_html = f"<i>m</i> = {fmt(L)}"
+        else:
+            math_html = f"{fmt(L)} < <i>m</i> < {fmt(H)}"
+        final_table_data.append((math_html, sol_text, L, H))
 
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
         html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>عدد وطبيعة الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
         
         active_idx = 0
-        if is_ln_fraction:
-            if current_m < 0: active_idx = 0
-            elif abs(current_m - 0.0) <= 0.02: active_idx = 1
-            elif 0.0 < current_m < 0.28: active_idx = 2
-            elif abs(current_m - 0.28) <= 0.02: active_idx = 3
-            else: active_idx = 4
-        else:
-            if current_m < 0: active_idx = 0
-            elif abs(current_m) <= 0.02: active_idx = 1
-            elif 0 < current_m < 0.28: active_idx = 2
-            elif abs(current_m - 0.28) <= 0.02: active_idx = 3
-            else: active_idx = 4
+        for idx, (math_html, sol_text, L, H) in enumerate(final_table_data):
+            is_active = False
+            if L == H:
+                if abs(current_m - L) <= 0.03: is_active = True
+            elif L == float('-inf'):
+                if current_m <= H + 0.03: is_active = True
+            elif H == float('inf'):
+                if current_m >= L - 0.03: is_active = True
+            else:
+                if L - 0.03 <= current_m <= H + 0.03: is_active = True
+            if is_active:
+                active_idx = idx
 
-        for idx, (math_html, sol_text) in enumerate(final_table_data):
+        for idx, (math_html, sol_text, L, H) in enumerate(final_table_data):
             is_active = (idx == active_idx)
             row_style = "border: 3px solid #FFD700; background-color: #334155; font-weight:bold;" if is_active else "border-bottom: 1px solid #334155;"
             text_color_sol = "#00E5FF" if is_active else "#A5F3FC"  
