@@ -28,7 +28,7 @@ st.markdown("""
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     
     /* =========================================================
-       الحل الجذري للوحة المفاتيح: إجبار الهاتف على عرض الشبكة
+       الحل الجذري للوحة المفاتيح
        ========================================================= */
        
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) {
@@ -133,7 +133,7 @@ def fix_implicit_mult(expr_str):
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
 
-if 'f_val' not in st.session_state: st.session_state.f_val = "x*e**(x+1)/(x+1)"
+if 'f_val' not in st.session_state: st.session_state.f_val = "ln(x**2+x)/x"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -194,7 +194,6 @@ except:
     valid_input = False
 
 if valid_input:
-    # إرجاع شكل النتيجة الرياضية (المعادلة باللون الأصفر)
     f_latex = sp.latex(f_expr).replace(r"\log", r"\ln")
     g_latex = sp.latex(g_expr).replace(r"\log", r"\ln")
     st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {f_latex} \\ y = {g_latex} \end{{cases}}")
@@ -219,12 +218,12 @@ if valid_input:
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 4. الرادار الذكي للمقاربات الأفقية والعمودية
+    # 4. الرادار الذكي الشامل (التحليلي + العددي)
     # ---------------------------------------------------------
     unique_asymptotes = []
     m_critical = []
     
-    # المقاربات الأفقية
+    # أ. المقاربات الأفقية والعمودية
     try:
         for direction in [sp.oo, -sp.oo]:
             lim_h = sp.limit(f_expr, x_sym, direction)
@@ -233,15 +232,13 @@ if valid_input:
                 m_critical.append(round(float(lim_h), 2))
     except: pass
 
-    # المقاربات العمودية (أصفار المقام وما بداخل اللوغاريتم)
     candidate_v_asymptotes = []
     try:
         n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
         if d_expr != 1:
             roots = sp.solve(d_expr, x_sym)
             for r in roots:
-                if r.is_real:
-                    candidate_v_asymptotes.append(float(r))
+                if r.is_real: candidate_v_asymptotes.append(float(r))
     except: pass
     
     try:
@@ -249,15 +246,13 @@ if valid_input:
             arg = log_expr.args[0]
             roots = sp.solve(arg, x_sym)
             for r in roots:
-                if r.is_real:
-                    candidate_v_asymptotes.append(float(r))
+                if r.is_real: candidate_v_asymptotes.append(float(r))
     except: pass
 
     for r in set(candidate_v_asymptotes):
         r_str = str(int(r)) if int(r)==r else str(float(r))
         unique_asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={r_str}"})
 
-    # إزالة التكرارات من المقاربات
     seen_labels = set()
     final_asyms = []
     for asym in unique_asymptotes:
@@ -266,9 +261,7 @@ if valid_input:
             final_asyms.append(asym)
     unique_asymptotes = final_asyms
 
-    # ---------------------------------------------------------
-    # 5. استخراج القيم الحرجة (المشتقة والتقاطع مع المحاور)
-    # ---------------------------------------------------------
+    # ب. استخراج القيم الحرجة جبرياً (SymPy)
     try:
         val_0 = float(f_expr.subs(x_sym, 0))
         if np.isfinite(val_0): m_critical.append(round(val_0, 2))
@@ -280,14 +273,32 @@ if valid_input:
         for cp in crit_pts:
             if cp.is_real:
                 val_cp = float(f_expr.subs(x_sym, cp))
-                if np.isfinite(val_cp):
-                    m_critical.append(round(val_cp, 2))
+                if np.isfinite(val_cp): m_critical.append(round(val_cp, 2))
     except: pass
 
-    m_critical = [m for m in m_critical if np.isfinite(m)]
+    # ج. الإضافة العبقرية: رصد القيم الحدية (الذروات) عددياً لسد عجز SymPy
+    with np.errstate(divide='ignore', invalid='ignore'):
+        dy_num = np.diff(y_vals)
+        # تصفية الضوضاء الناتجة عن التقريب
+        dy_num[np.abs(dy_num) < 1e-6] = 0
+        # الكشف عن تغير الإشارة (من صعود إلى نزول أو العكس)
+        sign_change = (dy_num[:-1] * dy_num[1:]) < 0
+        peak_indices = np.where(sign_change)[0] + 1
+        
+        for idx in peak_indices:
+            if np.isfinite(y_vals[idx]) and np.isfinite(y_vals[idx-1]) and np.isfinite(y_vals[idx+1]):
+                # التأكد من أنها قمة حقيقية ناعمة وليست قفزة مقارب شاقولي
+                if abs(y_vals[idx] - y_vals[idx-1]) < 0.5 and abs(y_vals[idx] - y_vals[idx+1]) < 0.5:
+                    m_critical.append(round(float(y_vals[idx]), 2))
+
+    # فلترة وترتيب القيم الحرجة
+    m_critical = [m for m in m_critical if np.isfinite(m) and abs(m) < 50]
     m_critical = np.unique(m_critical)
     m_critical = np.sort(m_critical)
 
+    # ---------------------------------------------------------
+    # 5. تصنيف الحلول بناءً على التقاطع
+    # ---------------------------------------------------------
     def get_roots_text(m_test):
         with np.errstate(divide='ignore', invalid='ignore'):
             y_g = g_func(x_vals, m_test)
@@ -345,6 +356,8 @@ if valid_input:
 
         if pos_s == 1 and neg_s == 1 and len(desc) == 2:
             return "حلان مختلفان في الإشارة"
+        elif pos_s == 2 and neg_s == 1 and pos_d == 0 and len(desc) == 2:
+            return "حلان موجبان وحل سالب"
         elif pos_s == 1 and zero_s == 1 and len(desc) == 2:
             return "حل معدوم و حل موجب"
         elif neg_s == 1 and zero_s == 1 and len(desc) == 2:
@@ -365,7 +378,6 @@ if valid_input:
     else:
         raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0.0)))
 
-    # دمج المجالات المتشابهة تلقائياً
     merged_intervals = []
     if raw_intervals:
         cur_L, cur_H, cur_text = raw_intervals[0][0], raw_intervals[0][1], raw_intervals[0][2]
@@ -443,7 +455,6 @@ if valid_input:
         ax.axhline(0, color='#9CA3AF', linewidth=1.5) 
         ax.axvline(0, color='#9CA3AF', linewidth=1.5) 
         
-        # رسم المقاربات האفقية والعمودية
         for asym in unique_asymptotes:
             if asym['type'] == 'h':
                 ax.axhline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
