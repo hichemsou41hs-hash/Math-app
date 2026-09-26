@@ -128,8 +128,7 @@ with col1:
 with col2:
     st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
 
-# زر الأستاذ للتحكم اليدوي (يحل مشكلة العمى البرمجي)
-manual_crit_input = st.text_input("🛡️ زر الأستاذ: أضف قيمة حرجة (ذروة) يدوياً إذا لم يرصدها البرنامج (مثال: 0.89):", "")
+manual_crit_input = st.text_input("🛡️ زر الأستاذ: أضف قيمة حرجة (ذروة) يدوياً إذا احتجت لذلك (مثال: 0.89):", "")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
@@ -156,30 +155,40 @@ if valid_input:
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
-    x_vals = np.linspace(-8, 8, 40001)
+    # مصفوفة الرسم (ضيقة لتكون واضحة)
+    x_vals_plot = np.linspace(-8, 8, 40001)
     
-    with np.errstate(divide='ignore', invalid='ignore'):
-        y_vals = f_func(x_vals)
+    # مصفوفة الرادار العميق (واسعة لاصطياد الجذور البعيدة بجوار المقاربات)
+    x_vals_roots = np.concatenate([
+        np.linspace(-500, -8, 5000, endpoint=False),
+        np.linspace(-8, 8, 40001),
+        np.linspace(8, 500, 5000)
+    ])
     
-    if np.iscomplexobj(y_vals):
-        y_vals = np.where(np.isreal(y_vals), y_vals.real, np.nan)
-    if np.isscalar(y_vals):
-        y_vals = np.full_like(x_vals, y_vals, dtype=float)
+    def process_y_vals(x_arr):
+        with np.errstate(divide='ignore', invalid='ignore'):
+            y_arr = f_func(x_arr)
+        if np.iscomplexobj(y_arr):
+            y_arr = np.where(np.isreal(y_arr), y_arr.real, np.nan)
+        if np.isscalar(y_arr):
+            y_arr = np.full_like(x_arr, y_arr, dtype=float)
+        dy = np.abs(np.diff(y_arr))
+        jump_idx = np.where(dy > 30)[0] 
+        for idx in jump_idx:
+            y_arr[idx] = np.nan
+            y_arr[idx+1] = np.nan
+        return y_arr
 
-    # تنظيف القفزات اللانهائية للمقاربات لتفادي الذروات الوهمية
-    dy = np.abs(np.diff(y_vals))
-    jump_idx = np.where(dy > 30)[0] 
-    for idx in jump_idx:
-        y_vals[idx] = np.nan
-        y_vals[idx+1] = np.nan
+    y_vals_plot = process_y_vals(x_vals_plot)
+    y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # 4. الرادار الثلاثي الطبقات للقيم الحرجة (SymPy + SciPy + User)
+    # 4. استخراج القيم الحرجة بذكاء (لمنع الذروات الوهمية)
     # ---------------------------------------------------------
     unique_asymptotes = []
     m_critical = []
     
-    # أ. المقاربات الأفقية
+    # أ. المقاربات
     try:
         for direction in [sp.oo, -sp.oo]:
             lim_h = sp.limit(f_expr, x_sym, direction)
@@ -188,7 +197,6 @@ if valid_input:
                 m_critical.append(round(float(lim_h), 2))
     except: pass
 
-    # المقاربات العمودية
     candidate_v_asymptotes = []
     try:
         n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
@@ -209,7 +217,15 @@ if valid_input:
         r_str = str(int(r)) if int(r)==r else str(float(r))
         unique_asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={r_str}"})
 
-    # ب. استخراج القيم الحرجة جبرياً (SymPy)
+    seen_labels = set()
+    final_asyms = []
+    for asym in unique_asymptotes:
+        if asym['label'] not in seen_labels:
+            seen_labels.add(asym['label'])
+            final_asyms.append(asym)
+    unique_asymptotes = final_asyms
+
+    # ب. القيم الحدية الجبرية
     try:
         val_0 = float(f_expr.subs(x_sym, 0))
         if np.isfinite(val_0): m_critical.append(round(val_0, 2))
@@ -224,56 +240,54 @@ if valid_input:
                 if np.isfinite(val_cp): m_critical.append(round(val_cp, 2))
     except: pass
 
-    # ج. الرادار المتقدم SciPy (Find Peaks) لسد ثغرات SymPy
-    valid_indices = np.where(~np.isnan(y_vals))[0]
-    if len(valid_indices) > 0:
-        y_valid = y_vals[valid_indices]
-        
-        # البحث عن القمم العلوية
-        peaks, _ = find_peaks(y_valid, prominence=0.05, distance=100)
-        # البحث عن القيعان السفلية
-        valleys, _ = find_peaks(-y_valid, prominence=0.05, distance=100)
-        
-        for p in peaks: m_critical.append(round(y_valid[p], 2))
-        for v in valleys: m_critical.append(round(y_valid[v], 2))
+    # ج. الرادار المتقدم SciPy (Find Peaks) مجزأ للقضاء على الذروات الوهمية!
+    is_valid = ~np.isnan(y_vals_plot)
+    edges = np.diff(is_valid.astype(int))
+    starts = np.where(edges == 1)[0] + 1
+    if is_valid[0]: starts = np.insert(starts, 0, 0)
+    ends = np.where(edges == -1)[0]
+    if is_valid[-1]: ends = np.append(ends, len(y_vals_plot) - 1)
+    
+    for s, e in zip(starts, ends):
+        segment = y_vals_plot[s:e+1]
+        if len(segment) > 10:
+            peaks, _ = find_peaks(segment, prominence=0.05)
+            valleys, _ = find_peaks(-segment, prominence=0.05)
+            for p in peaks: m_critical.append(round(float(segment[p]), 2))
+            for v in valleys: m_critical.append(round(float(segment[v]), 2))
 
-    # د. تدخل الأستاذ اليدوي (Manual Override)
     if manual_crit_input:
-        try:
-            m_critical.append(round(float(manual_crit_input.strip()), 2))
+        try: m_critical.append(round(float(manual_crit_input.strip()), 2))
         except: pass
 
-    # فلترة وتنظيف دقيق للقيم الحرجة
+    # فلترة القيم الحرجة
     m_critical = [round(m, 2) for m in m_critical if np.isfinite(m) and abs(m) < 50]
     m_critical.sort()
     merged_m_crit = []
     for m in m_critical:
-        if not merged_m_crit:
-            merged_m_crit.append(m)
+        if not merged_m_crit: merged_m_crit.append(m)
         else:
             if abs(m - merged_m_crit[-1]) > 0.05:
                 merged_m_crit.append(m)
     m_critical = merged_m_crit
 
     # ---------------------------------------------------------
-    # 5. تصنيف الحلول الصارم
+    # 5. تصنيف الحلول الصارم (باستخدام الرادار العميق)
     # ---------------------------------------------------------
     def get_roots_text(m_test):
         is_critical = any(abs(m_test - mc) < 1e-2 for mc in m_critical)
         
         with np.errstate(divide='ignore', invalid='ignore'):
-            y_g = g_func(x_vals, m_test)
+            y_g = g_func(x_vals_roots, m_test)
             if np.isscalar(y_g):
-                y_g = np.full_like(x_vals, y_g, dtype=float)
-            diff = y_vals - y_g
+                y_g = np.full_like(x_vals_roots, y_g, dtype=float)
+            diff = y_vals_roots - y_g
             
         crossings = []
         for i in range(len(diff)-1):
             if np.isfinite(diff[i]) and np.isfinite(diff[i+1]):
-                if diff[i] * diff[i+1] < 0:
-                    crossings.append(x_vals[i])
-                elif diff[i] == 0:
-                    crossings.append(x_vals[i])
+                if diff[i] * diff[i+1] < 0: crossings.append(x_vals_roots[i])
+                elif diff[i] == 0: crossings.append(x_vals_roots[i])
                     
         tangents = []
         cleaned_crossings = []
@@ -282,29 +296,23 @@ if valid_input:
             skip = False
             for i in range(len(crossings)):
                 if skip:
-                    skip = False
-                    continue
-                # إذا وجدنا نقطتي تقاطع متقاربتين جدا في قيمة حرجة، نعتبرها مماسا (حل مضاعف)
+                    skip = False; continue
                 if i < len(crossings)-1 and abs(crossings[i+1] - crossings[i]) < 0.5:
                     tangents.append((crossings[i] + crossings[i+1])/2.0)
                     skip = True
-                else:
-                    cleaned_crossings.append(crossings[i])
+                else: cleaned_crossings.append(crossings[i])
             
-            # قنص المماس الذي لم يقطعه الخط تماما (بسبب الدقة)
             abs_diff = np.abs(diff)
             for i in range(1, len(abs_diff)-1):
                 if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
-                    if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1]:
-                        if abs_diff[i] < 0.1:
-                            if not any(abs(x_vals[i] - c) < 0.6 for c in cleaned_crossings) and not any(abs(x_vals[i] - t) < 0.6 for t in tangents):
-                                tangents.append(x_vals[i])
+                    if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1] and abs_diff[i] < 0.1:
+                        if not any(abs(x_vals_roots[i] - c) < 0.6 for c in cleaned_crossings) and not any(abs(x_vals_roots[i] - t) < 0.6 for t in tangents):
+                            tangents.append(x_vals_roots[i])
         else:
             cleaned_crossings = crossings
             
         all_roots = [(c, "single") for c in cleaned_crossings] + [(t, "double") for t in tangents]
         
-        # تنظيف الحلول من التكرار
         final_roots = []
         for r, t in all_roots:
             if not any(abs(r - fr[0]) < 0.1 for fr in final_roots):
@@ -337,7 +345,6 @@ if valid_input:
 
         if zero_s == 1: desc.append("حل معدوم")
 
-        # اختصارات أنيقة للجدول
         if pos_s == 1 and neg_s == 1 and len(desc) == 2: return "حلان مختلفان في الإشارة"
         if pos_s == 2 and neg_s == 1 and pos_d == 0 and len(desc) == 2: return "حلان موجبان وحل سالب"
         if pos_s == 1 and neg_s == 2 and pos_d == 0 and len(desc) == 2: return "حلان سالبان وحل موجب"
@@ -359,14 +366,12 @@ if valid_input:
     else:
         raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0.0)))
 
-    # دمج المجالات المتشابهة تلقائياً
     merged_intervals = []
     if raw_intervals:
         cur_L, cur_H, cur_text = raw_intervals[0][0], raw_intervals[0][1], raw_intervals[0][2]
         for item in raw_intervals[1:]:
             l, h, txt = item[0], item[1], item[2]
-            if txt == cur_text:
-                cur_H = h
+            if txt == cur_text: cur_H = h
             else:
                 merged_intervals.append((cur_L, cur_H, cur_text))
                 cur_L, cur_H, cur_text = l, h, txt
@@ -374,16 +379,11 @@ if valid_input:
 
     final_table_data = []
     for L, H, sol_text in merged_intervals:
-        if L == float('-inf') and H == float('inf'):
-            math_html = "<i>m</i> ∈ ℝ"
-        elif L == float('-inf'):
-            math_html = f"<i>m</i> < {fmt(H)}"
-        elif H == float('inf'):
-            math_html = f"<i>m</i> > {fmt(L)}"
-        elif L == H:
-            math_html = f"<i>m</i> = {fmt(L)}"
-        else:
-            math_html = f"{fmt(L)} < <i>m</i> < {fmt(H)}"
+        if L == float('-inf') and H == float('inf'): math_html = "<i>m</i> ∈ ℝ"
+        elif L == float('-inf'): math_html = f"<i>m</i> < {fmt(H)}"
+        elif H == float('inf'): math_html = f"<i>m</i> > {fmt(L)}"
+        elif L == H: math_html = f"<i>m</i> = {fmt(L)}"
+        else: math_html = f"{fmt(L)} < <i>m</i> < {fmt(H)}"
         final_table_data.append((math_html, sol_text, L, H))
 
     def generate_html_table(current_m):
@@ -417,7 +417,7 @@ if valid_input:
     with col1:
         if st.button("تشغيل المناقشة آلياً ▶️"):
             st.session_state.auto_play = True
-            st.session_state.m_anim = -4.0
+            st.session_state.m_anim = -2.0
             st.rerun()
     with col2:
         if st.button("إيقاف ⏹️"):
@@ -444,37 +444,34 @@ if valid_input:
                 ax.axvline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
                 ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', va='top')
         
-        ax.plot(x_vals, y_vals, color='#00E5FF', linewidth=3, label='C_f')
+        ax.plot(x_vals_plot, y_vals_plot, color='#00E5FF', linewidth=3, label='C_f')
         
         with np.errstate(divide='ignore', invalid='ignore'):
-            y_g_plot = g_func(x_vals, m_val)
-        if np.isscalar(y_g_plot):
-            y_g_plot = np.full_like(x_vals, y_g_plot, dtype=float)
+            y_g_plot = g_func(x_vals_plot, m_val)
+        if np.isscalar(y_g_plot): y_g_plot = np.full_like(x_vals_plot, y_g_plot, dtype=float)
         
         m_val_str = str(int(m_val)) if int(m_val)==m_val else str(round(m_val, 2))
-        if st.session_state.g_val.strip() == 'm':
-            m_eq_label = f"y = {m_val_str}"
+        if st.session_state.g_val.strip() == 'm': m_eq_label = f"y = {m_val_str}"
         else:
             rep_str = f"({m_val_str})" if m_val < 0 else m_val_str
             m_eq_label = "y = " + st.session_state.g_val.replace('m', rep_str).replace('*', '')
             
-        ax.plot(x_vals, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f"${m_eq_label}$")
+        ax.plot(x_vals_plot, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f"${m_eq_label}$")
         
-        diff_plot = y_vals - y_g_plot
+        diff_plot = y_vals_plot - y_g_plot
         intersect_x = []
         for i in range(len(diff_plot)-1):
             if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
                 if diff_plot[i] * diff_plot[i+1] < 0:
                     denom = diff_plot[i+1] - diff_plot[i]
-                    xi = x_vals[i] - diff_plot[i] * (x_vals[i+1] - x_vals[i]) / denom if denom != 0 else x_vals[i]
+                    xi = x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom if denom != 0 else x_vals_plot[i]
                     intersect_x.append(float(xi))
                 elif diff_plot[i] == 0:
-                    intersect_x.append(float(x_vals[i]))
+                    intersect_x.append(float(x_vals_plot[i]))
 
         unique_intersect_x = []
         for ix in intersect_x:
-            if not any(abs(ix - uix) < 0.1 for uix in unique_intersect_x):
-                unique_intersect_x.append(ix)
+            if not any(abs(ix - uix) < 0.1 for uix in unique_intersect_x): unique_intersect_x.append(ix)
 
         intersect_y = []
         for ix in unique_intersect_x:
@@ -520,5 +517,5 @@ if valid_input:
         st.session_state.auto_play = False
 
     else:
-        m_val = st.slider("تحكم يدوي:", -4.0, 5.0, 0.0, 0.05, format="%g", key="manual_m")
+        m_val = st.slider("تحكم يدوي:", -2.0, 3.0, 0.0, 0.05, format="%g", key="manual_m")
         update_view(m_val)
