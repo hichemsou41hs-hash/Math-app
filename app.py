@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 import sympy as sp
+from scipy.signal import find_peaks
 import time
 import warnings
 import re
@@ -27,10 +28,6 @@ st.markdown("""
     .stTextInput label { direction: rtl !important; text-align: right !important; display: block;}
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     
-    /* =========================================================
-       الحل الجذري للوحة المفاتيح
-       ========================================================= */
-       
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) {
         display: grid !important;
         grid-template-columns: repeat(6, 1fr) !important;
@@ -40,72 +37,32 @@ st.markdown("""
         border-radius: 8px !important;
         margin-bottom: 2px !important;
     }
-    
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) > div[data-testid="column"] {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        flex: none !important;
-        padding: 0 !important;
-        display: block !important;
+        width: 100% !important; min-width: 0 !important; max-width: 100% !important; flex: none !important; padding: 0 !important; display: block !important;
     }
-
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button {
-        width: 100% !important;
-        height: 48px !important;
-        padding: 0px !important;
-        margin: 0 !important;
-        border-radius: 6px !important;
-        background-color: #334155 !important;
-        color: #00E5FF !important;
-        border: 1px solid #475569 !important;
-        box-shadow: 0 4px 0 #090e1a !important; 
-        transition: all 0.1s !important;
+        width: 100% !important; height: 48px !important; padding: 0px !important; margin: 0 !important; border-radius: 6px !important; background-color: #334155 !important; color: #00E5FF !important; border: 1px solid #475569 !important; box-shadow: 0 4px 0 #090e1a !important; transition: all 0.1s !important;
     }
-    
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button div,
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button p,
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button span {
-        font-size: 13px !important; 
-        font-family: Arial, Helvetica, sans-serif !important; 
-        font-weight: normal !important; 
-        letter-spacing: -0.5px !important; 
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: visible !important; 
-        text-overflow: clip !important; 
-        white-space: nowrap !important;
+        font-size: 13px !important; font-family: Arial, Helvetica, sans-serif !important; font-weight: normal !important; letter-spacing: -0.5px !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; text-overflow: clip !important; white-space: nowrap !important;
     }
-    
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button:active {
-        transform: translateY(4px) !important;
-        box-shadow: 0 0 0 #090e1a !important;
-        background-color: #00E5FF !important;
-        color: #0F172A !important;
+        transform: translateY(4px) !important; box-shadow: 0 0 0 #090e1a !important; background-color: #00E5FF !important; color: #0F172A !important;
     }
 
     button[kind="primary"] {
-        width: 100% !important;
-        height: 50px !important;
-        background-color: #ef4444 !important;
-        color: white !important;
-        font-size: 18px !important;
-        font-weight: bold !important;
-        border-radius: 8px !important;
-        box-shadow: 0 4px 0 #7f1d1d !important;
-        border: none !important;
-        margin-top: 5px !important;
+        width: 100% !important; height: 50px !important; background-color: #ef4444 !important; color: white !important; font-size: 18px !important; font-weight: bold !important; border-radius: 8px !important; box-shadow: 0 4px 0 #7f1d1d !important; border: none !important; margin-top: 5px !important;
     }
     button[kind="primary"]:active {
-        transform: translateY(4px) !important;
-        box-shadow: 0 0 0 #7f1d1d !important;
-        background-color: #dc2626 !important;
+        transform: translateY(4px) !important; box-shadow: 0 0 0 #7f1d1d !important; background-color: #dc2626 !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
 st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>", unsafe_allow_html=True)
-st.markdown("<div class='title-dis'>المناقشة البيانية</div>", unsafe_allow_html=True)
+st.markdown("<div class='title-dis'>المناقشة البيانية (المحرك الذكي)</div>", unsafe_allow_html=True)
 
 def fmt(val):
     if val == float('inf') or val == sp.oo: return "+∞"
@@ -120,8 +77,7 @@ def fmt(val):
         return str(val)
 
 def fix_implicit_mult(expr_str):
-    if "()" in expr_str:
-        expr_str = expr_str.replace("()", "(1)")
+    if "()" in expr_str: expr_str = expr_str.replace("()", "(1)")
     expr_str = expr_str.replace('^', '**')
     expr_str = re.sub(r'([xy0-9])(ln|cos|sin|sqrt|abs|e|pi)', r'\1*\2', expr_str)
     expr_str = re.sub(r'(e|pi)([xy0-9])', r'\1*\2', expr_str)
@@ -143,12 +99,9 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
     
     def k_click(char):
         target = "f_val" if st.session_state.kbd_target == "f" else "g_val"
-        if char == 'DEL':
-            st.session_state[target] = st.session_state[target][:-1]
-        elif char == 'CLR':
-            st.session_state[target] = ""
-        else:
-            st.session_state[target] += char
+        if char == 'DEL': st.session_state[target] = st.session_state[target][:-1]
+        elif char == 'CLR': st.session_state[target] = ""
+        else: st.session_state[target] += char
 
     keys = [
         [("x", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
@@ -162,7 +115,6 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         cols = st.columns(6) 
         for c_idx, (label, val) in enumerate(row):
             cols[c_idx].button(label, key=f"kb_{r_idx}_{c_idx}", on_click=k_click, args=(val,))
-
     st.button("مسح الكل (Clear)", on_click=k_click, args=("CLR",), use_container_width=True, type="primary")
 
 # ---------------------------------------------------------
@@ -175,6 +127,9 @@ with col1:
     st.text_input("أدخل عبارة الدالة f(x):", key="f_val")
 with col2:
     st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
+
+# زر الأستاذ للتحكم اليدوي (يحل مشكلة العمى البرمجي)
+manual_crit_input = st.text_input("🛡️ زر الأستاذ: أضف قيمة حرجة (ذروة) يدوياً إذا لم يرصدها البرنامج (مثال: 0.89):", "")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
@@ -211,14 +166,15 @@ if valid_input:
     if np.isscalar(y_vals):
         y_vals = np.full_like(x_vals, y_vals, dtype=float)
 
+    # تنظيف القفزات اللانهائية للمقاربات لتفادي الذروات الوهمية
     dy = np.abs(np.diff(y_vals))
-    jump_idx = np.where(dy > 50)[0] 
+    jump_idx = np.where(dy > 30)[0] 
     for idx in jump_idx:
         y_vals[idx] = np.nan
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 4. الرادار الذكي الشامل (التحليلي + العددي) لتعويض عجز SymPy
+    # 4. الرادار الثلاثي الطبقات للقيم الحرجة (SymPy + SciPy + User)
     # ---------------------------------------------------------
     unique_asymptotes = []
     m_critical = []
@@ -241,7 +197,6 @@ if valid_input:
             for r in roots:
                 if r.is_real: candidate_v_asymptotes.append(float(r))
     except: pass
-    
     try:
         for log_expr in f_expr.atoms(sp.log):
             arg = log_expr.args[0]
@@ -254,15 +209,7 @@ if valid_input:
         r_str = str(int(r)) if int(r)==r else str(float(r))
         unique_asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={r_str}"})
 
-    seen_labels = set()
-    final_asyms = []
-    for asym in unique_asymptotes:
-        if asym['label'] not in seen_labels:
-            seen_labels.add(asym['label'])
-            final_asyms.append(asym)
-    unique_asymptotes = final_asyms
-
-    # ب. استخراج القيم الحرجة (تقاطع مع المحاور والمشتقة جبرياً إن أمكن)
+    # ب. استخراج القيم الحرجة جبرياً (SymPy)
     try:
         val_0 = float(f_expr.subs(x_sym, 0))
         if np.isfinite(val_0): m_critical.append(round(val_0, 2))
@@ -277,22 +224,26 @@ if valid_input:
                 if np.isfinite(val_cp): m_critical.append(round(val_cp, 2))
     except: pass
 
-    # ج. الإضافة العبقرية: رصد القيم الحدية (الذروات) عددياً لسد عجز SymPy
-    with np.errstate(divide='ignore', invalid='ignore'):
-        dy_num = np.diff(y_vals)
-        for i in range(1, len(dy_num)):
-            dy_prev = dy_num[i-1]
-            dy_curr = dy_num[i]
-            if np.isfinite(dy_prev) and np.isfinite(dy_curr):
-                # إذا تغيرت الإشارة من موجب إلى سالب (أو العكس)، فهذه ذروة حقيقية
-                if dy_prev * dy_curr <= 0 and (dy_prev != 0 or dy_curr != 0):
-                    idx = i
-                    if np.isfinite(y_vals[idx]) and np.isfinite(y_vals[idx-1]) and np.isfinite(y_vals[idx+1]):
-                        # فلترة لضمان أنها قمة وليست قفزة مقارب عمودي
-                        if abs(y_vals[idx] - y_vals[idx-1]) < 0.5:
-                            m_critical.append(round(float(y_vals[idx]), 2))
+    # ج. الرادار المتقدم SciPy (Find Peaks) لسد ثغرات SymPy
+    valid_indices = np.where(~np.isnan(y_vals))[0]
+    if len(valid_indices) > 0:
+        y_valid = y_vals[valid_indices]
+        
+        # البحث عن القمم العلوية
+        peaks, _ = find_peaks(y_valid, prominence=0.05, distance=100)
+        # البحث عن القيعان السفلية
+        valleys, _ = find_peaks(-y_valid, prominence=0.05, distance=100)
+        
+        for p in peaks: m_critical.append(round(y_valid[p], 2))
+        for v in valleys: m_critical.append(round(y_valid[v], 2))
 
-    # فلترة وترتيب ودمج القيم الحرجة المتقاربة (لمنع التكرار)
+    # د. تدخل الأستاذ اليدوي (Manual Override)
+    if manual_crit_input:
+        try:
+            m_critical.append(round(float(manual_crit_input.strip()), 2))
+        except: pass
+
+    # فلترة وتنظيف دقيق للقيم الحرجة
     m_critical = [round(m, 2) for m in m_critical if np.isfinite(m) and abs(m) < 50]
     m_critical.sort()
     merged_m_crit = []
@@ -300,17 +251,15 @@ if valid_input:
         if not merged_m_crit:
             merged_m_crit.append(m)
         else:
-            # دمج القيم الحرجة المتقاربة جداً
             if abs(m - merged_m_crit[-1]) > 0.05:
                 merged_m_crit.append(m)
     m_critical = merged_m_crit
 
     # ---------------------------------------------------------
-    # 5. تصنيف الحلول بناءً على التقاطع وقنص التماس
+    # 5. تصنيف الحلول الصارم
     # ---------------------------------------------------------
     def get_roots_text(m_test):
-        # التحقق إن كانت القيمة m تعتبر قيمة حرجة (ذروة)
-        is_critical = any(abs(m_test - mc) < 1e-3 for mc in m_critical)
+        is_critical = any(abs(m_test - mc) < 1e-2 for mc in m_critical)
         
         with np.errstate(divide='ignore', invalid='ignore'):
             y_g = g_func(x_vals, m_test)
@@ -329,32 +278,33 @@ if valid_input:
         tangents = []
         cleaned_crossings = []
         
-        # هندسة قنص التماس: دمج نقطتي تقاطع متقاربتين جداً في نقطة مماس واحدة
         if is_critical:
             skip = False
             for i in range(len(crossings)):
                 if skip:
                     skip = False
                     continue
-                if i < len(crossings)-1 and abs(crossings[i+1] - crossings[i]) < 0.4:
+                # إذا وجدنا نقطتي تقاطع متقاربتين جدا في قيمة حرجة، نعتبرها مماسا (حل مضاعف)
+                if i < len(crossings)-1 and abs(crossings[i+1] - crossings[i]) < 0.5:
                     tangents.append((crossings[i] + crossings[i+1])/2.0)
                     skip = True
                 else:
                     cleaned_crossings.append(crossings[i])
             
-            # قنص التماس الخفي (في حال مر المستقيم فوق الذروة بمسافة مجهرية)
+            # قنص المماس الذي لم يقطعه الخط تماما (بسبب الدقة)
             abs_diff = np.abs(diff)
             for i in range(1, len(abs_diff)-1):
                 if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
                     if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1]:
-                        if abs_diff[i] < 0.08:
-                            if not any(abs(x_vals[i] - c) < 0.5 for c in cleaned_crossings) and not any(abs(x_vals[i] - t) < 0.5 for t in tangents):
+                        if abs_diff[i] < 0.1:
+                            if not any(abs(x_vals[i] - c) < 0.6 for c in cleaned_crossings) and not any(abs(x_vals[i] - t) < 0.6 for t in tangents):
                                 tangents.append(x_vals[i])
         else:
             cleaned_crossings = crossings
             
         all_roots = [(c, "single") for c in cleaned_crossings] + [(t, "double") for t in tangents]
         
+        # تنظيف الحلول من التكرار
         final_roots = []
         for r, t in all_roots:
             if not any(abs(r - fr[0]) < 0.1 for fr in final_roots):
@@ -387,29 +337,25 @@ if valid_input:
 
         if zero_s == 1: desc.append("حل معدوم")
 
-        if pos_s == 1 and neg_s == 1 and len(desc) == 2:
-            return "حلان مختلفان في الإشارة"
-        elif pos_s == 2 and neg_s == 1 and pos_d == 0 and len(desc) == 2:
-            return "حلان موجبان وحل سالب"
-        elif pos_s == 1 and neg_s == 2 and pos_d == 0 and len(desc) == 2:
-            return "حلان سالبان وحل موجب"
-        elif pos_s == 1 and zero_s == 1 and len(desc) == 2:
-            return "حل معدوم و حل موجب"
-        elif neg_s == 1 and zero_s == 1 and len(desc) == 2:
-            return "حل معدوم و حل سالب"
+        # اختصارات أنيقة للجدول
+        if pos_s == 1 and neg_s == 1 and len(desc) == 2: return "حلان مختلفان في الإشارة"
+        if pos_s == 2 and neg_s == 1 and pos_d == 0 and len(desc) == 2: return "حلان موجبان وحل سالب"
+        if pos_s == 1 and neg_s == 2 and pos_d == 0 and len(desc) == 2: return "حلان سالبان وحل موجب"
+        if pos_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل موجب"
+        if neg_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل سالب"
 
         if len(desc) == 0: return f"{count} حلول"
         return " و ".join(desc)
 
     raw_intervals = []
     if len(m_critical) > 0:
-        raw_intervals.append((float('-inf'), m_critical[0], get_roots_text(m_critical[0] - 1.0)))
+        raw_intervals.append((float('-inf'), m_critical[0], get_roots_text(m_critical[0] - 0.5)))
         for i in range(len(m_critical)):
             raw_intervals.append((m_critical[i], m_critical[i], get_roots_text(m_critical[i])))
             if i < len(m_critical) - 1:
                 mid = (m_critical[i] + m_critical[i+1]) / 2.0
                 raw_intervals.append((m_critical[i], m_critical[i+1], get_roots_text(mid)))
-        raw_intervals.append((m_critical[-1], float('inf'), get_roots_text(m_critical[-1] + 1.0)))
+        raw_intervals.append((m_critical[-1], float('inf'), get_roots_text(m_critical[-1] + 0.5)))
     else:
         raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0.0)))
 
@@ -455,8 +401,7 @@ if valid_input:
                 if current_m >= L + 0.03: is_active = True
             else:
                 if L + 0.03 <= current_m <= H - 0.03: is_active = True
-            if is_active:
-                active_idx = idx
+            if is_active: active_idx = idx
 
         for idx, (math_html, sol_text, L, H) in enumerate(final_table_data):
             is_active = (idx == active_idx)
@@ -472,7 +417,7 @@ if valid_input:
     with col1:
         if st.button("تشغيل المناقشة آلياً ▶️"):
             st.session_state.auto_play = True
-            st.session_state.m_anim = -3.0
+            st.session_state.m_anim = -4.0
             st.rerun()
     with col2:
         if st.button("إيقاف ⏹️"):
@@ -533,8 +478,7 @@ if valid_input:
 
         intersect_y = []
         for ix in unique_intersect_x:
-            if st.session_state.g_val.strip() == 'm':
-                intersect_y.append(m_val)
+            if st.session_state.g_val.strip() == 'm': intersect_y.append(m_val)
             else:
                 yt = g_func(ix, m_val)
                 intersect_y.append(float(yt) if not np.isscalar(yt) else yt)
@@ -561,10 +505,8 @@ if valid_input:
             update_view(m_val)
             
             is_critical_now = any(abs(st.session_state.m_anim - mc) < 0.05 for mc in m_critical)
-            if is_critical_now:
-                time.sleep(2.0) 
-            else:
-                time.sleep(0.05)
+            if is_critical_now: time.sleep(2.0) 
+            else: time.sleep(0.05)
                 
             step = 0.1 
             next_m = st.session_state.m_anim + step
@@ -575,9 +517,8 @@ if valid_input:
                     break
             
             st.session_state.m_anim = next_m
-            
         st.session_state.auto_play = False
 
     else:
-        m_val = st.slider("تحكم يدوي:", -3.0, 4.0, 0.0, 0.05, format="%g", key="manual_m")
+        m_val = st.slider("تحكم يدوي:", -4.0, 5.0, 0.0, 0.05, format="%g", key="manual_m")
         update_view(m_val)
