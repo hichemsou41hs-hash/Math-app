@@ -218,12 +218,12 @@ if valid_input:
         y_vals[idx+1] = np.nan
 
     # ---------------------------------------------------------
-    # 4. الرادار الذكي الشامل (التحليلي + العددي)
+    # 4. الرادار الذكي الشامل (التحليلي + العددي) لتعويض عجز SymPy
     # ---------------------------------------------------------
     unique_asymptotes = []
     m_critical = []
     
-    # أ. المقاربات الأفقية والعمودية
+    # أ. المقاربات الأفقية
     try:
         for direction in [sp.oo, -sp.oo]:
             lim_h = sp.limit(f_expr, x_sym, direction)
@@ -232,6 +232,7 @@ if valid_input:
                 m_critical.append(round(float(lim_h), 2))
     except: pass
 
+    # المقاربات العمودية
     candidate_v_asymptotes = []
     try:
         n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
@@ -261,7 +262,7 @@ if valid_input:
             final_asyms.append(asym)
     unique_asymptotes = final_asyms
 
-    # ب. استخراج القيم الحرجة جبرياً (SymPy)
+    # ب. استخراج القيم الحرجة (تقاطع مع المحاور والمشتقة جبرياً إن أمكن)
     try:
         val_0 = float(f_expr.subs(x_sym, 0))
         if np.isfinite(val_0): m_critical.append(round(val_0, 2))
@@ -279,27 +280,38 @@ if valid_input:
     # ج. الإضافة العبقرية: رصد القيم الحدية (الذروات) عددياً لسد عجز SymPy
     with np.errstate(divide='ignore', invalid='ignore'):
         dy_num = np.diff(y_vals)
-        # تصفية الضوضاء الناتجة عن التقريب
-        dy_num[np.abs(dy_num) < 1e-6] = 0
-        # الكشف عن تغير الإشارة (من صعود إلى نزول أو العكس)
-        sign_change = (dy_num[:-1] * dy_num[1:]) < 0
-        peak_indices = np.where(sign_change)[0] + 1
-        
-        for idx in peak_indices:
-            if np.isfinite(y_vals[idx]) and np.isfinite(y_vals[idx-1]) and np.isfinite(y_vals[idx+1]):
-                # التأكد من أنها قمة حقيقية ناعمة وليست قفزة مقارب شاقولي
-                if abs(y_vals[idx] - y_vals[idx-1]) < 0.5 and abs(y_vals[idx] - y_vals[idx+1]) < 0.5:
-                    m_critical.append(round(float(y_vals[idx]), 2))
+        for i in range(1, len(dy_num)):
+            dy_prev = dy_num[i-1]
+            dy_curr = dy_num[i]
+            if np.isfinite(dy_prev) and np.isfinite(dy_curr):
+                # إذا تغيرت الإشارة من موجب إلى سالب (أو العكس)، فهذه ذروة حقيقية
+                if dy_prev * dy_curr <= 0 and (dy_prev != 0 or dy_curr != 0):
+                    idx = i
+                    if np.isfinite(y_vals[idx]) and np.isfinite(y_vals[idx-1]) and np.isfinite(y_vals[idx+1]):
+                        # فلترة لضمان أنها قمة وليست قفزة مقارب عمودي
+                        if abs(y_vals[idx] - y_vals[idx-1]) < 0.5:
+                            m_critical.append(round(float(y_vals[idx]), 2))
 
-    # فلترة وترتيب القيم الحرجة
-    m_critical = [m for m in m_critical if np.isfinite(m) and abs(m) < 50]
-    m_critical = np.unique(m_critical)
-    m_critical = np.sort(m_critical)
+    # فلترة وترتيب ودمج القيم الحرجة المتقاربة (لمنع التكرار)
+    m_critical = [round(m, 2) for m in m_critical if np.isfinite(m) and abs(m) < 50]
+    m_critical.sort()
+    merged_m_crit = []
+    for m in m_critical:
+        if not merged_m_crit:
+            merged_m_crit.append(m)
+        else:
+            # دمج القيم الحرجة المتقاربة جداً
+            if abs(m - merged_m_crit[-1]) > 0.05:
+                merged_m_crit.append(m)
+    m_critical = merged_m_crit
 
     # ---------------------------------------------------------
-    # 5. تصنيف الحلول بناءً على التقاطع
+    # 5. تصنيف الحلول بناءً على التقاطع وقنص التماس
     # ---------------------------------------------------------
     def get_roots_text(m_test):
+        # التحقق إن كانت القيمة m تعتبر قيمة حرجة (ذروة)
+        is_critical = any(abs(m_test - mc) < 1e-3 for mc in m_critical)
+        
         with np.errstate(divide='ignore', invalid='ignore'):
             y_g = g_func(x_vals, m_test)
             if np.isscalar(y_g):
@@ -307,41 +319,62 @@ if valid_input:
             diff = y_vals - y_g
             
         crossings = []
-        tangents = []
         for i in range(len(diff)-1):
             if np.isfinite(diff[i]) and np.isfinite(diff[i+1]):
                 if diff[i] * diff[i+1] < 0:
-                    crossings.append(i)
+                    crossings.append(x_vals[i])
                 elif diff[i] == 0:
-                    crossings.append(i)
+                    crossings.append(x_vals[i])
                     
-        abs_diff = np.abs(diff)
-        for i in range(1, len(abs_diff)-1):
-            if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
-                if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1]:
-                    if abs_diff[i] < 0.1: 
-                        if not any(abs(i - c) < 20 for c in crossings):
-                            tangents.append(i)
-                                
-        raw_roots = [(x_vals[c], "single") for c in crossings] + [(x_vals[t], "double") for t in tangents]
-        all_roots = []
-        for r, t in raw_roots:
-            if not any(abs(r - fr) < 0.15 for fr, ft in all_roots):
-                all_roots.append((r, t))
+        tangents = []
+        cleaned_crossings = []
         
-        count = len(all_roots)
+        # هندسة قنص التماس: دمج نقطتي تقاطع متقاربتين جداً في نقطة مماس واحدة
+        if is_critical:
+            skip = False
+            for i in range(len(crossings)):
+                if skip:
+                    skip = False
+                    continue
+                if i < len(crossings)-1 and abs(crossings[i+1] - crossings[i]) < 0.4:
+                    tangents.append((crossings[i] + crossings[i+1])/2.0)
+                    skip = True
+                else:
+                    cleaned_crossings.append(crossings[i])
+            
+            # قنص التماس الخفي (في حال مر المستقيم فوق الذروة بمسافة مجهرية)
+            abs_diff = np.abs(diff)
+            for i in range(1, len(abs_diff)-1):
+                if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
+                    if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1]:
+                        if abs_diff[i] < 0.08:
+                            if not any(abs(x_vals[i] - c) < 0.5 for c in cleaned_crossings) and not any(abs(x_vals[i] - t) < 0.5 for t in tangents):
+                                tangents.append(x_vals[i])
+        else:
+            cleaned_crossings = crossings
+            
+        all_roots = [(c, "single") for c in cleaned_crossings] + [(t, "double") for t in tangents]
+        
+        final_roots = []
+        for r, t in all_roots:
+            if not any(abs(r - fr[0]) < 0.1 for fr in final_roots):
+                final_roots.append((r, t))
+        
+        count = len(final_roots)
         if count == 0: return "لا توجد حلول"
         
         desc = []
-        pos_s = sum(1 for r, t in all_roots if r > 0.05 and t == "single")
-        neg_s = sum(1 for r, t in all_roots if r < -0.05 and t == "single")
-        zero_s = sum(1 for r, t in all_roots if abs(r) <= 0.05 and t == "single")
-        pos_d = sum(1 for r, t in all_roots if r > 0.05 and t == "double")
-        neg_d = sum(1 for r, t in all_roots if r < -0.05 and t == "double")
-        zero_d = sum(1 for r, t in all_roots if abs(r) <= 0.05 and t == "double")
+        pos_s = sum(1 for r, t in final_roots if r > 0.05 and t == "single")
+        neg_s = sum(1 for r, t in final_roots if r < -0.05 and t == "single")
+        zero_s = sum(1 for r, t in final_roots if abs(r) <= 0.05 and t == "single")
+        pos_d = sum(1 for r, t in final_roots if r > 0.05 and t == "double")
+        neg_d = sum(1 for r, t in final_roots if r < -0.05 and t == "double")
+        zero_d = sum(1 for r, t in final_roots if abs(r) <= 0.05 and t == "double")
 
         if pos_d == 1: desc.append("حل مضاعف موجب")
+        elif pos_d > 1: desc.append(f"{pos_d} حلول مضاعفة موجبة")
         if neg_d == 1: desc.append("حل مضاعف سالب")
+        elif neg_d > 1: desc.append(f"{neg_d} حلول مضاعفة سالبة")
         if zero_d == 1: desc.append("حل مضاعف معدوم")
 
         if pos_s == 1: desc.append("حل وحيد موجب")
@@ -358,6 +391,8 @@ if valid_input:
             return "حلان مختلفان في الإشارة"
         elif pos_s == 2 and neg_s == 1 and pos_d == 0 and len(desc) == 2:
             return "حلان موجبان وحل سالب"
+        elif pos_s == 1 and neg_s == 2 and pos_d == 0 and len(desc) == 2:
+            return "حلان سالبان وحل موجب"
         elif pos_s == 1 and zero_s == 1 and len(desc) == 2:
             return "حل معدوم و حل موجب"
         elif neg_s == 1 and zero_s == 1 and len(desc) == 2:
@@ -378,6 +413,7 @@ if valid_input:
     else:
         raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0.0)))
 
+    # دمج المجالات المتشابهة تلقائياً
     merged_intervals = []
     if raw_intervals:
         cur_L, cur_H, cur_text = raw_intervals[0][0], raw_intervals[0][1], raw_intervals[0][2]
