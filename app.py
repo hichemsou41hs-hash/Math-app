@@ -158,10 +158,7 @@ except:
 
 col_text, col_cam = st.columns(2)
 
-with col_text:
-    st.text_input("أدخل عبارة الدالة f(x):", key="f_val")
-    st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
-
+# تقنية العكس البرمجي: تنفيذ الكاميرا قبل خانات الكتابة لمنع تعارض الحالات
 with col_cam:
     tab1, tab2 = st.tabs(["📸 تصوير", "🖼️ رفع صورة"])
     with tab1:
@@ -183,7 +180,6 @@ with col_cam:
                         genai.configure(api_key=api_key)
                         
                         img = Image.open(img_file)
-                        # التحديث النهائي لمحرك جوجل (الإصدار 3.8 السريع)
                         model = genai.GenerativeModel('gemini-3.8-flash')
                         prompt = "Extract ONLY the mathematical function expression from this image. Convert it to a simple string compatible with Python/SymPy (use ** for powers, * for multiplication, sqrt() for roots, abs() for absolute value, ln() for natural log). DO NOT output any markdown, LaTeX, or explanatory text. Just the raw math string."
                         response = model.generate_content([prompt, img])
@@ -195,6 +191,10 @@ with col_cam:
                         st.rerun()
                     except Exception as e:
                         st.error(f"❌ خطأ تقني: {str(e)}")
+
+with col_text:
+    st.text_input("أدخل عبارة الدالة f(x):", key="f_val")
+    st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
 
 x_sym, m_sym = sp.symbols('x m', real=True)
 local_dict = {'x': x_sym, 'm': m_sym, 'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
@@ -561,12 +561,19 @@ if valid_input:
     var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
-    # المناقشة البيانية الدقيقة وبناء المجالات
+    # المناقشة البيانية (استخراج المجالات الدقيقة)
     # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
         fl_m = float(sp.N(sm))
         if np.isfinite(fl_m) and abs(fl_m) < 50: m_critical_num.append(round(fl_m, 2))
+        
+    is_valid_plot = ~np.isnan(y_vals_plot)
+    edges = np.diff(is_valid_plot.astype(int))
+    starts = np.where(edges == 1)[0] + 1
+    if is_valid_plot[0]: starts = np.insert(starts, 0, 0)
+    ends = np.where(edges == -1)[0]
+    if is_valid_plot[-1]: ends = np.append(ends, len(y_vals_plot) - 1)
 
     for s, e in zip(starts, ends):
         segment = y_vals_plot[s:e+1]
