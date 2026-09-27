@@ -93,7 +93,7 @@ def clean_latex_to_text(l_str):
     s = s.replace("{", "").replace("}", "").replace("\\", "")
     return s
 
-# منقي متطور يزيل أكواد التحكم المعقدة (\left, \right) لتجنب انهيار مكتبة الرسم
+# مُنقي الأكواد الاحترافي (يحذف الأقواس المطاطية المسببة لانهيار مكتبة الرسم)
 def sanitize_latex(expr):
     if not isinstance(expr, str): expr = sp.latex(expr)
     s = expr.replace('log', 'ln')
@@ -106,6 +106,8 @@ def get_sol_color_pdf(sol_text):
     if "مضاعف" in sol_text: return "#D97706"       
     if "حل وحيد" in sol_text or "معدوم" in sol_text: return "#2E7D32" 
     if "حلان" in sol_text or "مختلفان" in sol_text: return "#0284C7"  
+    if "ثلاثة" in sol_text: return "#C2185B"
+    if "أربعة" in sol_text: return "#00796B"
     return "#6D28D9"                               
 
 def get_sol_color_html(sol_text):
@@ -113,6 +115,8 @@ def get_sol_color_html(sol_text):
     if "مضاعف" in sol_text: return "#F59E0B"
     if "حل وحيد" in sol_text or "معدوم" in sol_text: return "#4ADE80"
     if "حلان" in sol_text or "مختلفان" in sol_text: return "#38BDF8"
+    if "ثلاثة" in sol_text: return "#F472B6"
+    if "أربعة" in sol_text: return "#2DD4BF"
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
@@ -131,6 +135,7 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         elif char == 'CLR': st.session_state[target] = ""
         else: st.session_state[target] += char
 
+    # رموز مضغوطة وذكية لمنع ظهور علامة الاقتطاع (...) في الهواتف
     keys = [
         [("x", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
         [("m", "m"), ("π", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
@@ -185,7 +190,7 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # استخراج القيم المضبوطة والمشتقة
+    # استخراج القيم المظبوطة (Exact Symbolic Engine) والمشتقة
     # ---------------------------------------------------------
     sym_m_critical = []
     unique_asymptotes = []
@@ -229,7 +234,7 @@ if valid_input:
         if not any(abs(p['val'] - val) < 1e-4 for p in pts_var_exact):
             pts_var_exact.append({'val': val, 'sym': r, 'latex_x': sanitize_latex(r), 'type': 'extrema'})
 
-    # المحرك الهجين لالتقاط النقاط الزاوية غير القابلة للاشتقاق
+    # المحرك الهجين لالتقاط النقاط الزاوية غير القابلة للاشتقاق رياضياً
     is_valid_plot = ~np.isnan(y_vals_plot)
     edges = np.diff(is_valid_plot.astype(int))
     starts = np.where(edges == 1)[0] + 1
@@ -308,7 +313,7 @@ if valid_input:
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # النهايات الرياضية
+    # النهايات الرياضية والخوارزمية الدفاعية لمنع الانهيار
     # ---------------------------------------------------------
     limits_data_detailed = []
     limits_mpl_list = []
@@ -319,9 +324,11 @@ if valid_input:
             lim_latex = "+\infty" if lim == sp.oo else sanitize_latex(lim)
             expr_latex = sanitize_latex(f_expr)
             
+            # لواجهة التطبيق
             latex_streamlit = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
             limits_data_detailed.append(latex_streamlit)
             
+            # للـ PDF 
             lhs_mpl = fr"\lim_{{x \to {dir_latex}}} f(x) = \lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) ="
             rhs_mpl = fr"{lim_latex}"
             limits_mpl_list.append((lhs_mpl, rhs_mpl))
@@ -345,15 +352,21 @@ if valid_input:
         fig_l, ax_l = plt.subplots(figsize=(8, max(1.5, n_lines * 0.9)))
         ax_l.axis('off')
         
-        for i, (lhs, rhs) in enumerate(all_lines):
-            y_pos = 1.0 - (i + 0.5) / n_lines
-            if i == 0: 
-                ax_l.text(0.5, y_pos, f"${lhs}$", fontsize=22, ha='center', va='center', color='#1E3A8A')
-            else: 
-                ax_l.text(0.70, y_pos, f"${lhs}$", fontsize=22, ha='right', va='center', color='#1E3A8A')
-                ax_l.text(0.72, y_pos, f"${rhs}$", fontsize=24, ha='left', va='center', color='#D32F2F', fontweight='bold')
-                
-        fig_l.tight_layout(pad=0)
+        try:
+            for i, (lhs, rhs) in enumerate(all_lines):
+                y_pos = 1.0 - (i + 0.5) / n_lines
+                if i == 0: 
+                    ax_l.text(0.5, y_pos, f"${lhs}$", fontsize=22, ha='center', va='center', color='#1E3A8A')
+                else: 
+                    ax_l.text(0.70, y_pos, f"${lhs}$", fontsize=22, ha='right', va='center', color='#1E3A8A')
+                    ax_l.text(0.72, y_pos, f"${rhs}$", fontsize=24, ha='left', va='center', color='#D32F2F', fontweight='bold')
+            fig_l.canvas.draw()
+            fig_l.tight_layout(pad=0)
+        except:
+            ax_l.clear()
+            ax_l.axis('off')
+            ax_l.text(0.5, 0.5, "لم نتمكن من رسم المعادلات المعقدة", fontsize=18, ha='center', va='center', color='#D32F2F')
+            
         tmp_l = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
         fig_l.savefig(tmp_l.name, bbox_inches='tight', dpi=300)
         plt.close(fig_l)
@@ -362,12 +375,24 @@ if valid_input:
     limits_image_path = generate_limits_image()
 
     def generate_deriv_image():
-        df_latex_str = sanitize_latex(sp.simplify(df_expr))
+        df_simp = sp.simplify(df_expr)
+        df_latex_str = sanitize_latex(df_simp)
         math_str = fr"f'(x) = {df_latex_str}"
-        fig_d, ax_d = plt.subplots(figsize=(6, 1.2))
+        fig_d, ax_d = plt.subplots(figsize=(8, 1.2))
         ax_d.axis('off')
-        ax_d.text(0.5, 0.5, f"${math_str}$", fontsize=24, ha='center', va='center', color='#1E3A8A')
-        fig_d.tight_layout(pad=0)
+        
+        # نظام الحماية: في حال فشلت مكتبة الرسم في قراءة الكود تستخدم الدالة كـنص رياضي عادي 
+        try:
+            ax_d.text(0.5, 0.5, f"${math_str}$", fontsize=24, ha='center', va='center', color='#1E3A8A')
+            fig_d.canvas.draw()
+            fig_d.tight_layout(pad=0)
+        except:
+            ax_d.clear()
+            ax_d.axis('off')
+            safe_str = str(df_simp).replace('**', '^')
+            ax_d.text(0.5, 0.5, f"f'(x) = {safe_str}", fontsize=18, ha='center', va='center', color='#1E3A8A', family='serif')
+            fig_d.tight_layout(pad=0)
+            
         tmp_d = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
         fig_d.savefig(tmp_d.name, bbox_inches='tight', dpi=300)
         plt.close(fig_d)
@@ -635,7 +660,7 @@ if valid_input:
         final_table_latex.append((pdf_latex, sol_text))
 
     # ---------------------------------------------------------
-    # دوال واجهة الويب وملف الـ PDF النهائي
+    # دوال واجهة الويب وملف الـ PDF النهائي (مع الألوان)
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
@@ -830,7 +855,8 @@ if valid_input:
                     st.latex(lim)
                     
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
-                st.latex(fr"f'(x) = {sanitize_latex(sp.simplify(df_expr))}")
+                df_latex_str = sanitize_latex(sp.simplify(df_expr))
+                st.latex(fr"f'(x) = {df_latex_str}")
                 
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
                 if var_table_image_path:
