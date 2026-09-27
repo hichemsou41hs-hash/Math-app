@@ -89,7 +89,7 @@ def fix_implicit_mult(expr_str):
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
 
-if 'f_val' not in st.session_state: st.session_state.f_val = "ln(x**2+x)/x"
+if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(x**2+x)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -155,10 +155,7 @@ if valid_input:
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
-    # مصفوفة الرسم (ضيقة لتكون واضحة)
     x_vals_plot = np.linspace(-8, 8, 40001)
-    
-    # مصفوفة الرادار العميق (واسعة لاصطياد الجذور البعيدة بجوار المقاربات)
     x_vals_roots = np.concatenate([
         np.linspace(-500, -8, 5000, endpoint=False),
         np.linspace(-8, 8, 40001),
@@ -183,12 +180,12 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # 4. استخراج القيم الحرجة بذكاء (لمنع الذروات الوهمية)
+    # 4. استخراج القيم الحرجة بذكاء (الترقية الجديدة)
     # ---------------------------------------------------------
     unique_asymptotes = []
     m_critical = []
     
-    # أ. المقاربات
+    # أ. المقاربات الأفقية
     try:
         for direction in [sp.oo, -sp.oo]:
             lim_h = sp.limit(f_expr, x_sym, direction)
@@ -197,6 +194,7 @@ if valid_input:
                 m_critical.append(round(float(lim_h), 2))
     except: pass
 
+    # ب. أطراف مجموعة التعريف والمقاربات العمودية
     candidate_v_asymptotes = []
     try:
         n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
@@ -213,9 +211,16 @@ if valid_input:
                 if r.is_real: candidate_v_asymptotes.append(float(r))
     except: pass
 
+    # الترقية: حساب نهايات الدالة عند أطراف المجال لإضافتها إلى القيم الحرجة (يحل مشكلة m=0)
     for r in set(candidate_v_asymptotes):
         r_str = str(int(r)) if int(r)==r else str(float(r))
         unique_asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={r_str}"})
+        try:
+            lim_r = sp.limit(f_expr, x_sym, r, dir='+')
+            if lim_r.is_real and np.isfinite(float(lim_r)): m_critical.append(round(float(lim_r), 2))
+            lim_l = sp.limit(f_expr, x_sym, r, dir='-')
+            if lim_l.is_real and np.isfinite(float(lim_l)): m_critical.append(round(float(lim_l), 2))
+        except: pass
 
     seen_labels = set()
     final_asyms = []
@@ -225,7 +230,7 @@ if valid_input:
             final_asyms.append(asym)
     unique_asymptotes = final_asyms
 
-    # ب. القيم الحدية الجبرية
+    # ج. القيم الحدية الجبرية (المشتقة)
     try:
         val_0 = float(f_expr.subs(x_sym, 0))
         if np.isfinite(val_0): m_critical.append(round(val_0, 2))
@@ -240,7 +245,7 @@ if valid_input:
                 if np.isfinite(val_cp): m_critical.append(round(val_cp, 2))
     except: pass
 
-    # ج. الرادار المتقدم SciPy (Find Peaks) مجزأ للقضاء على الذروات الوهمية!
+    # د. الرادار المتقدم SciPy 
     is_valid = ~np.isnan(y_vals_plot)
     edges = np.diff(is_valid.astype(int))
     starts = np.where(edges == 1)[0] + 1
@@ -260,7 +265,6 @@ if valid_input:
         try: m_critical.append(round(float(manual_crit_input.strip()), 2))
         except: pass
 
-    # فلترة القيم الحرجة
     m_critical = [round(m, 2) for m in m_critical if np.isfinite(m) and abs(m) < 50]
     m_critical.sort()
     merged_m_crit = []
@@ -272,7 +276,7 @@ if valid_input:
     m_critical = merged_m_crit
 
     # ---------------------------------------------------------
-    # 5. تصنيف الحلول الصارم (باستخدام الرادار العميق)
+    # 5. تصنيف الحلول الصارم 
     # ---------------------------------------------------------
     def get_roots_text(m_test):
         is_critical = any(abs(m_test - mc) < 1e-2 for mc in m_critical)
@@ -346,8 +350,11 @@ if valid_input:
         if zero_s == 1: desc.append("حل معدوم")
 
         if pos_s == 1 and neg_s == 1 and len(desc) == 2: return "حلان مختلفان في الإشارة"
-        if pos_s == 2 and neg_s == 1 and pos_d == 0 and len(desc) == 2: return "حلان موجبان وحل سالب"
-        if pos_s == 1 and neg_s == 2 and pos_d == 0 and len(desc) == 2: return "حلان سالبان وحل موجب"
+        
+        # التعديل هنا ليطابق رغبة الأستاذ تماماً
+        if pos_s == 2 and neg_s == 1 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل سالب وحلان موجبان"
+        
+        if pos_s == 1 and neg_s == 2 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل موجب وحلان سالبان"
         if pos_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل موجب"
         if neg_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل سالب"
 
