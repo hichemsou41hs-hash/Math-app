@@ -88,6 +88,14 @@ def bound_to_html(s):
     s = s.replace("{", "").replace("}", "").replace("\\", "")
     return s
 
+def clean_latex_to_text(l_str):
+    s = str(l_str).replace(" ", "")
+    s = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"\1/\2", s)
+    s = s.replace(r"-\infty", "-∞").replace(r"+\infty", "+∞").replace(r"\infty", "∞")
+    s = s.replace(r"\ln", "ln").replace(r"e", "e").replace(r"\pi", "π")
+    s = s.replace("{", "").replace("}", "").replace("\\", "")
+    return s
+
 def sanitize_latex(expr):
     if not isinstance(expr, str): expr = sp.latex(expr)
     s = expr.replace('log', 'ln')
@@ -145,8 +153,6 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
 api_key = None
 try:
     api_key = st.secrets["GEMINI_API_KEY"]
-    import google.generativeai as genai
-    genai.configure(api_key=api_key)
 except:
     pass 
 
@@ -157,7 +163,6 @@ with col_text:
     st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
 
 with col_cam:
-    # نظام التبويبات لتوفير خيار "رفع صورة" في حال عطل الكاميرا في هاتف التلميذ
     tab1, tab2 = st.tabs(["📸 تصوير", "🖼️ رفع صورة"])
     with tab1:
         img_file_cam = st.camera_input("التقط صورة للدالة", label_visibility="collapsed")
@@ -173,7 +178,10 @@ with col_cam:
             if st.button("استخراج الدالة 🤖", use_container_width=True):
                 with st.spinner("جاري قراءة الصورة..."):
                     try:
+                        import google.generativeai as genai
                         from PIL import Image
+                        genai.configure(api_key=api_key)
+                        
                         img = Image.open(img_file)
                         model = genai.GenerativeModel('gemini-1.5-flash')
                         prompt = "Extract ONLY the mathematical function expression from this image. Convert it to a simple string compatible with Python/SymPy (use ** for powers, * for multiplication, sqrt() for roots, abs() for absolute value, ln() for natural log). DO NOT output any markdown, LaTeX, or explanatory text. Just the raw math string."
@@ -185,7 +193,8 @@ with col_cam:
                         time.sleep(1)
                         st.rerun()
                     except Exception as e:
-                        st.error("❌ لم نتمكن من قراءة الصورة، حاول مجدداً.")
+                        # طباعة سبب المشكلة الحقيقي للمستخدم لمعرفته وتصحيحه
+                        st.error(f"❌ لم نتمكن من قراءة الصورة. التفاصيل: {str(e)}")
 
 x_sym, m_sym = sp.symbols('x m', real=True)
 local_dict = {'x': x_sym, 'm': m_sym, 'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
@@ -245,11 +254,9 @@ if valid_input:
 
     df_expr = sp.diff(f_expr, x_sym)
     
-    # الحل الجذري لمشكلة sign: التحويل الجبري الخالص أولاً، ثم التبسيط، ثم الحماية من التراجع
     df_clean = df_expr.replace(sp.sign, lambda arg: arg / sp.Abs(arg))
     df_simp = sp.simplify(df_clean)
-    if df_simp.has(sp.Piecewise): 
-        df_simp = df_clean 
+    if df_simp.has(sp.Piecewise): df_simp = df_clean 
     df_latex_str_safe = sanitize_latex(df_simp)
     
     sym_extrema = []
@@ -361,7 +368,7 @@ if valid_input:
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # النهايات الرياضية 
+    # النهايات الرياضية
     # ---------------------------------------------------------
     limits_data_detailed = []
     limits_mpl_list = []
@@ -411,7 +418,7 @@ if valid_input:
         except:
             ax_l.clear()
             ax_l.axis('off')
-            ax_l.text(0.5, 0.5, "خطأ في رسم النهايات", fontsize=18, ha='center', va='center', color='#D32F2F')
+            ax_l.text(0.5, 0.5, "خطأ في رسم المعادلات", fontsize=18, ha='center', va='center', color='#D32F2F')
             
         tmp_l = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
         fig_l.savefig(tmp_l.name, bbox_inches='tight', dpi=300)
@@ -706,7 +713,7 @@ if valid_input:
         final_table_latex.append((pdf_latex, sol_text))
 
     # ---------------------------------------------------------
-    # دوال واجهة الويب وملف الـ PDF النهائي (مع الجدول المطور)
+    # دوال واجهة الويب وملف الـ PDF النهائي (مع حماية الإطار)
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
