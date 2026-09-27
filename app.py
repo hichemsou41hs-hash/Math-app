@@ -188,7 +188,7 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # استخراج القيم المظبوطة (Exact Symbolic Engine) والمشتقة
+    # استخراج القيم المظبوطة والمشتقة الرياضية الصحيحة
     # ---------------------------------------------------------
     sym_m_critical = []
     unique_asymptotes = []
@@ -262,7 +262,6 @@ if valid_input:
     pts_var_exact.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
     pts_var_exact.sort(key=lambda p: p['val'])
 
-    # خوارزمية ذكية لاختبار قابلية الاشتقاق عند النقاط الحدية (كشف النقاط الزاوية)
     df_func_test = sp.lambdify(x_sym, df_expr, 'numpy')
     for p in pts_var_exact:
         if p['type'] == 'extrema':
@@ -271,7 +270,6 @@ if valid_input:
                 df_val = df_func_test(v_test)
                 df_near_plus = df_func_test(v_test + 1e-4)
                 df_near_minus = df_func_test(v_test - 1e-4)
-            # إذا تضخمت المشتقة نحو المالانهاية، فهذا يعني أن الدالة لا تقبل الاشتقاق هنا (نقطة زاوية)
             if not np.isfinite(df_val) or abs(df_near_plus) > 20 or abs(df_near_minus) > 20:
                 p['type'] = 'corner'
 
@@ -323,7 +321,7 @@ if valid_input:
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # النهايات الرياضية والمشتقة
+    # النهايات والمشتقة (تبديل دالة الإشارة إلى شكل رياضي مألوف)
     # ---------------------------------------------------------
     limits_data_detailed = []
     limits_mpl_list = []
@@ -373,7 +371,7 @@ if valid_input:
         except:
             ax_l.clear()
             ax_l.axis('off')
-            ax_l.text(0.5, 0.5, "خطأ في رسم المعادلات", fontsize=18, ha='center', va='center', color='#D32F2F')
+            ax_l.text(0.5, 0.5, "لم نتمكن من رسم المعادلات المعقدة", fontsize=18, ha='center', va='center', color='#D32F2F')
             
         tmp_l = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
         fig_l.savefig(tmp_l.name, bbox_inches='tight', dpi=300)
@@ -382,16 +380,15 @@ if valid_input:
 
     limits_image_path = generate_limits_image()
 
+    # خوارزمية ذكية لترجمة دالة الإشارة sign إلى كسر رياضيات اعتيادي u/|u|
+    df_simp = sp.simplify(df_expr).replace(sp.sign, lambda arg: arg / sp.Abs(arg))
+    if df_simp.has(sp.Piecewise): df_simp = df_expr 
+    df_latex_str_safe = sanitize_latex(df_simp)
+
     def generate_deriv_image():
-        df_simp = sp.simplify(df_expr)
-        # إبطال التبسيط المجزأ (Piecewise) إذا كان سيؤدي لشكل معقد
-        if df_simp.has(sp.Piecewise): df_simp = df_expr 
-        
-        df_latex_str = sanitize_latex(df_simp)
-        math_str = fr"f'(x) = {df_latex_str}"
+        math_str = fr"f'(x) = {df_latex_str_safe}"
         fig_d, ax_d = plt.subplots(figsize=(8, 1.2))
         ax_d.axis('off')
-        
         try:
             ax_d.text(0.5, 0.5, f"${math_str}$", fontsize=24, ha='center', va='center', color='#1E3A8A')
             fig_d.canvas.draw()
@@ -411,7 +408,7 @@ if valid_input:
     deriv_image_path = generate_deriv_image()
 
     # ---------------------------------------------------------
-    # بناء جدول التغيرات الاحترافي (Vector Graphic)
+    # بناء جدول التغيرات الاحترافي
     # ---------------------------------------------------------
     N = len(pts_var_exact)
     def generate_variation_table_image():
@@ -457,7 +454,7 @@ if valid_input:
                 ax_v.plot([x_c, x_c], [4, 5], 'k-', lw=1.2, zorder=2)
                 ax_v.text(x_c, 4.5, '0', ha='center', va='center', fontsize=16)
                 ax_v.plot([x_c, x_c], [0, 4], 'k:', lw=1, alpha=0.5, zorder=2)
-            elif p['type'] == 'corner': # رسم خطوط عدم قابلية الاشتقاق (||)
+            elif p['type'] == 'corner': 
                 ax_v.plot([x_c-0.03, x_c-0.03], [4, 5], 'k-', lw=1.5, color='#D32F2F', zorder=2)
                 ax_v.plot([x_c+0.03, x_c+0.03], [4, 5], 'k-', lw=1.5, color='#D32F2F', zorder=2)
                 ax_v.plot([x_c, x_c], [0, 4], 'k:', lw=1, alpha=0.5, zorder=2)
@@ -674,7 +671,7 @@ if valid_input:
         final_table_latex.append((pdf_latex, sol_text))
 
     # ---------------------------------------------------------
-    # دوال واجهة الويب وملف الـ PDF النهائي
+    # دوال واجهة الويب وملف الـ PDF النهائي (مع حماية الإطار)
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
@@ -700,6 +697,10 @@ if valid_input:
         fig_dt, ax_dt = plt.subplots(figsize=(8, nrows * 0.7 + 0.8))
         ax_dt.axis('off')
         
+        # تثبيت إطار الرسم لمنع تمدد الصورة عند وجود عناوين طويلة (المشكلة التي لاحظتها)
+        ax_dt.set_xlim(-0.05, 8.05)
+        ax_dt.set_ylim(-0.05, nrows * 0.7 + 0.75)
+        
         for i in range(nrows + 1):
             y = i * 0.7
             ax_dt.plot([0, 8], [y, y], 'k-', lw=1 if 0 < i < nrows else 2)
@@ -718,8 +719,9 @@ if valid_input:
         ax_dt.add_patch(rect1)
         ax_dt.add_patch(rect2)
         
-        ax_dt.text(2, nrows * 0.7 + 0.35, fix_arabic_mpl("عدد وطبيعة الحلول"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
-        ax_dt.text(6, nrows * 0.7 + 0.35, fix_arabic_mpl("المجال / القيمة المضبوطة"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
+        # تصغير خط العناوين درجة واحدة لضمان عدم ملامسة الحواف
+        ax_dt.text(2, nrows * 0.7 + 0.35, fix_arabic_mpl("عدد وطبيعة الحلول"), color='white', fontsize=14, fontweight='bold', ha='center', va='center')
+        ax_dt.text(6, nrows * 0.7 + 0.35, fix_arabic_mpl("المجال / القيمة المضبوطة"), color='white', fontsize=14, fontweight='bold', ha='center', va='center')
         
         for i, (m_latex, sol_text) in enumerate(final_table_latex):
             y_center = (nrows - i - 1) * 0.7 + 0.35
@@ -869,11 +871,7 @@ if valid_input:
                     st.latex(lim)
                     
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
-                # استخدام النسخة غير المبسطة إذا كان التبسيط يؤدي لظهور دالة مجزأة غير أنيقة
-                df_simp_ui = sp.simplify(df_expr)
-                if df_simp_ui.has(sp.Piecewise): df_simp_ui = df_expr
-                df_latex_str_ui = sanitize_latex(df_simp_ui)
-                st.latex(fr"f'(x) = {df_latex_str_ui}")
+                st.latex(fr"f'(x) = {df_latex_str_safe}")
                 
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
                 if var_table_image_path:
