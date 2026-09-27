@@ -65,6 +65,27 @@ def fix_implicit_mult(expr_str):
 def fix_arabic(text):
     return get_display(arabic_reshaper.reshape(text))
 
+# دوال تحويل الـ LaTeX إلى نصوص بسيطة للجدول لضمان وضوح الشكل الأسي
+def latex_to_html(l_str):
+    s = str(l_str).replace(" ", "")
+    s = s.replace(r"-\frac{1}{e}", "-1/<i>e</i>").replace(r"\frac{1}{e}", "1/<i>e</i>")
+    s = s.replace(r"-\frac{1}{2}", "-1/2").replace(r"\frac{1}{2}", "1/2")
+    s = s.replace(r"-e^{-1}", "-1/<i>e</i>").replace(r"e^{-1}", "1/<i>e</i>")
+    s = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"\1/\2", s)
+    s = s.replace(r"\infty", "∞").replace(r"e", "<i>e</i>").replace(r"\ln", "ln")
+    s = s.replace("{", "").replace("}", "").replace("\\", "")
+    return s
+
+def clean_latex_to_text(l_str):
+    s = str(l_str).replace(" ", "")
+    s = s.replace(r"-\frac{1}{e}", "-1/e").replace(r"\frac{1}{e}", "1/e")
+    s = s.replace(r"-\frac{1}{2}", "-1/2").replace(r"\frac{1}{2}", "1/2")
+    s = s.replace(r"-e^{-1}", "-1/e").replace(r"e^{-1}", "1/e")
+    s = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"\1/\2", s)
+    s = s.replace(r"\infty", "∞").replace(r"e", "e").replace(r"\ln", "ln")
+    s = s.replace("{", "").replace("}", "").replace("\\", "")
+    return s
+
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
 if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(x)"
@@ -134,7 +155,7 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # استخراج القيم المظبوطة (Exact Symbolic Engine)
+    # استخراج القيم المظبوطة جبرياً لمنع الفواصل العشرية
     # ---------------------------------------------------------
     sym_m_critical = []
     unique_asymptotes = []
@@ -176,20 +197,17 @@ if valid_input:
 
     pts_var_exact = []
     pts_var_exact.append({'val': -np.inf, 'sym': -sp.oo, 'latex_x': r"-\infty", 'type': 'inf'})
-    
     for r in candidate_v_asymptotes:
         pts_var_exact.append({'val': float(sp.N(r)), 'sym': r, 'latex_x': sp.latex(r).replace('log', 'ln'), 'type': 'v_asym'})
-        
     for r in sym_extrema:
         val = float(sp.N(r))
         if not any(abs(p['val'] - val) < 1e-4 for p in pts_var_exact):
             pts_var_exact.append({'val': val, 'sym': r, 'latex_x': sp.latex(r).replace('log', 'ln'), 'type': 'extrema'})
-            
     pts_var_exact.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
     pts_var_exact.sort(key=lambda p: p['val'])
 
     # ---------------------------------------------------------
-    # استنتاج مجموعة التعريف الدقيقة (اقتطاع الجدول)
+    # استنتاج مجموعة التعريف الدقيقة
     # ---------------------------------------------------------
     valid_intervals = []
     for i in range(len(pts_var_exact) - 1):
@@ -218,8 +236,7 @@ if valid_input:
     limits_mpl_list = []
 
     def get_limit_explanation(val_sym):
-        if val_sym == sp.oo or val_sym == -sp.oo:
-            return "نعتمد على الحد الأعلى درجة (للدوال الناطقة) أو نطبق مبرهنات التزايد المقارن للدوال الأسية واللوغاريتمية."
+        if val_sym == sp.oo or val_sym == -sp.oo: return "نعتمد على الحد الأعلى درجة (للدوال الناطقة) أو نطبق مبرهنات التزايد المقارن للدوال الأسية واللوغاريتمية."
         return "إذا واجهنا حالة عدم تعيين بعد التعويض المباشر، نستخدم طرق الاختزال، التحليل، أو المبرهنات الشهيرة."
 
     def add_limit(val_sym, dir_sympy, dir_latex, ar_desc):
@@ -227,15 +244,11 @@ if valid_input:
             lim = sp.limit(f_expr, x_sym, val_sym, dir=dir_sympy)
             lim_latex = sp.latex(lim).replace('log', 'ln')
             expr_latex = sp.latex(f_expr).replace('log', 'ln')
-            
             explanation = get_limit_explanation(val_sym)
+            
             latex_streamlit = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
-            limits_data_detailed.append({
-                'desc': ar_desc,
-                'explanation': explanation,
-                'latex': latex_streamlit
-            })
-            # تمت إزالة mathbf من سلسلة Matplotlib لتجنب خطأ ValueError مع المالانهاية
+            limits_data_detailed.append({'desc': ar_desc, 'explanation': explanation, 'latex': latex_streamlit})
+            
             mpl_str = fr"\lim_{{x \to {dir_latex}}} f(x) = {lim_latex}"
             limits_mpl_list.append((ar_desc, mpl_str))
         except: pass
@@ -243,7 +256,6 @@ if valid_input:
     if len(pts_var_exact) > 0:
         if pts_var_exact[0]['sym'] == -sp.oo: add_limit(-sp.oo, '+', r"-\infty", "النهاية عند الأطراف غير المنتهية:")
         if pts_var_exact[-1]['sym'] == sp.oo: add_limit(sp.oo, '-', r"+\infty", "النهاية عند الأطراف غير المنتهية:")
-
         for p in pts_var_exact:
             if p['type'] == 'v_asym':
                 idx = pts_var_exact.index(p)
@@ -272,7 +284,7 @@ if valid_input:
     limits_image_path = generate_limits_image()
 
     # ---------------------------------------------------------
-    # بناء جدول التغيرات الاحترافي (Vector Graphic باستخدام Matplotlib)
+    # بناء جدول التغيرات الاحترافي بالصور المضبوطة
     # ---------------------------------------------------------
     N = len(pts_var_exact)
     def generate_variation_table_image():
@@ -353,11 +365,6 @@ if valid_input:
                 if l_node and r_node:
                     y_l = 0.8 if signs[i] == "+" else 3.2
                     y_r = 3.2 if signs[i] == "+" else 0.8
-                    
-                    if l_node[1] == float('inf'): y_l = 3.2
-                    elif l_node[1] == float('-inf'): y_l = 0.8
-                    if r_node[1] == float('inf'): y_r = 3.2
-                    elif r_node[1] == float('-inf'): y_r = 0.8
                     if y_l == y_r: y_l = 2.0; y_r = 2.0
                     
                     ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
@@ -381,7 +388,7 @@ if valid_input:
     var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
-    # المناقشة البيانية (استعمال القيم المضبوطة)
+    # المناقشة البيانية الدقيقة وبناء المجالات (Intervals)
     # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
@@ -498,29 +505,43 @@ if valid_input:
 
     final_table_data = []
     final_table_plain = [] 
+    
     for L, H, sol_text in merged_intervals:
         L_inc = any(r[0] == L and r[1] == L and r[2] == sol_text for r in raw_intervals)
         H_inc = any(r[0] == H and r[1] == H and r[2] == sol_text for r in raw_intervals)
-        L_exact = "-\infty" if L == float('-inf') else get_exact_m(L)
-        H_exact = "+\infty" if H == float('inf') else get_exact_m(H)
+        
+        L_latex = "-\infty" if L == float('-inf') else get_exact_m(L)
+        H_latex = "+\infty" if H == float('inf') else get_exact_m(H)
+        
+        L_html = latex_to_html(L_latex)
+        H_html = latex_to_html(H_latex)
+        L_plain = clean_latex_to_text(L_latex)
+        H_plain = clean_latex_to_text(H_latex)
         
         if L == float('-inf') and H == float('inf'):
             math_html, plain_m = "<i>m</i> ∈ ℝ", "m ∈ R"
         elif L == float('-inf'):
-            math_html = f"<i>m</i> ≤ {H_exact}" if H_inc else f"<i>m</i> < {H_exact}"
-            plain_m = f"m <= {H_exact}" if H_inc else f"m < {H_exact}"
+            bracket_html = "]" if H_inc else "["
+            math_html = f"<i>m</i> ∈ ]-∞ ; {H_html}{bracket_html}"
+            plain_m = f"m ∈ ]-∞ ; {H_plain}{bracket_html}"
         elif H == float('inf'):
-            math_html = f"<i>m</i> ≥ {L_exact}" if L_inc else f"<i>m</i> > {L_exact}"
-            plain_m = f"m >= {L_exact}" if L_inc else f"m > {L_exact}"
+            bracket_html = "[" if L_inc else "]"
+            math_html = f"<i>m</i> ∈ {bracket_html}{L_html} ; +∞["
+            plain_m = f"m ∈ {bracket_html}{L_plain} ; +∞["
         elif L == H:
-            math_html, plain_m = f"<i>m</i> = {L_exact}", f"m = {L_exact}"
+            math_html, plain_m = f"<i>m</i> = {L_html}", f"m = {L_plain}"
         else:
-            ls = "≤" if L_inc else "<"; rs = "≤" if H_inc else "<"
-            math_html = f"{L_exact} {ls} <i>m</i> {rs} {H_exact}"
-            plain_m = f"{L_exact} {'<=' if L_inc else '<'} m {'<=' if H_inc else '<'} {H_exact}"
+            ls_bracket = "[" if L_inc else "]"
+            rs_bracket = "]" if H_inc else "["
+            math_html = f"<i>m</i> ∈ {ls_bracket}{L_html} ; {H_html}{rs_bracket}"
+            plain_m = f"m ∈ {ls_bracket}{L_plain} ; {H_plain}{rs_bracket}"
+            
         final_table_data.append((math_html, sol_text, L, H))
         final_table_plain.append((plain_m, sol_text))
 
+    # ---------------------------------------------------------
+    # دوال واجهة الويب وملف الـ PDF 
+    # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
         html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>عدد وطبيعة الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
@@ -560,15 +581,14 @@ if valid_input:
         
         pdf.set_font("Amiri", size=14)
         pdf.set_fill_color(30, 58, 138); pdf.set_text_color(255, 255, 255)
-        pdf.cell(95, 12, fix_arabic("المجال / القيمة المضبوطة"), border=1, fill=True, align='C')
+        pdf.cell(95, 12, fix_arabic("المجالات الدقيقة (بدون تقريب)"), border=1, fill=True, align='C')
         pdf.cell(95, 12, fix_arabic("عدد وطبيعة الحلول"), border=1, ln=True, fill=True, align='C')
         
         for i, (m_str, text_str) in enumerate(final_table_plain):
             if i % 2 == 0: pdf.set_fill_color(241, 245, 249) 
             else: pdf.set_fill_color(255, 255, 255)
             pdf.set_text_color(15, 23, 42)
-            cl_m_str = m_str.replace(r"\frac", "").replace("{", "").replace("}", "").replace(r"\ln", "ln").replace(r"\infty", "∞").replace("\\", "")
-            pdf.cell(95, 12, cl_m_str, border=1, align='C', fill=True)
+            pdf.cell(95, 12, m_str, border=1, align='C', fill=True)
             pdf.cell(95, 12, fix_arabic(text_str), border=1, ln=True, align='C', fill=True)
 
         pdf.add_page()
