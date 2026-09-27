@@ -180,7 +180,7 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # 4. استخراج القيم الحرجة بذكاء (الترقية الجديدة)
+    # 4. استخراج القيم الحرجة بذكاء (الترقية الجديدة الشاملة)
     # ---------------------------------------------------------
     unique_asymptotes = []
     m_critical = []
@@ -211,7 +211,7 @@ if valid_input:
                 if r.is_real: candidate_v_asymptotes.append(float(r))
     except: pass
 
-    # الترقية: حساب نهايات الدالة عند أطراف المجال لإضافتها إلى القيم الحرجة (يحل مشكلة m=0)
+    # حساب نهايات الدالة عند أطراف المجال لإضافتها إلى القيم الحرجة (يحل مشكلة m=0)
     for r in set(candidate_v_asymptotes):
         r_str = str(int(r)) if int(r)==r else str(float(r))
         unique_asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={r_str}"})
@@ -276,7 +276,7 @@ if valid_input:
     m_critical = merged_m_crit
 
     # ---------------------------------------------------------
-    # 5. تصنيف الحلول الصارم 
+    # 5. تصنيف الحلول الصارم (دقة 0.01)
     # ---------------------------------------------------------
     def get_roots_text(m_test):
         is_critical = any(abs(m_test - mc) < 1e-2 for mc in m_critical)
@@ -326,12 +326,13 @@ if valid_input:
         if count == 0: return "لا توجد حلول"
         
         desc = []
-        pos_s = sum(1 for r, t in final_roots if r > 0.05 and t == "single")
-        neg_s = sum(1 for r, t in final_roots if r < -0.05 and t == "single")
-        zero_s = sum(1 for r, t in final_roots if abs(r) <= 0.05 and t == "single")
-        pos_d = sum(1 for r, t in final_roots if r > 0.05 and t == "double")
-        neg_d = sum(1 for r, t in final_roots if r < -0.05 and t == "double")
-        zero_d = sum(1 for r, t in final_roots if abs(r) <= 0.05 and t == "double")
+        # هنا تم تصغير هامش التسامح إلى 0.01 للقضاء على خطأ "الحل المعدوم"
+        pos_s = sum(1 for r, t in final_roots if r > 0.01 and t == "single")
+        neg_s = sum(1 for r, t in final_roots if r < -0.01 and t == "single")
+        zero_s = sum(1 for r, t in final_roots if abs(r) <= 0.01 and t == "single")
+        pos_d = sum(1 for r, t in final_roots if r > 0.01 and t == "double")
+        neg_d = sum(1 for r, t in final_roots if r < -0.01 and t == "double")
+        zero_d = sum(1 for r, t in final_roots if abs(r) <= 0.01 and t == "double")
 
         if pos_d == 1: desc.append("حل مضاعف موجب")
         elif pos_d > 1: desc.append(f"{pos_d} حلول مضاعفة موجبة")
@@ -351,7 +352,7 @@ if valid_input:
 
         if pos_s == 1 and neg_s == 1 and len(desc) == 2: return "حلان مختلفان في الإشارة"
         
-        # التعديل هنا ليطابق رغبة الأستاذ تماماً
+        # التعديل الخاص بعبارة 3 حلول تماماً كما طلبت
         if pos_s == 2 and neg_s == 1 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل سالب وحلان موجبان"
         
         if pos_s == 1 and neg_s == 2 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل موجب وحلان سالبان"
