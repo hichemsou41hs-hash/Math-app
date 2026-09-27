@@ -134,14 +134,17 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # استخراج القيم المظبوطة (Exact Symbolic Engine)
+    # استخراج القيم المظبوطة والمقاربات (Exact Symbolic Engine)
     # ---------------------------------------------------------
     sym_m_critical = []
+    unique_asymptotes = []
     
     try:
         for direction in [sp.oo, -sp.oo]:
             lim_h = sp.limit(f_expr, x_sym, direction)
-            if lim_h.is_real: sym_m_critical.append(lim_h)
+            if lim_h.is_real: 
+                sym_m_critical.append(lim_h)
+                unique_asymptotes.append({'type': 'h', 'val': float(sp.N(lim_h)), 'label': f"y={sp.latex(lim_h).replace('log', 'ln')}"})
     except: pass
 
     candidate_v_asymptotes = []
@@ -157,6 +160,9 @@ if valid_input:
                 if r.is_real is not False and sp.im(sp.N(r)) == 0: candidate_v_asymptotes.append(r)
     except: pass
     candidate_v_asymptotes = list(set(candidate_v_asymptotes))
+    
+    for r in candidate_v_asymptotes:
+        unique_asymptotes.append({'type': 'v', 'val': float(sp.N(r)), 'label': f"x={sp.latex(r).replace('log', 'ln')}"})
 
     sym_extrema = []
     try:
@@ -515,7 +521,7 @@ if valid_input:
         final_table_plain.append((plain_m, sol_text))
 
     # ---------------------------------------------------------
-    # دوال واجهة الويب وملف الـ PDF 
+    # دوال واجهة الويب وملف الـ PDF الملون
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
