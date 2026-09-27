@@ -188,7 +188,7 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # استخراج القيم المظبوطة والمشتقة الرياضية الصحيحة
+    # استخراج القيم المظبوطة (Exact Symbolic Engine) والمشتقة
     # ---------------------------------------------------------
     sym_m_critical = []
     unique_asymptotes = []
@@ -211,6 +211,12 @@ if valid_input:
         unique_asymptotes.append({'type': 'v', 'val': float(sp.N(r)), 'label': f"x={sanitize_latex(r)}"})
 
     df_expr = sp.diff(f_expr, x_sym)
+    
+    # تحويل المشتقة جبرياً إلى صيغة احترافية (استبدال sign(u) بـ u/|u|)
+    df_clean = df_expr.replace(sp.sign, lambda arg: arg / sp.Abs(arg))
+    df_simp = sp.simplify(df_clean)
+    if df_simp.has(sp.Piecewise): df_simp = df_clean
+    df_latex_str_safe = sanitize_latex(df_simp)
     
     sym_extrema = []
     try:
@@ -321,7 +327,7 @@ if valid_input:
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # النهايات والمشتقة (تبديل دالة الإشارة إلى شكل رياضي مألوف)
+    # النهايات الرياضية الخالصة
     # ---------------------------------------------------------
     limits_data_detailed = []
     limits_mpl_list = []
@@ -380,11 +386,6 @@ if valid_input:
 
     limits_image_path = generate_limits_image()
 
-    # خوارزمية ذكية لترجمة دالة الإشارة sign إلى كسر رياضيات اعتيادي u/|u|
-    df_simp = sp.simplify(df_expr).replace(sp.sign, lambda arg: arg / sp.Abs(arg))
-    if df_simp.has(sp.Piecewise): df_simp = df_expr 
-    df_latex_str_safe = sanitize_latex(df_simp)
-
     def generate_deriv_image():
         math_str = fr"f'(x) = {df_latex_str_safe}"
         fig_d, ax_d = plt.subplots(figsize=(8, 1.2))
@@ -408,7 +409,7 @@ if valid_input:
     deriv_image_path = generate_deriv_image()
 
     # ---------------------------------------------------------
-    # بناء جدول التغيرات الاحترافي
+    # بناء جدول التغيرات الاحترافي (Vector Graphic)
     # ---------------------------------------------------------
     N = len(pts_var_exact)
     def generate_variation_table_image():
@@ -671,7 +672,7 @@ if valid_input:
         final_table_latex.append((pdf_latex, sol_text))
 
     # ---------------------------------------------------------
-    # دوال واجهة الويب وملف الـ PDF النهائي (مع حماية الإطار)
+    # دوال واجهة الويب وملف الـ PDF النهائي
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
@@ -694,40 +695,40 @@ if valid_input:
 
     def generate_pdf_discussion_table():
         nrows = len(final_table_latex)
-        fig_dt, ax_dt = plt.subplots(figsize=(8, nrows * 0.7 + 0.8))
+        # تمت زيادة مساحة الجدول لمنع الكلمات الطويلة من الخروج خارج الإطار
+        fig_dt, ax_dt = plt.subplots(figsize=(10, nrows * 0.7 + 0.8))
         ax_dt.axis('off')
         
-        # تثبيت إطار الرسم لمنع تمدد الصورة عند وجود عناوين طويلة (المشكلة التي لاحظتها)
-        ax_dt.set_xlim(-0.05, 8.05)
+        ax_dt.set_xlim(-0.05, 10.05)
         ax_dt.set_ylim(-0.05, nrows * 0.7 + 0.75)
         
         for i in range(nrows + 1):
             y = i * 0.7
-            ax_dt.plot([0, 8], [y, y], 'k-', lw=1 if 0 < i < nrows else 2)
+            ax_dt.plot([0, 10], [y, y], 'k-', lw=1 if 0 < i < nrows else 2)
         ax_dt.plot([0, 0], [0, nrows * 0.7], 'k-', lw=2)
-        ax_dt.plot([4, 4], [0, nrows * 0.7], 'k-', lw=1)
-        ax_dt.plot([8, 8], [0, nrows * 0.7], 'k-', lw=2)
+        ax_dt.plot([6, 6], [0, nrows * 0.7], 'k-', lw=1) # أعطيت 60% من المساحة للنص العربي لضمان الاتساع
+        ax_dt.plot([10, 10], [0, nrows * 0.7], 'k-', lw=2)
         
-        ax_dt.plot([0, 8], [nrows * 0.7, nrows * 0.7], 'k-', lw=2)
-        ax_dt.plot([0, 8], [nrows * 0.7 + 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
+        ax_dt.plot([0, 10], [nrows * 0.7, nrows * 0.7], 'k-', lw=2)
+        ax_dt.plot([0, 10], [nrows * 0.7 + 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
         ax_dt.plot([0, 0], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
-        ax_dt.plot([4, 4], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
-        ax_dt.plot([8, 8], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
+        ax_dt.plot([6, 6], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
+        ax_dt.plot([10, 10], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
         
-        rect1 = plt.Rectangle((0, nrows * 0.7), 4, 0.7, facecolor='#1E3A8A')
-        rect2 = plt.Rectangle((4, nrows * 0.7), 4, 0.7, facecolor='#1E3A8A')
+        rect1 = plt.Rectangle((0, nrows * 0.7), 6, 0.7, facecolor='#1E3A8A')
+        rect2 = plt.Rectangle((6, nrows * 0.7), 4, 0.7, facecolor='#1E3A8A')
         ax_dt.add_patch(rect1)
         ax_dt.add_patch(rect2)
         
-        # تصغير خط العناوين درجة واحدة لضمان عدم ملامسة الحواف
-        ax_dt.text(2, nrows * 0.7 + 0.35, fix_arabic_mpl("عدد وطبيعة الحلول"), color='white', fontsize=14, fontweight='bold', ha='center', va='center')
-        ax_dt.text(6, nrows * 0.7 + 0.35, fix_arabic_mpl("المجال / القيمة المضبوطة"), color='white', fontsize=14, fontweight='bold', ha='center', va='center')
+        ax_dt.text(3, nrows * 0.7 + 0.35, fix_arabic_mpl("عدد وطبيعة الحلول"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
+        ax_dt.text(8, nrows * 0.7 + 0.35, fix_arabic_mpl("المجال / القيمة المضبوطة"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
         
         for i, (m_latex, sol_text) in enumerate(final_table_latex):
             y_center = (nrows - i - 1) * 0.7 + 0.35
             c_pdf = get_sol_color_pdf(sol_text)
-            ax_dt.text(2, y_center, fix_arabic_mpl(sol_text), fontsize=15, ha='center', va='center', color=c_pdf, fontweight='bold')
-            ax_dt.text(6, y_center, f"${m_latex}$", fontsize=16, ha='center', va='center', color='#1E3A8A')
+            f_size = 14 if len(sol_text) > 35 else 16 # تصغير الخط قليلاً للنصوص الطويلة جداً
+            ax_dt.text(3, y_center, fix_arabic_mpl(sol_text), fontsize=f_size, ha='center', va='center', color=c_pdf, fontweight='bold')
+            ax_dt.text(8, y_center, f"${m_latex}$", fontsize=16, ha='center', va='center', color='#1E3A8A')
             
         fig_dt.tight_layout(pad=0)
         tmp_dt = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
