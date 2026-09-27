@@ -93,7 +93,6 @@ def clean_latex_to_text(l_str):
     s = s.replace("{", "").replace("}", "").replace("\\", "")
     return s
 
-# مُنقي الأكواد الاحترافي (يحذف الأقواس المطاطية المسببة لانهيار مكتبة الرسم)
 def sanitize_latex(expr):
     if not isinstance(expr, str): expr = sp.latex(expr)
     s = expr.replace('log', 'ln')
@@ -135,7 +134,6 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         elif char == 'CLR': st.session_state[target] = ""
         else: st.session_state[target] += char
 
-    # رموز مضغوطة وذكية لمنع ظهور علامة الاقتطاع (...) في الهواتف
     keys = [
         [("x", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
         [("m", "m"), ("π", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
@@ -234,7 +232,6 @@ if valid_input:
         if not any(abs(p['val'] - val) < 1e-4 for p in pts_var_exact):
             pts_var_exact.append({'val': val, 'sym': r, 'latex_x': sanitize_latex(r), 'type': 'extrema'})
 
-    # المحرك الهجين لالتقاط النقاط الزاوية غير القابلة للاشتقاق رياضياً
     is_valid_plot = ~np.isnan(y_vals_plot)
     edges = np.diff(is_valid_plot.astype(int))
     starts = np.where(edges == 1)[0] + 1
@@ -264,6 +261,19 @@ if valid_input:
             
     pts_var_exact.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
     pts_var_exact.sort(key=lambda p: p['val'])
+
+    # خوارزمية ذكية لاختبار قابلية الاشتقاق عند النقاط الحدية (كشف النقاط الزاوية)
+    df_func_test = sp.lambdify(x_sym, df_expr, 'numpy')
+    for p in pts_var_exact:
+        if p['type'] == 'extrema':
+            v_test = p['val']
+            with np.errstate(all='ignore'):
+                df_val = df_func_test(v_test)
+                df_near_plus = df_func_test(v_test + 1e-4)
+                df_near_minus = df_func_test(v_test - 1e-4)
+            # إذا تضخمت المشتقة نحو المالانهاية، فهذا يعني أن الدالة لا تقبل الاشتقاق هنا (نقطة زاوية)
+            if not np.isfinite(df_val) or abs(df_near_plus) > 20 or abs(df_near_minus) > 20:
+                p['type'] = 'corner'
 
     valid_intervals = []
     for i in range(len(pts_var_exact) - 1):
@@ -313,7 +323,7 @@ if valid_input:
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # النهايات الرياضية والخوارزمية الدفاعية لمنع الانهيار
+    # النهايات الرياضية والمشتقة
     # ---------------------------------------------------------
     limits_data_detailed = []
     limits_mpl_list = []
@@ -324,11 +334,9 @@ if valid_input:
             lim_latex = "+\infty" if lim == sp.oo else sanitize_latex(lim)
             expr_latex = sanitize_latex(f_expr)
             
-            # لواجهة التطبيق
             latex_streamlit = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
             limits_data_detailed.append(latex_streamlit)
             
-            # للـ PDF 
             lhs_mpl = fr"\lim_{{x \to {dir_latex}}} f(x) = \lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) ="
             rhs_mpl = fr"{lim_latex}"
             limits_mpl_list.append((lhs_mpl, rhs_mpl))
@@ -365,7 +373,7 @@ if valid_input:
         except:
             ax_l.clear()
             ax_l.axis('off')
-            ax_l.text(0.5, 0.5, "لم نتمكن من رسم المعادلات المعقدة", fontsize=18, ha='center', va='center', color='#D32F2F')
+            ax_l.text(0.5, 0.5, "خطأ في رسم المعادلات", fontsize=18, ha='center', va='center', color='#D32F2F')
             
         tmp_l = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
         fig_l.savefig(tmp_l.name, bbox_inches='tight', dpi=300)
@@ -376,12 +384,14 @@ if valid_input:
 
     def generate_deriv_image():
         df_simp = sp.simplify(df_expr)
+        # إبطال التبسيط المجزأ (Piecewise) إذا كان سيؤدي لشكل معقد
+        if df_simp.has(sp.Piecewise): df_simp = df_expr 
+        
         df_latex_str = sanitize_latex(df_simp)
         math_str = fr"f'(x) = {df_latex_str}"
         fig_d, ax_d = plt.subplots(figsize=(8, 1.2))
         ax_d.axis('off')
         
-        # نظام الحماية: في حال فشلت مكتبة الرسم في قراءة الكود تستخدم الدالة كـنص رياضي عادي 
         try:
             ax_d.text(0.5, 0.5, f"${math_str}$", fontsize=24, ha='center', va='center', color='#1E3A8A')
             fig_d.canvas.draw()
@@ -447,6 +457,10 @@ if valid_input:
                 ax_v.plot([x_c, x_c], [4, 5], 'k-', lw=1.2, zorder=2)
                 ax_v.text(x_c, 4.5, '0', ha='center', va='center', fontsize=16)
                 ax_v.plot([x_c, x_c], [0, 4], 'k:', lw=1, alpha=0.5, zorder=2)
+            elif p['type'] == 'corner': # رسم خطوط عدم قابلية الاشتقاق (||)
+                ax_v.plot([x_c-0.03, x_c-0.03], [4, 5], 'k-', lw=1.5, color='#D32F2F', zorder=2)
+                ax_v.plot([x_c+0.03, x_c+0.03], [4, 5], 'k-', lw=1.5, color='#D32F2F', zorder=2)
+                ax_v.plot([x_c, x_c], [0, 4], 'k:', lw=1, alpha=0.5, zorder=2)
 
             if i < N - 1:
                 x_ic = x_c + (col_w / 2.0)
@@ -470,7 +484,7 @@ if valid_input:
                 if i < N-1 and valid_intervals[i]:
                     lim_r = sp.limit(f_expr, x_sym, p['sym'], dir='+')
                     nodes.append((x_c+0.4, float(sp.N(lim_r)) if lim_r.is_real else float('inf') if lim_r==sp.oo else float('-inf'), get_lim_latex_for_table(lim_r)))
-            elif p['type'] == 'extrema':
+            elif p['type'] in ['extrema', 'corner']:
                 sym_y = sp.simplify(f_expr.subs(x_sym, p['sym']))
                 nodes.append((x_c, float(sp.N(sym_y)), sanitize_latex(sym_y)))
 
@@ -660,7 +674,7 @@ if valid_input:
         final_table_latex.append((pdf_latex, sol_text))
 
     # ---------------------------------------------------------
-    # دوال واجهة الويب وملف الـ PDF النهائي (مع الألوان)
+    # دوال واجهة الويب وملف الـ PDF النهائي
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
@@ -855,8 +869,11 @@ if valid_input:
                     st.latex(lim)
                     
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
-                df_latex_str = sanitize_latex(sp.simplify(df_expr))
-                st.latex(fr"f'(x) = {df_latex_str}")
+                # استخدام النسخة غير المبسطة إذا كان التبسيط يؤدي لظهور دالة مجزأة غير أنيقة
+                df_simp_ui = sp.simplify(df_expr)
+                if df_simp_ui.has(sp.Piecewise): df_simp_ui = df_expr
+                df_latex_str_ui = sanitize_latex(df_simp_ui)
+                st.latex(fr"f'(x) = {df_latex_str_ui}")
                 
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
                 if var_table_image_path:
