@@ -134,7 +134,7 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # استخراج القيم المظبوطة والمقاربات (Exact Symbolic Engine)
+    # استخراج القيم المظبوطة (Exact Symbolic Engine)
     # ---------------------------------------------------------
     sym_m_critical = []
     unique_asymptotes = []
@@ -235,7 +235,8 @@ if valid_input:
                 'explanation': explanation,
                 'latex': latex_streamlit
             })
-            mpl_str = fr"\lim_{{x \to {dir_latex}}} f(x) = \mathbf{{{lim_latex}}}"
+            # تمت إزالة mathbf من سلسلة Matplotlib لتجنب خطأ ValueError مع المالانهاية
+            mpl_str = fr"\lim_{{x \to {dir_latex}}} f(x) = {lim_latex}"
             limits_mpl_list.append((ar_desc, mpl_str))
         except: pass
 
@@ -520,9 +521,6 @@ if valid_input:
         final_table_data.append((math_html, sol_text, L, H))
         final_table_plain.append((plain_m, sol_text))
 
-    # ---------------------------------------------------------
-    # دوال واجهة الويب وملف الـ PDF الملون
-    # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
         html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>عدد وطبيعة الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
