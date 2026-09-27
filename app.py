@@ -43,9 +43,9 @@ st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>
 st.markdown("<div class='title-dis'>المناقشة البيانية ودراسة الدالة</div>", unsafe_allow_html=True)
 
 def fmt(val):
-    if str(val) == 'oo' or val == float('inf'): return "+∞"
-    if str(val) == '-oo' or val == float('-inf'): return "-∞"
-    if str(val) == 'zoo': return "±∞"
+    if str(val) == 'oo' or val == float('inf'): return "+\infty"
+    if str(val) == '-oo' or val == float('-inf'): return "-\infty"
+    if str(val) == 'zoo': return "\pm\infty"
     try:
         f_val = float(val)
         if not np.isfinite(f_val): return str(val)
@@ -55,6 +55,10 @@ def fmt(val):
     except:
         return str(val)
 
+def fmt_pdf(val):
+    v = fmt(val)
+    return v.replace("\infty", "∞").replace("\pm", "±")
+
 def fix_implicit_mult(expr_str):
     if "()" in expr_str: expr_str = expr_str.replace("()", "(1)")
     expr_str = expr_str.replace('^', '**')
@@ -63,8 +67,7 @@ def fix_implicit_mult(expr_str):
     return expr_str
 
 def fix_arabic(text):
-    reshaped_text = arabic_reshaper.reshape(text)
-    return get_display(reshaped_text)
+    return get_display(arabic_reshaper.reshape(text))
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
@@ -105,14 +108,11 @@ try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
     transformations = (standard_transformations + (implicit_multiplication_application,))
     local_dict = {'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
-    
     f_processed = fix_implicit_mult(st.session_state.f_val)
     g_processed = fix_implicit_mult(st.session_state.g_val)
-    
     with sp.evaluate(False):
         f_expr = parse_expr(f_processed, local_dict=local_dict, transformations=transformations, evaluate=False)
         g_expr = parse_expr(g_processed, local_dict=local_dict, transformations=transformations, evaluate=False)
-        
     valid_input = True
 except:
     st.error("⚠️ صيغة غير صالحة أو الخانة فارغة.")
@@ -220,7 +220,7 @@ if valid_input:
             val_str = fmt(lim)
             dir_str = "+\infty" if direction == sp.oo else "-\infty"
             limits_html_list.append(fr"\lim_{{x \to {dir_str}}} f(x) = {val_str}")
-            limits_pdf_list.append(f"lim (x -> {dir_str}) = {val_str}")
+            limits_pdf_list.append(f"lim (x ➔ {fmt_pdf(dir_str)}) f(x) = {fmt_pdf(val_str)}")
     except: pass
 
     for v in candidate_v_asymptotes:
@@ -228,53 +228,44 @@ if valid_input:
         try:
             lim_l = sp.limit(f_expr, x_sym, v, dir='-')
             limits_html_list.append(fr"\lim_{{x \to {v_str}^-}} f(x) = {fmt(lim_l)}")
-            limits_pdf_list.append(f"lim (x -> {v_str} <) = {fmt(lim_l)}")
+            limits_pdf_list.append(f"lim (x ➔ {fmt_pdf(v_str)} <) f(x) = {fmt_pdf(lim_l)}")
         except: pass
         try:
             lim_r = sp.limit(f_expr, x_sym, v, dir='+')
             limits_html_list.append(fr"\lim_{{x \to {v_str}^+}} f(x) = {fmt(lim_r)}")
-            limits_pdf_list.append(f"lim (x -> {v_str} >) = {fmt(lim_r)}")
+            limits_pdf_list.append(f"lim (x ➔ {fmt_pdf(v_str)} >) f(x) = {fmt_pdf(lim_r)}")
         except: pass
 
     # ---------------------------------------------------------
-    # بناء بيانات جدول التغيرات
+    # بناء جدول التغيرات الاحترافي (Vector Graphic باستخدام Matplotlib)
     # ---------------------------------------------------------
     v_asym_x = [v['val'] for v in unique_asymptotes if v['type'] == 'v']
     critical_x_var = sorted(list(set(x_extrema + v_asym_x)))
     pts_var = [-np.inf] + critical_x_var + [np.inf]
+    N = len(pts_var)
     
-    x_row, sign_row, f_row = [], [], []
-    for i in range(len(pts_var)):
-        val = pts_var[i]
+    def generate_variation_table_image():
+        fig_v, ax_v = plt.subplots(figsize=(max(8, N*1.5), 3.5))
+        ax_v.axis('off')
+        x_max = 1.2 + N * 2
         
-        if val == -np.inf: x_row.append("-∞")
-        elif val == np.inf: x_row.append("+∞")
-        else: x_row.append(fmt(val))
+        # رسم هيكل الجدول الرياضي
+        ax_v.plot([0, x_max], [6, 6], 'k-', lw=2)
+        ax_v.plot([0, x_max], [5, 5], 'k-', lw=1.5)
+        ax_v.plot([0, x_max], [4, 4], 'k-', lw=1.5)
+        ax_v.plot([0, x_max], [0, 0], 'k-', lw=2)
+        ax_v.plot([0, 0], [0, 6], 'k-', lw=2)
+        ax_v.plot([1.2, 1.2], [0, 6], 'k-', lw=2)
+        ax_v.plot([x_max, x_max], [0, 6], 'k-', lw=2)
         
-        if val == -np.inf or val == np.inf:
-            try: f_row.append(fmt(sp.limit(f_expr, x_sym, val)))
-            except: f_row.append("Ø")
-            sign_row.append("")
-        elif val in candidate_v_asymptotes:
-            try: l_str = fmt(sp.limit(f_expr, x_sym, val, dir='-'))
-            except: l_str = "Ø"
-            try: r_str = fmt(sp.limit(f_expr, x_sym, val, dir='+'))
-            except: r_str = "Ø"
-            
-            if l_str == "Ø" and r_str == "Ø": f_row.append("||")
-            elif l_str == "Ø": f_row.append(f"|| {r_str}")
-            elif r_str == "Ø": f_row.append(f"{l_str} ||")
-            else: f_row.append(f"{l_str} || {r_str}")
-            sign_row.append("||")
-        else:
-            f_row.append(fmt(f_func(val)))
-            sign_row.append("0")
-
-        if i < len(pts_var) - 1:
+        # التسميات (x, f'(x), f(x))
+        ax_v.text(0.6, 5.5, '$x$', ha='center', va='center', fontsize=18)
+        ax_v.text(0.6, 4.5, "$f'(x)$", ha='center', va='center', fontsize=18)
+        ax_v.text(0.6, 2.0, '$f(x)$', ha='center', va='center', fontsize=18)
+        
+        signs, valid = [], []
+        for i in range(N - 1):
             left, right = pts_var[i], pts_var[i+1]
-            x_row.append("")
-            
-            mid = 0
             if left == -np.inf and right == np.inf: mid = 0
             elif left == -np.inf: mid = right - 1
             elif right == np.inf: mid = left + 1
@@ -282,41 +273,104 @@ if valid_input:
             
             y_mid = f_func(mid)
             if not np.isfinite(y_mid):
-                sign_row.append("///"); f_row.append("///")
+                signs.append(None); valid.append(False)
             else:
-                y_mid_plus = f_func(mid + 1e-5)
-                if y_mid_plus > y_mid: sign_row.append("+"); f_row.append("↗")
-                else: sign_row.append("-"); f_row.append("↘")
+                valid.append(True)
+                signs.append("+" if f_func(mid + 1e-5) > y_mid else "-")
+                
+        nodes = []
+        for i in range(N):
+            x_val = pts_var[i]
+            x_c = 1.2 + i * 2 # إحداثيات مركز النقطة
+            
+            # كتابة قيم x
+            v_str = "-\infty" if x_val == -np.inf else "+\infty" if x_val == np.inf else fmt(x_val)
+            ax_v.text(x_c, 5.5, f"${v_str}$", ha='center', va='center', fontsize=15)
+            
+            # خطوط القيم الممنوعة والمعدومة
+            if x_val in candidate_v_asymptotes:
+                ax_v.plot([x_c-0.05, x_c-0.05], [0, 5], 'k-', lw=1.5)
+                ax_v.plot([x_c+0.05, x_c+0.05], [0, 5], 'k-', lw=1.5)
+            elif x_val != -np.inf and x_val != np.inf:
+                ax_v.plot([x_c, x_c], [4, 5], 'k-', lw=1.2)
+                ax_v.text(x_c, 4.5, '0', ha='center', va='center', fontsize=14)
+                ax_v.plot([x_c, x_c], [0, 4], 'k:', lw=1, alpha=0.5)
 
-    latex_str = r"\begin{array}{|c|" + "c" * len(x_row) + r"|}" + "\n"
-    latex_str += r"\hline" + "\n"
-    
-    tex_x = []
-    for x in x_row:
-        if x == "-∞": tex_x.append(r"-\infty")
-        elif x == "+∞": tex_x.append(r"+\infty")
-        elif x == "": tex_x.append("")
-        else: tex_x.append(str(x))
-    latex_str += r"x & " + " & ".join(tex_x) + r" \\ \hline" + "\n"
-    
-    tex_s = []
-    for s in sign_row:
-        if s == "///": tex_s.append(r"\blacksquare")
-        else: tex_s.append(str(s))
-    latex_str += r"f'(x) & " + " & ".join(tex_s) + r" \\ \hline" + "\n"
-    
-    tex_f = []
-    for f in f_row:
-        f_cl = f.replace("-∞", r"-\infty").replace("+∞", r"+\infty")
-        f_cl = f_cl.replace("↗", r"\nearrow").replace("↘", r"\searrow")
-        if "||" in f_cl:
-            parts = f_cl.split("||")
-            if len(parts) == 2: tex_f.append(r"\begin{matrix} " + parts[0].strip() + r" \\ " + parts[1].strip() + r" \end{matrix}")
-            else: tex_f.append(f_cl)
-        elif f_cl == "///": tex_f.append(r"\blacksquare")
-        else: tex_f.append(f_cl)
-    latex_str += r"f(x) & " + " & ".join(tex_f) + r" \\ \hline" + "\n"
-    latex_str += r"\end{array}"
+            # تظليل المجالات المرفوضة وإضافة الإشارات
+            if i < N - 1:
+                x_ic = x_c + 1
+                if not valid[i]:
+                    rect = plt.Rectangle((x_c, 0), 2, 5, facecolor='#EF4444', alpha=0.7)
+                    ax_v.add_patch(rect)
+                else:
+                    ax_v.text(x_ic, 4.5, f"${signs[i]}$", ha='center', va='center', fontsize=20)
+            
+            # استخراج النهايات والصور لحساب الأسهم
+            if x_val == -np.inf:
+                try: 
+                    v = sp.limit(f_expr, x_sym, -sp.oo)
+                    val_str = "+\infty" if v == sp.oo else "-\infty" if v == -sp.oo else fmt(v)
+                    nodes.append((x_c+0.2, float(v) if v.is_real else float('inf') if v==sp.oo else float('-inf'), val_str))
+                except: nodes.append((x_c+0.2, 0, "?"))
+            elif x_val == np.inf:
+                try: 
+                    v = sp.limit(f_expr, x_sym, sp.oo)
+                    val_str = "+\infty" if v == sp.oo else "-\infty" if v == -sp.oo else fmt(v)
+                    nodes.append((x_c-0.2, float(v) if v.is_real else float('inf') if v==sp.oo else float('-inf'), val_str))
+                except: nodes.append((x_c-0.2, 0, "?"))
+            elif x_val in candidate_v_asymptotes:
+                if i > 0 and valid[i-1]:
+                    try:
+                        v = sp.limit(f_expr, x_sym, x_val, dir='-')
+                        val_str = "+\infty" if v == sp.oo else "-\infty" if v == -sp.oo else fmt(v)
+                        nodes.append((x_c-0.2, float(v) if v.is_real else float('inf') if v==sp.oo else float('-inf'), val_str))
+                    except: nodes.append((x_c-0.2, 0, "?"))
+                if i < N-1 and valid[i]:
+                    try:
+                        v = sp.limit(f_expr, x_sym, x_val, dir='+')
+                        val_str = "+\infty" if v == sp.oo else "-\infty" if v == -sp.oo else fmt(v)
+                        nodes.append((x_c+0.2, float(v) if v.is_real else float('inf') if v==sp.oo else float('-inf'), val_str))
+                    except: nodes.append((x_c+0.2, 0, "?"))
+            else:
+                v = f_func(x_val)
+                nodes.append((x_c, float(v), fmt(v)))
+
+        # رسم الأسهم الحقيقية والنهايات
+        for i in range(N - 1):
+            if valid[i]:
+                x_c_left = 1.2 + i * 2
+                x_c_right = 1.2 + (i+1) * 2
+                l_node = next((n for n in nodes if n[0] >= x_c_left and n[0] <= x_c_left + 0.5), None)
+                r_node = next((n for n in nodes if n[0] >= x_c_right - 0.5 and n[0] <= x_c_right), None)
+                
+                if l_node and r_node:
+                    y_l = 0.8 if signs[i] == "+" else 3.2
+                    y_r = 3.2 if signs[i] == "+" else 0.8
+                    
+                    if l_node[1] == float('inf'): y_l = 3.2
+                    elif l_node[1] == float('-inf'): y_l = 0.8
+                    if r_node[1] == float('inf'): y_r = 3.2
+                    elif r_node[1] == float('-inf'): y_r = 0.8
+                    if y_l == y_r: y_l = 2.0; y_r = 2.0
+                    
+                    ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=14)
+                    ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=14)
+                    
+                    pad_x, pad_y = 0.2, 0.3
+                    start_x, end_x = l_node[0] + pad_x, r_node[0] - pad_x
+                    start_y = y_l + (pad_y if signs[i]=="+" else -pad_y)
+                    end_y = y_r + (-pad_y if signs[i]=="+" else pad_y)
+                    if y_l == y_r: start_y = end_y = y_l
+                    
+                    ax_v.annotate('', xy=(end_x, end_y), xytext=(start_x, start_y), arrowprops=dict(arrowstyle="->", color="#1565C0", lw=2))
+                                
+        fig_v.tight_layout()
+        tmp_v = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+        fig_v.savefig(tmp_v.name, bbox_inches='tight', dpi=300)
+        plt.close(fig_v)
+        return tmp_v.name
+
+    var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
     # تصنيف الحلول الصارم للمناقشة البيانية
@@ -451,45 +505,6 @@ if valid_input:
 
     def generate_pdf(fig_path):
         if not PDF_ENABLED: return None
-        
-        # إنشاء صورة لجدول التغيرات باستخدام Matplotlib للـ PDF (لمنع تشوهه)
-        fig_tab, ax_tab = plt.subplots(figsize=(max(8, len(x_row)*0.9), 2.5))
-        ax_tab.axis('off')
-        
-        def mp_fmt(s):
-            s = str(s).replace("-∞", r"$-\infty$").replace("+∞", r"$+\infty$")
-            s = s.replace("↗", r"$\nearrow$").replace("↘", r"$\searrow$")
-            if "||" in s:
-                parts = s.split("||")
-                if len(parts) == 2: return parts[0].strip() + "\n" + parts[1].strip()
-            if s == "///": return "X"
-            return s
-            
-        tab_data = [
-            ["x"] + [mp_fmt(v) for v in x_row],
-            ["f'(x)"] + [mp_fmt(v) for v in sign_row],
-            ["f(x)"] + [mp_fmt(v) for v in f_row]
-        ]
-        
-        table = ax_tab.table(cellText=tab_data, loc='center', cellLoc='center')
-        table.auto_set_font_size(False)
-        table.set_fontsize(16)
-        table.scale(1, 3.5)
-        
-        for (row, col), cell in table.get_celld().items():
-            if col == 0:
-                cell.set_facecolor("#1E3A8A")
-                cell.get_text().set_color("white")
-                cell.get_text().set_fontweight("bold")
-            elif cell.get_text().get_text() == "X":
-                cell.set_facecolor("#EF4444")
-                cell.get_text().set_text("")
-                
-        fig_tab.tight_layout()
-        tmp_tab = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-        fig_tab.savefig(tmp_tab.name, bbox_inches='tight', dpi=250)
-        plt.close(fig_tab)
-        
         pdf = FPDF(orientation='P', unit='mm', format='A4')
         font_path = "Amiri-Regular.ttf"
         
@@ -498,10 +513,9 @@ if valid_input:
                 req = urllib.request.Request("https://github.com/google/fonts/raw/main/ofl/amiri/Amiri-Regular.ttf", headers={'User-Agent': 'Mozilla/5.0'})
                 with urllib.request.urlopen(req) as response, open(font_path, 'wb') as out_file: out_file.write(response.read())
             except: pass
-            
         if not os.path.exists(font_path) or os.path.getsize(font_path) < 10000: return None
             
-        # الصفحة الأولى: المناقشة البيانية
+        # الصفحة الأولى: المناقشة
         pdf.add_page()
         pdf.add_font("Amiri", "", font_path, uni=True)
         pdf.set_font("Amiri", size=24)
@@ -521,7 +535,7 @@ if valid_input:
             pdf.cell(95, 12, m_str, border=1, align='C', fill=True)
             pdf.cell(95, 12, fix_arabic(text_str), border=1, ln=True, align='C', fill=True)
 
-        # الصفحة الثانية: دراسة الدالة
+        # الصفحة الثانية: دراسة الدالة وجدول التغيرات
         pdf.add_page()
         pdf.set_font("Amiri", size=20)
         pdf.set_text_color(21, 101, 192)
@@ -537,10 +551,9 @@ if valid_input:
         exp = "لحساب النهايات، نقوم بتعويض قيم المتغير عند أطراف مجموعة التعريف. وإذا واجهنا حالة عدم تعيين نستخدم قواعد الاختزال أو المبرهنات الشهيرة. النتائج هي:"
         pdf.multi_cell(0, 8, fix_arabic(exp), align='R')
         
-        # استخدام خط Amiri هنا لحل مشكلة الترميز بشكل نهائي
-        pdf.set_font("Amiri", size=14) 
+        pdf.set_font("Amiri", size=14)
         pdf.set_text_color(0, 0, 0)
-        for txt in limits_pdf_list: pdf.cell(0, 8, txt.replace("oo", "∞"), ln=True, align='L')
+        for txt in limits_pdf_list: pdf.cell(0, 8, txt, ln=True, align='L')
         pdf.ln(8)
 
         pdf.set_font("Amiri", size=16)
@@ -548,8 +561,8 @@ if valid_input:
         pdf.cell(0, 10, fix_arabic("2. جدول التغيرات الرياضي الكامل:"), ln=True, align='R')
         pdf.ln(5)
         
-        # إدراج صورة جدول التغيرات العالية الدقة
-        pdf.image(tmp_tab.name, x=10, w=190)
+        # إدراج صورة جدول التغيرات الرسومي عالية الدقة
+        pdf.image(var_table_image_path, x=10, w=190)
 
         pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
         pdf.output(pdf_file.name)
@@ -626,11 +639,12 @@ if valid_input:
             
             with st.expander("📊 عرض دراسة الدالة الشاملة (مستخرجة آلياً)", expanded=False):
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. شرح وحساب النهايات:</h4>", unsafe_allow_html=True)
-                st.markdown("<p style='text-align:right; direction:rtl; color:#E2E8F0; font-size:16px;'>لحساب النهايات، نقوم بتعويض قيم $x$ عند أطراف مجموعة التعريف. إذا واجهنا حالة عدم تعيين نستعمل قواعد الاختزال والنهايات الشهيرة.</p>", unsafe_allow_html=True)
+                st.markdown("<p style='text-align:right; direction:rtl; color:#E2E8F0; font-size:16px;'>لحساب النهايات، نقوم بتعويض قيم المتغير عند أطراف مجموعة التعريف. وإذا واجهنا حالة عدم تعيين نستخدم قواعد الاختزال أو المبرهنات الشهيرة. النتائج:</p>", unsafe_allow_html=True)
                 for math_str in limits_html_list: st.latex(math_str)
                 
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. جدول التغيرات (الرياضي الكامل):</h4>", unsafe_allow_html=True)
-                st.latex(latex_str)
+                # عرض الصورة الرسومية الفائقة الدقة للجدول
+                st.image(var_table_image_path, use_column_width=True)
             
             if PDF_ENABLED and not st.session_state.auto_play:
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
