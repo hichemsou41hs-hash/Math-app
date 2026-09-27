@@ -34,16 +34,6 @@ st.markdown("""
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) > div[data-testid="column"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; flex: none !important; padding: 0 !important; display: block !important; }
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button { width: 100% !important; height: 48px !important; padding: 0px !important; margin: 0 !important; border-radius: 6px !important; background-color: #334155 !important; color: #00E5FF !important; border: 1px solid #475569 !important; box-shadow: 0 4px 0 #090e1a !important; transition: all 0.1s !important; }
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button:active { transform: translateY(4px) !important; box-shadow: 0 0 0 #090e1a !important; background-color: #00E5FF !important; color: #0F172A !important; }
-    
-    /* شفرة CSS المضافة لمنع اختفاء المربعات في لوحة المفاتيح */
-    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button p { 
-        font-size: 17px !important; 
-        overflow: visible !important; 
-        text-overflow: clip !important; 
-        white-space: nowrap !important;
-        letter-spacing: -1px !important; 
-    }
-    
     button[kind="primary"] { width: 100% !important; height: 50px !important; background-color: #ef4444 !important; color: white !important; font-size: 18px !important; font-weight: bold !important; border-radius: 8px !important; box-shadow: 0 4px 0 #7f1d1d !important; border: none !important; margin-top: 5px !important; }
     button[kind="primary"]:active { transform: translateY(4px) !important; box-shadow: 0 0 0 #7f1d1d !important; background-color: #dc2626 !important; }
     </style>
@@ -110,7 +100,7 @@ def get_sol_color_html(sol_text):
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
-if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(x)"
+if 'f_val' not in st.session_state: st.session_state.f_val = "-x*e^x+x"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -177,7 +167,7 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # استخراج القيم المظبوطة (Exact Symbolic Engine)
+    # استخراج القيم المظبوطة (Exact Symbolic Engine) والمشتقة
     # ---------------------------------------------------------
     sym_m_critical = []
     unique_asymptotes = []
@@ -199,9 +189,11 @@ if valid_input:
     for r in candidate_v_asymptotes:
         unique_asymptotes.append({'type': 'v', 'val': float(sp.N(r)), 'label': f"x={sp.latex(r).replace('log', 'ln')}"})
 
+    # حساب الدالة المشتقة
+    df_expr = sp.diff(f_expr, x_sym)
+    
     sym_extrema = []
     try:
-        df_expr = sp.diff(f_expr, x_sym)
         for r in sp.solve(df_expr, x_sym):
             if r.is_real is not False and sp.im(sp.N(r)) == 0:
                 sym_extrema.append(r)
@@ -271,7 +263,7 @@ if valid_input:
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # النهايات الرياضية الخالصة بخطوات واضحة وتلوين مبهر
+    # النهايات الرياضية والمشتقة (تلوين الخطوات والنتائج)
     # ---------------------------------------------------------
     limits_data_detailed = []
     limits_mpl_list = []
@@ -282,9 +274,11 @@ if valid_input:
             lim_latex = "+\infty" if lim == sp.oo else sp.latex(lim).replace('log', 'ln')
             expr_latex = sp.latex(f_expr).replace('log', 'ln')
             
+            # لواجهة التطبيق
             latex_streamlit = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
             limits_data_detailed.append(latex_streamlit)
             
+            # للـ PDF (فصل الطرفين للتلوين)
             lhs_mpl = fr"\lim_{{x \to {dir_latex}}} f(x) = \lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) ="
             rhs_mpl = fr"{lim_latex}"
             limits_mpl_list.append((lhs_mpl, rhs_mpl))
@@ -302,6 +296,7 @@ if valid_input:
                 if i > 0 and valid_intervals[i-1]: add_limit(p['sym'], '-', fr"{v_latex}^-")
                 if i < len(valid_intervals) and valid_intervals[i]: add_limit(p['sym'], '+', fr"{v_latex}^+")
 
+    # دالة رسم النهايات للـ PDF
     def generate_limits_image():
         all_lines = [(domain_latex_mpl, "")] + limits_mpl_list
         n_lines = len(all_lines)
@@ -324,8 +319,23 @@ if valid_input:
 
     limits_image_path = generate_limits_image()
 
+    # دالة رسم المشتقة للـ PDF
+    def generate_deriv_image():
+        df_latex_str = sp.latex(sp.simplify(df_expr)).replace('log', 'ln')
+        math_str = fr"f'(x) = {df_latex_str}"
+        fig_d, ax_d = plt.subplots(figsize=(6, 1.2))
+        ax_d.axis('off')
+        ax_d.text(0.5, 0.5, f"${math_str}$", fontsize=24, ha='center', va='center', color='#1E3A8A')
+        fig_d.tight_layout(pad=0)
+        tmp_d = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+        fig_d.savefig(tmp_d.name, bbox_inches='tight', dpi=300)
+        plt.close(fig_d)
+        return tmp_d.name
+        
+    deriv_image_path = generate_deriv_image()
+
     # ---------------------------------------------------------
-    # بناء جدول التغيرات الاحترافي
+    # بناء جدول التغيرات الاحترافي (Vector Graphic)
     # ---------------------------------------------------------
     N = len(pts_var_exact)
     def generate_variation_table_image():
@@ -432,7 +442,7 @@ if valid_input:
     var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
-    # المناقشة البيانية (استخراج المجالات الدقيقة)
+    # المناقشة البيانية 
     # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
@@ -658,7 +668,7 @@ if valid_input:
         pdf.add_page()
         pdf.add_font("Amiri", "", font_path, uni=True)
         pdf.set_font("Amiri", size=24)
-        pdf.set_text_color(21, 101, 192) 
+        pdf.set_text_color(21, 101, 192)
         pdf.cell(0, 10, fix_arabic_pdf("الأستاذ سوايسية هشام - المناقشة البيانية"), ln=True, align='C')
         pdf.ln(5); pdf.image(fig_path, x=15, w=180); pdf.ln(5)
         
@@ -672,18 +682,28 @@ if valid_input:
         pdf.cell(0, 15, fix_arabic_pdf("دراسة الدالة الشاملة (مستخرجة آلياً)"), ln=True, align='C')
         pdf.ln(5)
         
+        # العناوين باللون الأحمر الأنيق (Crimson Red)
         pdf.set_font("Amiri", size=16)
-        pdf.set_text_color(194, 24, 91) 
+        pdf.set_text_color(194, 24, 91)
         pdf.cell(0, 10, fix_arabic_pdf("1. استنتاج مجموعة التعريف وحساب النهايات:"), ln=True, align='R')
         pdf.ln(2)
         
         if limits_image_path:
-            pdf.image(limits_image_path, x=15, w=180)
+            pdf.image(limits_image_path, x=20, w=170)
             pdf.ln(5)
 
         pdf.set_font("Amiri", size=16)
         pdf.set_text_color(194, 24, 91)
-        pdf.cell(0, 10, fix_arabic_pdf("2. جدول التغيرات الرياضي بالقيم المضبوطة:"), ln=True, align='R')
+        pdf.cell(0, 10, fix_arabic_pdf("2. حساب الدالة المشتقة:"), ln=True, align='R')
+        pdf.ln(2)
+        
+        if deriv_image_path:
+            pdf.image(deriv_image_path, x=50, w=110)
+            pdf.ln(5)
+
+        pdf.set_font("Amiri", size=16)
+        pdf.set_text_color(194, 24, 91)
+        pdf.cell(0, 10, fix_arabic_pdf("3. جدول التغيرات:"), ln=True, align='R')
         pdf.ln(5)
         
         if var_table_image_path:
@@ -768,8 +788,12 @@ if valid_input:
                 
                 for lim in limits_data_detailed:
                     st.latex(lim)
+                    
+                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
+                df_latex_str = sp.latex(sp.simplify(df_expr)).replace('log', 'ln')
+                st.latex(fr"f'(x) = {df_latex_str}")
                 
-                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. جدول التغيرات الرياضي بالقيم المضبوطة:</h4>", unsafe_allow_html=True)
+                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
                 if var_table_image_path:
                     st.image(var_table_image_path, use_container_width=True)
             
