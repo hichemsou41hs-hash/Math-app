@@ -249,7 +249,6 @@ if valid_input:
         ax_v.axis('off')
         x_max = 1.2 + N * 2
         
-        # رسم هيكل الجدول الرياضي
         ax_v.plot([0, x_max], [6, 6], 'k-', lw=2)
         ax_v.plot([0, x_max], [5, 5], 'k-', lw=1.5)
         ax_v.plot([0, x_max], [4, 4], 'k-', lw=1.5)
@@ -258,7 +257,6 @@ if valid_input:
         ax_v.plot([1.2, 1.2], [0, 6], 'k-', lw=2)
         ax_v.plot([x_max, x_max], [0, 6], 'k-', lw=2)
         
-        # التسميات (x, f'(x), f(x))
         ax_v.text(0.6, 5.5, '$x$', ha='center', va='center', fontsize=18)
         ax_v.text(0.6, 4.5, "$f'(x)$", ha='center', va='center', fontsize=18)
         ax_v.text(0.6, 2.0, '$f(x)$', ha='center', va='center', fontsize=18)
@@ -281,13 +279,11 @@ if valid_input:
         nodes = []
         for i in range(N):
             x_val = pts_var[i]
-            x_c = 1.2 + i * 2 # إحداثيات مركز النقطة
+            x_c = 1.2 + i * 2 
             
-            # كتابة قيم x
             v_str = "-\infty" if x_val == -np.inf else "+\infty" if x_val == np.inf else fmt(x_val)
             ax_v.text(x_c, 5.5, f"${v_str}$", ha='center', va='center', fontsize=15)
             
-            # خطوط القيم الممنوعة والمعدومة
             if x_val in candidate_v_asymptotes:
                 ax_v.plot([x_c-0.05, x_c-0.05], [0, 5], 'k-', lw=1.5)
                 ax_v.plot([x_c+0.05, x_c+0.05], [0, 5], 'k-', lw=1.5)
@@ -296,7 +292,6 @@ if valid_input:
                 ax_v.text(x_c, 4.5, '0', ha='center', va='center', fontsize=14)
                 ax_v.plot([x_c, x_c], [0, 4], 'k:', lw=1, alpha=0.5)
 
-            # تظليل المجالات المرفوضة وإضافة الإشارات
             if i < N - 1:
                 x_ic = x_c + 1
                 if not valid[i]:
@@ -305,7 +300,6 @@ if valid_input:
                 else:
                     ax_v.text(x_ic, 4.5, f"${signs[i]}$", ha='center', va='center', fontsize=20)
             
-            # استخراج النهايات والصور لحساب الأسهم
             if x_val == -np.inf:
                 try: 
                     v = sp.limit(f_expr, x_sym, -sp.oo)
@@ -335,7 +329,6 @@ if valid_input:
                 v = f_func(x_val)
                 nodes.append((x_c, float(v), fmt(v)))
 
-        # رسم الأسهم الحقيقية والنهايات
         for i in range(N - 1):
             if valid[i]:
                 x_c_left = 1.2 + i * 2
@@ -551,9 +544,9 @@ if valid_input:
         exp = "لحساب النهايات، نقوم بتعويض قيم المتغير عند أطراف مجموعة التعريف. وإذا واجهنا حالة عدم تعيين نستخدم قواعد الاختزال أو المبرهنات الشهيرة. النتائج هي:"
         pdf.multi_cell(0, 8, fix_arabic(exp), align='R')
         
-        pdf.set_font("Amiri", size=14)
+        pdf.set_font("Amiri", size=14) 
         pdf.set_text_color(0, 0, 0)
-        for txt in limits_pdf_list: pdf.cell(0, 8, txt, ln=True, align='L')
+        for txt in limits_pdf_list: pdf.cell(0, 8, txt.replace("oo", "∞"), ln=True, align='L')
         pdf.ln(8)
 
         pdf.set_font("Amiri", size=16)
@@ -561,7 +554,6 @@ if valid_input:
         pdf.cell(0, 10, fix_arabic("2. جدول التغيرات الرياضي الكامل:"), ln=True, align='R')
         pdf.ln(5)
         
-        # إدراج صورة جدول التغيرات الرسومي عالية الدقة
         pdf.image(var_table_image_path, x=10, w=190)
 
         pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
@@ -639,12 +631,11 @@ if valid_input:
             
             with st.expander("📊 عرض دراسة الدالة الشاملة (مستخرجة آلياً)", expanded=False):
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. شرح وحساب النهايات:</h4>", unsafe_allow_html=True)
-                st.markdown("<p style='text-align:right; direction:rtl; color:#E2E8F0; font-size:16px;'>لحساب النهايات، نقوم بتعويض قيم المتغير عند أطراف مجموعة التعريف. وإذا واجهنا حالة عدم تعيين نستخدم قواعد الاختزال أو المبرهنات الشهيرة. النتائج:</p>", unsafe_allow_html=True)
+                st.markdown("<p style='text-align:right; direction:rtl; color:#E2E8F0; font-size:16px;'>لحساب النهايات، نقوم بتعويض قيم $x$ عند أطراف مجموعة التعريف. إذا واجهنا حالة عدم تعيين نستعمل قواعد الاختزال والنهايات الشهيرة.</p>", unsafe_allow_html=True)
                 for math_str in limits_html_list: st.latex(math_str)
                 
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. جدول التغيرات (الرياضي الكامل):</h4>", unsafe_allow_html=True)
-                # عرض الصورة الرسومية الفائقة الدقة للجدول
-                st.image(var_table_image_path, use_column_width=True)
+                st.image(var_table_image_path, use_container_width=True)
             
             if PDF_ENABLED and not st.session_state.auto_play:
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
