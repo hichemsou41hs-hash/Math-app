@@ -7,7 +7,6 @@ import time
 import warnings
 import re
 import os
-import urllib.request
 import tempfile
 
 try:
@@ -35,7 +34,6 @@ st.markdown("""
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button { width: 100% !important; height: 48px !important; padding: 0px !important; margin: 0 !important; border-radius: 6px !important; background-color: #334155 !important; color: #00E5FF !important; border: 1px solid #475569 !important; box-shadow: 0 4px 0 #090e1a !important; transition: all 0.1s !important; }
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button:active { transform: translateY(4px) !important; box-shadow: 0 0 0 #090e1a !important; background-color: #00E5FF !important; color: #0F172A !important; }
     
-    /* شفرة CSS لضمان عدم اقتطاع محتوى الأزرار */
     div[data-testid="stHorizontalBlock"] button * { 
         font-size: 17px !important; 
         overflow: visible !important; 
@@ -94,7 +92,7 @@ def clean_latex_to_text(l_str):
     s = s.replace("{", "").replace("}", "").replace("\\", "")
     return s
 
-# منقي أكواد الـ LaTeX لمنع انهيار مكتبة Matplotlib مع الدوال المعقدة مثل الإشارة والجذر
+# منقي أكواد الـ LaTeX لضمان عدم انهيار مكتبة الرسم عند ظهور دوال معقدة (مثل sign و re)
 def sanitize_latex(expr):
     if not isinstance(expr, str): expr = sp.latex(expr)
     return expr.replace('log', 'ln').replace(r'\operatorname', r'\mathrm')
@@ -104,6 +102,8 @@ def get_sol_color_pdf(sol_text):
     if "مضاعف" in sol_text: return "#D97706"       
     if "حل وحيد" in sol_text or "معدوم" in sol_text: return "#2E7D32" 
     if "حلان" in sol_text or "مختلفان" in sol_text: return "#0284C7"  
+    if "ثلاثة" in sol_text: return "#C2185B"
+    if "أربعة" in sol_text: return "#00796B"
     return "#6D28D9"                               
 
 def get_sol_color_html(sol_text):
@@ -111,6 +111,8 @@ def get_sol_color_html(sol_text):
     if "مضاعف" in sol_text: return "#F59E0B"
     if "حل وحيد" in sol_text or "معدوم" in sol_text: return "#4ADE80"
     if "حلان" in sol_text or "مختلفان" in sol_text: return "#38BDF8"
+    if "ثلاثة" in sol_text: return "#F472B6"
+    if "أربعة" in sol_text: return "#2DD4BF"
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
@@ -129,7 +131,6 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         elif char == 'CLR': st.session_state[target] = ""
         else: st.session_state[target] += char
 
-    # استخدام رموز ذكية وضيقة لمنع المتصفح من إخفائها (مربعين بينهما سطر، x²، eˣ)
     keys = [
         [("x", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
         [("m", "m"), ("π", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
@@ -143,8 +144,10 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
             cols[c_idx].button(label, key=f"kb_{r_idx}_{c_idx}", on_click=k_click, args=(val,))
     st.button("مسح الكل (Clear)", on_click=k_click, args=("CLR",), use_container_width=True, type="primary")
 
-# جعل x_sym عدداً حقيقياً حصراً لمنع ظهور مشتقات الدوال المركبة (Complex Math)
+# تعريف المتغيرات كأعداد حقيقية حصراً لمنع خلط محرك SymPy بين x المعطى من المستخدم والرياضي
 x_sym, m_sym = sp.symbols('x m', real=True)
+local_dict = {'x': x_sym, 'm': m_sym, 'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
+
 col1, col2 = st.columns(2)
 with col1: st.text_input("أدخل عبارة الدالة f(x):", key="f_val")
 with col2: st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
@@ -152,10 +155,10 @@ with col2: st.text_input("أدخل معادلة المستقيم بدلالة m:
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
     transformations = (standard_transformations + (implicit_multiplication_application,))
-    local_dict = {'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
     f_processed = fix_implicit_mult(st.session_state.f_val)
     g_processed = fix_implicit_mult(st.session_state.g_val)
     with sp.evaluate(False):
+        # تمرير local_dict يجبر المحرك على استخدام x_sym الحقيقي بدلاً من خلق متغير جديد
         f_expr = parse_expr(f_processed, local_dict=local_dict, transformations=transformations, evaluate=False)
         g_expr = parse_expr(g_processed, local_dict=local_dict, transformations=transformations, evaluate=False)
     valid_input = True
@@ -164,7 +167,7 @@ except:
     valid_input = False
 
 if valid_input:
-    st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {sp.latex(f_expr).replace('log', 'ln')} \\ y = {sp.latex(g_expr).replace('log', 'ln')} \end{{cases}}")
+    st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {sanitize_latex(f_expr)} \\ y = {sanitize_latex(g_expr)} \end{{cases}}")
 
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
@@ -184,7 +187,7 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # استخراج القيم المظبوطة (Exact Symbolic Engine) والمشتقة
+    # المحرك الجبري: استخراج القيم المظبوطة والمشتقة
     # ---------------------------------------------------------
     sym_m_critical = []
     unique_asymptotes = []
@@ -204,7 +207,7 @@ if valid_input:
     candidate_v_asymptotes = list(set(candidate_v_asymptotes))
     
     for r in candidate_v_asymptotes:
-        unique_asymptotes.append({'type': 'v', 'val': float(sp.N(r)), 'label': f"x={sp.latex(r).replace('log', 'ln')}"})
+        unique_asymptotes.append({'type': 'v', 'val': float(sp.N(r)), 'label': f"x={sanitize_latex(r)}"})
 
     df_expr = sp.diff(f_expr, x_sym)
     
@@ -221,12 +224,40 @@ if valid_input:
     pts_var_exact.append({'val': -np.inf, 'sym': -sp.oo, 'latex_x': r"-\infty", 'type': 'inf'})
     
     for r in candidate_v_asymptotes:
-        pts_var_exact.append({'val': float(sp.N(r)), 'sym': r, 'latex_x': sp.latex(r).replace('log', 'ln'), 'type': 'v_asym'})
+        pts_var_exact.append({'val': float(sp.N(r)), 'sym': r, 'latex_x': sanitize_latex(r), 'type': 'v_asym'})
         
     for r in sym_extrema:
         val = float(sp.N(r))
         if not any(abs(p['val'] - val) < 1e-4 for p in pts_var_exact):
-            pts_var_exact.append({'val': val, 'sym': r, 'latex_x': sp.latex(r).replace('log', 'ln'), 'type': 'extrema'})
+            pts_var_exact.append({'val': val, 'sym': r, 'latex_x': sanitize_latex(r), 'type': 'extrema'})
+
+    # المحرك الهجين: التقاط النقاط الزاوية غير القابلة للاشتقاق رياضياً ودمجها في الجدول المضبوط
+    is_valid_plot = ~np.isnan(y_vals_plot)
+    edges = np.diff(is_valid_plot.astype(int))
+    starts = np.where(edges == 1)[0] + 1
+    if is_valid_plot[0]: starts = np.insert(starts, 0, 0)
+    ends = np.where(edges == -1)[0]
+    if is_valid_plot[-1]: ends = np.append(ends, len(y_vals_plot) - 1)
+
+    numeric_extrema_x = []
+    for s, e in zip(starts, ends):
+        segment = y_vals_plot[s:e+1]
+        seg_x = x_vals_plot[s:e+1]
+        if len(segment) > 10:
+            peaks, _ = find_peaks(segment, prominence=0.02)
+            valleys, _ = find_peaks(-segment, prominence=0.02)
+            for p in peaks: numeric_extrema_x.append(float(seg_x[p]))
+            for v in valleys: numeric_extrema_x.append(float(seg_x[v]))
+            
+    for nx in numeric_extrema_x:
+        if not any(abs(p['val'] - nx) < 0.1 for p in pts_var_exact):
+            try:
+                sym_nx = sp.nsimplify(nx, tolerance=0.05)
+                y_val = sp.simplify(f_expr.subs(x_sym, sym_nx))
+                if y_val.is_real:
+                    pts_var_exact.append({'val': float(sp.N(sym_nx)), 'sym': sym_nx, 'latex_x': sanitize_latex(sym_nx), 'type': 'extrema'})
+                    sym_m_critical.append(y_val)
+            except: pass
             
     pts_var_exact.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
     pts_var_exact.sort(key=lambda p: p['val'])
@@ -279,7 +310,7 @@ if valid_input:
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # النهايات الرياضية الخالصة (تلوين الخطوات والنتائج)
+    # النهايات الرياضية والمشتقة (بدون نصوص تعبيرية)
     # ---------------------------------------------------------
     limits_data_detailed = []
     limits_mpl_list = []
@@ -291,10 +322,10 @@ if valid_input:
             expr_latex = sanitize_latex(f_expr)
             
             # لواجهة التطبيق
-            latex_streamlit = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
+            latex_streamlit = fr"\lim_{{x \to {dir_latex}}} f(x) = \lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
             limits_data_detailed.append(latex_streamlit)
             
-            # للـ PDF (فصل الطرفين للتلوين)
+            # لملف الـ PDF (فصل الطرفين لتلوين النتيجة باللون الأحمر وإعطاء مظهر الخطوات المتسلسلة)
             lhs_mpl = fr"\lim_{{x \to {dir_latex}}} f(x) = \lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) ="
             rhs_mpl = fr"{lim_latex}"
             limits_mpl_list.append((lhs_mpl, rhs_mpl))
@@ -456,19 +487,12 @@ if valid_input:
     var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
-    # المناقشة البيانية (بالقيم المضبوطة والمجالات الحقيقية)
+    # المناقشة البيانية الدقيقة وبناء المجالات
     # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
         fl_m = float(sp.N(sm))
         if np.isfinite(fl_m) and abs(fl_m) < 50: m_critical_num.append(round(fl_m, 2))
-        
-    is_valid_plot = ~np.isnan(y_vals_plot)
-    edges = np.diff(is_valid_plot.astype(int))
-    starts = np.where(edges == 1)[0] + 1
-    if is_valid_plot[0]: starts = np.insert(starts, 0, 0)
-    ends = np.where(edges == -1)[0]
-    if is_valid_plot[-1]: ends = np.append(ends, len(y_vals_plot) - 1)
 
     for s, e in zip(starts, ends):
         segment = y_vals_plot[s:e+1]
@@ -480,11 +504,16 @@ if valid_input:
             
     m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 50])))
 
-    def get_exact_m(val_float):
+    def get_exact_strings(val_float):
         for sm in sym_m_critical:
             if abs(float(sp.N(sm)) - val_float) < 1e-2:
-                return sanitize_latex(sm)
-        return fmt(val_float)
+                latex_str = sanitize_latex(sm)
+                plain_str = latex_str
+                plain_str = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"\1/\2", plain_str)
+                plain_str = plain_str.replace(r"\infty", "∞").replace(r"\ln", "ln")
+                plain_str = plain_str.replace("{", "").replace("}", "").replace("\\", "")
+                return latex_str, plain_str
+        return fmt(val_float), fmt(val_float)
 
     def get_roots_text(m_test):
         is_critical = any(abs(m_test - mc) < 1e-2 for mc in m_critical_num)
@@ -547,7 +576,6 @@ if valid_input:
         if pos_s == 1 and neg_s == 2 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل موجب وحلان سالبان"
         if pos_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل موجب"
         if neg_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل سالب"
-
         if len(desc) == 0: return f"{count} حلول"
         return " و ".join(desc)
 
@@ -578,8 +606,8 @@ if valid_input:
         L_inc = any(r[0] == L and r[1] == L and r[2] == sol_text for r in raw_intervals)
         H_inc = any(r[0] == H and r[1] == H and r[2] == sol_text for r in raw_intervals)
         
-        L_latex = r"-\infty" if L == float('-inf') else get_exact_m(L)
-        H_latex = r"+\infty" if H == float('inf') else get_exact_m(H)
+        L_latex, L_plain = get_exact_strings(L) if L != float('-inf') else (r"-\infty", "-∞")
+        H_latex, H_plain = get_exact_strings(H) if H != float('inf') else (r"+\infty", "+∞")
         
         L_html = bound_to_html(L_latex)
         H_html = bound_to_html(H_latex)
@@ -608,7 +636,7 @@ if valid_input:
         final_table_latex.append((pdf_latex, sol_text))
 
     # ---------------------------------------------------------
-    # دوال واجهة الويب وملف الـ PDF النهائي (مع الألوان)
+    # دوال واجهة الويب (جدول HTML) وصناعة جدول صورة للـ PDF 
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
@@ -682,7 +710,7 @@ if valid_input:
         pdf.add_page()
         pdf.add_font("Amiri", "", font_path, uni=True)
         pdf.set_font("Amiri", size=24)
-        pdf.set_text_color(21, 101, 192) 
+        pdf.set_text_color(21, 101, 192)
         pdf.cell(0, 10, fix_arabic_pdf("الأستاذ سوايسية هشام - المناقشة البيانية"), ln=True, align='C')
         pdf.ln(5); pdf.image(fig_path, x=15, w=180); pdf.ln(5)
         
@@ -696,7 +724,6 @@ if valid_input:
         pdf.cell(0, 15, fix_arabic_pdf("دراسة تغيرات الدالة f"), ln=True, align='C')
         pdf.ln(5)
         
-        # تلوين عناوين الأقسام باللون الأحمر العنابي
         pdf.set_font("Amiri", size=16)
         pdf.set_text_color(194, 24, 91) 
         pdf.cell(0, 10, fix_arabic_pdf("1. استنتاج مجموعة التعريف وحساب النهايات:"), ln=True, align='R')
@@ -804,8 +831,7 @@ if valid_input:
                     st.latex(lim)
                     
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
-                df_latex_str = sanitize_latex(sp.simplify(df_expr))
-                st.latex(fr"f'(x) = {df_latex_str}")
+                st.latex(fr"f'(x) = {sanitize_latex(sp.simplify(df_expr))}")
                 
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
                 if var_table_image_path:
