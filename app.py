@@ -9,7 +9,6 @@ import re
 import os
 import urllib.request
 import tempfile
-import base64
 
 # استيراد مكتبات الـ PDF
 try:
@@ -515,7 +514,7 @@ if valid_input:
         pdf = FPDF(orientation='P', unit='mm', format='A4')
         font_path = "Amiri-Regular.ttf"
         
-        # تحميل آمن ومضمون للخط العربي بتجاوز حظر GitHub
+        # تحميل آمن للخط لتجاوز حظر GitHub
         if not os.path.exists(font_path) or os.path.getsize(font_path) < 10000:
             try:
                 req = urllib.request.Request(
@@ -526,12 +525,10 @@ if valid_input:
                     out_file.write(response.read())
             except: pass
             
-        # حماية ضد انهيار التطبيق (Crash Preventer)
         if not os.path.exists(font_path) or os.path.getsize(font_path) < 10000:
-            st.error("⚠️ خطأ في تحميل الخط العربي. يرجى التأكد من اتصال خوادم المنصة أو رفع ملف Amiri-Regular.ttf يدوياً.")
+            st.error("⚠️ خطأ في تحميل الخط العربي. يرجى التأكد من اتصال خوادم المنصة.")
             return None
             
-        # الصفحة الأولى: المناقشة البيانية
         pdf.add_page()
         pdf.add_font("Amiri", "", font_path, uni=True)
         pdf.set_font("Amiri", size=24)
@@ -544,6 +541,7 @@ if valid_input:
         pdf.image(fig_path, x=15, w=180)
         pdf.ln(5)
         
+        # استخدام خط Amiri للجدول لحل مشكلة الترميز
         pdf.set_font("Amiri", size=14)
         pdf.set_fill_color(30, 58, 138) 
         pdf.set_text_color(255, 255, 255)
@@ -556,7 +554,7 @@ if valid_input:
             pdf.cell(95, 12, m_str, border=1, align='C', fill=True)
             pdf.cell(95, 12, fix_arabic(text_str), border=1, ln=True, align='C', fill=True)
 
-        # الصفحة الثانية: دراسة الدالة
+        # الصفحة الثانية
         pdf.add_page()
         pdf.set_font("Amiri", size=20)
         pdf.set_text_color(21, 101, 192)
@@ -566,7 +564,9 @@ if valid_input:
         pdf.set_font("Amiri", size=16)
         pdf.set_text_color(0, 0, 0)
         pdf.cell(0, 10, fix_arabic("1. النهايات والمقاربات:"), ln=True, align='R')
-        pdf.set_font("Arial", size=14)
+        
+        # تصحيح خطأ الترميز: إجبار استخدام Amiri في جميع أنحاء المستند
+        pdf.set_font("Amiri", size=14)
         for math_str, ar_str in limits_data:
             text_line = math_str + "  :  " + fix_arabic(ar_str)
             pdf.cell(0, 8, text_line, ln=True, align='R')
