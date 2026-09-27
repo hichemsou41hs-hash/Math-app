@@ -52,8 +52,7 @@ def fmt(val):
         if abs(f_val) > 1e6: return str(f_val)
         if int(f_val) == f_val: return str(int(f_val))
         return str(round(f_val, 2))
-    except:
-        return str(val)
+    except: return str(val)
 
 def fix_implicit_mult(expr_str):
     if "()" in expr_str: expr_str = expr_str.replace("()", "(1)")
@@ -65,7 +64,7 @@ def fix_implicit_mult(expr_str):
 def fix_arabic(text):
     return get_display(arabic_reshaper.reshape(text))
 
-# المترجم لتنظيف المجالات وعرضها كرموز رياضية أنيقة في واجهة الهاتف (HTML)
+# المترجم الصارم للـ HTML (لواجهة الهاتف لمنع تكسر الـ LaTeX)
 def bound_to_html(s):
     s = str(s).replace(" ", "")
     s = s.replace(r"-\infty", "-∞").replace(r"+\infty", "+∞").replace(r"\infty", "∞")
@@ -74,7 +73,7 @@ def bound_to_html(s):
     s = s.replace("{", "").replace("}", "").replace("\\", "")
     return s
 
-# المترجم لتنظيف المجالات لملف الـ PDF
+# المترجم للـ PDF
 def clean_latex_to_text(l_str):
     s = str(l_str).replace(" ", "")
     s = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"\1/\2", s)
@@ -218,12 +217,12 @@ if valid_input:
             
     domain_latex = r"D_f = \color{#FFD700}{" + r" \cup ".join(domain_intervals_str) + r"}" if domain_intervals_str else r"D_f = \emptyset"
 
+    # جمع النهايات الحقيقية لإدراجها في قيم المناقشة الدقيقة (مثل النقطة 0)
     try:
         for direction in [sp.oo, -sp.oo]:
             lim = sp.limit(f_expr, x_sym, direction)
             if lim.is_real: sym_m_critical.append(lim)
     except: pass
-
     for i, p in enumerate(pts_var_exact):
         if p['type'] == 'v_asym':
             if i > 0 and valid_intervals[i-1]:
@@ -236,57 +235,46 @@ if valid_input:
                     lim = sp.limit(f_expr, x_sym, p['sym'], dir='+')
                     if lim.is_real: sym_m_critical.append(lim)
                 except: pass
-    
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # شرح وحساب النهايات رياضياً
+    # النهايات الرياضية الخالصة (بدون نصوص عربية)
     # ---------------------------------------------------------
-    limits_data_detailed = []
     limits_mpl_list = []
-
-    def get_limit_explanation(val_sym):
-        if val_sym == sp.oo or val_sym == -sp.oo:
-            return "نعتمد على الحد الأعلى درجة (للدوال الناطقة) أو نطبق مبرهنات التزايد المقارن للدوال الأسية واللوغاريتمية."
-        return "إذا واجهنا حالة عدم تعيين بعد التعويض المباشر، نستخدم طرق الاختزال، التحليل، أو المبرهنات الشهيرة."
-
-    def add_limit(val_sym, dir_sympy, dir_latex, ar_desc):
+    
+    def add_limit(val_sym, dir_sympy, dir_latex):
         try:
             lim = sp.limit(f_expr, x_sym, val_sym, dir=dir_sympy)
             lim_latex = sp.latex(lim).replace('log', 'ln')
             expr_latex = sp.latex(f_expr).replace('log', 'ln')
             
-            explanation = get_limit_explanation(val_sym)
-            latex_streamlit = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
-            limits_data_detailed.append({'desc': ar_desc, 'explanation': explanation, 'latex': latex_streamlit})
-            
-            mpl_str = fr"\lim_{{x \to {dir_latex}}} f(x) = {lim_latex}"
-            limits_mpl_list.append((ar_desc, mpl_str))
+            # صيغة رياضية تظهر التعويض أو خطوات حسابية
+            math_str = fr"\lim_{{x \to {dir_latex}}} f(x) = \lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{{lim_latex}}}"
+            limits_mpl_list.append(math_str)
         except: pass
 
     if len(pts_var_exact) > 0:
-        if pts_var_exact[0]['sym'] == -sp.oo: add_limit(-sp.oo, '+', r"-\infty", "النهاية عند الأطراف غير المنتهية:")
-        if pts_var_exact[-1]['sym'] == sp.oo: add_limit(sp.oo, '-', r"+\infty", "النهاية عند الأطراف غير المنتهية:")
+        if pts_var_exact[0]['sym'] == -sp.oo: add_limit(-sp.oo, '+', r"-\infty")
+        if pts_var_exact[-1]['sym'] == sp.oo: add_limit(sp.oo, '-', r"+\infty")
 
         for p in pts_var_exact:
             if p['type'] == 'v_asym':
                 idx = pts_var_exact.index(p)
                 v_latex = p['latex_x']
                 if idx > 0 and valid_intervals[idx-1]:
-                    add_limit(p['sym'], '-', fr"{v_latex}^-", f"النهاية بجوار القيمة الممنوعة ${v_latex}$ بقيم صغرى :")
+                    add_limit(p['sym'], '-', fr"{v_latex}^-")
                 if idx < len(valid_intervals) and valid_intervals[idx]:
-                    add_limit(p['sym'], '+', fr"{v_latex}^+", f"النهاية بجوار القيمة الممنوعة ${v_latex}$ بقيم كبرى :")
+                    add_limit(p['sym'], '+', fr"{v_latex}^+")
 
     def generate_limits_image():
         if not limits_mpl_list: return None
         n_lim = len(limits_mpl_list)
-        fig_l, ax_l = plt.subplots(figsize=(6, max(1, n_lim * 0.8)))
+        # الصورة تحتوي فقط على معادلات رياضية (لضمان عدم حدوث أي تداخل عربي)
+        fig_l, ax_l = plt.subplots(figsize=(8, max(1.5, n_lim * 1.0)))
         ax_l.axis('off')
-        for i, (ar_desc, math_str) in enumerate(limits_mpl_list):
+        for i, math_str in enumerate(limits_mpl_list):
             y_pos = 1.0 - (i + 0.5) / n_lim
-            clean_ar_desc = ar_desc.replace("$", "") 
-            ax_l.text(0.95, y_pos, fix_arabic(clean_ar_desc), fontsize=14, ha='right', va='center', color='#1E3A8A', fontweight='bold')
-            ax_l.text(0.4, y_pos, f"${math_str}$", fontsize=18, ha='right', va='center', color='#D32F2F')
+            ax_l.text(0.5, y_pos, f"${math_str}$", fontsize=22, ha='center', va='center', color='#1565C0')
         fig_l.tight_layout(pad=0)
         tmp_l = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
         fig_l.savefig(tmp_l.name, bbox_inches='tight', dpi=300)
@@ -525,7 +513,7 @@ if valid_input:
         L_latex = r"-\infty" if L == float('-inf') else get_exact_m(L)
         H_latex = r"+\infty" if H == float('inf') else get_exact_m(H)
         
-        # تحويل الترميز إلى شكل نقي يطبع بدون مشاكل
+        # تحويل الأكواد إلى HTML نقي لجدول المتصفح، ولنص نقي للـ PDF
         L_html = bound_to_html(L_latex)
         H_html = bound_to_html(H_latex)
         L_plain = clean_latex_to_text(L_latex)
@@ -555,7 +543,7 @@ if valid_input:
         final_table_plain.append((plain_m, sol_text))
 
     # ---------------------------------------------------------
-    # دوال واجهة الويب وملف الـ PDF 
+    # دوال واجهة الويب وملف الـ PDF الخالي من الأخطاء
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
@@ -571,6 +559,7 @@ if valid_input:
 
         for idx, (math_html, sol_text, L, H) in enumerate(final_table_data):
             row_style = "border: 3px solid #FFD700; background-color: #334155; font-weight:bold;" if idx == active_idx else "border-bottom: 1px solid #334155;"
+            # استخدام HTML النظيف لضمان ظهور الرموز 
             html += f"<tr style='{row_style}'> <td style='padding:10px; color:{'#00E5FF' if idx == active_idx else '#A5F3FC'};'>{sol_text}</td> <td style='padding:10px; color:{'#FFD700' if idx == active_idx else '#FEF08A'}; font-size: 20px; white-space: nowrap; font-family: \"Times New Roman\", Times, serif;' dir='ltr'>{math_html}</td> </tr>"
         html += "</table>"
         return html
@@ -580,6 +569,19 @@ if valid_input:
         pdf = FPDF(orientation='P', unit='mm', format='A4')
         font_path = "Amiri-Regular.ttf"
         
+        # تحميل خط DejaVu الذي يدعم رمز المالانهاية ∞ بشكل مثالي في الـ PDF
+        dejavu_path = "DejaVuSans.ttf"
+        has_dejavu = False
+        if not os.path.exists(dejavu_path) or os.path.getsize(dejavu_path) < 10000:
+            try:
+                req = urllib.request.Request("https://github.com/matomo-org/travis-scripts/raw/master/fonts/DejaVuSans.ttf", headers={'User-Agent': 'Mozilla/5.0'})
+                with urllib.request.urlopen(req) as response, open(dejavu_path, 'wb') as out_file: out_file.write(response.read())
+            except: pass
+        
+        if os.path.exists(dejavu_path) and os.path.getsize(dejavu_path) > 10000:
+            pdf.add_font("DejaVu", "", dejavu_path, uni=True)
+            has_dejavu = True
+
         if not os.path.exists(font_path) or os.path.getsize(font_path) < 10000:
             try:
                 req = urllib.request.Request("https://github.com/google/fonts/raw/main/ofl/amiri/Amiri-Regular.ttf", headers={'User-Agent': 'Mozilla/5.0'})
@@ -603,8 +605,12 @@ if valid_input:
             if i % 2 == 0: pdf.set_fill_color(241, 245, 249) 
             else: pdf.set_fill_color(255, 255, 255)
             pdf.set_text_color(15, 23, 42)
-            pdf.set_font("Amiri", size=14) 
+            
+            if has_dejavu: pdf.set_font("DejaVu", size=13)
+            else: pdf.set_font("Amiri", size=14)
             pdf.cell(95, 12, m_str, border=1, align='C', fill=True)
+            
+            pdf.set_font("Amiri", size=14)
             pdf.cell(95, 12, fix_arabic(text_str), border=1, ln=True, align='C', fill=True)
 
         pdf.add_page()
@@ -704,12 +710,11 @@ if valid_input:
             st.markdown(generate_html_table(m_val), unsafe_allow_html=True)
             
             with st.expander("📊 عرض دراسة الدالة الشاملة (مستخرجة آلياً)", expanded=False):
-                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. مجموعة التعريف والتبرير الرياضي للنهايات:</h4>", unsafe_allow_html=True)
+                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. مجموعة التعريف وحساب النهايات رياضياً:</h4>", unsafe_allow_html=True)
                 st.latex(domain_latex)
                 
-                for lim in limits_data_detailed:
-                    st.markdown(f"<p style='color:#FFD700; text-align:right; direction:rtl; font-weight:normal; margin-bottom:5px;'>• {lim['desc']}<br><span style='color:#9CA3AF; font-size:14px;'>{lim['explanation']}</span></p>", unsafe_allow_html=True)
-                    st.latex(lim['latex'])
+                for lim_latex in limits_mpl_list:
+                    st.latex(lim_latex)
                 
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. جدول التغيرات الرياضي بالقيم المضبوطة:</h4>", unsafe_allow_html=True)
                 if var_table_image_path:
