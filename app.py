@@ -7,6 +7,7 @@ import time
 import warnings
 import re
 import os
+import urllib.request
 import tempfile
 
 try:
@@ -61,8 +62,13 @@ def fix_implicit_mult(expr_str):
     expr_str = re.sub(r'(e|pi)([xy0-9])', r'\1*\2', expr_str)
     return expr_str
 
-def fix_arabic(text):
+# دالة مخصصة لنصوص مكتبة FPDF (تحتاج تقنية القلب get_display)
+def fix_arabic_pdf(text):
     return get_display(arabic_reshaper.reshape(text))
+
+# دالة مخصصة لصور Matplotlib (تحتاج تشكيل الحروف فقط بدون قلب لمنع الانعكاس المزدوج)
+def fix_arabic_mpl(text):
+    return arabic_reshaper.reshape(text)
 
 # المترجم للـ HTML (لواجهة الهاتف لمنع تكسر الـ LaTeX)
 def bound_to_html(s):
@@ -142,7 +148,7 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # المحرك الجبري: استخراج القيم المظبوطة (Exact Symbolic Engine)
+    # استخراج القيم المظبوطة (Exact Symbolic Engine)
     # ---------------------------------------------------------
     sym_m_critical = []
     unique_asymptotes = []
@@ -199,7 +205,6 @@ if valid_input:
     while len(valid_intervals) > 0 and not valid_intervals[-1]:
         valid_intervals.pop(-1); pts_var_exact.pop(-1)
 
-    # تصحيح استنتاج مجموعة التعريف (دمج المجالات المتصلة وتجاهل القيم الحدية)
     domain_intervals_str = []
     i = 0
     while i < len(valid_intervals):
@@ -216,7 +221,7 @@ if valid_input:
             
     domain_latex = r"D_f = \color{#FFD700}{" + r" \cup ".join(domain_intervals_str) + r"}" if domain_intervals_str else r"D_f = \emptyset"
 
-    # جمع النهايات الحقيقية لإدراجها في القيم الحرجة
+    # جمع النهايات الحقيقية (بما فيها الأطراف) لإضافتها للقيم الحرجة للمناقشة البيانية
     try:
         for direction in [sp.oo, -sp.oo]:
             lim = sp.limit(f_expr, x_sym, direction)
@@ -239,19 +244,17 @@ if valid_input:
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # النهايات الرياضية الخالصة (تصحيح ظهور علامة + للمالانهاية)
+    # النهايات الرياضية الخالصة
     # ---------------------------------------------------------
     limits_mpl_list = []
     
     def add_limit(val_sym, dir_sympy, dir_latex):
         try:
             lim = sp.limit(f_expr, x_sym, val_sym, dir=dir_sympy)
-            # إضافة علامة + يدويا إذا كانت النهاية + مالانهاية
             lim_latex = "+\infty" if lim == sp.oo else sp.latex(lim).replace('log', 'ln')
             expr_latex = sp.latex(f_expr).replace('log', 'ln')
             
-            # صيغة رياضية تعرض دالة النهاية ونتيجتها المباشرة
-            math_str = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{{lim_latex}}}"
+            math_str = fr"\lim_{{x \to {dir_latex}}} f(x) = \lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{{lim_latex}}}"
             limits_mpl_list.append(math_str)
         except: pass
 
@@ -271,7 +274,6 @@ if valid_input:
     def generate_limits_image():
         if not limits_mpl_list: return None
         n_lim = len(limits_mpl_list)
-        # الصورة تحتوي فقط على معادلات رياضية نقية لضمان عدم وجود أي نص معكوس
         fig_l, ax_l = plt.subplots(figsize=(6, max(1.5, n_lim * 1.0)))
         ax_l.axis('off')
         for i, math_str in enumerate(limits_mpl_list):
@@ -286,7 +288,7 @@ if valid_input:
     limits_image_path = generate_limits_image()
 
     # ---------------------------------------------------------
-    # بناء جدول التغيرات الاحترافي (إضافة + للمالانهاية)
+    # بناء جدول التغيرات الاحترافي (Vector Graphic)
     # ---------------------------------------------------------
     N = len(pts_var_exact)
     def generate_variation_table_image():
@@ -341,7 +343,6 @@ if valid_input:
                 else:
                     ax_v.text(x_ic, 4.5, f"${signs[i]}$", ha='center', va='center', fontsize=26, color='#D32F2F' if signs[i]=='-' else '#2E7D32')
             
-            # معالجة طباعة النهايات داخل الجدول (إجبار ظهور + مالانهاية)
             def get_lim_latex_for_table(l_sym):
                 return "+\infty" if l_sym == sp.oo else sp.latex(l_sym).replace('log','ln')
 
@@ -394,7 +395,7 @@ if valid_input:
     var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
-    # المناقشة البيانية (بالقيم المضبوطة والمجالات الحقيقية)
+    # المناقشة البيانية (استخراج المجالات الدقيقة)
     # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
@@ -519,7 +520,6 @@ if valid_input:
         L_latex = r"-\infty" if L == float('-inf') else get_exact_m(L)
         H_latex = r"+\infty" if H == float('inf') else get_exact_m(H)
         
-        # HTML لواجهة التطبيق
         L_html = bound_to_html(L_latex)
         H_html = bound_to_html(H_latex)
         
@@ -547,7 +547,7 @@ if valid_input:
         final_table_latex.append((pdf_latex, sol_text))
 
     # ---------------------------------------------------------
-    # دوال واجهة الويب (جدول HTML) وصناعة صورة للـ PDF 
+    # دوال واجهة الويب (جدول HTML) وصناعة جدول صورة للـ PDF 
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
@@ -567,7 +567,7 @@ if valid_input:
         html += "</table>"
         return html
 
-    # استبدال جدول الـ PDF بنسخة صورية عالية الدقة باستخدام Matplotlib لحل مشكلة المالانهاية للأبد
+    # استبدال جدول الـ PDF العادي بصورة Matplotlib لضمان عدم اختفاء الرموز وعمل العربية بشكل طبيعي 
     def generate_pdf_discussion_table():
         nrows = len(final_table_latex)
         fig_dt, ax_dt = plt.subplots(figsize=(8, nrows * 0.7 + 0.8))
@@ -591,12 +591,13 @@ if valid_input:
         ax_dt.add_patch(rect1)
         ax_dt.add_patch(rect2)
         
-        ax_dt.text(2, nrows * 0.7 + 0.35, fix_arabic("عدد وطبيعة الحلول"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
-        ax_dt.text(6, nrows * 0.7 + 0.35, fix_arabic("المجال / القيمة المضبوطة"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
+        # استخدام fix_arabic_mpl لمنع انعكاس الكلمات المزدوج
+        ax_dt.text(2, nrows * 0.7 + 0.35, fix_arabic_mpl("عدد وطبيعة الحلول"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
+        ax_dt.text(6, nrows * 0.7 + 0.35, fix_arabic_mpl("المجال / القيمة المضبوطة"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
         
         for i, (m_latex, sol_text) in enumerate(final_table_latex):
             y_center = (nrows - i - 1) * 0.7 + 0.35
-            ax_dt.text(2, y_center, fix_arabic(sol_text), fontsize=14, ha='center', va='center')
+            ax_dt.text(2, y_center, fix_arabic_mpl(sol_text), fontsize=14, ha='center', va='center')
             ax_dt.text(6, y_center, f"${m_latex}$", fontsize=16, ha='center', va='center', color='#1E3A8A')
             
         fig_dt.tight_layout(pad=0)
@@ -621,7 +622,8 @@ if valid_input:
         pdf.add_font("Amiri", "", font_path, uni=True)
         pdf.set_font("Amiri", size=24)
         pdf.set_text_color(21, 101, 192)
-        pdf.cell(0, 10, fix_arabic("الأستاذ سوايسية هشام - المناقشة البيانية"), ln=True, align='C')
+        # هنا للـ PDF العادي نستخدم دالة fix_arabic_pdf
+        pdf.cell(0, 10, fix_arabic_pdf("الأستاذ سوايسية هشام - المناقشة البيانية"), ln=True, align='C')
         pdf.ln(5); pdf.image(fig_path, x=15, w=180); pdf.ln(5)
         
         # استدعاء جدول المناقشة كصورة مطبوعة رياضياً
@@ -632,12 +634,12 @@ if valid_input:
         pdf.add_page()
         pdf.set_font("Amiri", size=20)
         pdf.set_text_color(21, 101, 192)
-        pdf.cell(0, 15, fix_arabic("دراسة الدالة الشاملة (مستخرجة آلياً)"), ln=True, align='C')
+        pdf.cell(0, 15, fix_arabic_pdf("دراسة الدالة الشاملة (مستخرجة آلياً)"), ln=True, align='C')
         pdf.ln(5)
         
         pdf.set_font("Amiri", size=16)
         pdf.set_text_color(21, 101, 192)
-        pdf.cell(0, 10, fix_arabic("1. استنتاج مجموعة التعريف وحساب النهايات:"), ln=True, align='R')
+        pdf.cell(0, 10, fix_arabic_pdf("1. استنتاج مجموعة التعريف وحساب النهايات:"), ln=True, align='R')
         pdf.ln(2)
         
         if limits_image_path:
@@ -646,7 +648,7 @@ if valid_input:
 
         pdf.set_font("Amiri", size=16)
         pdf.set_text_color(21, 101, 192)
-        pdf.cell(0, 10, fix_arabic("2. جدول التغيرات الرياضي بالقيم المضبوطة:"), ln=True, align='R')
+        pdf.cell(0, 10, fix_arabic_pdf("2. جدول التغيرات الرياضي بالقيم المضبوطة:"), ln=True, align='R')
         pdf.ln(5)
         
         if var_table_image_path:
@@ -729,7 +731,6 @@ if valid_input:
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. استنتاج مجموعة التعريف وحساب النهايات:</h4>", unsafe_allow_html=True)
                 st.latex(domain_latex)
                 if limits_image_path:
-                    # عرض صورة النهايات النقية
                     st.image(limits_image_path, use_container_width=True)
                 
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. جدول التغيرات الرياضي بالقيم المضبوطة:</h4>", unsafe_allow_html=True)
