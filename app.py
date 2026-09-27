@@ -180,7 +180,7 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # 4. استخراج القيم الحرجة بذكاء (الترقية الجديدة الشاملة)
+    # 4. استخراج القيم الحرجة بذكاء الشامل
     # ---------------------------------------------------------
     unique_asymptotes = []
     m_critical = []
@@ -211,7 +211,7 @@ if valid_input:
                 if r.is_real: candidate_v_asymptotes.append(float(r))
     except: pass
 
-    # حساب نهايات الدالة عند أطراف المجال لإضافتها إلى القيم الحرجة (يحل مشكلة m=0)
+    # حساب نهايات الدالة عند أطراف المجال لإضافتها إلى القيم الحرجة (لحل مشكلة m=0)
     for r in set(candidate_v_asymptotes):
         r_str = str(int(r)) if int(r)==r else str(float(r))
         unique_asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={r_str}"})
@@ -276,7 +276,7 @@ if valid_input:
     m_critical = merged_m_crit
 
     # ---------------------------------------------------------
-    # 5. تصنيف الحلول الصارم (دقة 0.01)
+    # 5. تصنيف الحلول الصارم 
     # ---------------------------------------------------------
     def get_roots_text(m_test):
         is_critical = any(abs(m_test - mc) < 1e-2 for mc in m_critical)
@@ -326,7 +326,7 @@ if valid_input:
         if count == 0: return "لا توجد حلول"
         
         desc = []
-        # هنا تم تصغير هامش التسامح إلى 0.01 للقضاء على خطأ "الحل المعدوم"
+        # تم تصغير هامش التسامح إلى 0.01 لضبط دقة الجذور الصغيرة
         pos_s = sum(1 for r, t in final_roots if r > 0.01 and t == "single")
         neg_s = sum(1 for r, t in final_roots if r < -0.01 and t == "single")
         zero_s = sum(1 for r, t in final_roots if abs(r) <= 0.01 and t == "single")
@@ -352,7 +352,6 @@ if valid_input:
 
         if pos_s == 1 and neg_s == 1 and len(desc) == 2: return "حلان مختلفان في الإشارة"
         
-        # التعديل الخاص بعبارة 3 حلول تماماً كما طلبت
         if pos_s == 2 and neg_s == 1 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل سالب وحلان موجبان"
         
         if pos_s == 1 and neg_s == 2 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل موجب وحلان سالبان"
@@ -387,11 +386,23 @@ if valid_input:
 
     final_table_data = []
     for L, H, sol_text in merged_intervals:
-        if L == float('-inf') and H == float('inf'): math_html = "<i>m</i> ∈ ℝ"
-        elif L == float('-inf'): math_html = f"<i>m</i> < {fmt(H)}"
-        elif H == float('inf'): math_html = f"<i>m</i> > {fmt(L)}"
-        elif L == H: math_html = f"<i>m</i> = {fmt(L)}"
-        else: math_html = f"{fmt(L)} < <i>m</i> < {fmt(H)}"
+        # التحقق من شمولية القيمة الحدية لوضع علامة المتباينة الصحيحة (يساوي)
+        L_inc = any(r[0] == L and r[1] == L and r[2] == sol_text for r in raw_intervals)
+        H_inc = any(r[0] == H and r[1] == H and r[2] == sol_text for r in raw_intervals)
+        
+        if L == float('-inf') and H == float('inf'):
+            math_html = "<i>m</i> ∈ ℝ"
+        elif L == float('-inf'):
+            math_html = f"<i>m</i> ≤ {fmt(H)}" if H_inc else f"<i>m</i> < {fmt(H)}"
+        elif H == float('inf'):
+            math_html = f"<i>m</i> ≥ {fmt(L)}" if L_inc else f"<i>m</i> > {fmt(L)}"
+        elif L == H:
+            math_html = f"<i>m</i> = {fmt(L)}"
+        else:
+            ls = "≤" if L_inc else "<"
+            rs = "≤" if H_inc else "<"
+            math_html = f"{fmt(L)} {ls} <i>m</i> {rs} {fmt(H)}"
+            
         final_table_data.append((math_html, sol_text, L, H))
 
     def generate_html_table(current_m):
