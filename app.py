@@ -7,7 +7,6 @@ import time
 import warnings
 import re
 import os
-import urllib.request
 import tempfile
 
 try:
@@ -52,7 +51,8 @@ def fmt(val):
         if abs(f_val) > 1e6: return str(f_val)
         if int(f_val) == f_val: return str(int(f_val))
         return str(round(f_val, 2))
-    except: return str(val)
+    except:
+        return str(val)
 
 def fix_implicit_mult(expr_str):
     if "()" in expr_str: expr_str = expr_str.replace("()", "(1)")
@@ -64,21 +64,12 @@ def fix_implicit_mult(expr_str):
 def fix_arabic(text):
     return get_display(arabic_reshaper.reshape(text))
 
-# المترجم الصارم للـ HTML (لواجهة الهاتف لمنع تكسر الـ LaTeX)
+# المترجم للـ HTML (لواجهة الهاتف لمنع تكسر الـ LaTeX)
 def bound_to_html(s):
     s = str(s).replace(" ", "")
     s = s.replace(r"-\infty", "-∞").replace(r"+\infty", "+∞").replace(r"\infty", "∞")
     s = s.replace(r"\ln", "ln").replace(r"e", "<i>e</i>").replace(r"\pi", "π")
     s = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"\1/\2", s)
-    s = s.replace("{", "").replace("}", "").replace("\\", "")
-    return s
-
-# المترجم للـ PDF
-def clean_latex_to_text(l_str):
-    s = str(l_str).replace(" ", "")
-    s = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"\1/\2", s)
-    s = s.replace(r"-\infty", "-∞").replace(r"+\infty", "+∞").replace(r"\infty", "∞")
-    s = s.replace(r"\ln", "ln").replace(r"e", "e").replace(r"\pi", "π")
     s = s.replace("{", "").replace("}", "").replace("\\", "")
     return s
 
@@ -151,7 +142,7 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # استخراج القيم المظبوطة (Exact Symbolic Engine)
+    # المحرك الجبري: استخراج القيم المظبوطة (Exact Symbolic Engine)
     # ---------------------------------------------------------
     sym_m_critical = []
     unique_asymptotes = []
@@ -208,21 +199,30 @@ if valid_input:
     while len(valid_intervals) > 0 and not valid_intervals[-1]:
         valid_intervals.pop(-1); pts_var_exact.pop(-1)
 
+    # تصحيح استنتاج مجموعة التعريف (دمج المجالات المتصلة وتجاهل القيم الحدية)
     domain_intervals_str = []
-    for i in range(len(valid_intervals)):
+    i = 0
+    while i < len(valid_intervals):
         if valid_intervals[i]:
-            l_b = "-\infty" if pts_var_exact[i]['val'] == -np.inf else pts_var_exact[i]['latex_x']
-            r_b = "+\infty" if pts_var_exact[i+1]['val'] == np.inf else pts_var_exact[i+1]['latex_x']
+            start_idx = i
+            while i < len(valid_intervals) - 1 and valid_intervals[i+1] and pts_var_exact[i+1]['type'] != 'v_asym':
+                i += 1
+            end_idx = i
+            
+            l_b = "-\infty" if pts_var_exact[start_idx]['val'] == -np.inf else pts_var_exact[start_idx]['latex_x']
+            r_b = "+\infty" if pts_var_exact[end_idx+1]['val'] == np.inf else pts_var_exact[end_idx+1]['latex_x']
             domain_intervals_str.append(fr"]{l_b}; {r_b}[")
+        i += 1
             
     domain_latex = r"D_f = \color{#FFD700}{" + r" \cup ".join(domain_intervals_str) + r"}" if domain_intervals_str else r"D_f = \emptyset"
 
-    # جمع النهايات الحقيقية لإدراجها في قيم المناقشة الدقيقة (مثل النقطة 0)
+    # جمع النهايات الحقيقية لإدراجها في القيم الحرجة
     try:
         for direction in [sp.oo, -sp.oo]:
             lim = sp.limit(f_expr, x_sym, direction)
             if lim.is_real: sym_m_critical.append(lim)
     except: pass
+
     for i, p in enumerate(pts_var_exact):
         if p['type'] == 'v_asym':
             if i > 0 and valid_intervals[i-1]:
@@ -235,21 +235,23 @@ if valid_input:
                     lim = sp.limit(f_expr, x_sym, p['sym'], dir='+')
                     if lim.is_real: sym_m_critical.append(lim)
                 except: pass
+    
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # النهايات الرياضية الخالصة (بدون نصوص عربية)
+    # النهايات الرياضية الخالصة (تصحيح ظهور علامة + للمالانهاية)
     # ---------------------------------------------------------
     limits_mpl_list = []
     
     def add_limit(val_sym, dir_sympy, dir_latex):
         try:
             lim = sp.limit(f_expr, x_sym, val_sym, dir=dir_sympy)
-            lim_latex = sp.latex(lim).replace('log', 'ln')
+            # إضافة علامة + يدويا إذا كانت النهاية + مالانهاية
+            lim_latex = "+\infty" if lim == sp.oo else sp.latex(lim).replace('log', 'ln')
             expr_latex = sp.latex(f_expr).replace('log', 'ln')
             
-            # صيغة رياضية تظهر التعويض أو خطوات حسابية
-            math_str = fr"\lim_{{x \to {dir_latex}}} f(x) = \lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{{lim_latex}}}"
+            # صيغة رياضية تعرض دالة النهاية ونتيجتها المباشرة
+            math_str = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{{lim_latex}}}"
             limits_mpl_list.append(math_str)
         except: pass
 
@@ -269,8 +271,8 @@ if valid_input:
     def generate_limits_image():
         if not limits_mpl_list: return None
         n_lim = len(limits_mpl_list)
-        # الصورة تحتوي فقط على معادلات رياضية (لضمان عدم حدوث أي تداخل عربي)
-        fig_l, ax_l = plt.subplots(figsize=(8, max(1.5, n_lim * 1.0)))
+        # الصورة تحتوي فقط على معادلات رياضية نقية لضمان عدم وجود أي نص معكوس
+        fig_l, ax_l = plt.subplots(figsize=(6, max(1.5, n_lim * 1.0)))
         ax_l.axis('off')
         for i, math_str in enumerate(limits_mpl_list):
             y_pos = 1.0 - (i + 0.5) / n_lim
@@ -284,7 +286,7 @@ if valid_input:
     limits_image_path = generate_limits_image()
 
     # ---------------------------------------------------------
-    # بناء جدول التغيرات الاحترافي
+    # بناء جدول التغيرات الاحترافي (إضافة + للمالانهاية)
     # ---------------------------------------------------------
     N = len(pts_var_exact)
     def generate_variation_table_image():
@@ -339,17 +341,21 @@ if valid_input:
                 else:
                     ax_v.text(x_ic, 4.5, f"${signs[i]}$", ha='center', va='center', fontsize=26, color='#D32F2F' if signs[i]=='-' else '#2E7D32')
             
+            # معالجة طباعة النهايات داخل الجدول (إجبار ظهور + مالانهاية)
+            def get_lim_latex_for_table(l_sym):
+                return "+\infty" if l_sym == sp.oo else sp.latex(l_sym).replace('log','ln')
+
             if p['type'] == 'inf':
                 lim = sp.limit(f_expr, x_sym, p['sym'])
                 dx = 0.5 if x_val == -np.inf else -0.5
-                nodes.append((x_c+dx, float(sp.N(lim)) if lim.is_real else float('inf') if lim==sp.oo else float('-inf'), sp.latex(lim).replace('log','ln')))
+                nodes.append((x_c+dx, float(sp.N(lim)) if lim.is_real else float('inf') if lim==sp.oo else float('-inf'), get_lim_latex_for_table(lim)))
             elif p['type'] == 'v_asym':
                 if i > 0 and valid_intervals[i-1]:
                     lim_l = sp.limit(f_expr, x_sym, p['sym'], dir='-')
-                    nodes.append((x_c-0.4, float(sp.N(lim_l)) if lim_l.is_real else float('inf') if lim_l==sp.oo else float('-inf'), sp.latex(lim_l).replace('log','ln')))
+                    nodes.append((x_c-0.4, float(sp.N(lim_l)) if lim_l.is_real else float('inf') if lim_l==sp.oo else float('-inf'), get_lim_latex_for_table(lim_l)))
                 if i < N-1 and valid_intervals[i]:
                     lim_r = sp.limit(f_expr, x_sym, p['sym'], dir='+')
-                    nodes.append((x_c+0.4, float(sp.N(lim_r)) if lim_r.is_real else float('inf') if lim_r==sp.oo else float('-inf'), sp.latex(lim_r).replace('log','ln')))
+                    nodes.append((x_c+0.4, float(sp.N(lim_r)) if lim_r.is_real else float('inf') if lim_r==sp.oo else float('-inf'), get_lim_latex_for_table(lim_r)))
             elif p['type'] == 'extrema':
                 sym_y = sp.simplify(f_expr.subs(x_sym, p['sym']))
                 nodes.append((x_c, float(sp.N(sym_y)), sp.latex(sym_y).replace('log','ln')))
@@ -388,7 +394,7 @@ if valid_input:
     var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
-    # المناقشة البيانية (استعمال القيم المضبوطة والمجالات الحقيقية)
+    # المناقشة البيانية (بالقيم المضبوطة والمجالات الحقيقية)
     # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
@@ -504,7 +510,7 @@ if valid_input:
         merged_intervals.append((cur_L, cur_H, cur_text))
 
     final_table_data = []
-    final_table_plain = [] 
+    final_table_latex = [] 
     
     for L, H, sol_text in merged_intervals:
         L_inc = any(r[0] == L and r[1] == L and r[2] == sol_text for r in raw_intervals)
@@ -513,37 +519,35 @@ if valid_input:
         L_latex = r"-\infty" if L == float('-inf') else get_exact_m(L)
         H_latex = r"+\infty" if H == float('inf') else get_exact_m(H)
         
-        # تحويل الأكواد إلى HTML نقي لجدول المتصفح، ولنص نقي للـ PDF
+        # HTML لواجهة التطبيق
         L_html = bound_to_html(L_latex)
         H_html = bound_to_html(H_latex)
-        L_plain = clean_latex_to_text(L_latex)
-        H_plain = clean_latex_to_text(H_latex)
         
         if L == float('-inf') and H == float('inf'):
             math_html = "<i>m</i> ∈ ℝ"
-            plain_m = "m ∈ ℝ"
+            pdf_latex = r"m \in \mathbb{R}"
         elif L == float('-inf'):
             bracket_H = "]" if H_inc else "["
             math_html = f"<i>m</i> ∈ ]-∞ ; {H_html}{bracket_H}"
-            plain_m = f"m ∈ ]-∞ ; {H_plain}{bracket_H}"
+            pdf_latex = fr"m \in ]-\infty ; {H_latex}{bracket_H}"
         elif H == float('inf'):
             bracket_L = "[" if L_inc else "]"
             math_html = f"<i>m</i> ∈ {bracket_L}{L_html} ; +∞["
-            plain_m = f"m ∈ {bracket_L}{L_plain} ; +∞["
+            pdf_latex = fr"m \in {bracket_L}{L_latex} ; +\infty["
         elif L == H:
             math_html = f"<i>m</i> = {L_html}"
-            plain_m = f"m = {L_plain}"
+            pdf_latex = fr"m = {L_latex}"
         else:
             bracket_L = "[" if L_inc else "]"
             bracket_H = "]" if H_inc else "["
             math_html = f"<i>m</i> ∈ {bracket_L}{L_html} ; {H_html}{bracket_H}"
-            plain_m = f"m ∈ {bracket_L}{L_plain} ; {H_plain}{bracket_H}"
+            pdf_latex = fr"m \in {bracket_L}{L_latex} ; {H_latex}{bracket_H}"
             
         final_table_data.append((math_html, sol_text, L, H))
-        final_table_plain.append((plain_m, sol_text))
+        final_table_latex.append((pdf_latex, sol_text))
 
     # ---------------------------------------------------------
-    # دوال واجهة الويب وملف الـ PDF الخالي من الأخطاء
+    # دوال واجهة الويب (جدول HTML) وصناعة صورة للـ PDF 
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
@@ -559,29 +563,53 @@ if valid_input:
 
         for idx, (math_html, sol_text, L, H) in enumerate(final_table_data):
             row_style = "border: 3px solid #FFD700; background-color: #334155; font-weight:bold;" if idx == active_idx else "border-bottom: 1px solid #334155;"
-            # استخدام HTML النظيف لضمان ظهور الرموز 
             html += f"<tr style='{row_style}'> <td style='padding:10px; color:{'#00E5FF' if idx == active_idx else '#A5F3FC'};'>{sol_text}</td> <td style='padding:10px; color:{'#FFD700' if idx == active_idx else '#FEF08A'}; font-size: 20px; white-space: nowrap; font-family: \"Times New Roman\", Times, serif;' dir='ltr'>{math_html}</td> </tr>"
         html += "</table>"
         return html
+
+    # استبدال جدول الـ PDF بنسخة صورية عالية الدقة باستخدام Matplotlib لحل مشكلة المالانهاية للأبد
+    def generate_pdf_discussion_table():
+        nrows = len(final_table_latex)
+        fig_dt, ax_dt = plt.subplots(figsize=(8, nrows * 0.7 + 0.8))
+        ax_dt.axis('off')
+        
+        for i in range(nrows + 1):
+            y = i * 0.7
+            ax_dt.plot([0, 8], [y, y], 'k-', lw=1 if 0 < i < nrows else 2)
+        ax_dt.plot([0, 0], [0, nrows * 0.7], 'k-', lw=2)
+        ax_dt.plot([4, 4], [0, nrows * 0.7], 'k-', lw=1)
+        ax_dt.plot([8, 8], [0, nrows * 0.7], 'k-', lw=2)
+        
+        ax_dt.plot([0, 8], [nrows * 0.7, nrows * 0.7], 'k-', lw=2)
+        ax_dt.plot([0, 8], [nrows * 0.7 + 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
+        ax_dt.plot([0, 0], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
+        ax_dt.plot([4, 4], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
+        ax_dt.plot([8, 8], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
+        
+        rect1 = plt.Rectangle((0, nrows * 0.7), 4, 0.7, facecolor='#1E3A8A')
+        rect2 = plt.Rectangle((4, nrows * 0.7), 4, 0.7, facecolor='#1E3A8A')
+        ax_dt.add_patch(rect1)
+        ax_dt.add_patch(rect2)
+        
+        ax_dt.text(2, nrows * 0.7 + 0.35, fix_arabic("عدد وطبيعة الحلول"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
+        ax_dt.text(6, nrows * 0.7 + 0.35, fix_arabic("المجال / القيمة المضبوطة"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
+        
+        for i, (m_latex, sol_text) in enumerate(final_table_latex):
+            y_center = (nrows - i - 1) * 0.7 + 0.35
+            ax_dt.text(2, y_center, fix_arabic(sol_text), fontsize=14, ha='center', va='center')
+            ax_dt.text(6, y_center, f"${m_latex}$", fontsize=16, ha='center', va='center', color='#1E3A8A')
+            
+        fig_dt.tight_layout(pad=0)
+        tmp_dt = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+        fig_dt.savefig(tmp_dt.name, bbox_inches='tight', dpi=300)
+        plt.close(fig_dt)
+        return tmp_dt.name
 
     def generate_pdf(fig_path):
         if not PDF_ENABLED: return None
         pdf = FPDF(orientation='P', unit='mm', format='A4')
         font_path = "Amiri-Regular.ttf"
         
-        # تحميل خط DejaVu الذي يدعم رمز المالانهاية ∞ بشكل مثالي في الـ PDF
-        dejavu_path = "DejaVuSans.ttf"
-        has_dejavu = False
-        if not os.path.exists(dejavu_path) or os.path.getsize(dejavu_path) < 10000:
-            try:
-                req = urllib.request.Request("https://github.com/matomo-org/travis-scripts/raw/master/fonts/DejaVuSans.ttf", headers={'User-Agent': 'Mozilla/5.0'})
-                with urllib.request.urlopen(req) as response, open(dejavu_path, 'wb') as out_file: out_file.write(response.read())
-            except: pass
-        
-        if os.path.exists(dejavu_path) and os.path.getsize(dejavu_path) > 10000:
-            pdf.add_font("DejaVu", "", dejavu_path, uni=True)
-            has_dejavu = True
-
         if not os.path.exists(font_path) or os.path.getsize(font_path) < 10000:
             try:
                 req = urllib.request.Request("https://github.com/google/fonts/raw/main/ofl/amiri/Amiri-Regular.ttf", headers={'User-Agent': 'Mozilla/5.0'})
@@ -596,22 +624,10 @@ if valid_input:
         pdf.cell(0, 10, fix_arabic("الأستاذ سوايسية هشام - المناقشة البيانية"), ln=True, align='C')
         pdf.ln(5); pdf.image(fig_path, x=15, w=180); pdf.ln(5)
         
-        pdf.set_font("Amiri", size=14)
-        pdf.set_fill_color(30, 58, 138); pdf.set_text_color(255, 255, 255)
-        pdf.cell(95, 12, fix_arabic("المجال / القيمة المضبوطة"), border=1, fill=True, align='C')
-        pdf.cell(95, 12, fix_arabic("عدد وطبيعة الحلول"), border=1, ln=True, fill=True, align='C')
-        
-        for i, (m_str, text_str) in enumerate(final_table_plain):
-            if i % 2 == 0: pdf.set_fill_color(241, 245, 249) 
-            else: pdf.set_fill_color(255, 255, 255)
-            pdf.set_text_color(15, 23, 42)
-            
-            if has_dejavu: pdf.set_font("DejaVu", size=13)
-            else: pdf.set_font("Amiri", size=14)
-            pdf.cell(95, 12, m_str, border=1, align='C', fill=True)
-            
-            pdf.set_font("Amiri", size=14)
-            pdf.cell(95, 12, fix_arabic(text_str), border=1, ln=True, align='C', fill=True)
+        # استدعاء جدول المناقشة كصورة مطبوعة رياضياً
+        disc_table_img = generate_pdf_discussion_table()
+        if disc_table_img:
+            pdf.image(disc_table_img, x=15, w=180)
 
         pdf.add_page()
         pdf.set_font("Amiri", size=20)
@@ -710,11 +726,11 @@ if valid_input:
             st.markdown(generate_html_table(m_val), unsafe_allow_html=True)
             
             with st.expander("📊 عرض دراسة الدالة الشاملة (مستخرجة آلياً)", expanded=False):
-                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. مجموعة التعريف وحساب النهايات رياضياً:</h4>", unsafe_allow_html=True)
+                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. استنتاج مجموعة التعريف وحساب النهايات:</h4>", unsafe_allow_html=True)
                 st.latex(domain_latex)
-                
-                for lim_latex in limits_mpl_list:
-                    st.latex(lim_latex)
+                if limits_image_path:
+                    # عرض صورة النهايات النقية
+                    st.image(limits_image_path, use_container_width=True)
                 
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. جدول التغيرات الرياضي بالقيم المضبوطة:</h4>", unsafe_allow_html=True)
                 if var_table_image_path:
