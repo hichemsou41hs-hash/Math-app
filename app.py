@@ -34,6 +34,16 @@ st.markdown("""
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) > div[data-testid="column"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; flex: none !important; padding: 0 !important; display: block !important; }
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button { width: 100% !important; height: 48px !important; padding: 0px !important; margin: 0 !important; border-radius: 6px !important; background-color: #334155 !important; color: #00E5FF !important; border: 1px solid #475569 !important; box-shadow: 0 4px 0 #090e1a !important; transition: all 0.1s !important; }
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button:active { transform: translateY(4px) !important; box-shadow: 0 0 0 #090e1a !important; background-color: #00E5FF !important; color: #0F172A !important; }
+    
+    /* شفرة CSS المضافة لمنع اختفاء المربعات في لوحة المفاتيح */
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button p { 
+        font-size: 17px !important; 
+        overflow: visible !important; 
+        text-overflow: clip !important; 
+        white-space: nowrap !important;
+        letter-spacing: -1px !important; 
+    }
+    
     button[kind="primary"] { width: 100% !important; height: 50px !important; background-color: #ef4444 !important; color: white !important; font-size: 18px !important; font-weight: bold !important; border-radius: 8px !important; box-shadow: 0 4px 0 #7f1d1d !important; border: none !important; margin-top: 5px !important; }
     button[kind="primary"]:active { transform: translateY(4px) !important; box-shadow: 0 0 0 #7f1d1d !important; background-color: #dc2626 !important; }
     </style>
@@ -84,13 +94,12 @@ def clean_latex_to_text(l_str):
     s = s.replace("{", "").replace("}", "").replace("\\", "")
     return s
 
-# دوال اختيار الألوان للنتائج في الجداول (HTML و PDF)
 def get_sol_color_pdf(sol_text):
-    if "لا توجد" in sol_text: return "#D32F2F"      # أحمر
-    if "مضاعف" in sol_text: return "#D97706"       # برتقالي
-    if "حل وحيد" in sol_text or "معدوم" in sol_text: return "#2E7D32" # أخضر
-    if "حلان" in sol_text or "مختلفان" in sol_text: return "#0284C7"  # أزرق
-    return "#6D28D9"                               # بنفسجي
+    if "لا توجد" in sol_text: return "#D32F2F"      
+    if "مضاعف" in sol_text: return "#D97706"       
+    if "حل وحيد" in sol_text or "معدوم" in sol_text: return "#2E7D32" 
+    if "حلان" in sol_text or "مختلفان" in sol_text: return "#0284C7"  
+    return "#6D28D9"                               
 
 def get_sol_color_html(sol_text):
     if "لا توجد" in sol_text: return "#EF4444"
@@ -220,7 +229,11 @@ if valid_input:
         mid = 0 if (left == -np.inf and right == np.inf) else (right - 1 if left == -np.inf else (left + 1 if right == np.inf else (left + right) / 2.0))
         valid_intervals.append(np.isfinite(f_func(mid)))
         
-    # تصحيح شامل لمجموعة التعريف (دمج المجالات وتخطي القيم الممنوعة فقط)
+    while len(valid_intervals) > 0 and not valid_intervals[0]:
+        valid_intervals.pop(0); pts_var_exact.pop(0)
+    while len(valid_intervals) > 0 and not valid_intervals[-1]:
+        valid_intervals.pop(-1); pts_var_exact.pop(-1)
+
     domain_intervals_str = []
     i = 0
     while i < len(valid_intervals):
@@ -238,7 +251,6 @@ if valid_input:
     domain_latex_mpl = r"D_f =" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
     domain_latex_st = r"D_f = \color{#FFD700}{" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset") + r"}"
 
-    # جمع النهايات الحقيقية (بما فيها الأطراف) لإضافتها للقيم الحرجة للمناقشة البيانية
     try:
         for direction in [sp.oo, -sp.oo]:
             lim = sp.limit(f_expr, x_sym, direction)
@@ -259,7 +271,7 @@ if valid_input:
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # النهايات الرياضية الخالصة (خطوات حساب النتيجة الملونة)
+    # النهايات الرياضية الخالصة بخطوات واضحة وتلوين مبهر
     # ---------------------------------------------------------
     limits_data_detailed = []
     limits_mpl_list = []
@@ -270,18 +282,15 @@ if valid_input:
             lim_latex = "+\infty" if lim == sp.oo else sp.latex(lim).replace('log', 'ln')
             expr_latex = sp.latex(f_expr).replace('log', 'ln')
             
-            # لواجهة التطبيق
-            latex_streamlit = fr"\lim_{{x \to {dir_latex}}} f(x) = \lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
+            latex_streamlit = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
             limits_data_detailed.append(latex_streamlit)
             
-            # لملف الـ PDF (تقسيم المعادلة لتلوين النتيجة باللون الأحمر #D32F2F)
             lhs_mpl = fr"\lim_{{x \to {dir_latex}}} f(x) = \lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) ="
             rhs_mpl = fr"{lim_latex}"
             limits_mpl_list.append((lhs_mpl, rhs_mpl))
         except: pass
 
     if len(pts_var_exact) > 0:
-        # البحث فقط في المجالات المعرفة حقاً
         if valid_intervals and valid_intervals[0]:
             if pts_var_exact[0]['sym'] == -sp.oo: add_limit(-sp.oo, '+', r"-\infty")
         if valid_intervals and valid_intervals[-1]:
@@ -301,9 +310,9 @@ if valid_input:
         
         for i, (lhs, rhs) in enumerate(all_lines):
             y_pos = 1.0 - (i + 0.5) / n_lines
-            if i == 0: # مجموعة التعريف
+            if i == 0: 
                 ax_l.text(0.5, y_pos, f"${lhs}$", fontsize=22, ha='center', va='center', color='#1E3A8A')
-            else: # النهايات (المعادلة زرقاء والنتيجة حمراء بارزة)
+            else: 
                 ax_l.text(0.70, y_pos, f"${lhs}$", fontsize=22, ha='right', va='center', color='#1E3A8A')
                 ax_l.text(0.72, y_pos, f"${rhs}$", fontsize=24, ha='left', va='center', color='#D32F2F', fontweight='bold')
                 
@@ -316,13 +325,8 @@ if valid_input:
     limits_image_path = generate_limits_image()
 
     # ---------------------------------------------------------
-    # بناء جدول التغيرات الاحترافي (Vector Graphic)
+    # بناء جدول التغيرات الاحترافي
     # ---------------------------------------------------------
-    while len(valid_intervals) > 0 and not valid_intervals[0]:
-        valid_intervals.pop(0); pts_var_exact.pop(0)
-    while len(valid_intervals) > 0 and not valid_intervals[-1]:
-        valid_intervals.pop(-1); pts_var_exact.pop(-1)
-
     N = len(pts_var_exact)
     def generate_variation_table_image():
         if N < 2: return None
@@ -407,8 +411,8 @@ if valid_input:
                     y_r = 3.2 if signs[i] == "+" else 0.8
                     if y_l == y_r: y_l = 2.0; y_r = 2.0
                     
-                    ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F')
-                    ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F')
+                    ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
+                    ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
                     
                     pad_x, pad_y = 0.35, 0.4
                     start_x, end_x = l_node[0] + pad_x, r_node[0] - pad_x
@@ -428,7 +432,7 @@ if valid_input:
     var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
-    # المناقشة البيانية (بالقيم المضبوطة والمجالات الحقيقية)
+    # المناقشة البيانية (استخراج المجالات الدقيقة)
     # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
@@ -580,7 +584,7 @@ if valid_input:
         final_table_latex.append((pdf_latex, sol_text))
 
     # ---------------------------------------------------------
-    # واجهة الويب (جدول HTML بالألوان الزاهية) وملف الـ PDF 
+    # دوال واجهة الويب (جدول HTML) وصناعة جدول صورة للـ PDF 
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
@@ -596,12 +600,11 @@ if valid_input:
 
         for idx, (math_html, sol_text, L, H) in enumerate(final_table_data):
             row_style = "border: 3px solid #FFD700; background-color: #334155; font-weight:bold;" if idx == active_idx else "border-bottom: 1px solid #334155;"
-            c_text = get_sol_color_html(sol_text) # ألوان حيوية للشاشة الداكنة
+            c_text = get_sol_color_html(sol_text) 
             html += f"<tr style='{row_style}'> <td style='padding:10px; color:{c_text}; font-weight:bold;'>{sol_text}</td> <td style='padding:10px; color:{'#FFD700' if idx == active_idx else '#FEF08A'}; font-size: 20px; white-space: nowrap; font-family: \"Times New Roman\", Times, serif;' dir='ltr'>{math_html}</td> </tr>"
         html += "</table>"
         return html
 
-    # جدول הـ PDF (ألوان كلاسيكية واضحة)
     def generate_pdf_discussion_table():
         nrows = len(final_table_latex)
         fig_dt, ax_dt = plt.subplots(figsize=(8, nrows * 0.7 + 0.8))
@@ -655,7 +658,7 @@ if valid_input:
         pdf.add_page()
         pdf.add_font("Amiri", "", font_path, uni=True)
         pdf.set_font("Amiri", size=24)
-        pdf.set_text_color(21, 101, 192) # أزرق العنوان
+        pdf.set_text_color(21, 101, 192) 
         pdf.cell(0, 10, fix_arabic_pdf("الأستاذ سوايسية هشام - المناقشة البيانية"), ln=True, align='C')
         pdf.ln(5); pdf.image(fig_path, x=15, w=180); pdf.ln(5)
         
@@ -670,7 +673,7 @@ if valid_input:
         pdf.ln(5)
         
         pdf.set_font("Amiri", size=16)
-        pdf.set_text_color(194, 24, 91) # أحمر عناوين الدراسة (#C2185B)
+        pdf.set_text_color(194, 24, 91) 
         pdf.cell(0, 10, fix_arabic_pdf("1. استنتاج مجموعة التعريف وحساب النهايات:"), ln=True, align='R')
         pdf.ln(2)
         
