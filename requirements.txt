@@ -3,3 +3,6 @@ numpy
 matplotlib
 sympy
 scipy
+fpdf2
+arabic-reshaper
+python-bidi
