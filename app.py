@@ -189,7 +189,6 @@ if valid_input:
     for r in candidate_v_asymptotes:
         unique_asymptotes.append({'type': 'v', 'val': float(sp.N(r)), 'label': f"x={sp.latex(r).replace('log', 'ln')}"})
 
-    # حساب الدالة المشتقة
     df_expr = sp.diff(f_expr, x_sym)
     
     sym_extrema = []
@@ -263,7 +262,7 @@ if valid_input:
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # النهايات الرياضية والمشتقة (تلوين الخطوات والنتائج)
+    # النهايات والمشتقة (تلوين الخطوات والنتائج)
     # ---------------------------------------------------------
     limits_data_detailed = []
     limits_mpl_list = []
@@ -274,11 +273,9 @@ if valid_input:
             lim_latex = "+\infty" if lim == sp.oo else sp.latex(lim).replace('log', 'ln')
             expr_latex = sp.latex(f_expr).replace('log', 'ln')
             
-            # لواجهة التطبيق
             latex_streamlit = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
             limits_data_detailed.append(latex_streamlit)
             
-            # للـ PDF (فصل الطرفين للتلوين)
             lhs_mpl = fr"\lim_{{x \to {dir_latex}}} f(x) = \lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) ="
             rhs_mpl = fr"{lim_latex}"
             limits_mpl_list.append((lhs_mpl, rhs_mpl))
@@ -296,7 +293,6 @@ if valid_input:
                 if i > 0 and valid_intervals[i-1]: add_limit(p['sym'], '-', fr"{v_latex}^-")
                 if i < len(valid_intervals) and valid_intervals[i]: add_limit(p['sym'], '+', fr"{v_latex}^+")
 
-    # دالة رسم النهايات للـ PDF
     def generate_limits_image():
         all_lines = [(domain_latex_mpl, "")] + limits_mpl_list
         n_lines = len(all_lines)
@@ -319,7 +315,6 @@ if valid_input:
 
     limits_image_path = generate_limits_image()
 
-    # دالة رسم المشتقة للـ PDF
     def generate_deriv_image():
         df_latex_str = sp.latex(sp.simplify(df_expr)).replace('log', 'ln')
         math_str = fr"f'(x) = {df_latex_str}"
@@ -442,7 +437,7 @@ if valid_input:
     var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
-    # المناقشة البيانية 
+    # المناقشة البيانية (استخراج المجالات الدقيقة)
     # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
@@ -594,7 +589,7 @@ if valid_input:
         final_table_latex.append((pdf_latex, sol_text))
 
     # ---------------------------------------------------------
-    # دوال واجهة الويب (جدول HTML) وصناعة جدول صورة للـ PDF 
+    # دوال واجهة الويب وملف الـ PDF النهائي
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
@@ -668,7 +663,7 @@ if valid_input:
         pdf.add_page()
         pdf.add_font("Amiri", "", font_path, uni=True)
         pdf.set_font("Amiri", size=24)
-        pdf.set_text_color(21, 101, 192)
+        pdf.set_text_color(21, 101, 192) 
         pdf.cell(0, 10, fix_arabic_pdf("الأستاذ سوايسية هشام - المناقشة البيانية"), ln=True, align='C')
         pdf.ln(5); pdf.image(fig_path, x=15, w=180); pdf.ln(5)
         
@@ -679,12 +674,11 @@ if valid_input:
         pdf.add_page()
         pdf.set_font("Amiri", size=20)
         pdf.set_text_color(21, 101, 192)
-        pdf.cell(0, 15, fix_arabic_pdf("دراسة الدالة الشاملة (مستخرجة آلياً)"), ln=True, align='C')
+        pdf.cell(0, 15, fix_arabic_pdf("دراسة تغيرات الدالة f"), ln=True, align='C')
         pdf.ln(5)
         
-        # العناوين باللون الأحمر الأنيق (Crimson Red)
         pdf.set_font("Amiri", size=16)
-        pdf.set_text_color(194, 24, 91)
+        pdf.set_text_color(194, 24, 91) 
         pdf.cell(0, 10, fix_arabic_pdf("1. استنتاج مجموعة التعريف وحساب النهايات:"), ln=True, align='R')
         pdf.ln(2)
         
