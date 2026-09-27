@@ -45,6 +45,9 @@ st.markdown("""
     
     button[kind="primary"] { width: 100% !important; height: 50px !important; background-color: #ef4444 !important; color: white !important; font-size: 18px !important; font-weight: bold !important; border-radius: 8px !important; box-shadow: 0 4px 0 #7f1d1d !important; border: none !important; margin-top: 5px !important; }
     button[kind="primary"]:active { transform: translateY(4px) !important; box-shadow: 0 0 0 #7f1d1d !important; background-color: #dc2626 !important; }
+    
+    div[data-testid="stTabs"] button { font-size: 16px !important; font-weight: bold !important; color: #A5F3FC !important; }
+    div[data-testid="stTabs"] button[aria-selected="true"] { color: #FFD700 !important; border-bottom-color: #FFD700 !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -139,9 +142,6 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
             cols[c_idx].button(label, key=f"kb_{r_idx}_{c_idx}", on_click=k_click, args=(val,))
     st.button("مسح الكل (Clear)", on_click=k_click, args=("CLR",), use_container_width=True, type="primary")
 
-# ---------------------------------------------------------
-# نظام إدخال الدالة بالذكاء الاصطناعي (مخفي وآمن)
-# ---------------------------------------------------------
 api_key = None
 try:
     api_key = st.secrets["GEMINI_API_KEY"]
@@ -157,10 +157,18 @@ with col_text:
     st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
 
 with col_cam:
-    img_file = st.camera_input("📸 صوّر عبارة الدالة")
+    # نظام التبويبات لتوفير خيار "رفع صورة" في حال عطل الكاميرا في هاتف التلميذ
+    tab1, tab2 = st.tabs(["📸 تصوير", "🖼️ رفع صورة"])
+    with tab1:
+        img_file_cam = st.camera_input("التقط صورة للدالة", label_visibility="collapsed")
+    with tab2:
+        img_file_up = st.file_uploader("اختر صورة من هاتفك", type=['png', 'jpg', 'jpeg'], label_visibility="collapsed")
+        
+    img_file = img_file_cam if img_file_cam else img_file_up
+    
     if img_file:
         if not api_key:
-            st.error("⚠️ خاصية الذكاء الاصطناعي غير مفعلة (ينقص مفتاح API في الإعدادات).")
+            st.error("⚠️ خاصية الذكاء الاصطناعي غير مفعلة (ينقص مفتاح API).")
         else:
             if st.button("استخراج الدالة 🤖", use_container_width=True):
                 with st.spinner("جاري قراءة الصورة..."):
@@ -177,7 +185,7 @@ with col_cam:
                         time.sleep(1)
                         st.rerun()
                     except Exception as e:
-                        st.error("❌ لم نتمكن من قراءة الصورة، حاول التقاط صورة أوضح.")
+                        st.error("❌ لم نتمكن من قراءة الصورة، حاول مجدداً.")
 
 x_sym, m_sym = sp.symbols('x m', real=True)
 local_dict = {'x': x_sym, 'm': m_sym, 'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
@@ -236,6 +244,13 @@ if valid_input:
         unique_asymptotes.append({'type': 'v', 'val': float(sp.N(r)), 'label': f"x={sanitize_latex(r)}"})
 
     df_expr = sp.diff(f_expr, x_sym)
+    
+    # الحل الجذري لمشكلة sign: التحويل الجبري الخالص أولاً، ثم التبسيط، ثم الحماية من التراجع
+    df_clean = df_expr.replace(sp.sign, lambda arg: arg / sp.Abs(arg))
+    df_simp = sp.simplify(df_clean)
+    if df_simp.has(sp.Piecewise): 
+        df_simp = df_clean 
+    df_latex_str_safe = sanitize_latex(df_simp)
     
     sym_extrema = []
     try:
@@ -346,7 +361,7 @@ if valid_input:
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # النهايات والمشتقة
+    # النهايات الرياضية 
     # ---------------------------------------------------------
     limits_data_detailed = []
     limits_mpl_list = []
@@ -396,7 +411,7 @@ if valid_input:
         except:
             ax_l.clear()
             ax_l.axis('off')
-            ax_l.text(0.5, 0.5, "خطأ في رسم المعادلات", fontsize=18, ha='center', va='center', color='#D32F2F')
+            ax_l.text(0.5, 0.5, "خطأ في رسم النهايات", fontsize=18, ha='center', va='center', color='#D32F2F')
             
         tmp_l = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
         fig_l.savefig(tmp_l.name, bbox_inches='tight', dpi=300)
@@ -405,13 +420,9 @@ if valid_input:
 
     limits_image_path = generate_limits_image()
 
-    df_simp = sp.simplify(df_expr).replace(sp.sign, lambda arg: arg / sp.Abs(arg))
-    if df_simp.has(sp.Piecewise): df_simp = df_expr 
-    df_latex_str_safe = sanitize_latex(df_simp)
-
     def generate_deriv_image():
         math_str = fr"f'(x) = {df_latex_str_safe}"
-        fig_d, ax_d = plt.subplots(figsize=(8, 1.2))
+        fig_d, ax_d = plt.subplots(figsize=(8, 1.5))
         ax_d.axis('off')
         try:
             ax_d.text(0.5, 0.5, f"${math_str}$", fontsize=24, ha='center', va='center', color='#1E3A8A')
@@ -543,7 +554,7 @@ if valid_input:
     var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
-    # المناقشة البيانية 
+    # المناقشة البيانية (استخراج المجالات الدقيقة)
     # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
