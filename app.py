@@ -7,6 +7,7 @@ import time
 import warnings
 import re
 import os
+import urllib.request
 import tempfile
 
 try:
@@ -92,18 +93,19 @@ def clean_latex_to_text(l_str):
     s = s.replace("{", "").replace("}", "").replace("\\", "")
     return s
 
-# منقي أكواد الـ LaTeX لضمان عدم انهيار مكتبة الرسم عند ظهور دوال معقدة (مثل sign و re)
+# منقي متطور يزيل أكواد التحكم المعقدة (\left, \right) لتجنب انهيار مكتبة الرسم
 def sanitize_latex(expr):
     if not isinstance(expr, str): expr = sp.latex(expr)
-    return expr.replace('log', 'ln').replace(r'\operatorname', r'\mathrm')
+    s = expr.replace('log', 'ln')
+    s = s.replace(r'\left', '').replace(r'\right', '')
+    s = s.replace(r'\operatorname', r'\mathrm')
+    return s
 
 def get_sol_color_pdf(sol_text):
     if "لا توجد" in sol_text: return "#D32F2F"      
     if "مضاعف" in sol_text: return "#D97706"       
     if "حل وحيد" in sol_text or "معدوم" in sol_text: return "#2E7D32" 
     if "حلان" in sol_text or "مختلفان" in sol_text: return "#0284C7"  
-    if "ثلاثة" in sol_text: return "#C2185B"
-    if "أربعة" in sol_text: return "#00796B"
     return "#6D28D9"                               
 
 def get_sol_color_html(sol_text):
@@ -111,8 +113,6 @@ def get_sol_color_html(sol_text):
     if "مضاعف" in sol_text: return "#F59E0B"
     if "حل وحيد" in sol_text or "معدوم" in sol_text: return "#4ADE80"
     if "حلان" in sol_text or "مختلفان" in sol_text: return "#38BDF8"
-    if "ثلاثة" in sol_text: return "#F472B6"
-    if "أربعة" in sol_text: return "#2DD4BF"
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
@@ -144,7 +144,6 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
             cols[c_idx].button(label, key=f"kb_{r_idx}_{c_idx}", on_click=k_click, args=(val,))
     st.button("مسح الكل (Clear)", on_click=k_click, args=("CLR",), use_container_width=True, type="primary")
 
-# تعريف المتغيرات كأعداد حقيقية حصراً لمنع خلط محرك SymPy بين x المعطى من المستخدم والرياضي
 x_sym, m_sym = sp.symbols('x m', real=True)
 local_dict = {'x': x_sym, 'm': m_sym, 'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
 
@@ -158,7 +157,6 @@ try:
     f_processed = fix_implicit_mult(st.session_state.f_val)
     g_processed = fix_implicit_mult(st.session_state.g_val)
     with sp.evaluate(False):
-        # تمرير local_dict يجبر المحرك على استخدام x_sym الحقيقي بدلاً من خلق متغير جديد
         f_expr = parse_expr(f_processed, local_dict=local_dict, transformations=transformations, evaluate=False)
         g_expr = parse_expr(g_processed, local_dict=local_dict, transformations=transformations, evaluate=False)
     valid_input = True
@@ -187,7 +185,7 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # المحرك الجبري: استخراج القيم المظبوطة والمشتقة
+    # استخراج القيم المضبوطة والمشتقة
     # ---------------------------------------------------------
     sym_m_critical = []
     unique_asymptotes = []
@@ -231,7 +229,7 @@ if valid_input:
         if not any(abs(p['val'] - val) < 1e-4 for p in pts_var_exact):
             pts_var_exact.append({'val': val, 'sym': r, 'latex_x': sanitize_latex(r), 'type': 'extrema'})
 
-    # المحرك الهجين: التقاط النقاط الزاوية غير القابلة للاشتقاق رياضياً ودمجها في الجدول المضبوط
+    # المحرك الهجين لالتقاط النقاط الزاوية غير القابلة للاشتقاق
     is_valid_plot = ~np.isnan(y_vals_plot)
     edges = np.diff(is_valid_plot.astype(int))
     starts = np.where(edges == 1)[0] + 1
@@ -310,7 +308,7 @@ if valid_input:
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # النهايات الرياضية والمشتقة (بدون نصوص تعبيرية)
+    # النهايات الرياضية
     # ---------------------------------------------------------
     limits_data_detailed = []
     limits_mpl_list = []
@@ -321,11 +319,9 @@ if valid_input:
             lim_latex = "+\infty" if lim == sp.oo else sanitize_latex(lim)
             expr_latex = sanitize_latex(f_expr)
             
-            # لواجهة التطبيق
-            latex_streamlit = fr"\lim_{{x \to {dir_latex}}} f(x) = \lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
+            latex_streamlit = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
             limits_data_detailed.append(latex_streamlit)
             
-            # لملف الـ PDF (فصل الطرفين لتلوين النتيجة باللون الأحمر وإعطاء مظهر الخطوات المتسلسلة)
             lhs_mpl = fr"\lim_{{x \to {dir_latex}}} f(x) = \lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) ="
             rhs_mpl = fr"{lim_latex}"
             limits_mpl_list.append((lhs_mpl, rhs_mpl))
@@ -487,12 +483,19 @@ if valid_input:
     var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
-    # المناقشة البيانية الدقيقة وبناء المجالات
+    # المناقشة البيانية (استخراج المجالات الدقيقة)
     # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
         fl_m = float(sp.N(sm))
         if np.isfinite(fl_m) and abs(fl_m) < 50: m_critical_num.append(round(fl_m, 2))
+        
+    is_valid_plot = ~np.isnan(y_vals_plot)
+    edges = np.diff(is_valid_plot.astype(int))
+    starts = np.where(edges == 1)[0] + 1
+    if is_valid_plot[0]: starts = np.insert(starts, 0, 0)
+    ends = np.where(edges == -1)[0]
+    if is_valid_plot[-1]: ends = np.append(ends, len(y_vals_plot) - 1)
 
     for s, e in zip(starts, ends):
         segment = y_vals_plot[s:e+1]
@@ -504,16 +507,11 @@ if valid_input:
             
     m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 50])))
 
-    def get_exact_strings(val_float):
+    def get_exact_m(val_float):
         for sm in sym_m_critical:
             if abs(float(sp.N(sm)) - val_float) < 1e-2:
-                latex_str = sanitize_latex(sm)
-                plain_str = latex_str
-                plain_str = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"\1/\2", plain_str)
-                plain_str = plain_str.replace(r"\infty", "∞").replace(r"\ln", "ln")
-                plain_str = plain_str.replace("{", "").replace("}", "").replace("\\", "")
-                return latex_str, plain_str
-        return fmt(val_float), fmt(val_float)
+                return sanitize_latex(sm)
+        return fmt(val_float)
 
     def get_roots_text(m_test):
         is_critical = any(abs(m_test - mc) < 1e-2 for mc in m_critical_num)
@@ -576,6 +574,7 @@ if valid_input:
         if pos_s == 1 and neg_s == 2 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل موجب وحلان سالبان"
         if pos_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل موجب"
         if neg_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل سالب"
+
         if len(desc) == 0: return f"{count} حلول"
         return " و ".join(desc)
 
@@ -606,8 +605,8 @@ if valid_input:
         L_inc = any(r[0] == L and r[1] == L and r[2] == sol_text for r in raw_intervals)
         H_inc = any(r[0] == H and r[1] == H and r[2] == sol_text for r in raw_intervals)
         
-        L_latex, L_plain = get_exact_strings(L) if L != float('-inf') else (r"-\infty", "-∞")
-        H_latex, H_plain = get_exact_strings(H) if H != float('inf') else (r"+\infty", "+∞")
+        L_latex = r"-\infty" if L == float('-inf') else get_exact_m(L)
+        H_latex = r"+\infty" if H == float('inf') else get_exact_m(H)
         
         L_html = bound_to_html(L_latex)
         H_html = bound_to_html(H_latex)
@@ -636,7 +635,7 @@ if valid_input:
         final_table_latex.append((pdf_latex, sol_text))
 
     # ---------------------------------------------------------
-    # دوال واجهة الويب (جدول HTML) وصناعة جدول صورة للـ PDF 
+    # دوال واجهة الويب وملف الـ PDF النهائي
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
