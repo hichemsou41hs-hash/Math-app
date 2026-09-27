@@ -45,9 +45,6 @@ st.markdown("""
     
     button[kind="primary"] { width: 100% !important; height: 50px !important; background-color: #ef4444 !important; color: white !important; font-size: 18px !important; font-weight: bold !important; border-radius: 8px !important; box-shadow: 0 4px 0 #7f1d1d !important; border: none !important; margin-top: 5px !important; }
     button[kind="primary"]:active { transform: translateY(4px) !important; box-shadow: 0 0 0 #7f1d1d !important; background-color: #dc2626 !important; }
-    
-    div[data-testid="stTabs"] button { font-size: 16px !important; font-weight: bold !important; color: #A5F3FC !important; }
-    div[data-testid="stTabs"] button[aria-selected="true"] { color: #FFD700 !important; border-bottom-color: #FFD700 !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -123,7 +120,7 @@ def get_sol_color_html(sol_text):
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
-if 'f_val' not in st.session_state: st.session_state.f_val = "sqrt(abs(x^2-1))"
+if 'f_val' not in st.session_state: st.session_state.f_val = "x+sqrt(x^2+2x)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -156,17 +153,12 @@ try:
 except:
     pass 
 
-col_text, col_cam = st.columns(2)
+col_text, col_img = st.columns(2)
 
-# تقنية العكس البرمجي: تنفيذ الكاميرا قبل خانات الكتابة لمنع تعارض الحالات
-with col_cam:
-    tab1, tab2 = st.tabs(["📸 تصوير", "🖼️ رفع صورة"])
-    with tab1:
-        img_file_cam = st.camera_input("التقط صورة للدالة", label_visibility="collapsed")
-    with tab2:
-        img_file_up = st.file_uploader("اختر صورة من هاتفك", type=['png', 'jpg', 'jpeg'], label_visibility="collapsed")
-        
-    img_file = img_file_cam if img_file_cam else img_file_up
+# معالجة الذكاء الاصطناعي أولاً قبل رسم خانات الإدخال لمنع تعارض Streamlit
+with col_img:
+    # تم إزالة الكاميرا والاكتفاء برفع الصور
+    img_file = st.file_uploader("🖼️ ارفع صورة الدالة لاستخراجها آلياً:", type=['png', 'jpg', 'jpeg'])
     
     if img_file:
         if not api_key:
@@ -561,27 +553,25 @@ if valid_input:
     var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
-    # المناقشة البيانية (استخراج المجالات الدقيقة)
+    # المناقشة البيانية (مع التصحيح الرياضي الخارق للمجالات)
     # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
         fl_m = float(sp.N(sm))
         if np.isfinite(fl_m) and abs(fl_m) < 50: m_critical_num.append(round(fl_m, 2))
-        
-    is_valid_plot = ~np.isnan(y_vals_plot)
-    edges = np.diff(is_valid_plot.astype(int))
-    starts = np.where(edges == 1)[0] + 1
-    if is_valid_plot[0]: starts = np.insert(starts, 0, 0)
-    ends = np.where(edges == -1)[0]
-    if is_valid_plot[-1]: ends = np.append(ends, len(y_vals_plot) - 1)
 
     for s, e in zip(starts, ends):
         segment = y_vals_plot[s:e+1]
-        if len(segment) > 10:
-            peaks, _ = find_peaks(segment, prominence=0.05)
-            valleys, _ = find_peaks(-segment, prominence=0.05)
-            for p in peaks: m_critical_num.append(round(float(segment[p]), 2))
-            for v in valleys: m_critical_num.append(round(float(segment[v]), 2))
+        if len(segment) > 0:
+            # إضافة حواف مجالات التعريف كنقاط حرجة إلزامية!
+            if s > 0 and np.isfinite(y_vals_plot[s]): m_critical_num.append(round(float(y_vals_plot[s]), 2))
+            if e < len(x_vals_plot) - 1 and np.isfinite(y_vals_plot[e]): m_critical_num.append(round(float(y_vals_plot[e]), 2))
+            
+            if len(segment) > 10:
+                peaks, _ = find_peaks(segment, prominence=0.05)
+                valleys, _ = find_peaks(-segment, prominence=0.05)
+                for p in peaks: m_critical_num.append(round(float(segment[p]), 2))
+                for v in valleys: m_critical_num.append(round(float(segment[v]), 2))
             
     m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 50])))
 
