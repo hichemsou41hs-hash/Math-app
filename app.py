@@ -74,7 +74,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>", unsafe_allow_html=True)
-st.markdown("<div class='title-dis'>المناقشة البيانية (المحرك الذكي)</div>", unsafe_allow_html=True)
+st.markdown("<div class='title-dis'>المناقشة البيانية ودراسة الدالة</div>", unsafe_allow_html=True)
 
 def fmt(val):
     if val == float('inf') or val == sp.oo: return "+∞"
@@ -105,7 +105,6 @@ def fix_arabic(text):
 # ---------------------------------------------------------
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
-
 if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(x**2+x)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
@@ -197,11 +196,13 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # 4. الرادار الذكي لاستخراج القيم الحرجة
+    # 4. الرادار الذكي لاستخراج القيم الحرجة ودراسة الدالة
     # ---------------------------------------------------------
     unique_asymptotes = []
     m_critical = []
+    x_extrema = [] # لتسجيل فواصل الذروات (تفيد في جدول التغيرات)
     
+    # المقاربات الأفقية
     try:
         for direction in [sp.oo, -sp.oo]:
             lim_h = sp.limit(f_expr, x_sym, direction)
@@ -210,6 +211,7 @@ if valid_input:
                 m_critical.append(round(float(lim_h), 2))
     except: pass
 
+    # المقاربات العمودية وأطراف المجال
     candidate_v_asymptotes = []
     try:
         n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
@@ -244,20 +246,7 @@ if valid_input:
             final_asyms.append(asym)
     unique_asymptotes = final_asyms
 
-    try:
-        val_0 = float(f_expr.subs(x_sym, 0))
-        if np.isfinite(val_0): m_critical.append(round(val_0, 2))
-    except: pass
-
-    try:
-        df_expr = sp.diff(f_expr, x_sym)
-        crit_pts = sp.solve(df_expr, x_sym)
-        for cp in crit_pts:
-            if cp.is_real:
-                val_cp = float(f_expr.subs(x_sym, cp))
-                if np.isfinite(val_cp): m_critical.append(round(val_cp, 2))
-    except: pass
-
+    # استخراج الذروات (Extrema)
     is_valid = ~np.isnan(y_vals_plot)
     edges = np.diff(is_valid.astype(int))
     starts = np.where(edges == 1)[0] + 1
@@ -267,11 +256,16 @@ if valid_input:
     
     for s, e in zip(starts, ends):
         segment = y_vals_plot[s:e+1]
+        seg_x = x_vals_plot[s:e+1]
         if len(segment) > 10:
             peaks, _ = find_peaks(segment, prominence=0.05)
             valleys, _ = find_peaks(-segment, prominence=0.05)
-            for p in peaks: m_critical.append(round(float(segment[p]), 2))
-            for v in valleys: m_critical.append(round(float(segment[v]), 2))
+            for p in peaks: 
+                m_critical.append(round(float(segment[p]), 2))
+                x_extrema.append(float(seg_x[p]))
+            for v in valleys: 
+                m_critical.append(round(float(segment[v]), 2))
+                x_extrema.append(float(seg_x[v]))
 
     if manual_crit_input:
         try: m_critical.append(round(float(manual_crit_input.strip()), 2))
@@ -283,22 +277,72 @@ if valid_input:
     for m in m_critical:
         if not merged_m_crit: merged_m_crit.append(m)
         else:
-            if abs(m - merged_m_crit[-1]) > 0.05:
-                merged_m_crit.append(m)
+            if abs(m - merged_m_crit[-1]) > 0.05: merged_m_crit.append(m)
     m_critical = merged_m_crit
 
+    # استخراج الجذور (تقاطع الدالة مع محور الفواصل للوضع النسبي)
+    x_roots = []
+    with np.errstate(divide='ignore', invalid='ignore'):
+        diff_0 = y_vals_roots - 0
+    for i in range(len(diff_0)-1):
+        if np.isfinite(diff_0[i]) and np.isfinite(diff_0[i+1]):
+            if diff_0[i] * diff_0[i+1] < 0: x_roots.append(float(x_vals_roots[i]))
+            elif diff_0[i] == 0: x_roots.append(float(x_vals_roots[i]))
+    
+    unique_x_roots = []
+    for ix in x_roots:
+        if not any(abs(ix - u) < 0.1 for u in unique_x_roots):
+            unique_x_roots.append(ix)
+
     # ---------------------------------------------------------
-    # 5. تصنيف الحلول الصارم 
+    # 5. بناء جداول (إتجاه التغير + الوضع النسبي + النهايات)
+    # ---------------------------------------------------------
+    v_asym_x = [v['val'] for v in unique_asymptotes if v['type'] == 'v']
+    
+    # أ. جدول اتجاه التغير
+    critical_x_var = sorted(list(set(x_extrema + v_asym_x)))
+    var_table_data = []
+    pts_var = [-np.inf] + critical_x_var + [np.inf]
+    for i in range(len(pts_var)-1):
+        left, right = pts_var[i], pts_var[i+1]
+        if abs(right - left) < 1e-3: continue
+        mid = 0 if (left == -np.inf and right == np.inf) else (right - 1 if left == -np.inf else (left + 1 if right == np.inf else (left + right) / 2))
+        y_mid = f_func(mid)
+        if not np.isfinite(y_mid): continue
+        y_mid_plus = f_func(mid + 1e-5)
+        state = "متزايدة تماما (+)" if y_mid_plus > y_mid else "متناقصة تماما (-)"
+        var_table_data.append((left, right, state))
+
+    # ب. الوضع النسبي (مع محور الفواصل)
+    critical_x_pos = sorted(list(set(unique_x_roots + v_asym_x)))
+    pos_table_data = []
+    pts_pos = [-np.inf] + critical_x_pos + [np.inf]
+    for i in range(len(pts_pos)-1):
+        left, right = pts_pos[i], pts_pos[i+1]
+        if abs(right - left) < 1e-3: continue
+        mid = 0 if (left == -np.inf and right == np.inf) else (right - 1 if left == -np.inf else (left + 1 if right == np.inf else (left + right) / 2))
+        y_mid = f_func(mid)
+        if not np.isfinite(y_mid): continue
+        state = "فوق محور الفواصل (+)" if y_mid > 0 else "تحت محور الفواصل (-)"
+        pos_table_data.append((left, right, state))
+
+    # ج. النهايات والمقاربات
+    limits_data = []
+    for asym in unique_asymptotes:
+        if asym['type'] == 'h': limits_data.append((f"y = {asym['val']}", "مقارب أفقي عند المالانهاية"))
+        elif asym['type'] == 'v': limits_data.append((f"x = {asym['val']}", "مقارب عمودي (النهاية ±∞)"))
+    if not limits_data: limits_data.append(("±∞", "تؤول النهايات إلى المالانهاية عند أطراف مجموعة التعريف"))
+
+    # ---------------------------------------------------------
+    # 6. تصنيف الحلول الصارم للمناقشة البيانية 
     # ---------------------------------------------------------
     def get_roots_text(m_test):
         is_critical = any(abs(m_test - mc) < 1e-2 for mc in m_critical)
-        
         with np.errstate(divide='ignore', invalid='ignore'):
             y_g = g_func(x_vals_roots, m_test)
-            if np.isscalar(y_g):
-                y_g = np.full_like(x_vals_roots, y_g, dtype=float)
+            if np.isscalar(y_g): y_g = np.full_like(x_vals_roots, y_g, dtype=float)
             diff = y_vals_roots - y_g
-            
+        
         crossings = []
         for i in range(len(diff)-1):
             if np.isfinite(diff[i]) and np.isfinite(diff[i+1]):
@@ -307,7 +351,6 @@ if valid_input:
                     
         tangents = []
         cleaned_crossings = []
-        
         if is_critical:
             skip = False
             for i in range(len(crossings)):
@@ -324,15 +367,12 @@ if valid_input:
                     if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1] and abs_diff[i] < 0.1:
                         if not any(abs(x_vals_roots[i] - c) < 0.6 for c in cleaned_crossings) and not any(abs(x_vals_roots[i] - t) < 0.6 for t in tangents):
                             tangents.append(x_vals_roots[i])
-        else:
-            cleaned_crossings = crossings
+        else: cleaned_crossings = crossings
             
         all_roots = [(c, "single") for c in cleaned_crossings] + [(t, "double") for t in tangents]
-        
         final_roots = []
         for r, t in all_roots:
-            if not any(abs(r - fr[0]) < 0.1 for fr in final_roots):
-                final_roots.append((r, t))
+            if not any(abs(r - fr[0]) < 0.1 for fr in final_roots): final_roots.append((r, t))
         
         count = len(final_roots)
         if count == 0: return "لا توجد حلول"
@@ -379,8 +419,7 @@ if valid_input:
                 mid = (m_critical[i] + m_critical[i+1]) / 2.0
                 raw_intervals.append((m_critical[i], m_critical[i+1], get_roots_text(mid)))
         raw_intervals.append((m_critical[-1], float('inf'), get_roots_text(m_critical[-1] + 0.5)))
-    else:
-        raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0.0)))
+    else: raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0.0)))
 
     merged_intervals = []
     if raw_intervals:
@@ -423,6 +462,9 @@ if valid_input:
         final_table_data.append((math_html, sol_text, L, H))
         final_table_plain.append((plain_m, sol_text))
 
+    # ---------------------------------------------------------
+    # 7. دوال واجهة الويب وملف الـ PDF
+    # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
         html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>عدد وطبيعة الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
@@ -449,6 +491,119 @@ if valid_input:
         html += "</table>"
         return html
 
+    def generate_study_html():
+        html = "<div style='background-color:#1E293B; padding:15px; border-radius:10px; margin-top:10px;'>"
+        html += "<h4 style='color:#00E5FF; text-align:right;'>1. النهايات والمقاربات:</h4><ul style='text-align:right; direction:rtl; color:white;'>"
+        for math_str, ar_str in limits_data:
+            html += f"<li>{ar_str} : <b style='color:#FFD700;' dir='ltr'>{math_str}</b></li>"
+        html += "</ul>"
+        
+        html += "<h4 style='color:#00E5FF; text-align:right;'>2. جدول إتجاه التغير:</h4>"
+        html += "<table style='width:100%; text-align:center; background-color:#0F172A; border-collapse: collapse;' dir='rtl'>"
+        html += "<tr style='background-color:#334155; color:white;'><th style='padding:8px; border:1px solid #444;'>المجال</th><th style='padding:8px; border:1px solid #444;'>إتجاه التغير</th></tr>"
+        for L, R, state in var_table_data:
+            L_str = "-∞" if L == -np.inf else fmt(L)
+            R_str = "+∞" if R == np.inf else fmt(R)
+            html += f"<tr><td dir='ltr' style='padding:8px; border:1px solid #444; color:#FFD700;'>] {L_str} , {R_str} [</td><td style='padding:8px; border:1px solid #444; color:white;'>{state}</td></tr>"
+        html += "</table><br>"
+        
+        html += "<h4 style='color:#00E5FF; text-align:right;'>3. جدول الوضع النسبي (مع محور الفواصل):</h4>"
+        html += "<table style='width:100%; text-align:center; background-color:#0F172A; border-collapse: collapse;' dir='rtl'>"
+        html += "<tr style='background-color:#334155; color:white;'><th style='padding:8px; border:1px solid #444;'>المجال</th><th style='padding:8px; border:1px solid #444;'>الوضع النسبي</th></tr>"
+        for L, R, state in pos_table_data:
+            L_str = "-∞" if L == -np.inf else fmt(L)
+            R_str = "+∞" if R == np.inf else fmt(R)
+            html += f"<tr><td dir='ltr' style='padding:8px; border:1px solid #444; color:#FFD700;'>] {L_str} , {R_str} [</td><td style='padding:8px; border:1px solid #444; color:white;'>{state}</td></tr>"
+        html += "</table></div>"
+        return html
+
+    def generate_pdf(fig_path):
+        if not PDF_ENABLED: return None
+        
+        pdf = FPDF(orientation='P', unit='mm', format='A4')
+        font_path = "Amiri-Regular.ttf"
+        if not os.path.exists(font_path):
+            try: urllib.request.urlretrieve("https://github.com/google/fonts/raw/main/ofl/amiri/Amiri-Regular.ttf", font_path)
+            except: pass
+            
+        # الصفحة الأولى: المناقشة البيانية
+        pdf.add_page()
+        if os.path.exists(font_path):
+            pdf.add_font("Amiri", "", font_path, uni=True)
+            pdf.set_font("Amiri", size=24)
+        else: pdf.set_font("Arial", size=24)
+            
+        pdf.set_text_color(21, 101, 192)
+        title = fix_arabic("الأستاذ سوايسية هشام - المناقشة البيانية")
+        pdf.cell(0, 10, title, ln=True, align='C')
+        pdf.ln(5)
+        
+        pdf.image(fig_path, x=15, w=180)
+        pdf.ln(5)
+        
+        pdf.set_font("Amiri" if os.path.exists(font_path) else "Arial", size=14)
+        pdf.set_fill_color(30, 58, 138) 
+        pdf.set_text_color(255, 255, 255)
+        pdf.cell(95, 12, fix_arabic("المجال / القيمة"), border=1, fill=True, align='C')
+        pdf.cell(95, 12, fix_arabic("عدد وطبيعة الحلول"), border=1, ln=True, fill=True, align='C')
+        
+        for i, (m_str, text_str) in enumerate(final_table_plain):
+            pdf.set_fill_color(241, 245, 249) if i % 2 == 0 else pdf.set_fill_color(255, 255, 255)
+            pdf.set_text_color(15, 23, 42)
+            pdf.cell(95, 12, m_str, border=1, align='C', fill=True)
+            pdf.cell(95, 12, fix_arabic(text_str), border=1, ln=True, align='C', fill=True)
+
+        # الصفحة الثانية: دراسة الدالة
+        pdf.add_page()
+        pdf.set_font("Amiri" if os.path.exists(font_path) else "Arial", size=20)
+        pdf.set_text_color(21, 101, 192)
+        pdf.cell(0, 15, fix_arabic("دراسة الدالة الشاملة (مستخرجة آلياً)"), ln=True, align='C')
+        pdf.ln(5)
+        
+        pdf.set_font("Amiri" if os.path.exists(font_path) else "Arial", size=16)
+        pdf.set_text_color(0, 0, 0)
+        pdf.cell(0, 10, fix_arabic("1. النهايات والمقاربات:"), ln=True, align='R')
+        pdf.set_font("Arial", size=14)
+        for math_str, ar_str in limits_data:
+            text_line = math_str + "  :  " + fix_arabic(ar_str)
+            pdf.cell(0, 8, text_line, ln=True, align='R')
+        pdf.ln(5)
+
+        def draw_study_table(title, headers, data_rows):
+            pdf.set_font("Amiri" if os.path.exists(font_path) else "Arial", size=16)
+            pdf.set_text_color(21, 101, 192)
+            pdf.cell(0, 10, fix_arabic(title), ln=True, align='R')
+            
+            pdf.set_font("Amiri" if os.path.exists(font_path) else "Arial", size=14)
+            pdf.set_fill_color(30, 58, 138)
+            pdf.set_text_color(255, 255, 255)
+            
+            col_width = 190 / len(headers)
+            pdf.cell(col_width, 10, fix_arabic(headers[0]), border=1, fill=True, align='C')
+            pdf.cell(col_width, 10, fix_arabic(headers[1]), border=1, ln=True, fill=True, align='C')
+            
+            pdf.set_text_color(15, 23, 42)
+            for i, row in enumerate(data_rows):
+                pdf.set_fill_color(241, 245, 249) if i % 2 == 0 else pdf.set_fill_color(255, 255, 255)
+                L, R, state = row
+                L_str = "-∞" if L == -np.inf else fmt(L)
+                R_str = "+∞" if R == np.inf else fmt(R)
+                domain_str = f"] {L_str} , {R_str} ["
+                
+                pdf.cell(col_width, 10, fix_arabic(state), border=1, fill=True, align='C')
+                pdf.cell(col_width, 10, domain_str, border=1, ln=True, fill=True, align='C')
+            pdf.ln(5)
+
+        draw_study_table("2. جدول إتجاه التغير:", ["إتجاه التغير", "المجال"], var_table_data)
+        draw_study_table("3. جدول الوضع النسبي (مع محور الفواصل):", ["الوضع النسبي", "المجال"], pos_table_data)
+
+        pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+        pdf.output(pdf_file.name)
+        return pdf_file.name
+
+    # ---------------------------------------------------------
+    # 8. عرض التطبيق
+    # ---------------------------------------------------------
     st.write("") 
     col1, col2 = st.columns(2)
     with col1:
@@ -461,79 +616,22 @@ if valid_input:
             st.session_state.auto_play = False
             st.rerun()
 
-    # ---------------------------------------------------------
-    # 6. وظيفة إنشاء الـ PDF (النسخة الملونة والأنيقة)
-    # ---------------------------------------------------------
-    def generate_pdf(fig_path):
-        if not PDF_ENABLED: return None
-        
-        pdf = FPDF(orientation='P', unit='mm', format='A4')
-        pdf.add_page()
-        
-        font_path = "Amiri-Regular.ttf"
-        if not os.path.exists(font_path):
-            try:
-                urllib.request.urlretrieve("https://github.com/google/fonts/raw/main/ofl/amiri/Amiri-Regular.ttf", font_path)
-            except: pass
-            
-        if os.path.exists(font_path):
-            pdf.add_font("Amiri", "", font_path, uni=True)
-            pdf.set_font("Amiri", size=24)
-        else:
-            pdf.set_font("Arial", size=24)
-            
-        pdf.set_text_color(21, 101, 192) # أزرق احترافي
-        title = fix_arabic("الأستاذ سوايسية هشام - المناقشة البيانية")
-        pdf.cell(0, 10, title, ln=True, align='C')
-        pdf.ln(5)
-        
-        # المنحنى
-        pdf.image(fig_path, x=15, w=180)
-        pdf.ln(5)
-        
-        pdf.set_font("Amiri" if os.path.exists(font_path) else "Arial", size=14)
-        
-        # رأس الجدول بلون داكن (مثل GeoGebra/التطبيقات الحديثة)
-        pdf.set_fill_color(30, 58, 138) 
-        pdf.set_text_color(255, 255, 255)
-        pdf.cell(95, 12, fix_arabic("المجال / القيمة"), border=1, fill=True, align='C')
-        pdf.cell(95, 12, fix_arabic("عدد وطبيعة الحلول"), border=1, ln=True, fill=True, align='C')
-        
-        # أسطر الجدول بألوان متناوبة
-        for i, (m_str, text_str) in enumerate(final_table_plain):
-            if i % 2 == 0:
-                pdf.set_fill_color(241, 245, 249) # رمادي/أزرق فاتح جداً
-            else:
-                pdf.set_fill_color(255, 255, 255) # أبيض
-                
-            pdf.set_text_color(15, 23, 42) # نص أسود/كحلي داكن
-            pdf.cell(95, 12, m_str, border=1, align='C', fill=True)
-            pdf.cell(95, 12, fix_arabic(text_str), border=1, ln=True, align='C', fill=True)
-            
-        pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
-        pdf.output(pdf_file.name)
-        return pdf_file.name
-
     placeholder = st.empty()
 
     def update_view(m_val):
         fig, ax = plt.subplots(figsize=(10, 6.5))
-        
-        # --- التصميم الجديد لمعلم GeoGebra ---
-        fig.patch.set_facecolor('#FFFFFF') # خلفية بيضاء
+        fig.patch.set_facecolor('#FFFFFF')
         ax.set_facecolor('#FFFFFF')
         ax.tick_params(colors='black', labelsize=11)
         
         for spine in ax.spines.values(): spine.set_edgecolor('#A0A0A0')
-        ax.axhline(0, color='black', linewidth=2, zorder=3) # محور الفواصل
-        ax.axvline(0, color='black', linewidth=2, zorder=3) # محور التراتيب
+        ax.axhline(0, color='black', linewidth=2, zorder=3)
+        ax.axvline(0, color='black', linewidth=2, zorder=3)
         
-        # شبكة GeoGebra الدقيقة
         ax.minorticks_on()
         ax.grid(True, which='major', color='#CCCCCC', linestyle='-', linewidth=1.2, zorder=1)
         ax.grid(True, which='minor', color='#EBEBEB', linestyle='-', linewidth=0.6, zorder=1)
         
-        # المقاربات 
         for asym in unique_asymptotes:
             if asym['type'] == 'h':
                 ax.axhline(asym['val'], color='#D32F2F', linestyle='--', linewidth=2.2, zorder=4)
@@ -542,7 +640,6 @@ if valid_input:
                 ax.axvline(asym['val'], color='#D32F2F', linestyle='--', linewidth=2.2, zorder=4)
                 ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color='#D32F2F', fontsize=14, fontweight='bold', va='top')
         
-        # رسم المنحنى بلون GeoGebra الأخضر/الزيتي 
         ax.plot(x_vals_plot, y_vals_plot, color='#2E7D32', linewidth=3.5, label='C_f', zorder=5)
         
         with np.errstate(divide='ignore', invalid='ignore'):
@@ -555,7 +652,6 @@ if valid_input:
             rep_str = f"({m_val_str})" if m_val < 0 else m_val_str
             m_eq_label = "y = " + st.session_state.g_val.replace('m', rep_str).replace('*', '')
             
-        # مستقيم المناقشة باللون الأزرق
         ax.plot(x_vals_plot, y_g_plot, color='#1565C0', linestyle='--', linewidth=3, label=f"${m_eq_label}$", zorder=5)
         
         diff_plot = y_vals_plot - y_g_plot
@@ -566,8 +662,7 @@ if valid_input:
                     denom = diff_plot[i+1] - diff_plot[i]
                     xi = x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom if denom != 0 else x_vals_plot[i]
                     intersect_x.append(float(xi))
-                elif diff_plot[i] == 0:
-                    intersect_x.append(float(x_vals_plot[i]))
+                elif diff_plot[i] == 0: intersect_x.append(float(x_vals_plot[i]))
 
         unique_intersect_x = []
         for ix in intersect_x:
@@ -586,7 +681,6 @@ if valid_input:
         ax.text(4, m_val + 0.35, f"${m_eq_label}$", color='#1565C0', fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
 
         ax.set_ylim(-6, 8)
-        # مفتاح الرسم بلون أبيض وأسود
         legend = ax.legend(facecolor='#FFFFFF', edgecolor='#A0A0A0', loc='upper right', fontsize=12)
         for text in legend.get_texts(): text.set_color("black")
         fig.tight_layout()
@@ -595,37 +689,33 @@ if valid_input:
             st.pyplot(fig, use_container_width=True)
             st.markdown(generate_html_table(m_val), unsafe_allow_html=True)
             
+            with st.expander("📊 عرض دراسة الدالة الشاملة (مستخرجة آلياً)", expanded=False):
+                st.markdown(generate_study_html(), unsafe_allow_html=True)
+            
             if PDF_ENABLED and not st.session_state.auto_play:
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
-                    # حفظ الصورة بخلفية بيضاء بدلاً من الداكنة
                     fig.savefig(tmpfile.name, facecolor='#FFFFFF')
                     pdf_path = generate_pdf(tmpfile.name)
                     if pdf_path:
-                        with open(pdf_path, "rb") as pdf_file:
-                            pdf_bytes = pdf_file.read()
-                        st.download_button(label="📥 تحميل الحل كملف PDF", data=pdf_bytes, file_name="monaqasha_souaissia.pdf", mime="application/pdf")
+                        with open(pdf_path, "rb") as pdf_file: pdf_bytes = pdf_file.read()
+                        st.download_button(label="📥 تحميل الحل والدراسة كملف PDF", data=pdf_bytes, file_name="monaqasha_souaissia.pdf", mime="application/pdf")
         plt.close(fig)
 
     if st.session_state.auto_play:
         while st.session_state.auto_play and st.session_state.m_anim <= 4.0:
             m_val = round(st.session_state.m_anim, 2)
             update_view(m_val)
-            
             is_critical_now = any(abs(st.session_state.m_anim - mc) < 0.05 for mc in m_critical)
             if is_critical_now: time.sleep(2.0) 
             else: time.sleep(0.05)
-                
             step = 0.1 
             next_m = st.session_state.m_anim + step
-            
             for mc in m_critical:
                 if st.session_state.m_anim < mc - 1e-4 and next_m >= mc - 1e-4:
                     next_m = float(mc)
                     break
-            
             st.session_state.m_anim = next_m
         st.session_state.auto_play = False
-
     else:
         m_val = st.slider("تحكم يدوي:", -2.0, 3.0, 0.0, 0.05, format="%g", key="manual_m")
         update_view(m_val)
