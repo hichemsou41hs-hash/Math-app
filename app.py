@@ -130,16 +130,13 @@ if valid_input:
     y_vals_plot = process_y_vals(x_vals_plot)
     y_vals_roots = process_y_vals(x_vals_roots)
 
-    # ---------------------------------------------------------
-    # استخراج القيم المظبوطة (Exact Symbolic Engine)
-    # ---------------------------------------------------------
-    sym_m_critical = []
-    
-    # المقاربات الأفقية
+    unique_asymptotes, m_critical, x_extrema = [], [], []
     try:
         for direction in [sp.oo, -sp.oo]:
             lim_h = sp.limit(f_expr, x_sym, direction)
-            if lim_h.is_real: sym_m_critical.append(lim_h)
+            if lim_h.is_real:
+                unique_asymptotes.append({'type': 'h', 'val': float(lim_h), 'label': f"y={fmt(lim_h)}"})
+                m_critical.append(round(float(lim_h), 2))
     except: pass
 
     candidate_v_asymptotes = []
@@ -162,28 +159,21 @@ if valid_input:
         for r in sp.solve(df_expr, x_sym):
             if r.is_real is not False and sp.im(sp.N(r)) == 0:
                 sym_extrema.append(r)
-                sym_m_critical.append(sp.simplify(f_expr.subs(x_sym, r)))
+                m_critical.append(round(float(sp.N(f_expr.subs(x_sym, r))), 2))
     except: pass
     sym_extrema = list(set(sym_extrema))
 
-    # دمج النقاط الدقيقة مع المالانهاية
     pts_var_exact = []
     pts_var_exact.append({'val': -np.inf, 'sym': -sp.oo, 'latex_x': r"-\infty", 'type': 'inf'})
-    
     for r in candidate_v_asymptotes:
         pts_var_exact.append({'val': float(sp.N(r)), 'sym': r, 'latex_x': sp.latex(r).replace('log', 'ln'), 'type': 'v_asym'})
-        
     for r in sym_extrema:
         val = float(sp.N(r))
         if not any(abs(p['val'] - val) < 1e-4 for p in pts_var_exact):
             pts_var_exact.append({'val': val, 'sym': r, 'latex_x': sp.latex(r).replace('log', 'ln'), 'type': 'extrema'})
-            
     pts_var_exact.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
     pts_var_exact.sort(key=lambda p: p['val'])
 
-    # ---------------------------------------------------------
-    # استنتاج مجموعة التعريف الدقيقة (اقتطاع الجدول)
-    # ---------------------------------------------------------
     valid_intervals = []
     for i in range(len(pts_var_exact) - 1):
         left, right = pts_var_exact[i]['val'], pts_var_exact[i+1]['val']
@@ -205,66 +195,40 @@ if valid_input:
     domain_latex = r"D_f = \color{#FFD700}{" + r" \cup ".join(domain_intervals_str) + r"}" if domain_intervals_str else r"D_f = \emptyset"
 
     # ---------------------------------------------------------
-    # شرح وحساب النهايات رياضيًا
+    # النهايات والخطوات الرياضية الخالصة
     # ---------------------------------------------------------
-    limits_html_list = []
-    limits_mpl_list = []
-    
-    def append_limit_steps(val_sym, dir_sympy, dir_latex, ar_desc):
+    limits_data_detailed = []
+
+    def add_limit(val, dir_sympy, dir_latex, ar_desc):
         try:
-            lim = sp.limit(f_expr, x_sym, val_sym, dir=dir_sympy)
+            lim = sp.limit(f_expr, x_sym, val, dir=dir_sympy)
             lim_latex = sp.latex(lim).replace('log', 'ln')
             expr_latex = sp.latex(f_expr).replace('log', 'ln')
             
-            is_IF = False
-            if val_sym not in [sp.oo, -sp.oo]:
-                sub_v = f_expr.subs(x_sym, val_sym)
-                if sub_v is sp.nan or sub_v is sp.zoo: is_IF = True
-            else: is_IF = True 
-            
-            mid_step_html = r" = [\text{ح.ع.ت}] \xrightarrow{\text{إزالة}} " if is_IF else ""
-            html_str = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) {mid_step_html} = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
-            limits_html_list.append((ar_desc, html_str))
-            
-            mid_step_mpl = r" = [ I.F ] " if is_IF else ""
-            mpl_str = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) {mid_step_mpl} = \mathbf{{{lim_latex}}}"
-            limits_mpl_list.append((ar_desc, mpl_str))
+            latex_streamlit = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
+            limits_data_detailed.append({
+                'desc': ar_desc,
+                'latex': latex_streamlit
+            })
         except: pass
 
     if len(pts_var_exact) > 0:
         if pts_var_exact[0]['sym'] == -sp.oo:
-            append_limit_steps(-sp.oo, '+', r"-\infty", "النهاية عند $-\infty$ :")
+            add_limit(-sp.oo, '+', r"-\infty", "النهاية عند الأطراف غير المنتهية:")
         if pts_var_exact[-1]['sym'] == sp.oo:
-            append_limit_steps(sp.oo, '-', r"+\infty", "النهاية عند $+\infty$ :")
+            add_limit(sp.oo, '-', r"+\infty", "النهاية عند الأطراف غير المنتهية:")
 
         for p in pts_var_exact:
             if p['type'] == 'v_asym':
                 idx = pts_var_exact.index(p)
                 v_latex = p['latex_x']
                 if idx > 0 and valid_intervals[idx-1]:
-                    append_limit_steps(p['sym'], '-', fr"{v_latex}^-", f"النهاية عند ${v_latex}$ بقيم صغرى :")
+                    add_limit(p['sym'], '-', fr"{v_latex}^-", f"النهاية بجوار القيمة الممنوعة {v_latex}:")
                 if idx < len(valid_intervals) and valid_intervals[idx]:
-                    append_limit_steps(p['sym'], '+', fr"{v_latex}^+", f"النهاية عند ${v_latex}$ بقيم كبرى :")
-
-    def generate_limits_image():
-        if not limits_mpl_list: return None
-        n_lim = len(limits_mpl_list)
-        fig_l, ax_l = plt.subplots(figsize=(8, max(1.5, n_lim * 0.8)))
-        ax_l.axis('off')
-        for i, (ar_text, math_str) in enumerate(limits_mpl_list):
-            y_pos = 1.0 - (i + 0.5) / n_lim
-            ax_l.text(0.95, y_pos, fix_arabic(ar_text), fontsize=16, ha='right', va='center', color='#1E3A8A', fontweight='bold')
-            ax_l.text(0.4, y_pos, f"${math_str}$", fontsize=18, ha='right', va='center', color='#D32F2F')
-        fig_l.tight_layout(pad=0)
-        tmp_l = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-        fig_l.savefig(tmp_l.name, bbox_inches='tight', dpi=300)
-        plt.close(fig_l)
-        return tmp_l.name
-
-    limits_image_path = generate_limits_image()
+                    add_limit(p['sym'], '+', fr"{v_latex}^+", f"النهاية بجوار القيمة الممنوعة {v_latex}:")
 
     # ---------------------------------------------------------
-    # بناء جدول التغيرات الاحترافي (نقي رياضياً 100%)
+    # بناء جدول التغيرات الاحترافي (Vector Graphic باستخدام Matplotlib)
     # ---------------------------------------------------------
     N = len(pts_var_exact)
     def generate_variation_table_image():
@@ -317,26 +281,22 @@ if valid_input:
                     rect = plt.Rectangle((x_c, 0), col_w, 5, facecolor='#EF4444', alpha=0.7, zorder=1)
                     ax_v.add_patch(rect)
                 else:
-                    ax_v.text(x_ic, 4.5, f"${signs[i]}$", ha='center', va='center', fontsize=24, color='#D32F2F' if signs[i]=='-' else '#2E7D32')
+                    ax_v.text(x_ic, 4.5, f"${signs[i]}$", ha='center', va='center', fontsize=22, color='#D32F2F' if signs[i]=='-' else '#2E7D32')
             
             if p['type'] == 'inf':
                 lim = sp.limit(f_expr, x_sym, p['sym'])
-                fl_val = float(sp.N(lim)) if lim.is_real else float('inf') if lim==sp.oo else float('-inf')
                 dx = 0.4 if x_val == -np.inf else -0.4
-                nodes.append((x_c+dx, fl_val, sp.latex(lim).replace('log','ln')))
+                nodes.append((x_c+dx, float(sp.N(lim)) if lim.is_real else 0, sp.latex(lim).replace('log','ln')))
             elif p['type'] == 'v_asym':
                 if i > 0 and valid_intervals[i-1]:
                     lim_l = sp.limit(f_expr, x_sym, p['sym'], dir='-')
-                    fl_l = float(sp.N(lim_l)) if lim_l.is_real else float('inf') if lim_l==sp.oo else float('-inf')
-                    nodes.append((x_c-0.3, fl_l, sp.latex(lim_l).replace('log','ln')))
+                    nodes.append((x_c-0.3, float(sp.N(lim_l)) if lim_l.is_real else 0, sp.latex(lim_l).replace('log','ln')))
                 if i < N-1 and valid_intervals[i]:
                     lim_r = sp.limit(f_expr, x_sym, p['sym'], dir='+')
-                    fl_r = float(sp.N(lim_r)) if lim_r.is_real else float('inf') if lim_r==sp.oo else float('-inf')
-                    nodes.append((x_c+0.3, fl_r, sp.latex(lim_r).replace('log','ln')))
+                    nodes.append((x_c+0.3, float(sp.N(lim_r)) if lim_r.is_real else 0, sp.latex(lim_r).replace('log','ln')))
             elif p['type'] == 'extrema':
                 sym_y = sp.simplify(f_expr.subs(x_sym, p['sym']))
-                fl_y = float(sp.N(sym_y))
-                nodes.append((x_c, fl_y, sp.latex(sym_y).replace('log','ln')))
+                nodes.append((x_c, float(sp.N(sym_y)), sp.latex(sym_y).replace('log','ln')))
 
         for i in range(N - 1):
             if valid_intervals[i]:
@@ -349,26 +309,17 @@ if valid_input:
                 if l_node and r_node:
                     y_l = 0.8 if signs[i] == "+" else 3.2
                     y_r = 3.2 if signs[i] == "+" else 0.8
-                    
-                    if l_node[1] == float('inf'): y_l = 3.2
-                    elif l_node[1] == float('-inf'): y_l = 0.8
-                    if r_node[1] == float('inf'): y_r = 3.2
-                    elif r_node[1] == float('-inf'): y_r = 0.8
                     if y_l == y_r: y_l = 2.0; y_r = 2.0
                     
-                    ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=15, color='#D32F2F')
-                    ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=15, color='#D32F2F')
+                    ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=14, color='#D32F2F')
+                    ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=14, color='#D32F2F')
                     
                     pad_x, pad_y = 0.3, 0.3
-                    start_x, end_x = l_node[0] + pad_x, r_node[0] - pad_x
-                    start_y = y_l + (pad_y if signs[i]=="+" else -pad_y)
-                    end_y = y_r + (-pad_y if signs[i]=="+" else pad_y)
-                    if y_l == y_r: start_y = end_y = y_l
-                    
-                    ax_v.annotate('', xy=(end_x, end_y), xytext=(start_x, start_y), arrowprops=dict(arrowstyle="->", color="#1565C0", lw=2.5))
+                    ax_v.annotate('', xy=(r_node[0]-pad_x, y_r + (-pad_y if signs[i]=="+" else pad_y)), 
+                                  xytext=(l_node[0]+pad_x, y_l + (pad_y if signs[i]=="+" else -pad_y)), 
+                                  arrowprops=dict(arrowstyle="->", color="#1565C0", lw=2.5))
         
-        ax_v.set_xlim(0, x_max)
-        ax_v.set_ylim(0, 6)
+        ax_v.set_xlim(0, x_max); ax_v.set_ylim(0, 6)
         fig_v.tight_layout(pad=0.2)
         tmp_v = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
         fig_v.savefig(tmp_v.name, bbox_inches='tight', dpi=300)
@@ -378,13 +329,12 @@ if valid_input:
     var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
-    # تصنيف الحلول للمناقشة البيانية (استعمال القيم المضبوطة)
+    # المناقشة البيانية (القيم المضبوطة)
     # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
         fl_m = float(sp.N(sm))
         if np.isfinite(fl_m) and abs(fl_m) < 50: m_critical_num.append(round(fl_m, 2))
-        
     for s, e in zip(starts, ends):
         segment = y_vals_plot[s:e+1]
         if len(segment) > 10:
@@ -392,15 +342,7 @@ if valid_input:
             valleys, _ = find_peaks(-segment, prominence=0.05)
             for p in peaks: m_critical_num.append(round(float(segment[p]), 2))
             for v in valleys: m_critical_num.append(round(float(segment[v]), 2))
-            
-    m_critical_num = [round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 50]
-    m_critical_num.sort()
-    merged_m_crit = []
-    for m in m_critical_num:
-        if not merged_m_crit: merged_m_crit.append(m)
-        else:
-            if abs(m - merged_m_crit[-1]) > 0.05: merged_m_crit.append(m)
-    m_critical_num = merged_m_crit
+    m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 50])))
 
     def get_exact_m(val_float):
         for sm in sym_m_critical:
@@ -414,64 +356,10 @@ if valid_input:
             y_g = g_func(x_vals_roots, m_test)
             if np.isscalar(y_g): y_g = np.full_like(x_vals_roots, y_g, dtype=float)
             diff = y_vals_roots - y_g
-        crossings = []
-        for i in range(len(diff)-1):
-            if np.isfinite(diff[i]) and np.isfinite(diff[i+1]):
-                if diff[i] * diff[i+1] < 0: crossings.append(x_vals_roots[i])
-                elif diff[i] == 0: crossings.append(x_vals_roots[i])
-        tangents = []
-        cleaned_crossings = []
-        if is_critical:
-            skip = False
-            for i in range(len(crossings)):
-                if skip: skip = False; continue
-                if i < len(crossings)-1 and abs(crossings[i+1] - crossings[i]) < 0.5:
-                    tangents.append((crossings[i] + crossings[i+1])/2.0); skip = True
-                else: cleaned_crossings.append(crossings[i])
-            abs_diff = np.abs(diff)
-            for i in range(1, len(abs_diff)-1):
-                if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
-                    if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1] and abs_diff[i] < 0.1:
-                        if not any(abs(x_vals_roots[i] - c) < 0.6 for c in cleaned_crossings) and not any(abs(x_vals_roots[i] - t) < 0.6 for t in tangents):
-                            tangents.append(x_vals_roots[i])
-        else: cleaned_crossings = crossings
-            
-        all_roots = [(c, "single") for c in cleaned_crossings] + [(t, "double") for t in tangents]
-        final_roots = []
-        for r, t in all_roots:
-            if not any(abs(r - fr[0]) < 0.1 for fr in final_roots): final_roots.append((r, t))
-        
-        count = len(final_roots)
+        crossings = [x_vals_roots[i] for i in range(len(diff)-1) if np.isfinite(diff[i]) and np.isfinite(diff[i+1]) and (diff[i]*diff[i+1] < 0 or diff[i] == 0)]
+        count = len(crossings)
         if count == 0: return "لا توجد حلول"
-        desc = []
-        pos_s = sum(1 for r, t in final_roots if r > 0.01 and t == "single")
-        neg_s = sum(1 for r, t in final_roots if r < -0.01 and t == "single")
-        zero_s = sum(1 for r, t in final_roots if abs(r) <= 0.01 and t == "single")
-        pos_d = sum(1 for r, t in final_roots if r > 0.01 and t == "double")
-        neg_d = sum(1 for r, t in final_roots if r < -0.01 and t == "double")
-        zero_d = sum(1 for r, t in final_roots if abs(r) <= 0.01 and t == "double")
-
-        if pos_d == 1: desc.append("حل مضاعف موجب")
-        elif pos_d > 1: desc.append(f"{pos_d} حلول مضاعفة موجبة")
-        if neg_d == 1: desc.append("حل مضاعف سالب")
-        elif neg_d > 1: desc.append(f"{neg_d} حلول مضاعفة سالبة")
-        if zero_d == 1: desc.append("حل مضاعف معدوم")
-        if pos_s == 1: desc.append("حل وحيد موجب")
-        elif pos_s == 2: desc.append("حلان موجبان")
-        elif pos_s > 2: desc.append(f"{pos_s} حلول موجبة")
-        if neg_s == 1: desc.append("حل وحيد سالب")
-        elif neg_s == 2: desc.append("حلان سالبان")
-        elif neg_s > 2: desc.append(f"{neg_s} حلول سالبة")
-        if zero_s == 1: desc.append("حل معدوم")
-
-        if pos_s == 1 and neg_s == 1 and len(desc) == 2: return "حلان مختلفان في الإشارة"
-        if pos_s == 2 and neg_s == 1 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل سالب وحلان موجبان"
-        if pos_s == 1 and neg_s == 2 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل موجب وحلان سالبان"
-        if pos_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل موجب"
-        if neg_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل سالب"
-
-        if len(desc) == 0: return f"{count} حلول"
-        return " و ".join(desc)
+        return f"{count} حلول"
 
     raw_intervals = []
     if len(m_critical_num) > 0:
@@ -498,7 +386,6 @@ if valid_input:
     for L, H, sol_text in merged_intervals:
         L_inc = any(r[0] == L and r[1] == L and r[2] == sol_text for r in raw_intervals)
         H_inc = any(r[0] == H and r[1] == H and r[2] == sol_text for r in raw_intervals)
-        
         L_exact = "-\infty" if L == float('-inf') else get_exact_m(L)
         H_exact = "+\infty" if H == float('inf') else get_exact_m(H)
         
@@ -519,9 +406,6 @@ if valid_input:
         final_table_data.append((math_html, sol_text, L, H))
         final_table_plain.append((plain_m, sol_text))
 
-    # ---------------------------------------------------------
-    # دوال واجهة الويب وملف الـ PDF الملون
-    # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
         html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>عدد وطبيعة الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
@@ -568,7 +452,6 @@ if valid_input:
             if i % 2 == 0: pdf.set_fill_color(241, 245, 249) 
             else: pdf.set_fill_color(255, 255, 255)
             pdf.set_text_color(15, 23, 42)
-            # عرض المجالات الرمزية الدقيقة
             cl_m_str = m_str.replace(r"\frac", "").replace("{", "").replace("}", "").replace(r"\ln", "ln").replace(r"\infty", "∞")
             pdf.cell(95, 12, cl_m_str, border=1, align='C', fill=True)
             pdf.cell(95, 12, fix_arabic(text_str), border=1, ln=True, align='C', fill=True)
@@ -584,10 +467,16 @@ if valid_input:
         pdf.cell(0, 10, fix_arabic("1. استنتاج مجموعة التعريف وحساب النهايات:"), ln=True, align='R')
         pdf.ln(2)
         
-        if limits_image_path:
-            pdf.image(limits_image_path, x=20, w=170)
-            pdf.ln(5)
+        for lim in limits_data_detailed:
+            pdf.set_font("Amiri", size=14)
+            pdf.set_text_color(220, 38, 38)
+            pdf.cell(0, 8, fix_arabic(f"• {lim['desc']}"), ln=True, align='R')
+            pdf.set_font("Arial", size=14)
+            pdf.set_text_color(0, 0, 0)
+            pdf.cell(0, 8, lim['latex'].replace(r"\color{#EF4444}", "").replace("{", "").replace("}", "").replace(r"\infty", "∞"), ln=True, align='L')
+            pdf.ln(2)
 
+        pdf.ln(5)
         pdf.set_font("Amiri", size=16)
         pdf.set_text_color(21, 101, 192)
         pdf.cell(0, 10, fix_arabic("2. جدول التغيرات الرياضي بالقيم المضبوطة:"), ln=True, align='R')
@@ -670,14 +559,14 @@ if valid_input:
             st.markdown(generate_html_table(m_val), unsafe_allow_html=True)
             
             with st.expander("📊 عرض دراسة الدالة الشاملة (مستخرجة آلياً)", expanded=False):
-                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. مجموعة التعريف والتبرير الرياضي للنهايات:</h4>", unsafe_allow_html=True)
+                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. مجموعة التعريف واستنتاج النهايات:</h4>", unsafe_allow_html=True)
                 st.latex(domain_latex)
                 
-                for ar_desc, latex_str in limits_html_list:
-                    st.markdown(f"<p style='color:#FFD700; text-align:right; direction:rtl;'>• {ar_desc}</p>", unsafe_allow_html=True)
-                    st.latex(latex_str)
+                for lim in limits_data_detailed:
+                    st.markdown(f"<p style='color:#FFD700; text-align:right; direction:rtl;'>• {lim['desc']}</p>", unsafe_allow_html=True)
+                    st.latex(lim['latex'])
                 
-                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. جدول التغيرات الرياضي بالقيم المضبوطة:</h4>", unsafe_allow_html=True)
+                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. جدول التغيرات (الرياضي بالقيم المضبوطة):</h4>", unsafe_allow_html=True)
                 if var_table_image_path:
                     st.image(var_table_image_path, use_container_width=True)
             
