@@ -11,7 +11,7 @@ import urllib.request
 import tempfile
 import base64
 
-# استيراد مكتبات الـ PDF (يجب إضافتها في requirements.txt)
+# استيراد مكتبات الـ PDF
 try:
     from fpdf import FPDF
     import arabic_reshaper
@@ -20,7 +20,6 @@ try:
 except ImportError:
     PDF_ENABLED = False
 
-# تجاهل التحذيرات الرياضية
 warnings.filterwarnings("ignore")
 
 # 1. إعدادات الصفحة
@@ -96,7 +95,6 @@ def fix_implicit_mult(expr_str):
     expr_str = re.sub(r'(e|pi)([xy0-9])', r'\1*\2', expr_str)
     return expr_str
 
-# دالة مساعدة لتصحيح النصوص العربية في الـ PDF
 def fix_arabic(text):
     reshaped_text = arabic_reshaper.reshape(text)
     bidi_text = get_display(reshaped_text)
@@ -111,7 +109,6 @@ if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
 if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(x**2+x)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
-if 'pdf_trigger' not in st.session_state: st.session_state.pdf_trigger = False
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
     t_sel = st.radio("توجيه الإدخال إلى:", ["f(x) الدالة", "m المستقيم بدلالة"], horizontal=True)
@@ -200,7 +197,7 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # 4. استخراج القيم الحرجة بذكاء الشامل
+    # 4. الرادار الذكي لاستخراج القيم الحرجة
     # ---------------------------------------------------------
     unique_asymptotes = []
     m_critical = []
@@ -397,7 +394,7 @@ if valid_input:
         merged_intervals.append((cur_L, cur_H, cur_text))
 
     final_table_data = []
-    final_table_plain = [] # لتوليد الـ PDF
+    final_table_plain = [] 
     
     for L, H, sol_text in merged_intervals:
         L_inc = any(r[0] == L and r[1] == L and r[2] == sol_text for r in raw_intervals)
@@ -465,7 +462,7 @@ if valid_input:
             st.rerun()
 
     # ---------------------------------------------------------
-    # 6. وظيفة إنشاء الـ PDF
+    # 6. وظيفة إنشاء الـ PDF (النسخة الملونة والأنيقة)
     # ---------------------------------------------------------
     def generate_pdf(fig_path):
         if not PDF_ENABLED: return None
@@ -473,7 +470,6 @@ if valid_input:
         pdf = FPDF(orientation='P', unit='mm', format='A4')
         pdf.add_page()
         
-        # تحميل خط عربي
         font_path = "Amiri-Regular.ttf"
         if not os.path.exists(font_path):
             try:
@@ -486,30 +482,33 @@ if valid_input:
         else:
             pdf.set_font("Arial", size=24)
             
-        # العنوان
-        pdf.set_text_color(0, 51, 102)
+        pdf.set_text_color(21, 101, 192) # أزرق احترافي
         title = fix_arabic("الأستاذ سوايسية هشام - المناقشة البيانية")
         pdf.cell(0, 10, title, ln=True, align='C')
-        pdf.ln(10)
+        pdf.ln(5)
         
-        # إدراج صورة المنحنى
+        # المنحنى
         pdf.image(fig_path, x=15, w=180)
-        pdf.ln(10)
+        pdf.ln(5)
         
-        # جدول المناقشة
         pdf.set_font("Amiri" if os.path.exists(font_path) else "Arial", size=14)
-        pdf.set_fill_color(30, 41, 59)
+        
+        # رأس الجدول بلون داكن (مثل GeoGebra/التطبيقات الحديثة)
+        pdf.set_fill_color(30, 58, 138) 
         pdf.set_text_color(255, 255, 255)
+        pdf.cell(95, 12, fix_arabic("المجال / القيمة"), border=1, fill=True, align='C')
+        pdf.cell(95, 12, fix_arabic("عدد وطبيعة الحلول"), border=1, ln=True, fill=True, align='C')
         
-        # رأس الجدول
-        pdf.cell(95, 10, fix_arabic("المجال / القيمة"), border=1, fill=True, align='C')
-        pdf.cell(95, 10, fix_arabic("عدد وطبيعة الحلول"), border=1, ln=True, fill=True, align='C')
-        
-        # محتوى الجدول
-        pdf.set_text_color(0, 0, 0)
-        for m_str, text_str in final_table_plain:
-            pdf.cell(95, 10, m_str, border=1, align='C')
-            pdf.cell(95, 10, fix_arabic(text_str), border=1, ln=True, align='C')
+        # أسطر الجدول بألوان متناوبة
+        for i, (m_str, text_str) in enumerate(final_table_plain):
+            if i % 2 == 0:
+                pdf.set_fill_color(241, 245, 249) # رمادي/أزرق فاتح جداً
+            else:
+                pdf.set_fill_color(255, 255, 255) # أبيض
+                
+            pdf.set_text_color(15, 23, 42) # نص أسود/كحلي داكن
+            pdf.cell(95, 12, m_str, border=1, align='C', fill=True)
+            pdf.cell(95, 12, fix_arabic(text_str), border=1, ln=True, align='C', fill=True)
             
         pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
         pdf.output(pdf_file.name)
@@ -519,23 +518,32 @@ if valid_input:
 
     def update_view(m_val):
         fig, ax = plt.subplots(figsize=(10, 6.5))
-        fig.patch.set_facecolor('#0F172A')
-        ax.set_facecolor('#0F172A')
-        ax.tick_params(colors='white')
         
-        for spine in ax.spines.values(): spine.set_edgecolor('none')
-        ax.axhline(0, color='#9CA3AF', linewidth=1.5) 
-        ax.axvline(0, color='#9CA3AF', linewidth=1.5) 
+        # --- التصميم الجديد لمعلم GeoGebra ---
+        fig.patch.set_facecolor('#FFFFFF') # خلفية بيضاء
+        ax.set_facecolor('#FFFFFF')
+        ax.tick_params(colors='black', labelsize=11)
         
+        for spine in ax.spines.values(): spine.set_edgecolor('#A0A0A0')
+        ax.axhline(0, color='black', linewidth=2, zorder=3) # محور الفواصل
+        ax.axvline(0, color='black', linewidth=2, zorder=3) # محور التراتيب
+        
+        # شبكة GeoGebra الدقيقة
+        ax.minorticks_on()
+        ax.grid(True, which='major', color='#CCCCCC', linestyle='-', linewidth=1.2, zorder=1)
+        ax.grid(True, which='minor', color='#EBEBEB', linestyle='-', linewidth=0.6, zorder=1)
+        
+        # المقاربات 
         for asym in unique_asymptotes:
             if asym['type'] == 'h':
-                ax.axhline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
-                ax.text(7.5, asym['val'] + 0.25, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', ha='right')
+                ax.axhline(asym['val'], color='#D32F2F', linestyle='--', linewidth=2.2, zorder=4)
+                ax.text(7.5, asym['val'] + 0.25, f"${asym['label']}$", color='#D32F2F', fontsize=14, fontweight='bold', ha='right')
             elif asym['type'] == 'v':
-                ax.axvline(asym['val'], color='#FF3366', linestyle=':', linewidth=2.5)
-                ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color='#FF3366', fontsize=14, fontweight='bold', va='top')
+                ax.axvline(asym['val'], color='#D32F2F', linestyle='--', linewidth=2.2, zorder=4)
+                ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color='#D32F2F', fontsize=14, fontweight='bold', va='top')
         
-        ax.plot(x_vals_plot, y_vals_plot, color='#00E5FF', linewidth=3, label='C_f')
+        # رسم المنحنى بلون GeoGebra الأخضر/الزيتي 
+        ax.plot(x_vals_plot, y_vals_plot, color='#2E7D32', linewidth=3.5, label='C_f', zorder=5)
         
         with np.errstate(divide='ignore', invalid='ignore'):
             y_g_plot = g_func(x_vals_plot, m_val)
@@ -547,7 +555,8 @@ if valid_input:
             rep_str = f"({m_val_str})" if m_val < 0 else m_val_str
             m_eq_label = "y = " + st.session_state.g_val.replace('m', rep_str).replace('*', '')
             
-        ax.plot(x_vals_plot, y_g_plot, color='#FFD700', linestyle='--', linewidth=3, label=f"${m_eq_label}$")
+        # مستقيم المناقشة باللون الأزرق
+        ax.plot(x_vals_plot, y_g_plot, color='#1565C0', linestyle='--', linewidth=3, label=f"${m_eq_label}$", zorder=5)
         
         diff_plot = y_vals_plot - y_g_plot
         intersect_x = []
@@ -572,14 +581,14 @@ if valid_input:
                 intersect_y.append(float(yt) if not np.isscalar(yt) else yt)
 
         if unique_intersect_x:
-            ax.scatter(unique_intersect_x, intersect_y, color='#FF0000', s=120, zorder=5, edgecolor='white', linewidth=2, label='نقاط التقاطع')
+            ax.scatter(unique_intersect_x, intersect_y, color='#FF8C00', s=130, zorder=6, edgecolor='black', linewidth=1.5, label='نقاط التقاطع')
 
-        ax.text(4, m_val + 0.25, f"${m_eq_label}$", color='#FFD700', fontsize=14, fontweight='bold', ha='center', va='bottom')
+        ax.text(4, m_val + 0.35, f"${m_eq_label}$", color='#1565C0', fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
 
         ax.set_ylim(-6, 8)
-        ax.grid(True, color='#ffffff', linestyle='-', alpha=0.1)
-        legend = ax.legend(facecolor='#1E293B', edgecolor='#334155', loc='upper right', fontsize=12)
-        for text in legend.get_texts(): text.set_color("white")
+        # مفتاح الرسم بلون أبيض وأسود
+        legend = ax.legend(facecolor='#FFFFFF', edgecolor='#A0A0A0', loc='upper right', fontsize=12)
+        for text in legend.get_texts(): text.set_color("black")
         fig.tight_layout()
         
         with placeholder.container():
@@ -588,7 +597,8 @@ if valid_input:
             
             if PDF_ENABLED and not st.session_state.auto_play:
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
-                    fig.savefig(tmpfile.name, facecolor='#0F172A')
+                    # حفظ الصورة بخلفية بيضاء بدلاً من الداكنة
+                    fig.savefig(tmpfile.name, facecolor='#FFFFFF')
                     pdf_path = generate_pdf(tmpfile.name)
                     if pdf_path:
                         with open(pdf_path, "rb") as pdf_file:
