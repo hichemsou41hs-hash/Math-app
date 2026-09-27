@@ -6,6 +6,19 @@ from scipy.signal import find_peaks
 import time
 import warnings
 import re
+import os
+import urllib.request
+import tempfile
+import base64
+
+# استيراد مكتبات الـ PDF (يجب إضافتها في requirements.txt)
+try:
+    from fpdf import FPDF
+    import arabic_reshaper
+    from bidi.algorithm import get_display
+    PDF_ENABLED = True
+except ImportError:
+    PDF_ENABLED = False
 
 # تجاهل التحذيرات الرياضية
 warnings.filterwarnings("ignore")
@@ -83,6 +96,12 @@ def fix_implicit_mult(expr_str):
     expr_str = re.sub(r'(e|pi)([xy0-9])', r'\1*\2', expr_str)
     return expr_str
 
+# دالة مساعدة لتصحيح النصوص العربية في الـ PDF
+def fix_arabic(text):
+    reshaped_text = arabic_reshaper.reshape(text)
+    bidi_text = get_display(reshaped_text)
+    return bidi_text
+
 # ---------------------------------------------------------
 # 2. إدارة حالة التطبيق ولوحة المفاتيح
 # ---------------------------------------------------------
@@ -92,6 +111,7 @@ if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
 if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(x**2+x)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
+if 'pdf_trigger' not in st.session_state: st.session_state.pdf_trigger = False
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
     t_sel = st.radio("توجيه الإدخال إلى:", ["f(x) الدالة", "m المستقيم بدلالة"], horizontal=True)
@@ -128,7 +148,7 @@ with col1:
 with col2:
     st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
 
-manual_crit_input = st.text_input("🛡️ زر الأستاذ: أضف قيمة حرجة (ذروة) يدوياً إذا احتجت لذلك (مثال: 0.89):", "")
+manual_crit_input = st.text_input("🛡️ زر الأستاذ: أضف قيمة حرجة (ذروة) يدوياً (اختياري):", "")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
@@ -185,7 +205,6 @@ if valid_input:
     unique_asymptotes = []
     m_critical = []
     
-    # أ. المقاربات الأفقية
     try:
         for direction in [sp.oo, -sp.oo]:
             lim_h = sp.limit(f_expr, x_sym, direction)
@@ -194,7 +213,6 @@ if valid_input:
                 m_critical.append(round(float(lim_h), 2))
     except: pass
 
-    # ب. أطراف مجموعة التعريف والمقاربات العمودية
     candidate_v_asymptotes = []
     try:
         n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
@@ -211,7 +229,6 @@ if valid_input:
                 if r.is_real: candidate_v_asymptotes.append(float(r))
     except: pass
 
-    # حساب نهايات الدالة عند أطراف المجال لإضافتها إلى القيم الحرجة (لحل مشكلة m=0)
     for r in set(candidate_v_asymptotes):
         r_str = str(int(r)) if int(r)==r else str(float(r))
         unique_asymptotes.append({'type': 'v', 'val': float(r), 'label': f"x={r_str}"})
@@ -230,7 +247,6 @@ if valid_input:
             final_asyms.append(asym)
     unique_asymptotes = final_asyms
 
-    # ج. القيم الحدية الجبرية (المشتقة)
     try:
         val_0 = float(f_expr.subs(x_sym, 0))
         if np.isfinite(val_0): m_critical.append(round(val_0, 2))
@@ -245,7 +261,6 @@ if valid_input:
                 if np.isfinite(val_cp): m_critical.append(round(val_cp, 2))
     except: pass
 
-    # د. الرادار المتقدم SciPy 
     is_valid = ~np.isnan(y_vals_plot)
     edges = np.diff(is_valid.astype(int))
     starts = np.where(edges == 1)[0] + 1
@@ -326,7 +341,6 @@ if valid_input:
         if count == 0: return "لا توجد حلول"
         
         desc = []
-        # تم تصغير هامش التسامح إلى 0.01 لضبط دقة الجذور الصغيرة
         pos_s = sum(1 for r, t in final_roots if r > 0.01 and t == "single")
         neg_s = sum(1 for r, t in final_roots if r < -0.01 and t == "single")
         zero_s = sum(1 for r, t in final_roots if abs(r) <= 0.01 and t == "single")
@@ -351,9 +365,7 @@ if valid_input:
         if zero_s == 1: desc.append("حل معدوم")
 
         if pos_s == 1 and neg_s == 1 and len(desc) == 2: return "حلان مختلفان في الإشارة"
-        
         if pos_s == 2 and neg_s == 1 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل سالب وحلان موجبان"
-        
         if pos_s == 1 and neg_s == 2 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل موجب وحلان سالبان"
         if pos_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل موجب"
         if neg_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل سالب"
@@ -385,25 +397,34 @@ if valid_input:
         merged_intervals.append((cur_L, cur_H, cur_text))
 
     final_table_data = []
+    final_table_plain = [] # لتوليد الـ PDF
+    
     for L, H, sol_text in merged_intervals:
-        # التحقق من شمولية القيمة الحدية لوضع علامة المتباينة الصحيحة (يساوي)
         L_inc = any(r[0] == L and r[1] == L and r[2] == sol_text for r in raw_intervals)
         H_inc = any(r[0] == H and r[1] == H and r[2] == sol_text for r in raw_intervals)
         
         if L == float('-inf') and H == float('inf'):
             math_html = "<i>m</i> ∈ ℝ"
+            plain_m = "m ∈ R"
         elif L == float('-inf'):
             math_html = f"<i>m</i> ≤ {fmt(H)}" if H_inc else f"<i>m</i> < {fmt(H)}"
+            plain_m = f"m <= {fmt(H)}" if H_inc else f"m < {fmt(H)}"
         elif H == float('inf'):
             math_html = f"<i>m</i> ≥ {fmt(L)}" if L_inc else f"<i>m</i> > {fmt(L)}"
+            plain_m = f"m >= {fmt(L)}" if L_inc else f"m > {fmt(L)}"
         elif L == H:
             math_html = f"<i>m</i> = {fmt(L)}"
+            plain_m = f"m = {fmt(L)}"
         else:
             ls = "≤" if L_inc else "<"
             rs = "≤" if H_inc else "<"
             math_html = f"{fmt(L)} {ls} <i>m</i> {rs} {fmt(H)}"
+            ls_p = "<=" if L_inc else "<"
+            rs_p = "<=" if H_inc else "<"
+            plain_m = f"{fmt(L)} {ls_p} m {rs_p} {fmt(H)}"
             
         final_table_data.append((math_html, sol_text, L, H))
+        final_table_plain.append((plain_m, sol_text))
 
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
@@ -442,6 +463,57 @@ if valid_input:
         if st.button("إيقاف ⏹️"):
             st.session_state.auto_play = False
             st.rerun()
+
+    # ---------------------------------------------------------
+    # 6. وظيفة إنشاء الـ PDF
+    # ---------------------------------------------------------
+    def generate_pdf(fig_path):
+        if not PDF_ENABLED: return None
+        
+        pdf = FPDF(orientation='P', unit='mm', format='A4')
+        pdf.add_page()
+        
+        # تحميل خط عربي
+        font_path = "Amiri-Regular.ttf"
+        if not os.path.exists(font_path):
+            try:
+                urllib.request.urlretrieve("https://github.com/google/fonts/raw/main/ofl/amiri/Amiri-Regular.ttf", font_path)
+            except: pass
+            
+        if os.path.exists(font_path):
+            pdf.add_font("Amiri", "", font_path, uni=True)
+            pdf.set_font("Amiri", size=24)
+        else:
+            pdf.set_font("Arial", size=24)
+            
+        # العنوان
+        pdf.set_text_color(0, 51, 102)
+        title = fix_arabic("الأستاذ سوايسية هشام - المناقشة البيانية")
+        pdf.cell(0, 10, title, ln=True, align='C')
+        pdf.ln(10)
+        
+        # إدراج صورة المنحنى
+        pdf.image(fig_path, x=15, w=180)
+        pdf.ln(10)
+        
+        # جدول المناقشة
+        pdf.set_font("Amiri" if os.path.exists(font_path) else "Arial", size=14)
+        pdf.set_fill_color(30, 41, 59)
+        pdf.set_text_color(255, 255, 255)
+        
+        # رأس الجدول
+        pdf.cell(95, 10, fix_arabic("المجال / القيمة"), border=1, fill=True, align='C')
+        pdf.cell(95, 10, fix_arabic("عدد وطبيعة الحلول"), border=1, ln=True, fill=True, align='C')
+        
+        # محتوى الجدول
+        pdf.set_text_color(0, 0, 0)
+        for m_str, text_str in final_table_plain:
+            pdf.cell(95, 10, m_str, border=1, align='C')
+            pdf.cell(95, 10, fix_arabic(text_str), border=1, ln=True, align='C')
+            
+        pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+        pdf.output(pdf_file.name)
+        return pdf_file.name
 
     placeholder = st.empty()
 
@@ -513,6 +585,15 @@ if valid_input:
         with placeholder.container():
             st.pyplot(fig, use_container_width=True)
             st.markdown(generate_html_table(m_val), unsafe_allow_html=True)
+            
+            if PDF_ENABLED and not st.session_state.auto_play:
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
+                    fig.savefig(tmpfile.name, facecolor='#0F172A')
+                    pdf_path = generate_pdf(tmpfile.name)
+                    if pdf_path:
+                        with open(pdf_path, "rb") as pdf_file:
+                            pdf_bytes = pdf_file.read()
+                        st.download_button(label="📥 تحميل الحل كملف PDF", data=pdf_bytes, file_name="monaqasha_souaissia.pdf", mime="application/pdf")
         plt.close(fig)
 
     if st.session_state.auto_play:
