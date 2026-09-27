@@ -34,6 +34,16 @@ st.markdown("""
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) > div[data-testid="column"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; flex: none !important; padding: 0 !important; display: block !important; }
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button { width: 100% !important; height: 48px !important; padding: 0px !important; margin: 0 !important; border-radius: 6px !important; background-color: #334155 !important; color: #00E5FF !important; border: 1px solid #475569 !important; box-shadow: 0 4px 0 #090e1a !important; transition: all 0.1s !important; }
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button:active { transform: translateY(4px) !important; box-shadow: 0 0 0 #090e1a !important; background-color: #00E5FF !important; color: #0F172A !important; }
+    
+    /* شفرة CSS لضمان عدم اقتطاع محتوى الأزرار */
+    div[data-testid="stHorizontalBlock"] button * { 
+        font-size: 17px !important; 
+        overflow: visible !important; 
+        text-overflow: clip !important; 
+        white-space: nowrap !important;
+        letter-spacing: -1px !important; 
+    }
+    
     button[kind="primary"] { width: 100% !important; height: 50px !important; background-color: #ef4444 !important; color: white !important; font-size: 18px !important; font-weight: bold !important; border-radius: 8px !important; box-shadow: 0 4px 0 #7f1d1d !important; border: none !important; margin-top: 5px !important; }
     button[kind="primary"]:active { transform: translateY(4px) !important; box-shadow: 0 0 0 #7f1d1d !important; background-color: #dc2626 !important; }
     </style>
@@ -84,6 +94,11 @@ def clean_latex_to_text(l_str):
     s = s.replace("{", "").replace("}", "").replace("\\", "")
     return s
 
+# منقي أكواد الـ LaTeX لمنع انهيار مكتبة Matplotlib مع الدوال المعقدة مثل الإشارة والجذر
+def sanitize_latex(expr):
+    if not isinstance(expr, str): expr = sp.latex(expr)
+    return expr.replace('log', 'ln').replace(r'\operatorname', r'\mathrm')
+
 def get_sol_color_pdf(sol_text):
     if "لا توجد" in sol_text: return "#D32F2F"      
     if "مضاعف" in sol_text: return "#D97706"       
@@ -100,7 +115,7 @@ def get_sol_color_html(sol_text):
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
-if 'f_val' not in st.session_state: st.session_state.f_val = "-x*e^x+x"
+if 'f_val' not in st.session_state: st.session_state.f_val = "sqrt(abs(x^2-1))"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -114,11 +129,12 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         elif char == 'CLR': st.session_state[target] = ""
         else: st.session_state[target] += char
 
+    # استخدام رموز ذكية وضيقة لمنع المتصفح من إخفائها (مربعين بينهما سطر، x²، eˣ)
     keys = [
         [("x", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
         [("m", "m"), ("π", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
-        [("□/□", "/"), ("√", "sqrt("), ("□²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
-        [("e^□", "e^("), ("|□|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
+        [("■/■", "/"), ("√", "sqrt("), ("x²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
+        [("eˣ", "e^("), ("|x|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
         [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
     ]
     for r_idx, row in enumerate(keys):
@@ -127,7 +143,8 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
             cols[c_idx].button(label, key=f"kb_{r_idx}_{c_idx}", on_click=k_click, args=(val,))
     st.button("مسح الكل (Clear)", on_click=k_click, args=("CLR",), use_container_width=True, type="primary")
 
-x_sym, m_sym = sp.symbols('x m')
+# جعل x_sym عدداً حقيقياً حصراً لمنع ظهور مشتقات الدوال المركبة (Complex Math)
+x_sym, m_sym = sp.symbols('x m', real=True)
 col1, col2 = st.columns(2)
 with col1: st.text_input("أدخل عبارة الدالة f(x):", key="f_val")
 with col2: st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
@@ -262,7 +279,7 @@ if valid_input:
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # النهايات والمشتقة (تلوين الخطوات والنتائج)
+    # النهايات الرياضية الخالصة (تلوين الخطوات والنتائج)
     # ---------------------------------------------------------
     limits_data_detailed = []
     limits_mpl_list = []
@@ -270,12 +287,14 @@ if valid_input:
     def add_limit(val_sym, dir_sympy, dir_latex):
         try:
             lim = sp.limit(f_expr, x_sym, val_sym, dir=dir_sympy)
-            lim_latex = "+\infty" if lim == sp.oo else sp.latex(lim).replace('log', 'ln')
-            expr_latex = sp.latex(f_expr).replace('log', 'ln')
+            lim_latex = "+\infty" if lim == sp.oo else sanitize_latex(lim)
+            expr_latex = sanitize_latex(f_expr)
             
+            # لواجهة التطبيق
             latex_streamlit = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
             limits_data_detailed.append(latex_streamlit)
             
+            # للـ PDF (فصل الطرفين للتلوين)
             lhs_mpl = fr"\lim_{{x \to {dir_latex}}} f(x) = \lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) ="
             rhs_mpl = fr"{lim_latex}"
             limits_mpl_list.append((lhs_mpl, rhs_mpl))
@@ -316,7 +335,7 @@ if valid_input:
     limits_image_path = generate_limits_image()
 
     def generate_deriv_image():
-        df_latex_str = sp.latex(sp.simplify(df_expr)).replace('log', 'ln')
+        df_latex_str = sanitize_latex(sp.simplify(df_expr))
         math_str = fr"f'(x) = {df_latex_str}"
         fig_d, ax_d = plt.subplots(figsize=(6, 1.2))
         ax_d.axis('off')
@@ -386,7 +405,7 @@ if valid_input:
                     ax_v.text(x_ic, 4.5, f"${signs[i]}$", ha='center', va='center', fontsize=26, color='#D32F2F' if signs[i]=='-' else '#2E7D32')
             
             def get_lim_latex_for_table(l_sym):
-                return "+\infty" if l_sym == sp.oo else sp.latex(l_sym).replace('log','ln')
+                return "+\infty" if l_sym == sp.oo else sanitize_latex(l_sym)
 
             if p['type'] == 'inf':
                 lim = sp.limit(f_expr, x_sym, p['sym'])
@@ -401,7 +420,7 @@ if valid_input:
                     nodes.append((x_c+0.4, float(sp.N(lim_r)) if lim_r.is_real else float('inf') if lim_r==sp.oo else float('-inf'), get_lim_latex_for_table(lim_r)))
             elif p['type'] == 'extrema':
                 sym_y = sp.simplify(f_expr.subs(x_sym, p['sym']))
-                nodes.append((x_c, float(sp.N(sym_y)), sp.latex(sym_y).replace('log','ln')))
+                nodes.append((x_c, float(sp.N(sym_y)), sanitize_latex(sym_y)))
 
         for i in range(N - 1):
             if valid_intervals[i]:
@@ -437,7 +456,7 @@ if valid_input:
     var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
-    # المناقشة البيانية (استخراج المجالات الدقيقة)
+    # المناقشة البيانية (بالقيم المضبوطة والمجالات الحقيقية)
     # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
@@ -464,7 +483,7 @@ if valid_input:
     def get_exact_m(val_float):
         for sm in sym_m_critical:
             if abs(float(sp.N(sm)) - val_float) < 1e-2:
-                return sp.latex(sm).replace('log', 'ln')
+                return sanitize_latex(sm)
         return fmt(val_float)
 
     def get_roots_text(m_test):
@@ -589,7 +608,7 @@ if valid_input:
         final_table_latex.append((pdf_latex, sol_text))
 
     # ---------------------------------------------------------
-    # دوال واجهة الويب وملف الـ PDF النهائي
+    # دوال واجهة الويب وملف الـ PDF النهائي (مع الألوان)
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
@@ -677,6 +696,7 @@ if valid_input:
         pdf.cell(0, 15, fix_arabic_pdf("دراسة تغيرات الدالة f"), ln=True, align='C')
         pdf.ln(5)
         
+        # تلوين عناوين الأقسام باللون الأحمر العنابي
         pdf.set_font("Amiri", size=16)
         pdf.set_text_color(194, 24, 91) 
         pdf.cell(0, 10, fix_arabic_pdf("1. استنتاج مجموعة التعريف وحساب النهايات:"), ln=True, align='R')
@@ -784,7 +804,7 @@ if valid_input:
                     st.latex(lim)
                     
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
-                df_latex_str = sp.latex(sp.simplify(df_expr)).replace('log', 'ln')
+                df_latex_str = sanitize_latex(sp.simplify(df_expr))
                 st.latex(fr"f'(x) = {df_latex_str}")
                 
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
