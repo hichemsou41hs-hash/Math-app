@@ -85,14 +85,6 @@ def bound_to_html(s):
     s = s.replace("{", "").replace("}", "").replace("\\", "")
     return s
 
-def clean_latex_to_text(l_str):
-    s = str(l_str).replace(" ", "")
-    s = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"\1/\2", s)
-    s = s.replace(r"-\infty", "-∞").replace(r"+\infty", "+∞").replace(r"\infty", "∞")
-    s = s.replace(r"\ln", "ln").replace(r"e", "e").replace(r"\pi", "π")
-    s = s.replace("{", "").replace("}", "").replace("\\", "")
-    return s
-
 def sanitize_latex(expr):
     if not isinstance(expr, str): expr = sp.latex(expr)
     s = expr.replace('log', 'ln')
@@ -147,12 +139,48 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
             cols[c_idx].button(label, key=f"kb_{r_idx}_{c_idx}", on_click=k_click, args=(val,))
     st.button("مسح الكل (Clear)", on_click=k_click, args=("CLR",), use_container_width=True, type="primary")
 
+# ---------------------------------------------------------
+# نظام إدخال الدالة بالذكاء الاصطناعي (مخفي وآمن)
+# ---------------------------------------------------------
+api_key = None
+try:
+    api_key = st.secrets["GEMINI_API_KEY"]
+    import google.generativeai as genai
+    genai.configure(api_key=api_key)
+except:
+    pass 
+
+col_text, col_cam = st.columns(2)
+
+with col_text:
+    st.text_input("أدخل عبارة الدالة f(x):", key="f_val")
+    st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
+
+with col_cam:
+    img_file = st.camera_input("📸 صوّر عبارة الدالة")
+    if img_file:
+        if not api_key:
+            st.error("⚠️ خاصية الذكاء الاصطناعي غير مفعلة (ينقص مفتاح API في الإعدادات).")
+        else:
+            if st.button("استخراج الدالة 🤖", use_container_width=True):
+                with st.spinner("جاري قراءة الصورة..."):
+                    try:
+                        from PIL import Image
+                        img = Image.open(img_file)
+                        model = genai.GenerativeModel('gemini-1.5-flash')
+                        prompt = "Extract ONLY the mathematical function expression from this image. Convert it to a simple string compatible with Python/SymPy (use ** for powers, * for multiplication, sqrt() for roots, abs() for absolute value, ln() for natural log). DO NOT output any markdown, LaTeX, or explanatory text. Just the raw math string."
+                        response = model.generate_content([prompt, img])
+                        
+                        extracted_text = response.text.strip().replace('`', '').replace('\n', '')
+                        st.session_state.f_val = extracted_text
+                        st.success("✅ تم الاستخراج بنجاح!")
+                        time.sleep(1)
+                        st.rerun()
+                    except Exception as e:
+                        st.error("❌ لم نتمكن من قراءة الصورة، حاول التقاط صورة أوضح.")
+
 x_sym, m_sym = sp.symbols('x m', real=True)
 local_dict = {'x': x_sym, 'm': m_sym, 'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
-
-col1, col2 = st.columns(2)
-with col1: st.text_input("أدخل عبارة الدالة f(x):", key="f_val")
-with col2: st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
@@ -187,9 +215,6 @@ if valid_input:
     y_vals_plot = process_y_vals(x_vals_plot)
     y_vals_roots = process_y_vals(x_vals_roots)
 
-    # ---------------------------------------------------------
-    # استخراج القيم المظبوطة (Exact Symbolic Engine) والمشتقة
-    # ---------------------------------------------------------
     sym_m_critical = []
     unique_asymptotes = []
     
@@ -211,12 +236,6 @@ if valid_input:
         unique_asymptotes.append({'type': 'v', 'val': float(sp.N(r)), 'label': f"x={sanitize_latex(r)}"})
 
     df_expr = sp.diff(f_expr, x_sym)
-    
-    # تحويل المشتقة جبرياً إلى صيغة احترافية (استبدال sign(u) بـ u/|u|)
-    df_clean = df_expr.replace(sp.sign, lambda arg: arg / sp.Abs(arg))
-    df_simp = sp.simplify(df_clean)
-    if df_simp.has(sp.Piecewise): df_simp = df_clean
-    df_latex_str_safe = sanitize_latex(df_simp)
     
     sym_extrema = []
     try:
@@ -327,7 +346,7 @@ if valid_input:
     sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # النهايات الرياضية الخالصة
+    # النهايات والمشتقة
     # ---------------------------------------------------------
     limits_data_detailed = []
     limits_mpl_list = []
@@ -377,7 +396,7 @@ if valid_input:
         except:
             ax_l.clear()
             ax_l.axis('off')
-            ax_l.text(0.5, 0.5, "لم نتمكن من رسم المعادلات المعقدة", fontsize=18, ha='center', va='center', color='#D32F2F')
+            ax_l.text(0.5, 0.5, "خطأ في رسم المعادلات", fontsize=18, ha='center', va='center', color='#D32F2F')
             
         tmp_l = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
         fig_l.savefig(tmp_l.name, bbox_inches='tight', dpi=300)
@@ -385,6 +404,10 @@ if valid_input:
         return tmp_l.name
 
     limits_image_path = generate_limits_image()
+
+    df_simp = sp.simplify(df_expr).replace(sp.sign, lambda arg: arg / sp.Abs(arg))
+    if df_simp.has(sp.Piecewise): df_simp = df_expr 
+    df_latex_str_safe = sanitize_latex(df_simp)
 
     def generate_deriv_image():
         math_str = fr"f'(x) = {df_latex_str_safe}"
@@ -409,7 +432,7 @@ if valid_input:
     deriv_image_path = generate_deriv_image()
 
     # ---------------------------------------------------------
-    # بناء جدول التغيرات الاحترافي (Vector Graphic)
+    # بناء جدول التغيرات الاحترافي
     # ---------------------------------------------------------
     N = len(pts_var_exact)
     def generate_variation_table_image():
@@ -520,7 +543,7 @@ if valid_input:
     var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
-    # المناقشة البيانية (استخراج المجالات الدقيقة)
+    # المناقشة البيانية 
     # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
@@ -672,7 +695,7 @@ if valid_input:
         final_table_latex.append((pdf_latex, sol_text))
 
     # ---------------------------------------------------------
-    # دوال واجهة الويب وملف الـ PDF النهائي
+    # دوال واجهة الويب وملف الـ PDF النهائي (مع الجدول المطور)
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
@@ -695,7 +718,6 @@ if valid_input:
 
     def generate_pdf_discussion_table():
         nrows = len(final_table_latex)
-        # تمت زيادة مساحة الجدول لمنع الكلمات الطويلة من الخروج خارج الإطار
         fig_dt, ax_dt = plt.subplots(figsize=(10, nrows * 0.7 + 0.8))
         ax_dt.axis('off')
         
@@ -706,7 +728,7 @@ if valid_input:
             y = i * 0.7
             ax_dt.plot([0, 10], [y, y], 'k-', lw=1 if 0 < i < nrows else 2)
         ax_dt.plot([0, 0], [0, nrows * 0.7], 'k-', lw=2)
-        ax_dt.plot([6, 6], [0, nrows * 0.7], 'k-', lw=1) # أعطيت 60% من المساحة للنص العربي لضمان الاتساع
+        ax_dt.plot([6, 6], [0, nrows * 0.7], 'k-', lw=1) 
         ax_dt.plot([10, 10], [0, nrows * 0.7], 'k-', lw=2)
         
         ax_dt.plot([0, 10], [nrows * 0.7, nrows * 0.7], 'k-', lw=2)
@@ -726,7 +748,7 @@ if valid_input:
         for i, (m_latex, sol_text) in enumerate(final_table_latex):
             y_center = (nrows - i - 1) * 0.7 + 0.35
             c_pdf = get_sol_color_pdf(sol_text)
-            f_size = 14 if len(sol_text) > 35 else 16 # تصغير الخط قليلاً للنصوص الطويلة جداً
+            f_size = 14 if len(sol_text) > 35 else 16 
             ax_dt.text(3, y_center, fix_arabic_mpl(sol_text), fontsize=f_size, ha='center', va='center', color=c_pdf, fontweight='bold')
             ax_dt.text(8, y_center, f"${m_latex}$", fontsize=16, ha='center', va='center', color='#1E3A8A')
             
