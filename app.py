@@ -144,7 +144,7 @@ with col1:
 with col2:
     st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
 
-manual_crit_input = st.text_input("🛡️ زر الأستاذ: أضف قيمة حرجة (ذروة) يدوياً (اختياري):", "")
+manual_crit_input = st.text_input("🛡️ زر الأستاذ: أضف قيمة حرجة يدوياً (اختياري):", "")
 
 try:
     from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
@@ -200,9 +200,8 @@ if valid_input:
     # ---------------------------------------------------------
     unique_asymptotes = []
     m_critical = []
-    x_extrema = [] # لتسجيل فواصل الذروات (تفيد في جدول التغيرات)
+    x_extrema = [] 
     
-    # المقاربات الأفقية
     try:
         for direction in [sp.oo, -sp.oo]:
             lim_h = sp.limit(f_expr, x_sym, direction)
@@ -211,7 +210,6 @@ if valid_input:
                 m_critical.append(round(float(lim_h), 2))
     except: pass
 
-    # المقاربات العمودية وأطراف المجال
     candidate_v_asymptotes = []
     try:
         n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
@@ -246,7 +244,6 @@ if valid_input:
             final_asyms.append(asym)
     unique_asymptotes = final_asyms
 
-    # استخراج الذروات (Extrema)
     is_valid = ~np.isnan(y_vals_plot)
     edges = np.diff(is_valid.astype(int))
     starts = np.where(edges == 1)[0] + 1
@@ -280,7 +277,6 @@ if valid_input:
             if abs(m - merged_m_crit[-1]) > 0.05: merged_m_crit.append(m)
     m_critical = merged_m_crit
 
-    # استخراج الجذور (تقاطع الدالة مع محور الفواصل للوضع النسبي)
     x_roots = []
     with np.errstate(divide='ignore', invalid='ignore'):
         diff_0 = y_vals_roots - 0
@@ -299,7 +295,6 @@ if valid_input:
     # ---------------------------------------------------------
     v_asym_x = [v['val'] for v in unique_asymptotes if v['type'] == 'v']
     
-    # أ. جدول اتجاه التغير
     critical_x_var = sorted(list(set(x_extrema + v_asym_x)))
     var_table_data = []
     pts_var = [-np.inf] + critical_x_var + [np.inf]
@@ -313,7 +308,6 @@ if valid_input:
         state = "متزايدة تماما (+)" if y_mid_plus > y_mid else "متناقصة تماما (-)"
         var_table_data.append((left, right, state))
 
-    # ب. الوضع النسبي (مع محور الفواصل)
     critical_x_pos = sorted(list(set(unique_x_roots + v_asym_x)))
     pos_table_data = []
     pts_pos = [-np.inf] + critical_x_pos + [np.inf]
@@ -326,7 +320,6 @@ if valid_input:
         state = "فوق محور الفواصل (+)" if y_mid > 0 else "تحت محور الفواصل (-)"
         pos_table_data.append((left, right, state))
 
-    # ج. النهايات والمقاربات
     limits_data = []
     for asym in unique_asymptotes:
         if asym['type'] == 'h': limits_data.append((f"y = {asym['val']}", "مقارب أفقي عند المالانهاية"))
@@ -463,12 +456,11 @@ if valid_input:
         final_table_plain.append((plain_m, sol_text))
 
     # ---------------------------------------------------------
-    # 7. دوال واجهة الويب وملف الـ PDF
+    # 7. دوال واجهة الويب وملف الـ PDF الآمن
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
         html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>عدد وطبيعة الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
-        
         active_idx = 0
         for idx, (math_html, sol_text, L, H) in enumerate(final_table_data):
             is_active = False
@@ -522,16 +514,27 @@ if valid_input:
         
         pdf = FPDF(orientation='P', unit='mm', format='A4')
         font_path = "Amiri-Regular.ttf"
-        if not os.path.exists(font_path):
-            try: urllib.request.urlretrieve("https://github.com/google/fonts/raw/main/ofl/amiri/Amiri-Regular.ttf", font_path)
+        
+        # تحميل آمن ومضمون للخط العربي بتجاوز حظر GitHub
+        if not os.path.exists(font_path) or os.path.getsize(font_path) < 10000:
+            try:
+                req = urllib.request.Request(
+                    "https://github.com/google/fonts/raw/main/ofl/amiri/Amiri-Regular.ttf",
+                    headers={'User-Agent': 'Mozilla/5.0'}
+                )
+                with urllib.request.urlopen(req) as response, open(font_path, 'wb') as out_file:
+                    out_file.write(response.read())
             except: pass
+            
+        # حماية ضد انهيار التطبيق (Crash Preventer)
+        if not os.path.exists(font_path) or os.path.getsize(font_path) < 10000:
+            st.error("⚠️ خطأ في تحميل الخط العربي. يرجى التأكد من اتصال خوادم المنصة أو رفع ملف Amiri-Regular.ttf يدوياً.")
+            return None
             
         # الصفحة الأولى: المناقشة البيانية
         pdf.add_page()
-        if os.path.exists(font_path):
-            pdf.add_font("Amiri", "", font_path, uni=True)
-            pdf.set_font("Amiri", size=24)
-        else: pdf.set_font("Arial", size=24)
+        pdf.add_font("Amiri", "", font_path, uni=True)
+        pdf.set_font("Amiri", size=24)
             
         pdf.set_text_color(21, 101, 192)
         title = fix_arabic("الأستاذ سوايسية هشام - المناقشة البيانية")
@@ -541,7 +544,7 @@ if valid_input:
         pdf.image(fig_path, x=15, w=180)
         pdf.ln(5)
         
-        pdf.set_font("Amiri" if os.path.exists(font_path) else "Arial", size=14)
+        pdf.set_font("Amiri", size=14)
         pdf.set_fill_color(30, 58, 138) 
         pdf.set_text_color(255, 255, 255)
         pdf.cell(95, 12, fix_arabic("المجال / القيمة"), border=1, fill=True, align='C')
@@ -555,12 +558,12 @@ if valid_input:
 
         # الصفحة الثانية: دراسة الدالة
         pdf.add_page()
-        pdf.set_font("Amiri" if os.path.exists(font_path) else "Arial", size=20)
+        pdf.set_font("Amiri", size=20)
         pdf.set_text_color(21, 101, 192)
         pdf.cell(0, 15, fix_arabic("دراسة الدالة الشاملة (مستخرجة آلياً)"), ln=True, align='C')
         pdf.ln(5)
         
-        pdf.set_font("Amiri" if os.path.exists(font_path) else "Arial", size=16)
+        pdf.set_font("Amiri", size=16)
         pdf.set_text_color(0, 0, 0)
         pdf.cell(0, 10, fix_arabic("1. النهايات والمقاربات:"), ln=True, align='R')
         pdf.set_font("Arial", size=14)
@@ -570,11 +573,11 @@ if valid_input:
         pdf.ln(5)
 
         def draw_study_table(title, headers, data_rows):
-            pdf.set_font("Amiri" if os.path.exists(font_path) else "Arial", size=16)
+            pdf.set_font("Amiri", size=16)
             pdf.set_text_color(21, 101, 192)
             pdf.cell(0, 10, fix_arabic(title), ln=True, align='R')
             
-            pdf.set_font("Amiri" if os.path.exists(font_path) else "Arial", size=14)
+            pdf.set_font("Amiri", size=14)
             pdf.set_fill_color(30, 58, 138)
             pdf.set_text_color(255, 255, 255)
             
