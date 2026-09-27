@@ -1,6 +1,11 @@
 import streamlit as st
 import numpy as np
-import matplotlib.subplots as plt_sub
+import streamlit as st
+import numpy as np
+import matplotlib.pyplot as plt
+import sympy as sp
+from scipy.signal import find_peaks
+import time
 import matplotlib.pyplot as plt
 import sympy as sp
 from scipy.signal import find_peaks
