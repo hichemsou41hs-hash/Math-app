@@ -288,7 +288,6 @@ if valid_input:
                 if y_mid_plus > y_mid: sign_row.append("+"); f_row.append("↗")
                 else: sign_row.append("-"); f_row.append("↘")
 
-    # --- توليد كود LaTeX لجدول التغيرات (خاص بواجهة التطبيق) ---
     latex_str = r"\begin{array}{|c|" + "c" * len(x_row) + r"|}" + "\n"
     latex_str += r"\hline" + "\n"
     
@@ -453,7 +452,7 @@ if valid_input:
     def generate_pdf(fig_path):
         if not PDF_ENABLED: return None
         
-        # --- إنشاء صورة لجدول التغيرات باستخدام Matplotlib للـ PDF ---
+        # إنشاء صورة لجدول التغيرات باستخدام Matplotlib للـ PDF (لمنع تشوهه)
         fig_tab, ax_tab = plt.subplots(figsize=(max(8, len(x_row)*0.9), 2.5))
         ax_tab.axis('off')
         
@@ -490,7 +489,6 @@ if valid_input:
         tmp_tab = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
         fig_tab.savefig(tmp_tab.name, bbox_inches='tight', dpi=250)
         plt.close(fig_tab)
-        # ---------------------------------------------------------
         
         pdf = FPDF(orientation='P', unit='mm', format='A4')
         font_path = "Amiri-Regular.ttf"
@@ -503,7 +501,7 @@ if valid_input:
             
         if not os.path.exists(font_path) or os.path.getsize(font_path) < 10000: return None
             
-        # الصفحة الأولى: المناقشة
+        # الصفحة الأولى: المناقشة البيانية
         pdf.add_page()
         pdf.add_font("Amiri", "", font_path, uni=True)
         pdf.set_font("Amiri", size=24)
@@ -517,7 +515,8 @@ if valid_input:
         pdf.cell(95, 12, fix_arabic("عدد وطبيعة الحلول"), border=1, ln=True, fill=True, align='C')
         
         for i, (m_str, text_str) in enumerate(final_table_plain):
-            pdf.set_fill_color(241, 245, 249) if i % 2 == 0 else pdf.set_fill_color(255, 255, 255)
+            if i % 2 == 0: pdf.set_fill_color(241, 245, 249) 
+            else: pdf.set_fill_color(255, 255, 255)
             pdf.set_text_color(15, 23, 42)
             pdf.cell(95, 12, m_str, border=1, align='C', fill=True)
             pdf.cell(95, 12, fix_arabic(text_str), border=1, ln=True, align='C', fill=True)
@@ -538,17 +537,18 @@ if valid_input:
         exp = "لحساب النهايات، نقوم بتعويض قيم المتغير عند أطراف مجموعة التعريف. وإذا واجهنا حالة عدم تعيين نستخدم قواعد الاختزال أو المبرهنات الشهيرة. النتائج هي:"
         pdf.multi_cell(0, 8, fix_arabic(exp), align='R')
         
-        pdf.set_font("Arial", size=14) # للرياضيات في الـ PDF
+        # استخدام خط Amiri هنا لحل مشكلة الترميز بشكل نهائي
+        pdf.set_font("Amiri", size=14) 
         pdf.set_text_color(0, 0, 0)
         for txt in limits_pdf_list: pdf.cell(0, 8, txt.replace("oo", "∞"), ln=True, align='L')
         pdf.ln(8)
 
         pdf.set_font("Amiri", size=16)
         pdf.set_text_color(21, 101, 192)
-        pdf.cell(0, 10, fix_arabic("2. جدول التغيرات الرياضي (مُنشأ بتقنية Matplotlib):"), ln=True, align='R')
+        pdf.cell(0, 10, fix_arabic("2. جدول التغيرات الرياضي الكامل:"), ln=True, align='R')
         pdf.ln(5)
         
-        # إدراج صورة جدول التغيرات عالية الدقة
+        # إدراج صورة جدول التغيرات العالية الدقة
         pdf.image(tmp_tab.name, x=10, w=190)
 
         pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
