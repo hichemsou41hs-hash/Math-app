@@ -55,20 +55,6 @@ def fmt(val):
     except:
         return str(val)
 
-# دالة مخصصة للـ PDF لتفادي أي مشكلة مع رمز المالانهاية
-def fmt_pdf(val):
-    if str(val) == 'oo' or val == float('inf'): return "+inf"
-    if str(val) == '-oo' or val == float('-inf'): return "-inf"
-    if str(val) == 'zoo': return "+-inf"
-    try:
-        f_val = float(val)
-        if not np.isfinite(f_val): return str(val)
-        if abs(f_val) > 1e6: return str(f_val)
-        if int(f_val) == f_val: return str(int(f_val))
-        return str(round(f_val, 2))
-    except:
-        return str(val)
-
 def fix_implicit_mult(expr_str):
     if "()" in expr_str: expr_str = expr_str.replace("()", "(1)")
     expr_str = expr_str.replace('^', '**')
@@ -81,7 +67,7 @@ def fix_arabic(text):
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
-if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(x**2+x)"
+if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(x)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -220,49 +206,108 @@ if valid_input:
     m_critical = merged_m_crit
 
     # ---------------------------------------------------------
-    # استخراج النهايات (شرح وحساب) 
-    # ---------------------------------------------------------
-    limits_html_list = []
-    limits_pdf_list = []
-    try:
-        for direction in [sp.oo, -sp.oo]:
-            lim = sp.limit(f_expr, x_sym, direction)
-            dir_str = "+\infty" if direction == sp.oo else "-\infty"
-            limits_html_list.append(fr"\lim_{{x \to {dir_str}}} f(x) = {fmt(lim)}")
-            limits_pdf_list.append(f"lim (x -> {fmt_pdf(direction)}) f(x) = {fmt_pdf(lim)}")
-    except: pass
-
-    for v in candidate_v_asymptotes:
-        v_str = fmt(v)
-        try:
-            lim_l = sp.limit(f_expr, x_sym, v, dir='-')
-            limits_html_list.append(fr"\lim_{{x \to {v_str}^-}} f(x) = {fmt(lim_l)}")
-            limits_pdf_list.append(f"lim (x -> {fmt_pdf(v)} <) f(x) = {fmt_pdf(lim_l)}")
-        except: pass
-        try:
-            lim_r = sp.limit(f_expr, x_sym, v, dir='+')
-            limits_html_list.append(fr"\lim_{{x \to {v_str}^+}} f(x) = {fmt(lim_r)}")
-            limits_pdf_list.append(f"lim (x -> {fmt_pdf(v)} >) f(x) = {fmt_pdf(lim_r)}")
-        except: pass
-
-    # ---------------------------------------------------------
-    # بناء جدول التغيرات الاحترافي (إصلاح تداخل x وتوسيع الخانات)
+    # استنتاج مجموعة التعريف الدقيقة (اقتطاع الجدول)
     # ---------------------------------------------------------
     v_asym_x = [v['val'] for v in unique_asymptotes if v['type'] == 'v']
     critical_x_var = sorted(list(set(x_extrema + v_asym_x)))
     pts_var = [-np.inf] + critical_x_var + [np.inf]
-    N = len(pts_var)
     
+    valid_intervals = []
+    for i in range(len(pts_var) - 1):
+        left, right = pts_var[i], pts_var[i+1]
+        if left == -np.inf and right == np.inf: mid = 0
+        elif left == -np.inf: mid = right - 1
+        elif right == np.inf: mid = left + 1
+        else: mid = (left + right) / 2.0
+        valid_intervals.append(np.isfinite(f_func(mid)))
+        
+    while len(valid_intervals) > 0 and not valid_intervals[0]:
+        valid_intervals.pop(0)
+        pts_var.pop(0)
+        
+    while len(valid_intervals) > 0 and not valid_intervals[-1]:
+        valid_intervals.pop(-1)
+        pts_var.pop(-1)
+
+    # تشكيل عبارة مجموعة التعريف LaTeX
+    domain_intervals_str = []
+    for i in range(len(valid_intervals)):
+        if valid_intervals[i]:
+            l_b = "-\infty" if pts_var[i] == -np.inf else fmt(pts_var[i])
+            r_b = "+\infty" if pts_var[i+1] == np.inf else fmt(pts_var[i+1])
+            domain_intervals_str.append(fr"]{l_b}, {r_b}[")
+            
+    domain_latex = r"D_f = " + r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"D_f = \emptyset"
+
+    # ---------------------------------------------------------
+    # استخراج النهايات المخصصة للمجال فقط (بصيغة LaTeX)
+    # ---------------------------------------------------------
+    limits_html_list = []
+    
+    if len(pts_var) > 0:
+        if pts_var[0] == -np.inf:
+            try:
+                lim = sp.limit(f_expr, x_sym, -sp.oo)
+                limits_html_list.append(fr"\lim_{{x \to -\infty}} f(x) = {fmt(lim)}")
+            except: pass
+            
+        if pts_var[-1] == np.inf:
+            try:
+                lim = sp.limit(f_expr, x_sym, sp.oo)
+                limits_html_list.append(fr"\lim_{{x \to +\infty}} f(x) = {fmt(lim)}")
+            except: pass
+
+        for v in candidate_v_asymptotes:
+            if v >= pts_var[0] and v <= pts_var[-1]:
+                v_str = fmt(v)
+                try:
+                    idx = pts_var.index(v)
+                    if idx > 0 and valid_intervals[idx-1]:
+                        lim_l = sp.limit(f_expr, x_sym, v, dir='-')
+                        limits_html_list.append(fr"\lim_{{x \to {v_str}^-}} f(x) = {fmt(lim_l)}")
+                except: pass
+                
+                try:
+                    idx = pts_var.index(v)
+                    if idx < len(valid_intervals) and valid_intervals[idx]:
+                        lim_r = sp.limit(f_expr, x_sym, v, dir='+')
+                        limits_html_list.append(fr"\lim_{{x \to {v_str}^+}} f(x) = {fmt(lim_r)}")
+                except: pass
+
+    # --- رسم النهايات كصورة عالية الدقة للـ PDF لتجنب أي تداخل ---
+    def generate_limits_image():
+        if not limits_html_list: return None
+        n_lim = len(limits_html_list)
+        fig_l, ax_l = plt.subplots(figsize=(6, max(1, n_lim * 0.7)))
+        ax_l.axis('off')
+        
+        for i, math_str in enumerate(limits_html_list):
+            ax_l.text(1.0, 1.0 - (i + 0.5) / n_lim, f"${math_str}$", 
+                      fontsize=20, ha='right', va='center', color='black')
+            
+        fig_l.tight_layout(pad=0)
+        tmp_l = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+        fig_l.savefig(tmp_l.name, bbox_inches='tight', dpi=300)
+        plt.close(fig_l)
+        return tmp_l.name
+
+    limits_image_path = generate_limits_image()
+
+    # ---------------------------------------------------------
+    # بناء جدول التغيرات الاحترافي (Vector Graphic باستخدام Matplotlib)
+    # ---------------------------------------------------------
+    N = len(pts_var)
     def generate_variation_table_image():
-        # إنشاء مساحة أوسع للجدول
+        if N < 2: return None
+        
+        # توسيع المسافات وإزاحة بداية الجدول لتفادي التصاق x مع -∞
+        col_w = 2.2 
+        x_start_data = 2.0 
+        x_max = x_start_data + N * col_w
+        
         fig_v, ax_v = plt.subplots(figsize=(max(8, N*2.0), 3.5))
         ax_v.axis('off')
         
-        col_w = 2.0 # عرض الخانة
-        x_start_data = 1.5 # إزاحة لليمين لإبعاد -∞ عن حرف x
-        x_max = x_start_data + N * col_w
-        
-        # رسم هيكل الجدول
         ax_v.plot([0, x_max], [6, 6], 'k-', lw=2, zorder=2)
         ax_v.plot([0, x_max], [5, 5], 'k-', lw=1.5, zorder=2)
         ax_v.plot([0, x_max], [4, 4], 'k-', lw=1.5, zorder=2)
@@ -272,12 +317,12 @@ if valid_input:
         ax_v.plot([x_start_data, x_start_data], [0, 6], 'k-', lw=2, zorder=2)
         ax_v.plot([x_max, x_max], [0, 6], 'k-', lw=2, zorder=2)
         
-        # التسميات
-        ax_v.text(0.75, 5.5, '$x$', ha='center', va='center', fontsize=18)
-        ax_v.text(0.75, 4.5, "$f'(x)$", ha='center', va='center', fontsize=18)
-        ax_v.text(0.75, 2.0, '$f(x)$', ha='center', va='center', fontsize=18)
+        # التسميات تتمركز في منتصف العمود الأول (x_start_data / 2)
+        ax_v.text(x_start_data / 2, 5.5, '$x$', ha='center', va='center', fontsize=20)
+        ax_v.text(x_start_data / 2, 4.5, "$f'(x)$", ha='center', va='center', fontsize=20)
+        ax_v.text(x_start_data / 2, 2.0, '$f(x)$', ha='center', va='center', fontsize=20)
         
-        signs, valid = [], []
+        signs = []
         for i in range(N - 1):
             left, right = pts_var[i], pts_var[i+1]
             if left == -np.inf and right == np.inf: mid = 0
@@ -286,19 +331,16 @@ if valid_input:
             else: mid = (left + right) / 2.0
             
             y_mid = f_func(mid)
-            if not np.isfinite(y_mid):
-                signs.append(None); valid.append(False)
-            else:
-                valid.append(True)
-                signs.append("+" if f_func(mid + 1e-5) > y_mid else "-")
+            if not np.isfinite(y_mid): signs.append(None)
+            else: signs.append("+" if f_func(mid + 1e-5) > y_mid else "-")
                 
         nodes = []
         for i in range(N):
             x_val = pts_var[i]
-            x_c = x_start_data + 1.0 + i * col_w 
+            x_c = x_start_data + (col_w / 2.0) + i * col_w 
             
             v_str = "-\infty" if x_val == -np.inf else "+\infty" if x_val == np.inf else fmt(x_val)
-            ax_v.text(x_c, 5.5, f"${v_str}$", ha='center', va='center', fontsize=15)
+            ax_v.text(x_c, 5.5, f"${v_str}$", ha='center', va='center', fontsize=16)
             
             if x_val in candidate_v_asymptotes:
                 ax_v.plot([x_c-0.05, x_c-0.05], [0, 5], 'k-', lw=1.5, zorder=2)
@@ -310,13 +352,12 @@ if valid_input:
 
             if i < N - 1:
                 x_ic = x_c + (col_w / 2.0)
-                if not valid[i]:
+                if not valid_intervals[i]:
                     rect = plt.Rectangle((x_c, 0), col_w, 5, facecolor='#EF4444', alpha=0.7, zorder=1)
                     ax_v.add_patch(rect)
                 else:
-                    ax_v.text(x_ic, 4.5, f"${signs[i]}$", ha='center', va='center', fontsize=20)
+                    ax_v.text(x_ic, 4.5, f"${signs[i]}$", ha='center', va='center', fontsize=22)
             
-            # استخراج العقد للأسهم بمسافات مدروسة
             if x_val == -np.inf:
                 try: 
                     v = sp.limit(f_expr, x_sym, -sp.oo)
@@ -328,12 +369,12 @@ if valid_input:
                     nodes.append((x_c-0.4, float(v) if v.is_real else float('inf') if v==sp.oo else float('-inf'), fmt(v)))
                 except: nodes.append((x_c-0.4, 0, "?"))
             elif x_val in candidate_v_asymptotes:
-                if i > 0 and valid[i-1]:
+                if i > 0 and valid_intervals[i-1]:
                     try:
                         v = sp.limit(f_expr, x_sym, x_val, dir='-')
                         nodes.append((x_c-0.3, float(v) if v.is_real else float('inf') if v==sp.oo else float('-inf'), fmt(v)))
                     except: nodes.append((x_c-0.3, 0, "?"))
-                if i < N-1 and valid[i]:
+                if i < N-1 and valid_intervals[i]:
                     try:
                         v = sp.limit(f_expr, x_sym, x_val, dir='+')
                         nodes.append((x_c+0.3, float(v) if v.is_real else float('inf') if v==sp.oo else float('-inf'), fmt(v)))
@@ -343,9 +384,9 @@ if valid_input:
                 nodes.append((x_c, float(v), fmt(v)))
 
         for i in range(N - 1):
-            if valid[i]:
-                x_c_left = x_start_data + 1.0 + i * col_w
-                x_c_right = x_start_data + 1.0 + (i+1) * col_w
+            if valid_intervals[i]:
+                x_c_left = x_start_data + (col_w / 2.0) + i * col_w
+                x_c_right = x_start_data + (col_w / 2.0) + (i+1) * col_w
                 
                 l_node = next((n for n in nodes if n[0] >= x_c_left and n[0] <= x_c_left + 0.6), None)
                 r_node = next((n for n in nodes if n[0] >= x_c_right - 0.6 and n[0] <= x_c_right), None)
@@ -360,8 +401,8 @@ if valid_input:
                     elif r_node[1] == float('-inf'): y_r = 0.8
                     if y_l == y_r: y_l = 2.0; y_r = 2.0
                     
-                    ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=14)
-                    ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=14)
+                    ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=15)
+                    ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=15)
                     
                     pad_x, pad_y = 0.3, 0.3
                     start_x, end_x = l_node[0] + pad_x, r_node[0] - pad_x
@@ -369,7 +410,7 @@ if valid_input:
                     end_y = y_r + (-pad_y if signs[i]=="+" else pad_y)
                     if y_l == y_r: start_y = end_y = y_l
                     
-                    ax_v.annotate('', xy=(end_x, end_y), xytext=(start_x, start_y), arrowprops=dict(arrowstyle="->", color="#1565C0", lw=2))
+                    ax_v.annotate('', xy=(end_x, end_y), xytext=(start_x, start_y), arrowprops=dict(arrowstyle="->", color="#1565C0", lw=2.5))
         
         ax_v.set_xlim(0, x_max)
         ax_v.set_ylim(0, 6)
@@ -558,26 +599,26 @@ if valid_input:
         pdf.set_font("Amiri", size=14)
         pdf.set_text_color(60, 60, 60)
         
-        # تفكيك النصوص الطويلة لتفادي مشكلة التداخل في الـ PDF
         exp1 = "لحساب النهايات، نقوم بتعويض قيم المتغير عند أطراف مجموعة التعريف."
-        exp2 = "وإذا واجهنا حالة عدم تعيين نستخدم قواعد الاختزال أو المبرهنات الشهيرة."
-        exp3 = "النتائج المبرمجة آلياً هي:"
+        exp2 = "إذا واجهنا حالة عدم تعيين نستخدم قواعد الاختزال أو المبرهنات الشهيرة."
+        exp3 = "النتائج الرياضية المحسوبة آلياً هي:"
         pdf.cell(0, 8, fix_arabic(exp1), ln=True, align='R')
         pdf.cell(0, 8, fix_arabic(exp2), ln=True, align='R')
         pdf.cell(0, 8, fix_arabic(exp3), ln=True, align='R')
-        pdf.ln(2)
+        pdf.ln(5)
         
-        pdf.set_font("Amiri", size=14) 
-        pdf.set_text_color(0, 0, 0)
-        for txt in limits_pdf_list: pdf.cell(0, 8, txt, ln=True, align='L')
-        pdf.ln(8)
+        # رسم النهايات بخطوط LaTeX حقيقية كصورة داخل הـ PDF لمنع التشوه واختفاء الرموز
+        if limits_image_path:
+            pdf.image(limits_image_path, x=80, w=120)
+            pdf.ln(5)
 
         pdf.set_font("Amiri", size=16)
         pdf.set_text_color(21, 101, 192)
         pdf.cell(0, 10, fix_arabic("2. جدول التغيرات الرياضي الكامل:"), ln=True, align='R')
         pdf.ln(5)
         
-        pdf.image(var_table_image_path, x=5, w=200)
+        if var_table_image_path:
+            pdf.image(var_table_image_path, x=10, w=190)
 
         pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
         pdf.output(pdf_file.name)
@@ -653,12 +694,13 @@ if valid_input:
             st.markdown(generate_html_table(m_val), unsafe_allow_html=True)
             
             with st.expander("📊 عرض دراسة الدالة الشاملة (مستخرجة آلياً)", expanded=False):
-                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. شرح وحساب النهايات:</h4>", unsafe_allow_html=True)
-                st.markdown("<p style='text-align:right; direction:rtl; color:#E2E8F0; font-size:16px;'>لحساب النهايات، نقوم بتعويض قيم $x$ عند أطراف مجموعة التعريف. إذا واجهنا حالة عدم تعيين نستعمل قواعد الاختزال والنهايات الشهيرة.</p>", unsafe_allow_html=True)
+                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. مجموعة التعريف وحساب النهايات:</h4>", unsafe_allow_html=True)
+                st.latex(domain_latex)
                 for math_str in limits_html_list: st.latex(math_str)
                 
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. جدول التغيرات (الرياضي الكامل):</h4>", unsafe_allow_html=True)
-                st.image(var_table_image_path, use_container_width=True)
+                if var_table_image_path:
+                    st.image(var_table_image_path, use_container_width=True)
             
             if PDF_ENABLED and not st.session_state.auto_play:
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
