@@ -183,7 +183,8 @@ with col_cam:
                         genai.configure(api_key=api_key)
                         
                         img = Image.open(img_file)
-                        model = genai.GenerativeModel('gemini-1.5-flash')
+                        # تم التحديث للنموذج الجديد 2.5 السريع جداً 
+                        model = genai.GenerativeModel('gemini-2.5-flash')
                         prompt = "Extract ONLY the mathematical function expression from this image. Convert it to a simple string compatible with Python/SymPy (use ** for powers, * for multiplication, sqrt() for roots, abs() for absolute value, ln() for natural log). DO NOT output any markdown, LaTeX, or explanatory text. Just the raw math string."
                         response = model.generate_content([prompt, img])
                         
@@ -193,8 +194,7 @@ with col_cam:
                         time.sleep(1)
                         st.rerun()
                     except Exception as e:
-                        # طباعة سبب المشكلة الحقيقي للمستخدم لمعرفته وتصحيحه
-                        st.error(f"❌ لم نتمكن من قراءة الصورة. التفاصيل: {str(e)}")
+                        st.error(f"❌ خطأ تقني: {str(e)}")
 
 x_sym, m_sym = sp.symbols('x m', real=True)
 local_dict = {'x': x_sym, 'm': m_sym, 'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
@@ -713,7 +713,7 @@ if valid_input:
         final_table_latex.append((pdf_latex, sol_text))
 
     # ---------------------------------------------------------
-    # دوال واجهة الويب وملف الـ PDF النهائي (مع حماية الإطار)
+    # دوال واجهة الويب وملف الـ PDF النهائي
     # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
