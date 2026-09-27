@@ -1,5 +1,6 @@
 import streamlit as st
 import numpy as np
+import matplotlib.subplots as plt_sub
 import matplotlib.pyplot as plt
 import sympy as sp
 from scipy.signal import find_peaks
@@ -65,10 +66,21 @@ def fix_implicit_mult(expr_str):
 def fix_arabic(text):
     return get_display(arabic_reshaper.reshape(text))
 
-def clean_latex_to_text(l_str):
-    s = str(l_str).replace(" ", "")
+# المترجم الرياضي لتنظيف المجالات (HTML لواجهة التطبيق)
+def bound_to_html(s):
+    s = str(s).replace(" ", "")
+    s = s.replace(r"-\infty", "-∞").replace(r"+\infty", "+∞").replace(r"\infty", "∞")
+    s = s.replace(r"\ln", "ln").replace(r"e", "<i>e</i>").replace(r"\pi", "π")
     s = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"\1/\2", s)
-    s = s.replace(r"\infty", "∞").replace(r"\ln", "ln")
+    s = s.replace("{", "").replace("}", "").replace("\\", "")
+    return s
+
+# المترجم الرياضي لتنظيف المجالات (نص نقي للـ PDF)
+def bound_to_pdf(s):
+    s = str(s).replace(" ", "")
+    s = s.replace(r"-\infty", "-∞").replace(r"+\infty", "+∞").replace(r"\infty", "∞")
+    s = s.replace(r"\ln", "ln").replace(r"e", "e").replace(r"\pi", "π")
+    s = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"\1/\2", s)
     s = s.replace("{", "").replace("}", "").replace("\\", "")
     return s
 
@@ -141,7 +153,7 @@ if valid_input:
     y_vals_roots = process_y_vals(x_vals_roots)
 
     # ---------------------------------------------------------
-    # المحرك الجبري: استخراج القيم المظبوطة (Exact Symbolic Engine)
+    # استخراج القيم المظبوطة (Exact Symbolic Engine)
     # ---------------------------------------------------------
     sym_m_critical = []
     unique_asymptotes = []
@@ -207,31 +219,28 @@ if valid_input:
             
     domain_latex = r"D_f = \color{#FFD700}{" + r" \cup ".join(domain_intervals_str) + r"}" if domain_intervals_str else r"D_f = \emptyset"
 
-    # إضافة كل النهايات إلى القيم الحرجة (لكي يُقطع مجال المناقشة بدقة مثل الصفر)
+    # جمع النهايات الحقيقية وإضافتها للقيم الحرجة (لقطع المجالات بدقة)
     try:
         for direction in [sp.oo, -sp.oo]:
             lim = sp.limit(f_expr, x_sym, direction)
             if lim.is_real: sym_m_critical.append(lim)
     except: pass
 
-    for p in pts_var_exact:
+    for i, p in enumerate(pts_var_exact):
         if p['type'] == 'v_asym':
-            idx = pts_var_exact.index(p)
-            if idx > 0 and valid_intervals[idx-1]:
+            if i > 0 and valid_intervals[i-1]:
                 try: 
                     lim = sp.limit(f_expr, x_sym, p['sym'], dir='-')
                     if lim.is_real: sym_m_critical.append(lim)
                 except: pass
-            if idx < len(valid_intervals) and valid_intervals[idx]:
+            if i < len(valid_intervals) and valid_intervals[i]:
                 try: 
                     lim = sp.limit(f_expr, x_sym, p['sym'], dir='+')
                     if lim.is_real: sym_m_critical.append(lim)
                 except: pass
-    
-    sym_m_critical = list(set(sym_m_critical))
 
     # ---------------------------------------------------------
-    # شرح وحساب النهايات رياضياً (القيم المضبوطة)
+    # شرح وحساب النهايات رياضياً (خطوة بخطوة)
     # ---------------------------------------------------------
     limits_data_detailed = []
     limits_mpl_list = []
@@ -287,7 +296,7 @@ if valid_input:
     limits_image_path = generate_limits_image()
 
     # ---------------------------------------------------------
-    # بناء جدول التغيرات الاحترافي (Vector Graphic باستخدام Matplotlib)
+    # بناء جدول التغيرات الاحترافي (Vector Graphic)
     # ---------------------------------------------------------
     N = len(pts_var_exact)
     def generate_variation_table_image():
@@ -370,8 +379,8 @@ if valid_input:
                     y_r = 3.2 if signs[i] == "+" else 0.8
                     if y_l == y_r: y_l = 2.0; y_r = 2.0
                     
-                    ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=16, color='#D32F2F', fontweight='bold')
-                    ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=16, color='#D32F2F', fontweight='bold')
+                    ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
+                    ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
                     
                     pad_x, pad_y = 0.35, 0.4
                     start_x, end_x = l_node[0] + pad_x, r_node[0] - pad_x
@@ -391,7 +400,7 @@ if valid_input:
     var_table_image_path = generate_variation_table_image()
 
     # ---------------------------------------------------------
-    # المناقشة البيانية (استعمال القيم المضبوطة والمجالات الحقيقية)
+    # المناقشة البيانية (بالقيم المضبوطة والمجالات الدقيقة)
     # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
@@ -516,31 +525,32 @@ if valid_input:
         L_latex = r"-\infty" if L == float('-inf') else get_exact_m(L)
         H_latex = r"+\infty" if H == float('inf') else get_exact_m(H)
         
-        L_plain = "-∞" if L == float('-inf') else clean_latex_to_text(L_latex)
-        H_plain = "+∞" if H == float('inf') else clean_latex_to_text(H_latex)
+        L_html = bound_to_html(L_latex)
+        H_html = bound_to_html(H_latex)
+        L_plain = bound_to_pdf(L_latex)
+        H_plain = bound_to_pdf(H_latex)
         
-        # تصحيح الخطأ المطبعي H_latex بدلاً من L_latex في المجالات
         if L == float('-inf') and H == float('inf'):
-            math_html = r"m \in \mathbb{R}"
+            math_html = "<i>m</i> ∈ ℝ"
             plain_m = "m ∈ R"
         elif L == float('-inf'):
             bracket_H = "]" if H_inc else "["
-            math_html = fr"m \in ]-\infty ; {H_latex}{bracket_H}"
+            math_html = f"<i>m</i> ∈ ]-∞ ; {H_html}{bracket_H}"
             plain_m = f"m ∈ ]-∞ ; {H_plain}{bracket_H}"
         elif H == float('inf'):
             bracket_L = "[" if L_inc else "]"
-            math_html = fr"m \in {bracket_L}{L_latex} ; +\infty["
+            math_html = f"<i>m</i> ∈ {bracket_L}{L_html} ; +∞["
             plain_m = f"m ∈ {bracket_L}{L_plain} ; +∞["
         elif L == H:
-            math_html = fr"m = {L_latex}"
+            math_html = f"<i>m</i> = {L_html}"
             plain_m = f"m = {L_plain}"
         else:
             bracket_L = "[" if L_inc else "]"
             bracket_H = "]" if H_inc else "["
-            math_html = fr"m \in {bracket_L}{L_latex} ; {H_latex}{bracket_H}"
+            math_html = f"<i>m</i> ∈ {bracket_L}{L_html} ; {H_html}{bracket_H}"
             plain_m = f"m ∈ {bracket_L}{L_plain} ; {H_plain}{bracket_H}"
             
-        final_table_data.append((f"${math_html}$", sol_text, L, H))
+        final_table_data.append((math_html, sol_text, L, H))
         final_table_plain.append((plain_m, sol_text))
 
     # ---------------------------------------------------------
@@ -560,7 +570,7 @@ if valid_input:
 
         for idx, (math_html, sol_text, L, H) in enumerate(final_table_data):
             row_style = "border: 3px solid #FFD700; background-color: #334155; font-weight:bold;" if idx == active_idx else "border-bottom: 1px solid #334155;"
-            html += f"<tr style='{row_style}'> <td style='padding:10px; color:{'#00E5FF' if idx == active_idx else '#A5F3FC'};'>{sol_text}</td> <td style='padding:10px; color:{'#FFD700' if idx == active_idx else '#FEF08A'}; font-family: Arial; font-size: 18px; white-space: nowrap;' dir='ltr'>{math_html}</td> </tr>"
+            html += f"<tr style='{row_style}'> <td style='padding:10px; color:{'#00E5FF' if idx == active_idx else '#A5F3FC'};'>{sol_text}</td> <td style='padding:10px; color:{'#FFD700' if idx == active_idx else '#FEF08A'}; font-family: \"Times New Roman\", Times, serif; font-size: 20px; white-space: nowrap;' dir='ltr'>{math_html}</td> </tr>"
         html += "</table>"
         return html
 
@@ -589,12 +599,12 @@ if valid_input:
         pdf.cell(95, 12, fix_arabic("عدد وطبيعة الحلول"), border=1, ln=True, fill=True, align='C')
         
         for i, (m_str, text_str) in enumerate(final_table_plain):
-            if i % 2 == 0:
-                pdf.set_fill_color(241, 245, 249) 
-            else:
-                pdf.set_fill_color(255, 255, 255)
+            if i % 2 == 0: pdf.set_fill_color(241, 245, 249) 
+            else: pdf.set_fill_color(255, 255, 255)
             pdf.set_text_color(15, 23, 42)
+            pdf.set_font("Arial", size=14) 
             pdf.cell(95, 12, m_str, border=1, align='C', fill=True)
+            pdf.set_font("Amiri", size=14)
             pdf.cell(95, 12, fix_arabic(text_str), border=1, ln=True, align='C', fill=True)
 
         pdf.add_page()
