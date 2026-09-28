@@ -321,6 +321,7 @@ if valid_input:
     domain_latex_st = r"D_f = \color{#FFD700}{" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset") + r"}"
     domain_latex_mpl = r"D_f =" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
 
+    # النواة الرياضية الشاملة والمحصنة للمناقشة البيانية (الأفقية، المائلة، الدورانية)
     sym_m_critical = []
     try:
         m_expr_list = sp.solve(f_expr - g_expr, m_sym)
@@ -390,6 +391,7 @@ if valid_input:
     
     m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 100])))
 
+    # الفلتر الذكي للعبارات المعقدة (يمنع ظهور الدوال الجامعية في الجدول ويمنع تكسير الأسطر)
     def get_exact_m(val_float):
         for sm in sym_m_critical:
             if abs(float(sp.N(sm)) - val_float) < 1e-2:
@@ -536,17 +538,19 @@ if valid_input:
             is_active = (idx == active_idx)
             c_text = get_sol_color_html(sol_text)
             
+            # تم إضافة white-space:nowrap وتصغير الخط قليلاً لتفادي تكسير المعادلات في الشاشات
             if is_active:
-                text_cell = f"<span style='display:inline-block; width:95%; background-color:#334155; border:3px solid #FFD700; padding:6px; border-radius:6px; color:{c_text}; font-weight:bold; font-size:20px;'>{sol_text}</span>"
-                math_cell = f"<span style='display:inline-block; width:95%; background-color:#334155; border:3px solid #FFD700; padding:6px; border-radius:6px;'>**${m_latex}$**</span>"
+                text_cell = f"<span style='display:inline-block; width:90%; background-color:#334155; border:2px solid #FFD700; padding:4px; border-radius:6px; color:{c_text}; font-weight:bold; font-size:17px;'>{sol_text}</span>"
+                math_cell = f"<span style='display:inline-block; width:90%; background-color:#334155; border:2px solid #FFD700; padding:4px; border-radius:6px; white-space:nowrap; font-size:16px;'>**${m_latex}$**</span>"
             else:
-                text_cell = f"<span style='color:{c_text}; font-weight:bold; font-size:18px;'>{sol_text}</span>"
-                math_cell = f"${m_latex}$"
+                text_cell = f"<span style='color:{c_text}; font-weight:bold; font-size:17px;'>{sol_text}</span>"
+                math_cell = f"<span style='white-space:nowrap; font-size:16px;'>${m_latex}$</span>"
                 
             md += f"| {text_cell} | {math_cell} |\n"
             
         return md
 
+    # نظام الحماية لمنع الانهيار
     def generate_pdf_discussion_table():
         nrows = len(final_table)
         fig_dt, ax_dt = plt.subplots(figsize=(10, nrows * 0.7 + 0.8))
