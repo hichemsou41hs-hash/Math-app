@@ -45,6 +45,10 @@ st.markdown("""
     
     button[kind="primary"] { width: 100% !important; height: 50px !important; background-color: #ef4444 !important; color: white !important; font-size: 18px !important; font-weight: bold !important; border-radius: 8px !important; box-shadow: 0 4px 0 #7f1d1d !important; border: none !important; margin-top: 5px !important; }
     button[kind="primary"]:active { transform: translateY(4px) !important; box-shadow: 0 0 0 #7f1d1d !important; background-color: #dc2626 !important; }
+    
+    table { width: 100%; border-collapse: collapse; text-align: center; }
+    th { background-color: #1E293B !important; color: white !important; padding: 10px; font-size: 18px; border-bottom: 2px solid #444; }
+    td { padding: 10px; border-bottom: 1px solid #334155; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -76,22 +80,6 @@ def fix_arabic_pdf(text):
 
 def fix_arabic_mpl(text):
     return arabic_reshaper.reshape(text)
-
-def bound_to_html(s):
-    s = str(s).replace(" ", "")
-    s = s.replace(r"-\infty", "-∞").replace(r"+\infty", "+∞").replace(r"\infty", "∞")
-    s = s.replace(r"\ln", "ln").replace(r"e", "<i>e</i>").replace(r"\pi", "π")
-    s = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"\1/\2", s)
-    s = s.replace("{", "").replace("}", "").replace("\\", "")
-    return s
-
-def clean_latex_to_text(l_str):
-    s = str(l_str).replace(" ", "")
-    s = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"\1/\2", s)
-    s = s.replace(r"-\infty", "-∞").replace(r"+\infty", "+∞").replace(r"\infty", "∞")
-    s = s.replace(r"\ln", "ln").replace(r"e", "e").replace(r"\pi", "π")
-    s = s.replace("{", "").replace("}", "").replace("\\", "")
-    return s
 
 def sanitize_latex(expr):
     if not isinstance(expr, str): expr = sp.latex(expr)
@@ -338,7 +326,6 @@ if valid_input:
     domain_latex_mpl = r"D_f =" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
     domain_latex_st = r"D_f = \color{#FFD700}{" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset") + r"}"
 
-    # إضافة التقاطع مع محور التراتيب (f(0)) رياضياً كقيمة حرجة لضمان المناقشة الدقيقة لإشارة الحلول
     try:
         val_0 = sp.simplify(f_expr.subs(x_sym, 0))
         if val_0.is_real:
@@ -662,9 +649,8 @@ if valid_input:
                 cur_L, cur_H, cur_text = item[0], item[1], item[2]
         merged_intervals.append((cur_L, cur_H, cur_text))
 
-    final_table_data = []
-    final_table_latex = [] 
-    
+    # هندسة الجدول الحديثة (بدون HTML معقد) لدعم عرض الرياضيات بـ LaTeX المباشر
+    final_table = [] 
     for L, H, sol_text in merged_intervals:
         L_inc = any(r[0] == L and r[1] == L and r[2] == sol_text for r in raw_intervals)
         H_inc = any(r[0] == H and r[1] == H and r[2] == sol_text for r in raw_intervals)
@@ -672,37 +658,29 @@ if valid_input:
         L_latex = r"-\infty" if L == float('-inf') else get_exact_m(L)
         H_latex = r"+\infty" if H == float('inf') else get_exact_m(H)
         
-        L_html = bound_to_html(L_latex)
-        H_html = bound_to_html(H_latex)
-        
         if L == float('-inf') and H == float('inf'):
-            math_html = "<i>m</i> ∈ ℝ"
-            pdf_latex = r"m \in \mathbb{R}"
+            m_latex = r"m \in \mathbb{R}"
         elif L == float('-inf'):
             bracket_H = "]" if H_inc else "["
-            math_html = f"<i>m</i> ∈ ]-∞ ; {H_html}{bracket_H}"
-            pdf_latex = fr"m \in ]-\infty ; {H_latex}{bracket_H}"
+            m_latex = fr"m \in ]-\infty ; {H_latex}{bracket_H}"
         elif H == float('inf'):
             bracket_L = "[" if L_inc else "]"
-            math_html = f"<i>m</i> ∈ {bracket_L}{L_html} ; +∞["
-            pdf_latex = fr"m \in {bracket_L}{L_latex} ; +\infty["
+            m_latex = fr"m \in {bracket_L}{L_latex} ; +\infty["
         elif L == H:
-            math_html = f"<i>m</i> = {L_html}"
-            pdf_latex = fr"m = {L_latex}"
+            m_latex = fr"m = {L_latex}"
         else:
             bracket_L = "[" if L_inc else "]"
             bracket_H = "]" if H_inc else "["
-            math_html = f"<i>m</i> ∈ {bracket_L}{L_html} ; {H_html}{bracket_H}"
-            pdf_latex = fr"m \in {bracket_L}{L_latex} ; {H_latex}{bracket_H}"
+            m_latex = fr"m \in {bracket_L}{L_latex} ; {H_latex}{bracket_H}"
             
-        final_table_data.append((math_html, sol_text, L, H))
-        final_table_latex.append((pdf_latex, sol_text))
+        final_table.append((m_latex, sol_text, L, H))
 
-    def generate_html_table(current_m):
-        html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
-        html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>عدد وطبيعة الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
+    def generate_st_markdown_table(current_m):
+        md = "| عدد وطبيعة الحلول | المجال / القيمة المضبوطة |\\n"
+        md += "| :---: | :---: |\\n"
+        
         active_idx = 0
-        for idx, (math_html, sol_text, L, H) in enumerate(final_table_data):
+        for idx, (m_latex, sol_text, L, H) in enumerate(final_table):
             is_active = False
             if L == H and abs(current_m - L) <= 0.03: is_active = True
             elif L == float('-inf') and current_m <= H - 0.03: is_active = True
@@ -710,15 +688,24 @@ if valid_input:
             elif L + 0.03 <= current_m <= H - 0.03: is_active = True
             if is_active: active_idx = idx
 
-        for idx, (math_html, sol_text, L, H) in enumerate(final_table_data):
-            row_style = "border: 3px solid #FFD700; background-color: #334155; font-weight:bold;" if idx == active_idx else "border-bottom: 1px solid #334155;"
-            c_text = get_sol_color_html(sol_text) 
-            html += f"<tr style='{row_style}'> <td style='padding:10px; color:{c_text}; font-weight:bold;'>{sol_text}</td> <td style='padding:10px; color:{'#FFD700' if idx == active_idx else '#FEF08A'}; font-size: 20px; white-space: nowrap; font-family: \"Times New Roman\", Times, serif;' dir='ltr'>{math_html}</td> </tr>"
-        html += "</table>"
-        return html
+        for idx, (m_latex, sol_text, L, H) in enumerate(final_table):
+            is_active = (idx == active_idx)
+            c_text = get_sol_color_html(sol_text)
+            
+            # دمج ألوان الـ HTML للنصوص فقط، وجعل المجالات تُعالج كـ LaTeX نقي
+            if is_active:
+                text_cell = f"<span style='color:{c_text}; font-weight:bold; font-size:18px; background-color:#334155; padding:2px 8px; border-radius:4px;'>{sol_text}</span>"
+                math_cell = f"**${m_latex}$**"
+            else:
+                text_cell = f"<span style='color:{c_text}; font-weight:bold; font-size:18px;'>{sol_text}</span>"
+                math_cell = f"${m_latex}$"
+                
+            md += f"| {text_cell} | {math_cell} |\\n"
+            
+        return md
 
     def generate_pdf_discussion_table():
-        nrows = len(final_table_latex)
+        nrows = len(final_table)
         fig_dt, ax_dt = plt.subplots(figsize=(10, nrows * 0.7 + 0.8))
         ax_dt.axis('off')
         
@@ -746,7 +733,7 @@ if valid_input:
         ax_dt.text(3, nrows * 0.7 + 0.35, fix_arabic_mpl("عدد وطبيعة الحلول"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
         ax_dt.text(8, nrows * 0.7 + 0.35, fix_arabic_mpl("المجال / القيمة المضبوطة"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
         
-        for i, (m_latex, sol_text) in enumerate(final_table_latex):
+        for i, (m_latex, sol_text, L, H) in enumerate(final_table):
             y_center = (nrows - i - 1) * 0.7 + 0.35
             c_pdf = get_sol_color_pdf(sol_text)
             f_size = 14 if len(sol_text) > 35 else 16 
@@ -851,8 +838,7 @@ if valid_input:
                 elif asym['type'] == 'v':
                     ax.axvline(asym['val'], color='#D32F2F', linestyle='--', linewidth=2.2, zorder=4)
                     ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color='#D32F2F', fontsize=14, fontweight='bold', va='top')
-            except:
-                pass
+            except: pass
         
         try:
             ax.plot(x_vals_plot, y_vals_plot, color='#2E7D32', linewidth=3.5, label=r'$C_f$', zorder=5)
@@ -888,26 +874,23 @@ if valid_input:
         if unique_intersect_x:
             try:
                 ax.scatter(unique_intersect_x, intersect_y, color='#FF8C00', s=130, zorder=6, edgecolor='black', linewidth=1.5, label=fix_arabic_mpl('نقاط التقاطع'))
-            except:
-                pass
+            except: pass
                 
         try:
             ax.text(4, m_val + 0.35, f"${m_eq_label}$", color='#1565C0', fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
-        except:
-            pass
+        except: pass
             
         ax.set_ylim(-6, 8)
         try:
             legend = ax.legend(facecolor='#FFFFFF', edgecolor='#A0A0A0', loc='upper right', fontsize=12)
             for text in legend.get_texts(): text.set_color("black")
-        except:
-            pass
+        except: pass
             
         fig.tight_layout()
         
         with placeholder.container():
             st.pyplot(fig, use_container_width=True)
-            st.markdown(generate_html_table(m_val), unsafe_allow_html=True)
+            st.markdown(generate_st_markdown_table(m_val), unsafe_allow_html=True)
             
             with st.expander("📊 عرض دراسة الدالة الشاملة (مستخرجة آلياً)", expanded=False):
                 st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. استنتاج مجموعة التعريف وحساب النهايات:</h4>", unsafe_allow_html=True)
