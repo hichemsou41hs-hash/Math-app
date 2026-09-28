@@ -321,9 +321,7 @@ if valid_input:
     domain_latex_st = r"D_f = \color{#FFD700}{" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset") + r"}"
     domain_latex_mpl = r"D_f =" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
 
-    # ---------------------------------------------------------
-    # النواة الرياضية الشاملة الجديدة (للمناقشة الأفقية، المائلة، الدورانية)
-    # ---------------------------------------------------------
+    # النواة الرياضية الشاملة والمحصنة للمناقشة البيانية (الأفقية، المائلة، الدورانية)
     sym_m_critical = []
     try:
         m_expr_list = sp.solve(f_expr - g_expr, m_sym)
@@ -544,6 +542,7 @@ if valid_input:
             
         return md
 
+    # نظام الحماية لمنع الانهيار
     def generate_pdf_discussion_table():
         nrows = len(final_table)
         fig_dt, ax_dt = plt.subplots(figsize=(10, nrows * 0.7 + 0.8))
@@ -594,6 +593,8 @@ if valid_input:
             fig_dt.tight_layout(pad=0)
         except:
             draw_table(use_math=False)
+            try: fig_dt.tight_layout(pad=0)
+            except: pass
             
         tmp_dt = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
         fig_dt.savefig(tmp_dt.name, bbox_inches='tight', dpi=300)
@@ -670,7 +671,8 @@ if valid_input:
             ax_d.axis('off')
             safe_str = str(df_simp).replace('**', '^')
             ax_d.text(0.5, 0.5, f"f'(x) = {safe_str}", fontsize=18, ha='center', va='center', color='#1E3A8A', family='serif')
-            fig_d.tight_layout(pad=0)
+            try: fig_d.tight_layout(pad=0)
+            except: pass
             
         tmp_d = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
         fig_d.savefig(tmp_d.name, bbox_inches='tight', dpi=300)
@@ -767,8 +769,12 @@ if valid_input:
                     y_r = 3.2 if signs[i] == "+" else 0.8
                     if y_l == y_r: y_l = 2.0; y_r = 2.0
                     
-                    ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
-                    ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
+                    try:
+                        ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
+                    except: pass
+                    try:
+                        ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
+                    except: pass
                     
                     pad_x, pad_y = 0.35, 0.4
                     start_x, end_x = l_node[0] + pad_x, r_node[0] - pad_x
@@ -779,11 +785,17 @@ if valid_input:
                     ax_v.annotate('', xy=(end_x, end_y), xytext=(start_x, start_y), arrowprops=dict(arrowstyle="->", color="#1565C0", lw=2.5))
         
         ax_v.set_xlim(0, x_max); ax_v.set_ylim(0, 6)
-        fig_v.tight_layout(pad=0.2)
-        tmp_v = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-        fig_v.savefig(tmp_v.name, bbox_inches='tight', dpi=300)
-        plt.close(fig_v)
-        return tmp_v.name
+        
+        # حماية إضافية لجدول التغيرات
+        try:
+            fig_v.tight_layout(pad=0.2)
+            tmp_v = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+            fig_v.savefig(tmp_v.name, bbox_inches='tight', dpi=300)
+            plt.close(fig_v)
+            return tmp_v.name
+        except Exception as e:
+            plt.close(fig_v)
+            return None
 
     var_table_image_path = generate_variation_table_image()
 
@@ -903,12 +915,8 @@ if valid_input:
             if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
                 if diff_plot[i] * diff_plot[i+1] < 0:
                     denom = diff_plot[i+1] - diff_plot[i]
-                    x_c = x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom
-                    intersect_x.append(float(x_c))
-                elif diff_plot[i] == 0:
-                    intersect_x.append(float(x_vals_plot[i]))
-        if len(diff_plot) > 0 and diff_plot[-1] == 0:
-            intersect_x.append(float(x_vals_plot[-1]))
+                    intersect_x.append(float(x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom if denom != 0 else x_vals_plot[i]))
+                elif diff_plot[i] == 0: intersect_x.append(float(x_vals_plot[i]))
 
         unique_intersect_x = []
         for ix in intersect_x:
@@ -931,7 +939,9 @@ if valid_input:
             for text in legend.get_texts(): text.set_color("black")
         except: pass
             
-        fig.tight_layout()
+        try:
+            fig.tight_layout()
+        except: pass
         
         with placeholder.container():
             st.pyplot(fig, use_container_width=True)
