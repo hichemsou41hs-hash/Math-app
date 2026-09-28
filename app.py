@@ -46,7 +46,6 @@ st.markdown("""
     button[kind="primary"] { width: 100% !important; height: 50px !important; background-color: #ef4444 !important; color: white !important; font-size: 18px !important; font-weight: bold !important; border-radius: 8px !important; box-shadow: 0 4px 0 #7f1d1d !important; border: none !important; margin-top: 5px !important; }
     button[kind="primary"]:active { transform: translateY(4px) !important; box-shadow: 0 0 0 #7f1d1d !important; background-color: #dc2626 !important; }
     
-    /* هندسة خطوط الجدول الجديد */
     [data-testid="stMarkdownContainer"] table { width: 100% !important; border-collapse: collapse !important; border: 2px solid #475569 !important; margin-bottom: 20px !important; }
     [data-testid="stMarkdownContainer"] th { background-color: #1E293B !important; color: #FFFFFF !important; padding: 12px !important; font-size: 19px !important; border: 2px solid #475569 !important; text-align: center !important; }
     [data-testid="stMarkdownContainer"] td { padding: 15px 10px !important; border: 1px solid #334155 !important; text-align: center !important; vertical-align: middle !important; font-size: 18px !important; }
@@ -703,43 +702,59 @@ if valid_input:
             
         return md
 
+    # نظام حماية محكم لرسم جدول الـ PDF (يمنع انهيار Matplotlib تماماً)
     def generate_pdf_discussion_table():
         nrows = len(final_table)
         fig_dt, ax_dt = plt.subplots(figsize=(10, nrows * 0.7 + 0.8))
-        ax_dt.axis('off')
         
-        ax_dt.set_xlim(-0.05, 10.05)
-        ax_dt.set_ylim(-0.05, nrows * 0.7 + 0.75)
-        
-        for i in range(nrows + 1):
-            y = i * 0.7
-            ax_dt.plot([0, 10], [y, y], 'k-', lw=1 if 0 < i < nrows else 2)
-        ax_dt.plot([0, 0], [0, nrows * 0.7], 'k-', lw=2)
-        ax_dt.plot([6, 6], [0, nrows * 0.7], 'k-', lw=1) 
-        ax_dt.plot([10, 10], [0, nrows * 0.7], 'k-', lw=2)
-        
-        ax_dt.plot([0, 10], [nrows * 0.7, nrows * 0.7], 'k-', lw=2)
-        ax_dt.plot([0, 10], [nrows * 0.7 + 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
-        ax_dt.plot([0, 0], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
-        ax_dt.plot([6, 6], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
-        ax_dt.plot([10, 10], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
-        
-        rect1 = plt.Rectangle((0, nrows * 0.7), 6, 0.7, facecolor='#1E3A8A')
-        rect2 = plt.Rectangle((6, nrows * 0.7), 4, 0.7, facecolor='#1E3A8A')
-        ax_dt.add_patch(rect1)
-        ax_dt.add_patch(rect2)
-        
-        ax_dt.text(3, nrows * 0.7 + 0.35, fix_arabic_mpl("عدد وطبيعة الحلول"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
-        ax_dt.text(8, nrows * 0.7 + 0.35, fix_arabic_mpl("المجال / القيمة المضبوطة"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
-        
-        for i, (m_latex, sol_text, L, H) in enumerate(final_table):
-            y_center = (nrows - i - 1) * 0.7 + 0.35
-            c_pdf = get_sol_color_pdf(sol_text)
-            f_size = 14 if len(sol_text) > 35 else 16 
-            ax_dt.text(3, y_center, fix_arabic_mpl(sol_text), fontsize=f_size, ha='center', va='center', color=c_pdf, fontweight='bold')
-            ax_dt.text(8, y_center, f"${m_latex}$", fontsize=16, ha='center', va='center', color='#1E3A8A')
+        def draw_table(use_math=True):
+            ax_dt.clear()
+            ax_dt.axis('off')
+            ax_dt.set_xlim(-0.05, 10.05)
+            ax_dt.set_ylim(-0.05, nrows * 0.7 + 0.75)
             
-        fig_dt.tight_layout(pad=0)
+            for i in range(nrows + 1):
+                y = i * 0.7
+                ax_dt.plot([0, 10], [y, y], 'k-', lw=1 if 0 < i < nrows else 2)
+            ax_dt.plot([0, 0], [0, nrows * 0.7], 'k-', lw=2)
+            ax_dt.plot([6, 6], [0, nrows * 0.7], 'k-', lw=1) 
+            ax_dt.plot([10, 10], [0, nrows * 0.7], 'k-', lw=2)
+            
+            ax_dt.plot([0, 10], [nrows * 0.7, nrows * 0.7], 'k-', lw=2)
+            ax_dt.plot([0, 10], [nrows * 0.7 + 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
+            ax_dt.plot([0, 0], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
+            ax_dt.plot([6, 6], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
+            ax_dt.plot([10, 10], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
+            
+            rect1 = plt.Rectangle((0, nrows * 0.7), 6, 0.7, facecolor='#1E3A8A')
+            rect2 = plt.Rectangle((6, nrows * 0.7), 4, 0.7, facecolor='#1E3A8A')
+            ax_dt.add_patch(rect1)
+            ax_dt.add_patch(rect2)
+            
+            ax_dt.text(3, nrows * 0.7 + 0.35, fix_arabic_mpl("عدد وطبيعة الحلول"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
+            ax_dt.text(8, nrows * 0.7 + 0.35, fix_arabic_mpl("المجال / القيمة المضبوطة"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
+            
+            for i, (m_latex, sol_text, L, H) in enumerate(final_table):
+                y_center = (nrows - i - 1) * 0.7 + 0.35
+                c_pdf = get_sol_color_pdf(sol_text)
+                f_size = 14 if len(sol_text) > 35 else 16 
+                ax_dt.text(3, y_center, fix_arabic_mpl(sol_text), fontsize=f_size, ha='center', va='center', color=c_pdf, fontweight='bold')
+                
+                if use_math:
+                    ax_dt.text(8, y_center, f"${m_latex}$", fontsize=16, ha='center', va='center', color='#1E3A8A')
+                else:
+                    # تحويل النص الرياضي المعقد إلى نص عادي لتفادي أخطاء محرك الرسم
+                    plain_text = m_latex.replace(r'\infty', 'oo').replace(r'\in', ' in ').replace(r'\\', '')
+                    plain_text = plain_text.replace('{', '').replace('}', '')
+                    ax_dt.text(8, y_center, plain_text, fontsize=14, ha='center', va='center', color='#1E3A8A', family='serif')
+
+        try:
+            draw_table(use_math=True)
+            fig_dt.canvas.draw()
+            fig_dt.tight_layout(pad=0)
+        except:
+            draw_table(use_math=False)
+            
         tmp_dt = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
         fig_dt.savefig(tmp_dt.name, bbox_inches='tight', dpi=300)
         plt.close(fig_dt)
