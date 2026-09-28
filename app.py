@@ -81,9 +81,25 @@ def fix_arabic_pdf(text):
 def fix_arabic_mpl(text):
     return arabic_reshaper.reshape(text)
 
+# تنقية معادلات LaTeX واستبدال دوال لامبرت بالقيم العشرية المناسبة لطور البكالوريا
 def sanitize_latex(expr):
+    if hasattr(expr, 'has'):
+        if expr.has(sp.LambertW) or (hasattr(sp, 'RootOf') and expr.has(sp.RootOf)):
+            try:
+                fl = float(sp.N(expr))
+                if int(fl) == fl: return str(int(fl))
+                return str(round(fl, 2))
+            except: pass
+    elif isinstance(expr, str) and ("LambertW" in expr or "RootOf" in expr or "W(" in expr):
+        try:
+            fl = float(sp.N(sp.sympify(expr)))
+            if int(fl) == fl: return str(int(fl))
+            return str(round(fl, 2))
+        except: pass
+
     if not isinstance(expr, str): expr = sp.latex(expr)
-    s = expr.replace('log', 'ln')
+    s = str(expr)
+    s = s.replace('log', 'ln')
     s = s.replace(r'\left', '').replace(r'\right', '')
     s = s.replace(r'\operatorname', r'\mathrm')
     return s
@@ -435,7 +451,6 @@ if valid_input:
                 else: cleaned_crossings.append(crossings[i])
             
             abs_diff = np.abs(diff)
-            # فلتر مجهري لمنع تذبذبات التقريب العائمة (Floating-point noise) من توليد مماسات وهمية
             abs_diff_r = np.round(abs_diff, 5)
             for i in range(1, len(abs_diff_r)-1):
                 if np.isfinite(abs_diff_r[i-1]) and np.isfinite(abs_diff_r[i]) and np.isfinite(abs_diff_r[i+1]):
@@ -848,7 +863,7 @@ if valid_input:
             pdf.ln(5)
 
         pdf.set_font("Amiri", size=16)
-        pdf.set_text_color(194, 24, 91)
+        pdf.set_text_color(194, 24, 91) 
         pdf.cell(0, 10, fix_arabic_pdf("2. حساب الدالة المشتقة:"), ln=True, align='R')
         pdf.ln(2)
         
@@ -857,7 +872,7 @@ if valid_input:
             pdf.ln(5)
 
         pdf.set_font("Amiri", size=16)
-        pdf.set_text_color(194, 24, 91)
+        pdf.set_text_color(194, 24, 91) 
         pdf.cell(0, 10, fix_arabic_pdf("3. جدول التغيرات:"), ln=True, align='R')
         pdf.ln(5)
         
@@ -925,11 +940,12 @@ if valid_input:
             if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
                 if diff_plot[i] * diff_plot[i+1] < 0:
                     denom = diff_plot[i+1] - diff_plot[i]
-                    intersect_x.append(float(x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom if denom != 0 else x_vals_plot[i]))
+                    x_c = x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom
+                    intersect_x.append(float(x_c))
                 elif diff_plot[i] == 0:
                     if i == 0 or diff_plot[i-1] != 0:
                         j = i
-                        while j < len(diff_plot) and diff_plot[j] == 0: j += 1
+                        while j < len(diff) and diff[j] == 0: j += 1
                         if j - i < 5: 
                             intersect_x.append(float(x_vals_plot[i]))
         if len(diff_plot) > 0 and diff_plot[-1] == 0 and diff_plot[-2] != 0:
