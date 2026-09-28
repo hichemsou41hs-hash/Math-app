@@ -108,8 +108,8 @@ def get_sol_color_html(sol_text):
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
-if 'f_val' not in st.session_state: st.session_state.f_val = "(x-1)*e^(1-x)"
-if 'g_val' not in st.session_state: st.session_state.g_val = "m*x+1"
+if 'f_val' not in st.session_state: st.session_state.f_val = "(x+e^x+2)/(e^x+1)"
+if 'g_val' not in st.session_state: st.session_state.g_val = "m+x"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
@@ -321,7 +321,6 @@ if valid_input:
     domain_latex_st = r"D_f = \color{#FFD700}{" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset") + r"}"
     domain_latex_mpl = r"D_f =" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
 
-    # النواة الرياضية الشاملة والمحصنة للمناقشة البيانية (الأفقية، المائلة، الدورانية)
     sym_m_critical = []
     try:
         m_expr_list = sp.solve(f_expr - g_expr, m_sym)
@@ -391,7 +390,6 @@ if valid_input:
     
     m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 100])))
 
-    # الفلتر الذكي للعبارات المعقدة (يمنع ظهور الدوال الجامعية في الجدول ويمنع تكسير الأسطر)
     def get_exact_m(val_float):
         for sm in sym_m_critical:
             if abs(float(sp.N(sm)) - val_float) < 1e-2:
@@ -418,8 +416,12 @@ if valid_input:
                     x_c = x_vals_roots[i] - diff[i] * (x_vals_roots[i+1] - x_vals_roots[i]) / denom
                     crossings.append(float(x_c))
                 elif diff[i] == 0:
-                    crossings.append(float(x_vals_roots[i]))
-        if len(diff) > 0 and diff[-1] == 0:
+                    if i == 0 or diff[i-1] != 0:
+                        j = i
+                        while j < len(diff) and diff[j] == 0: j += 1
+                        if j - i < 5: 
+                            crossings.append(float(x_vals_roots[i]))
+        if len(diff) > 0 and diff[-1] == 0 and diff[-2] != 0:
             crossings.append(float(x_vals_roots[-1]))
             
         tangents = []
@@ -431,10 +433,13 @@ if valid_input:
                 if i < len(crossings)-1 and abs(crossings[i+1] - crossings[i]) < 0.5:
                     tangents.append((crossings[i] + crossings[i+1])/2.0); skip = True
                 else: cleaned_crossings.append(crossings[i])
+            
             abs_diff = np.abs(diff)
-            for i in range(1, len(abs_diff)-1):
-                if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
-                    if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1] and abs_diff[i] < 0.1:
+            # فلتر مجهري لمنع تذبذبات التقريب العائمة (Floating-point noise) من توليد مماسات وهمية
+            abs_diff_r = np.round(abs_diff, 5)
+            for i in range(1, len(abs_diff_r)-1):
+                if np.isfinite(abs_diff_r[i-1]) and np.isfinite(abs_diff_r[i]) and np.isfinite(abs_diff_r[i+1]):
+                    if abs_diff_r[i] < abs_diff_r[i-1] - 1e-9 and abs_diff_r[i] < abs_diff_r[i+1] - 1e-9 and abs_diff_r[i] < 0.05:
                         if not any(abs(x_vals_roots[i] - c) < 0.6 for c in cleaned_crossings) and not any(abs(x_vals_roots[i] - t) < 0.6 for t in tangents):
                             tangents.append(x_vals_roots[i])
         else: cleaned_crossings = crossings
@@ -538,7 +543,6 @@ if valid_input:
             is_active = (idx == active_idx)
             c_text = get_sol_color_html(sol_text)
             
-            # تم إضافة white-space:nowrap وتصغير الخط قليلاً لتفادي تكسير المعادلات في الشاشات
             if is_active:
                 text_cell = f"<span style='display:inline-block; width:90%; background-color:#334155; border:2px solid #FFD700; padding:4px; border-radius:6px; color:{c_text}; font-weight:bold; font-size:17px;'>{sol_text}</span>"
                 math_cell = f"<span style='display:inline-block; width:90%; background-color:#334155; border:2px solid #FFD700; padding:4px; border-radius:6px; white-space:nowrap; font-size:16px;'>**${m_latex}$**</span>"
@@ -550,7 +554,6 @@ if valid_input:
             
         return md
 
-    # نظام الحماية لمنع الانهيار
     def generate_pdf_discussion_table():
         nrows = len(final_table)
         fig_dt, ax_dt = plt.subplots(figsize=(10, nrows * 0.7 + 0.8))
@@ -923,7 +926,14 @@ if valid_input:
                 if diff_plot[i] * diff_plot[i+1] < 0:
                     denom = diff_plot[i+1] - diff_plot[i]
                     intersect_x.append(float(x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom if denom != 0 else x_vals_plot[i]))
-                elif diff_plot[i] == 0: intersect_x.append(float(x_vals_plot[i]))
+                elif diff_plot[i] == 0:
+                    if i == 0 or diff_plot[i-1] != 0:
+                        j = i
+                        while j < len(diff_plot) and diff_plot[j] == 0: j += 1
+                        if j - i < 5: 
+                            intersect_x.append(float(x_vals_plot[i]))
+        if len(diff_plot) > 0 and diff_plot[-1] == 0 and diff_plot[-2] != 0:
+            intersect_x.append(float(x_vals_plot[-1]))
 
         unique_intersect_x = []
         for ix in intersect_x:
