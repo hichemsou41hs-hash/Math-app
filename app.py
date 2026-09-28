@@ -146,6 +146,9 @@ col_text, col_img = st.columns(2)
 with col_img:
     img_file = st.file_uploader("🖼️ ارفع صورة الدالة لاستخراجها آلياً:", type=['png', 'jpg', 'jpeg'])
     
+    # الرسالة التوجيهية للتلاميذ
+    st.markdown("<p style='font-size:14px; color:#94A3B8; text-align:right; direction:rtl; margin-top:-10px;'>💡 <b>ملاحظة:</b> في حال وجود ضغط على خادم الذكاء الاصطناعي وفشل قراءة الصورة، يرجى كتابة الدالة يدوياً في الخانة المجاورة.</p>", unsafe_allow_html=True)
+    
     if img_file:
         if not api_key:
             st.error("⚠️ خاصية الذكاء الاصطناعي غير مفعلة (ينقص مفتاح API).")
