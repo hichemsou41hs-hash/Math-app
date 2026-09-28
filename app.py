@@ -336,7 +336,6 @@ if valid_input:
     domain_latex_st = r"D_f = \color{#FFD700}{" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset") + r"}"
     domain_latex_mpl = r"D_f =" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
 
-    # النواة الرياضية الشاملة للمناقشة البيانية (الأفقية، المائلة، الدورانية)
     sym_m_critical = []
     try:
         m_expr_list = sp.solve(f_expr - g_expr, m_sym)
@@ -552,8 +551,9 @@ if valid_input:
             
         final_table.append((m_latex, sol_text, L, H))
 
+    # تعديل عنوان العمود في التطبيق إلى "عدد و إشارة حلول المعادلة"
     def generate_st_markdown_table(current_m):
-        md = "| عدد وطبيعة الحلول | المجال / القيمة المضبوطة |\n"
+        md = "| عدد و إشارة حلول المعادلة | المجال / القيمة المضبوطة |\n"
         md += "| :---: | :---: |\n"
         
         active_idx = 0
@@ -580,6 +580,7 @@ if valid_input:
             
         return md
 
+    # تعديل عنوان العمود في جدول الـ PDF إلى "عدد و إشارة حلول المعادلة"
     def generate_pdf_discussion_table():
         nrows = len(final_table)
         fig_dt, ax_dt = plt.subplots(figsize=(10, nrows * 0.7 + 0.8))
@@ -608,7 +609,7 @@ if valid_input:
             ax_dt.add_patch(rect1)
             ax_dt.add_patch(rect2)
             
-            ax_dt.text(3, nrows * 0.7 + 0.35, fix_arabic_mpl("عدد وطبيعة الحلول"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
+            ax_dt.text(3, nrows * 0.7 + 0.35, fix_arabic_mpl("عدد و إشارة حلول المعادلة"), color='white', fontsize=15, fontweight='bold', ha='center', va='center')
             ax_dt.text(8, nrows * 0.7 + 0.35, fix_arabic_mpl("المجال / القيمة المضبوطة"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
             
             for i, (m_latex, sol_text, L, H) in enumerate(final_table):
@@ -637,6 +638,28 @@ if valid_input:
         fig_dt.savefig(tmp_dt.name, bbox_inches='tight', dpi=300)
         plt.close(fig_dt)
         return tmp_dt.name
+
+    # توليد صورة أنيقة لمعادلة المناقشة البيانية لوضعها فوق جدول الـ PDF
+    def generate_eq_image():
+        math_str = fr"f(x) = {sanitize_latex(g_expr)}"
+        fig_e, ax_e = plt.subplots(figsize=(8, 0.7))
+        fig_e.patch.set_facecolor('#FFFFFF')
+        ax_e.set_facecolor('#FFFFFF')
+        ax_e.axis('off')
+        try:
+            ax_e.text(0.5, 0.5, f"${math_str}$", fontsize=22, ha='center', va='center', color='#1E3A8A', fontweight='bold')
+            fig_e.canvas.draw()
+            fig_e.tight_layout(pad=0)
+        except:
+            ax_e.clear()
+            ax_e.axis('off')
+            ax_e.text(0.5, 0.5, f"f(x) = {st.session_state.g_val}", fontsize=18, ha='center', va='center', color='#1E3A8A')
+            try: fig_e.tight_layout(pad=0)
+            except: pass
+        tmp_e = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+        fig_e.savefig(tmp_e.name, bbox_inches='tight', dpi=300)
+        plt.close(fig_e)
+        return tmp_e.name
 
     limits_data_detailed = []
     limits_mpl_list = []
@@ -761,11 +784,11 @@ if valid_input:
             elif p['type'] == 'extrema':
                 ax_v.plot([x_c, x_c], [4, 5], 'k-', lw=1.2, zorder=2)
                 ax_v.text(x_c, 4.5, '0', ha='center', va='center', fontsize=16)
-                ax_v.plot([x_c, x_c], [0, 4], 'k:', lw=1, alpha=0.5, zorder=2)
+                # تم إلغاء إسقاط الخط المتقطع في خانة الدالة f(x) كما طلبت
             elif p['type'] == 'corner': 
                 ax_v.plot([x_c-0.03, x_c-0.03], [4, 5], 'k-', lw=1.5, color='#D32F2F', zorder=2)
                 ax_v.plot([x_c+0.03, x_c+0.03], [4, 5], 'k-', lw=1.5, color='#D32F2F', zorder=2)
-                ax_v.plot([x_c, x_c], [0, 4], 'k:', lw=1, alpha=0.5, zorder=2)
+                # تم إلغاء إسقاط الخط المتقطع في خانة الدالة f(x) كما طلبت
 
             if i < N - 1:
                 x_ic = x_c + (col_w / 2.0)
@@ -835,7 +858,7 @@ if valid_input:
 
     var_table_image_path = generate_variation_table_image()
 
-    # إعادة تنظيم ملف PDF بالتسلسل البيداغوجي المطلوب (دراسة الدالة ثم المنحنى والمناقشة)
+    # ترتيب ملف PDF بالتسلسل البيداغوجي وإضافة معادلة المناقشة البيانية فوق الجدول
     def generate_pdf(fig_path):
         if not PDF_ENABLED: return None
         pdf = FPDF(orientation='P', unit='mm', format='A4')
@@ -880,7 +903,7 @@ if valid_input:
         if var_table_image_path:
             pdf.image(var_table_image_path, x=10, w=190)
 
-        # --- الصفحة الثانية: المنحنى البياني يليه جدول المناقشة البيانية ---
+        # --- الصفحة الثانية: المنحنى البياني يليه معادلة وجدول المناقشة البيانية ---
         pdf.add_page()
         pdf.set_font("Amiri", size=17)
         pdf.set_text_color(21, 101, 192)
@@ -891,8 +914,15 @@ if valid_input:
         
         pdf.set_font("Amiri", size=17)
         pdf.set_text_color(194, 24, 91)
-        pdf.cell(0, 9, fix_arabic_pdf("5. جدول نتائج المناقشة البيانية:"), ln=True, align='R')
-        pdf.ln(2)
+        pdf.cell(0, 9, fix_arabic_pdf("5. جدول نتائج المناقشة البيانية لحلول المعادلة:"), ln=True, align='R')
+        pdf.ln(1)
+        
+        # إدراج معادلة المناقشة البيانية بصيغة رياضية أنيقة فوق الجدول
+        eq_image_path = generate_eq_image()
+        if eq_image_path:
+            pdf.image(eq_image_path, x=60, w=90)
+            pdf.ln(2)
+
         disc_table_img = generate_pdf_discussion_table()
         if disc_table_img:
             pdf.image(disc_table_img, x=15, w=180)
@@ -906,7 +936,6 @@ if valid_input:
     with col1:
         if st.button("تشغيل المناقشة آلياً ▶️"):
             st.session_state.auto_play = True
-            # يبدأ دائماً من أدنى قيمة سالبة صعوداً للأعلى
             st.session_state.m_anim = m_min_val
             st.rerun()
     with col2:
@@ -1037,7 +1066,6 @@ if valid_input:
             st.session_state.m_anim = next_m
         st.session_state.auto_play = False
     else:
-        # التأكد من بقاء العداد اليدوي ضمن المجال الآمن
         if 'manual_m' in st.session_state:
             if st.session_state.manual_m < m_min_val or st.session_state.manual_m > m_max_val:
                 st.session_state.manual_m = m_min_val
