@@ -108,8 +108,8 @@ def get_sol_color_html(sol_text):
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
-if 'f_val' not in st.session_state: st.session_state.f_val = "x+sqrt(x^2-2x+5)-1"
-if 'g_val' not in st.session_state: st.session_state.g_val = "m"
+if 'f_val' not in st.session_state: st.session_state.f_val = "(x-1)*e^(1-x)"
+if 'g_val' not in st.session_state: st.session_state.g_val = "m*x+1"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
@@ -145,8 +145,6 @@ col_text, col_img = st.columns(2)
 
 with col_img:
     img_file = st.file_uploader("🖼️ ارفع صورة الدالة لاستخراجها آلياً:", type=['png', 'jpg', 'jpeg'])
-    
-    # الرسالة التوجيهية للتلاميذ
     st.markdown("<p style='font-size:14px; color:#94A3B8; text-align:right; direction:rtl; margin-top:-10px;'>💡 <b>ملاحظة:</b> في حال وجود ضغط على خادم الذكاء الاصطناعي وفشل قراءة الصورة، يرجى كتابة الدالة يدوياً في الخانة المجاورة.</p>", unsafe_allow_html=True)
     
     if img_file:
@@ -213,9 +211,6 @@ if valid_input:
     y_vals_plot = process_y_vals(x_vals_plot)
     y_vals_roots = process_y_vals(x_vals_roots)
 
-    sym_m_critical = []
-    unique_asymptotes = []
-    
     candidate_v_asymptotes = []
     try:
         n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
@@ -230,6 +225,7 @@ if valid_input:
     except: pass
     candidate_v_asymptotes = list(set(candidate_v_asymptotes))
     
+    unique_asymptotes = []
     for r in candidate_v_asymptotes:
         unique_asymptotes.append({'type': 'v', 'val': float(sp.N(r)), 'label': f"x={sanitize_latex(r)}"})
 
@@ -245,16 +241,13 @@ if valid_input:
         for r in sp.solve(df_expr, x_sym):
             if r.is_real is not False and sp.im(sp.N(r)) == 0:
                 sym_extrema.append(r)
-                sym_m_critical.append(sp.simplify(f_expr.subs(x_sym, r)))
     except: pass
     sym_extrema = list(set(sym_extrema))
 
     pts_var_exact = []
     pts_var_exact.append({'val': -np.inf, 'sym': -sp.oo, 'latex_x': r"-\infty", 'type': 'inf'})
-    
     for r in candidate_v_asymptotes:
         pts_var_exact.append({'val': float(sp.N(r)), 'sym': r, 'latex_x': sanitize_latex(r), 'type': 'v_asym'})
-        
     for r in sym_extrema:
         val = float(sp.N(r))
         if not any(abs(p['val'] - val) < 1e-4 for p in pts_var_exact):
@@ -284,7 +277,6 @@ if valid_input:
                 y_val = sp.simplify(f_expr.subs(x_sym, sym_nx))
                 if y_val.is_real:
                     pts_var_exact.append({'val': float(sp.N(sym_nx)), 'sym': sym_nx, 'latex_x': sanitize_latex(sym_nx), 'type': 'extrema'})
-                    sym_m_critical.append(y_val)
             except: pass
             
     pts_var_exact.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
@@ -326,34 +318,287 @@ if valid_input:
             domain_intervals_str.append(fr"]{l_b}; {r_b}[")
         i += 1
             
-    domain_latex_mpl = r"D_f =" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
     domain_latex_st = r"D_f = \color{#FFD700}{" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset") + r"}"
+    domain_latex_mpl = r"D_f =" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
 
+    # ---------------------------------------------------------
+    # النواة الرياضية الشاملة الجديدة (للمناقشة الأفقية، المائلة، الدورانية)
+    # ---------------------------------------------------------
+    sym_m_critical = []
     try:
-        val_0 = sp.simplify(f_expr.subs(x_sym, 0))
-        if val_0.is_real:
-            sym_m_critical.append(val_0)
+        m_expr_list = sp.solve(f_expr - g_expr, m_sym)
+        m_expr = m_expr_list[0] if m_expr_list else f_expr
     except:
-        pass
+        m_expr = f_expr
 
     try:
         for direction in [sp.oo, -sp.oo]:
-            lim = sp.limit(f_expr, x_sym, direction)
+            lim = sp.limit(m_expr, x_sym, direction)
             if lim.is_real: sym_m_critical.append(lim)
     except: pass
-    for i, p in enumerate(pts_var_exact):
-        if p['type'] == 'v_asym':
-            if i > 0 and valid_intervals[i-1]:
-                try: 
-                    lim = sp.limit(f_expr, x_sym, p['sym'], dir='-')
-                    if lim.is_real: sym_m_critical.append(lim)
-                except: pass
-            if i < len(valid_intervals) and valid_intervals[i]:
-                try: 
-                    lim = sp.limit(f_expr, x_sym, p['sym'], dir='+')
-                    if lim.is_real: sym_m_critical.append(lim)
-                except: pass
-    sym_m_critical = list(set(sym_m_critical))
+
+    try:
+        val_0 = sp.simplify(m_expr.subs(x_sym, 0))
+        if val_0.is_real: sym_m_critical.append(val_0)
+        else:
+            lim_0 = sp.limit(m_expr, x_sym, 0)
+            if lim_0.is_real: sym_m_critical.append(lim_0)
+    except: pass
+    
+    try:
+        for r in sym_extrema:
+            sym_m_val = sp.simplify(m_expr.subs(x_sym, r))
+            if sym_m_val.is_real: sym_m_critical.append(sym_m_val)
+    except: pass
+
+    try:
+        dm_expr = sp.diff(m_expr, x_sym)
+        for r in sp.solve(dm_expr, x_sym):
+            if r.is_real is not False and sp.im(sp.N(r)) == 0:
+                sym_m_val = sp.simplify(m_expr.subs(x_sym, r))
+                if sym_m_val.is_real: sym_m_critical.append(sym_m_val)
+    except: pass
+
+    m_critical_num = []
+    for sm in sym_m_critical:
+        fl_m = float(sp.N(sm))
+        if np.isfinite(fl_m) and abs(fl_m) < 100: m_critical_num.append(round(fl_m, 2))
+
+    try:
+        m_func_eval = sp.lambdify(x_sym, m_expr, 'numpy')
+        x_test_m = np.linspace(-25, 25, 100001)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            y_test_m = m_func_eval(x_test_m)
+            if np.iscomplexobj(y_test_m): y_test_m = np.where(np.isreal(y_test_m), y_test_m.real, np.nan)
+            
+        is_val_m = ~np.isnan(y_test_m)
+        edges_m = np.diff(is_val_m.astype(int))
+        starts_m = np.where(edges_m == 1)[0] + 1
+        if is_val_m[0]: starts_m = np.insert(starts_m, 0, 0)
+        ends_m = np.where(edges_m == -1)[0]
+        if is_val_m[-1]: ends_m = np.append(ends_m, len(y_test_m) - 1)
+
+        for s, e in zip(starts_m, ends_m):
+            segment = y_test_m[s:e+1]
+            if len(segment) > 0:
+                if s > 0 and np.isfinite(y_test_m[s]): m_critical_num.append(round(float(y_test_m[s]), 2))
+                if e < len(x_test_m) - 1 and np.isfinite(y_test_m[e]): m_critical_num.append(round(float(y_test_m[e]), 2))
+                
+                if len(segment) > 10:
+                    peaks, _ = find_peaks(segment, prominence=0.05)
+                    valleys, _ = find_peaks(-segment, prominence=0.05)
+                    for p in peaks: m_critical_num.append(round(float(segment[p]), 2))
+                    for v in valleys: m_critical_num.append(round(float(segment[v]), 2))
+    except: pass
+    
+    m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 100])))
+
+    def get_exact_m(val_float):
+        for sm in sym_m_critical:
+            if abs(float(sp.N(sm)) - val_float) < 1e-2:
+                return sanitize_latex(sm)
+        return fmt(val_float)
+
+    def get_roots_text(m_test):
+        is_critical = any(abs(m_test - mc) < 1e-2 for mc in m_critical_num)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            y_g = g_func(x_vals_roots, m_test)
+            if np.isscalar(y_g): y_g = np.full_like(x_vals_roots, y_g, dtype=float)
+            diff = y_vals_roots - y_g
+        crossings = []
+        for i in range(len(diff)-1):
+            if np.isfinite(diff[i]) and np.isfinite(diff[i+1]):
+                if diff[i] * diff[i+1] < 0:
+                    denom = diff[i+1] - diff[i]
+                    x_c = x_vals_roots[i] - diff[i] * (x_vals_roots[i+1] - x_vals_roots[i]) / denom
+                    crossings.append(float(x_c))
+                elif diff[i] == 0:
+                    crossings.append(float(x_vals_roots[i]))
+        if len(diff) > 0 and diff[-1] == 0:
+            crossings.append(float(x_vals_roots[-1]))
+            
+        tangents = []
+        cleaned_crossings = []
+        if is_critical:
+            skip = False
+            for i in range(len(crossings)):
+                if skip: skip = False; continue
+                if i < len(crossings)-1 and abs(crossings[i+1] - crossings[i]) < 0.5:
+                    tangents.append((crossings[i] + crossings[i+1])/2.0); skip = True
+                else: cleaned_crossings.append(crossings[i])
+            abs_diff = np.abs(diff)
+            for i in range(1, len(abs_diff)-1):
+                if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
+                    if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1] and abs_diff[i] < 0.1:
+                        if not any(abs(x_vals_roots[i] - c) < 0.6 for c in cleaned_crossings) and not any(abs(x_vals_roots[i] - t) < 0.6 for t in tangents):
+                            tangents.append(x_vals_roots[i])
+        else: cleaned_crossings = crossings
+            
+        all_roots = [(c, "single") for c in cleaned_crossings] + [(t, "double") for t in tangents]
+        final_roots = []
+        for r, t in all_roots:
+            if not any(abs(r - fr[0]) < 0.1 for fr in final_roots): final_roots.append((r, t))
+        
+        count = len(final_roots)
+        if count == 0: return "لا توجد حلول"
+        desc = []
+        pos_s = sum(1 for r, t in final_roots if r > 0.01 and t == "single")
+        neg_s = sum(1 for r, t in final_roots if r < -0.01 and t == "single")
+        zero_s = sum(1 for r, t in final_roots if abs(r) <= 0.01 and t == "single")
+        pos_d = sum(1 for r, t in final_roots if r > 0.01 and t == "double")
+        neg_d = sum(1 for r, t in final_roots if r < -0.01 and t == "double")
+        zero_d = sum(1 for r, t in final_roots if abs(r) <= 0.01 and t == "double")
+
+        if pos_d == 1: desc.append("حل مضاعف موجب")
+        elif pos_d > 1: desc.append(f"{pos_d} حلول مضاعفة موجبة")
+        if neg_d == 1: desc.append("حل مضاعف سالب")
+        elif neg_d > 1: desc.append(f"{neg_d} حلول مضاعفة سالبة")
+        if zero_d == 1: desc.append("حل مضاعف معدوم")
+        if pos_s == 1: desc.append("حل وحيد موجب")
+        elif pos_s == 2: desc.append("حلان موجبان")
+        elif pos_s > 2: desc.append(f"{pos_s} حلول موجبة")
+        if neg_s == 1: desc.append("حل وحيد سالب")
+        elif neg_s == 2: desc.append("حلان سالبان")
+        elif neg_s > 2: desc.append(f"{neg_s} حلول سالبة")
+        if zero_s == 1: desc.append("حل معدوم")
+
+        if pos_s == 1 and neg_s == 1 and len(desc) == 2: return "حلان مختلفان في الإشارة"
+        if pos_s == 2 and neg_s == 1 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل سالب وحلان موجبان"
+        if pos_s == 1 and neg_s == 2 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل موجب وحلان سالبان"
+        if pos_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل موجب"
+        if neg_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل سالب"
+
+        if len(desc) == 0: return f"{count} حلول"
+        return " و ".join(desc)
+
+    raw_intervals = []
+    if len(m_critical_num) > 0:
+        raw_intervals.append((float('-inf'), m_critical_num[0], get_roots_text(m_critical_num[0] - 0.5)))
+        for i in range(len(m_critical_num)):
+            raw_intervals.append((m_critical_num[i], m_critical_num[i], get_roots_text(m_critical_num[i])))
+            if i < len(m_critical_num) - 1:
+                raw_intervals.append((m_critical_num[i], m_critical_num[i+1], get_roots_text((m_critical_num[i] + m_critical_num[i+1]) / 2.0)))
+        raw_intervals.append((m_critical_num[-1], float('inf'), get_roots_text(m_critical_num[-1] + 0.5)))
+    else: raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0.0)))
+
+    merged_intervals = []
+    if raw_intervals:
+        cur_L, cur_H, cur_text = raw_intervals[0][0], raw_intervals[0][1], raw_intervals[0][2]
+        for item in raw_intervals[1:]:
+            if item[2] == cur_text: cur_H = item[1]
+            else:
+                merged_intervals.append((cur_L, cur_H, cur_text))
+                cur_L, cur_H, cur_text = item[0], item[1], item[2]
+        merged_intervals.append((cur_L, cur_H, cur_text))
+
+    final_table = [] 
+    for L, H, sol_text in merged_intervals:
+        L_inc = any(r[0] == L and r[1] == L and r[2] == sol_text for r in raw_intervals)
+        H_inc = any(r[0] == H and r[1] == H and r[2] == sol_text for r in raw_intervals)
+        
+        L_latex = r"-\infty" if L == float('-inf') else get_exact_m(L)
+        H_latex = r"+\infty" if H == float('inf') else get_exact_m(H)
+        
+        if L == float('-inf') and H == float('inf'):
+            m_latex = r"m \in \mathbb{R}"
+        elif L == float('-inf'):
+            bracket_H = "]" if H_inc else "["
+            m_latex = fr"m \in ]-\infty ; {H_latex}{bracket_H}"
+        elif H == float('inf'):
+            bracket_L = "[" if L_inc else "]"
+            m_latex = fr"m \in {bracket_L}{L_latex} ; +\infty["
+        elif L == H:
+            m_latex = fr"m = {L_latex}"
+        else:
+            bracket_L = "[" if L_inc else "]"
+            bracket_H = "]" if H_inc else "["
+            m_latex = fr"m \in {bracket_L}{L_latex} ; {H_latex}{bracket_H}"
+            
+        final_table.append((m_latex, sol_text, L, H))
+
+    def generate_st_markdown_table(current_m):
+        md = "| عدد وطبيعة الحلول | المجال / القيمة المضبوطة |\n"
+        md += "| :---: | :---: |\n"
+        
+        active_idx = 0
+        for idx, (m_latex, sol_text, L, H) in enumerate(final_table):
+            is_active = False
+            if L == H and abs(current_m - L) <= 0.03: is_active = True
+            elif L == float('-inf') and current_m <= H - 0.03: is_active = True
+            elif H == float('inf') and current_m >= L + 0.03: is_active = True
+            elif L + 0.03 <= current_m <= H - 0.03: is_active = True
+            if is_active: active_idx = idx
+
+        for idx, (m_latex, sol_text, L, H) in enumerate(final_table):
+            is_active = (idx == active_idx)
+            c_text = get_sol_color_html(sol_text)
+            
+            if is_active:
+                text_cell = f"<span style='color:{c_text}; font-weight:bold; font-size:20px; text-shadow: 0 0 10px {c_text}90;'>{sol_text}</span>"
+                math_cell = f"**${m_latex}$**"
+            else:
+                text_cell = f"<span style='color:{c_text}; font-weight:bold; font-size:18px;'>{sol_text}</span>"
+                math_cell = f"${m_latex}$"
+                
+            md += f"| {text_cell} | {math_cell} |\n"
+            
+        return md
+
+    def generate_pdf_discussion_table():
+        nrows = len(final_table)
+        fig_dt, ax_dt = plt.subplots(figsize=(10, nrows * 0.7 + 0.8))
+        
+        def draw_table(use_math=True):
+            ax_dt.clear()
+            ax_dt.axis('off')
+            ax_dt.set_xlim(-0.05, 10.05)
+            ax_dt.set_ylim(-0.05, nrows * 0.7 + 0.75)
+            
+            for i in range(nrows + 1):
+                y = i * 0.7
+                ax_dt.plot([0, 10], [y, y], 'k-', lw=1 if 0 < i < nrows else 2)
+            ax_dt.plot([0, 0], [0, nrows * 0.7], 'k-', lw=2)
+            ax_dt.plot([6, 6], [0, nrows * 0.7], 'k-', lw=1) 
+            ax_dt.plot([10, 10], [0, nrows * 0.7], 'k-', lw=2)
+            
+            ax_dt.plot([0, 10], [nrows * 0.7, nrows * 0.7], 'k-', lw=2)
+            ax_dt.plot([0, 10], [nrows * 0.7 + 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
+            ax_dt.plot([0, 0], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
+            ax_dt.plot([6, 6], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
+            ax_dt.plot([10, 10], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
+            
+            rect1 = plt.Rectangle((0, nrows * 0.7), 6, 0.7, facecolor='#1E3A8A')
+            rect2 = plt.Rectangle((6, nrows * 0.7), 4, 0.7, facecolor='#1E3A8A')
+            ax_dt.add_patch(rect1)
+            ax_dt.add_patch(rect2)
+            
+            ax_dt.text(3, nrows * 0.7 + 0.35, fix_arabic_mpl("عدد وطبيعة الحلول"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
+            ax_dt.text(8, nrows * 0.7 + 0.35, fix_arabic_mpl("المجال / القيمة المضبوطة"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
+            
+            for i, (m_latex, sol_text, L, H) in enumerate(final_table):
+                y_center = (nrows - i - 1) * 0.7 + 0.35
+                c_pdf = get_sol_color_pdf(sol_text)
+                f_size = 14 if len(sol_text) > 35 else 16 
+                ax_dt.text(3, y_center, fix_arabic_mpl(sol_text), fontsize=f_size, ha='center', va='center', color=c_pdf, fontweight='bold')
+                
+                if use_math:
+                    ax_dt.text(8, y_center, f"${m_latex}$", fontsize=16, ha='center', va='center', color='#1E3A8A')
+                else:
+                    plain_text = m_latex.replace(r'\infty', 'oo').replace(r'\in', ' in ').replace(r'\\', '')
+                    plain_text = plain_text.replace('{', '').replace('}', '')
+                    ax_dt.text(8, y_center, plain_text, fontsize=14, ha='center', va='center', color='#1E3A8A', family='serif')
+
+        try:
+            draw_table(use_math=True)
+            fig_dt.canvas.draw()
+            fig_dt.tight_layout(pad=0)
+        except:
+            draw_table(use_math=False)
+            
+        tmp_dt = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+        fig_dt.savefig(tmp_dt.name, bbox_inches='tight', dpi=300)
+        plt.close(fig_dt)
+        return tmp_dt.name
 
     limits_data_detailed = []
     limits_mpl_list = []
@@ -542,227 +787,6 @@ if valid_input:
 
     var_table_image_path = generate_variation_table_image()
 
-    m_critical_num = []
-    for sm in sym_m_critical:
-        fl_m = float(sp.N(sm))
-        if np.isfinite(fl_m) and abs(fl_m) < 50: m_critical_num.append(round(fl_m, 2))
-
-    for s, e in zip(starts, ends):
-        segment = y_vals_plot[s:e+1]
-        if len(segment) > 0:
-            if s > 0 and np.isfinite(y_vals_plot[s]): m_critical_num.append(round(float(y_vals_plot[s]), 2))
-            if e < len(x_vals_plot) - 1 and np.isfinite(y_vals_plot[e]): m_critical_num.append(round(float(y_vals_plot[e]), 2))
-            
-            if len(segment) > 10:
-                peaks, _ = find_peaks(segment, prominence=0.05)
-                valleys, _ = find_peaks(-segment, prominence=0.05)
-                for p in peaks: m_critical_num.append(round(float(segment[p]), 2))
-                for v in valleys: m_critical_num.append(round(float(segment[v]), 2))
-            
-    m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 50])))
-
-    def get_exact_m(val_float):
-        for sm in sym_m_critical:
-            if abs(float(sp.N(sm)) - val_float) < 1e-2:
-                return sanitize_latex(sm)
-        return fmt(val_float)
-
-    def get_roots_text(m_test):
-        is_critical = any(abs(m_test - mc) < 1e-2 for mc in m_critical_num)
-        with np.errstate(divide='ignore', invalid='ignore'):
-            y_g = g_func(x_vals_roots, m_test)
-            if np.isscalar(y_g): y_g = np.full_like(x_vals_roots, y_g, dtype=float)
-            diff = y_vals_roots - y_g
-        crossings = []
-        for i in range(len(diff)-1):
-            if np.isfinite(diff[i]) and np.isfinite(diff[i+1]):
-                if diff[i] * diff[i+1] < 0: crossings.append(x_vals_roots[i])
-                elif diff[i] == 0: crossings.append(x_vals_roots[i])
-        tangents = []
-        cleaned_crossings = []
-        if is_critical:
-            skip = False
-            for i in range(len(crossings)):
-                if skip: skip = False; continue
-                if i < len(crossings)-1 and abs(crossings[i+1] - crossings[i]) < 0.5:
-                    tangents.append((crossings[i] + crossings[i+1])/2.0); skip = True
-                else: cleaned_crossings.append(crossings[i])
-            abs_diff = np.abs(diff)
-            for i in range(1, len(abs_diff)-1):
-                if np.isfinite(abs_diff[i-1]) and np.isfinite(abs_diff[i]) and np.isfinite(abs_diff[i+1]):
-                    if abs_diff[i] < abs_diff[i-1] and abs_diff[i] < abs_diff[i+1] and abs_diff[i] < 0.1:
-                        if not any(abs(x_vals_roots[i] - c) < 0.6 for c in cleaned_crossings) and not any(abs(x_vals_roots[i] - t) < 0.6 for t in tangents):
-                            tangents.append(x_vals_roots[i])
-        else: cleaned_crossings = crossings
-            
-        all_roots = [(c, "single") for c in cleaned_crossings] + [(t, "double") for t in tangents]
-        final_roots = []
-        for r, t in all_roots:
-            if not any(abs(r - fr[0]) < 0.1 for fr in final_roots): final_roots.append((r, t))
-        
-        count = len(final_roots)
-        if count == 0: return "لا توجد حلول"
-        desc = []
-        pos_s = sum(1 for r, t in final_roots if r > 0.01 and t == "single")
-        neg_s = sum(1 for r, t in final_roots if r < -0.01 and t == "single")
-        zero_s = sum(1 for r, t in final_roots if abs(r) <= 0.01 and t == "single")
-        pos_d = sum(1 for r, t in final_roots if r > 0.01 and t == "double")
-        neg_d = sum(1 for r, t in final_roots if r < -0.01 and t == "double")
-        zero_d = sum(1 for r, t in final_roots if abs(r) <= 0.01 and t == "double")
-
-        if pos_d == 1: desc.append("حل مضاعف موجب")
-        elif pos_d > 1: desc.append(f"{pos_d} حلول مضاعفة موجبة")
-        if neg_d == 1: desc.append("حل مضاعف سالب")
-        elif neg_d > 1: desc.append(f"{neg_d} حلول مضاعفة سالبة")
-        if zero_d == 1: desc.append("حل مضاعف معدوم")
-        if pos_s == 1: desc.append("حل وحيد موجب")
-        elif pos_s == 2: desc.append("حلان موجبان")
-        elif pos_s > 2: desc.append(f"{pos_s} حلول موجبة")
-        if neg_s == 1: desc.append("حل وحيد سالب")
-        elif neg_s == 2: desc.append("حلان سالبان")
-        elif neg_s > 2: desc.append(f"{neg_s} حلول سالبة")
-        if zero_s == 1: desc.append("حل معدوم")
-
-        if pos_s == 1 and neg_s == 1 and len(desc) == 2: return "حلان مختلفان في الإشارة"
-        if pos_s == 2 and neg_s == 1 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل سالب وحلان موجبان"
-        if pos_s == 1 and neg_s == 2 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل موجب وحلان سالبان"
-        if pos_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل موجب"
-        if neg_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل سالب"
-
-        if len(desc) == 0: return f"{count} حلول"
-        return " و ".join(desc)
-
-    raw_intervals = []
-    if len(m_critical_num) > 0:
-        raw_intervals.append((float('-inf'), m_critical_num[0], get_roots_text(m_critical_num[0] - 0.5)))
-        for i in range(len(m_critical_num)):
-            raw_intervals.append((m_critical_num[i], m_critical_num[i], get_roots_text(m_critical_num[i])))
-            if i < len(m_critical_num) - 1:
-                raw_intervals.append((m_critical_num[i], m_critical_num[i+1], get_roots_text((m_critical_num[i] + m_critical_num[i+1]) / 2.0)))
-        raw_intervals.append((m_critical_num[-1], float('inf'), get_roots_text(m_critical_num[-1] + 0.5)))
-    else: raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0.0)))
-
-    merged_intervals = []
-    if raw_intervals:
-        cur_L, cur_H, cur_text = raw_intervals[0][0], raw_intervals[0][1], raw_intervals[0][2]
-        for item in raw_intervals[1:]:
-            if item[2] == cur_text: cur_H = item[1]
-            else:
-                merged_intervals.append((cur_L, cur_H, cur_text))
-                cur_L, cur_H, cur_text = item[0], item[1], item[2]
-        merged_intervals.append((cur_L, cur_H, cur_text))
-
-    final_table = [] 
-    for L, H, sol_text in merged_intervals:
-        L_inc = any(r[0] == L and r[1] == L and r[2] == sol_text for r in raw_intervals)
-        H_inc = any(r[0] == H and r[1] == H and r[2] == sol_text for r in raw_intervals)
-        
-        L_latex = r"-\infty" if L == float('-inf') else get_exact_m(L)
-        H_latex = r"+\infty" if H == float('inf') else get_exact_m(H)
-        
-        if L == float('-inf') and H == float('inf'):
-            m_latex = r"m \in \mathbb{R}"
-        elif L == float('-inf'):
-            bracket_H = "]" if H_inc else "["
-            m_latex = fr"m \in ]-\infty ; {H_latex}{bracket_H}"
-        elif H == float('inf'):
-            bracket_L = "[" if L_inc else "]"
-            m_latex = fr"m \in {bracket_L}{L_latex} ; +\infty["
-        elif L == H:
-            m_latex = fr"m = {L_latex}"
-        else:
-            bracket_L = "[" if L_inc else "]"
-            bracket_H = "]" if H_inc else "["
-            m_latex = fr"m \in {bracket_L}{L_latex} ; {H_latex}{bracket_H}"
-            
-        final_table.append((m_latex, sol_text, L, H))
-
-    def generate_st_markdown_table(current_m):
-        md = "| عدد وطبيعة الحلول | المجال / القيمة المضبوطة |\n"
-        md += "| :---: | :---: |\n"
-        
-        active_idx = 0
-        for idx, (m_latex, sol_text, L, H) in enumerate(final_table):
-            is_active = False
-            if L == H and abs(current_m - L) <= 0.03: is_active = True
-            elif L == float('-inf') and current_m <= H - 0.03: is_active = True
-            elif H == float('inf') and current_m >= L + 0.03: is_active = True
-            elif L + 0.03 <= current_m <= H - 0.03: is_active = True
-            if is_active: active_idx = idx
-
-        for idx, (m_latex, sol_text, L, H) in enumerate(final_table):
-            is_active = (idx == active_idx)
-            c_text = get_sol_color_html(sol_text)
-            
-            if is_active:
-                text_cell = f"<span style='color:{c_text}; font-weight:bold; font-size:20px; text-shadow: 0 0 10px {c_text}90;'>{sol_text}</span>"
-                math_cell = f"**${m_latex}$**"
-            else:
-                text_cell = f"<span style='color:{c_text}; font-weight:bold; font-size:18px;'>{sol_text}</span>"
-                math_cell = f"${m_latex}$"
-                
-            md += f"| {text_cell} | {math_cell} |\n"
-            
-        return md
-
-    # نظام حماية محكم لرسم جدول الـ PDF (يمنع انهيار Matplotlib تماماً)
-    def generate_pdf_discussion_table():
-        nrows = len(final_table)
-        fig_dt, ax_dt = plt.subplots(figsize=(10, nrows * 0.7 + 0.8))
-        
-        def draw_table(use_math=True):
-            ax_dt.clear()
-            ax_dt.axis('off')
-            ax_dt.set_xlim(-0.05, 10.05)
-            ax_dt.set_ylim(-0.05, nrows * 0.7 + 0.75)
-            
-            for i in range(nrows + 1):
-                y = i * 0.7
-                ax_dt.plot([0, 10], [y, y], 'k-', lw=1 if 0 < i < nrows else 2)
-            ax_dt.plot([0, 0], [0, nrows * 0.7], 'k-', lw=2)
-            ax_dt.plot([6, 6], [0, nrows * 0.7], 'k-', lw=1) 
-            ax_dt.plot([10, 10], [0, nrows * 0.7], 'k-', lw=2)
-            
-            ax_dt.plot([0, 10], [nrows * 0.7, nrows * 0.7], 'k-', lw=2)
-            ax_dt.plot([0, 10], [nrows * 0.7 + 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
-            ax_dt.plot([0, 0], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
-            ax_dt.plot([6, 6], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
-            ax_dt.plot([10, 10], [nrows * 0.7, nrows * 0.7 + 0.7], 'k-', lw=2)
-            
-            rect1 = plt.Rectangle((0, nrows * 0.7), 6, 0.7, facecolor='#1E3A8A')
-            rect2 = plt.Rectangle((6, nrows * 0.7), 4, 0.7, facecolor='#1E3A8A')
-            ax_dt.add_patch(rect1)
-            ax_dt.add_patch(rect2)
-            
-            ax_dt.text(3, nrows * 0.7 + 0.35, fix_arabic_mpl("عدد وطبيعة الحلول"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
-            ax_dt.text(8, nrows * 0.7 + 0.35, fix_arabic_mpl("المجال / القيمة المضبوطة"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
-            
-            for i, (m_latex, sol_text, L, H) in enumerate(final_table):
-                y_center = (nrows - i - 1) * 0.7 + 0.35
-                c_pdf = get_sol_color_pdf(sol_text)
-                f_size = 14 if len(sol_text) > 35 else 16 
-                ax_dt.text(3, y_center, fix_arabic_mpl(sol_text), fontsize=f_size, ha='center', va='center', color=c_pdf, fontweight='bold')
-                
-                if use_math:
-                    ax_dt.text(8, y_center, f"${m_latex}$", fontsize=16, ha='center', va='center', color='#1E3A8A')
-                else:
-                    # تحويل النص الرياضي المعقد إلى نص عادي لتفادي أخطاء محرك الرسم
-                    plain_text = m_latex.replace(r'\infty', 'oo').replace(r'\in', ' in ').replace(r'\\', '')
-                    plain_text = plain_text.replace('{', '').replace('}', '')
-                    ax_dt.text(8, y_center, plain_text, fontsize=14, ha='center', va='center', color='#1E3A8A', family='serif')
-
-        try:
-            draw_table(use_math=True)
-            fig_dt.canvas.draw()
-            fig_dt.tight_layout(pad=0)
-        except:
-            draw_table(use_math=False)
-            
-        tmp_dt = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-        fig_dt.savefig(tmp_dt.name, bbox_inches='tight', dpi=300)
-        plt.close(fig_dt)
-        return tmp_dt.name
-
     def generate_pdf(fig_path):
         if not PDF_ENABLED: return None
         pdf = FPDF(orientation='P', unit='mm', format='A4')
@@ -879,8 +903,12 @@ if valid_input:
             if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
                 if diff_plot[i] * diff_plot[i+1] < 0:
                     denom = diff_plot[i+1] - diff_plot[i]
-                    intersect_x.append(float(x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom if denom != 0 else x_vals_plot[i]))
-                elif diff_plot[i] == 0: intersect_x.append(float(x_vals_plot[i]))
+                    x_c = x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom
+                    intersect_x.append(float(x_c))
+                elif diff_plot[i] == 0:
+                    intersect_x.append(float(x_vals_plot[i]))
+        if len(diff_plot) > 0 and diff_plot[-1] == 0:
+            intersect_x.append(float(x_vals_plot[-1]))
 
         unique_intersect_x = []
         for ix in intersect_x:
