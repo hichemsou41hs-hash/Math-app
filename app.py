@@ -390,7 +390,6 @@ if valid_input:
     
     m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 100])))
 
-    # الفلتر الذكي للعبارات المعقدة (يمنع ظهور الدوال الجامعية في الجدول)
     def get_exact_m(val_float):
         for sm in sym_m_critical:
             if abs(float(sp.N(sm)) - val_float) < 1e-2:
@@ -538,8 +537,8 @@ if valid_input:
             c_text = get_sol_color_html(sol_text)
             
             if is_active:
-                text_cell = f"<span style='color:{c_text}; font-weight:bold; font-size:20px; text-shadow: 0 0 10px {c_text}90;'>{sol_text}</span>"
-                math_cell = f"**${m_latex}$**"
+                text_cell = f"<span style='display:inline-block; width:95%; background-color:#334155; border:3px solid #FFD700; padding:6px; border-radius:6px; color:{c_text}; font-weight:bold; font-size:20px;'>{sol_text}</span>"
+                math_cell = f"<span style='display:inline-block; width:95%; background-color:#334155; border:3px solid #FFD700; padding:6px; border-radius:6px;'>**${m_latex}$**</span>"
             else:
                 text_cell = f"<span style='color:{c_text}; font-weight:bold; font-size:18px;'>{sol_text}</span>"
                 math_cell = f"${m_latex}$"
@@ -919,12 +918,8 @@ if valid_input:
             if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
                 if diff_plot[i] * diff_plot[i+1] < 0:
                     denom = diff_plot[i+1] - diff_plot[i]
-                    x_c = x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom
-                    intersect_x.append(float(x_c))
-                elif diff_plot[i] == 0:
-                    intersect_x.append(float(x_vals_plot[i]))
-        if len(diff_plot) > 0 and diff_plot[-1] == 0:
-            intersect_x.append(float(x_vals_plot[-1]))
+                    intersect_x.append(float(x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom if denom != 0 else x_vals_plot[i]))
+                elif diff_plot[i] == 0: intersect_x.append(float(x_vals_plot[i]))
 
         unique_intersect_x = []
         for ix in intersect_x:
