@@ -120,7 +120,7 @@ def get_sol_color_html(sol_text):
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
-if 'f_val' not in st.session_state: st.session_state.f_val = "x+sqrt(x^2+2x)"
+if 'f_val' not in st.session_state: st.session_state.f_val = "x+sqrt(x^2-2x+5)-1"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -155,9 +155,7 @@ except:
 
 col_text, col_img = st.columns(2)
 
-# معالجة الذكاء الاصطناعي أولاً قبل رسم خانات الإدخال لمنع تعارض Streamlit
 with col_img:
-    # تم إزالة الكاميرا والاكتفاء برفع الصور
     img_file = st.file_uploader("🖼️ ارفع صورة الدالة لاستخراجها آلياً:", type=['png', 'jpg', 'jpeg'])
     
     if img_file:
@@ -210,8 +208,8 @@ if valid_input:
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
-    x_vals_plot = np.linspace(-8, 8, 40001)
-    x_vals_roots = np.concatenate([np.linspace(-500, -8, 5000, endpoint=False), np.linspace(-8, 8, 40001), np.linspace(8, 500, 5000)])
+    x_vals_plot = np.linspace(-15, 15, 60001)
+    x_vals_roots = np.concatenate([np.linspace(-500, -15, 5000, endpoint=False), np.linspace(-15, 15, 60001), np.linspace(15, 500, 5000)])
     
     def process_y_vals(x_arr):
         with np.errstate(divide='ignore', invalid='ignore'): y_arr = f_func(x_arr)
@@ -340,6 +338,14 @@ if valid_input:
     domain_latex_mpl = r"D_f =" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
     domain_latex_st = r"D_f = \color{#FFD700}{" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset") + r"}"
 
+    # إضافة التقاطع مع محور التراتيب (f(0)) رياضياً كقيمة حرجة لضمان المناقشة الدقيقة لإشارة الحلول
+    try:
+        val_0 = sp.simplify(f_expr.subs(x_sym, 0))
+        if val_0.is_real:
+            sym_m_critical.append(val_0)
+    except:
+        pass
+
     try:
         for direction in [sp.oo, -sp.oo]:
             lim = sp.limit(f_expr, x_sym, direction)
@@ -359,9 +365,6 @@ if valid_input:
                 except: pass
     sym_m_critical = list(set(sym_m_critical))
 
-    # ---------------------------------------------------------
-    # النهايات الرياضية
-    # ---------------------------------------------------------
     limits_data_detailed = []
     limits_mpl_list = []
     
@@ -441,9 +444,6 @@ if valid_input:
         
     deriv_image_path = generate_deriv_image()
 
-    # ---------------------------------------------------------
-    # بناء جدول التغيرات الاحترافي
-    # ---------------------------------------------------------
     N = len(pts_var_exact)
     def generate_variation_table_image():
         if N < 2: return None
@@ -552,9 +552,6 @@ if valid_input:
 
     var_table_image_path = generate_variation_table_image()
 
-    # ---------------------------------------------------------
-    # المناقشة البيانية (مع التصحيح الرياضي الخارق للمجالات)
-    # ---------------------------------------------------------
     m_critical_num = []
     for sm in sym_m_critical:
         fl_m = float(sp.N(sm))
@@ -563,7 +560,6 @@ if valid_input:
     for s, e in zip(starts, ends):
         segment = y_vals_plot[s:e+1]
         if len(segment) > 0:
-            # إضافة حواف مجالات التعريف كنقاط حرجة إلزامية!
             if s > 0 and np.isfinite(y_vals_plot[s]): m_critical_num.append(round(float(y_vals_plot[s]), 2))
             if e < len(x_vals_plot) - 1 and np.isfinite(y_vals_plot[e]): m_critical_num.append(round(float(y_vals_plot[e]), 2))
             
@@ -702,9 +698,6 @@ if valid_input:
         final_table_data.append((math_html, sol_text, L, H))
         final_table_latex.append((pdf_latex, sol_text))
 
-    # ---------------------------------------------------------
-    # دوال واجهة الويب وملف الـ PDF النهائي
-    # ---------------------------------------------------------
     def generate_html_table(current_m):
         html = "<table style='width:100%; border-collapse: collapse; text-align:center; font-size:18px; background-color:#1E293B;'>"
         html += "<tr style='border-bottom:2px solid #444;'> <th style='color:white; padding:10px;'>عدد وطبيعة الحلول</th> <th dir='ltr' style='color:white; padding:10px;'>المجال / القيمة</th> </tr>"
@@ -851,14 +844,20 @@ if valid_input:
         ax.grid(True, which='minor', color='#EBEBEB', linestyle='-', linewidth=0.6, zorder=1)
         
         for asym in unique_asymptotes:
-            if asym['type'] == 'h':
-                ax.axhline(asym['val'], color='#D32F2F', linestyle='--', linewidth=2.2, zorder=4)
-                ax.text(7.5, asym['val'] + 0.25, f"${asym['label']}$", color='#D32F2F', fontsize=14, fontweight='bold', ha='right')
-            elif asym['type'] == 'v':
-                ax.axvline(asym['val'], color='#D32F2F', linestyle='--', linewidth=2.2, zorder=4)
-                ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color='#D32F2F', fontsize=14, fontweight='bold', va='top')
+            try:
+                if asym['type'] == 'h':
+                    ax.axhline(asym['val'], color='#D32F2F', linestyle='--', linewidth=2.2, zorder=4)
+                    ax.text(7.5, asym['val'] + 0.25, f"${asym['label']}$", color='#D32F2F', fontsize=14, fontweight='bold', ha='right')
+                elif asym['type'] == 'v':
+                    ax.axvline(asym['val'], color='#D32F2F', linestyle='--', linewidth=2.2, zorder=4)
+                    ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color='#D32F2F', fontsize=14, fontweight='bold', va='top')
+            except:
+                pass
         
-        ax.plot(x_vals_plot, y_vals_plot, color='#2E7D32', linewidth=3.5, label='C_f', zorder=5)
+        try:
+            ax.plot(x_vals_plot, y_vals_plot, color='#2E7D32', linewidth=3.5, label=r'$C_f$', zorder=5)
+        except:
+            ax.plot(x_vals_plot, y_vals_plot, color='#2E7D32', linewidth=3.5, label='C_f', zorder=5)
         
         with np.errstate(divide='ignore', invalid='ignore'): y_g_plot = g_func(x_vals_plot, m_val)
         if np.isscalar(y_g_plot): y_g_plot = np.full_like(x_vals_plot, y_g_plot, dtype=float)
@@ -866,8 +865,11 @@ if valid_input:
         m_val_str = str(int(m_val)) if int(m_val)==m_val else str(round(m_val, 2))
         m_eq_label = f"y = {m_val_str}" if st.session_state.g_val.strip() == 'm' else "y = " + st.session_state.g_val.replace('m', f"({m_val_str})" if m_val < 0 else m_val_str).replace('*', '')
             
-        ax.plot(x_vals_plot, y_g_plot, color='#1565C0', linestyle='--', linewidth=3, label=f"${m_eq_label}$", zorder=5)
-        
+        try:
+            ax.plot(x_vals_plot, y_g_plot, color='#1565C0', linestyle='--', linewidth=3, label=f"${m_eq_label}$", zorder=5)
+        except:
+            ax.plot(x_vals_plot, y_g_plot, color='#1565C0', linestyle='--', linewidth=3, label=m_eq_label, zorder=5)
+            
         diff_plot = y_vals_plot - y_g_plot
         intersect_x = []
         for i in range(len(diff_plot)-1):
@@ -883,11 +885,24 @@ if valid_input:
 
         intersect_y = [m_val if st.session_state.g_val.strip() == 'm' else (float(g_func(ix, m_val)) if not np.isscalar(g_func(ix, m_val)) else g_func(ix, m_val)) for ix in unique_intersect_x]
 
-        if unique_intersect_x: ax.scatter(unique_intersect_x, intersect_y, color='#FF8C00', s=130, zorder=6, edgecolor='black', linewidth=1.5, label='نقاط التقاطع')
-        ax.text(4, m_val + 0.35, f"${m_eq_label}$", color='#1565C0', fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
+        if unique_intersect_x:
+            try:
+                ax.scatter(unique_intersect_x, intersect_y, color='#FF8C00', s=130, zorder=6, edgecolor='black', linewidth=1.5, label=fix_arabic_mpl('نقاط التقاطع'))
+            except:
+                pass
+                
+        try:
+            ax.text(4, m_val + 0.35, f"${m_eq_label}$", color='#1565C0', fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
+        except:
+            pass
+            
         ax.set_ylim(-6, 8)
-        legend = ax.legend(facecolor='#FFFFFF', edgecolor='#A0A0A0', loc='upper right', fontsize=12)
-        for text in legend.get_texts(): text.set_color("black")
+        try:
+            legend = ax.legend(facecolor='#FFFFFF', edgecolor='#A0A0A0', loc='upper right', fontsize=12)
+            for text in legend.get_texts(): text.set_color("black")
+        except:
+            pass
+            
         fig.tight_layout()
         
         with placeholder.container():
