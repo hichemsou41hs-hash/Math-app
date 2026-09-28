@@ -45,6 +45,11 @@ st.markdown("""
     
     button[kind="primary"] { width: 100% !important; height: 50px !important; background-color: #ef4444 !important; color: white !important; font-size: 18px !important; font-weight: bold !important; border-radius: 8px !important; box-shadow: 0 4px 0 #7f1d1d !important; border: none !important; margin-top: 5px !important; }
     button[kind="primary"]:active { transform: translateY(4px) !important; box-shadow: 0 0 0 #7f1d1d !important; background-color: #dc2626 !important; }
+    
+    /* هندسة خطوط الجدول الجديد */
+    [data-testid="stMarkdownContainer"] table { width: 100% !important; border-collapse: collapse !important; border: 2px solid #475569 !important; margin-bottom: 20px !important; }
+    [data-testid="stMarkdownContainer"] th { background-color: #1E293B !important; color: #FFFFFF !important; padding: 12px !important; font-size: 19px !important; border: 2px solid #475569 !important; text-align: center !important; }
+    [data-testid="stMarkdownContainer"] td { padding: 15px 10px !important; border: 1px solid #334155 !important; text-align: center !important; vertical-align: middle !important; font-size: 18px !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -671,7 +676,6 @@ if valid_input:
         final_table.append((m_latex, sol_text, L, H))
 
     def generate_st_markdown_table(current_m):
-        # تصحيح خطأ النزول للسطر \n لضمان ظهور الجدول في الواجهة كجدول حقيقي
         md = "| عدد وطبيعة الحلول | المجال / القيمة المضبوطة |\n"
         md += "| :---: | :---: |\n"
         
@@ -689,7 +693,7 @@ if valid_input:
             c_text = get_sol_color_html(sol_text)
             
             if is_active:
-                text_cell = f"<span style='color:{c_text}; font-weight:bold; font-size:18px; background-color:#334155; padding:2px 8px; border-radius:4px;'>{sol_text}</span>"
+                text_cell = f"<span style='color:{c_text}; font-weight:bold; font-size:20px; text-shadow: 0 0 10px {c_text}90;'>{sol_text}</span>"
                 math_cell = f"**${m_latex}$**"
             else:
                 text_cell = f"<span style='color:{c_text}; font-weight:bold; font-size:18px;'>{sol_text}</span>"
@@ -885,7 +889,6 @@ if valid_input:
         
         with placeholder.container():
             st.pyplot(fig, use_container_width=True)
-            # تم استخدام جدول الـ Markdown الحديث لدعم الـ LaTeX المباشر
             st.markdown(generate_st_markdown_table(m_val), unsafe_allow_html=True)
             
             with st.expander("📊 عرض دراسة الدالة الشاملة (مستخرجة آلياً)", expanded=False):
