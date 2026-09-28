@@ -81,7 +81,6 @@ def fix_arabic_pdf(text):
 def fix_arabic_mpl(text):
     return arabic_reshaper.reshape(text)
 
-# تنقية معادلات LaTeX واستبدال دوال لامبرت بالقيم العشرية المناسبة لطور البكالوريا
 def sanitize_latex(expr):
     if hasattr(expr, 'has'):
         if expr.has(sp.LambertW) or (hasattr(sp, 'RootOf') and expr.has(sp.RootOf)):
@@ -123,7 +122,7 @@ def get_sol_color_html(sol_text):
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
-if 'm_anim' not in st.session_state: st.session_state.m_anim = -5.0
+if 'm_anim' not in st.session_state: st.session_state.m_anim = -6.0
 if 'f_val' not in st.session_state: st.session_state.f_val = "(x+e^x+2)/(e^x+1)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m+x"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
@@ -337,6 +336,7 @@ if valid_input:
     domain_latex_st = r"D_f = \color{#FFD700}{" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset") + r"}"
     domain_latex_mpl = r"D_f =" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
 
+    # النواة الرياضية الشاملة للمناقشة البيانية (الأفقية، المائلة، الدورانية)
     sym_m_critical = []
     try:
         m_expr_list = sp.solve(f_expr - g_expr, m_sym)
@@ -405,6 +405,17 @@ if valid_input:
     except: pass
     
     m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 100])))
+
+    # حساب حدود حركة الوسيط m لينطلق دائماً من الأسفل صعوداً للأعلى
+    m_min_val = -6.0
+    m_max_val = 6.0
+    if m_critical_num:
+        if m_critical_num[0] - 1.5 < m_min_val:
+            m_min_val = float(np.floor(m_critical_num[0] - 1.5))
+        if m_critical_num[-1] + 1.5 > m_max_val:
+            m_max_val = float(np.ceil(m_critical_num[-1] + 1.5))
+    m_min_val = float(max(-25.0, m_min_val))
+    m_max_val = float(min(25.0, m_max_val))
 
     def get_exact_m(val_float):
         for sm in sym_m_critical:
@@ -824,6 +835,7 @@ if valid_input:
 
     var_table_image_path = generate_variation_table_image()
 
+    # إعادة تنظيم ملف PDF بالتسلسل البيداغوجي المطلوب (دراسة الدالة ثم المنحنى والمناقشة)
     def generate_pdf(fig_path):
         if not PDF_ENABLED: return None
         pdf = FPDF(orientation='P', unit='mm', format='A4')
@@ -836,48 +848,54 @@ if valid_input:
             except: pass
         if not os.path.exists(font_path) or os.path.getsize(font_path) < 10000: return None
             
-        pdf.add_page()
         pdf.add_font("Amiri", "", font_path, uni=True)
-        pdf.set_font("Amiri", size=24)
-        pdf.set_text_color(21, 101, 192)
-        pdf.cell(0, 10, fix_arabic_pdf("الأستاذ سوايسية هشام - المناقشة البيانية"), ln=True, align='C')
-        pdf.ln(5); pdf.image(fig_path, x=15, w=180); pdf.ln(5)
         
+        # --- الصفحة الأولى: دراسة تغيرات الدالة بالتسلسل المنطقي ---
+        pdf.add_page()
+        pdf.set_font("Amiri", size=22)
+        pdf.set_text_color(21, 101, 192)
+        pdf.cell(0, 12, fix_arabic_pdf("الأستاذ سوايسية هشام - دراسة الدالة والمناقشة البيانية"), ln=True, align='C')
+        pdf.ln(3)
+        
+        pdf.set_font("Amiri", size=15)
+        pdf.set_text_color(194, 24, 91) 
+        pdf.cell(0, 8, fix_arabic_pdf("1. استنتاج مجموعة التعريف وحساب النهايات:"), ln=True, align='R')
+        pdf.ln(1)
+        if limits_image_path:
+            pdf.image(limits_image_path, x=20, w=170)
+            pdf.ln(4)
+
+        pdf.set_font("Amiri", size=15)
+        pdf.set_text_color(194, 24, 91) 
+        pdf.cell(0, 8, fix_arabic_pdf("2. حساب الدالة المشتقة:"), ln=True, align='R')
+        pdf.ln(1)
+        if deriv_image_path:
+            pdf.image(deriv_image_path, x=45, w=120)
+            pdf.ln(4)
+
+        pdf.set_font("Amiri", size=15)
+        pdf.set_text_color(194, 24, 91) 
+        pdf.cell(0, 8, fix_arabic_pdf("3. جدول التغيرات:"), ln=True, align='R')
+        pdf.ln(3)
+        if var_table_image_path:
+            pdf.image(var_table_image_path, x=10, w=190)
+
+        # --- الصفحة الثانية: المنحنى البياني يليه جدول المناقشة البيانية ---
+        pdf.add_page()
+        pdf.set_font("Amiri", size=17)
+        pdf.set_text_color(21, 101, 192)
+        pdf.cell(0, 9, fix_arabic_pdf("4. التمثيل البياني للدالة ومستقيم المناقشة:"), ln=True, align='R')
+        pdf.ln(1)
+        pdf.image(fig_path, x=20, w=170)
+        pdf.ln(4)
+        
+        pdf.set_font("Amiri", size=17)
+        pdf.set_text_color(194, 24, 91)
+        pdf.cell(0, 9, fix_arabic_pdf("5. جدول نتائج المناقشة البيانية:"), ln=True, align='R')
+        pdf.ln(2)
         disc_table_img = generate_pdf_discussion_table()
         if disc_table_img:
             pdf.image(disc_table_img, x=15, w=180)
-
-        pdf.add_page()
-        pdf.set_font("Amiri", size=20)
-        pdf.set_text_color(21, 101, 192)
-        pdf.cell(0, 15, fix_arabic_pdf("دراسة تغيرات الدالة f"), ln=True, align='C')
-        pdf.ln(5)
-        
-        pdf.set_font("Amiri", size=16)
-        pdf.set_text_color(194, 24, 91) 
-        pdf.cell(0, 10, fix_arabic_pdf("1. استنتاج مجموعة التعريف وحساب النهايات:"), ln=True, align='R')
-        pdf.ln(2)
-        
-        if limits_image_path:
-            pdf.image(limits_image_path, x=20, w=170)
-            pdf.ln(5)
-
-        pdf.set_font("Amiri", size=16)
-        pdf.set_text_color(194, 24, 91) 
-        pdf.cell(0, 10, fix_arabic_pdf("2. حساب الدالة المشتقة:"), ln=True, align='R')
-        pdf.ln(2)
-        
-        if deriv_image_path:
-            pdf.image(deriv_image_path, x=50, w=110)
-            pdf.ln(5)
-
-        pdf.set_font("Amiri", size=16)
-        pdf.set_text_color(194, 24, 91) 
-        pdf.cell(0, 10, fix_arabic_pdf("3. جدول التغيرات:"), ln=True, align='R')
-        pdf.ln(5)
-        
-        if var_table_image_path:
-            pdf.image(var_table_image_path, x=10, w=190)
 
         pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
         pdf.output(pdf_file.name)
@@ -888,7 +906,8 @@ if valid_input:
     with col1:
         if st.button("تشغيل المناقشة آلياً ▶️"):
             st.session_state.auto_play = True
-            st.session_state.m_anim = -2.0
+            # يبدأ دائماً من أدنى قيمة سالبة صعوداً للأعلى
+            st.session_state.m_anim = m_min_val
             st.rerun()
     with col2:
         if st.button("إيقاف ⏹️"):
@@ -1004,12 +1023,12 @@ if valid_input:
         plt.close(fig)
 
     if st.session_state.auto_play:
-        while st.session_state.auto_play and st.session_state.m_anim <= 4.0:
+        while st.session_state.auto_play and st.session_state.m_anim <= m_max_val:
             m_val = round(st.session_state.m_anim, 2)
             update_view(m_val)
             is_critical_now = any(abs(st.session_state.m_anim - mc) < 0.05 for mc in m_critical_num)
-            if is_critical_now: time.sleep(2.0) 
-            else: time.sleep(0.05)
+            if is_critical_now: time.sleep(1.8) 
+            else: time.sleep(0.04)
             step = 0.1 
             next_m = st.session_state.m_anim + step
             for mc in m_critical_num:
@@ -1018,5 +1037,9 @@ if valid_input:
             st.session_state.m_anim = next_m
         st.session_state.auto_play = False
     else:
-        m_val = st.slider("تحكم يدوي:", -2.0, 3.0, 0.0, 0.05, format="%g", key="manual_m")
+        # التأكد من بقاء العداد اليدوي ضمن المجال الآمن
+        if 'manual_m' in st.session_state:
+            if st.session_state.manual_m < m_min_val or st.session_state.manual_m > m_max_val:
+                st.session_state.manual_m = m_min_val
+        m_val = st.slider("تحكم يدوي:", m_min_val, m_max_val, m_min_val, 0.05, format="%g", key="manual_m")
         update_view(m_val)
