@@ -321,7 +321,6 @@ if valid_input:
     domain_latex_st = r"D_f = \color{#FFD700}{" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset") + r"}"
     domain_latex_mpl = r"D_f =" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
 
-    # النواة الرياضية الشاملة والمحصنة للمناقشة البيانية (الأفقية، المائلة، الدورانية)
     sym_m_critical = []
     try:
         m_expr_list = sp.solve(f_expr - g_expr, m_sym)
@@ -391,10 +390,17 @@ if valid_input:
     
     m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 100])))
 
+    # الفلتر الذكي للعبارات المعقدة (يمنع ظهور الدوال الجامعية في الجدول)
     def get_exact_m(val_float):
         for sm in sym_m_critical:
             if abs(float(sp.N(sm)) - val_float) < 1e-2:
-                return sanitize_latex(sm)
+                s_str = str(sm)
+                if "LambertW" in s_str or "RootOf" in s_str or "Integral" in s_str or "zoo" in s_str:
+                    return fmt(val_float)
+                latex_str = sanitize_latex(sm)
+                if len(latex_str) > 25:
+                    return fmt(val_float)
+                return latex_str
         return fmt(val_float)
 
     def get_roots_text(m_test):
@@ -542,7 +548,6 @@ if valid_input:
             
         return md
 
-    # نظام الحماية لمنع الانهيار
     def generate_pdf_discussion_table():
         nrows = len(final_table)
         fig_dt, ax_dt = plt.subplots(figsize=(10, nrows * 0.7 + 0.8))
@@ -786,7 +791,6 @@ if valid_input:
         
         ax_v.set_xlim(0, x_max); ax_v.set_ylim(0, 6)
         
-        # حماية إضافية لجدول التغيرات
         try:
             fig_v.tight_layout(pad=0.2)
             tmp_v = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
@@ -915,8 +919,12 @@ if valid_input:
             if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
                 if diff_plot[i] * diff_plot[i+1] < 0:
                     denom = diff_plot[i+1] - diff_plot[i]
-                    intersect_x.append(float(x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom if denom != 0 else x_vals_plot[i]))
-                elif diff_plot[i] == 0: intersect_x.append(float(x_vals_plot[i]))
+                    x_c = x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom
+                    intersect_x.append(float(x_c))
+                elif diff_plot[i] == 0:
+                    intersect_x.append(float(x_vals_plot[i]))
+        if len(diff_plot) > 0 and diff_plot[-1] == 0:
+            intersect_x.append(float(x_vals_plot[-1]))
 
         unique_intersect_x = []
         for ix in intersect_x:
