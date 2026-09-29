@@ -29,7 +29,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
 import numpy as np
 import matplotlib.pyplot as plt
 import sympy as sp
@@ -436,7 +435,6 @@ if valid_input:
     
     m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 100])))
 
-    # حساب حدود حركة الوسيط m لينطلق دائماً من الأسفل صعوداً للأعلى
     m_min_val = -6.0
     m_max_val = 6.0
     if m_critical_num:
@@ -582,7 +580,6 @@ if valid_input:
             
         final_table.append((m_latex, sol_text, L, H))
 
-    # تعديل عنوان العمود في التطبيق إلى "عدد و إشارة حلول المعادلة"
     def generate_st_markdown_table(current_m):
         md = "| عدد و إشارة حلول المعادلة | المجال / القيمة المضبوطة |\n"
         md += "| :---: | :---: |\n"
@@ -611,7 +608,6 @@ if valid_input:
             
         return md
 
-    # تعديل عنوان العمود في جدول الـ PDF إلى "عدد و إشارة حلول المعادلة"
     def generate_pdf_discussion_table():
         nrows = len(final_table)
         fig_dt, ax_dt = plt.subplots(figsize=(10, nrows * 0.7 + 0.8))
@@ -670,7 +666,6 @@ if valid_input:
         plt.close(fig_dt)
         return tmp_dt.name
 
-    # توليد صورة أنيقة لمعادلة المناقشة البيانية لوضعها فوق جدول الـ PDF
     def generate_eq_image():
         math_str = fr"f(x) = {sanitize_latex(g_expr)}"
         fig_e, ax_e = plt.subplots(figsize=(8, 0.7))
@@ -815,11 +810,9 @@ if valid_input:
             elif p['type'] == 'extrema':
                 ax_v.plot([x_c, x_c], [4, 5], 'k-', lw=1.2, zorder=2)
                 ax_v.text(x_c, 4.5, '0', ha='center', va='center', fontsize=16)
-                # تم إلغاء إسقاط الخط المتقطع في خانة الدالة f(x) كما طلبت
             elif p['type'] == 'corner': 
                 ax_v.plot([x_c-0.03, x_c-0.03], [4, 5], 'k-', lw=1.5, color='#D32F2F', zorder=2)
                 ax_v.plot([x_c+0.03, x_c+0.03], [4, 5], 'k-', lw=1.5, color='#D32F2F', zorder=2)
-                # تم إلغاء إسقاط الخط المتقطع في خانة الدالة f(x) كما طلبت
 
             if i < N - 1:
                 x_ic = x_c + (col_w / 2.0)
@@ -889,7 +882,6 @@ if valid_input:
 
     var_table_image_path = generate_variation_table_image()
 
-    # ترتيب ملف PDF بالتسلسل البيداغوجي وإضافة معادلة المناقشة البيانية فوق الجدول
     def generate_pdf(fig_path):
         if not PDF_ENABLED: return None
         pdf = FPDF(orientation='P', unit='mm', format='A4')
@@ -904,7 +896,6 @@ if valid_input:
             
         pdf.add_font("Amiri", "", font_path, uni=True)
         
-        # --- الصفحة الأولى: دراسة تغيرات الدالة بالتسلسل المنطقي ---
         pdf.add_page()
         pdf.set_font("Amiri", size=22)
         pdf.set_text_color(21, 101, 192)
@@ -934,7 +925,6 @@ if valid_input:
         if var_table_image_path:
             pdf.image(var_table_image_path, x=10, w=190)
 
-        # --- الصفحة الثانية: المنحنى البياني يليه معادلة وجدول المناقشة البيانية ---
         pdf.add_page()
         pdf.set_font("Amiri", size=17)
         pdf.set_text_color(21, 101, 192)
@@ -948,7 +938,6 @@ if valid_input:
         pdf.cell(0, 9, fix_arabic_pdf("5. جدول نتائج المناقشة البيانية لحلول المعادلة:"), ln=True, align='R')
         pdf.ln(1)
         
-        # إدراج معادلة المناقشة البيانية بصيغة رياضية أنيقة فوق الجدول
         eq_image_path = generate_eq_image()
         if eq_image_path:
             pdf.image(eq_image_path, x=60, w=90)
@@ -976,31 +965,60 @@ if valid_input:
 
     placeholder = st.empty()
 
-    def update_view(m_val):
+    def draw_plot(m_val, mode='dark'):
         fig, ax = plt.subplots(figsize=(10, 6.5))
-        fig.patch.set_facecolor('#FFFFFF'); ax.set_facecolor('#FFFFFF')
-        ax.tick_params(colors='black', labelsize=11)
-        for spine in ax.spines.values(): spine.set_edgecolor('#A0A0A0')
-        ax.axhline(0, color='black', linewidth=2, zorder=3)
-        ax.axvline(0, color='black', linewidth=2, zorder=3)
-        ax.minorticks_on()
-        ax.grid(True, which='major', color='#CCCCCC', linestyle='-', linewidth=1.2, zorder=1)
-        ax.grid(True, which='minor', color='#EBEBEB', linestyle='-', linewidth=0.6, zorder=1)
         
+        if mode == 'dark':
+            fig.patch.set_facecolor('#0F172A')
+            ax.set_facecolor('#0F172A')
+            ax.tick_params(colors='#E2E8F0', labelsize=11)
+            for spine in ax.spines.values(): spine.set_edgecolor('#334155')
+            ax.axhline(0, color='#E2E8F0', linewidth=2, zorder=3)
+            ax.axvline(0, color='#E2E8F0', linewidth=2, zorder=3)
+            ax.minorticks_on()
+            ax.grid(True, which='major', color='#1E293B', linestyle='-', linewidth=1.2, zorder=1)
+            ax.grid(True, which='minor', color='#0F172A', linestyle='-', linewidth=0.6, zorder=1)
+            
+            c_asym = '#F472B6' 
+            c_cf = '#00E5FF' 
+            c_cg = '#FFD700' 
+            c_pts = '#EF4444' 
+            c_text = '#E2E8F0'
+            bg_leg = '#1E293B'
+            edge_leg = '#334155'
+        else:
+            fig.patch.set_facecolor('#FFFFFF')
+            ax.set_facecolor('#FFFFFF')
+            ax.tick_params(colors='black', labelsize=11)
+            for spine in ax.spines.values(): spine.set_edgecolor('#A0A0A0')
+            ax.axhline(0, color='black', linewidth=2, zorder=3)
+            ax.axvline(0, color='black', linewidth=2, zorder=3)
+            ax.minorticks_on()
+            ax.grid(True, which='major', color='#CCCCCC', linestyle='-', linewidth=1.2, zorder=1)
+            ax.grid(True, which='minor', color='#EBEBEB', linestyle='-', linewidth=0.6, zorder=1)
+            
+            c_asym = '#D32F2F'
+            c_cf = '#2E7D32' 
+            c_cg = '#1565C0' 
+            c_pts = '#FF8C00' 
+            c_text = 'black'
+            bg_leg = '#FFFFFF'
+            edge_leg = '#A0A0A0'
+
         for asym in unique_asymptotes:
             try:
                 if asym['type'] == 'h':
-                    ax.axhline(asym['val'], color='#D32F2F', linestyle='--', linewidth=2.2, zorder=4)
-                    ax.text(7.5, asym['val'] + 0.25, f"${asym['label']}$", color='#D32F2F', fontsize=14, fontweight='bold', ha='right')
+                    ax.axhline(asym['val'], color=c_asym, linestyle='--', linewidth=2.2, zorder=4)
+                    ax.text(7.5, asym['val'] + 0.25, f"${asym['label']}$", color=c_asym, fontsize=14, fontweight='bold', ha='right')
                 elif asym['type'] == 'v':
-                    ax.axvline(asym['val'], color='#D32F2F', linestyle='--', linewidth=2.2, zorder=4)
-                    ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color='#D32F2F', fontsize=14, fontweight='bold', va='top')
+                    ax.axvline(asym['val'], color=c_asym, linestyle='--', linewidth=2.2, zorder=4)
+                    ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color=c_asym, fontsize=14, fontweight='bold', va='top')
             except: pass
         
         try:
-            ax.plot(x_vals_plot, y_vals_plot, color='#2E7D32', linewidth=3.5, label=r'$C_f$', zorder=5)
+            ax.plot(x_vals_plot, y_vals_plot, color=c_cf, linewidth=3.5, label=r'$C_f$', zorder=5)
         except:
-            ax.plot(x_vals_plot, y_vals_plot, color='#2E7D32', linewidth=3.5, label='C_f', zorder=5)
+            ax.plot(x_vals_plot, y_vals_plot, color=c_cf, linewidth=3.5, label='C_f', zorder=5)
         
         with np.errstate(divide='ignore', invalid='ignore'): y_g_plot = g_func(x_vals_plot, m_val)
         if np.isscalar(y_g_plot): y_g_plot = np.full_like(x_vals_plot, y_g_plot, dtype=float)
@@ -1009,9 +1027,9 @@ if valid_input:
         m_eq_label = f"y = {m_val_str}" if st.session_state.g_val.strip() == 'm' else "y = " + st.session_state.g_val.replace('m', f"({m_val_str})" if m_val < 0 else m_val_str).replace('*', '')
             
         try:
-            ax.plot(x_vals_plot, y_g_plot, color='#1565C0', linestyle='--', linewidth=3, label=f"${m_eq_label}$", zorder=5)
+            ax.plot(x_vals_plot, y_g_plot, color=c_cg, linestyle='--', linewidth=3, label=f"${m_eq_label}$", zorder=5)
         except:
-            ax.plot(x_vals_plot, y_g_plot, color='#1565C0', linestyle='--', linewidth=3, label=m_eq_label, zorder=5)
+            ax.plot(x_vals_plot, y_g_plot, color=c_cg, linestyle='--', linewidth=3, label=m_eq_label, zorder=5)
             
         diff_plot = y_vals_plot - y_g_plot
         intersect_x = []
@@ -1024,7 +1042,7 @@ if valid_input:
                 elif diff_plot[i] == 0:
                     if i == 0 or diff_plot[i-1] != 0:
                         j = i
-                        while j < len(diff) and diff[j] == 0: j += 1
+                        while j < len(diff_plot) and diff_plot[j] == 0: j += 1
                         if j - i < 5: 
                             intersect_x.append(float(x_vals_plot[i]))
         if len(diff_plot) > 0 and diff_plot[-1] == 0 and diff_plot[-2] != 0:
@@ -1038,25 +1056,30 @@ if valid_input:
 
         if unique_intersect_x:
             try:
-                ax.scatter(unique_intersect_x, intersect_y, color='#FF8C00', s=130, zorder=6, edgecolor='black', linewidth=1.5, label=fix_arabic_mpl('نقاط التقاطع'))
+                ax.scatter(unique_intersect_x, intersect_y, color=c_pts, s=130, zorder=6, edgecolor='white' if mode=='dark' else 'black', linewidth=1.5, label=fix_arabic_mpl('نقاط التقاطع'))
             except: pass
                 
         try:
-            ax.text(4, m_val + 0.35, f"${m_eq_label}$", color='#1565C0', fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
+            ax.text(4, m_val + 0.35, f"${m_eq_label}$", color=c_cg, fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
         except: pass
             
         ax.set_ylim(-6, 8)
         try:
-            legend = ax.legend(facecolor='#FFFFFF', edgecolor='#A0A0A0', loc='upper right', fontsize=12)
-            for text in legend.get_texts(): text.set_color("black")
+            legend = ax.legend(facecolor=bg_leg, edgecolor=edge_leg, loc='upper right', fontsize=12)
+            for text in legend.get_texts(): text.set_color(c_text)
         except: pass
             
         try:
             fig.tight_layout()
         except: pass
         
+        return fig, ax
+
+    def update_view(m_val):
+        fig_dark, ax_dark = draw_plot(m_val, mode='dark')
+        
         with placeholder.container():
-            st.pyplot(fig, use_container_width=True)
+            st.pyplot(fig_dark, use_container_width=True)
             st.markdown(generate_st_markdown_table(m_val), unsafe_allow_html=True)
             
             with st.expander("📊 عرض دراسة الدالة الشاملة (مستخرجة آلياً)", expanded=False):
@@ -1074,13 +1097,15 @@ if valid_input:
                     st.image(var_table_image_path, use_container_width=True)
             
             if PDF_ENABLED and not st.session_state.auto_play:
+                fig_light, ax_light = draw_plot(m_val, mode='light')
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
-                    fig.savefig(tmpfile.name, facecolor='#FFFFFF')
+                    fig_light.savefig(tmpfile.name, facecolor='#FFFFFF')
                     pdf_path = generate_pdf(tmpfile.name)
                     if pdf_path:
                         with open(pdf_path, "rb") as pdf_file: pdf_bytes = pdf_file.read()
                         st.download_button(label="📥 تحميل الحل والدراسة كملف PDF", data=pdf_bytes, file_name="monaqasha_souaissia.pdf", mime="application/pdf")
-        plt.close(fig)
+                plt.close(fig_light)
+        plt.close(fig_dark)
 
     if st.session_state.auto_play:
         while st.session_state.auto_play and st.session_state.m_anim <= m_max_val:
