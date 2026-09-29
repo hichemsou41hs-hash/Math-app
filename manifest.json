@@ -1,0 +1,19 @@
+{
+  "short_name": "المناقشة البيانية",
+  "name": "المناقشة البيانية و دراسة تغيرات الدالة -الأستاذ سوايسية-",
+  "icons": [
+    {
+      "src": "favicon_512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a",
+  "description": "تطبيق تعليمي لدراسة اتجاه تغير دالة و المناقشة البيانية لتلاميذ البكالوريا",
+  "orientation": "portrait-primary",
+  "lang": "ar",
+  "dir": "rtl"
+}
