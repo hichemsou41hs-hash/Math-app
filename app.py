@@ -972,12 +972,12 @@ if valid_input:
             fig.patch.set_facecolor('#0F172A')
             ax.set_facecolor('#0F172A')
             ax.tick_params(colors='#E2E8F0', labelsize=11)
-            for spine in ax.spines.values(): spine.set_edgecolor('#334155')
-            ax.axhline(0, color='#E2E8F0', linewidth=2, zorder=3)
-            ax.axvline(0, color='#E2E8F0', linewidth=2, zorder=3)
+            for spine in ax.spines.values(): spine.set_edgecolor('#475569')
+            ax.axhline(0, color='#E2E8F0', linewidth=2.5, zorder=3)
+            ax.axvline(0, color='#E2E8F0', linewidth=2.5, zorder=3)
             ax.minorticks_on()
-            ax.grid(True, which='major', color='#1E293B', linestyle='-', linewidth=1.2, zorder=1)
-            ax.grid(True, which='minor', color='#0F172A', linestyle='-', linewidth=0.6, zorder=1)
+            ax.grid(True, which='major', color='#475569', linestyle='-', linewidth=1.2, zorder=1)
+            ax.grid(True, which='minor', color='#1E293B', linestyle='-', linewidth=0.8, zorder=1)
             
             c_asym = '#F472B6' 
             c_cf = '#00E5FF' 
@@ -985,7 +985,7 @@ if valid_input:
             c_pts = '#EF4444' 
             c_text = '#E2E8F0'
             bg_leg = '#1E293B'
-            edge_leg = '#334155'
+            edge_leg = '#475569'
         else:
             fig.patch.set_facecolor('#FFFFFF')
             ax.set_facecolor('#FFFFFF')
