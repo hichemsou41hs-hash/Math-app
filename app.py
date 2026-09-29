@@ -1,10 +1,34 @@
 import streamlit as st
+manifest_data = """
+{
+  "name": "المناقشة البيانية - الأستاذ سوايسية",
+  "short_name": "المناقشة البيانية",
+  "description": "تطبيق تعليمي لدراسة اتجاه تغير دالة والمناقشة البيانية",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/hichemsou41hs-hash/Math-app/main/favicon_512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
+"""
+
+import base64
+b64_manifest = base64.b64encode(manifest_data.encode('utf-8')).decode('utf-8')
+
 st.markdown(
-    """
-    <link rel="manifest" href="manifest.json">
-    """,
-    unsafe_allow_html=True,
+    f'<link rel="manifest" href="data:application/manifest+json;base64,{b64_manifest}">',
+    unsafe_allow_html=True
 )
+
 
 import numpy as np
 import matplotlib.pyplot as plt
