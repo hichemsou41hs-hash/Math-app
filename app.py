@@ -928,7 +928,8 @@ if valid_input:
         pdf.add_page()
         pdf.set_font("Amiri", size=17)
         pdf.set_text_color(21, 101, 192)
-        pdf.cell(0, 9, fix_arabic_pdf("4. التمثيل البياني للدالة ومستقيم المناقشة:"), ln=True, align='R')
+        # --- تم تعديل العنوان في الـ PDF ليصبح خاصاً بالتمثيل البياني فقط ---
+        pdf.cell(0, 9, fix_arabic_pdf("4. التمثيل البياني للدالة (Cf):"), ln=True, align='R')
         pdf.ln(1)
         pdf.image(fig_path, x=20, w=170)
         pdf.ln(4)
@@ -1020,48 +1021,50 @@ if valid_input:
         except:
             ax.plot(x_vals_plot, y_vals_plot, color=c_cf, linewidth=3.5, label='C_f', zorder=5)
         
-        with np.errstate(divide='ignore', invalid='ignore'): y_g_plot = g_func(x_vals_plot, m_val)
-        if np.isscalar(y_g_plot): y_g_plot = np.full_like(x_vals_plot, y_g_plot, dtype=float)
-        
-        m_val_str = str(int(m_val)) if int(m_val)==m_val else str(round(m_val, 2))
-        m_eq_label = f"y = {m_val_str}" if st.session_state.g_val.strip() == 'm' else "y = " + st.session_state.g_val.replace('m', f"({m_val_str})" if m_val < 0 else m_val_str).replace('*', '')
+        # --- تم جعل رسم مستقيم المناقشة ونقاط التقاطع يظهر فقط في وضع الشاشة (dark) ويتخلف في وضع الـ PDF (light) ---
+        if mode == 'dark':
+            with np.errstate(divide='ignore', invalid='ignore'): y_g_plot = g_func(x_vals_plot, m_val)
+            if np.isscalar(y_g_plot): y_g_plot = np.full_like(x_vals_plot, y_g_plot, dtype=float)
             
-        try:
-            ax.plot(x_vals_plot, y_g_plot, color=c_cg, linestyle='--', linewidth=3, label=f"${m_eq_label}$", zorder=5)
-        except:
-            ax.plot(x_vals_plot, y_g_plot, color=c_cg, linestyle='--', linewidth=3, label=m_eq_label, zorder=5)
-            
-        diff_plot = y_vals_plot - y_g_plot
-        intersect_x = []
-        for i in range(len(diff_plot)-1):
-            if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
-                if diff_plot[i] * diff_plot[i+1] < 0:
-                    denom = diff_plot[i+1] - diff_plot[i]
-                    x_c = x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom
-                    intersect_x.append(float(x_c))
-                elif diff_plot[i] == 0:
-                    if i == 0 or diff_plot[i-1] != 0:
-                        j = i
-                        while j < len(diff_plot) and diff_plot[j] == 0: j += 1
-                        if j - i < 5: 
-                            intersect_x.append(float(x_vals_plot[i]))
-        if len(diff_plot) > 0 and diff_plot[-1] == 0 and diff_plot[-2] != 0:
-            intersect_x.append(float(x_vals_plot[-1]))
-
-        unique_intersect_x = []
-        for ix in intersect_x:
-            if not any(abs(ix - u) < 0.1 for u in unique_intersect_x): unique_intersect_x.append(ix)
-
-        intersect_y = [m_val if st.session_state.g_val.strip() == 'm' else (float(g_func(ix, m_val)) if not np.isscalar(g_func(ix, m_val)) else g_func(ix, m_val)) for ix in unique_intersect_x]
-
-        if unique_intersect_x:
-            try:
-                ax.scatter(unique_intersect_x, intersect_y, color=c_pts, s=130, zorder=6, edgecolor='white' if mode=='dark' else 'black', linewidth=1.5, label=fix_arabic_mpl('نقاط التقاطع'))
-            except: pass
+            m_val_str = str(int(m_val)) if int(m_val)==m_val else str(round(m_val, 2))
+            m_eq_label = f"y = {m_val_str}" if st.session_state.g_val.strip() == 'm' else "y = " + st.session_state.g_val.replace('m', f"({m_val_str})" if m_val < 0 else m_val_str).replace('*', '')
                 
-        try:
-            ax.text(4, m_val + 0.35, f"${m_eq_label}$", color=c_cg, fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
-        except: pass
+            try:
+                ax.plot(x_vals_plot, y_g_plot, color=c_cg, linestyle='--', linewidth=3, label=f"${m_eq_label}$", zorder=5)
+            except:
+                ax.plot(x_vals_plot, y_g_plot, color=c_cg, linestyle='--', linewidth=3, label=m_eq_label, zorder=5)
+                
+            diff_plot = y_vals_plot - y_g_plot
+            intersect_x = []
+            for i in range(len(diff_plot)-1):
+                if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
+                    if diff_plot[i] * diff_plot[i+1] < 0:
+                        denom = diff_plot[i+1] - diff_plot[i]
+                        x_c = x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom
+                        intersect_x.append(float(x_c))
+                    elif diff_plot[i] == 0:
+                        if i == 0 or diff_plot[i-1] != 0:
+                            j = i
+                            while j < len(diff_plot) and diff_plot[j] == 0: j += 1
+                            if j - i < 5: 
+                                intersect_x.append(float(x_vals_plot[i]))
+            if len(diff_plot) > 0 and diff_plot[-1] == 0 and diff_plot[-2] != 0:
+                intersect_x.append(float(x_vals_plot[-1]))
+
+            unique_intersect_x = []
+            for ix in intersect_x:
+                if not any(abs(ix - u) < 0.1 for u in unique_intersect_x): unique_intersect_x.append(ix)
+
+            intersect_y = [m_val if st.session_state.g_val.strip() == 'm' else (float(g_func(ix, m_val)) if not np.isscalar(g_func(ix, m_val)) else g_func(ix, m_val)) for ix in unique_intersect_x]
+
+            if unique_intersect_x:
+                try:
+                    ax.scatter(unique_intersect_x, intersect_y, color=c_pts, s=130, zorder=6, edgecolor='white', linewidth=1.5, label=fix_arabic_mpl('نقاط التقاطع'))
+                except: pass
+                    
+            try:
+                ax.text(4, m_val + 0.35, f"${m_eq_label}$", color=c_cg, fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
+            except: pass
             
         ax.set_ylim(-6, 8)
         try:
