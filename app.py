@@ -38,8 +38,12 @@ import time
 import warnings
 import re
 import os
+import io
+import json
 import urllib.request
+import urllib.parse
 import tempfile
+from PIL import Image, ImageOps, ImageFilter
 from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
 
 try:
@@ -113,12 +117,134 @@ def fmt(val):
     except:
         return str(val)
 
+# مطهر ومترجم رياضي شامل يدعم LaTeX و exp ونتائج الـ OCR
+def clean_ocr_math(raw_str):
+    if not raw_str:
+        return ""
+    s = raw_str.strip()
+    s = s.replace('`', '').replace('$', '').strip()
+    lines = [line.strip() for line in s.splitlines() if line.strip()]
+    if lines:
+        for line in lines:
+            if any(k in line.lower() for k in ['f(x)', 'x', 'ln', 'exp', 'e^', 'sqrt', '/']):
+                s = line
+                break
+        else:
+            s = lines[0]
+
+    # إزالة البادئات مثل f(x) = أو y =
+    s = re.sub(r'^[fFgGyY]\s*\(\s*x\s*\)\s*=\s*', '', s)
+    s = re.sub(r'^[yY]\s*=\s*', '', s)
+
+    # توحيد الرموز الرياضية والأسس
+    replacements = {
+        '−': '-', '–': '-', '—': '-', '×': '*', '÷': '/', '⋅': '*', '·': '*',
+        '²': '^2', '³': '^3', '⁴': '^4', '√': 'sqrt',
+        '\\left': '', '\\right': '', '\\cdot': '*', '\\times': '*',
+        '\\ln': 'ln', '\\log': 'ln', '\\exp': 'exp', '\\sqrt': 'sqrt',
+        '\\pi': 'pi', '\\mathrm{e}': 'e', '\\text{e}': 'e', 'In(': 'ln(', '1n(': 'ln('
+    }
+    for k, v in replacements.items():
+        s = s.replace(k, v)
+
+    # تحويل كسور LaTeX: \frac{a}{b} -> ((a)/(b))
+    for _ in range(5):
+        new_s = re.sub(r'\\d?frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}', r'((\1)/(\2))', s)
+        if new_s == s:
+            break
+        s = new_s
+
+    # تحويل الجذور والأسس في LaTeX
+    s = re.sub(r'sqrt\s*\{([^{}]+)\}', r'sqrt(\1)', s)
+    s = re.sub(r'\^\s*\{([^{}]+)\}', r'^(\1)', s)
+    s = s.replace('{', '(').replace('}', ')')
+    s = s.replace('\\', '')
+
+    # تحويل القيمة المطلقة |...| إلى abs(...)
+    s = re.sub(r'\|([^|]+)\|', r'abs(\1)', s)
+    return s.strip()
+
 def fix_implicit_mult(expr_str):
-    if "()" in expr_str: expr_str = expr_str.replace("()", "(1)")
+    expr_str = clean_ocr_math(expr_str)
+    if "()" in expr_str:
+        expr_str = expr_str.replace("()", "(1)")
     expr_str = expr_str.replace('^', '**')
-    expr_str = re.sub(r'([xy0-9])(ln|cos|sin|sqrt|abs|e|pi)', r'\1*\2', expr_str)
-    expr_str = re.sub(r'(e|pi)([xy0-9])', r'\1*\2', expr_str)
+    # حماية الكلمات المحجوزة مثل exp و ln و sqrt من التفكيك الخاطئ
+    expr_str = re.sub(r'([xy0-9\)])\s*(exp|ln|log|cos|sin|tan|sqrt|abs|pi)\b', r'\1*\2', expr_str)
+    expr_str = re.sub(r'([xy0-9\)])\s*(e)\b(?![a-zA-Z])', r'\1*\2', expr_str)
+    expr_str = re.sub(r'\b(e|pi)\s*([xy0-9\(])', r'\1*\2', expr_str)
     return expr_str
+
+# محرك OCR مزدوج (Gemini Vision متعدد النماذج + محرك OCR احتياطي مجاني)
+def extract_math_from_image(image_file, api_key=None):
+    img = Image.open(image_file).convert("RGB")
+    
+    # تحسين جودة الصورة وتباينها لزيادة دقة الـ OCR
+    img_gray = ImageOps.grayscale(img)
+    img_contrast = ImageOps.autocontrast(img_gray)
+    img_sharp = img_contrast.filter(ImageFilter.SHARPEN)
+
+    prompt = (
+        "You are an expert mathematical OCR system. Extract ONLY the mathematical function expression f(x) from this image.\n"
+        "Rules:\n"
+        "1. Output ONLY the raw right-hand side expression (do NOT write 'f(x) =' or 'y =').\n"
+        "2. Use Python/SymPy syntax: ^ or ** for powers, * for multiplication, / for division, exp(...) or e^(...) for exponential, ln(...) for natural logarithm, sqrt(...) for square root, abs(...) for absolute value |x|.\n"
+        "3. Wrap numerators and denominators in parentheses, e.g., (x + 1)/(x - 1).\n"
+        "4. Do NOT output markdown, backticks, LaTeX, or explanations."
+    )
+
+    errors_log = []
+
+    # 1. المحاولة عبر نماذج Gemini Vision المتعددة
+    if api_key:
+        try:
+            import google.generativeai as genai
+            genai.configure(api_key=api_key)
+            candidate_models = [
+                'gemini-2.5-flash',
+                'gemini-2.0-flash',
+                'gemini-1.5-flash',
+                'gemini-1.5-pro'
+            ]
+            for model_name in candidate_models:
+                try:
+                    model = genai.GenerativeModel(model_name)
+                    response = model.generate_content([prompt, img])
+                    if response and response.text:
+                        cleaned = clean_ocr_math(response.text)
+                        if cleaned:
+                            return cleaned, None
+                except Exception as model_err:
+                    errors_log.append(f"{model_name}: {str(model_err)}")
+                    continue
+        except Exception as e:
+            errors_log.append(str(e))
+
+    # 2. المحرك الاحتياطي المجاني (OCR.space API) في حال ضغط الخادم أو غياب المفتاح
+    try:
+        buffered = io.BytesIO()
+        img_sharp.save(buffered, format="JPEG", quality=92)
+        img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+        payload = urllib.parse.urlencode({
+            'apikey': 'helloworld',
+            'base64Image': f'data:image/jpeg;base64,{img_base64}',
+            'language': 'eng',
+            'isOverlayRequired': 'false',
+            'OCREngine': '2'
+        }).encode('utf-8')
+        req = urllib.request.Request("https://api.ocr.space/parse/image", data=payload, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=12) as resp:
+            result = json.loads(resp.read().decode('utf-8'))
+            parsed_results = result.get('ParsedResults', [])
+            if parsed_results:
+                raw_text = parsed_results[0].get('ParsedText', '')
+                cleaned = clean_ocr_math(raw_text)
+                if cleaned:
+                    return cleaned, None
+    except Exception as ocr_err:
+        errors_log.append(f"Fallback OCR: {str(ocr_err)}")
+
+    return None, " | ".join(errors_log) if errors_log else "تعذر استخراج النص من الصورة."
 
 def fix_arabic_pdf(text):
     return get_display(arabic_reshaper.reshape(text)) if PDF_ENABLED else text
@@ -130,9 +256,13 @@ def sanitize_latex(expr):
     if hasattr(expr, 'has'):
         if expr.has(sp.LambertW) or (hasattr(sp, 'RootOf') and expr.has(sp.RootOf)):
             try:
-                fl = float(sp.N(expr))
-                if int(fl) == fl: return str(int(fl))
-                return str(round(fl, 2))
+                simp_e = sp.simplify(expr)
+                if not simp_e.has(sp.LambertW):
+                    expr = simp_e
+                else:
+                    fl = float(sp.re(sp.N(expr)))
+                    if abs(fl - round(fl)) < 1e-6: return str(int(round(fl)))
+                    return str(round(fl, 2))
             except: pass
     if not isinstance(expr, str): expr = sp.latex(expr)
     s = str(expr)
@@ -166,7 +296,7 @@ def get_sol_color_html(sol_text):
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
-if 'f_val' not in st.session_state: st.session_state.f_val = "x^2 + x*ln(x) + 1"
+if 'f_val' not in st.session_state: st.session_state.f_val = "x - 1 + x/exp(x - 2)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -200,29 +330,19 @@ except: pass
 
 col_text, col_img = st.columns(2)
 with col_img:
-    img_file = st.file_uploader("🖼 ارفع صورة الدالة لاستخراجها آلياً:", type=['png', 'jpg', 'jpeg'])
-    st.markdown("<div style='font-size:14px; color:#94A3B8; text-align:right; direction:rtl; margin-top:-10px; margin-bottom:10px;'>💡 <b>ملاحظة:</b> في حال وجود ضغط على خادم الذكاء الاصطناعي وفشل قراءة الصورة، يرجى كتابة الدالة يدوياً في الخانة المجاورة.</div>", unsafe_allow_html=True)
+    img_file = st.file_uploader("🖼 ارفع صورة الدالة لاستخراجها آلياً (Math OCR):", type=['png', 'jpg', 'jpeg', 'webp'])
+    st.markdown("<div style='font-size:14px; color:#94A3B8; text-align:right; direction:rtl; margin-top:-10px; margin-bottom:10px;'>💡 <b>ملاحظة:</b> يرجى قص الصورة لتشمل عبارة الدالة فقط للحصول على أعلى دقة استخراج.</div>", unsafe_allow_html=True)
     if img_file:
-        if not api_key:
-            st.error("⚠️️ خاصية الذكاء الاصطناعي غير مفعلة.")
-        else:
-            if st.button("استخراج الدالة 🤖", use_container_width=True):
-                with st.spinner("جاري قراءة الصورة..."):
-                    try:
-                        import google.generativeai as genai
-                        from PIL import Image
-                        genai.configure(api_key=api_key)
-                        img = Image.open(img_file)
-                        model = genai.GenerativeModel('gemini-3.8-flash')
-                        prompt = "Extract ONLY the mathematical function expression from this image. Convert it to a simple string compatible with Python/SymPy. DO NOT output any text. Just the math string."
-                        response = model.generate_content([prompt, img])
-                        extracted_text = response.text.strip().replace('`', '').replace('\n', '')
-                        st.session_state.f_val = extracted_text
-                        st.success("✅ تم الاستخراج بنجاح!")
-                        time.sleep(1)
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"❌ خطأ تقني: {str(e)}")
+        if st.button("استخراج الدالة من الصورة 🤖", use_container_width=True):
+            with st.spinner("جاري تحليل الصورة واستخراج العبارة الرياضية..."):
+                extracted_text, err_msg = extract_math_from_image(img_file, api_key)
+                if extracted_text:
+                    st.session_state.f_val = extracted_text
+                    st.success(f"✅ تم الاستخراج بنجاح: {extracted_text}")
+                    time.sleep(0.8)
+                    st.rerun()
+                else:
+                    st.error("⚠️ تعذر قراءة الصورة آلياً. يرجى التأكد من وضوح الصورة أو كتابة الدالة يدوياً.")
 
 with col_text:
     st.text_input("أدخل عبارة الدالة f(x):", key="f_val")
@@ -232,11 +352,15 @@ current_f = st.session_state.f_val
 current_g = st.session_state.g_val
 
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v4"):
+def build_math_context(f_str, g_str, version_tag="v5"):
     cache = {'valid': False, 'error': ''}
     try:
         x_sym, m_sym = sp.symbols('x m', real=True)
-        local_dict = {'x': x_sym, 'm': m_sym, 'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
+        local_dict = {
+            'x': x_sym, 'm': m_sym, 'e': sp.E, 'E': sp.E, 'pi': sp.pi,
+            'ln': sp.log, 'log': sp.log, 'exp': sp.exp, 'sqrt': sp.sqrt,
+            'abs': sp.Abs, 'Abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin, 'tan': sp.tan
+        }
         transformations = (standard_transformations + (implicit_multiplication_application,))
         f_processed = fix_implicit_mult(f_str)
         g_processed = fix_implicit_mult(g_str)
@@ -251,12 +375,16 @@ def build_math_context(f_str, g_str, version_tag="v4"):
             n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
             if d_expr != 1:
                 for r in sp.solve(d_expr, x_sym):
-                    if r.is_real is not False and sp.im(sp.N(r)) == 0: candidate_v_asymptotes.append(r)
+                    r = sp.simplify(r)
+                    if r.is_real is not False and abs(float(sp.im(sp.N(r)))) < 1e-7:
+                        candidate_v_asymptotes.append(r)
         except: pass
         try:
             for log_expr in f_expr.atoms(sp.log):
                 for r in sp.solve(log_expr.args[0], x_sym):
-                    if r.is_real is not False and sp.im(sp.N(r)) == 0: candidate_v_asymptotes.append(r)
+                    r = sp.simplify(r)
+                    if r.is_real is not False and abs(float(sp.im(sp.N(r)))) < 1e-7:
+                        candidate_v_asymptotes.append(r)
         except: pass
         candidate_v_asymptotes = list(set(candidate_v_asymptotes))
         
@@ -269,22 +397,22 @@ def build_math_context(f_str, g_str, version_tag="v4"):
                 if lim_p in [sp.oo, -sp.oo, sp.zoo] or lim_m in [sp.oo, -sp.oo, sp.zoo]:
                     true_v_asymptotes.append(r)
                 else:
-                    val_p = float(sp.N(lim_p))
+                    val_p = float(sp.re(sp.N(lim_p)))
                     if np.isfinite(val_p):
-                        holes.append({'sym': r, 'val': float(sp.N(r)), 'lim': val_p})
+                        holes.append({'sym': r, 'val': float(sp.re(sp.N(r))), 'lim': val_p})
             except:
                 true_v_asymptotes.append(r)
 
         unique_asymptotes = []
         for r in true_v_asymptotes:
-            unique_asymptotes.append({'type': 'v', 'val': float(sp.N(r)), 'label': f"x={sanitize_latex(r)}"})
+            unique_asymptotes.append({'type': 'v', 'val': float(sp.re(sp.N(r))), 'label': f"x={sanitize_latex(r)}"})
 
         x_base = np.linspace(-15, 15, 6001)
         x_roots_base = np.concatenate([np.linspace(-500, -15, 2000, endpoint=False), np.linspace(-15, 15, 6001), np.linspace(15, 500, 2000)])
         
         extra_x = []
         for a in candidate_v_asymptotes:
-            val = float(sp.N(a))
+            val = float(sp.re(sp.N(a)))
             if -16 <= val <= 16:
                 for delta in [1e-3, 1e-4, 1e-5, 1e-6]:
                     extra_x.append(val - delta)
@@ -298,9 +426,10 @@ def build_math_context(f_str, g_str, version_tag="v4"):
             x_vals_roots = x_roots_base
 
         def process_y_vals(x_arr):
-            with np.errstate(divide='ignore', invalid='ignore'): y_arr = f_func(x_arr)
+            with np.errstate(divide='ignore', invalid='ignore', over='ignore'): y_arr = f_func(x_arr)
             if np.iscomplexobj(y_arr): y_arr = np.where(np.isreal(y_arr), y_arr.real, np.nan)
             if np.isscalar(y_arr): y_arr = np.full_like(x_arr, y_arr, dtype=float)
+            y_arr = np.array(y_arr, dtype=float)
             y_arr[~np.isfinite(y_arr)] = np.nan
             dy = np.abs(np.diff(y_arr))
             for idx in np.where(dy > 30)[0]: y_arr[idx] = np.nan; y_arr[idx+1] = np.nan
@@ -349,17 +478,23 @@ def build_math_context(f_str, g_str, version_tag="v4"):
                         if arg.is_number:
                             sub_rules.append(fr"({sanitize_latex(arg)})' = 0")
                         else:
-                            x_factors = [f for f in arg.as_ordered_factors() if f.has(x_sym)] if arg.is_Mul else []
-                            if len(x_factors) >= 2:
-                                u_part = x_factors[0]
-                                v_part = sp.Mul(*x_factors[1:])
-                                c_part = sp.Mul(*[f for f in arg.as_ordered_factors() if not f.has(x_sym)])
-                                du_p = sp.simplify(sp.diff(u_part, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
-                                dv_p = sp.simplify(sp.diff(v_part, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
-                                c_str = "" if c_part == 1 else ("-" if c_part == -1 else sanitize_latex(c_part))
-                                sub_rules.append(fr"\left({sanitize_latex(arg)}\right)' = {c_str}\left[({sanitize_latex(du_p)})({sanitize_latex(v_part)}) + ({sanitize_latex(dv_p)})({sanitize_latex(u_part)})\right] = {sanitize_latex(d_arg)}")
+                            num_a, den_a = sp.fraction(arg)
+                            if den_a != 1 and den_a.has(x_sym):
+                                du_a = sp.simplify(sp.diff(num_a, x_sym))
+                                dv_a = sp.simplify(sp.diff(den_a, x_sym))
+                                sub_rules.append(fr"\left({sanitize_latex(arg)}\right)' = \frac{{({sanitize_latex(du_a)})({sanitize_latex(den_a)}) - ({sanitize_latex(dv_a)})({sanitize_latex(num_a)})}}{{({sanitize_latex(den_a)})^2}} = {sanitize_latex(d_arg)}")
                             else:
-                                sub_rules.append(fr"\left({sanitize_latex(arg)}\right)' = {sanitize_latex(d_arg)}")
+                                x_factors = [f for f in arg.as_ordered_factors() if f.has(x_sym)] if arg.is_Mul else []
+                                if len(x_factors) >= 2:
+                                    u_part = x_factors[0]
+                                    v_part = sp.Mul(*x_factors[1:])
+                                    c_part = sp.Mul(*[f for f in arg.as_ordered_factors() if not f.has(x_sym)])
+                                    du_p = sp.simplify(sp.diff(u_part, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
+                                    dv_p = sp.simplify(sp.diff(v_part, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
+                                    c_str = "" if c_part == 1 else ("-" if c_part == -1 else sanitize_latex(c_part))
+                                    sub_rules.append(fr"\left({sanitize_latex(arg)}\right)' = {c_str}\left[({sanitize_latex(du_p)})({sanitize_latex(v_part)}) + ({sanitize_latex(dv_p)})({sanitize_latex(u_part)})\right] = {sanitize_latex(d_arg)}")
+                                else:
+                                    sub_rules.append(fr"\left({sanitize_latex(arg)}\right)' = {sanitize_latex(d_arg)}")
                         if d_arg != 0:
                             term_derivs.append(d_arg)
                     
@@ -423,19 +558,20 @@ def build_math_context(f_str, g_str, version_tag="v4"):
         sym_extrema = []
         try:
             for r in sp.solve(df_expr, x_sym):
-                if r.is_real is not False and sp.im(sp.N(r)) == 0:
-                    val_y_check = sp.simplify(f_expr.subs(x_sym, r))
-                    if val_y_check.is_real is not False and sp.im(sp.N(val_y_check)) == 0:
-                        sym_extrema.append(r)
+                r_simp = sp.simplify(r)
+                if r_simp.is_real is not False and abs(float(sp.im(sp.N(r_simp)))) < 1e-7:
+                    val_y_check = sp.simplify(f_expr.subs(x_sym, r_simp))
+                    if val_y_check.is_real is not False and abs(float(sp.im(sp.N(val_y_check)))) < 1e-7:
+                        sym_extrema.append(r_simp)
         except: pass
         sym_extrema = list(set(sym_extrema))
 
         pts_var_exact = []
         pts_var_exact.append({'val': -np.inf, 'sym': -sp.oo, 'latex_x': r"-\infty", 'type': 'inf'})
         for r in candidate_v_asymptotes:
-            pts_var_exact.append({'val': float(sp.N(r)), 'sym': r, 'latex_x': sanitize_latex(r), 'type': 'v_asym'})
+            pts_var_exact.append({'val': float(sp.re(sp.N(r))), 'sym': r, 'latex_x': sanitize_latex(r), 'type': 'v_asym'})
         for r in sym_extrema:
-            val = float(sp.N(r))
+            val = float(sp.re(sp.N(r)))
             if not any(abs(p['val'] - val) < 1e-4 for p in pts_var_exact):
                 pts_var_exact.append({'val': val, 'sym': r, 'latex_x': sanitize_latex(r), 'type': 'extrema'})
 
@@ -461,8 +597,8 @@ def build_math_context(f_str, g_str, version_tag="v4"):
                 try:
                     sym_nx = sp.nsimplify(nx, tolerance=0.05)
                     y_val = sp.simplify(f_expr.subs(x_sym, sym_nx))
-                    if y_val.is_real is not False and sp.im(sp.N(y_val)) == 0:
-                        pts_var_exact.append({'val': float(sp.N(sym_nx)), 'sym': sym_nx, 'latex_x': sanitize_latex(sym_nx), 'type': 'extrema'})
+                    if y_val.is_real is not False and abs(float(sp.im(sp.N(y_val)))) < 1e-7:
+                        pts_var_exact.append({'val': float(sp.re(sp.N(sym_nx))), 'sym': sym_nx, 'latex_x': sanitize_latex(sym_nx), 'type': 'extrema'})
                 except: pass
                 
         pts_var_exact.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
@@ -524,7 +660,8 @@ def build_math_context(f_str, g_str, version_tag="v4"):
             n_expr, d_expr = sp.fraction(sp.cancel(m_expr))
             if d_expr != 1:
                 for r in sp.solve(d_expr, x_sym):
-                    if r.is_real is not False and sp.im(sp.N(r)) == 0: 
+                    r = sp.simplify(r)
+                    if r.is_real is not False and abs(float(sp.im(sp.N(r)))) < 1e-7: 
                         m_candidate_boundaries.append(r)
         except: pass
         m_candidate_boundaries = list(set(m_candidate_boundaries))
@@ -532,8 +669,8 @@ def build_math_context(f_str, g_str, version_tag="v4"):
         try:
             for direction in [sp.oo, -sp.oo]:
                 lim = sp.limit(m_expr, x_sym, direction)
-                if lim.is_real and np.isfinite(float(sp.N(lim))):
-                    m_critical_num.append(float(sp.N(lim)))
+                if lim.is_real and np.isfinite(float(sp.re(sp.N(lim)))):
+                    m_critical_num.append(float(sp.re(sp.N(lim))))
                     sym_m_critical.append(sp.simplify(lim))
         except: pass
 
@@ -542,51 +679,56 @@ def build_math_context(f_str, g_str, version_tag="v4"):
             for dir in ['+', '-']:
                 try:
                     lim = sp.limit(m_expr, x_sym, boundary, dir=dir)
-                    if lim.is_real and np.isfinite(float(sp.N(lim))):
-                        val_m = float(sp.N(lim))
+                    if lim.is_real and np.isfinite(float(sp.re(sp.N(lim)))):
+                        val_m = float(sp.re(sp.N(lim)))
                         m_critical_num.append(val_m)
                         sym_m_critical.append(sp.simplify(lim))
                         try:
-                            val_f = f_func(float(sp.N(boundary)))
+                            b_fl = float(sp.re(sp.N(boundary)))
+                            val_f = f_func(b_fl)
                             if not np.iscomplexobj(val_f) and np.isfinite(float(val_f)):
-                                exact_tangent_points.append({'x': float(sp.N(boundary)), 'm_req': val_m})
+                                exact_tangent_points.append({'x': b_fl, 'm_req': val_m})
                         except: pass
                 except: pass
 
         try:
-            val_0 = float(sp.N(sp.simplify(m_expr.subs(x_sym, 0))))
-            if np.isfinite(val_0):
-                m_critical_num.append(val_0)
-                sym_m_critical.append(sp.simplify(m_expr.subs(x_sym, 0)))
+            val_0_sym = sp.simplify(m_expr.subs(x_sym, 0))
+            if val_0_sym.is_real is not False and abs(float(sp.im(sp.N(val_0_sym)))) < 1e-7:
+                val_0 = float(sp.re(sp.N(val_0_sym)))
+                if np.isfinite(val_0):
+                    m_critical_num.append(val_0)
+                    sym_m_critical.append(val_0_sym)
         except: pass
         
         try:
             lim_0 = sp.limit(m_expr, x_sym, 0)
-            if lim_0.is_real and np.isfinite(float(sp.N(lim_0))):
-                m_critical_num.append(float(sp.N(lim_0)))
+            if lim_0.is_real and np.isfinite(float(sp.re(sp.N(lim_0)))):
+                m_critical_num.append(float(sp.re(sp.N(lim_0))))
                 sym_m_critical.append(sp.simplify(lim_0))
         except: pass
 
         try:
             dm_expr = sp.diff(m_expr, x_sym)
             for r in sp.solve(dm_expr, x_sym):
-                if r.is_real is not False and sp.im(sp.N(r)) == 0:
+                r_simp = sp.simplify(r)
+                if r_simp.is_real is not False and abs(float(sp.im(sp.N(r_simp)))) < 1e-7:
                     try:
-                        val_f = f_func(float(sp.N(r)))
+                        val_x = float(sp.re(sp.N(r_simp)))
+                        val_f = f_func(val_x)
                         if not np.iscomplexobj(val_f) and np.isfinite(float(val_f)):
-                            val_x = float(sp.N(r))
-                            val_m = float(sp.N(sp.simplify(m_expr.subs(x_sym, r))))
+                            m_sub = sp.simplify(m_expr.subs(x_sym, r_simp))
+                            val_m = float(sp.re(sp.N(m_sub)))
                             exact_tangent_points.append({'x': val_x, 'm_req': val_m})
                             if np.isfinite(val_m): 
                                 m_critical_num.append(val_m)
-                                sym_m_critical.append(sp.simplify(m_expr.subs(x_sym, r)))
+                                sym_m_critical.append(m_sub)
                     except: pass
         except: pass
 
         try:
             m_func_eval = sp.lambdify(x_sym, m_expr, 'numpy')
             x_test_m = np.linspace(-25, 25, 10001)
-            with np.errstate(divide='ignore', invalid='ignore'):
+            with np.errstate(divide='ignore', invalid='ignore', over='ignore'):
                 y_test_m = m_func_eval(x_test_m)
                 if np.iscomplexobj(y_test_m): y_test_m = np.where(np.isreal(y_test_m), y_test_m.real, np.nan)
                 
@@ -632,6 +774,7 @@ def build_math_context(f_str, g_str, version_tag="v4"):
         def exactify_value(val_float, sym_val=None):
             if sym_val is not None:
                 try:
+                    sym_val = sp.simplify(sym_val)
                     s_str = str(sym_val)
                     if not any(bad in s_str for bad in ["LambertW", "RootOf", "Integral", "zoo", "I"]):
                         l_str = sanitize_latex(sym_val)
@@ -652,13 +795,15 @@ def build_math_context(f_str, g_str, version_tag="v4"):
 
         def get_exact_m(val_float):
             for sm in sym_m_critical:
-                if abs(float(sp.N(sm)) - val_float) < 1e-2:
-                    res = exactify_value(val_float, sm)
-                    if not re.match(r'^-?\d+(\.\d+)?$', res): return res
+                try:
+                    if abs(float(sp.re(sp.N(sm))) - val_float) < 1e-2:
+                        res = exactify_value(val_float, sm)
+                        if not re.match(r'^-?\d+(\.\d+)?$', res): return res
+                except: pass
             return exactify_value(val_float)
 
         def is_valid_root(x_val):
-            if any(abs(x_val - float(sp.N(a['val']))) < 1e-3 for a in unique_asymptotes if a['type'] == 'v'): return False
+            if any(abs(x_val - float(sp.re(sp.N(a['val'])))) < 1e-3 for a in unique_asymptotes if a['type'] == 'v'): return False
             if any(abs(x_val - h['val']) < 1e-3 for h in holes): return False
             try:
                 with np.errstate(all='ignore'): v = f_func(x_val)
@@ -669,7 +814,7 @@ def build_math_context(f_str, g_str, version_tag="v4"):
 
         def get_roots_text(m_test):
             is_critical = any(abs(m_test - mc) < 1e-2 for mc in m_critical_num)
-            with np.errstate(divide='ignore', invalid='ignore'):
+            with np.errstate(divide='ignore', invalid='ignore', over='ignore'):
                 y_g = g_func(x_vals_roots, m_test)
                 if np.isscalar(y_g): y_g = np.full_like(x_vals_roots, y_g, dtype=float)
                 diff = y_vals_roots - y_g
@@ -821,23 +966,23 @@ def build_math_context(f_str, g_str, version_tag="v4"):
                     try:
                         lim = sp.limit(f_expr, x_sym, p['sym'])
                         dx = 0.5 if p['val'] == -np.inf else -0.5
-                        nodes.append((x_c+dx, float(sp.N(lim)) if lim.is_real else float('inf') if lim==sp.oo else float('-inf'), get_lim_latex_for_table(lim)))
+                        nodes.append((x_c+dx, float(sp.re(sp.N(lim))) if lim.is_real else float('inf') if lim==sp.oo else float('-inf'), get_lim_latex_for_table(lim)))
                     except: pass
                 elif p['type'] == 'v_asym':
                     if i > 0 and valid_intervals[i-1]:
                         try:
                             lim_l = sp.limit(f_expr, x_sym, p['sym'], dir='-')
-                            nodes.append((x_c-0.4, float(sp.N(lim_l)) if lim_l.is_real else float('inf') if lim_l==sp.oo else float('-inf'), get_lim_latex_for_table(lim_l)))
+                            nodes.append((x_c-0.4, float(sp.re(sp.N(lim_l))) if lim_l.is_real else float('inf') if lim_l==sp.oo else float('-inf'), get_lim_latex_for_table(lim_l)))
                         except: pass
                     if i < N-1 and valid_intervals[i]:
                         try:
                             lim_r = sp.limit(f_expr, x_sym, p['sym'], dir='+')
-                            nodes.append((x_c+0.4, float(sp.N(lim_r)) if lim_r.is_real else float('inf') if lim_r==sp.oo else float('-inf'), get_lim_latex_for_table(lim_r)))
+                            nodes.append((x_c+0.4, float(sp.re(sp.N(lim_r))) if lim_r.is_real else float('inf') if lim_r==sp.oo else float('-inf'), get_lim_latex_for_table(lim_r)))
                         except: pass
                 elif p['type'] in ['extrema', 'corner']:
                     try:
                         sym_y = sp.simplify(f_expr.subs(x_sym, p['sym']))
-                        val_y = float(sp.N(sym_y))
+                        val_y = float(sp.re(sp.N(sym_y)))
                         nodes.append((x_c, val_y, exactify_value(val_y, sym_y)))
                     except: pass
             for i in range(N - 1):
@@ -888,7 +1033,7 @@ def build_math_context(f_str, g_str, version_tag="v4"):
                     if l_den == 0 and val_sym not in [sp.oo, -sp.oo]:
                         try:
                             eps = 1e-5 if dir_sympy == '+' else -1e-5
-                            d_val = float(sp.N(den.subs(x_sym, float(sp.N(val_sym)) + eps)))
+                            d_val = float(sp.re(sp.N(den.subs(x_sym, float(sp.re(sp.N(val_sym))) + eps))))
                             l_den_s = "0^+" if d_val > 0 else "0^-"
                         except: pass
                     steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(num)}\right) = {l_num_s} \quad , \quad \lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(den)}\right) = {l_den_s}")
@@ -1130,12 +1275,12 @@ def build_math_context(f_str, g_str, version_tag="v4"):
         cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v4":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v5":
     with st.spinner("جاري التحليل الرياضي الدقيق (تتم هذه العملية مرة واحدة لتسريع حركة المناقشة الآلية)..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v4")
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v5")
         st.session_state.last_f = current_f
         st.session_state.last_g = current_g
-        st.session_state.cache_ver = "v4"
+        st.session_state.cache_ver = "v5"
 
 cache = st.session_state.math_cache
 
@@ -1156,7 +1301,7 @@ else:
             st.session_state.m_anim = m_min_val
             st.rerun()
     with col2:
-        if st.button("إيقاف ⏹️", disabled=not st.session_state.auto_play):
+        if st.button("إيقاف ⏹️️", disabled=not st.session_state.auto_play):
             st.session_state.auto_play = False
             st.rerun()
     
@@ -1235,7 +1380,7 @@ else:
         except: ax.plot(cache['x_vals_plot'], cache['y_vals_plot'], color=c_cf, linewidth=3.5, label='C_f', zorder=5)
         
         if mode == 'dark':
-            with np.errstate(divide='ignore', invalid='ignore'): y_g_plot = cache['g_func'](cache['x_vals_plot'], m_val)
+            with np.errstate(divide='ignore', invalid='ignore', over='ignore'): y_g_plot = cache['g_func'](cache['x_vals_plot'], m_val)
             if np.isscalar(y_g_plot): y_g_plot = np.full_like(cache['x_vals_plot'], y_g_plot, dtype=float)
             
             m_val_str = str(int(m_val)) if int(m_val)==m_val else str(round(m_val, 2))
@@ -1252,7 +1397,7 @@ else:
                     if diff_plot[i] * diff_plot[i+1] < 0:
                         denom = diff_plot[i+1] - diff_plot[i]
                         x_c = cache['x_vals_plot'][i] - diff_plot[i] * (cache['x_vals_plot'][i+1] - cache['x_vals_plot'][i]) / denom
-                        if not any(abs(x_c - float(sp.N(a['val']))) < 1e-3 for a in cache['unique_asymptotes'] if a['type'] == 'v'):
+                        if not any(abs(x_c - float(sp.re(sp.N(a['val'])))) < 1e-3 for a in cache['unique_asymptotes'] if a['type'] == 'v'):
                             intersect_x.append(float(x_c))
                     elif diff_plot[i] == 0:
                         if i == 0 or diff_plot[i-1] != 0:
@@ -1260,12 +1405,12 @@ else:
                             while j < len(diff_plot) and diff_plot[j] == 0: j += 1
                             if j - i < 5: 
                                 x_c = cache['x_vals_plot'][i]
-                                if not any(abs(x_c - float(sp.N(a['val']))) < 1e-3 for a in cache['unique_asymptotes'] if a['type'] == 'v'):
+                                if not any(abs(x_c - float(sp.re(sp.N(a['val'])))) < 1e-3 for a in cache['unique_asymptotes'] if a['type'] == 'v'):
                                     intersect_x.append(float(x_c))
                                     
             if len(diff_plot) > 0 and diff_plot[-1] == 0 and diff_plot[-2] != 0:
                 x_c = cache['x_vals_plot'][-1]
-                if not any(abs(x_c - float(sp.N(a['val']))) < 1e-3 for a in cache['unique_asymptotes'] if a['type'] == 'v'):
+                if not any(abs(x_c - float(sp.re(sp.N(a['val'])))) < 1e-3 for a in cache['unique_asymptotes'] if a['type'] == 'v'):
                     intersect_x.append(float(x_c))
 
             unique_intersect_x = []
@@ -1440,7 +1585,6 @@ else:
                 pdf_bytes = pdf_file.read()
             st.download_button(label="📥 تحميل الحل والدراسة كملف PDF", data=pdf_bytes, file_name="monaqasha_souaissia.pdf", mime="application/pdf", disabled=st.session_state.auto_play)
 
-# الشريط السفلي لروابط التواصل الاجتماعي
 st.markdown("""
 <div class='footer-social'>
     <span class='footer-text'>رابط صفحتي في كل من الفايسبوك والانستغرام:</span>
