@@ -147,12 +147,13 @@ def get_sol_color_html(sol_text):
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
-if 'f_val' not in st.session_state: st.session_state.f_val = "(-x + ln(x) + 1)/(x - 1)"
+if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(abs(x))"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
-    t_sel = st.radio("توجيه الإدخال إلى:", ["f(x) الدالة", "m المستقيم بدلالة"], horizontal=True)
+    # تصليح مشكلة توجيه لوحة المفاتيح بمنح الزر مفتاحاً (key) ليحتفظ بذاكرته
+    t_sel = st.radio("🎯 تحديد خانة الكتابة:", ["f(x) الدالة", "m المستقيم بدلالة"], horizontal=True, key="kbd_radio")
     st.session_state.kbd_target = "f" if t_sel == "f(x) الدالة" else "g"
     
     def k_click(char):
@@ -227,7 +228,6 @@ def build_math_context(f_str, g_str):
         f_func = sp.lambdify(x_sym, f_expr, 'numpy')
         g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
         
-        # استخراج النقاط الممنوعة أولاً لتحديد المقاربات الحقيقية والثقوب
         candidate_v_asymptotes = []
         try:
             n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
@@ -242,7 +242,6 @@ def build_math_context(f_str, g_str):
         except: pass
         candidate_v_asymptotes = list(set(candidate_v_asymptotes))
         
-        # التفرقة بين المقارب العمودي الحقيقي والثقب (نهاية منتهية)
         true_v_asymptotes = []
         holes = []
         for r in candidate_v_asymptotes:
@@ -252,7 +251,6 @@ def build_math_context(f_str, g_str):
                 if lim_p in [sp.oo, -sp.oo, sp.zoo] or lim_m in [sp.oo, -sp.oo, sp.zoo]:
                     true_v_asymptotes.append(r)
                 else:
-                    # نهاية منتهية إذن هو ثقب (إزالة المقارب الخاطئ)
                     val_p = float(sp.N(lim_p))
                     if np.isfinite(val_p):
                         holes.append({'sym': r, 'val': float(sp.N(r)), 'lim': val_p})
@@ -263,7 +261,6 @@ def build_math_context(f_str, g_str):
         for r in true_v_asymptotes:
             unique_asymptotes.append({'type': 'v', 'val': float(sp.N(r)), 'label': f"x={sanitize_latex(r)}"})
 
-        # حقن القيم لرسم المنحنى بدقة فائقة عند جميع النقاط الممنوعة
         x_base = np.linspace(-15, 15, 6001)
         x_roots_base = np.concatenate([np.linspace(-500, -15, 2000, endpoint=False), np.linspace(-15, 15, 6001), np.linspace(15, 500, 2000)])
         
@@ -312,7 +309,6 @@ def build_math_context(f_str, g_str):
 
         pts_var_exact = []
         pts_var_exact.append({'val': -np.inf, 'sym': -sp.oo, 'latex_x': r"-\infty", 'type': 'inf'})
-        # إضافة كل النقاط الممنوعة في جدول التغيرات كجدار (بما فيها الثقوب والمقاربات)
         for r in candidate_v_asymptotes:
             pts_var_exact.append({'val': float(sp.N(r)), 'sym': r, 'latex_x': sanitize_latex(r), 'type': 'v_asym'})
         for r in sym_extrema:
@@ -539,7 +535,6 @@ def build_math_context(f_str, g_str):
             return exactify_value(val_float)
 
         def is_valid_root(x_val):
-            # التأكد من أنه لا يقع تماماً على مقارب عمودي أو ثقب
             if any(abs(x_val - float(sp.N(a['val']))) < 1e-3 for a in unique_asymptotes if a['type'] == 'v'): return False
             if any(abs(x_val - h['val']) < 1e-3 for h in holes): return False
             try:
@@ -1030,7 +1025,6 @@ else:
                     ax.text(asym['val'] + 0.15, ax.get_ylim()[1]-1.5, f"${asym['label']}$", color=c_asym, fontsize=14, fontweight='bold', va='top')
             except: pass
             
-        # رسم الثقوب بدلاً من المقاربات الوهمية
         for hole in cache['holes']:
             ax.plot(hole['val'], hole['lim'], marker='o', markerfacecolor=bg_leg, markeredgecolor=c_cf, markersize=8, markeredgewidth=2, zorder=6)
         
