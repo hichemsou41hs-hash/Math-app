@@ -373,35 +373,37 @@ if valid_input:
     except:
         m_expr = f_expr
 
+    m_critical_num = []
+
+    # 1. استخراج النهايات عند المالانهاية
     try:
         for direction in [sp.oo, -sp.oo]:
             lim = sp.limit(m_expr, x_sym, direction)
-            if lim.is_real: sym_m_critical.append(lim)
+            if lim.is_real and np.isfinite(float(sp.N(lim))):
+                m_critical_num.append(float(sp.N(lim)))
     except: pass
 
+    # 2. استخراج النهايات عند أطراف مجموعة التعريف (يحل مشكلة غياب m=0)
+    for boundary in candidate_v_asymptotes:
+        for dir in ['+', '-']:
+            try:
+                lim = sp.limit(m_expr, x_sym, boundary, dir=dir)
+                if lim.is_real and np.isfinite(float(sp.N(lim))):
+                    m_critical_num.append(float(sp.N(lim)))
+            except: pass
+            
     try:
-        for r in sym_extrema:
-            sym_m_val = sp.simplify(m_expr.subs(x_sym, r))
-            if sym_m_val.is_real: sym_m_critical.append(sym_m_val)
+        val_0 = float(sp.N(sp.simplify(m_expr.subs(x_sym, 0))))
+        if np.isfinite(val_0): m_critical_num.append(val_0)
     except: pass
-
     try:
-        dm_expr = sp.diff(m_expr, x_sym)
-        for r in sp.solve(dm_expr, x_sym):
-            if r.is_real is not False and sp.im(sp.N(r)) == 0:
-                sym_m_val = sp.simplify(m_expr.subs(x_sym, r))
-                if sym_m_val.is_real: sym_m_critical.append(sym_m_val)
+        lim_0 = sp.limit(m_expr, x_sym, 0, dir='+')
+        if lim_0.is_real and np.isfinite(float(sp.N(lim_0))):
+            m_critical_num.append(float(sp.N(lim_0)))
     except: pass
 
-    m_critical_num = []
-    for sm in sym_m_critical:
-        fl_m = float(sp.N(sm))
-        if np.isfinite(fl_m) and abs(fl_m) < 100: m_critical_num.append(round(fl_m, 2))
-
-    # دالة ذكية واستخراج نقاط التماس بدقة لجميع الدوال بلا استثناء
+    # 3. استخراج نقاط التماس الدقيقة رياضياً 
     exact_tangent_points = []
-    
-    # 1. التماس الدقيق عبر الحل التحليلي للمشتقة (SymPy)
     try:
         dm_expr = sp.diff(m_expr, x_sym)
         for r in sp.solve(dm_expr, x_sym):
@@ -409,9 +411,10 @@ if valid_input:
                 val_x = float(sp.N(r))
                 val_m = float(sp.N(sp.simplify(m_expr.subs(x_sym, r))))
                 exact_tangent_points.append({'x': val_x, 'm_req': val_m})
+                if np.isfinite(val_m): m_critical_num.append(val_m)
     except: pass
 
-    # 2. التماس التقريبي كحل بديل (Fallback)
+    # 4. الدعم العددي الشامل (Fallback)
     try:
         m_func_eval = sp.lambdify(x_sym, m_expr, 'numpy')
         x_test_m = np.linspace(-25, 25, 100001)
@@ -429,6 +432,10 @@ if valid_input:
         for s, e in zip(starts_m, ends_m):
             segment = y_test_m[s:e+1]
             seg_x = x_test_m[s:e+1]
+            
+            if s > 0 and np.isfinite(y_test_m[s]): m_critical_num.append(float(y_test_m[s]))
+            if e < len(x_test_m) - 1 and np.isfinite(y_test_m[e]): m_critical_num.append(float(y_test_m[e]))
+            
             if len(segment) > 10:
                 peaks, _ = find_peaks(segment, prominence=0.05)
                 valleys, _ = find_peaks(-segment, prominence=0.05)
@@ -437,23 +444,19 @@ if valid_input:
                     val_m = float(segment[p])
                     if not any(abs(val_x - tp['x']) < 0.1 for tp in exact_tangent_points):
                         exact_tangent_points.append({'x': val_x, 'm_req': val_m})
-                    m_critical_num.append(round(val_m, 2))
+                    m_critical_num.append(val_m)
                 for v in valleys:
                     val_x = float(seg_x[v])
                     val_m = float(segment[v])
                     if not any(abs(val_x - tp['x']) < 0.1 for tp in exact_tangent_points):
                         exact_tangent_points.append({'x': val_x, 'm_req': val_m})
-                    m_critical_num.append(round(val_m, 2))
+                    m_critical_num.append(val_m)
     except: pass
-    
-    # دمج نقاط التماس التي تم العثور عليها بدقة لتكون قيما حرجة في الجدول
-    for tp in exact_tangent_points:
-        if np.isfinite(tp['m_req']):
-            m_critical_num.append(round(tp['m_req'], 2))
-            
+
+    # إضافة المستقيمات المقاربة الأفقية
     for asym in unique_asymptotes:
         if asym['type'] == 'h':
-            m_critical_num.append(round(asym['val'], 2))
+            m_critical_num.append(asym['val'])
 
     m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 100])))
 
@@ -482,7 +485,7 @@ if valid_input:
                 return latex_str
         return fmt(val_float)
 
-    # دالة ذكية لفحص الانتماء الدقيق للحلول لجميع الدوال
+    # فلترة صارمة لمنع الحلول الوهمية خارج مجموعة التعريف (Domain Enforcement)
     def is_valid_root(x_val):
         if any(abs(x_val - float(sp.N(a['val']))) < 1e-3 for a in unique_asymptotes if a['type'] == 'v'):
             return False
@@ -534,7 +537,7 @@ if valid_input:
                     tangents.append((crossings[i] + crossings[i+1])/2.0); skip = True
                 else: cleaned_crossings.append(crossings[i])
             
-            # 3. الاعتماد كلياً على القيم الدقيقة (Exact) بدلاً من الفحص البصري لحساب المماسات بشكل قطعي
+            # احتساب المماسات الرياضية الدقيقة بشكل مطلق
             for tp in exact_tangent_points:
                 if abs(tp['m_req'] - m_test) < 0.05:
                     if is_valid_root(tp['x']):
