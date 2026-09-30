@@ -147,8 +147,8 @@ def get_sol_color_html(sol_text):
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -6.0
-if 'f_val' not in st.session_state: st.session_state.f_val = "ln(x)"
-if 'g_val' not in st.session_state: st.session_state.g_val = "m*(x-1)"
+if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(abs(x))"
+if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
@@ -370,9 +370,7 @@ if valid_input:
         m_expr = f_expr
 
     m_critical_num = []
-    exact_tangent_points = []
-
-    # استخراج النهايات عند أطراف مجموعة التعريف وحالة النقطة الثابتة (للمناقشة الدورانية)
+    
     m_candidate_boundaries = list(candidate_v_asymptotes)
     try:
         n_expr, d_expr = sp.fraction(sp.cancel(m_expr))
@@ -391,6 +389,8 @@ if valid_input:
                 sym_m_critical.append(sp.simplify(lim))
     except: pass
 
+    exact_tangent_points = []
+    
     for boundary in m_candidate_boundaries:
         for dir in ['+', '-']:
             try:
@@ -399,7 +399,6 @@ if valid_input:
                     val_m = float(sp.N(lim))
                     m_critical_num.append(val_m)
                     sym_m_critical.append(sp.simplify(lim))
-                    # الكشف التلقائي عن نقطة الدوران المركزية وإضافتها كمماس لتصحيح الخلل
                     try:
                         if np.isfinite(float(f_func(float(sp.N(boundary))))):
                             exact_tangent_points.append({'x': float(sp.N(boundary)), 'm_req': val_m})
@@ -628,6 +627,15 @@ if valid_input:
             m_latex = fr"m \in ]{L_latex} ; {H_latex}["
             
         final_table.append((m_latex, sol_text, L, H))
+
+    st.write("") 
+    if not st.session_state.auto_play:
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("تشغيل المناقشة آلياً ▶️"):
+                st.session_state.auto_play = True
+                st.session_state.m_anim = m_min_val
+                st.rerun()
 
     def generate_st_markdown_table(current_m):
         md = "| عدد و إشارة حلول المعادلة | المجال / القيمة المضبوطة |\n"
@@ -932,87 +940,6 @@ if valid_input:
 
     var_table_image_path = generate_variation_table_image()
 
-    def generate_pdf(fig_path):
-        if not PDF_ENABLED: return None
-        pdf = FPDF(orientation='P', unit='mm', format='A4')
-        font_path = "Amiri-Regular.ttf"
-        
-        if not os.path.exists(font_path) or os.path.getsize(font_path) < 10000:
-            try:
-                req = urllib.request.Request("https://github.com/google/fonts/raw/main/ofl/amiri/Amiri-Regular.ttf", headers={'User-Agent': 'Mozilla/5.0'})
-                with urllib.request.urlopen(req) as response, open(font_path, 'wb') as out_file: out_file.write(response.read())
-            except: pass
-        if not os.path.exists(font_path) or os.path.getsize(font_path) < 10000: return None
-            
-        pdf.add_font("Amiri", "", font_path, uni=True)
-        
-        pdf.add_page()
-        pdf.set_font("Amiri", size=22)
-        pdf.set_text_color(21, 101, 192)
-        pdf.cell(0, 12, fix_arabic_pdf("الأستاذ سوايسية هشام - دراسة الدالة والمناقشة البيانية"), ln=True, align='C')
-        pdf.ln(3)
-        
-        pdf.set_font("Amiri", size=15)
-        pdf.set_text_color(194, 24, 91) 
-        pdf.cell(0, 8, fix_arabic_pdf("1. استنتاج مجموعة التعريف وحساب النهايات:"), ln=True, align='R')
-        pdf.ln(1)
-        if limits_image_path:
-            pdf.image(limits_image_path, x=20, w=170)
-            pdf.ln(4)
-
-        pdf.set_font("Amiri", size=15)
-        pdf.set_text_color(194, 24, 91) 
-        pdf.cell(0, 8, fix_arabic_pdf("2. حساب الدالة المشتقة:"), ln=True, align='R')
-        pdf.ln(1)
-        if deriv_image_path:
-            pdf.image(deriv_image_path, x=45, w=120)
-            pdf.ln(4)
-
-        pdf.set_font("Amiri", size=15)
-        pdf.set_text_color(194, 24, 91) 
-        pdf.cell(0, 8, fix_arabic_pdf("3. جدول التغيرات:"), ln=True, align='R')
-        pdf.ln(3)
-        if var_table_image_path:
-            pdf.image(var_table_image_path, x=10, w=190)
-
-        pdf.add_page()
-        pdf.set_font("Amiri", size=17)
-        pdf.set_text_color(21, 101, 192)
-        pdf.cell(0, 9, fix_arabic_pdf("4. التمثيل البياني للدالة (Cf):"), ln=True, align='R')
-        pdf.ln(1)
-        pdf.image(fig_path, x=20, w=170)
-        pdf.ln(4)
-        
-        pdf.set_font("Amiri", size=17)
-        pdf.set_text_color(194, 24, 91)
-        pdf.cell(0, 9, fix_arabic_pdf("5. جدول نتائج المناقشة البيانية لحلول المعادلة:"), ln=True, align='R')
-        pdf.ln(1)
-        
-        eq_image_path = generate_eq_image()
-        if eq_image_path:
-            pdf.image(eq_image_path, x=60, w=90)
-            pdf.ln(2)
-
-        disc_table_img = generate_pdf_discussion_table()
-        if disc_table_img:
-            pdf.image(disc_table_img, x=15, w=180)
-
-        pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
-        pdf.output(pdf_file.name)
-        return pdf_file.name
-
-    st.write("") 
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("تشغيل المناقشة آلياً ▶️"):
-            st.session_state.auto_play = True
-            st.session_state.m_anim = m_min_val
-            st.rerun()
-    with col2:
-        if st.button("إيقاف ⏹️"):
-            st.session_state.auto_play = False
-            st.rerun()
-
     placeholder = st.empty()
 
     def draw_plot(m_val, mode='dark'):
@@ -1170,7 +1097,7 @@ if valid_input:
         plt.close(fig_dark)
 
     if st.session_state.auto_play:
-        if st.session_state.m_anim <= m_max_val:
+        while st.session_state.auto_play and st.session_state.m_anim <= m_max_val:
             m_val = round(st.session_state.m_anim, 2)
             update_view(m_val)
             is_critical_now = any(abs(st.session_state.m_anim - mc) < 0.05 for mc in m_critical_num)
@@ -1182,10 +1109,9 @@ if valid_input:
                 if st.session_state.m_anim < mc - 1e-4 and next_m >= mc - 1e-4:
                     next_m = float(mc); break
             st.session_state.m_anim = next_m
-            st.rerun()
-        else:
-            st.session_state.auto_play = False
-            st.rerun()
+            
+        st.session_state.auto_play = False
+        st.rerun()
     else:
         if 'manual_m' in st.session_state:
             if st.session_state.manual_m < m_min_val or st.session_state.manual_m > m_max_val:
