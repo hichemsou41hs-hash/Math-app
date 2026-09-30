@@ -38,12 +38,9 @@ import time
 import warnings
 import re
 import os
-import io
-import json
 import urllib.request
-import urllib.parse
 import tempfile
-from PIL import Image, ImageOps, ImageFilter
+from PIL import Image
 from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
 
 try:
@@ -117,12 +114,10 @@ def fmt(val):
     except:
         return str(val)
 
-# مطهر ومترجم رياضي شامل يدعم LaTeX و exp ونتائج الـ OCR
 def clean_ocr_math(raw_str):
     if not raw_str:
         return ""
-    s = raw_str.strip()
-    s = s.replace('`', '').replace('$', '').strip()
+    s = raw_str.strip().replace('`', '').replace('$', '').strip()
     lines = [line.strip() for line in s.splitlines() if line.strip()]
     if lines:
         for line in lines:
@@ -132,11 +127,9 @@ def clean_ocr_math(raw_str):
         else:
             s = lines[0]
 
-    # إزالة البادئات مثل f(x) = أو y =
     s = re.sub(r'^[fFgGyY]\s*\(\s*x\s*\)\s*=\s*', '', s)
     s = re.sub(r'^[yY]\s*=\s*', '', s)
 
-    # توحيد الرموز الرياضية والأسس
     replacements = {
         '−': '-', '–': '-', '—': '-', '×': '*', '÷': '/', '⋅': '*', '·': '*',
         '²': '^2', '³': '^3', '⁴': '^4', '√': 'sqrt',
@@ -147,20 +140,16 @@ def clean_ocr_math(raw_str):
     for k, v in replacements.items():
         s = s.replace(k, v)
 
-    # تحويل كسور LaTeX: \frac{a}{b} -> ((a)/(b))
     for _ in range(5):
         new_s = re.sub(r'\\d?frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}', r'((\1)/(\2))', s)
         if new_s == s:
             break
         s = new_s
 
-    # تحويل الجذور والأسس في LaTeX
     s = re.sub(r'sqrt\s*\{([^{}]+)\}', r'sqrt(\1)', s)
     s = re.sub(r'\^\s*\{([^{}]+)\}', r'^(\1)', s)
     s = s.replace('{', '(').replace('}', ')')
     s = s.replace('\\', '')
-
-    # تحويل القيمة المطلقة |...| إلى abs(...)
     s = re.sub(r'\|([^|]+)\|', r'abs(\1)', s)
     return s.strip()
 
@@ -169,82 +158,54 @@ def fix_implicit_mult(expr_str):
     if "()" in expr_str:
         expr_str = expr_str.replace("()", "(1)")
     expr_str = expr_str.replace('^', '**')
-    # حماية الكلمات المحجوزة مثل exp و ln و sqrt من التفكيك الخاطئ
     expr_str = re.sub(r'([xy0-9\)])\s*(exp|ln|log|cos|sin|tan|sqrt|abs|pi)\b', r'\1*\2', expr_str)
     expr_str = re.sub(r'([xy0-9\)])\s*(e)\b(?![a-zA-Z])', r'\1*\2', expr_str)
     expr_str = re.sub(r'\b(e|pi)\s*([xy0-9\(])', r'\1*\2', expr_str)
     return expr_str
 
-# محرك OCR مزدوج (Gemini Vision متعدد النماذج + محرك OCR احتياطي مجاني)
-def extract_math_from_image(image_file, api_key=None):
-    img = Image.open(image_file).convert("RGB")
-    
-    # تحسين جودة الصورة وتباينها لزيادة دقة الـ OCR
-    img_gray = ImageOps.grayscale(img)
-    img_contrast = ImageOps.autocontrast(img_gray)
-    img_sharp = img_contrast.filter(ImageFilter.SHARPEN)
+def extract_math_from_image(image_file, api_key):
+    import google.generativeai as genai
+    genai.configure(api_key=api_key)
+    img = Image.open(image_file)
 
     prompt = (
-        "You are an expert mathematical OCR system. Extract ONLY the mathematical function expression f(x) from this image.\n"
-        "Rules:\n"
-        "1. Output ONLY the raw right-hand side expression (do NOT write 'f(x) =' or 'y =').\n"
-        "2. Use Python/SymPy syntax: ^ or ** for powers, * for multiplication, / for division, exp(...) or e^(...) for exponential, ln(...) for natural logarithm, sqrt(...) for square root, abs(...) for absolute value |x|.\n"
-        "3. Wrap numerators and denominators in parentheses, e.g., (x + 1)/(x - 1).\n"
-        "4. Do NOT output markdown, backticks, LaTeX, or explanations."
+        "Extract ONLY the mathematical function expression from this image. "
+        "Convert it to a simple string compatible with Python/SymPy "
+        "(use ** for powers, * for multiplication, / for division, exp() or e**() for exponential, "
+        "sqrt() for roots, abs() for absolute value, ln() for natural log). "
+        "Do NOT include 'f(x) =' or 'y ='. "
+        "DO NOT output any markdown, LaTeX, or explanatory text. Just the raw math string."
     )
 
-    errors_log = []
-
-    # 1. المحاولة عبر نماذج Gemini Vision المتعددة
-    if api_key:
-        try:
-            import google.generativeai as genai
-            genai.configure(api_key=api_key)
-            candidate_models = [
-                'gemini-2.5-flash',
-                'gemini-2.0-flash',
-                'gemini-1.5-flash',
-                'gemini-1.5-pro'
-            ]
-            for model_name in candidate_models:
-                try:
-                    model = genai.GenerativeModel(model_name)
-                    response = model.generate_content([prompt, img])
-                    if response and response.text:
-                        cleaned = clean_ocr_math(response.text)
-                        if cleaned:
-                            return cleaned, None
-                except Exception as model_err:
-                    errors_log.append(f"{model_name}: {str(model_err)}")
-                    continue
-        except Exception as e:
-            errors_log.append(str(e))
-
-    # 2. المحرك الاحتياطي المجاني (OCR.space API) في حال ضغط الخادم أو غياب المفتاح
+    candidate_models = [
+        'gemini-3.8-flash',
+        'gemini-2.5-flash',
+        'gemini-2.0-flash',
+        'gemini-1.5-flash'
+    ]
     try:
-        buffered = io.BytesIO()
-        img_sharp.save(buffered, format="JPEG", quality=92)
-        img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
-        payload = urllib.parse.urlencode({
-            'apikey': 'helloworld',
-            'base64Image': f'data:image/jpeg;base64,{img_base64}',
-            'language': 'eng',
-            'isOverlayRequired': 'false',
-            'OCREngine': '2'
-        }).encode('utf-8')
-        req = urllib.request.Request("https://api.ocr.space/parse/image", data=payload, headers={'User-Agent': 'Mozilla/5.0'})
-        with urllib.request.urlopen(req, timeout=12) as resp:
-            result = json.loads(resp.read().decode('utf-8'))
-            parsed_results = result.get('ParsedResults', [])
-            if parsed_results:
-                raw_text = parsed_results[0].get('ParsedText', '')
-                cleaned = clean_ocr_math(raw_text)
+        for m in genai.list_models():
+            if 'generateContent' in getattr(m, 'supported_generation_methods', []):
+                m_name = m.name.replace('models/', '')
+                if m_name not in candidate_models:
+                    candidate_models.append(m_name)
+    except Exception:
+        pass
+
+    last_err = ""
+    for model_name in candidate_models:
+        try:
+            model = genai.GenerativeModel(model_name)
+            response = model.generate_content([prompt, img])
+            if response and response.text:
+                cleaned = clean_ocr_math(response.text)
                 if cleaned:
                     return cleaned, None
-    except Exception as ocr_err:
-        errors_log.append(f"Fallback OCR: {str(ocr_err)}")
+        except Exception as e:
+            last_err = str(e)
+            continue
 
-    return None, " | ".join(errors_log) if errors_log else "تعذر استخراج النص من الصورة."
+    return None, last_err
 
 def fix_arabic_pdf(text):
     return get_display(arabic_reshaper.reshape(text)) if PDF_ENABLED else text
@@ -330,19 +291,22 @@ except: pass
 
 col_text, col_img = st.columns(2)
 with col_img:
-    img_file = st.file_uploader("🖼 ارفع صورة الدالة لاستخراجها آلياً (Math OCR):", type=['png', 'jpg', 'jpeg', 'webp'])
-    st.markdown("<div style='font-size:14px; color:#94A3B8; text-align:right; direction:rtl; margin-top:-10px; margin-bottom:10px;'>💡 <b>ملاحظة:</b> يرجى قص الصورة لتشمل عبارة الدالة فقط للحصول على أعلى دقة استخراج.</div>", unsafe_allow_html=True)
+    img_file = st.file_uploader("🖼 ارفع صورة الدالة لاستخراجها آلياً:", type=['png', 'jpg', 'jpeg', 'webp'])
+    st.markdown("<div style='font-size:14px; color:#94A3B8; text-align:right; direction:rtl; margin-top:-10px; margin-bottom:10px;'>💡 <b>ملاحظة:</b> في حال وجود ضغط على خادم الذكاء الاصطناعي وفشل قراءة الصورة، يرجى كتابة الدالة يدوياً في الخانة المجاورة.</div>", unsafe_allow_html=True)
     if img_file:
-        if st.button("استخراج الدالة من الصورة 🤖", use_container_width=True):
-            with st.spinner("جاري تحليل الصورة واستخراج العبارة الرياضية..."):
-                extracted_text, err_msg = extract_math_from_image(img_file, api_key)
-                if extracted_text:
-                    st.session_state.f_val = extracted_text
-                    st.success(f"✅ تم الاستخراج بنجاح: {extracted_text}")
-                    time.sleep(0.8)
-                    st.rerun()
-                else:
-                    st.error("⚠️ تعذر قراءة الصورة آلياً. يرجى التأكد من وضوح الصورة أو كتابة الدالة يدوياً.")
+        if not api_key:
+            st.error("⚠️ خاصية الذكاء الاصطناعي غير مفعلة (ينقص مفتاح API).")
+        else:
+            if st.button("استخراج الدالة 🤖", use_container_width=True):
+                with st.spinner("جاري قراءة الصورة..."):
+                    extracted_text, err_msg = extract_math_from_image(img_file, api_key)
+                    if extracted_text:
+                        st.session_state.f_val = extracted_text
+                        st.success(f"✅ تم الاستخراج بنجاح: {extracted_text}")
+                        time.sleep(0.8)
+                        st.rerun()
+                    else:
+                        st.error(f"❌ تعذر استخراج الدالة حالياً: {err_msg}")
 
 with col_text:
     st.text_input("أدخل عبارة الدالة f(x):", key="f_val")
@@ -352,7 +316,7 @@ current_f = st.session_state.f_val
 current_g = st.session_state.g_val
 
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v5"):
+def build_math_context(f_str, g_str, version_tag="v6"):
     cache = {'valid': False, 'error': ''}
     try:
         x_sym, m_sym = sp.symbols('x m', real=True)
@@ -961,23 +925,23 @@ def build_math_context(f_str, g_str, version_tag="v5"):
                         ax_v.add_patch(rect)
                     else:
                         ax_v.text(x_ic, 4.5, f"${signs[i]}$", ha='center', va='center', fontsize=26, color='#D32F2F' if signs[i]=='-' else '#2E7D32')
-                def get_lim_latex_for_table(l_sym): return "+\infty" if l_sym == sp.oo else sanitize_latex(l_sym)
+                def get_lim_latex_for_table(l_sym): return "+\infty" if l_sym == sp.oo else ("-\infty" if l_sym == -sp.oo else sanitize_latex(l_sym))
                 if p['type'] == 'inf':
                     try:
                         lim = sp.limit(f_expr, x_sym, p['sym'])
                         dx = 0.5 if p['val'] == -np.inf else -0.5
-                        nodes.append((x_c+dx, float(sp.re(sp.N(lim))) if lim.is_real else float('inf') if lim==sp.oo else float('-inf'), get_lim_latex_for_table(lim)))
+                        nodes.append((x_c+dx, float('inf') if lim==sp.oo else (float('-inf') if lim==-sp.oo else float(sp.re(sp.N(lim)))), get_lim_latex_for_table(lim)))
                     except: pass
                 elif p['type'] == 'v_asym':
                     if i > 0 and valid_intervals[i-1]:
                         try:
                             lim_l = sp.limit(f_expr, x_sym, p['sym'], dir='-')
-                            nodes.append((x_c-0.4, float(sp.re(sp.N(lim_l))) if lim_l.is_real else float('inf') if lim_l==sp.oo else float('-inf'), get_lim_latex_for_table(lim_l)))
+                            nodes.append((x_c-0.4, float('inf') if lim_l==sp.oo else (float('-inf') if lim_l==-sp.oo else float(sp.re(sp.N(lim_l)))), get_lim_latex_for_table(lim_l)))
                         except: pass
                     if i < N-1 and valid_intervals[i]:
                         try:
                             lim_r = sp.limit(f_expr, x_sym, p['sym'], dir='+')
-                            nodes.append((x_c+0.4, float(sp.re(sp.N(lim_r))) if lim_r.is_real else float('inf') if lim_r==sp.oo else float('-inf'), get_lim_latex_for_table(lim_r)))
+                            nodes.append((x_c+0.4, float('inf') if lim_r==sp.oo else (float('-inf') if lim_r==-sp.oo else float(sp.re(sp.N(lim_r)))), get_lim_latex_for_table(lim_r)))
                         except: pass
                 elif p['type'] in ['extrema', 'corner']:
                     try:
@@ -985,6 +949,8 @@ def build_math_context(f_str, g_str, version_tag="v5"):
                         val_y = float(sp.re(sp.N(sym_y)))
                         nodes.append((x_c, val_y, exactify_value(val_y, sym_y)))
                     except: pass
+
+            drawn_nodes = set()
             for i in range(N - 1):
                 if valid_intervals[i]:
                     x_c_left = x_start_data + (col_w / 2.0) + i * col_w
@@ -992,17 +958,28 @@ def build_math_context(f_str, g_str, version_tag="v5"):
                     l_node = next((n for n in nodes if n[0] >= x_c_left and n[0] <= x_c_left + 0.7), None)
                     r_node = next((n for n in nodes if n[0] >= x_c_right - 0.7 and n[0] <= x_c_right), None)
                     if l_node and r_node:
-                        y_l = 0.8 if signs[i] == "+" else 3.2
-                        y_r = 3.2 if signs[i] == "+" else 0.8
-                        if y_l == y_r: y_l = 2.0; y_r = 2.0
-                        try: ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
-                        except: pass
-                        try: ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
-                        except: pass
-                        pad_x, pad_y = 0.35, 0.4
+                        is_left_inflection = (i > 0 and valid_intervals[i-1] and signs[i-1] == signs[i] and pts_var_exact[i]['type'] == 'extrema')
+                        is_right_inflection = (i < N - 2 and valid_intervals[i+1] and signs[i] == signs[i+1] and pts_var_exact[i+1]['type'] == 'extrema')
+                        
+                        y_l = 2.0 if is_left_inflection else (0.8 if signs[i] == "+" else 3.2)
+                        y_r = 2.0 if is_right_inflection else (3.2 if signs[i] == "+" else 0.8)
+                        
+                        if l_node[0] not in drawn_nodes:
+                            try:
+                                ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
+                                drawn_nodes.add(l_node[0])
+                            except: pass
+                        if r_node[0] not in drawn_nodes:
+                            try:
+                                ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
+                                drawn_nodes.add(r_node[0])
+                            except: pass
+                        
+                        pad_x, pad_y = 0.35, 0.35
                         start_x, end_x = l_node[0] + pad_x, r_node[0] - pad_x
-                        start_y = y_l + (pad_y if signs[i]=="+" else -pad_y)
-                        end_y = y_r + (-pad_y if signs[i]=="+" else pad_y)
+                        slope_up = (y_r > y_l)
+                        start_y = y_l + (pad_y if slope_up else -pad_y)
+                        end_y = y_r + (-pad_y if slope_up else pad_y)
                         if y_l == y_r: start_y = end_y = y_l
                         ax_v.annotate('', xy=(end_x, end_y), xytext=(start_x, start_y), arrowprops=dict(arrowstyle="->", color="#1565C0", lw=2.5))
             ax_v.set_xlim(0, x_max); ax_v.set_ylim(0, 6)
@@ -1275,12 +1252,12 @@ def build_math_context(f_str, g_str, version_tag="v5"):
         cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v5":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v6":
     with st.spinner("جاري التحليل الرياضي الدقيق (تتم هذه العملية مرة واحدة لتسريع حركة المناقشة الآلية)..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v5")
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v6")
         st.session_state.last_f = current_f
         st.session_state.last_g = current_g
-        st.session_state.cache_ver = "v5"
+        st.session_state.cache_ver = "v6"
 
 cache = st.session_state.math_cache
 
@@ -1301,7 +1278,7 @@ else:
             st.session_state.m_anim = m_min_val
             st.rerun()
     with col2:
-        if st.button("إيقاف ⏹️️", disabled=not st.session_state.auto_play):
+        if st.button("إيقاف ⏹", disabled=not st.session_state.auto_play):
             st.session_state.auto_play = False
             st.rerun()
     
