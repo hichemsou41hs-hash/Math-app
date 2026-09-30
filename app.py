@@ -380,14 +380,6 @@ if valid_input:
     except: pass
 
     try:
-        val_0 = sp.simplify(m_expr.subs(x_sym, 0))
-        if val_0.is_real: sym_m_critical.append(val_0)
-        else:
-            lim_0 = sp.limit(m_expr, x_sym, 0)
-            if lim_0.is_real: sym_m_critical.append(lim_0)
-    except: pass
-    
-    try:
         for r in sym_extrema:
             sym_m_val = sp.simplify(m_expr.subs(x_sym, r))
             if sym_m_val.is_real: sym_m_critical.append(sym_m_val)
@@ -406,52 +398,16 @@ if valid_input:
         fl_m = float(sp.N(sm))
         if np.isfinite(fl_m) and abs(fl_m) < 100: m_critical_num.append(round(fl_m, 2))
 
-    try:
-        m_func_eval = sp.lambdify(x_sym, m_expr, 'numpy')
-        x_test_m = np.linspace(-25, 25, 100001)
-        with np.errstate(divide='ignore', invalid='ignore'):
-            y_test_m = m_func_eval(x_test_m)
-            if np.iscomplexobj(y_test_m): y_test_m = np.where(np.isreal(y_test_m), y_test_m.real, np.nan)
-            
-        is_val_m = ~np.isnan(y_test_m)
-        edges_m = np.diff(is_val_m.astype(int))
-        starts_m = np.where(edges_m == 1)[0] + 1
-        if is_val_m[0]: starts_m = np.insert(starts_m, 0, 0)
-        ends_m = np.where(edges_m == -1)[0]
-        if is_val_m[-1]: ends_m = np.append(ends_m, len(y_test_m) - 1)
+    # إضافة استخراج القيم الحدية الشاملة تلقائياً من جدول التغيرات (نقاط الذروة والقمم والقيعان)
+    for p in pts_var_exact:
+        if p['type'] in ['extrema', 'corner']:
+            try:
+                y_extr = float(sp.N(sp.simplify(f_expr.subs(x_sym, p['sym']))))
+                if np.isfinite(y_extr):
+                    m_critical_num.append(round(y_extr, 2))
+            except: pass
 
-        for s, e in zip(starts_m, ends_m):
-            segment = y_test_m[s:e+1]
-            if len(segment) > 0:
-                if s > 0 and np.isfinite(y_test_m[s]): m_critical_num.append(round(float(y_test_m[s]), 2))
-                if e < len(x_test_m) - 1 and np.isfinite(y_test_m[e]): m_critical_num.append(round(float(y_test_m[e]), 2))
-                
-                if len(segment) > 10:
-                    peaks, _ = find_peaks(segment, prominence=0.05)
-                    valleys, _ = find_peaks(-segment, prominence=0.05)
-                    for p in peaks: m_critical_num.append(round(float(segment[p]), 2))
-                    for v in valleys: m_critical_num.append(round(float(segment[v]), 2))
-    except: pass
-    
-    # فلترة إضافية للقيم الحرجة وتصحيح القيمة 0 للمستقيمات المقاربة الأفقية الوهمية أو الحلول خارج مجموعة التعريف
-    cleaned_m_critical = []
-    for m in m_critical_num:
-        if np.isfinite(m) and abs(m) < 100:
-            # التحقق مما إذا كان هذا المستوى يحقق تقاطعاً حقيقياً داخل مجال التعريف
-            test_crossings = 0
-            with np.errstate(divide='ignore', invalid='ignore'):
-                y_g_t = g_func(x_vals_roots, m)
-                if np.isscalar(y_g_t): y_g_t = np.full_like(x_vals_roots, y_g_t, dtype=float)
-                diff_t = y_vals_roots - y_g_t
-            for k in range(len(diff_t)-1):
-                if np.isfinite(diff_t[k]) and np.isfinite(diff_t[k+1]) and diff_t[k]*diff_t[k+1] < 0:
-                    test_crossings += 1
-            if test_crossings > 0 or abs(m - 3.59) < 0.1 or abs(m - 0.0) < 0.05:
-                cleaned_m_critical.append(round(m, 2))
-                
-    m_critical_num = sorted(list(set(cleaned_m_critical)))
-    if 0.0 not in m_critical_num: m_critical_num.append(0.0)
-    m_critical_num = sorted(m_critical_num)
+    m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 100])))
 
     m_min_val = -6.0
     m_max_val = 6.0
@@ -464,7 +420,9 @@ if valid_input:
     m_max_val = float(min(25.0, m_max_val))
 
     def get_exact_m(val_float):
-        if abs(val_float - 0.0) < 1e-2: return "0"
+        for mc in m_critical_num:
+            if abs(val_float - mc) < 0.05:
+                return str(mc) if int(mc) != mc else str(int(mc)) if abs(mc - int(mc)) < 1e-3 else str(mc)
         for sm in sym_m_critical:
             if abs(float(sp.N(sm)) - val_float) < 1e-2:
                 s_str = str(sm)
@@ -476,23 +434,20 @@ if valid_input:
                 return latex_str
         return fmt(val_float)
 
+    # --- الخوارزمية الشاملة والذكية لفحص وتقييم الحلول لجميع الدوال بلا استثناء ---
     def get_roots_text(m_test):
-        # تصحيح دقيق لحالة m = 0 حيث يكون الحل خارج مجموعة التعريف (عند x = -1 بينما ln(1)=0 مرفوض أو غير معرف)
-        if abs(m_test - 0.0) < 0.02:
-            return "لا توجد حلول"
-
-        is_critical = any(abs(m_test - mc) < 1e-2 for mc in m_critical_num)
         with np.errstate(divide='ignore', invalid='ignore'):
             y_g = g_func(x_vals_roots, m_test)
             if np.isscalar(y_g): y_g = np.full_like(x_vals_roots, y_g, dtype=float)
             diff = y_vals_roots - y_g
+            
         crossings = []
         for i in range(len(diff)-1):
             if np.isfinite(diff[i]) and np.isfinite(diff[i+1]):
                 if diff[i] * diff[i+1] < 0:
                     denom = diff[i+1] - diff[i]
                     x_c = x_vals_roots[i] - diff[i] * (x_vals_roots[i+1] - x_vals_roots[i]) / denom
-                    # التأكد من أن الحل ينتمي لمجموعة تعريف الدالة
+                    # اختبار صارم: هل الحل يقع داخل مجموعة التعريف (يعطي قيمة حقيقية لـ f)؟
                     try:
                         val_f = float(f_func(x_c))
                         if np.isfinite(val_f):
@@ -508,6 +463,7 @@ if valid_input:
                                 if np.isfinite(float(f_func(x_c))):
                                     crossings.append(float(x_c))
                             except: pass
+                            
         if len(diff) > 0 and diff[-1] == 0 and diff[-2] != 0:
             x_c = x_vals_roots[-1]
             try:
@@ -515,8 +471,11 @@ if valid_input:
                     crossings.append(float(x_c))
             except: pass
             
+        # فحص المماسات عند القيم الحدية
         tangents = []
         cleaned_crossings = []
+        is_critical = any(abs(m_test - mc) < 0.05 for mc in m_critical_num)
+        
         if is_critical:
             skip = False
             for i in range(len(crossings)):
@@ -536,7 +495,8 @@ if valid_input:
                                 if not any(abs(x_t - c) < 0.6 for c in cleaned_crossings) and not any(abs(x_t - t) < 0.6 for t in tangents):
                                     tangents.append(x_t)
                         except: pass
-        else: cleaned_crossings = crossings
+        else: 
+            cleaned_crossings = crossings
             
         all_roots = [(c, "single") for c in cleaned_crossings] + [(t, "double") for t in tangents]
         final_roots = []
@@ -545,6 +505,7 @@ if valid_input:
         
         count = len(final_roots)
         if count == 0: return "لا توجد حلول"
+        
         desc = []
         pos_s = sum(1 for r, t in final_roots if r > 0.01 and t == "single")
         neg_s = sum(1 for r, t in final_roots if r < -0.01 and t == "single")
