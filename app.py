@@ -152,7 +152,6 @@ if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
-    # تصليح مشكلة توجيه لوحة المفاتيح بمنح الزر مفتاحاً (key) ليحتفظ بذاكرته
     t_sel = st.radio("🎯 تحديد خانة الكتابة:", ["f(x) الدالة", "m المستقيم بدلالة"], horizontal=True, key="kbd_radio")
     st.session_state.kbd_target = "f" if t_sel == "f(x) الدالة" else "g"
     
@@ -752,28 +751,29 @@ def build_math_context(f_str, g_str):
         
         limits_data_detailed = []
         limits_mpl_list = []
-        def add_limit(val_sym, dir_sympy, dir_latex):
+        # كتابة النهايات بوضع < و > فوق السهم بدلاً من + و -
+        def add_limit(val_sym, dir_sympy, target_latex, arrow_latex=r"\to"):
             try:
                 lim = sp.limit(f_expr, x_sym, val_sym, dir=dir_sympy)
                 lim_latex = "+\infty" if lim == sp.oo else sanitize_latex(lim)
                 expr_latex = sanitize_latex(f_expr)
-                latex_streamlit = fr"\lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
+                latex_streamlit = fr"\lim_{{x {arrow_latex} {target_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
                 limits_data_detailed.append(latex_streamlit)
-                lhs_mpl = fr"\lim_{{x \to {dir_latex}}} f(x) = \lim_{{x \to {dir_latex}}} \left( {expr_latex} \right) ="
+                lhs_mpl = fr"\lim_{{x {arrow_latex} {target_latex}}} f(x) = \lim_{{x {arrow_latex} {target_latex}}} \left( {expr_latex} \right) ="
                 rhs_mpl = fr"{lim_latex}"
                 limits_mpl_list.append((lhs_mpl, rhs_mpl))
             except: pass
 
         if len(pts_var_exact) > 0:
             if valid_intervals and valid_intervals[0]:
-                if pts_var_exact[0]['sym'] == -sp.oo: add_limit(-sp.oo, '+', r"-\infty")
+                if pts_var_exact[0]['sym'] == -sp.oo: add_limit(-sp.oo, '+', r"-\infty", r"\to")
             if valid_intervals and valid_intervals[-1]:
-                if pts_var_exact[-1]['sym'] == sp.oo: add_limit(sp.oo, '-', r"+\infty")
+                if pts_var_exact[-1]['sym'] == sp.oo: add_limit(sp.oo, '-', r"+\infty", r"\to")
             for i, p in enumerate(pts_var_exact):
                 if p['type'] == 'v_asym':
                     v_latex = p['latex_x']
-                    if i > 0 and valid_intervals[i-1]: add_limit(p['sym'], '-', fr"{v_latex}^-")
-                    if i < len(valid_intervals) and valid_intervals[i]: add_limit(p['sym'], '+', fr"{v_latex}^+")
+                    if i > 0 and valid_intervals[i-1]: add_limit(p['sym'], '-', v_latex, r"\stackrel{<}{\to}")
+                    if i < len(valid_intervals) and valid_intervals[i]: add_limit(p['sym'], '+', v_latex, r"\stackrel{>}{\to}")
 
         def generate_limits_image():
             all_lines = [(domain_latex_mpl, "")] + limits_mpl_list
