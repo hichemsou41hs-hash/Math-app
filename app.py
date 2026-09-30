@@ -31,6 +31,7 @@ st.markdown(
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import sympy as sp
 from scipy.signal import find_peaks
 import time
@@ -153,8 +154,8 @@ def get_sol_color_html(sol_text):
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -6.0
-if 'f_val' not in st.session_state: st.session_state.f_val = "(x+1)/ln(x-1)"
-if 'g_val' not in st.session_state: st.session_state.g_val = "m+1"
+if 'f_val' not in st.session_state: st.session_state.f_val = "(x+1)/ln(x)"
+if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
@@ -375,7 +376,6 @@ if valid_input:
 
     m_critical_num = []
 
-    # 1. استخراج النهايات عند المالانهاية
     try:
         for direction in [sp.oo, -sp.oo]:
             lim = sp.limit(m_expr, x_sym, direction)
@@ -383,7 +383,6 @@ if valid_input:
                 m_critical_num.append(float(sp.N(lim)))
     except: pass
 
-    # 2. استخراج النهايات عند أطراف مجموعة التعريف (تم إبقاؤه لضمان الحدود الدقيقة)
     for boundary in candidate_v_asymptotes:
         for dir in ['+', '-']:
             try:
@@ -402,7 +401,6 @@ if valid_input:
             m_critical_num.append(float(sp.N(lim_0)))
     except: pass
 
-    # 3. استخراج نقاط التماس الدقيقة رياضياً (يحسم المماسات)
     exact_tangent_points = []
     try:
         dm_expr = sp.diff(m_expr, x_sym)
@@ -414,7 +412,6 @@ if valid_input:
                 if np.isfinite(val_m): m_critical_num.append(val_m)
     except: pass
 
-    # 4. الدعم العددي الشامل (ملاحظة: تم حذف قراءة الحواف المسببة لظهور القيم الغريبة)
     try:
         m_func_eval = sp.lambdify(x_sym, m_expr, 'numpy')
         x_test_m = np.linspace(-25, 25, 100001)
@@ -450,7 +447,6 @@ if valid_input:
                     m_critical_num.append(val_m)
     except: pass
 
-    # إضافة المستقيمات المقاربة الأفقية
     for asym in unique_asymptotes:
         if asym['type'] == 'h':
             m_critical_num.append(asym['val'])
@@ -482,7 +478,6 @@ if valid_input:
                 return latex_str
         return fmt(val_float)
 
-    # فلترة صارمة لمنع الحلول الوهمية خارج مجموعة التعريف (Domain Enforcement)
     def is_valid_root(x_val):
         if any(abs(x_val - float(sp.N(a['val']))) < 1e-3 for a in unique_asymptotes if a['type'] == 'v'):
             return False
@@ -534,7 +529,6 @@ if valid_input:
                     tangents.append((crossings[i] + crossings[i+1])/2.0); skip = True
                 else: cleaned_crossings.append(crossings[i])
             
-            # احتساب المماسات الرياضية الدقيقة بشكل مطلق
             for tp in exact_tangent_points:
                 if abs(tp['m_req'] - m_test) < 0.05:
                     if is_valid_root(tp['x']):
@@ -999,11 +993,13 @@ if valid_input:
         if mode == 'dark':
             fig.patch.set_facecolor('#0F172A')
             ax.set_facecolor('#0F172A')
-            ax.tick_params(colors='#E2E8F0', labelsize=11)
+            ax.tick_params(colors='#E2E8F0', labelsize=9)
             for spine in ax.spines.values(): spine.set_edgecolor('#475569')
             ax.axhline(0, color='#E2E8F0', linewidth=2.5, zorder=3)
             ax.axvline(0, color='#E2E8F0', linewidth=2.5, zorder=3)
             ax.minorticks_on()
+            ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
+            ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
             ax.grid(True, which='major', color='#475569', linestyle='-', linewidth=1.2, zorder=1)
             ax.grid(True, which='minor', color='#1E293B', linestyle='-', linewidth=0.8, zorder=1)
             
@@ -1017,11 +1013,13 @@ if valid_input:
         else:
             fig.patch.set_facecolor('#FFFFFF')
             ax.set_facecolor('#FFFFFF')
-            ax.tick_params(colors='black', labelsize=11)
+            ax.tick_params(colors='black', labelsize=9)
             for spine in ax.spines.values(): spine.set_edgecolor('#A0A0A0')
             ax.axhline(0, color='black', linewidth=2, zorder=3)
             ax.axvline(0, color='black', linewidth=2, zorder=3)
             ax.minorticks_on()
+            ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
+            ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
             ax.grid(True, which='major', color='#CCCCCC', linestyle='-', linewidth=1.2, zorder=1)
             ax.grid(True, which='minor', color='#EBEBEB', linestyle='-', linewidth=0.6, zorder=1)
             
@@ -1037,10 +1035,10 @@ if valid_input:
             try:
                 if asym['type'] == 'h':
                     ax.axhline(asym['val'], color=c_asym, linestyle='--', linewidth=2.2, zorder=4)
-                    ax.text(7.5, asym['val'] + 0.25, f"${asym['label']}$", color=c_asym, fontsize=14, fontweight='bold', ha='right')
+                    ax.text(ax.get_xlim()[1]-0.5, asym['val'] + 0.25, f"${asym['label']}$", color=c_asym, fontsize=14, fontweight='bold', ha='right')
                 elif asym['type'] == 'v':
                     ax.axvline(asym['val'], color=c_asym, linestyle='--', linewidth=2.2, zorder=4)
-                    ax.text(asym['val'] + 0.15, 6.5, f"${asym['label']}$", color=c_asym, fontsize=14, fontweight='bold', va='top')
+                    ax.text(asym['val'] + 0.15, ax.get_ylim()[1]-1.5, f"${asym['label']}$", color=c_asym, fontsize=14, fontweight='bold', va='top')
             except: pass
         
         try:
@@ -1097,7 +1095,9 @@ if valid_input:
                 ax.text(4, m_val + 0.35, f"${m_eq_label}$", color=c_cg, fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
             except: pass
             
-        ax.set_ylim(-6, 8)
+        ax.set_xlim(-12, 12)
+        ax.set_ylim(-8, 8)
+        
         try:
             legend = ax.legend(facecolor=bg_leg, edgecolor=edge_leg, loc='upper right', fontsize=12)
             for text in legend.get_texts(): text.set_color(c_text)
@@ -1146,9 +1146,9 @@ if valid_input:
             m_val = round(st.session_state.m_anim, 2)
             update_view(m_val)
             is_critical_now = any(abs(st.session_state.m_anim - mc) < 0.05 for mc in m_critical_num)
-            if is_critical_now: time.sleep(1.8) 
-            else: time.sleep(0.04)
-            step = 0.1 
+            if is_critical_now: time.sleep(1.2) 
+            else: time.sleep(0.01)
+            step = 0.2 
             next_m = st.session_state.m_anim + step
             for mc in m_critical_num:
                 if st.session_state.m_anim < mc - 1e-4 and next_m >= mc - 1e-4:
