@@ -461,13 +461,20 @@ if valid_input:
                 return latex_str
         return fmt(val_float)
 
+    # دالة ذكية لفحص انتماء الحل رياضياً إلى مجموعة التعريف
     def is_valid_root(x_val):
+        # 1. التأكد من أن القيمة ليست قريبة جداً من مستقيم مقارب عمودي (قيمة ممنوعة)
+        if any(abs(x_val - float(sp.N(a['val']))) < 1e-3 for a in unique_asymptotes if a['type'] == 'v'):
+            return False
+        # 2. التأكد رياضياً من أن التعويض في الدالة يعطي قيمة حقيقية معرفة
         try:
             with np.errstate(all='ignore'):
                 v = f_func(x_val)
-            if np.iscomplexobj(v): return False
-            return np.isfinite(float(v))
-        except: return False
+            if np.iscomplexobj(v) or not np.isfinite(float(v)):
+                return False
+            return True
+        except:
+            return False
 
     def get_roots_text(m_test):
         is_critical = any(abs(m_test - mc) < 1e-2 for mc in m_critical_num)
@@ -475,6 +482,7 @@ if valid_input:
             y_g = g_func(x_vals_roots, m_test)
             if np.isscalar(y_g): y_g = np.full_like(x_vals_roots, y_g, dtype=float)
             diff = y_vals_roots - y_g
+            
         crossings = []
         for i in range(len(diff)-1):
             if np.isfinite(diff[i]) and np.isfinite(diff[i+1]):
@@ -491,6 +499,7 @@ if valid_input:
                             x_c = x_vals_roots[i]
                             if is_valid_root(x_c):
                                 crossings.append(float(x_c))
+                                
         if len(diff) > 0 and diff[-1] == 0 and diff[-2] != 0:
             x_c = x_vals_roots[-1]
             if is_valid_root(x_c):
@@ -524,6 +533,7 @@ if valid_input:
         
         count = len(final_roots)
         if count == 0: return "لا توجد حلول"
+        
         desc = []
         pos_s = sum(1 for r, t in final_roots if r > 0.01 and t == "single")
         neg_s = sum(1 for r, t in final_roots if r < -0.01 and t == "single")
@@ -564,7 +574,7 @@ if valid_input:
         raw_intervals.append((m_critical_num[-1], float('inf'), get_roots_text(m_critical_num[-1] + 0.5)))
     else: raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0.0)))
 
-    # --- تم إيقاف دمج الفترات لضمان بقاء القيم الحدية مستقلة وأكاديمية دائماً ---
+    # بناء الجدول مباشرة من الفترات الدقيقة دون دمج (للحفاظ على القيم الحدية معزولة في سطر لوحدها)
     final_table = [] 
     for L, H, sol_text in raw_intervals:
         L_latex = r"-\infty" if L == float('-inf') else get_exact_m(L)
