@@ -120,13 +120,6 @@ def sanitize_latex(expr):
                 if int(fl) == fl: return str(int(fl))
                 return str(round(fl, 2))
             except: pass
-    elif isinstance(expr, str) and ("LambertW" in expr or "RootOf" in expr or "W(" in expr):
-        try:
-            fl = float(sp.N(sp.sympify(expr)))
-            if int(fl) == fl: return str(int(fl))
-            return str(round(fl, 2))
-        except: pass
-
     if not isinstance(expr, str): expr = sp.latex(expr)
     s = str(expr)
     s = s.replace('log', 'ln')
@@ -229,9 +222,9 @@ try:
     transformations = (standard_transformations + (implicit_multiplication_application,))
     f_processed = fix_implicit_mult(st.session_state.f_val)
     g_processed = fix_implicit_mult(st.session_state.g_val)
-    with sp.evaluate(False):
-        f_expr = parse_expr(f_processed, local_dict=local_dict, transformations=transformations, evaluate=False)
-        g_expr = parse_expr(g_processed, local_dict=local_dict, transformations=transformations, evaluate=False)
+    # تم التصحيح: تفعيل التقييم التلقائي لحل مشاكل SymPy
+    f_expr = parse_expr(f_processed, local_dict=local_dict, transformations=transformations)
+    g_expr = parse_expr(g_processed, local_dict=local_dict, transformations=transformations)
     valid_input = True
 except:
     st.error("⚠️ صيغة غير صالحة أو الخانة فارغة.")
@@ -243,8 +236,9 @@ if valid_input:
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
-    x_vals_plot = np.linspace(-15, 15, 60001)
-    x_vals_roots = np.concatenate([np.linspace(-500, -15, 5000, endpoint=False), np.linspace(-15, 15, 60001), np.linspace(15, 500, 5000)])
+    # تم تقليل عدد النقاط لتسريع التطبيق ومنع التوقف 
+    x_vals_plot = np.linspace(-15, 15, 6001)
+    x_vals_roots = np.concatenate([np.linspace(-500, -15, 2000, endpoint=False), np.linspace(-15, 15, 6001), np.linspace(15, 500, 2000)])
     
     def process_y_vals(x_arr):
         with np.errstate(divide='ignore', invalid='ignore'): y_arr = f_func(x_arr)
@@ -328,7 +322,6 @@ if valid_input:
     pts_var_exact.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
     pts_var_exact.sort(key=lambda p: p['val'])
 
-    # --- تصحيح ذكي لاكتشاف النقاط الزاوية (Corner points) حيث المشتقة من اليمين لا تساوي المشتقة من اليسار ---
     df_func_test = sp.lambdify(x_sym, df_expr, 'numpy')
     for p in pts_var_exact:
         if p['type'] == 'extrema':
@@ -339,9 +332,7 @@ if valid_input:
                 df_near_minus = df_func_test(v_test - 1e-4)
             
             diff_lr = abs(df_near_plus - df_near_minus) if (np.isfinite(df_near_plus) and np.isfinite(df_near_minus)) else 999.0
-            
-            # إذا اختلفت المشتقة يميناً ويساراً، فهي حتماً نقطة زاوية والدالة غير قابلة للاشتقاق
-            if not np.isfinite(df_val) or abs(df_near_plus) > 20 or abs(df_near_minus) > 20 or diff_lr > 0.1:
+            if not np.isfinite(df_val) or abs(df_near_plus) > 20 or abs(df_near_minus) > 20 or diff_lr > 0.05:
                 p['type'] = 'corner'
 
     valid_intervals = []
@@ -421,7 +412,7 @@ if valid_input:
 
     try:
         m_func_eval = sp.lambdify(x_sym, m_expr, 'numpy')
-        x_test_m = np.linspace(-25, 25, 100001)
+        x_test_m = np.linspace(-25, 25, 10001)
         with np.errstate(divide='ignore', invalid='ignore'):
             y_test_m = m_func_eval(x_test_m)
             if np.iscomplexobj(y_test_m): y_test_m = np.where(np.isreal(y_test_m), y_test_m.real, np.nan)
@@ -436,7 +427,6 @@ if valid_input:
         for s, e in zip(starts_m, ends_m):
             segment = y_test_m[s:e+1]
             seg_x = x_test_m[s:e+1]
-            
             if len(segment) > 10:
                 peaks, _ = find_peaks(segment, prominence=0.05)
                 valleys, _ = find_peaks(-segment, prominence=0.05)
@@ -470,7 +460,7 @@ if valid_input:
     m_min_val = float(max(-25.0, m_min_val))
     m_max_val = float(min(25.0, m_max_val))
 
-    # --- دالة تعيد القيم الرياضية الدقيقة المضبوطة كأولوية بدلاً من الفواصل ---
+    # دالة ذكية لإرجاع القيم المضبوطة (مثل e) بدلاً من 2.72
     def exactify_value(val_float, sym_val=None):
         if sym_val is not None:
             try:
@@ -486,7 +476,6 @@ if valid_input:
         if abs(val_float + 1/np.e) < 1e-3: return r"-\frac{1}{e}"
         if abs(val_float - np.pi) < 1e-3: return "\pi"
         if abs(val_float + np.pi) < 1e-3: return "-\pi"
-        
         if abs(val_float - int(round(val_float))) < 1e-3: return str(int(round(val_float)))
         return str(round(val_float, 2))
 
@@ -571,7 +560,6 @@ if valid_input:
         neg_d = sum(1 for r, t in final_roots if r < -0.01 and t == "double")
         zero_d = sum(1 for r, t in final_roots if abs(r) <= 0.01 and t == "double")
 
-        # --- تحسين التعبير عن "حلان مضاعفان" ---
         if pos_d == 1 and neg_d == 1:
             desc.append("حلان مضاعفان (أحدهما موجب والآخر سالب)")
         else:
@@ -857,7 +845,7 @@ if valid_input:
                 ax_v.plot([x_c, x_c], [4, 5], 'k-', lw=1.2, zorder=2)
                 ax_v.text(x_c, 4.5, '0', ha='center', va='center', fontsize=16)
             elif p['type'] == 'corner': 
-                # وضع خطين متوازيين في خانة المشتقة فقط عند نقطة الزاوية بدلا من الصفر
+                # رسم الخطين المتوازيين في خانة المشتقة فقط عند النقطة الزاوية (عدم قابلية الاشتقاق)
                 ax_v.plot([x_c-0.04, x_c-0.04], [4, 5], 'k-', lw=1.5, zorder=2)
                 ax_v.plot([x_c+0.04, x_c+0.04], [4, 5], 'k-', lw=1.5, zorder=2)
 
@@ -886,7 +874,6 @@ if valid_input:
             elif p['type'] in ['extrema', 'corner']:
                 sym_y = sp.simplify(f_expr.subs(x_sym, p['sym']))
                 val_y = float(sp.N(sym_y))
-                # استخدام التعبير المضبوط في أسهم جدول التغيرات أيضاً
                 nodes.append((x_c, val_y, exactify_value(val_y, sym_y)))
 
         for i in range(N - 1):
@@ -1169,19 +1156,22 @@ if valid_input:
         plt.close(fig_dark)
 
     if st.session_state.auto_play:
-        while st.session_state.auto_play and st.session_state.m_anim <= m_max_val:
+        if st.session_state.m_anim <= m_max_val:
             m_val = round(st.session_state.m_anim, 2)
             update_view(m_val)
             is_critical_now = any(abs(st.session_state.m_anim - mc) < 0.05 for mc in m_critical_num)
-            if is_critical_now: time.sleep(1.2) 
-            else: time.sleep(0.01)
+            time.sleep(1.2 if is_critical_now else 0.01) 
+            
             step = 0.2 
             next_m = st.session_state.m_anim + step
             for mc in m_critical_num:
                 if st.session_state.m_anim < mc - 1e-4 and next_m >= mc - 1e-4:
                     next_m = float(mc); break
             st.session_state.m_anim = next_m
-        st.session_state.auto_play = False
+            st.rerun()
+        else:
+            st.session_state.auto_play = False
+            st.rerun()
     else:
         if 'manual_m' in st.session_state:
             if st.session_state.manual_m < m_min_val or st.session_state.manual_m > m_max_val:
