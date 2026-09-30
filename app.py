@@ -147,8 +147,8 @@ def get_sol_color_html(sol_text):
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -6.0
-if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(abs(x))"
-if 'g_val' not in st.session_state: st.session_state.g_val = "m"
+if 'f_val' not in st.session_state: st.session_state.f_val = "ln(x)"
+if 'g_val' not in st.session_state: st.session_state.g_val = "m*(x-1)"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
@@ -370,33 +370,42 @@ if valid_input:
         m_expr = f_expr
 
     m_critical_num = []
+    exact_tangent_points = []
+
+    # استخراج النهايات عند أطراف مجموعة التعريف وحالة النقطة الثابتة (للمناقشة الدورانية)
+    m_candidate_boundaries = list(candidate_v_asymptotes)
+    try:
+        n_expr, d_expr = sp.fraction(sp.cancel(m_expr))
+        if d_expr != 1:
+            for r in sp.solve(d_expr, x_sym):
+                if r.is_real is not False and sp.im(sp.N(r)) == 0: 
+                    m_candidate_boundaries.append(r)
+    except: pass
+    m_candidate_boundaries = list(set(m_candidate_boundaries))
 
     try:
         for direction in [sp.oo, -sp.oo]:
             lim = sp.limit(m_expr, x_sym, direction)
             if lim.is_real and np.isfinite(float(sp.N(lim))):
                 m_critical_num.append(float(sp.N(lim)))
+                sym_m_critical.append(sp.simplify(lim))
     except: pass
 
-    for boundary in candidate_v_asymptotes:
+    for boundary in m_candidate_boundaries:
         for dir in ['+', '-']:
             try:
                 lim = sp.limit(m_expr, x_sym, boundary, dir=dir)
                 if lim.is_real and np.isfinite(float(sp.N(lim))):
-                    m_critical_num.append(float(sp.N(lim)))
+                    val_m = float(sp.N(lim))
+                    m_critical_num.append(val_m)
+                    sym_m_critical.append(sp.simplify(lim))
+                    # الكشف التلقائي عن نقطة الدوران المركزية وإضافتها كمماس لتصحيح الخلل
+                    try:
+                        if np.isfinite(float(f_func(float(sp.N(boundary))))):
+                            exact_tangent_points.append({'x': float(sp.N(boundary)), 'm_req': val_m})
+                    except: pass
             except: pass
-            
-    try:
-        val_0 = float(sp.N(sp.simplify(m_expr.subs(x_sym, 0))))
-        if np.isfinite(val_0): m_critical_num.append(val_0)
-    except: pass
-    try:
-        lim_0 = sp.limit(m_expr, x_sym, 0, dir='+')
-        if lim_0.is_real and np.isfinite(float(sp.N(lim_0))):
-            m_critical_num.append(float(sp.N(lim_0)))
-    except: pass
 
-    exact_tangent_points = []
     try:
         dm_expr = sp.diff(m_expr, x_sym)
         for r in sp.solve(dm_expr, x_sym):
@@ -448,7 +457,6 @@ if valid_input:
         if asym['type'] == 'h':
             m_critical_num.append(asym['val'])
 
-    # تم التعديل: تقريب لـ 3 فواصل للمحافظة على دقة الأرقام (مثل 0.368) لكي يتم تحويلها للرمز الدقيق لاحقا 
     m_critical_num = sorted(list(set([round(m, 3) for m in m_critical_num if np.isfinite(m) and abs(m) < 100])))
 
     m_min_val = -6.0
@@ -461,18 +469,15 @@ if valid_input:
     m_min_val = float(max(-25.0, m_min_val))
     m_max_val = float(min(25.0, m_max_val))
 
-    # --- فلترة متقدمة ومصحح رياضي ذكي لإجبار التطبيق على كتابة الكسور الدقيقة والرموز ---
     def exactify_value(val_float, sym_val=None):
         if sym_val is not None:
             try:
                 s_str = str(sym_val)
-                # تخطي الصيغ المعقدة جداً أو الغير قابلة للقراءة
                 if not any(bad in s_str for bad in ["LambertW", "RootOf", "Integral", "zoo", "I"]):
                     l_str = sanitize_latex(sym_val)
                     if len(l_str) < 25: return l_str
             except: pass
             
-        # الكشف الآلي عن الثوابت الرياضية المعروفة وإرجاع رموزها
         if abs(val_float - np.e) < 1e-2: return "e"
         if abs(val_float + np.e) < 1e-2: return "-e"
         if abs(val_float - 1/np.e) < 1e-2: return r"\frac{1}{e}"
@@ -484,17 +489,14 @@ if valid_input:
         if abs(val_float - 2*np.e) < 1e-2: return "2e"
         if abs(val_float + 2*np.e) < 1e-2: return "-2e"
         
-        # الأعداد الصحيحة
         if abs(val_float - int(round(val_float))) < 1e-2: return str(int(round(val_float)))
         
-        # الأعداد العشرية الأخرى تُقرب بشكل طبيعي بدون أصفار زائدة
         return str(round(val_float, 2)).rstrip('0').rstrip('.') if '.' in str(round(val_float, 2)) else str(round(val_float, 2))
 
     def get_exact_m(val_float):
         for sm in sym_m_critical:
             if abs(float(sp.N(sm)) - val_float) < 1e-2:
                 res = exactify_value(val_float, sm)
-                # التأكد من أنه نجح في جلب صيغة لاتيكس جميلة وليس مجرد رقم عشري
                 if not re.match(r'^-?\d+(\.\d+)?$', res): 
                     return res
         return exactify_value(val_float)
@@ -886,7 +888,6 @@ if valid_input:
             elif p['type'] in ['extrema', 'corner']:
                 sym_y = sp.simplify(f_expr.subs(x_sym, p['sym']))
                 val_y = float(sp.N(sym_y))
-                # تم التعديل: إجبار كتابة الصور الدقيقة باستخدام exactify_value في جدول التغيرات 
                 nodes.append((x_c, val_y, exactify_value(val_y, sym_y)))
 
         for i in range(N - 1):
