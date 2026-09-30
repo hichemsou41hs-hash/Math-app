@@ -147,7 +147,6 @@ def get_sol_color_html(sol_text):
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
-if 'm_anim' not in st.session_state: st.session_state.m_anim = -6.0
 if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(abs(x))"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
@@ -186,7 +185,7 @@ with col_img:
     st.markdown("<p style='font-size:14px; color:#94A3B8; text-align:right; direction:rtl; margin-top:-10px;'>💡 <b>ملاحظة:</b> في حال وجود ضغط على خادم الذكاء الاصطناعي وفشل قراءة الصورة، يرجى كتابة الدالة يدوياً في الخانة المجاورة.</p>", unsafe_allow_html=True)
     if img_file:
         if not api_key:
-            st.error("⚠️ خاصية الذكاء الاصطناعي غير مفعلة (ينقص مفتاح API).")
+            st.error("⚠️ خاصية الذكاء الاصطناعي غير مفعلة.")
         else:
             if st.button("استخراج الدالة 🤖", use_container_width=True):
                 with st.spinner("جاري قراءة الصورة..."):
@@ -196,7 +195,7 @@ with col_img:
                         genai.configure(api_key=api_key)
                         img = Image.open(img_file)
                         model = genai.GenerativeModel('gemini-3.8-flash')
-                        prompt = "Extract ONLY the mathematical function expression from this image. Convert it to a simple string compatible with Python/SymPy (use ** for powers, * for multiplication, sqrt() for roots, abs() for absolute value, ln() for natural log). DO NOT output any markdown, LaTeX, or explanatory text. Just the raw math string."
+                        prompt = "Extract ONLY the mathematical function expression from this image. Convert it to a simple string compatible with Python/SymPy. DO NOT output any text. Just the math string."
                         response = model.generate_content([prompt, img])
                         extracted_text = response.text.strip().replace('`', '').replace('\n', '')
                         st.session_state.f_val = extracted_text
@@ -213,15 +212,12 @@ with col_text:
 current_f = st.session_state.f_val
 current_g = st.session_state.g_val
 
-# ==============================================================================
-# خوارزمية التحليل الرياضي (تعمل مرة واحدة فقط وتخزن في الذاكرة لتسريع التطبيق)
-# ==============================================================================
+@st.cache_resource
 def build_math_context(f_str, g_str):
     cache = {'valid': False, 'error': ''}
     try:
         x_sym, m_sym = sp.symbols('x m', real=True)
         local_dict = {'x': x_sym, 'm': m_sym, 'e': sp.E, 'pi': sp.pi, 'ln': sp.log, 'sqrt': sp.sqrt, 'abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin}
-        
         transformations = (standard_transformations + (implicit_multiplication_application,))
         f_processed = fix_implicit_mult(f_str)
         g_processed = fix_implicit_mult(g_str)
@@ -273,8 +269,7 @@ def build_math_context(f_str, g_str):
         sym_extrema = []
         try:
             for r in sp.solve(df_expr, x_sym):
-                if r.is_real is not False and sp.im(sp.N(r)) == 0:
-                    sym_extrema.append(r)
+                if r.is_real is not False and sp.im(sp.N(r)) == 0: sym_extrema.append(r)
         except: pass
         sym_extrema = list(set(sym_extrema))
 
@@ -324,9 +319,8 @@ def build_math_context(f_str, g_str):
                     df_val = df_func_test(v_test)
                     df_near_plus = df_func_test(v_test + 1e-4)
                     df_near_minus = df_func_test(v_test - 1e-4)
-                
                 diff_lr = abs(df_near_plus - df_near_minus) if (np.isfinite(df_near_plus) and np.isfinite(df_near_minus)) else 999.0
-                if not np.isfinite(df_val) or abs(df_near_plus) > 20 or abs(df_near_minus) > 20 or diff_lr > 0.1:
+                if not np.isfinite(df_val) or abs(df_near_plus) > 20 or abs(df_near_minus) > 20 or diff_lr > 0.05:
                     p['type'] = 'corner'
 
         valid_intervals = []
@@ -364,13 +358,13 @@ def build_math_context(f_str, g_str):
 
         m_critical_num = []
         sym_m_critical = []
+        
         m_candidate_boundaries = list(candidate_v_asymptotes)
         try:
             n_expr, d_expr = sp.fraction(sp.cancel(m_expr))
             if d_expr != 1:
                 for r in sp.solve(d_expr, x_sym):
-                    if r.is_real is not False and sp.im(sp.N(r)) == 0: 
-                        m_candidate_boundaries.append(r)
+                    if r.is_real is not False and sp.im(sp.N(r)) == 0: m_candidate_boundaries.append(r)
         except: pass
         m_candidate_boundaries = list(set(m_candidate_boundaries))
 
@@ -426,7 +420,6 @@ def build_math_context(f_str, g_str):
             for s, e in zip(starts_m, ends_m):
                 segment = y_test_m[s:e+1]
                 seg_x = x_test_m[s:e+1]
-                
                 if len(segment) > 10:
                     peaks, _ = find_peaks(segment, prominence=0.05)
                     valleys, _ = find_peaks(-segment, prominence=0.05)
@@ -445,18 +438,14 @@ def build_math_context(f_str, g_str):
         except: pass
 
         for asym in unique_asymptotes:
-            if asym['type'] == 'h':
-                m_critical_num.append(asym['val'])
+            if asym['type'] == 'h': m_critical_num.append(asym['val'])
 
         m_critical_num = sorted(list(set([round(m, 3) for m in m_critical_num if np.isfinite(m) and abs(m) < 100])))
-
-        m_min_val = -6.0
-        m_max_val = 6.0
+        
+        m_min_val, m_max_val = -6.0, 6.0
         if m_critical_num:
-            if m_critical_num[0] - 1.5 < m_min_val:
-                m_min_val = float(np.floor(m_critical_num[0] - 1.5))
-            if m_critical_num[-1] + 1.5 > m_max_val:
-                m_max_val = float(np.ceil(m_critical_num[-1] + 1.5))
+            if m_critical_num[0] - 1.5 < m_min_val: m_min_val = float(np.floor(m_critical_num[0] - 1.5))
+            if m_critical_num[-1] + 1.5 > m_max_val: m_max_val = float(np.ceil(m_critical_num[-1] + 1.5))
         m_min_val = float(max(-25.0, m_min_val))
         m_max_val = float(min(25.0, m_max_val))
 
@@ -468,7 +457,6 @@ def build_math_context(f_str, g_str):
                         l_str = sanitize_latex(sym_val)
                         if len(l_str) < 25: return l_str
                 except: pass
-                
             if abs(val_float - np.e) < 1e-2: return "e"
             if abs(val_float + np.e) < 1e-2: return "-e"
             if abs(val_float - 1/np.e) < 1e-2: return r"\frac{1}{e}"
@@ -486,21 +474,16 @@ def build_math_context(f_str, g_str):
             for sm in sym_m_critical:
                 if abs(float(sp.N(sm)) - val_float) < 1e-2:
                     res = exactify_value(val_float, sm)
-                    if not re.match(r'^-?\d+(\.\d+)?$', res): 
-                        return res
+                    if not re.match(r'^-?\d+(\.\d+)?$', res): return res
             return exactify_value(val_float)
 
         def is_valid_root(x_val):
-            if any(abs(x_val - float(sp.N(a['val']))) < 1e-3 for a in unique_asymptotes if a['type'] == 'v'):
-                return False
+            if any(abs(x_val - float(sp.N(a['val']))) < 1e-3 for a in unique_asymptotes if a['type'] == 'v'): return False
             try:
-                with np.errstate(all='ignore'):
-                    v = f_func(x_val)
-                if np.iscomplexobj(v) or not np.isfinite(float(v)):
-                    return False
+                with np.errstate(all='ignore'): v = f_func(x_val)
+                if np.iscomplexobj(v) or not np.isfinite(float(v)): return False
                 return True
-            except:
-                return False
+            except: return False
 
         def get_roots_text(m_test):
             is_critical = any(abs(m_test - mc) < 1e-2 for mc in m_critical_num)
@@ -523,7 +506,6 @@ def build_math_context(f_str, g_str):
                             if j - i < 5: 
                                 x_c = x_vals_roots[i]
                                 if is_valid_root(x_c): crossings.append(float(x_c))
-                                    
             if len(diff) > 0 and diff[-1] == 0 and diff[-2] != 0:
                 x_c = x_vals_roots[-1]
                 if is_valid_root(x_c): crossings.append(float(x_c))
@@ -537,7 +519,6 @@ def build_math_context(f_str, g_str):
                     if i < len(crossings)-1 and abs(crossings[i+1] - crossings[i]) < 0.5:
                         tangents.append((crossings[i] + crossings[i+1])/2.0); skip = True
                     else: cleaned_crossings.append(crossings[i])
-                
                 for tp in exact_tangent_points:
                     if abs(tp['m_req'] - m_test) < 0.05:
                         if is_valid_root(tp['x']):
@@ -561,8 +542,7 @@ def build_math_context(f_str, g_str):
             neg_d = sum(1 for r, t in final_roots if r < -0.01 and t == "double")
             zero_d = sum(1 for r, t in final_roots if abs(r) <= 0.01 and t == "double")
 
-            if pos_d == 1 and neg_d == 1:
-                desc.append("حلان مضاعفان (أحدهما موجب والآخر سالب)")
+            if pos_d == 1 and neg_d == 1: desc.append("حلان مضاعفان (أحدهما موجب والآخر سالب)")
             else:
                 if pos_d == 1: desc.append("حل مضاعف موجب")
                 elif pos_d > 1: desc.append(f"{pos_d} حلول مضاعفة موجبة")
@@ -583,7 +563,6 @@ def build_math_context(f_str, g_str):
             if pos_s == 1 and neg_s == 2 and pos_d == 0 and len(desc) == 2: return "ثلاثة حلول: حل موجب وحلان سالبان"
             if pos_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل موجب"
             if neg_s == 1 and zero_s == 1 and len(desc) == 2: return "حل معدوم و حل سالب"
-
             if len(desc) == 0: return f"{count} حلول"
             return " و ".join(desc)
 
@@ -601,30 +580,19 @@ def build_math_context(f_str, g_str):
         for L, H, sol_text in raw_intervals:
             L_latex = r"-\infty" if L == float('-inf') else get_exact_m(L)
             H_latex = r"+\infty" if H == float('inf') else get_exact_m(H)
-            
-            if L == float('-inf') and H == float('inf'):
-                m_latex = r"m \in \mathbb{R}"
-            elif L == float('-inf'):
-                m_latex = fr"m \in ]-\infty ; {H_latex}["
-            elif H == float('inf'):
-                m_latex = fr"m \in ]{L_latex} ; +\infty["
-            elif L == H:
-                m_latex = fr"m = {L_latex}"
-            else:
-                m_latex = fr"m \in ]{L_latex} ; {H_latex}["
-                
+            if L == float('-inf') and H == float('inf'): m_latex = r"m \in \mathbb{R}"
+            elif L == float('-inf'): m_latex = fr"m \in ]-\infty ; {H_latex}["
+            elif H == float('inf'): m_latex = fr"m \in ]{L_latex} ; +\infty["
+            elif L == H: m_latex = fr"m = {L_latex}"
+            else: m_latex = fr"m \in ]{L_latex} ; {H_latex}["
             final_table.append((m_latex, sol_text, L, H))
 
         N = len(pts_var_exact)
         def generate_variation_table_image():
             if N < 2: return None
-            col_w = 2.8 
-            x_start_data = 2.0 
-            x_max = x_start_data + N * col_w
-            
+            col_w = 2.8; x_start_data = 2.0; x_max = x_start_data + N * col_w
             fig_v, ax_v = plt.subplots(figsize=(max(8, N*2.5), 3.5))
             ax_v.axis('off')
-            
             ax_v.plot([0, x_max], [6, 6], 'k-', lw=2, zorder=2)
             ax_v.plot([0, x_max], [5, 5], 'k-', lw=1.5, zorder=2)
             ax_v.plot([0, x_max], [4, 4], 'k-', lw=1.5, zorder=2)
@@ -632,7 +600,6 @@ def build_math_context(f_str, g_str):
             ax_v.plot([0, 0], [0, 6], 'k-', lw=2, zorder=2)
             ax_v.plot([x_start_data, x_start_data], [0, 6], 'k-', lw=2, zorder=2)
             ax_v.plot([x_max, x_max], [0, 6], 'k-', lw=2, zorder=2)
-            
             ax_v.text(x_start_data / 2, 5.5, '$x$', ha='center', va='center', fontsize=20, color='#1565C0', fontweight='bold')
             ax_v.text(x_start_data / 2, 4.5, "$f'(x)$", ha='center', va='center', fontsize=20, color='#1565C0', fontweight='bold')
             ax_v.text(x_start_data / 2, 2.0, '$f(x)$', ha='center', va='center', fontsize=20, color='#1565C0', fontweight='bold')
@@ -647,11 +614,8 @@ def build_math_context(f_str, g_str):
             nodes = []
             for i in range(N):
                 p = pts_var_exact[i]
-                x_val = p['val']
                 x_c = x_start_data + (col_w / 2.0) + i * col_w 
-                
                 ax_v.text(x_c, 5.5, f"${p['latex_x']}$", ha='center', va='center', fontsize=18)
-                
                 if p['type'] == 'v_asym':
                     ax_v.plot([x_c-0.05, x_c-0.05], [0, 5], 'k-', lw=1.5, zorder=2)
                     ax_v.plot([x_c+0.05, x_c+0.05], [0, 5], 'k-', lw=1.5, zorder=2)
@@ -661,7 +625,6 @@ def build_math_context(f_str, g_str):
                 elif p['type'] == 'corner': 
                     ax_v.plot([x_c-0.04, x_c-0.04], [4, 5], 'k-', lw=1.5, zorder=2)
                     ax_v.plot([x_c+0.04, x_c+0.04], [4, 5], 'k-', lw=1.5, zorder=2)
-
                 if i < N - 1:
                     x_ic = x_c + (col_w / 2.0)
                     if not valid_intervals[i]:
@@ -669,13 +632,10 @@ def build_math_context(f_str, g_str):
                         ax_v.add_patch(rect)
                     else:
                         ax_v.text(x_ic, 4.5, f"${signs[i]}$", ha='center', va='center', fontsize=26, color='#D32F2F' if signs[i]=='-' else '#2E7D32')
-                
-                def get_lim_latex_for_table(l_sym):
-                    return "+\infty" if l_sym == sp.oo else sanitize_latex(l_sym)
-
+                def get_lim_latex_for_table(l_sym): return "+\infty" if l_sym == sp.oo else sanitize_latex(l_sym)
                 if p['type'] == 'inf':
                     lim = sp.limit(f_expr, x_sym, p['sym'])
-                    dx = 0.5 if x_val == -np.inf else -0.5
+                    dx = 0.5 if p['val'] == -np.inf else -0.5
                     nodes.append((x_c+dx, float(sp.N(lim)) if lim.is_real else float('inf') if lim==sp.oo else float('-inf'), get_lim_latex_for_table(lim)))
                 elif p['type'] == 'v_asym':
                     if i > 0 and valid_intervals[i-1]:
@@ -688,37 +648,27 @@ def build_math_context(f_str, g_str):
                     sym_y = sp.simplify(f_expr.subs(x_sym, p['sym']))
                     val_y = float(sp.N(sym_y))
                     nodes.append((x_c, val_y, exactify_value(val_y, sym_y)))
-
             for i in range(N - 1):
                 if valid_intervals[i]:
                     x_c_left = x_start_data + (col_w / 2.0) + i * col_w
                     x_c_right = x_start_data + (col_w / 2.0) + (i+1) * col_w
-                    
                     l_node = next((n for n in nodes if n[0] >= x_c_left and n[0] <= x_c_left + 0.7), None)
                     r_node = next((n for n in nodes if n[0] >= x_c_right - 0.7 and n[0] <= x_c_right), None)
-                    
                     if l_node and r_node:
                         y_l = 0.8 if signs[i] == "+" else 3.2
                         y_r = 3.2 if signs[i] == "+" else 0.8
                         if y_l == y_r: y_l = 2.0; y_r = 2.0
-                        
-                        try:
-                            ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
+                        try: ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
                         except: pass
-                        try:
-                            ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
+                        try: ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
                         except: pass
-                        
                         pad_x, pad_y = 0.35, 0.4
                         start_x, end_x = l_node[0] + pad_x, r_node[0] - pad_x
                         start_y = y_l + (pad_y if signs[i]=="+" else -pad_y)
                         end_y = y_r + (-pad_y if signs[i]=="+" else pad_y)
                         if y_l == y_r: start_y = end_y = y_l
-                        
                         ax_v.annotate('', xy=(end_x, end_y), xytext=(start_x, start_y), arrowprops=dict(arrowstyle="->", color="#1565C0", lw=2.5))
-            
             ax_v.set_xlim(0, x_max); ax_v.set_ylim(0, 6)
-            
             try:
                 fig_v.tight_layout(pad=0.2)
                 tmp_v = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
@@ -817,7 +767,7 @@ def build_math_context(f_str, g_str):
             except:
                 ax_e.clear()
                 ax_e.axis('off')
-                ax_e.text(0.5, 0.5, f"f(x) = {st.session_state.g_val}", fontsize=18, ha='center', va='center', color='#1E3A8A')
+                ax_e.text(0.5, 0.5, f"f(x) = {current_g}", fontsize=18, ha='center', va='center', color='#1E3A8A')
                 try: fig_e.tight_layout(pad=0)
                 except: pass
             tmp_e = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
@@ -907,7 +857,7 @@ def build_math_context(f_str, g_str):
     return cache
 
 if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g:
-    with st.spinner("جاري التحليل الرياضي الشامل (تتم هذه العملية مرة واحدة فقط لتسريع العرض)..."):
+    with st.spinner("جاري التحليل الرياضي الدقيق (تتم هذه العملية مرة واحدة لتسريع حركة المناقشة الآلية)..."):
         st.session_state.math_cache = build_math_context(current_f, current_g)
         st.session_state.last_f = current_f
         st.session_state.last_g = current_g
@@ -923,6 +873,7 @@ else:
     m_max_val = cache['m_max_val']
     m_critical_num = cache['m_critical_num']
 
+    # إبقاء الأزرار ثابتة لتفادي الوميض
     st.write("") 
     col1, col2 = st.columns(2)
     with col1:
@@ -934,15 +885,16 @@ else:
         if st.button("إيقاف ⏹️", disabled=not st.session_state.auto_play):
             st.session_state.auto_play = False
             st.rerun()
-
-    placeholder = st.empty()
     
     m_val_manual = st.slider("تحكم يدوي:", m_min_val, m_max_val, m_min_val, 0.05, format="%g", key="manual_m", disabled=st.session_state.auto_play)
+
+    # إطارات ثابتة للصورة والجدول لتفادي الـ Rerun الكلي
+    anim_placeholder = st.empty()
+    table_placeholder = st.empty()
 
     def generate_st_markdown_table(current_m):
         md = "| عدد و إشارة حلول المعادلة | المجال / القيمة المضبوطة |\n"
         md += "| :---: | :---: |\n"
-        
         active_idx = 0
         for idx, (m_latex, sol_text, L, H) in enumerate(cache['final_table']):
             is_active = False
@@ -955,21 +907,17 @@ else:
         for idx, (m_latex, sol_text, L, H) in enumerate(cache['final_table']):
             is_active = (idx == active_idx)
             c_text = get_sol_color_html(sol_text)
-            
             if is_active:
                 text_cell = f"<span style='display:inline-block; width:90%; background-color:#334155; border:2px solid #FFD700; padding:4px; border-radius:6px; color:{c_text}; font-weight:bold; font-size:17px;'>{sol_text}</span>"
                 math_cell = f"<span style='display:inline-block; width:90%; background-color:#334155; border:2px solid #FFD700; padding:4px; border-radius:6px; white-space:nowrap; font-size:16px;'>**${m_latex}$**</span>"
             else:
                 text_cell = f"<span style='color:{c_text}; font-weight:bold; font-size:17px;'>{sol_text}</span>"
                 math_cell = f"<span style='white-space:nowrap; font-size:16px;'>${m_latex}$</span>"
-                
             md += f"| {text_cell} | {math_cell} |\n"
-            
         return md
 
     def draw_plot(m_val, mode='dark'):
         fig, ax = plt.subplots(figsize=(10, 6.5))
-        
         if mode == 'dark':
             fig.patch.set_facecolor('#0F172A')
             ax.set_facecolor('#0F172A')
@@ -982,14 +930,7 @@ else:
             ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
             ax.grid(True, which='major', color='#475569', linestyle='-', linewidth=1.2, zorder=1)
             ax.grid(True, which='minor', color='#1E293B', linestyle='-', linewidth=0.8, zorder=1)
-            
-            c_asym = '#F472B6' 
-            c_cf = '#00E5FF' 
-            c_cg = '#FFD700' 
-            c_pts = '#EF4444' 
-            c_text = '#E2E8F0'
-            bg_leg = '#1E293B'
-            edge_leg = '#475569'
+            c_asym, c_cf, c_cg, c_pts, c_text, bg_leg, edge_leg = '#F472B6', '#00E5FF', '#FFD700', '#EF4444', '#E2E8F0', '#1E293B', '#475569'
         else:
             fig.patch.set_facecolor('#FFFFFF')
             ax.set_facecolor('#FFFFFF')
@@ -1002,14 +943,7 @@ else:
             ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
             ax.grid(True, which='major', color='#CCCCCC', linestyle='-', linewidth=1.2, zorder=1)
             ax.grid(True, which='minor', color='#EBEBEB', linestyle='-', linewidth=0.6, zorder=1)
-            
-            c_asym = '#D32F2F'
-            c_cf = '#2E7D32' 
-            c_cg = '#1565C0' 
-            c_pts = '#FF8C00' 
-            c_text = 'black'
-            bg_leg = '#FFFFFF'
-            edge_leg = '#A0A0A0'
+            c_asym, c_cf, c_cg, c_pts, c_text, bg_leg, edge_leg = '#D32F2F', '#2E7D32', '#1565C0', '#FF8C00', 'black', '#FFFFFF', '#A0A0A0'
 
         for asym in cache['unique_asymptotes']:
             try:
@@ -1021,27 +955,23 @@ else:
                     ax.text(asym['val'] + 0.15, ax.get_ylim()[1]-1.5, f"${asym['label']}$", color=c_asym, fontsize=14, fontweight='bold', va='top')
             except: pass
         
-        try:
-            ax.plot(cache['x_vals_plot'], cache['y_vals_plot'], color=c_cf, linewidth=3.5, label=r'$C_f$', zorder=5)
-        except:
-            ax.plot(cache['x_vals_plot'], cache['y_vals_plot'], color=c_cf, linewidth=3.5, label='C_f', zorder=5)
+        try: ax.plot(cache['x_vals_plot'], cache['y_vals_plot'], color=c_cf, linewidth=3.5, label=r'$C_f$', zorder=5)
+        except: ax.plot(cache['x_vals_plot'], cache['y_vals_plot'], color=c_cf, linewidth=3.5, label='C_f', zorder=5)
         
         if mode == 'dark':
             with np.errstate(divide='ignore', invalid='ignore'): y_g_plot = cache['g_func'](cache['x_vals_plot'], m_val)
             if np.isscalar(y_g_plot): y_g_plot = np.full_like(cache['x_vals_plot'], y_g_plot, dtype=float)
             
             m_val_str = str(int(m_val)) if int(m_val)==m_val else str(round(m_val, 2))
-            m_eq_label = f"y = {m_val_str}" if st.session_state.g_val.strip() == 'm' else "y = " + st.session_state.g_val.replace('m', f"({m_val_str})" if m_val < 0 else m_val_str).replace('*', '')
+            m_eq_label = f"y = {m_val_str}" if current_g.strip() == 'm' else "y = " + current_g.replace('m', f"({m_val_str})" if m_val < 0 else m_val_str).replace('*', '')
                 
-            try:
-                ax.plot(cache['x_vals_plot'], y_g_plot, color=c_cg, linestyle='--', linewidth=3, label=f"${m_eq_label}$", zorder=5)
-            except:
-                ax.plot(cache['x_vals_plot'], y_g_plot, color=c_cg, linestyle='--', linewidth=3, label=m_eq_label, zorder=5)
+            try: ax.plot(cache['x_vals_plot'], y_g_plot, color=c_cg, linestyle='--', linewidth=3, label=f"${m_eq_label}$", zorder=5)
+            except: ax.plot(cache['x_vals_plot'], y_g_plot, color=c_cg, linestyle='--', linewidth=3, label=m_eq_label, zorder=5)
                 
             diff_plot = cache['y_vals_plot'] - y_g_plot
             intersect_x = []
             
-            # خوارزمية سريعة جداً للتقاطعات لضمان عدم توقف التطبيق
+            # تسريع خوارزمية التقاطعات لمنع التوقف بتاتاً
             for i in range(len(diff_plot)-1):
                 if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
                     if diff_plot[i] * diff_plot[i+1] < 0:
@@ -1067,15 +997,13 @@ else:
             for ix in intersect_x:
                 if not any(abs(ix - u) < 0.1 for u in unique_intersect_x): unique_intersect_x.append(ix)
 
-            intersect_y = [m_val if st.session_state.g_val.strip() == 'm' else (float(cache['g_func'](ix, m_val)) if not np.isscalar(cache['g_func'](ix, m_val)) else cache['g_func'](ix, m_val)) for ix in unique_intersect_x]
+            intersect_y = [m_val if current_g.strip() == 'm' else (float(cache['g_func'](ix, m_val)) if not np.isscalar(cache['g_func'](ix, m_val)) else cache['g_func'](ix, m_val)) for ix in unique_intersect_x]
 
             if unique_intersect_x:
-                try:
-                    ax.scatter(unique_intersect_x, intersect_y, color=c_pts, s=130, zorder=6, edgecolor='white', linewidth=1.5, label=fix_arabic_mpl('نقاط التقاطع'))
+                try: ax.scatter(unique_intersect_x, intersect_y, color=c_pts, s=130, zorder=6, edgecolor='white', linewidth=1.5, label=fix_arabic_mpl('نقاط التقاطع'))
                 except: pass
                     
-            try:
-                ax.text(4, m_val + 0.35, f"${m_eq_label}$", color=c_cg, fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
+            try: ax.text(4, m_val + 0.35, f"${m_eq_label}$", color=c_cg, fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
             except: pass
             
         ax.set_xlim(-12, 12)
@@ -1085,11 +1013,8 @@ else:
             legend = ax.legend(facecolor=bg_leg, edgecolor=edge_leg, loc='upper right', fontsize=12)
             for text in legend.get_texts(): text.set_color(c_text)
         except: pass
-            
-        try:
-            fig.tight_layout()
+        try: fig.tight_layout()
         except: pass
-        
         return fig, ax
 
     def generate_pdf():
@@ -1162,49 +1087,50 @@ else:
         except Exception as e:
             return None
 
-    def update_view(m_val):
-        fig_dark, ax_dark = draw_plot(m_val, mode='dark')
-        
-        with placeholder.container():
-            st.pyplot(fig_dark, use_container_width=True)
-            st.markdown(generate_st_markdown_table(m_val), unsafe_allow_html=True)
-            
-            with st.expander("📊 عرض دراسة الدالة الشاملة (مستخرجة آلياً)", expanded=False):
-                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. استنتاج مجموعة التعريف وحساب النهايات:</h4>", unsafe_allow_html=True)
-                st.latex(cache['domain_latex_st'])
-                
-                for lim in cache['limits_data_detailed']:
-                    st.latex(lim)
-                    
-                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
-                st.latex(fr"f'(x) = {cache['df_latex_str_safe']}")
-                
-                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
-                if cache['var_table_image_path']:
-                    st.image(cache['var_table_image_path'], use_container_width=True)
-            
-            if PDF_ENABLED and not st.session_state.auto_play:
-                pdf_path = generate_pdf()
-                if pdf_path:
-                    with open(pdf_path, "rb") as pdf_file: pdf_bytes = pdf_file.read()
-                    st.download_button(label="📥 تحميل الحل والدراسة كملف PDF", data=pdf_bytes, file_name="monaqasha_souaissia.pdf", mime="application/pdf")
-        plt.close(fig_dark)
-
-    m_val = st.session_state.m_anim if st.session_state.auto_play else m_val_manual
-    update_view(m_val)
-
+    # فصل حلقة التحريك الآلي لتعمل بثبات ونعومة فائقة وبدون أي وميض
     if st.session_state.auto_play:
-        if st.session_state.m_anim <= m_max_val:
-            is_critical_now = any(abs(st.session_state.m_anim - mc) < 0.05 for mc in m_critical_num)
-            time.sleep(0.8 if is_critical_now else 0.01) 
+        m_val = st.session_state.m_anim
+        while m_val <= m_max_val and st.session_state.auto_play:
+            fig_dark, ax_dark = draw_plot(m_val, mode='dark')
+            anim_placeholder.pyplot(fig_dark, use_container_width=True, clear_figure=True)
+            table_placeholder.markdown(generate_st_markdown_table(m_val), unsafe_allow_html=True)
+            plt.close(fig_dark)
             
-            step = 0.2 
-            next_m = st.session_state.m_anim + step
+            is_critical_now = any(abs(m_val - mc) < 0.05 for mc in m_critical_num)
+            time.sleep(1.0 if is_critical_now else 0.02) 
+            
+            step = 0.2
+            next_m = m_val + step
             for mc in m_critical_num:
-                if st.session_state.m_anim < mc - 1e-4 and next_m >= mc - 1e-4:
+                if m_val < mc - 1e-4 and next_m >= mc - 1e-4:
                     next_m = float(mc); break
-            st.session_state.m_anim = next_m
-            st.rerun()
-        else:
-            st.session_state.auto_play = False
-            st.rerun()
+            m_val = round(next_m, 2)
+            
+        st.session_state.auto_play = False
+        st.rerun()
+    else:
+        m_val = m_val_manual
+        fig_dark, ax_dark = draw_plot(m_val, mode='dark')
+        anim_placeholder.pyplot(fig_dark, use_container_width=True, clear_figure=True)
+        table_placeholder.markdown(generate_st_markdown_table(m_val), unsafe_allow_html=True)
+        plt.close(fig_dark)
+        
+    # إطار الدراسة الشاملة يبقى ثابتاً ولا ينهار أثناء حركة المناقشة
+    with st.expander("📊 عرض دراسة الدالة الشاملة (مستخرجة آلياً)", expanded=False):
+        st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. استنتاج مجموعة التعريف وحساب النهايات:</h4>", unsafe_allow_html=True)
+        st.latex(cache['domain_latex_st'])
+        for lim in cache['limits_data_detailed']:
+            st.latex(lim)
+        st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
+        st.latex(fr"f'(x) = {cache['df_latex_str_safe']}")
+        st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
+        if cache['var_table_image_path']:
+            st.image(cache['var_table_image_path'], use_container_width=True)
+
+    if PDF_ENABLED:
+        if not st.session_state.auto_play:
+            st.session_state.cached_pdf = generate_pdf()
+        if st.session_state.get('cached_pdf'):
+            with open(st.session_state.cached_pdf, "rb") as pdf_file: 
+                pdf_bytes = pdf_file.read()
+            st.download_button(label="📥 تحميل الحل والدراسة كملف PDF", data=pdf_bytes, file_name="monaqasha_souaissia.pdf", mime="application/pdf", disabled=st.session_state.auto_play)
