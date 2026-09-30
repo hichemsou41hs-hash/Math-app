@@ -58,15 +58,21 @@ st.markdown("""
     <style>
     .stApp { background-color: #0F172A; color: white; }
     .title-hes { text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap; margin-bottom: 0px;}
-    .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 12px;}
+    .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 25px;}
     
-    .social-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; direction: ltr; }
-    .social-btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 30px; color: white !important; text-decoration: none !important; font-weight: bold; font-size: 15px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .footer-social { margin-top: 35px; padding: 15px; background-color: #1E293B; border: 1px solid #334155; border-radius: 12px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 15px; direction: rtl; }
+    .footer-text { color: #FFD700 !important; font-size: 17px !important; font-weight: bold !important; margin: 0 !important; }
+    .social-links-group { display: flex; gap: 12px; direction: ltr; }
+    .social-btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 30px; color: white !important; text-decoration: none !important; font-weight: bold; font-size: 15px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     .social-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.4); color: white !important; }
     .fb-btn { background: #1877F2; border: 1px solid #3b82f6; }
     .ig-btn { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); border: 1px solid #ec4899; }
 
-    label, p, div[data-testid="stRadio"] p, div[data-testid="stTextInput"] label p { font-weight: bold !important; font-size: 17px !important; color: #00E5FF !important; }
+    .step-box-lim { text-align: right; direction: rtl; color: #FBBF24 !important; font-size: 16px !important; font-weight: bold !important; margin-top: 5px; margin-bottom: -8px; }
+    .step-box-deriv { text-align: right; direction: rtl; color: #FB923C !important; font-size: 16px !important; font-weight: bold !important; margin-top: 8px; margin-bottom: -8px; }
+    .step-box-final { text-align: right; direction: rtl; color: #4ADE80 !important; font-size: 17px !important; font-weight: bold !important; margin-top: 10px; margin-bottom: -8px; }
+
+    label, div[data-testid="stRadio"] p, div[data-testid="stTextInput"] label p { font-weight: bold !important; font-size: 17px !important; color: #00E5FF !important; }
     .stTextInput label { direction: rtl !important; text-align: right !important; display: block;}
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) { display: grid !important; grid-template-columns: repeat(6, 1fr) !important; gap: 5px !important; background-color: #1E293B !important; padding: 5px !important; border-radius: 8px !important; margin-bottom: 2px !important; }
@@ -93,19 +99,6 @@ st.markdown("""
 
 st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>", unsafe_allow_html=True)
 st.markdown("<div class='title-dis'>المناقشة البيانية ودراسة الدالة</div>", unsafe_allow_html=True)
-
-st.markdown("""
-<div class='social-container'>
-    <a href="https://www.facebook.com/share/1KHcAq6bVm/" target="_blank" class="social-btn fb-btn">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
-        <span>Facebook</span>
-    </a>
-    <a href="https://www.instagram.com/prof_hicham_math?stkn=dzh0OWgxZ2ltb3Uw" target="_blank" class="social-btn ig-btn">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-        <span>Instagram</span>
-    </a>
-</div>
-""", unsafe_allow_html=True)
 
 def fmt(val):
     if str(val) == 'oo' or val == float('inf'): return "+\infty"
@@ -208,10 +201,10 @@ except: pass
 col_text, col_img = st.columns(2)
 with col_img:
     img_file = st.file_uploader("🖼 ارفع صورة الدالة لاستخراجها آلياً:", type=['png', 'jpg', 'jpeg'])
-    st.markdown("<p style='font-size:14px; color:#94A3B8; text-align:right; direction:rtl; margin-top:-10px;'>💡 <b>ملاحظة:</b> في حال وجود ضغط على خادم الذكاء الاصطناعي وفشل قراءة الصورة، يرجى كتابة الدالة يدوياً في الخانة المجاورة.</p>", unsafe_allow_html=True)
+    st.markdown("<div style='font-size:14px; color:#94A3B8; text-align:right; direction:rtl; margin-top:-10px; margin-bottom:10px;'>💡 <b>ملاحظة:</b> في حال وجود ضغط على خادم الذكاء الاصطناعي وفشل قراءة الصورة، يرجى كتابة الدالة يدوياً في الخانة المجاورة.</div>", unsafe_allow_html=True)
     if img_file:
         if not api_key:
-            st.error("⚠️ خاصية الذكاء الاصطناعي غير مفعلة.")
+            st.error("⚠️️ خاصية الذكاء الاصطناعي غير مفعلة.")
         else:
             if st.button("استخراج الدالة 🤖", use_container_width=True):
                 with st.spinner("جاري قراءة الصورة..."):
@@ -239,7 +232,7 @@ current_f = st.session_state.f_val
 current_g = st.session_state.g_val
 
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v3"):
+def build_math_context(f_str, g_str, version_tag="v4"):
     cache = {'valid': False, 'error': ''}
     try:
         x_sym, m_sym = sp.symbols('x m', real=True)
@@ -327,12 +320,10 @@ def build_math_context(f_str, g_str, version_tag="v3"):
         except: pass
         df_latex_str_safe = sanitize_latex(df_simp)
 
-        # محرك شرح خطوات حساب الدالة المشتقة آلياً
         def build_derivative_steps():
             steps = []
             try:
                 num, den = sp.fraction(f_expr)
-                # الحالة 1: دالة كسرية u / v
                 if den != 1 and den.has(x_sym):
                     du = sp.simplify(sp.diff(num, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
                     dv = sp.simplify(sp.diff(den, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
@@ -350,7 +341,6 @@ def build_math_context(f_str, g_str, version_tag="v3"):
                         'label': 'بالتعويض في القانون:',
                         'math': fr"f'(x) = \frac{{({du_l})({v_l}) - ({dv_l})({u_l})}}{{({v_l})^2}}"
                     })
-                # الحالة 2: مجموع حدود
                 elif f_expr.is_Add:
                     term_derivs = []
                     sub_rules = []
@@ -372,19 +362,18 @@ def build_math_context(f_str, g_str, version_tag="v3"):
                                 sub_rules.append(fr"\left({sanitize_latex(arg)}\right)' = {sanitize_latex(d_arg)}")
                         if d_arg != 0:
                             term_derivs.append(d_arg)
-                    for idx_s in range(0, len(sub_rules), 2):
-                        chunk = r" \quad , \quad ".join(sub_rules[idx_s:idx_s+2])
+                    
+                    for idx_s, rule_str in enumerate(sub_rules):
                         steps.append({
-                            'label': 'مشتق كل حد:' if idx_s == 0 else 'تابع اشتقاق الحدود:',
-                            'math': chunk
+                            'label': f'مشتق الحد ({idx_s + 1}):',
+                            'math': rule_str
                         })
                     raw_sum = sp.Add(*term_derivs) if term_derivs else sp.Integer(0)
                     if sanitize_latex(raw_sum) != df_latex_str_safe:
                         steps.append({
-                            'label': 'بجمع المشتقات الجزئية:',
+                            'label': 'بجمع المشتقات الجزئية وتوحيد المقامات:',
                             'math': fr"f'(x) = {sanitize_latex(raw_sum)}"
                         })
-                # الحالة 3: جداء دالتين u * v
                 elif f_expr.is_Mul:
                     x_factors = [f for f in f_expr.as_ordered_factors() if f.has(x_sym)]
                     c_factors = [f for f in f_expr.as_ordered_factors() if not f.has(x_sym)]
@@ -405,7 +394,6 @@ def build_math_context(f_str, g_str, version_tag="v3"):
                             'label': 'بالتعويض في القانون:',
                             'math': fr"f'(x) = ({sanitize_latex(du_p)})({sanitize_latex(v_p)}) + ({sanitize_latex(dv_p)})({sanitize_latex(u_p)})"
                         })
-                # الحالة 4: دوال مركبة (لوغاريتمية، أسية، جذر)
                 elif f_expr.func == sp.log and len(f_expr.args) > 0:
                     inner = f_expr.args[0]
                     d_in = sp.simplify(sp.diff(inner, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
@@ -987,8 +975,8 @@ def build_math_context(f_str, g_str, version_tag="v3"):
                         ax_l.text(7.2, y_pos, f"${item['lhs']}$", fontsize=18, ha='right', va='center', color='#1E3A8A')
                         ax_l.text(7.4, y_pos, f"${item['rhs']}$", fontsize=20, ha='left', va='center', color='#D32F2F', fontweight='bold')
                     elif item['type'] == 'step':
-                        ax_l.text(9.6, y_pos, fix_arabic_mpl("لأن:"), fontsize=14, ha='right', va='center', color='#0284C7', fontweight='bold')
-                        ax_l.text(8.8, y_pos, f"$({item['math']})$", fontsize=14, ha='right', va='center', color='#475569')
+                        ax_l.text(9.6, y_pos, fix_arabic_mpl("لأن:"), fontsize=14, ha='right', va='center', color='#D97706', fontweight='bold')
+                        ax_l.text(8.8, y_pos, f"$({item['math']})$", fontsize=14, ha='right', va='center', color='#6D28D9')
                 except:
                     pass
             
@@ -1012,19 +1000,19 @@ def build_math_context(f_str, g_str, version_tag="v3"):
             for i, stp in enumerate(deriv_steps_detailed):
                 y_pos = n_lines - i - 0.5
                 try:
-                    ax_d.text(9.7, y_pos, fix_arabic_mpl(stp['label']), fontsize=13, ha='right', va='center', color='#0284C7', fontweight='bold')
-                    ax_d.text(7.3, y_pos, f"${stp['math']}$", fontsize=14, ha='right', va='center', color='#334155')
+                    ax_d.text(9.7, y_pos, fix_arabic_mpl(stp['label']), fontsize=13, ha='right', va='center', color='#D97706', fontweight='bold')
+                    ax_d.text(7.1, y_pos, f"${stp['math']}$", fontsize=14, ha='right', va='center', color='#0F766E')
                 except:
                     pass
             
             y_final = 0.5
             math_str = fr"f'(x) = {df_latex_str_safe}"
             try:
-                ax_d.text(9.7, y_final, fix_arabic_mpl("العبارة النهائية:"), fontsize=14, ha='right', va='center', color='#C2185B', fontweight='bold')
-                ax_d.text(7.3, y_final, f"${math_str}$", fontsize=18, ha='right', va='center', color='#1E3A8A', fontweight='bold')
+                ax_d.text(9.7, y_final, fix_arabic_mpl("العبارة النهائية:"), fontsize=14, ha='right', va='center', color='#2E7D32', fontweight='bold')
+                ax_d.text(7.1, y_final, f"${math_str}$", fontsize=18, ha='right', va='center', color='#15803D', fontweight='bold')
             except:
                 safe_str = str(df_simp).replace('**', '^')
-                ax_d.text(5.0, y_final, f"f'(x) = {safe_str}", fontsize=16, ha='center', va='center', color='#1E3A8A', family='serif')
+                ax_d.text(5.0, y_final, f"f'(x) = {safe_str}", fontsize=16, ha='center', va='center', color='#15803D', family='serif')
                 
             try:
                 fig_d.tight_layout(pad=0.2)
@@ -1142,11 +1130,12 @@ def build_math_context(f_str, g_str, version_tag="v3"):
         cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or 'deriv_steps_detailed' not in st.session_state.get('math_cache', {}):
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v4":
     with st.spinner("جاري التحليل الرياضي الدقيق (تتم هذه العملية مرة واحدة لتسريع حركة المناقشة الآلية)..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v3")
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v4")
         st.session_state.last_f = current_f
         st.session_state.last_g = current_g
+        st.session_state.cache_ver = "v4"
 
 cache = st.session_state.math_cache
 
@@ -1429,14 +1418,14 @@ else:
         for lim_item in cache['limits_data_detailed']:
             st.latex(lim_item['main'])
             for stp in lim_item['steps']:
-                st.markdown("<p style='text-align:right; direction:rtl; color:#94A3B8; font-size:15px; margin-bottom:-10px;'>🔹 <b>التعليل (خطوات الحساب):</b></p>", unsafe_allow_html=True)
-                st.latex(fr"\color{{#38BDF8}}{{{stp}}}")
+                st.markdown("<div class='step-box-lim'>🔹 التعليل (خطوات الحساب):</div>", unsafe_allow_html=True)
+                st.latex(fr"\color{{#C4B5FD}}{{{stp}}}")
                 
         st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
         for d_step in cache.get('deriv_steps_detailed', []):
-            st.markdown(f"<p style='text-align:right; direction:rtl; color:#94A3B8; font-size:15px; margin-bottom:-10px;'>🔸 <b>{d_step['label']}</b></p>", unsafe_allow_html=True)
-            st.latex(fr"\color{{#38BDF8}}{{{d_step['math']}}}")
-        st.markdown("<p style='text-align:right; direction:rtl; color:#FFD700; font-size:16px; margin-bottom:-10px;'>✅ <b>العبارة النهائية للمشتقة:</b></p>", unsafe_allow_html=True)
+            st.markdown(f"<div class='step-box-deriv'>🔸 {d_step['label']}</div>", unsafe_allow_html=True)
+            st.latex(fr"\color{{#FDE68A}}{{{d_step['math']}}}")
+        st.markdown("<div class='step-box-final'>✅ العبارة النهائية للمشتقة:</div>", unsafe_allow_html=True)
         st.latex(fr"\color{{#4ADE80}}{{f'(x) = {cache['df_latex_str_safe']}}}")
         
         st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
@@ -1450,3 +1439,20 @@ else:
             with open(st.session_state.cached_pdf, "rb") as pdf_file: 
                 pdf_bytes = pdf_file.read()
             st.download_button(label="📥 تحميل الحل والدراسة كملف PDF", data=pdf_bytes, file_name="monaqasha_souaissia.pdf", mime="application/pdf", disabled=st.session_state.auto_play)
+
+# الشريط السفلي لروابط التواصل الاجتماعي
+st.markdown("""
+<div class='footer-social'>
+    <span class='footer-text'>رابط صفحتي في كل من الفايسبوك والانستغرام:</span>
+    <div class='social-links-group'>
+        <a href="https://www.facebook.com/share/1KHcAq6bVm/" target="_blank" class="social-btn fb-btn">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
+            <span>Facebook</span>
+        </a>
+        <a href="https://www.instagram.com/prof_hicham_math?stkn=dzh0OWgxZ2ltb3Uw" target="_blank" class="social-btn ig-btn">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            <span>Instagram</span>
+        </a>
+    </div>
+</div>
+""", unsafe_allow_html=True)
