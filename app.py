@@ -822,7 +822,7 @@ def build_math_context(f_str, g_str):
             except:
                 draw_table(use_math=False)
                 try: fig_dt.tight_layout(pad=0)
-                except: pass
+            except: pass
             tmp_dt = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
             fig_dt.savefig(tmp_dt.name, bbox_inches='tight', dpi=300)
             plt.close(fig_dt)
@@ -1084,25 +1084,39 @@ else:
         except Exception as e:
             return None
 
-    # تشغيل المناقشة الآلية بسلاسة تامة دون وميض وبعيداً عن الأخطاء (تم إصلاح العقدة)
     if st.session_state.auto_play:
         m_val = st.session_state.m_anim
+        
+        # --- خوارزمية ذكية لاحتساب نقاط التوقف البيداغوجية المطلقة لتفادي حلقة الدوران اللانهائية ---
+        stop_points = []
+        if len(m_critical_num) == 0:
+            stop_points.append(0.0)
+        else:
+            stop_points.extend(m_critical_num)
+            stop_points.append(m_critical_num[0] - 1.5) 
+            for i in range(len(m_critical_num) - 1):
+                stop_points.append((m_critical_num[i] + m_critical_num[i+1]) / 2.0) 
+            stop_points.append(m_critical_num[-1] + 1.5) 
+        stop_points = sorted(list(set(stop_points)))
+
         while m_val <= m_max_val and st.session_state.auto_play:
             fig_dark, ax_dark = draw_plot(m_val, mode='dark')
             anim_placeholder.pyplot(fig_dark, use_container_width=True, clear_figure=True)
             table_placeholder.markdown(generate_st_markdown_table(m_val), unsafe_allow_html=True)
             plt.close(fig_dark)
             
-            is_critical_now = any(abs(m_val - mc) < 0.05 for mc in m_critical_num)
-            time.sleep(1.0 if is_critical_now else 0.02) 
+            is_stop_now = any(abs(m_val - sp_val) < 1e-4 for sp_val in stop_points)
+            time.sleep(1.5 if is_stop_now else 0.02) 
             
             step = 0.2
             next_m = m_val + step
-            for mc in m_critical_num:
-                if m_val < mc - 1e-4 and next_m >= mc - 1e-4:
-                    next_m = float(mc); break
             
-            # المتغير المحدث دون استخدام التقريب لتفادي التوقف اللانهائي
+            for sp_val in stop_points:
+                if m_val < sp_val - 1e-4 and next_m >= sp_val - 1e-4:
+                    # تم استخدام القيمة الفردية بدقة لتفادي التقريب الخاطئ والعودة للخلف
+                    next_m = float(sp_val)
+                    break
+            
             m_val = next_m
             
         st.session_state.auto_play = False
