@@ -331,7 +331,7 @@ if valid_input:
                 df_near_minus = df_func_test(v_test - 1e-4)
             
             diff_lr = abs(df_near_plus - df_near_minus) if (np.isfinite(df_near_plus) and np.isfinite(df_near_minus)) else 999.0
-            if not np.isfinite(df_val) or abs(df_near_plus) > 20 or abs(df_near_minus) > 20 or diff_lr > 0.1:
+            if not np.isfinite(df_val) or abs(df_near_plus) > 20 or abs(df_near_minus) > 20 or diff_lr > 0.05:
                 p['type'] = 'corner'
 
     valid_intervals = []
@@ -371,6 +371,7 @@ if valid_input:
 
     m_critical_num = []
     
+    # دمج القيم المحظورة للبحث عن المماسات المركزية (الحل الثابت للمناقشة الدورانية)
     m_candidate_boundaries = list(candidate_v_asymptotes)
     try:
         n_expr, d_expr = sp.fraction(sp.cancel(m_expr))
@@ -391,6 +392,7 @@ if valid_input:
 
     exact_tangent_points = []
     
+    # التقاط المركز الثابت كحل مضاعف (مماس للمناقشة الدورانية)
     for boundary in m_candidate_boundaries:
         for dir in ['+', '-']:
             try:
@@ -628,14 +630,23 @@ if valid_input:
             
         final_table.append((m_latex, sol_text, L, H))
 
+    # واجهة أزرار التحكم بدون إخفاء (لتفادي الوميض)
     st.write("") 
-    if not st.session_state.auto_play:
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("تشغيل المناقشة آلياً ▶️"):
-                st.session_state.auto_play = True
-                st.session_state.m_anim = m_min_val
-                st.rerun()
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("تشغيل المناقشة آلياً ▶️", disabled=st.session_state.auto_play):
+            st.session_state.auto_play = True
+            st.session_state.m_anim = m_min_val
+            st.rerun()
+    with col2:
+        if st.button("إيقاف ⏹️", disabled=not st.session_state.auto_play):
+            st.session_state.auto_play = False
+            st.rerun()
+
+    placeholder = st.empty()
+    
+    # مؤشر التحكم يبقى موجوداً ولكن يعطل آلياً لمنع القفز
+    m_val_manual = st.slider("تحكم يدوي:", m_min_val, m_max_val, m_min_val, 0.05, format="%g", key="manual_m", disabled=st.session_state.auto_play)
 
     def generate_st_markdown_table(current_m):
         md = "| عدد و إشارة حلول المعادلة | المجال / القيمة المضبوطة |\n"
@@ -940,7 +951,74 @@ if valid_input:
 
     var_table_image_path = generate_variation_table_image()
 
-    placeholder = st.empty()
+    def generate_pdf(fig_path):
+        if not PDF_ENABLED: return None
+        pdf = FPDF(orientation='P', unit='mm', format='A4')
+        font_path = "Amiri-Regular.ttf"
+        
+        if not os.path.exists(font_path) or os.path.getsize(font_path) < 10000:
+            try:
+                req = urllib.request.Request("https://github.com/google/fonts/raw/main/ofl/amiri/Amiri-Regular.ttf", headers={'User-Agent': 'Mozilla/5.0'})
+                with urllib.request.urlopen(req) as response, open(font_path, 'wb') as out_file: out_file.write(response.read())
+            except: pass
+        if not os.path.exists(font_path) or os.path.getsize(font_path) < 10000: return None
+            
+        pdf.add_font("Amiri", "", font_path, uni=True)
+        
+        pdf.add_page()
+        pdf.set_font("Amiri", size=22)
+        pdf.set_text_color(21, 101, 192)
+        pdf.cell(0, 12, fix_arabic_pdf("الأستاذ سوايسية هشام - دراسة الدالة والمناقشة البيانية"), ln=True, align='C')
+        pdf.ln(3)
+        
+        pdf.set_font("Amiri", size=15)
+        pdf.set_text_color(194, 24, 91) 
+        pdf.cell(0, 8, fix_arabic_pdf("1. استنتاج مجموعة التعريف وحساب النهايات:"), ln=True, align='R')
+        pdf.ln(1)
+        if limits_image_path:
+            pdf.image(limits_image_path, x=20, w=170)
+            pdf.ln(4)
+
+        pdf.set_font("Amiri", size=15)
+        pdf.set_text_color(194, 24, 91) 
+        pdf.cell(0, 8, fix_arabic_pdf("2. حساب الدالة المشتقة:"), ln=True, align='R')
+        pdf.ln(1)
+        if deriv_image_path:
+            pdf.image(deriv_image_path, x=45, w=120)
+            pdf.ln(4)
+
+        pdf.set_font("Amiri", size=15)
+        pdf.set_text_color(194, 24, 91) 
+        pdf.cell(0, 8, fix_arabic_pdf("3. جدول التغيرات:"), ln=True, align='R')
+        pdf.ln(3)
+        if var_table_image_path:
+            pdf.image(var_table_image_path, x=10, w=190)
+
+        pdf.add_page()
+        pdf.set_font("Amiri", size=17)
+        pdf.set_text_color(21, 101, 192)
+        pdf.cell(0, 9, fix_arabic_pdf("4. التمثيل البياني للدالة (Cf):"), ln=True, align='R')
+        pdf.ln(1)
+        pdf.image(fig_path, x=20, w=170)
+        pdf.ln(4)
+        
+        pdf.set_font("Amiri", size=17)
+        pdf.set_text_color(194, 24, 91)
+        pdf.cell(0, 9, fix_arabic_pdf("5. جدول نتائج المناقشة البيانية لحلول المعادلة:"), ln=True, align='R')
+        pdf.ln(1)
+        
+        eq_image_path = generate_eq_image()
+        if eq_image_path:
+            pdf.image(eq_image_path, x=60, w=90)
+            pdf.ln(2)
+
+        disc_table_img = generate_pdf_discussion_table()
+        if disc_table_img:
+            pdf.image(disc_table_img, x=15, w=180)
+
+        pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+        pdf.output(pdf_file.name)
+        return pdf_file.name
 
     def draw_plot(m_val, mode='dark'):
         fig, ax = plt.subplots(figsize=(10, 6.5))
@@ -1086,20 +1164,24 @@ if valid_input:
                     st.image(var_table_image_path, use_container_width=True)
             
             if PDF_ENABLED and not st.session_state.auto_play:
-                fig_light, ax_light = draw_plot(m_val, mode='light')
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
-                    fig_light.savefig(tmpfile.name, facecolor='#FFFFFF')
-                    pdf_path = generate_pdf(tmpfile.name)
-                    if pdf_path:
-                        with open(pdf_path, "rb") as pdf_file: pdf_bytes = pdf_file.read()
-                        st.download_button(label="📥 تحميل الحل والدراسة كملف PDF", data=pdf_bytes, file_name="monaqasha_souaissia.pdf", mime="application/pdf")
-                plt.close(fig_light)
+                try:
+                    fig_light, ax_light = draw_plot(m_val, mode='light')
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
+                        fig_light.savefig(tmpfile.name, facecolor='#FFFFFF')
+                        pdf_path = generate_pdf(tmpfile.name)
+                        if pdf_path:
+                            with open(pdf_path, "rb") as pdf_file: pdf_bytes = pdf_file.read()
+                            st.download_button(label="📥 تحميل الحل والدراسة كملف PDF", data=pdf_bytes, file_name="monaqasha_souaissia.pdf", mime="application/pdf")
+                    plt.close(fig_light)
+                except Exception as e:
+                    st.error(f"حدث خطأ أثناء توليد ملف الـ PDF: {e}")
         plt.close(fig_dark)
 
+    m_val = st.session_state.m_anim if st.session_state.auto_play else m_val_manual
+    update_view(m_val)
+
     if st.session_state.auto_play:
-        while st.session_state.auto_play and st.session_state.m_anim <= m_max_val:
-            m_val = round(st.session_state.m_anim, 2)
-            update_view(m_val)
+        if st.session_state.m_anim <= m_max_val:
             is_critical_now = any(abs(st.session_state.m_anim - mc) < 0.05 for mc in m_critical_num)
             time.sleep(1.2 if is_critical_now else 0.01) 
             
@@ -1109,12 +1191,7 @@ if valid_input:
                 if st.session_state.m_anim < mc - 1e-4 and next_m >= mc - 1e-4:
                     next_m = float(mc); break
             st.session_state.m_anim = next_m
-            
-        st.session_state.auto_play = False
-        st.rerun()
-    else:
-        if 'manual_m' in st.session_state:
-            if st.session_state.manual_m < m_min_val or st.session_state.manual_m > m_max_val:
-                st.session_state.manual_m = m_min_val
-        m_val = st.slider("تحكم يدوي:", m_min_val, m_max_val, m_min_val, 0.05, format="%g", key="manual_m")
-        update_view(m_val)
+            st.rerun()
+        else:
+            st.session_state.auto_play = False
+            st.rerun()
