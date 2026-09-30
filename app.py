@@ -147,7 +147,7 @@ def get_sol_color_html(sol_text):
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
-if 'f_val' not in st.session_state: st.session_state.f_val = "e^(2*x) - 4*e^x + 3"
+if 'f_val' not in st.session_state: st.session_state.f_val = "ln(x^2 - 4x + 3)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -269,7 +269,11 @@ def build_math_context(f_str, g_str):
         sym_extrema = []
         try:
             for r in sp.solve(df_expr, x_sym):
-                if r.is_real is not False and sp.im(sp.N(r)) == 0: sym_extrema.append(r)
+                if r.is_real is not False and sp.im(sp.N(r)) == 0:
+                    # جدار حماية مجموعة التعريف: رفض أي جذر مشتقة يعطي صورة غير حقيقية (مثل الأعداد المركبة)
+                    val_y_check = sp.simplify(f_expr.subs(x_sym, r))
+                    if val_y_check.is_real is not False and sp.im(sp.N(val_y_check)) == 0:
+                        sym_extrema.append(r)
         except: pass
         sym_extrema = list(set(sym_extrema))
 
@@ -304,7 +308,7 @@ def build_math_context(f_str, g_str):
                 try:
                     sym_nx = sp.nsimplify(nx, tolerance=0.05)
                     y_val = sp.simplify(f_expr.subs(x_sym, sym_nx))
-                    if y_val.is_real:
+                    if y_val.is_real is not False and sp.im(sp.N(y_val)) == 0:
                         pts_var_exact.append({'val': float(sp.N(sym_nx)), 'sym': sym_nx, 'latex_x': sanitize_latex(sym_nx), 'type': 'extrema'})
                 except: pass
                 
@@ -327,7 +331,11 @@ def build_math_context(f_str, g_str):
         for i in range(len(pts_var_exact) - 1):
             left, right = pts_var_exact[i]['val'], pts_var_exact[i+1]['val']
             mid = 0 if (left == -np.inf and right == np.inf) else (right - 1 if left == -np.inf else (left + 1 if right == np.inf else (left + right) / 2.0))
-            valid_intervals.append(np.isfinite(f_func(mid)))
+            try:
+                v_mid = f_func(mid)
+                valid_intervals.append(not np.iscomplexobj(v_mid) and np.isfinite(float(v_mid)))
+            except:
+                valid_intervals.append(False)
             
         while len(valid_intervals) > 0 and not valid_intervals[0]:
             valid_intervals.pop(0); pts_var_exact.pop(0)
@@ -358,7 +366,6 @@ def build_math_context(f_str, g_str):
 
         m_critical_num = []
         sym_m_critical = []
-        
         m_candidate_boundaries = list(candidate_v_asymptotes)
         try:
             n_expr, d_expr = sp.fraction(sp.cancel(m_expr))
@@ -387,12 +394,12 @@ def build_math_context(f_str, g_str):
                         m_critical_num.append(val_m)
                         sym_m_critical.append(sp.simplify(lim))
                         try:
-                            if np.isfinite(float(f_func(float(sp.N(boundary))))):
+                            val_f = f_func(float(sp.N(boundary)))
+                            if not np.iscomplexobj(val_f) and np.isfinite(float(val_f)):
                                 exact_tangent_points.append({'x': float(sp.N(boundary)), 'm_req': val_m})
                         except: pass
                 except: pass
 
-        # تقييم النقطة 0 لاكتشاف تغير الإشارة بشكل حاسم (أُعيدت لتصحيح الخلل في الصورة)
         try:
             val_0 = float(sp.N(sp.simplify(m_expr.subs(x_sym, 0))))
             if np.isfinite(val_0):
@@ -411,12 +418,16 @@ def build_math_context(f_str, g_str):
             dm_expr = sp.diff(m_expr, x_sym)
             for r in sp.solve(dm_expr, x_sym):
                 if r.is_real is not False and sp.im(sp.N(r)) == 0:
-                    val_x = float(sp.N(r))
-                    val_m = float(sp.N(sp.simplify(m_expr.subs(x_sym, r))))
-                    exact_tangent_points.append({'x': val_x, 'm_req': val_m})
-                    if np.isfinite(val_m): 
-                        m_critical_num.append(val_m)
-                        sym_m_critical.append(sp.simplify(m_expr.subs(x_sym, r)))
+                    try:
+                        val_f = f_func(float(sp.N(r)))
+                        if not np.iscomplexobj(val_f) and np.isfinite(float(val_f)):
+                            val_x = float(sp.N(r))
+                            val_m = float(sp.N(sp.simplify(m_expr.subs(x_sym, r))))
+                            exact_tangent_points.append({'x': val_x, 'm_req': val_m})
+                            if np.isfinite(val_m): 
+                                m_critical_num.append(val_m)
+                                sym_m_critical.append(sp.simplify(m_expr.subs(x_sym, r)))
+                    except: pass
         except: pass
 
         try:
@@ -497,7 +508,8 @@ def build_math_context(f_str, g_str):
             if any(abs(x_val - float(sp.N(a['val']))) < 1e-3 for a in unique_asymptotes if a['type'] == 'v'): return False
             try:
                 with np.errstate(all='ignore'): v = f_func(x_val)
-                if np.iscomplexobj(v) or not np.isfinite(float(v)): return False
+                if isinstance(v, complex) or np.iscomplexobj(v): return False
+                if not np.isfinite(float(v)): return False
                 return True
             except: return False
 
@@ -624,8 +636,10 @@ def build_math_context(f_str, g_str):
             for i in range(N - 1):
                 left, right = pts_var_exact[i]['val'], pts_var_exact[i+1]['val']
                 mid = 0 if (left == -np.inf and right == np.inf) else (right - 1 if left == -np.inf else (left + 1 if right == np.inf else (left + right) / 2.0))
-                if not np.isfinite(f_func(mid)): signs.append(None)
-                else: signs.append("+" if f_func(mid + 1e-5) > f_func(mid) else "-")
+                try:
+                    if not np.isfinite(float(f_func(mid))): signs.append(None)
+                    else: signs.append("+" if f_func(mid + 1e-5) > f_func(mid) else "-")
+                except: signs.append(None)
                     
             nodes = []
             for i in range(N):
@@ -650,20 +664,28 @@ def build_math_context(f_str, g_str):
                         ax_v.text(x_ic, 4.5, f"${signs[i]}$", ha='center', va='center', fontsize=26, color='#D32F2F' if signs[i]=='-' else '#2E7D32')
                 def get_lim_latex_for_table(l_sym): return "+\infty" if l_sym == sp.oo else sanitize_latex(l_sym)
                 if p['type'] == 'inf':
-                    lim = sp.limit(f_expr, x_sym, p['sym'])
-                    dx = 0.5 if p['val'] == -np.inf else -0.5
-                    nodes.append((x_c+dx, float(sp.N(lim)) if lim.is_real else float('inf') if lim==sp.oo else float('-inf'), get_lim_latex_for_table(lim)))
+                    try:
+                        lim = sp.limit(f_expr, x_sym, p['sym'])
+                        dx = 0.5 if p['val'] == -np.inf else -0.5
+                        nodes.append((x_c+dx, float(sp.N(lim)) if lim.is_real else float('inf') if lim==sp.oo else float('-inf'), get_lim_latex_for_table(lim)))
+                    except: pass
                 elif p['type'] == 'v_asym':
                     if i > 0 and valid_intervals[i-1]:
-                        lim_l = sp.limit(f_expr, x_sym, p['sym'], dir='-')
-                        nodes.append((x_c-0.4, float(sp.N(lim_l)) if lim_l.is_real else float('inf') if lim_l==sp.oo else float('-inf'), get_lim_latex_for_table(lim_l)))
+                        try:
+                            lim_l = sp.limit(f_expr, x_sym, p['sym'], dir='-')
+                            nodes.append((x_c-0.4, float(sp.N(lim_l)) if lim_l.is_real else float('inf') if lim_l==sp.oo else float('-inf'), get_lim_latex_for_table(lim_l)))
+                        except: pass
                     if i < N-1 and valid_intervals[i]:
-                        lim_r = sp.limit(f_expr, x_sym, p['sym'], dir='+')
-                        nodes.append((x_c+0.4, float(sp.N(lim_r)) if lim_r.is_real else float('inf') if lim_r==sp.oo else float('-inf'), get_lim_latex_for_table(lim_r)))
+                        try:
+                            lim_r = sp.limit(f_expr, x_sym, p['sym'], dir='+')
+                            nodes.append((x_c+0.4, float(sp.N(lim_r)) if lim_r.is_real else float('inf') if lim_r==sp.oo else float('-inf'), get_lim_latex_for_table(lim_r)))
+                        except: pass
                 elif p['type'] in ['extrema', 'corner']:
-                    sym_y = sp.simplify(f_expr.subs(x_sym, p['sym']))
-                    val_y = float(sp.N(sym_y))
-                    nodes.append((x_c, val_y, exactify_value(val_y, sym_y)))
+                    try:
+                        sym_y = sp.simplify(f_expr.subs(x_sym, p['sym']))
+                        val_y = float(sp.N(sym_y))
+                        nodes.append((x_c, val_y, exactify_value(val_y, sym_y)))
+                    except: pass
             for i in range(N - 1):
                 if valid_intervals[i]:
                     x_c_left = x_start_data + (col_w / 2.0) + i * col_w
@@ -883,7 +905,7 @@ if 'math_cache' not in st.session_state or st.session_state.get('last_f') != cur
 cache = st.session_state.math_cache
 
 if not cache.get('valid'):
-    st.error(f"⚠️ صيغة غير صالحة أو الخانة فارغة. {cache.get('error', '')}")
+    st.error(f"⚠️ صيغة غير صالحة أو الخانة فارغة. حاول كتابة الدالة بصيغة رياضية صحيحة.")
 else:
     st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {sanitize_latex(cache['f_expr'])} \\ y = {sanitize_latex(cache['g_expr'])} \end{{cases}}")
 
@@ -1012,7 +1034,15 @@ else:
             for ix in intersect_x:
                 if not any(abs(ix - u) < 0.1 for u in unique_intersect_x): unique_intersect_x.append(ix)
 
-            intersect_y = [m_val if current_g.strip() == 'm' else (float(cache['g_func'](ix, m_val)) if not np.isscalar(cache['g_func'](ix, m_val)) else cache['g_func'](ix, m_val)) for ix in unique_intersect_x]
+            intersect_y = []
+            for ix in unique_intersect_x:
+                if current_g.strip() == 'm': intersect_y.append(m_val)
+                else:
+                    try:
+                        v_eval = cache['g_func'](ix, m_val)
+                        if isinstance(v_eval, complex) or np.iscomplexobj(v_eval): intersect_y.append(np.nan)
+                        else: intersect_y.append(float(v_eval))
+                    except: intersect_y.append(np.nan)
 
             if unique_intersect_x:
                 try: ax.scatter(unique_intersect_x, intersect_y, color=c_pts, s=130, zorder=6, edgecolor='white', linewidth=1.5, label=fix_arabic_mpl('نقاط التقاطع'))
@@ -1133,7 +1163,6 @@ else:
                     next_m = float(sp_val)
                     break
             
-            # تصحيح الحلقة المفرغة: استخدام القيمة الدقيقة بدون تقريب لتفادي التجميد
             m_val = next_m
             
         st.session_state.auto_play = False
