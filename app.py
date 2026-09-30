@@ -222,7 +222,6 @@ try:
     transformations = (standard_transformations + (implicit_multiplication_application,))
     f_processed = fix_implicit_mult(st.session_state.f_val)
     g_processed = fix_implicit_mult(st.session_state.g_val)
-    # تم التصحيح: تفعيل التقييم التلقائي لحل مشاكل SymPy
     f_expr = parse_expr(f_processed, local_dict=local_dict, transformations=transformations)
     g_expr = parse_expr(g_processed, local_dict=local_dict, transformations=transformations)
     valid_input = True
@@ -236,7 +235,6 @@ if valid_input:
     f_func = sp.lambdify(x_sym, f_expr, 'numpy')
     g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
     
-    # تم تقليل عدد النقاط لتسريع التطبيق ومنع التوقف 
     x_vals_plot = np.linspace(-15, 15, 6001)
     x_vals_roots = np.concatenate([np.linspace(-500, -15, 2000, endpoint=False), np.linspace(-15, 15, 6001), np.linspace(15, 500, 2000)])
     
@@ -244,6 +242,7 @@ if valid_input:
         with np.errstate(divide='ignore', invalid='ignore'): y_arr = f_func(x_arr)
         if np.iscomplexobj(y_arr): y_arr = np.where(np.isreal(y_arr), y_arr.real, np.nan)
         if np.isscalar(y_arr): y_arr = np.full_like(x_arr, y_arr, dtype=float)
+        y_arr[~np.isfinite(y_arr)] = np.nan
         dy = np.abs(np.diff(y_arr))
         for idx in np.where(dy > 30)[0]: y_arr[idx] = np.nan; y_arr[idx+1] = np.nan
         return y_arr
@@ -417,7 +416,7 @@ if valid_input:
             y_test_m = m_func_eval(x_test_m)
             if np.iscomplexobj(y_test_m): y_test_m = np.where(np.isreal(y_test_m), y_test_m.real, np.nan)
             
-        is_val_m = ~np.isnan(y_test_m)
+        is_val_m = np.isfinite(y_test_m)
         edges_m = np.diff(is_val_m.astype(int))
         starts_m = np.where(edges_m == 1)[0] + 1
         if is_val_m[0]: starts_m = np.insert(starts_m, 0, 0)
@@ -427,6 +426,9 @@ if valid_input:
         for s, e in zip(starts_m, ends_m):
             segment = y_test_m[s:e+1]
             seg_x = x_test_m[s:e+1]
+            
+            # تم حذف السطرين المتسببين في القيم الوهمية لتبقى الجذور دقيقة 100%
+            
             if len(segment) > 10:
                 peaks, _ = find_peaks(segment, prominence=0.05)
                 valleys, _ = find_peaks(-segment, prominence=0.05)
@@ -460,7 +462,7 @@ if valid_input:
     m_min_val = float(max(-25.0, m_min_val))
     m_max_val = float(min(25.0, m_max_val))
 
-    # دالة ذكية لإرجاع القيم المضبوطة (مثل e) بدلاً من 2.72
+    # دالة تحويل القيم للرموز المضبوطة بدقة
     def exactify_value(val_float, sym_val=None):
         if sym_val is not None:
             try:
@@ -845,7 +847,6 @@ if valid_input:
                 ax_v.plot([x_c, x_c], [4, 5], 'k-', lw=1.2, zorder=2)
                 ax_v.text(x_c, 4.5, '0', ha='center', va='center', fontsize=16)
             elif p['type'] == 'corner': 
-                # رسم الخطين المتوازيين في خانة المشتقة فقط عند النقطة الزاوية (عدم قابلية الاشتقاق)
                 ax_v.plot([x_c-0.04, x_c-0.04], [4, 5], 'k-', lw=1.5, zorder=2)
                 ax_v.plot([x_c+0.04, x_c+0.04], [4, 5], 'k-', lw=1.5, zorder=2)
 
