@@ -58,7 +58,14 @@ st.markdown("""
     <style>
     .stApp { background-color: #0F172A; color: white; }
     .title-hes { text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap; margin-bottom: 0px;}
-    .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 30px;}
+    .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 12px;}
+    
+    .social-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; direction: ltr; }
+    .social-btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 30px; color: white !important; text-decoration: none !important; font-weight: bold; font-size: 15px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .social-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.4); color: white !important; }
+    .fb-btn { background: #1877F2; border: 1px solid #3b82f6; }
+    .ig-btn { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); border: 1px solid #ec4899; }
+
     label, p, div[data-testid="stRadio"] p, div[data-testid="stTextInput"] label p { font-weight: bold !important; font-size: 17px !important; color: #00E5FF !important; }
     .stTextInput label { direction: rtl !important; text-align: right !important; display: block;}
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
@@ -86,6 +93,19 @@ st.markdown("""
 
 st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>", unsafe_allow_html=True)
 st.markdown("<div class='title-dis'>المناقشة البيانية ودراسة الدالة</div>", unsafe_allow_html=True)
+
+st.markdown("""
+<div class='social-container'>
+    <a href="https://www.facebook.com/share/1KHcAq6bVm/" target="_blank" class="social-btn fb-btn">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
+        <span>Facebook</span>
+    </a>
+    <a href="https://www.instagram.com/prof_hicham_math?stkn=dzh0OWgxZ2ltb3Uw" target="_blank" class="social-btn ig-btn">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        <span>Instagram</span>
+    </a>
+</div>
+""", unsafe_allow_html=True)
 
 def fmt(val):
     if str(val) == 'oo' or val == float('inf'): return "+\infty"
@@ -219,7 +239,7 @@ current_f = st.session_state.f_val
 current_g = st.session_state.g_val
 
 @st.cache_resource
-def build_math_context(f_str, g_str):
+def build_math_context(f_str, g_str, version_tag="v3"):
     cache = {'valid': False, 'error': ''}
     try:
         x_sym, m_sym = sp.symbols('x m', real=True)
@@ -300,7 +320,117 @@ def build_math_context(f_str, g_str):
         df_clean = df_expr.replace(sp.sign, lambda arg: arg / sp.Abs(arg))
         df_simp = sp.simplify(df_clean)
         if df_simp.has(sp.Piecewise): df_simp = df_clean 
+        try:
+            df_together = sp.together(df_simp)
+            if not df_together.has(sp.Piecewise):
+                df_simp = df_together
+        except: pass
         df_latex_str_safe = sanitize_latex(df_simp)
+
+        # محرك شرح خطوات حساب الدالة المشتقة آلياً
+        def build_derivative_steps():
+            steps = []
+            try:
+                num, den = sp.fraction(f_expr)
+                # الحالة 1: دالة كسرية u / v
+                if den != 1 and den.has(x_sym):
+                    du = sp.simplify(sp.diff(num, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
+                    dv = sp.simplify(sp.diff(den, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
+                    u_l, v_l = sanitize_latex(num), sanitize_latex(den)
+                    du_l, dv_l = sanitize_latex(du), sanitize_latex(dv)
+                    steps.append({
+                        'label': 'قانون مشتق حاصل قسمة:',
+                        'math': r"f'(x) = \frac{u'(x) \cdot v(x) - v'(x) \cdot u(x)}{(v(x))^2}"
+                    })
+                    steps.append({
+                        'label': 'حساب مشتق البسط والمقام:',
+                        'math': fr"u(x) = {u_l} \Rightarrow u'(x) = {du_l} \quad , \quad v(x) = {v_l} \Rightarrow v'(x) = {dv_l}"
+                    })
+                    steps.append({
+                        'label': 'بالتعويض في القانون:',
+                        'math': fr"f'(x) = \frac{{({du_l})({v_l}) - ({dv_l})({u_l})}}{{({v_l})^2}}"
+                    })
+                # الحالة 2: مجموع حدود
+                elif f_expr.is_Add:
+                    term_derivs = []
+                    sub_rules = []
+                    for arg in f_expr.args:
+                        d_arg = sp.simplify(sp.diff(arg, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
+                        if arg.is_number:
+                            sub_rules.append(fr"({sanitize_latex(arg)})' = 0")
+                        else:
+                            x_factors = [f for f in arg.as_ordered_factors() if f.has(x_sym)] if arg.is_Mul else []
+                            if len(x_factors) >= 2:
+                                u_part = x_factors[0]
+                                v_part = sp.Mul(*x_factors[1:])
+                                c_part = sp.Mul(*[f for f in arg.as_ordered_factors() if not f.has(x_sym)])
+                                du_p = sp.simplify(sp.diff(u_part, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
+                                dv_p = sp.simplify(sp.diff(v_part, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
+                                c_str = "" if c_part == 1 else ("-" if c_part == -1 else sanitize_latex(c_part))
+                                sub_rules.append(fr"\left({sanitize_latex(arg)}\right)' = {c_str}\left[({sanitize_latex(du_p)})({sanitize_latex(v_part)}) + ({sanitize_latex(dv_p)})({sanitize_latex(u_part)})\right] = {sanitize_latex(d_arg)}")
+                            else:
+                                sub_rules.append(fr"\left({sanitize_latex(arg)}\right)' = {sanitize_latex(d_arg)}")
+                        if d_arg != 0:
+                            term_derivs.append(d_arg)
+                    for idx_s in range(0, len(sub_rules), 2):
+                        chunk = r" \quad , \quad ".join(sub_rules[idx_s:idx_s+2])
+                        steps.append({
+                            'label': 'مشتق كل حد:' if idx_s == 0 else 'تابع اشتقاق الحدود:',
+                            'math': chunk
+                        })
+                    raw_sum = sp.Add(*term_derivs) if term_derivs else sp.Integer(0)
+                    if sanitize_latex(raw_sum) != df_latex_str_safe:
+                        steps.append({
+                            'label': 'بجمع المشتقات الجزئية:',
+                            'math': fr"f'(x) = {sanitize_latex(raw_sum)}"
+                        })
+                # الحالة 3: جداء دالتين u * v
+                elif f_expr.is_Mul:
+                    x_factors = [f for f in f_expr.as_ordered_factors() if f.has(x_sym)]
+                    c_factors = [f for f in f_expr.as_ordered_factors() if not f.has(x_sym)]
+                    if len(x_factors) >= 2:
+                        u_p = x_factors[0] * sp.Mul(*c_factors)
+                        v_p = sp.Mul(*x_factors[1:])
+                        du_p = sp.simplify(sp.diff(u_p, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
+                        dv_p = sp.simplify(sp.diff(v_p, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
+                        steps.append({
+                            'label': 'قانون مشتق جداء:',
+                            'math': r"f'(x) = u'(x) \cdot v(x) + v'(x) \cdot u(x)"
+                        })
+                        steps.append({
+                            'label': 'حساب المشتقات الجزئية:',
+                            'math': fr"u(x) = {sanitize_latex(u_p)} \Rightarrow u'(x) = {sanitize_latex(du_p)} \quad , \quad v(x) = {sanitize_latex(v_p)} \Rightarrow v'(x) = {sanitize_latex(dv_p)}"
+                        })
+                        steps.append({
+                            'label': 'بالتعويض في القانون:',
+                            'math': fr"f'(x) = ({sanitize_latex(du_p)})({sanitize_latex(v_p)}) + ({sanitize_latex(dv_p)})({sanitize_latex(u_p)})"
+                        })
+                # الحالة 4: دوال مركبة (لوغاريتمية، أسية، جذر)
+                elif f_expr.func == sp.log and len(f_expr.args) > 0:
+                    inner = f_expr.args[0]
+                    d_in = sp.simplify(sp.diff(inner, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
+                    steps.append({
+                        'label': 'قانون مشتق اللوغاريتم:',
+                        'math': fr"f'(x) = \frac{{u'(x)}}{{u(x)}} = \frac{{({sanitize_latex(inner)})'}}{{{sanitize_latex(inner)}}} = \frac{{{sanitize_latex(d_in)}}}{{{sanitize_latex(inner)}}}"
+                    })
+                elif f_expr.func == sp.exp and len(f_expr.args) > 0:
+                    inner = f_expr.args[0]
+                    d_in = sp.simplify(sp.diff(inner, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
+                    steps.append({
+                        'label': 'قانون مشتق الأسية:',
+                        'math': fr"f'(x) = u'(x) \cdot e^{{u(x)}} = ({sanitize_latex(d_in)}) \cdot e^{{{sanitize_latex(inner)}}}"
+                    })
+                elif f_expr.func == sp.sqrt and len(f_expr.args) > 0:
+                    inner = f_expr.args[0]
+                    d_in = sp.simplify(sp.diff(inner, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
+                    steps.append({
+                        'label': 'قانون مشتق الجذر:',
+                        'math': fr"f'(x) = \frac{{u'(x)}}{{2\sqrt{{u(x)}}}} = \frac{{{sanitize_latex(d_in)}}}{{2\sqrt{{{sanitize_latex(inner)}}}}}"
+                    })
+            except: pass
+            return steps
+
+        deriv_steps_detailed = build_derivative_steps()
         
         sym_extrema = []
         try:
@@ -758,12 +888,10 @@ def build_math_context(f_str, g_str):
         limits_data_detailed = []
         limits_mpl_items = [{'type': 'domain', 'latex': domain_latex_mpl}]
 
-        # محرك ذكي لاستخراج خطوات وتعليل حساب النهايات مهما كانت الدالة
         def build_limit_steps(val_sym, dir_sympy, target_latex, arrow_latex):
             steps_math = []
             try:
                 num, den = sp.fraction(f_expr)
-                # الحالة 1: دالة ناطقة أو كسرية
                 if den != 1 and not den.is_number:
                     l_num = sp.limit(num, x_sym, val_sym, dir=dir_sympy)
                     l_den = sp.limit(den, x_sym, val_sym, dir=dir_sympy)
@@ -777,7 +905,6 @@ def build_math_context(f_str, g_str):
                         except: pass
                     steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(num)}\right) = {l_num_s} \quad , \quad \lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(den)}\right) = {l_den_s}")
                 
-                # الحالة 2: مجموع حدود
                 elif f_expr.is_Add:
                     sub_parts = []
                     has_pos_inf, has_neg_inf = False, False
@@ -797,14 +924,12 @@ def build_math_context(f_str, g_str):
                     if sub_parts:
                         steps_math.append(r" \quad , \quad ".join(sub_parts[:3]))
 
-                # الحالة 3: دالة مركبة (لوغاريتم، أسية، جذر)
                 elif f_expr.func in [sp.log, sp.exp, sp.sqrt] and len(f_expr.args) > 0:
                     inner = f_expr.args[0]
                     l_in = sp.limit(inner, x_sym, val_sym, dir=dir_sympy)
                     l_in_s = "0^+" if (l_in == 0 and f_expr.func == sp.log) else format_lim_val(l_in)
                     steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(inner)}\right) = {l_in_s}")
 
-                # الحالة 4: جداء دالتين
                 elif f_expr.is_Mul:
                     sub_parts = []
                     for arg in f_expr.args:
@@ -816,7 +941,6 @@ def build_math_context(f_str, g_str):
             except: pass
             return steps_math
 
-        # استخدام \overset المدعومة في كل من المتصفح وملف الـ PDF
         def add_limit(val_sym, dir_sympy, target_latex, arrow_latex=r"\to"):
             try:
                 lim = sp.limit(f_expr, x_sym, val_sym, dir=dir_sympy)
@@ -879,20 +1003,32 @@ def build_math_context(f_str, g_str):
         limits_image_path = generate_limits_image()
 
         def generate_deriv_image():
-            math_str = fr"f'(x) = {df_latex_str_safe}"
-            fig_d, ax_d = plt.subplots(figsize=(8, 1.5))
+            n_lines = len(deriv_steps_detailed) + 1
+            fig_d, ax_d = plt.subplots(figsize=(9, max(1.6, n_lines * 0.8)))
             ax_d.axis('off')
+            ax_d.set_xlim(0, 10)
+            ax_d.set_ylim(0, n_lines)
+            
+            for i, stp in enumerate(deriv_steps_detailed):
+                y_pos = n_lines - i - 0.5
+                try:
+                    ax_d.text(9.7, y_pos, fix_arabic_mpl(stp['label']), fontsize=13, ha='right', va='center', color='#0284C7', fontweight='bold')
+                    ax_d.text(7.3, y_pos, f"${stp['math']}$", fontsize=14, ha='right', va='center', color='#334155')
+                except:
+                    pass
+            
+            y_final = 0.5
+            math_str = fr"f'(x) = {df_latex_str_safe}"
             try:
-                ax_d.text(0.5, 0.5, f"${math_str}$", fontsize=24, ha='center', va='center', color='#1E3A8A')
-                fig_d.canvas.draw()
-                fig_d.tight_layout(pad=0)
+                ax_d.text(9.7, y_final, fix_arabic_mpl("العبارة النهائية:"), fontsize=14, ha='right', va='center', color='#C2185B', fontweight='bold')
+                ax_d.text(7.3, y_final, f"${math_str}$", fontsize=18, ha='right', va='center', color='#1E3A8A', fontweight='bold')
             except:
-                ax_d.clear()
-                ax_d.axis('off')
                 safe_str = str(df_simp).replace('**', '^')
-                ax_d.text(0.5, 0.5, f"f'(x) = {safe_str}", fontsize=18, ha='center', va='center', color='#1E3A8A', family='serif')
-                try: fig_d.tight_layout(pad=0)
-                except: pass
+                ax_d.text(5.0, y_final, f"f'(x) = {safe_str}", fontsize=16, ha='center', va='center', color='#1E3A8A', family='serif')
+                
+            try:
+                fig_d.tight_layout(pad=0.2)
+            except: pass
             tmp_d = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
             fig_d.savefig(tmp_d.name, bbox_inches='tight', dpi=300)
             plt.close(fig_d)
@@ -990,6 +1126,7 @@ def build_math_context(f_str, g_str):
             'final_table': final_table,
             'domain_latex_st': domain_latex_st,
             'limits_data_detailed': limits_data_detailed,
+            'deriv_steps_detailed': deriv_steps_detailed,
             'df_latex_str_safe': df_latex_str_safe,
             'var_table_image_path': var_table_image_path,
             'limits_image_path': limits_image_path,
@@ -1005,9 +1142,9 @@ def build_math_context(f_str, g_str):
         cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g:
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or 'deriv_steps_detailed' not in st.session_state.get('math_cache', {}):
     with st.spinner("جاري التحليل الرياضي الدقيق (تتم هذه العملية مرة واحدة لتسريع حركة المناقشة الآلية)..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g)
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v3")
         st.session_state.last_f = current_f
         st.session_state.last_g = current_g
 
@@ -1203,7 +1340,7 @@ else:
             pdf.cell(0, 8, fix_arabic_pdf("2. حساب الدالة المشتقة:"), ln=True, align='R')
             pdf.ln(1)
             if cache['deriv_image_path']:
-                pdf.image(cache['deriv_image_path'], x=45, w=120)
+                pdf.image(cache['deriv_image_path'], x=15, w=180)
                 pdf.ln(4)
 
             pdf.set_font("Amiri", size=15)
@@ -1294,8 +1431,14 @@ else:
             for stp in lim_item['steps']:
                 st.markdown("<p style='text-align:right; direction:rtl; color:#94A3B8; font-size:15px; margin-bottom:-10px;'>🔹 <b>التعليل (خطوات الحساب):</b></p>", unsafe_allow_html=True)
                 st.latex(fr"\color{{#38BDF8}}{{{stp}}}")
+                
         st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
-        st.latex(fr"f'(x) = {cache['df_latex_str_safe']}")
+        for d_step in cache.get('deriv_steps_detailed', []):
+            st.markdown(f"<p style='text-align:right; direction:rtl; color:#94A3B8; font-size:15px; margin-bottom:-10px;'>🔸 <b>{d_step['label']}</b></p>", unsafe_allow_html=True)
+            st.latex(fr"\color{{#38BDF8}}{{{d_step['math']}}}")
+        st.markdown("<p style='text-align:right; direction:rtl; color:#FFD700; font-size:16px; margin-bottom:-10px;'>✅ <b>العبارة النهائية للمشتقة:</b></p>", unsafe_allow_html=True)
+        st.latex(fr"\color{{#4ADE80}}{{f'(x) = {cache['df_latex_str_safe']}}}")
+        
         st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
         if cache['var_table_image_path']:
             st.image(cache['var_table_image_path'], use_container_width=True)
