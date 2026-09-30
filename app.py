@@ -154,7 +154,7 @@ def get_sol_color_html(sol_text):
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -6.0
-if 'f_val' not in st.session_state: st.session_state.f_val = "abs(x)*e^(-abs(x))"
+if 'f_val' not in st.session_state: st.session_state.f_val = "x/ln(x)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -190,7 +190,7 @@ except:
 col_text, col_img = st.columns(2)
 
 with col_img:
-    img_file = st.file_uploader("🖼️️ ارفع صورة الدالة لاستخراجها آلياً:", type=['png', 'jpg', 'jpeg'])
+    img_file = st.file_uploader("🖼 ارفع صورة الدالة لاستخراجها آلياً:", type=['png', 'jpg', 'jpeg'])
     st.markdown("<p style='font-size:14px; color:#94A3B8; text-align:right; direction:rtl; margin-top:-10px;'>💡 <b>ملاحظة:</b> في حال وجود ضغط على خادم الذكاء الاصطناعي وفشل قراءة الصورة، يرجى كتابة الدالة يدوياً في الخانة المجاورة.</p>", unsafe_allow_html=True)
     
     if img_file:
@@ -328,7 +328,7 @@ if valid_input:
     pts_var_exact.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
     pts_var_exact.sort(key=lambda p: p['val'])
 
-    # --- تصحيح واكتشاف نقطة الزاوية وعدم قابلية الاشتقاق بدقة متناهية ---
+    # --- تصحيح ذكي لاكتشاف النقاط الزاوية (Corner points) حيث المشتقة من اليمين لا تساوي المشتقة من اليسار ---
     df_func_test = sp.lambdify(x_sym, df_expr, 'numpy')
     for p in pts_var_exact:
         if p['type'] == 'extrema':
@@ -339,8 +339,9 @@ if valid_input:
                 df_near_minus = df_func_test(v_test - 1e-4)
             
             diff_lr = abs(df_near_plus - df_near_minus) if (np.isfinite(df_near_plus) and np.isfinite(df_near_minus)) else 999.0
-            # إذا كان المشتق من اليمين يختلف عن المشتق من اليسار فهذه نقطة زاوية غير قابلة للاشتقاق
-            if not np.isfinite(df_val) or abs(df_near_plus) > 20 or abs(df_near_minus) > 20 or diff_lr > 0.05:
+            
+            # إذا اختلفت المشتقة يميناً ويساراً، فهي حتماً نقطة زاوية والدالة غير قابلة للاشتقاق
+            if not np.isfinite(df_val) or abs(df_near_plus) > 20 or abs(df_near_minus) > 20 or diff_lr > 0.1:
                 p['type'] = 'corner'
 
     valid_intervals = []
@@ -413,7 +414,9 @@ if valid_input:
                 val_x = float(sp.N(r))
                 val_m = float(sp.N(sp.simplify(m_expr.subs(x_sym, r))))
                 exact_tangent_points.append({'x': val_x, 'm_req': val_m})
-                if np.isfinite(val_m): m_critical_num.append(val_m)
+                if np.isfinite(val_m): 
+                    m_critical_num.append(val_m)
+                    sym_m_critical.append(sp.simplify(m_expr.subs(x_sym, r)))
     except: pass
 
     try:
@@ -467,20 +470,32 @@ if valid_input:
     m_min_val = float(max(-25.0, m_min_val))
     m_max_val = float(min(25.0, m_max_val))
 
+    # --- دالة تعيد القيم الرياضية الدقيقة المضبوطة كأولوية بدلاً من الفواصل ---
+    def exactify_value(val_float, sym_val=None):
+        if sym_val is not None:
+            try:
+                s_str = str(sym_val)
+                if not any(bad in s_str for bad in ["LambertW", "RootOf", "Integral", "zoo"]):
+                    l_str = sanitize_latex(sym_val)
+                    if len(l_str) < 20: return l_str
+            except: pass
+            
+        if abs(val_float - np.e) < 1e-3: return "e"
+        if abs(val_float + np.e) < 1e-3: return "-e"
+        if abs(val_float - 1/np.e) < 1e-3: return r"\frac{1}{e}"
+        if abs(val_float + 1/np.e) < 1e-3: return r"-\frac{1}{e}"
+        if abs(val_float - np.pi) < 1e-3: return "\pi"
+        if abs(val_float + np.pi) < 1e-3: return "-\pi"
+        
+        if abs(val_float - int(round(val_float))) < 1e-3: return str(int(round(val_float)))
+        return str(round(val_float, 2))
+
     def get_exact_m(val_float):
-        for mc in m_critical_num:
-            if abs(val_float - mc) < 0.05:
-                return str(mc) if int(mc) != mc else str(int(mc)) if abs(mc - int(mc)) < 1e-3 else str(mc)
         for sm in sym_m_critical:
             if abs(float(sp.N(sm)) - val_float) < 1e-2:
-                s_str = str(sm)
-                if "LambertW" in s_str or "RootOf" in s_str or "Integral" in s_str or "zoo" in s_str:
-                    return fmt(val_float)
-                latex_str = sanitize_latex(sm)
-                if len(latex_str) > 25:
-                    return fmt(val_float)
-                return latex_str
-        return fmt(val_float)
+                res = exactify_value(val_float, sm)
+                if res != str(round(val_float, 2)): return res
+        return exactify_value(val_float)
 
     def is_valid_root(x_val):
         if any(abs(x_val - float(sp.N(a['val']))) < 1e-3 for a in unique_asymptotes if a['type'] == 'v'):
@@ -533,7 +548,6 @@ if valid_input:
                     tangents.append((crossings[i] + crossings[i+1])/2.0); skip = True
                 else: cleaned_crossings.append(crossings[i])
             
-            # يتم احتساب الحل المضاعف فقط عندما يكون المماس أفقياً بحق (تنعدم المشتقة)
             for tp in exact_tangent_points:
                 if abs(tp['m_req'] - m_test) < 0.05:
                     if is_valid_root(tp['x']):
@@ -557,6 +571,7 @@ if valid_input:
         neg_d = sum(1 for r, t in final_roots if r < -0.01 and t == "double")
         zero_d = sum(1 for r, t in final_roots if abs(r) <= 0.01 and t == "double")
 
+        # --- تحسين التعبير عن "حلان مضاعفان" ---
         if pos_d == 1 and neg_d == 1:
             desc.append("حلان مضاعفان (أحدهما موجب والآخر سالب)")
         else:
@@ -842,7 +857,7 @@ if valid_input:
                 ax_v.plot([x_c, x_c], [4, 5], 'k-', lw=1.2, zorder=2)
                 ax_v.text(x_c, 4.5, '0', ha='center', va='center', fontsize=16)
             elif p['type'] == 'corner': 
-                # رسم الخطين المتوازيين (||) في خانة المشتقة فقط عند نقطة الزاوية بدقة
+                # وضع خطين متوازيين في خانة المشتقة فقط عند نقطة الزاوية بدلا من الصفر
                 ax_v.plot([x_c-0.04, x_c-0.04], [4, 5], 'k-', lw=1.5, zorder=2)
                 ax_v.plot([x_c+0.04, x_c+0.04], [4, 5], 'k-', lw=1.5, zorder=2)
 
@@ -870,7 +885,9 @@ if valid_input:
                     nodes.append((x_c+0.4, float(sp.N(lim_r)) if lim_r.is_real else float('inf') if lim_r==sp.oo else float('-inf'), get_lim_latex_for_table(lim_r)))
             elif p['type'] in ['extrema', 'corner']:
                 sym_y = sp.simplify(f_expr.subs(x_sym, p['sym']))
-                nodes.append((x_c, float(sp.N(sym_y)), sanitize_latex(sym_y)))
+                val_y = float(sp.N(sym_y))
+                # استخدام التعبير المضبوط في أسهم جدول التغيرات أيضاً
+                nodes.append((x_c, val_y, exactify_value(val_y, sym_y)))
 
         for i in range(N - 1):
             if valid_intervals[i]:
