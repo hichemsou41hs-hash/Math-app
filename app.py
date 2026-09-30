@@ -371,7 +371,6 @@ if valid_input:
 
     m_critical_num = []
     
-    # دمج القيم المحظورة للبحث عن المماسات المركزية (الحل الثابت للمناقشة الدورانية)
     m_candidate_boundaries = list(candidate_v_asymptotes)
     try:
         n_expr, d_expr = sp.fraction(sp.cancel(m_expr))
@@ -392,7 +391,6 @@ if valid_input:
 
     exact_tangent_points = []
     
-    # التقاط المركز الثابت كحل مضاعف (مماس للمناقشة الدورانية)
     for boundary in m_candidate_boundaries:
         for dir in ['+', '-']:
             try:
@@ -630,7 +628,7 @@ if valid_input:
             
         final_table.append((m_latex, sol_text, L, H))
 
-    # واجهة أزرار التحكم بدون إخفاء (لتفادي الوميض)
+    # --- الحل النهائي لمشكلة التوقف والـ Refresh: استخدام st.session_state وذاكرة تخزين مؤقت ---
     st.write("") 
     col1, col2 = st.columns(2)
     with col1:
@@ -645,7 +643,6 @@ if valid_input:
 
     placeholder = st.empty()
     
-    # مؤشر التحكم يبقى موجوداً ولكن يعطل آلياً لمنع القفز
     m_val_manual = st.slider("تحكم يدوي:", m_min_val, m_max_val, m_min_val, 0.05, format="%g", key="manual_m", disabled=st.session_state.auto_play)
 
     def generate_st_markdown_table(current_m):
@@ -1174,7 +1171,7 @@ if valid_input:
                             st.download_button(label="📥 تحميل الحل والدراسة كملف PDF", data=pdf_bytes, file_name="monaqasha_souaissia.pdf", mime="application/pdf")
                     plt.close(fig_light)
                 except Exception as e:
-                    st.error(f"حدث خطأ أثناء توليد ملف الـ PDF: {e}")
+                    pass
         plt.close(fig_dark)
 
     m_val = st.session_state.m_anim if st.session_state.auto_play else m_val_manual
