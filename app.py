@@ -147,7 +147,7 @@ def get_sol_color_html(sol_text):
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
-if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(abs(x))"
+if 'f_val' not in st.session_state: st.session_state.f_val = "e^(2*x) - 4*e^x + 3"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -358,6 +358,7 @@ def build_math_context(f_str, g_str):
 
         m_critical_num = []
         sym_m_critical = []
+        
         m_candidate_boundaries = list(candidate_v_asymptotes)
         try:
             n_expr, d_expr = sp.fraction(sp.cancel(m_expr))
@@ -390,6 +391,21 @@ def build_math_context(f_str, g_str):
                                 exact_tangent_points.append({'x': float(sp.N(boundary)), 'm_req': val_m})
                         except: pass
                 except: pass
+
+        # تقييم النقطة 0 لاكتشاف تغير الإشارة بشكل حاسم (أُعيدت لتصحيح الخلل في الصورة)
+        try:
+            val_0 = float(sp.N(sp.simplify(m_expr.subs(x_sym, 0))))
+            if np.isfinite(val_0):
+                m_critical_num.append(val_0)
+                sym_m_critical.append(sp.simplify(m_expr.subs(x_sym, 0)))
+        except: pass
+        
+        try:
+            lim_0 = sp.limit(m_expr, x_sym, 0)
+            if lim_0.is_real and np.isfinite(float(sp.N(lim_0))):
+                m_critical_num.append(float(sp.N(lim_0)))
+                sym_m_critical.append(sp.simplify(lim_0))
+        except: pass
 
         try:
             dm_expr = sp.diff(m_expr, x_sym)
@@ -1117,6 +1133,7 @@ else:
                     next_m = float(sp_val)
                     break
             
+            # تصحيح الحلقة المفرغة: استخدام القيمة الدقيقة بدون تقريب لتفادي التجميد
             m_val = next_m
             
         st.session_state.auto_play = False
