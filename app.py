@@ -128,6 +128,12 @@ def sanitize_latex(expr):
     s = s.replace(r'\operatorname', r'\mathrm')
     return s
 
+def format_lim_val(lim_sym):
+    if lim_sym == sp.oo: return r"+\infty"
+    if lim_sym == -sp.oo: return r"-\infty"
+    if lim_sym == sp.zoo: return r"\pm\infty"
+    return sanitize_latex(lim_sym)
+
 def get_sol_color_pdf(sol_text):
     if "لا توجد" in sol_text: return "#D32F2F"      
     if "مضاعف" in sol_text: return "#D97706"       
@@ -147,7 +153,7 @@ def get_sol_color_html(sol_text):
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
-if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(abs(x))"
+if 'f_val' not in st.session_state: st.session_state.f_val = "x^2 + x*ln(x) + 1"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -385,7 +391,7 @@ def build_math_context(f_str, g_str):
             i += 1
                 
         domain_latex_st = r"D_f = \color{#FFD700}{" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset") + r"}"
-        domain_latex_mpl = r"D_f =" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
+        domain_latex_mpl = r"D_f = " + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
 
         try:
             m_expr_list = sp.solve(f_expr - g_expr, m_sym)
@@ -750,18 +756,84 @@ def build_math_context(f_str, g_str):
         var_table_image_path = generate_variation_table_image()
         
         limits_data_detailed = []
-        limits_mpl_list = []
-        # كتابة النهايات بوضع < و > فوق السهم بدلاً من + و -
+        limits_mpl_items = [{'type': 'domain', 'latex': domain_latex_mpl}]
+
+        # محرك ذكي لاستخراج خطوات وتعليل حساب النهايات مهما كانت الدالة
+        def build_limit_steps(val_sym, dir_sympy, target_latex, arrow_latex):
+            steps_math = []
+            try:
+                num, den = sp.fraction(f_expr)
+                # الحالة 1: دالة ناطقة أو كسرية
+                if den != 1 and not den.is_number:
+                    l_num = sp.limit(num, x_sym, val_sym, dir=dir_sympy)
+                    l_den = sp.limit(den, x_sym, val_sym, dir=dir_sympy)
+                    l_num_s = format_lim_val(l_num)
+                    l_den_s = format_lim_val(l_den)
+                    if l_den == 0 and val_sym not in [sp.oo, -sp.oo]:
+                        try:
+                            eps = 1e-5 if dir_sympy == '+' else -1e-5
+                            d_val = float(sp.N(den.subs(x_sym, float(sp.N(val_sym)) + eps)))
+                            l_den_s = "0^+" if d_val > 0 else "0^-"
+                        except: pass
+                    steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(num)}\right) = {l_num_s} \quad , \quad \lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(den)}\right) = {l_den_s}")
+                
+                # الحالة 2: مجموع حدود
+                elif f_expr.is_Add:
+                    sub_parts = []
+                    has_pos_inf, has_neg_inf = False, False
+                    for arg in f_expr.args:
+                        if not arg.is_number:
+                            l_p = sp.limit(arg, x_sym, val_sym, dir=dir_sympy)
+                            if l_p == sp.oo: has_pos_inf = True
+                            if l_p == -sp.oo: has_neg_inf = True
+                            sub_parts.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(arg)}\right) = {format_lim_val(l_p)}")
+                    if has_pos_inf and has_neg_inf:
+                        try:
+                            fact = sp.factor(f_expr)
+                            if fact != f_expr:
+                                l_tot = format_lim_val(sp.limit(f_expr, x_sym, val_sym, dir=dir_sympy))
+                                steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(fact)}\right) = {l_tot}")
+                        except: pass
+                    if sub_parts:
+                        steps_math.append(r" \quad , \quad ".join(sub_parts[:3]))
+
+                # الحالة 3: دالة مركبة (لوغاريتم، أسية، جذر)
+                elif f_expr.func in [sp.log, sp.exp, sp.sqrt] and len(f_expr.args) > 0:
+                    inner = f_expr.args[0]
+                    l_in = sp.limit(inner, x_sym, val_sym, dir=dir_sympy)
+                    l_in_s = "0^+" if (l_in == 0 and f_expr.func == sp.log) else format_lim_val(l_in)
+                    steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(inner)}\right) = {l_in_s}")
+
+                # الحالة 4: جداء دالتين
+                elif f_expr.is_Mul:
+                    sub_parts = []
+                    for arg in f_expr.args:
+                        if not arg.is_number:
+                            l_p = sp.limit(arg, x_sym, val_sym, dir=dir_sympy)
+                            sub_parts.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(arg)}\right) = {format_lim_val(l_p)}")
+                    if sub_parts:
+                        steps_math.append(r" \quad , \quad ".join(sub_parts[:3]))
+            except: pass
+            return steps_math
+
+        # استخدام \overset المدعومة في كل من المتصفح وملف الـ PDF
         def add_limit(val_sym, dir_sympy, target_latex, arrow_latex=r"\to"):
             try:
                 lim = sp.limit(f_expr, x_sym, val_sym, dir=dir_sympy)
-                lim_latex = "+\infty" if lim == sp.oo else sanitize_latex(lim)
+                lim_latex = format_lim_val(lim)
                 expr_latex = sanitize_latex(f_expr)
-                latex_streamlit = fr"\lim_{{x {arrow_latex} {target_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
-                limits_data_detailed.append(latex_streamlit)
+                
+                steps_list = build_limit_steps(val_sym, dir_sympy, target_latex, arrow_latex)
+                
+                latex_streamlit = fr"\lim_{{x {arrow_latex} {target_latex}}} f(x) = \lim_{{x {arrow_latex} {target_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
+                limits_data_detailed.append({'main': latex_streamlit, 'steps': steps_list})
+                
                 lhs_mpl = fr"\lim_{{x {arrow_latex} {target_latex}}} f(x) = \lim_{{x {arrow_latex} {target_latex}}} \left( {expr_latex} \right) ="
                 rhs_mpl = fr"{lim_latex}"
-                limits_mpl_list.append((lhs_mpl, rhs_mpl))
+                limits_mpl_items.append({'type': 'main', 'lhs': lhs_mpl, 'rhs': rhs_mpl})
+                
+                for stp in steps_list:
+                    limits_mpl_items.append({'type': 'step', 'math': stp})
             except: pass
 
         if len(pts_var_exact) > 0:
@@ -772,28 +844,33 @@ def build_math_context(f_str, g_str):
             for i, p in enumerate(pts_var_exact):
                 if p['type'] == 'v_asym':
                     v_latex = p['latex_x']
-                    if i > 0 and valid_intervals[i-1]: add_limit(p['sym'], '-', v_latex, r"\stackrel{<}{\to}")
-                    if i < len(valid_intervals) and valid_intervals[i]: add_limit(p['sym'], '+', v_latex, r"\stackrel{>}{\to}")
+                    if i > 0 and valid_intervals[i-1]: add_limit(p['sym'], '-', v_latex, r"\overset{<}{\to}")
+                    if i < len(valid_intervals) and valid_intervals[i]: add_limit(p['sym'], '+', v_latex, r"\overset{>}{\to}")
 
         def generate_limits_image():
-            all_lines = [(domain_latex_mpl, "")] + limits_mpl_list
-            n_lines = len(all_lines)
-            fig_l, ax_l = plt.subplots(figsize=(8, max(1.5, n_lines * 0.9)))
+            n_lines = len(limits_mpl_items)
+            fig_l, ax_l = plt.subplots(figsize=(9, max(2.0, n_lines * 0.75)))
             ax_l.axis('off')
+            ax_l.set_xlim(0, 10)
+            ax_l.set_ylim(0, n_lines)
+            
+            for i, item in enumerate(limits_mpl_items):
+                y_pos = n_lines - i - 0.5
+                try:
+                    if item['type'] == 'domain':
+                        ax_l.text(5.0, y_pos, f"${item['latex']}$", fontsize=20, ha='center', va='center', color='#1E3A8A', fontweight='bold')
+                    elif item['type'] == 'main':
+                        ax_l.text(7.2, y_pos, f"${item['lhs']}$", fontsize=18, ha='right', va='center', color='#1E3A8A')
+                        ax_l.text(7.4, y_pos, f"${item['rhs']}$", fontsize=20, ha='left', va='center', color='#D32F2F', fontweight='bold')
+                    elif item['type'] == 'step':
+                        ax_l.text(9.6, y_pos, fix_arabic_mpl("لأن:"), fontsize=14, ha='right', va='center', color='#0284C7', fontweight='bold')
+                        ax_l.text(8.8, y_pos, f"$({item['math']})$", fontsize=14, ha='right', va='center', color='#475569')
+                except:
+                    pass
+            
             try:
-                for i, (lhs, rhs) in enumerate(all_lines):
-                    y_pos = 1.0 - (i + 0.5) / n_lines
-                    if i == 0: 
-                        ax_l.text(0.5, y_pos, f"${lhs}$", fontsize=22, ha='center', va='center', color='#1E3A8A')
-                    else: 
-                        ax_l.text(0.70, y_pos, f"${lhs}$", fontsize=22, ha='right', va='center', color='#1E3A8A')
-                        ax_l.text(0.72, y_pos, f"${rhs}$", fontsize=24, ha='left', va='center', color='#D32F2F', fontweight='bold')
-                fig_l.canvas.draw()
-                fig_l.tight_layout(pad=0)
-            except:
-                ax_l.clear()
-                ax_l.axis('off')
-                ax_l.text(0.5, 0.5, "خطأ في رسم المعادلات", fontsize=18, ha='center', va='center', color='#D32F2F')
+                fig_l.tight_layout(pad=0.2)
+            except: pass
             tmp_l = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
             fig_l.savefig(tmp_l.name, bbox_inches='tight', dpi=300)
             plt.close(fig_l)
@@ -1118,7 +1195,7 @@ else:
             pdf.cell(0, 8, fix_arabic_pdf("1. استنتاج مجموعة التعريف وحساب النهايات:"), ln=True, align='R')
             pdf.ln(1)
             if cache['limits_image_path']:
-                pdf.image(cache['limits_image_path'], x=20, w=170)
+                pdf.image(cache['limits_image_path'], x=15, w=180)
                 pdf.ln(4)
 
             pdf.set_font("Amiri", size=15)
@@ -1212,8 +1289,11 @@ else:
     with st.expander("📊 عرض دراسة الدالة الشاملة (مستخرجة آلياً)", expanded=False):
         st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. استنتاج مجموعة التعريف وحساب النهايات:</h4>", unsafe_allow_html=True)
         st.latex(cache['domain_latex_st'])
-        for lim in cache['limits_data_detailed']:
-            st.latex(lim)
+        for lim_item in cache['limits_data_detailed']:
+            st.latex(lim_item['main'])
+            for stp in lim_item['steps']:
+                st.markdown("<p style='text-align:right; direction:rtl; color:#94A3B8; font-size:15px; margin-bottom:-10px;'>🔹 <b>التعليل (خطوات الحساب):</b></p>", unsafe_allow_html=True)
+                st.latex(fr"\color{{#38BDF8}}{{{stp}}}")
         st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
         st.latex(fr"f'(x) = {cache['df_latex_str_safe']}")
         st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
