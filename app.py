@@ -153,8 +153,8 @@ def get_sol_color_html(sol_text):
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -6.0
-if 'f_val' not in st.session_state: st.session_state.f_val = "(x+1)/ln(x)"
-if 'g_val' not in st.session_state: st.session_state.g_val = "m"
+if 'f_val' not in st.session_state: st.session_state.f_val = "(x+1)/ln(x-1)"
+if 'g_val' not in st.session_state: st.session_state.g_val = "m+1"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
@@ -383,7 +383,7 @@ if valid_input:
                 m_critical_num.append(float(sp.N(lim)))
     except: pass
 
-    # 2. استخراج النهايات عند أطراف مجموعة التعريف (يحل مشكلة غياب m=0)
+    # 2. استخراج النهايات عند أطراف مجموعة التعريف (تم إبقاؤه لضمان الحدود الدقيقة)
     for boundary in candidate_v_asymptotes:
         for dir in ['+', '-']:
             try:
@@ -402,7 +402,7 @@ if valid_input:
             m_critical_num.append(float(sp.N(lim_0)))
     except: pass
 
-    # 3. استخراج نقاط التماس الدقيقة رياضياً 
+    # 3. استخراج نقاط التماس الدقيقة رياضياً (يحسم المماسات)
     exact_tangent_points = []
     try:
         dm_expr = sp.diff(m_expr, x_sym)
@@ -414,7 +414,7 @@ if valid_input:
                 if np.isfinite(val_m): m_critical_num.append(val_m)
     except: pass
 
-    # 4. الدعم العددي الشامل (Fallback)
+    # 4. الدعم العددي الشامل (ملاحظة: تم حذف قراءة الحواف المسببة لظهور القيم الغريبة)
     try:
         m_func_eval = sp.lambdify(x_sym, m_expr, 'numpy')
         x_test_m = np.linspace(-25, 25, 100001)
@@ -432,9 +432,6 @@ if valid_input:
         for s, e in zip(starts_m, ends_m):
             segment = y_test_m[s:e+1]
             seg_x = x_test_m[s:e+1]
-            
-            if s > 0 and np.isfinite(y_test_m[s]): m_critical_num.append(float(y_test_m[s]))
-            if e < len(x_test_m) - 1 and np.isfinite(y_test_m[e]): m_critical_num.append(float(y_test_m[e]))
             
             if len(segment) > 10:
                 peaks, _ = find_peaks(segment, prominence=0.05)
