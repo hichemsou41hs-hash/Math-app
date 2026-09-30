@@ -227,21 +227,7 @@ def build_math_context(f_str, g_str):
         f_func = sp.lambdify(x_sym, f_expr, 'numpy')
         g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
         
-        x_vals_plot = np.linspace(-15, 15, 6001)
-        x_vals_roots = np.concatenate([np.linspace(-500, -15, 2000, endpoint=False), np.linspace(-15, 15, 6001), np.linspace(15, 500, 2000)])
-        
-        def process_y_vals(x_arr):
-            with np.errstate(divide='ignore', invalid='ignore'): y_arr = f_func(x_arr)
-            if np.iscomplexobj(y_arr): y_arr = np.where(np.isreal(y_arr), y_arr.real, np.nan)
-            if np.isscalar(y_arr): y_arr = np.full_like(x_arr, y_arr, dtype=float)
-            y_arr[~np.isfinite(y_arr)] = np.nan
-            dy = np.abs(np.diff(y_arr))
-            for idx in np.where(dy > 30)[0]: y_arr[idx] = np.nan; y_arr[idx+1] = np.nan
-            return y_arr
-
-        y_vals_plot = process_y_vals(x_vals_plot)
-        y_vals_roots = process_y_vals(x_vals_roots)
-
+        # استخراج المقاربات العمودية أولاً
         candidate_v_asymptotes = []
         try:
             n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
@@ -260,6 +246,37 @@ def build_math_context(f_str, g_str):
         for r in candidate_v_asymptotes:
             unique_asymptotes.append({'type': 'v', 'val': float(sp.N(r)), 'label': f"x={sanitize_latex(r)}"})
 
+        # حقن قيم قريبة جداً (1e-6) من المقاربات لإجبار المنحنى على النزول لأسفل الشاشة
+        x_base = np.linspace(-15, 15, 6001)
+        x_roots_base = np.concatenate([np.linspace(-500, -15, 2000, endpoint=False), np.linspace(-15, 15, 6001), np.linspace(15, 500, 2000)])
+        
+        extra_x = []
+        for a in unique_asymptotes:
+            val = a['val']
+            if -16 <= val <= 16:
+                for delta in [1e-3, 1e-4, 1e-5, 1e-6]:
+                    extra_x.append(val - delta)
+                    extra_x.append(val + delta)
+                    
+        if extra_x:
+            x_vals_plot = np.sort(np.concatenate([x_base, extra_x]))
+            x_vals_roots = np.sort(np.concatenate([x_roots_base, extra_x]))
+        else:
+            x_vals_plot = x_base
+            x_vals_roots = x_roots_base
+
+        def process_y_vals(x_arr):
+            with np.errstate(divide='ignore', invalid='ignore'): y_arr = f_func(x_arr)
+            if np.iscomplexobj(y_arr): y_arr = np.where(np.isreal(y_arr), y_arr.real, np.nan)
+            if np.isscalar(y_arr): y_arr = np.full_like(x_arr, y_arr, dtype=float)
+            y_arr[~np.isfinite(y_arr)] = np.nan
+            dy = np.abs(np.diff(y_arr))
+            for idx in np.where(dy > 30)[0]: y_arr[idx] = np.nan; y_arr[idx+1] = np.nan
+            return y_arr
+
+        y_vals_plot = process_y_vals(x_vals_plot)
+        y_vals_roots = process_y_vals(x_vals_roots)
+
         df_expr = sp.diff(f_expr, x_sym)
         df_clean = df_expr.replace(sp.sign, lambda arg: arg / sp.Abs(arg))
         df_simp = sp.simplify(df_clean)
@@ -270,7 +287,6 @@ def build_math_context(f_str, g_str):
         try:
             for r in sp.solve(df_expr, x_sym):
                 if r.is_real is not False and sp.im(sp.N(r)) == 0:
-                    # جدار حماية مجموعة التعريف: رفض أي جذر مشتقة يعطي صورة غير حقيقية (مثل الأعداد المركبة)
                     val_y_check = sp.simplify(f_expr.subs(x_sym, r))
                     if val_y_check.is_real is not False and sp.im(sp.N(val_y_check)) == 0:
                         sym_extrema.append(r)
@@ -1135,6 +1151,7 @@ else:
     if st.session_state.auto_play:
         m_val = st.session_state.m_anim
         
+        # --- خوارزمية ذكية لاحتساب نقاط التوقف البيداغوجية المطلقة لتفادي حلقة الدوران اللانهائية ---
         stop_points = []
         if len(m_critical_num) == 0:
             stop_points.append(0.0)
@@ -1160,6 +1177,7 @@ else:
             
             for sp_val in stop_points:
                 if m_val < sp_val - 1e-4 and next_m >= sp_val - 1e-4:
+                    # تم استخدام القيمة الفردية بدقة لتفادي التقريب الخاطئ والعودة للخلف
                     next_m = float(sp_val)
                     break
             
