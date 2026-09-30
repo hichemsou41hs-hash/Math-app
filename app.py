@@ -358,13 +358,13 @@ def build_math_context(f_str, g_str):
 
         m_critical_num = []
         sym_m_critical = []
-        
         m_candidate_boundaries = list(candidate_v_asymptotes)
         try:
             n_expr, d_expr = sp.fraction(sp.cancel(m_expr))
             if d_expr != 1:
                 for r in sp.solve(d_expr, x_sym):
-                    if r.is_real is not False and sp.im(sp.N(r)) == 0: m_candidate_boundaries.append(r)
+                    if r.is_real is not False and sp.im(sp.N(r)) == 0: 
+                        m_candidate_boundaries.append(r)
         except: pass
         m_candidate_boundaries = list(set(m_candidate_boundaries))
 
@@ -873,7 +873,6 @@ else:
     m_max_val = cache['m_max_val']
     m_critical_num = cache['m_critical_num']
 
-    # إبقاء الأزرار ثابتة لتفادي الوميض
     st.write("") 
     col1, col2 = st.columns(2)
     with col1:
@@ -888,7 +887,6 @@ else:
     
     m_val_manual = st.slider("تحكم يدوي:", m_min_val, m_max_val, m_min_val, 0.05, format="%g", key="manual_m", disabled=st.session_state.auto_play)
 
-    # إطارات ثابتة للصورة والجدول لتفادي الـ Rerun الكلي
     anim_placeholder = st.empty()
     table_placeholder = st.empty()
 
@@ -971,7 +969,6 @@ else:
             diff_plot = cache['y_vals_plot'] - y_g_plot
             intersect_x = []
             
-            # تسريع خوارزمية التقاطعات لمنع التوقف بتاتاً
             for i in range(len(diff_plot)-1):
                 if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
                     if diff_plot[i] * diff_plot[i+1] < 0:
@@ -1087,7 +1084,7 @@ else:
         except Exception as e:
             return None
 
-    # فصل حلقة التحريك الآلي لتعمل بثبات ونعومة فائقة وبدون أي وميض
+    # تشغيل المناقشة الآلية بسلاسة تامة دون وميض وبعيداً عن الأخطاء (تم إصلاح العقدة)
     if st.session_state.auto_play:
         m_val = st.session_state.m_anim
         while m_val <= m_max_val and st.session_state.auto_play:
@@ -1104,7 +1101,9 @@ else:
             for mc in m_critical_num:
                 if m_val < mc - 1e-4 and next_m >= mc - 1e-4:
                     next_m = float(mc); break
-            m_val = round(next_m, 2)
+            
+            # المتغير المحدث دون استخدام التقريب لتفادي التوقف اللانهائي
+            m_val = next_m
             
         st.session_state.auto_play = False
         st.rerun()
@@ -1115,7 +1114,6 @@ else:
         table_placeholder.markdown(generate_st_markdown_table(m_val), unsafe_allow_html=True)
         plt.close(fig_dark)
         
-    # إطار الدراسة الشاملة يبقى ثابتاً ولا ينهار أثناء حركة المناقشة
     with st.expander("📊 عرض دراسة الدالة الشاملة (مستخرجة آلياً)", expanded=False):
         st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. استنتاج مجموعة التعريف وحساب النهايات:</h4>", unsafe_allow_html=True)
         st.latex(cache['domain_latex_st'])
