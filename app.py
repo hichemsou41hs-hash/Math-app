@@ -147,7 +147,7 @@ def get_sol_color_html(sol_text):
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -6.0
-if 'f_val' not in st.session_state: st.session_state.f_val = "x/ln(x)"
+if 'f_val' not in st.session_state: st.session_state.f_val = "x*ln(abs(x))"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -331,7 +331,7 @@ if valid_input:
                 df_near_minus = df_func_test(v_test - 1e-4)
             
             diff_lr = abs(df_near_plus - df_near_minus) if (np.isfinite(df_near_plus) and np.isfinite(df_near_minus)) else 999.0
-            if not np.isfinite(df_val) or abs(df_near_plus) > 20 or abs(df_near_minus) > 20 or diff_lr > 0.05:
+            if not np.isfinite(df_val) or abs(df_near_plus) > 20 or abs(df_near_minus) > 20 or diff_lr > 0.1:
                 p['type'] = 'corner'
 
     valid_intervals = []
@@ -427,8 +427,6 @@ if valid_input:
             segment = y_test_m[s:e+1]
             seg_x = x_test_m[s:e+1]
             
-            # تم حذف السطرين المتسببين في القيم الوهمية لتبقى الجذور دقيقة 100%
-            
             if len(segment) > 10:
                 peaks, _ = find_peaks(segment, prominence=0.05)
                 valleys, _ = find_peaks(-segment, prominence=0.05)
@@ -450,7 +448,8 @@ if valid_input:
         if asym['type'] == 'h':
             m_critical_num.append(asym['val'])
 
-    m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 100])))
+    # تم التعديل: تقريب لـ 3 فواصل للمحافظة على دقة الأرقام (مثل 0.368) لكي يتم تحويلها للرمز الدقيق لاحقا 
+    m_critical_num = sorted(list(set([round(m, 3) for m in m_critical_num if np.isfinite(m) and abs(m) < 100])))
 
     m_min_val = -6.0
     m_max_val = 6.0
@@ -462,30 +461,42 @@ if valid_input:
     m_min_val = float(max(-25.0, m_min_val))
     m_max_val = float(min(25.0, m_max_val))
 
-    # دالة تحويل القيم للرموز المضبوطة بدقة
+    # --- فلترة متقدمة ومصحح رياضي ذكي لإجبار التطبيق على كتابة الكسور الدقيقة والرموز ---
     def exactify_value(val_float, sym_val=None):
         if sym_val is not None:
             try:
                 s_str = str(sym_val)
-                if not any(bad in s_str for bad in ["LambertW", "RootOf", "Integral", "zoo"]):
+                # تخطي الصيغ المعقدة جداً أو الغير قابلة للقراءة
+                if not any(bad in s_str for bad in ["LambertW", "RootOf", "Integral", "zoo", "I"]):
                     l_str = sanitize_latex(sym_val)
-                    if len(l_str) < 20: return l_str
+                    if len(l_str) < 25: return l_str
             except: pass
             
-        if abs(val_float - np.e) < 1e-3: return "e"
-        if abs(val_float + np.e) < 1e-3: return "-e"
-        if abs(val_float - 1/np.e) < 1e-3: return r"\frac{1}{e}"
-        if abs(val_float + 1/np.e) < 1e-3: return r"-\frac{1}{e}"
-        if abs(val_float - np.pi) < 1e-3: return "\pi"
-        if abs(val_float + np.pi) < 1e-3: return "-\pi"
-        if abs(val_float - int(round(val_float))) < 1e-3: return str(int(round(val_float)))
-        return str(round(val_float, 2))
+        # الكشف الآلي عن الثوابت الرياضية المعروفة وإرجاع رموزها
+        if abs(val_float - np.e) < 1e-2: return "e"
+        if abs(val_float + np.e) < 1e-2: return "-e"
+        if abs(val_float - 1/np.e) < 1e-2: return r"\frac{1}{e}"
+        if abs(val_float + 1/np.e) < 1e-2: return r"-\frac{1}{e}"
+        if abs(val_float - np.pi) < 1e-2: return r"\pi"
+        if abs(val_float + np.pi) < 1e-2: return r"-\pi"
+        if abs(val_float - np.e**2) < 1e-2: return "e^2"
+        if abs(val_float + np.e**2) < 1e-2: return "-e^2"
+        if abs(val_float - 2*np.e) < 1e-2: return "2e"
+        if abs(val_float + 2*np.e) < 1e-2: return "-2e"
+        
+        # الأعداد الصحيحة
+        if abs(val_float - int(round(val_float))) < 1e-2: return str(int(round(val_float)))
+        
+        # الأعداد العشرية الأخرى تُقرب بشكل طبيعي بدون أصفار زائدة
+        return str(round(val_float, 2)).rstrip('0').rstrip('.') if '.' in str(round(val_float, 2)) else str(round(val_float, 2))
 
     def get_exact_m(val_float):
         for sm in sym_m_critical:
             if abs(float(sp.N(sm)) - val_float) < 1e-2:
                 res = exactify_value(val_float, sm)
-                if res != str(round(val_float, 2)): return res
+                # التأكد من أنه نجح في جلب صيغة لاتيكس جميلة وليس مجرد رقم عشري
+                if not re.match(r'^-?\d+(\.\d+)?$', res): 
+                    return res
         return exactify_value(val_float)
 
     def is_valid_root(x_val):
@@ -875,6 +886,7 @@ if valid_input:
             elif p['type'] in ['extrema', 'corner']:
                 sym_y = sp.simplify(f_expr.subs(x_sym, p['sym']))
                 val_y = float(sp.N(sym_y))
+                # تم التعديل: إجبار كتابة الصور الدقيقة باستخدام exactify_value في جدول التغيرات 
                 nodes.append((x_c, val_y, exactify_value(val_y, sym_y)))
 
         for i in range(N - 1):
