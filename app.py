@@ -821,8 +821,10 @@ def build_math_context(f_str, g_str):
                 fig_dt.tight_layout(pad=0)
             except:
                 draw_table(use_math=False)
-                try: fig_dt.tight_layout(pad=0)
-            except: pass
+                try: 
+                    fig_dt.tight_layout(pad=0)
+                except: 
+                    pass
             tmp_dt = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
             fig_dt.savefig(tmp_dt.name, bbox_inches='tight', dpi=300)
             plt.close(fig_dt)
@@ -1087,7 +1089,6 @@ else:
     if st.session_state.auto_play:
         m_val = st.session_state.m_anim
         
-        # --- خوارزمية ذكية لاحتساب نقاط التوقف البيداغوجية المطلقة لتفادي حلقة الدوران اللانهائية ---
         stop_points = []
         if len(m_critical_num) == 0:
             stop_points.append(0.0)
@@ -1113,7 +1114,6 @@ else:
             
             for sp_val in stop_points:
                 if m_val < sp_val - 1e-4 and next_m >= sp_val - 1e-4:
-                    # تم استخدام القيمة الفردية بدقة لتفادي التقريب الخاطئ والعودة للخلف
                     next_m = float(sp_val)
                     break
             
