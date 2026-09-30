@@ -154,7 +154,7 @@ def get_sol_color_html(sol_text):
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -6.0
-if 'f_val' not in st.session_state: st.session_state.f_val = "(x+1)/ln(x)"
+if 'f_val' not in st.session_state: st.session_state.f_val = "abs(x)*e^(-abs(x))"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -190,7 +190,7 @@ except:
 col_text, col_img = st.columns(2)
 
 with col_img:
-    img_file = st.file_uploader("🖼️ ارفع صورة الدالة لاستخراجها آلياً:", type=['png', 'jpg', 'jpeg'])
+    img_file = st.file_uploader("🖼️️ ارفع صورة الدالة لاستخراجها آلياً:", type=['png', 'jpg', 'jpeg'])
     st.markdown("<p style='font-size:14px; color:#94A3B8; text-align:right; direction:rtl; margin-top:-10px;'>💡 <b>ملاحظة:</b> في حال وجود ضغط على خادم الذكاء الاصطناعي وفشل قراءة الصورة، يرجى كتابة الدالة يدوياً في الخانة المجاورة.</p>", unsafe_allow_html=True)
     
     if img_file:
@@ -328,6 +328,7 @@ if valid_input:
     pts_var_exact.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
     pts_var_exact.sort(key=lambda p: p['val'])
 
+    # --- تصحيح واكتشاف نقطة الزاوية وعدم قابلية الاشتقاق بدقة متناهية ---
     df_func_test = sp.lambdify(x_sym, df_expr, 'numpy')
     for p in pts_var_exact:
         if p['type'] == 'extrema':
@@ -336,7 +337,10 @@ if valid_input:
                 df_val = df_func_test(v_test)
                 df_near_plus = df_func_test(v_test + 1e-4)
                 df_near_minus = df_func_test(v_test - 1e-4)
-            if not np.isfinite(df_val) or abs(df_near_plus) > 20 or abs(df_near_minus) > 20:
+            
+            diff_lr = abs(df_near_plus - df_near_minus) if (np.isfinite(df_near_plus) and np.isfinite(df_near_minus)) else 999.0
+            # إذا كان المشتق من اليمين يختلف عن المشتق من اليسار فهذه نقطة زاوية غير قابلة للاشتقاق
+            if not np.isfinite(df_val) or abs(df_near_plus) > 20 or abs(df_near_minus) > 20 or diff_lr > 0.05:
                 p['type'] = 'corner'
 
     valid_intervals = []
@@ -529,6 +533,7 @@ if valid_input:
                     tangents.append((crossings[i] + crossings[i+1])/2.0); skip = True
                 else: cleaned_crossings.append(crossings[i])
             
+            # يتم احتساب الحل المضاعف فقط عندما يكون المماس أفقياً بحق (تنعدم المشتقة)
             for tp in exact_tangent_points:
                 if abs(tp['m_req'] - m_test) < 0.05:
                     if is_valid_root(tp['x']):
@@ -552,11 +557,15 @@ if valid_input:
         neg_d = sum(1 for r, t in final_roots if r < -0.01 and t == "double")
         zero_d = sum(1 for r, t in final_roots if abs(r) <= 0.01 and t == "double")
 
-        if pos_d == 1: desc.append("حل مضاعف موجب")
-        elif pos_d > 1: desc.append(f"{pos_d} حلول مضاعفة موجبة")
-        if neg_d == 1: desc.append("حل مضاعف سالب")
-        elif neg_d > 1: desc.append(f"{neg_d} حلول مضاعفة سالبة")
-        if zero_d == 1: desc.append("حل مضاعف معدوم")
+        if pos_d == 1 and neg_d == 1:
+            desc.append("حلان مضاعفان (أحدهما موجب والآخر سالب)")
+        else:
+            if pos_d == 1: desc.append("حل مضاعف موجب")
+            elif pos_d > 1: desc.append(f"{pos_d} حلول مضاعفة موجبة")
+            if neg_d == 1: desc.append("حل مضاعف سالب")
+            elif neg_d > 1: desc.append(f"{neg_d} حلول مضاعفة سالبة")
+            if zero_d == 1: desc.append("حل مضاعف معدوم")
+            
         if pos_s == 1: desc.append("حل وحيد موجب")
         elif pos_s == 2: desc.append("حلان موجبان")
         elif pos_s > 2: desc.append(f"{pos_s} حلول موجبة")
@@ -833,8 +842,9 @@ if valid_input:
                 ax_v.plot([x_c, x_c], [4, 5], 'k-', lw=1.2, zorder=2)
                 ax_v.text(x_c, 4.5, '0', ha='center', va='center', fontsize=16)
             elif p['type'] == 'corner': 
-                ax_v.plot([x_c-0.03, x_c-0.03], [4, 5], 'k-', lw=1.5, color='#D32F2F', zorder=2)
-                ax_v.plot([x_c+0.03, x_c+0.03], [4, 5], 'k-', lw=1.5, color='#D32F2F', zorder=2)
+                # رسم الخطين المتوازيين (||) في خانة المشتقة فقط عند نقطة الزاوية بدقة
+                ax_v.plot([x_c-0.04, x_c-0.04], [4, 5], 'k-', lw=1.5, zorder=2)
+                ax_v.plot([x_c+0.04, x_c+0.04], [4, 5], 'k-', lw=1.5, zorder=2)
 
             if i < N - 1:
                 x_ic = x_c + (col_w / 2.0)
