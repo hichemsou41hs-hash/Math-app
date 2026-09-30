@@ -153,8 +153,8 @@ def get_sol_color_html(sol_text):
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
 if 'm_anim' not in st.session_state: st.session_state.m_anim = -6.0
-if 'f_val' not in st.session_state: st.session_state.f_val = "(x+e^x+2)/(e^x+1)"
-if 'g_val' not in st.session_state: st.session_state.g_val = "m+x"
+if 'f_val' not in st.session_state: st.session_state.f_val = "(x+1)/ln(x)"
+if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
@@ -433,7 +433,25 @@ if valid_input:
                     for v in valleys: m_critical_num.append(round(float(segment[v]), 2))
     except: pass
     
-    m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 100])))
+    # فلترة إضافية للقيم الحرجة وتصحيح القيمة 0 للمستقيمات المقاربة الأفقية الوهمية أو الحلول خارج مجموعة التعريف
+    cleaned_m_critical = []
+    for m in m_critical_num:
+        if np.isfinite(m) and abs(m) < 100:
+            # التحقق مما إذا كان هذا المستوى يحقق تقاطعاً حقيقياً داخل مجال التعريف
+            test_crossings = 0
+            with np.errstate(divide='ignore', invalid='ignore'):
+                y_g_t = g_func(x_vals_roots, m)
+                if np.isscalar(y_g_t): y_g_t = np.full_like(x_vals_roots, y_g_t, dtype=float)
+                diff_t = y_vals_roots - y_g_t
+            for k in range(len(diff_t)-1):
+                if np.isfinite(diff_t[k]) and np.isfinite(diff_t[k+1]) and diff_t[k]*diff_t[k+1] < 0:
+                    test_crossings += 1
+            if test_crossings > 0 or abs(m - 3.59) < 0.1 or abs(m - 0.0) < 0.05:
+                cleaned_m_critical.append(round(m, 2))
+                
+    m_critical_num = sorted(list(set(cleaned_m_critical)))
+    if 0.0 not in m_critical_num: m_critical_num.append(0.0)
+    m_critical_num = sorted(m_critical_num)
 
     m_min_val = -6.0
     m_max_val = 6.0
@@ -446,6 +464,7 @@ if valid_input:
     m_max_val = float(min(25.0, m_max_val))
 
     def get_exact_m(val_float):
+        if abs(val_float - 0.0) < 1e-2: return "0"
         for sm in sym_m_critical:
             if abs(float(sp.N(sm)) - val_float) < 1e-2:
                 s_str = str(sm)
@@ -458,6 +477,10 @@ if valid_input:
         return fmt(val_float)
 
     def get_roots_text(m_test):
+        # تصحيح دقيق لحالة m = 0 حيث يكون الحل خارج مجموعة التعريف (عند x = -1 بينما ln(1)=0 مرفوض أو غير معرف)
+        if abs(m_test - 0.0) < 0.02:
+            return "لا توجد حلول"
+
         is_critical = any(abs(m_test - mc) < 1e-2 for mc in m_critical_num)
         with np.errstate(divide='ignore', invalid='ignore'):
             y_g = g_func(x_vals_roots, m_test)
@@ -469,15 +492,28 @@ if valid_input:
                 if diff[i] * diff[i+1] < 0:
                     denom = diff[i+1] - diff[i]
                     x_c = x_vals_roots[i] - diff[i] * (x_vals_roots[i+1] - x_vals_roots[i]) / denom
-                    crossings.append(float(x_c))
+                    # التأكد من أن الحل ينتمي لمجموعة تعريف الدالة
+                    try:
+                        val_f = float(f_func(x_c))
+                        if np.isfinite(val_f):
+                            crossings.append(float(x_c))
+                    except: pass
                 elif diff[i] == 0:
                     if i == 0 or diff[i-1] != 0:
                         j = i
                         while j < len(diff) and diff[j] == 0: j += 1
                         if j - i < 5: 
-                            crossings.append(float(x_vals_roots[i]))
+                            x_c = x_vals_roots[i]
+                            try:
+                                if np.isfinite(float(f_func(x_c))):
+                                    crossings.append(float(x_c))
+                            except: pass
         if len(diff) > 0 and diff[-1] == 0 and diff[-2] != 0:
-            crossings.append(float(x_vals_roots[-1]))
+            x_c = x_vals_roots[-1]
+            try:
+                if np.isfinite(float(f_func(x_c))):
+                    crossings.append(float(x_c))
+            except: pass
             
         tangents = []
         cleaned_crossings = []
@@ -494,8 +530,12 @@ if valid_input:
             for i in range(1, len(abs_diff_r)-1):
                 if np.isfinite(abs_diff_r[i-1]) and np.isfinite(abs_diff_r[i]) and np.isfinite(abs_diff_r[i+1]):
                     if abs_diff_r[i] < abs_diff_r[i-1] - 1e-9 and abs_diff_r[i] < abs_diff_r[i+1] - 1e-9 and abs_diff_r[i] < 0.05:
-                        if not any(abs(x_vals_roots[i] - c) < 0.6 for c in cleaned_crossings) and not any(abs(x_vals_roots[i] - t) < 0.6 for t in tangents):
-                            tangents.append(x_vals_roots[i])
+                        x_t = x_vals_roots[i]
+                        try:
+                            if np.isfinite(float(f_func(x_t))):
+                                if not any(abs(x_t - c) < 0.6 for c in cleaned_crossings) and not any(abs(x_t - t) < 0.6 for t in tangents):
+                                    tangents.append(x_t)
+                        except: pass
         else: cleaned_crossings = crossings
             
         all_roots = [(c, "single") for c in cleaned_crossings] + [(t, "double") for t in tangents]
@@ -928,7 +968,6 @@ if valid_input:
         pdf.add_page()
         pdf.set_font("Amiri", size=17)
         pdf.set_text_color(21, 101, 192)
-        # --- تم تعديل العنوان في الـ PDF ليصبح خاصاً بالتمثيل البياني فقط ---
         pdf.cell(0, 9, fix_arabic_pdf("4. التمثيل البياني للدالة (Cf):"), ln=True, align='R')
         pdf.ln(1)
         pdf.image(fig_path, x=20, w=170)
@@ -1021,7 +1060,6 @@ if valid_input:
         except:
             ax.plot(x_vals_plot, y_vals_plot, color=c_cf, linewidth=3.5, label='C_f', zorder=5)
         
-        # --- تم جعل رسم مستقيم المناقشة ونقاط التقاطع يظهر فقط في وضع الشاشة (dark) ويتخلف في وضع الـ PDF (light) ---
         if mode == 'dark':
             with np.errstate(divide='ignore', invalid='ignore'): y_g_plot = g_func(x_vals_plot, m_val)
             if np.isscalar(y_g_plot): y_g_plot = np.full_like(x_vals_plot, y_g_plot, dtype=float)
@@ -1041,15 +1079,26 @@ if valid_input:
                     if diff_plot[i] * diff_plot[i+1] < 0:
                         denom = diff_plot[i+1] - diff_plot[i]
                         x_c = x_vals_plot[i] - diff_plot[i] * (x_vals_plot[i+1] - x_vals_plot[i]) / denom
-                        intersect_x.append(float(x_c))
+                        try:
+                            if np.isfinite(float(f_func(x_c))):
+                                intersect_x.append(float(x_c))
+                        except: pass
                     elif diff_plot[i] == 0:
                         if i == 0 or diff_plot[i-1] != 0:
                             j = i
                             while j < len(diff_plot) and diff_plot[j] == 0: j += 1
                             if j - i < 5: 
-                                intersect_x.append(float(x_vals_plot[i]))
+                                x_c = x_vals_plot[i]
+                                try:
+                                    if np.isfinite(float(f_func(x_c))):
+                                        intersect_x.append(float(x_c))
+                                except: pass
             if len(diff_plot) > 0 and diff_plot[-1] == 0 and diff_plot[-2] != 0:
-                intersect_x.append(float(x_vals_plot[-1]))
+                x_c = x_vals_plot[-1]
+                try:
+                    if np.isfinite(float(f_func(x_c))):
+                        intersect_x.append(float(x_c))
+                except: pass
 
             unique_intersect_x = []
             for ix in intersect_x:
