@@ -147,7 +147,7 @@ def get_sol_color_html(sol_text):
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
-if 'f_val' not in st.session_state: st.session_state.f_val = "ln(x^2 - 4x + 3)"
+if 'f_val' not in st.session_state: st.session_state.f_val = "(-x + ln(x) + 1)/(x - 1)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -227,7 +227,7 @@ def build_math_context(f_str, g_str):
         f_func = sp.lambdify(x_sym, f_expr, 'numpy')
         g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
         
-        # استخراج المقاربات العمودية أولاً
+        # استخراج النقاط الممنوعة أولاً لتحديد المقاربات الحقيقية والثقوب
         candidate_v_asymptotes = []
         try:
             n_expr, d_expr = sp.fraction(sp.cancel(f_expr))
@@ -242,17 +242,34 @@ def build_math_context(f_str, g_str):
         except: pass
         candidate_v_asymptotes = list(set(candidate_v_asymptotes))
         
-        unique_asymptotes = []
+        # التفرقة بين المقارب العمودي الحقيقي والثقب (نهاية منتهية)
+        true_v_asymptotes = []
+        holes = []
         for r in candidate_v_asymptotes:
+            try:
+                lim_p = sp.limit(f_expr, x_sym, r, dir='+')
+                lim_m = sp.limit(f_expr, x_sym, r, dir='-')
+                if lim_p in [sp.oo, -sp.oo, sp.zoo] or lim_m in [sp.oo, -sp.oo, sp.zoo]:
+                    true_v_asymptotes.append(r)
+                else:
+                    # نهاية منتهية إذن هو ثقب (إزالة المقارب الخاطئ)
+                    val_p = float(sp.N(lim_p))
+                    if np.isfinite(val_p):
+                        holes.append({'sym': r, 'val': float(sp.N(r)), 'lim': val_p})
+            except:
+                true_v_asymptotes.append(r)
+
+        unique_asymptotes = []
+        for r in true_v_asymptotes:
             unique_asymptotes.append({'type': 'v', 'val': float(sp.N(r)), 'label': f"x={sanitize_latex(r)}"})
 
-        # حقن قيم قريبة جداً (1e-6) من المقاربات لإجبار المنحنى على النزول لأسفل الشاشة
+        # حقن القيم لرسم المنحنى بدقة فائقة عند جميع النقاط الممنوعة
         x_base = np.linspace(-15, 15, 6001)
         x_roots_base = np.concatenate([np.linspace(-500, -15, 2000, endpoint=False), np.linspace(-15, 15, 6001), np.linspace(15, 500, 2000)])
         
         extra_x = []
-        for a in unique_asymptotes:
-            val = a['val']
+        for a in candidate_v_asymptotes:
+            val = float(sp.N(a))
             if -16 <= val <= 16:
                 for delta in [1e-3, 1e-4, 1e-5, 1e-6]:
                     extra_x.append(val - delta)
@@ -295,6 +312,7 @@ def build_math_context(f_str, g_str):
 
         pts_var_exact = []
         pts_var_exact.append({'val': -np.inf, 'sym': -sp.oo, 'latex_x': r"-\infty", 'type': 'inf'})
+        # إضافة كل النقاط الممنوعة في جدول التغيرات كجدار (بما فيها الثقوب والمقاربات)
         for r in candidate_v_asymptotes:
             pts_var_exact.append({'val': float(sp.N(r)), 'sym': r, 'latex_x': sanitize_latex(r), 'type': 'v_asym'})
         for r in sym_extrema:
@@ -521,7 +539,9 @@ def build_math_context(f_str, g_str):
             return exactify_value(val_float)
 
         def is_valid_root(x_val):
+            # التأكد من أنه لا يقع تماماً على مقارب عمودي أو ثقب
             if any(abs(x_val - float(sp.N(a['val']))) < 1e-3 for a in unique_asymptotes if a['type'] == 'v'): return False
+            if any(abs(x_val - h['val']) < 1e-3 for h in holes): return False
             try:
                 with np.errstate(all='ignore'): v = f_func(x_val)
                 if isinstance(v, complex) or np.iscomplexobj(v): return False
@@ -893,6 +913,7 @@ def build_math_context(f_str, g_str):
             'x_vals_plot': x_vals_plot,
             'y_vals_plot': y_vals_plot,
             'unique_asymptotes': unique_asymptotes,
+            'holes': holes,
             'm_critical_num': m_critical_num,
             'final_table': final_table,
             'domain_latex_st': domain_latex_st,
@@ -1008,6 +1029,10 @@ else:
                     ax.axvline(asym['val'], color=c_asym, linestyle='--', linewidth=2.2, zorder=4)
                     ax.text(asym['val'] + 0.15, ax.get_ylim()[1]-1.5, f"${asym['label']}$", color=c_asym, fontsize=14, fontweight='bold', va='top')
             except: pass
+            
+        # رسم الثقوب بدلاً من المقاربات الوهمية
+        for hole in cache['holes']:
+            ax.plot(hole['val'], hole['lim'], marker='o', markerfacecolor=bg_leg, markeredgecolor=c_cf, markersize=8, markeredgewidth=2, zorder=6)
         
         try: ax.plot(cache['x_vals_plot'], cache['y_vals_plot'], color=c_cf, linewidth=3.5, label=r'$C_f$', zorder=5)
         except: ax.plot(cache['x_vals_plot'], cache['y_vals_plot'], color=c_cf, linewidth=3.5, label='C_f', zorder=5)
@@ -1151,7 +1176,6 @@ else:
     if st.session_state.auto_play:
         m_val = st.session_state.m_anim
         
-        # --- خوارزمية ذكية لاحتساب نقاط التوقف البيداغوجية المطلقة لتفادي حلقة الدوران اللانهائية ---
         stop_points = []
         if len(m_critical_num) == 0:
             stop_points.append(0.0)
@@ -1177,7 +1201,6 @@ else:
             
             for sp_val in stop_points:
                 if m_val < sp_val - 1e-4 and next_m >= sp_val - 1e-4:
-                    # تم استخدام القيمة الفردية بدقة لتفادي التقريب الخاطئ والعودة للخلف
                     next_m = float(sp_val)
                     break
             
