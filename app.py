@@ -398,18 +398,20 @@ if valid_input:
         fl_m = float(sp.N(sm))
         if np.isfinite(fl_m) and abs(fl_m) < 100: m_critical_num.append(round(fl_m, 2))
 
-    for p in pts_var_exact:
-        if p['type'] in ['extrema', 'corner']:
-            try:
-                y_extr = float(sp.N(sp.simplify(f_expr.subs(x_sym, p['sym']))))
-                if np.isfinite(y_extr):
-                    m_critical_num.append(round(y_extr, 2))
-            except: pass
-            
-    for asym in unique_asymptotes:
-        if asym['type'] == 'h':
-            m_critical_num.append(round(asym['val'], 2))
+    # دالة ذكية واستخراج نقاط التماس بدقة لجميع الدوال بلا استثناء
+    exact_tangent_points = []
+    
+    # 1. التماس الدقيق عبر الحل التحليلي للمشتقة (SymPy)
+    try:
+        dm_expr = sp.diff(m_expr, x_sym)
+        for r in sp.solve(dm_expr, x_sym):
+            if r.is_real is not False and sp.im(sp.N(r)) == 0:
+                val_x = float(sp.N(r))
+                val_m = float(sp.N(sp.simplify(m_expr.subs(x_sym, r))))
+                exact_tangent_points.append({'x': val_x, 'm_req': val_m})
+    except: pass
 
+    # 2. التماس التقريبي كحل بديل (Fallback)
     try:
         m_func_eval = sp.lambdify(x_sym, m_expr, 'numpy')
         x_test_m = np.linspace(-25, 25, 100001)
@@ -426,17 +428,33 @@ if valid_input:
 
         for s, e in zip(starts_m, ends_m):
             segment = y_test_m[s:e+1]
-            if len(segment) > 0:
-                if s > 0 and np.isfinite(y_test_m[s]): m_critical_num.append(round(float(y_test_m[s]), 2))
-                if e < len(x_test_m) - 1 and np.isfinite(y_test_m[e]): m_critical_num.append(round(float(y_test_m[e]), 2))
-                
-                if len(segment) > 10:
-                    peaks, _ = find_peaks(segment, prominence=0.05)
-                    valleys, _ = find_peaks(-segment, prominence=0.05)
-                    for p in peaks: m_critical_num.append(round(float(segment[p]), 2))
-                    for v in valleys: m_critical_num.append(round(float(segment[v]), 2))
+            seg_x = x_test_m[s:e+1]
+            if len(segment) > 10:
+                peaks, _ = find_peaks(segment, prominence=0.05)
+                valleys, _ = find_peaks(-segment, prominence=0.05)
+                for p in peaks:
+                    val_x = float(seg_x[p])
+                    val_m = float(segment[p])
+                    if not any(abs(val_x - tp['x']) < 0.1 for tp in exact_tangent_points):
+                        exact_tangent_points.append({'x': val_x, 'm_req': val_m})
+                    m_critical_num.append(round(val_m, 2))
+                for v in valleys:
+                    val_x = float(seg_x[v])
+                    val_m = float(segment[v])
+                    if not any(abs(val_x - tp['x']) < 0.1 for tp in exact_tangent_points):
+                        exact_tangent_points.append({'x': val_x, 'm_req': val_m})
+                    m_critical_num.append(round(val_m, 2))
     except: pass
     
+    # دمج نقاط التماس التي تم العثور عليها بدقة لتكون قيما حرجة في الجدول
+    for tp in exact_tangent_points:
+        if np.isfinite(tp['m_req']):
+            m_critical_num.append(round(tp['m_req'], 2))
+            
+    for asym in unique_asymptotes:
+        if asym['type'] == 'h':
+            m_critical_num.append(round(asym['val'], 2))
+
     m_critical_num = sorted(list(set([round(m, 2) for m in m_critical_num if np.isfinite(m) and abs(m) < 100])))
 
     m_min_val = -6.0
@@ -450,6 +468,9 @@ if valid_input:
     m_max_val = float(min(25.0, m_max_val))
 
     def get_exact_m(val_float):
+        for mc in m_critical_num:
+            if abs(val_float - mc) < 0.05:
+                return str(mc) if int(mc) != mc else str(int(mc)) if abs(mc - int(mc)) < 1e-3 else str(mc)
         for sm in sym_m_critical:
             if abs(float(sp.N(sm)) - val_float) < 1e-2:
                 s_str = str(sm)
@@ -461,12 +482,10 @@ if valid_input:
                 return latex_str
         return fmt(val_float)
 
-    # دالة ذكية لفحص انتماء الحل رياضياً إلى مجموعة التعريف
+    # دالة ذكية لفحص الانتماء الدقيق للحلول لجميع الدوال
     def is_valid_root(x_val):
-        # 1. التأكد من أن القيمة ليست قريبة جداً من مستقيم مقارب عمودي (قيمة ممنوعة)
         if any(abs(x_val - float(sp.N(a['val']))) < 1e-3 for a in unique_asymptotes if a['type'] == 'v'):
             return False
-        # 2. التأكد رياضياً من أن التعويض في الدالة يعطي قيمة حقيقية معرفة
         try:
             with np.errstate(all='ignore'):
                 v = f_func(x_val)
@@ -515,15 +534,12 @@ if valid_input:
                     tangents.append((crossings[i] + crossings[i+1])/2.0); skip = True
                 else: cleaned_crossings.append(crossings[i])
             
-            abs_diff = np.abs(diff)
-            abs_diff_r = np.round(abs_diff, 5)
-            for i in range(1, len(abs_diff_r)-1):
-                if np.isfinite(abs_diff_r[i-1]) and np.isfinite(abs_diff_r[i]) and np.isfinite(abs_diff_r[i+1]):
-                    if abs_diff_r[i] < abs_diff_r[i-1] - 1e-9 and abs_diff_r[i] < abs_diff_r[i+1] - 1e-9 and abs_diff_r[i] < 0.05:
-                        x_t = x_vals_roots[i]
-                        if is_valid_root(x_t):
-                            if not any(abs(x_t - c) < 0.6 for c in cleaned_crossings) and not any(abs(x_t - t) < 0.6 for t in tangents):
-                                tangents.append(x_t)
+            # 3. الاعتماد كلياً على القيم الدقيقة (Exact) بدلاً من الفحص البصري لحساب المماسات بشكل قطعي
+            for tp in exact_tangent_points:
+                if abs(tp['m_req'] - m_test) < 0.05:
+                    if is_valid_root(tp['x']):
+                        if not any(abs(tp['x'] - c) < 0.6 for c in cleaned_crossings) and not any(abs(tp['x'] - t) < 0.6 for t in tangents):
+                            tangents.append(tp['x'])
         else: cleaned_crossings = crossings
             
         all_roots = [(c, "single") for c in cleaned_crossings] + [(t, "double") for t in tangents]
@@ -574,7 +590,6 @@ if valid_input:
         raw_intervals.append((m_critical_num[-1], float('inf'), get_roots_text(m_critical_num[-1] + 0.5)))
     else: raw_intervals.append((float('-inf'), float('inf'), get_roots_text(0.0)))
 
-    # بناء الجدول مباشرة من الفترات الدقيقة دون دمج (للحفاظ على القيم الحدية معزولة في سطر لوحدها)
     final_table = [] 
     for L, H, sol_text in raw_intervals:
         L_latex = r"-\infty" if L == float('-inf') else get_exact_m(L)
