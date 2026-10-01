@@ -1,6 +1,7 @@
 # ==================== بداية الجزء الأول (1/2) ====================
 import streamlit as st
 import base64
+import io
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -119,6 +120,29 @@ st.markdown("""
 
 st.markdown("<div class='title-dis'>المناقشة البيانية ودراسة تغيرات دالة</div>", unsafe_allow_html=True)
 st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>", unsafe_allow_html=True)
+
+# دالة مساعدة لتحويل أي شكل في Matplotlib إلى بايتات صورة صالحة ومضمونة 100% في الذاكرة
+def fig_to_bytes(fig):
+    try:
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png', bbox_inches='tight', dpi=280, facecolor=fig.get_facecolor())
+        plt.close(fig)
+        data = buf.getvalue()
+        if data and len(data) > 100:
+            return data
+    except Exception:
+        pass
+    try:
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png', dpi=200)
+        plt.close(fig)
+        data = buf.getvalue()
+        if data and len(data) > 100:
+            return data
+    except Exception:
+        try: plt.close(fig)
+        except Exception: pass
+    return None
 
 def safe_float(expr):
     if expr is None: return np.nan
@@ -403,7 +427,7 @@ current_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() els
 # ==================== نهاية الجزء الأول (1/2) ====================
 # ==================== بداية الجزء الثاني (2/2) ====================
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v17"):
+def build_math_context(f_str, g_str, version_tag="v18"):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -737,10 +761,12 @@ def build_math_context(f_str, g_str, version_tag="v17"):
             if abs(val_float - int(round(val_float))) < 1e-2: return str(int(round(val_float)))
             return str(round(val_float, 2)).rstrip('0').rstrip('.') if '.' in str(round(val_float, 2)) else str(round(val_float, 2))
 
+        # توليد جدول الوضع النسبي في الذاكرة مباشرة (BytesIO) مع معالجة جذور البسط فقط كـنقاط تقاطع
         rel_pos_tables_info = []
         for od in oblique_details_list:
             rem_expr = od['rem_expr']
-            diff_roots = safe_solve_real(rem_expr, x_sym)
+            num_rem, den_rem = sp.fraction(sp.together(rem_expr))
+            diff_roots = safe_solve_real(num_rem, x_sym)
             rp_pts = [{'val': -np.inf, 'sym': -sp.oo, 'latex_x': r"-\infty", 'type': 'inf'}]
             for r in candidate_v_asymptotes:
                 rp_pts.append({'val': safe_float(r), 'sym': r, 'latex_x': sanitize_latex(r), 'type': 'v_asym'})
@@ -768,8 +794,10 @@ def build_math_context(f_str, g_str, version_tag="v17"):
 
             N_rp = len(rp_pts)
             col_w_rp = 4.4; x_st_rp = 2.6; x_max_rp = x_st_rp + N_rp * col_w_rp
-            tri_half_w = 1.70
+            tri_half_w = 1.65
             fig_rp, ax_rp = plt.subplots(figsize=(max(9.5, N_rp * 3.1), 3.5))
+            fig_rp.patch.set_facecolor('white')
+            ax_rp.set_facecolor('white')
             ax_rp.axis('off')
             ax_rp.plot([0, x_max_rp], [4.8, 4.8], 'k-', lw=2)
             ax_rp.plot([0, x_max_rp], [3.8, 3.8], 'k-', lw=1.5)
@@ -786,10 +814,14 @@ def build_math_context(f_str, g_str, version_tag="v17"):
 
             for idx_rp, p_rp in enumerate(rp_pts):
                 xc = x_st_rp + (col_w_rp / 2.0) + idx_rp * col_w_rp
-                ax_rp.text(xc, 4.3, f"${p_rp['latex_x']}$", ha='center', va='center', fontsize=17)
+                try:
+                    ax_rp.text(xc, 4.3, f"${p_rp['latex_x']}$", ha='center', va='center', fontsize=17)
+                except Exception:
+                    ax_rp.text(xc, 4.3, str(p_rp['latex_x']), ha='center', va='center', fontsize=15)
+
                 if p_rp['type'] == 'v_asym':
-                    ax_rp.plot([xc-0.05, xc-0.05], [0, 3.8], 'k-', lw=1.5)
-                    ax_rp.plot([xc+0.05, xc+0.05], [0, 3.8], 'k-', lw=1.5)
+                    ax_rp.plot([xc-0.06, xc-0.06], [0, 3.8], 'k-', lw=1.5)
+                    ax_rp.plot([xc+0.06, xc+0.06], [0, 3.8], 'k-', lw=1.5)
                 elif p_rp['type'] == 'root':
                     ax_rp.plot([xc, xc], [2.6, 3.8], 'k-', lw=1.5)
                     ax_rp.text(xc, 3.2, '$0$', ha='center', va='center', fontsize=17, fontweight='bold')
@@ -801,7 +833,10 @@ def build_math_context(f_str, g_str, version_tag="v17"):
                     ax_rp.text(xc - 0.25, 1.25, fix_arabic_mpl("يقطع"), ha='center', va='center', fontsize=13, color='#1E293B', fontweight='bold')
                     ax_rp.text(xc + 0.42, 0.72, "$(\\Delta)$", ha='center', va='center', fontsize=13, color='#1E293B', fontweight='bold')
                     ax_rp.text(xc - 0.22, 0.72, fix_arabic_mpl("في النقطة"), ha='center', va='center', fontsize=12, color='#B45309', fontweight='bold')
-                    ax_rp.text(xc, 0.25, f"$({p_rp['latex_x']} ; {y_inter_lat})$", ha='center', va='center', fontsize=13, color='#B45309', fontweight='bold')
+                    try:
+                        ax_rp.text(xc, 0.25, f"$({p_rp['latex_x']} , {y_inter_lat})$", ha='center', va='center', fontsize=13, color='#B45309', fontweight='bold')
+                    except Exception:
+                        ax_rp.text(xc, 0.25, f"({fmt(p_rp['val'])} , {fmt(y_inter_sym)})", ha='center', va='center', fontsize=12, color='#B45309', fontweight='bold')
 
                 if idx_rp < N_rp - 1:
                     xc_next = x_st_rp + (col_w_rp / 2.0) + (idx_rp + 1) * col_w_rp
@@ -822,30 +857,21 @@ def build_math_context(f_str, g_str, version_tag="v17"):
                         ax_rp.text(xic_pos - 0.35, 0.85, "$(\\Delta)$", ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
 
             ax_rp.set_xlim(0, x_max_rp); ax_rp.set_ylim(0, 4.8)
-            tmp_rp = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-            try:
-                fig_rp.tight_layout(pad=0.2)
-                fig_rp.savefig(tmp_rp.name, bbox_inches='tight', dpi=300)
-            except Exception:
-                pass
-            plt.close(fig_rp)
-            od['rel_pos_img'] = tmp_rp.name
+            od['rel_pos_bytes'] = fig_to_bytes(fig_rp)
 
             fig_ob, ax_ob = plt.subplots(figsize=(9.5, 4.0))
+            fig_ob.patch.set_facecolor('white')
+            ax_ob.set_facecolor('white')
             ax_ob.axis('off'); ax_ob.set_xlim(0, 10); ax_ob.set_ylim(0, 5.0)
             ax_ob.text(9.7, 4.4, fix_arabic_mpl("طريقة استنتاج معادلة المستقيم المقارب المائل:"), fontsize=14, ha='right', va='center', color='#D97706', fontweight='bold')
-            ax_ob.text(5.0, 3.5, fr"$a = \lim_{{x \to {od['target_latex']}}} \frac{{f(x)}}{{x}} = {od['a_lat']} \quad , \quad b = \lim_{{x \to {od['target_latex']}}} [f(x) - ({od['a_lat']})x] = {od['b_lat']}$", fontsize=15, ha='center', va='center', color='#1E3A8A')
-            ax_ob.text(5.0, 2.5, fr"$\lim_{{x \to {od['target_latex']}}} [f(x) - ({od['line_lat']})] = \lim_{{x \to {od['target_latex']}}} \left({od['rem_lat']}\right) = 0$", fontsize=15, ha='center', va='center', color='#6D28D9')
-            ax_ob.text(9.7, 1.5, fix_arabic_mpl("ومنه معادلة المقارب المائل وعبارة الفرق للوضع النسبي:"), fontsize=14, ha='right', va='center', color='#047857', fontweight='bold')
-            ax_ob.text(5.0, 0.6, fr"$(\Delta): y = {od['line_lat']} \quad , \quad f(x) - y = {od['rem_lat']}$", fontsize=16, ha='center', va='center', color='#047857', fontweight='bold')
-            tmp_ob = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
             try:
-                fig_ob.tight_layout(pad=0.2)
-                fig_ob.savefig(tmp_ob.name, bbox_inches='tight', dpi=300)
+                ax_ob.text(5.0, 3.5, fr"$a = \lim_{{x \to {od['target_latex']}}} \frac{{f(x)}}{{x}} = {od['a_lat']} \quad , \quad b = \lim_{{x \to {od['target_latex']}}} [f(x) - ({od['a_lat']})x] = {od['b_lat']}$", fontsize=15, ha='center', va='center', color='#1E3A8A')
+                ax_ob.text(5.0, 2.5, fr"$\lim_{{x \to {od['target_latex']}}} [f(x) - ({od['line_lat']})] = \lim_{{x \to {od['target_latex']}}} \left({od['rem_lat']}\right) = 0$", fontsize=15, ha='center', va='center', color='#6D28D9')
+                ax_ob.text(9.7, 1.5, fix_arabic_mpl("ومنه معادلة المقارب المائل وعبارة الفرق للوضع النسبي:"), fontsize=14, ha='right', va='center', color='#047857', fontweight='bold')
+                ax_ob.text(5.0, 0.6, fr"$(\Delta): y = {od['line_lat']} \quad , \quad f(x) - y = {od['rem_lat']}$", fontsize=16, ha='center', va='center', color='#047857', fontweight='bold')
             except Exception:
                 pass
-            plt.close(fig_ob)
-            od['oblique_steps_img'] = tmp_ob.name
+            od['oblique_steps_bytes'] = fig_to_bytes(fig_ob)
             rel_pos_tables_info.append(od)
 
         try:
@@ -1000,10 +1026,11 @@ def build_math_context(f_str, g_str, version_tag="v17"):
             final_table.append((m_latex, sol_text, L, H))
 
         N = len(pts_var_exact)
-        def generate_variation_table_image():
+        def generate_variation_table_bytes():
             if N < 2: return None
             col_w = 2.8; x_start_data = 2.0; x_max = x_start_data + N * col_w
             fig_v, ax_v = plt.subplots(figsize=(max(8, N*2.5), 3.5))
+            fig_v.patch.set_facecolor('white'); ax_v.set_facecolor('white')
             ax_v.axis('off')
             for y_line, lw_v in [(6, 2), (5, 1.5), (4, 1.5), (0, 2)]: ax_v.plot([0, x_max], [y_line, y_line], 'k-', lw=lw_v)
             for x_line in [0, x_start_data, x_max]: ax_v.plot([x_line, x_line], [0, 6], 'k-', lw=2)
@@ -1074,17 +1101,11 @@ def build_math_context(f_str, g_str, version_tag="v17"):
                         slope_up = (y_r > y_l)
                         ax_v.annotate('', xy=(r_node[0]-0.35, y_r + (-0.35 if slope_up else 0.35)), xytext=(l_node[0]+0.35, y_l + (0.35 if slope_up else -0.35)), arrowprops=dict(arrowstyle="->", color="#1565C0", lw=2.5))
             ax_v.set_xlim(0, x_max); ax_v.set_ylim(0, 6)
-            tmp_v = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-            try:
-                fig_v.savefig(tmp_v.name, bbox_inches='tight', dpi=300)
-            except Exception:
-                pass
-            plt.close(fig_v)
-            return tmp_v.name
+            return fig_to_bytes(fig_v)
 
-        var_table_image_path = generate_variation_table_image()
+        var_table_bytes = generate_variation_table_bytes()
 
-        def generate_limits_image():
+        def generate_limits_bytes():
             rows = []
             for idx_item, item in enumerate(limits_mpl_items):
                 if item['type'] == 'domain': rows.append(('domain', item['latex'], 0.9))
@@ -1100,6 +1121,7 @@ def build_math_context(f_str, g_str, version_tag="v17"):
                         rows.append(('geo_math', item['math'], 0.75))
             total_h = sum(r[2] for r in rows) + 0.4
             fig_l, ax_l = plt.subplots(figsize=(9.5, max(2.2, total_h * 0.78)))
+            fig_l.patch.set_facecolor('white'); ax_l.set_facecolor('white')
             ax_l.axis('off'); ax_l.set_xlim(0, 10); ax_l.set_ylim(0, total_h)
             curr_y = total_h - 0.2
             for r_type, content, h_step in rows:
@@ -1116,17 +1138,11 @@ def build_math_context(f_str, g_str, version_tag="v17"):
                     elif r_type == 'geo_math': ax_l.text(5.0, y_pos, f"${content}$", fontsize=16, ha='center', va='center', color='#047857', fontweight='bold')
                 except: pass
                 curr_y -= h_step
-            tmp_l = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-            try:
-                fig_l.savefig(tmp_l.name, bbox_inches='tight', dpi=300)
-            except Exception:
-                pass
-            plt.close(fig_l)
-            return tmp_l.name
+            return fig_to_bytes(fig_l)
 
-        limits_image_path = generate_limits_image()
+        limits_bytes = generate_limits_bytes()
 
-        def generate_deriv_image():
+        def generate_deriv_bytes():
             rows = []
             for stp in deriv_steps_detailed:
                 rows.append(('label', stp['label'], 0.6))
@@ -1136,6 +1152,7 @@ def build_math_context(f_str, g_str, version_tag="v17"):
             rows.append(('final_math', fr"f'(x) = {df_latex_str_safe}", 1.25))
             total_h = sum(r[2] for r in rows) + 0.4
             fig_d, ax_d = plt.subplots(figsize=(9.5, max(2.2, total_h * 0.78)))
+            fig_d.patch.set_facecolor('white'); ax_d.set_facecolor('white')
             ax_d.axis('off'); ax_d.set_xlim(0, 10); ax_d.set_ylim(0, total_h)
             curr_y = total_h - 0.2
             for r_type, content, h_step in rows:
@@ -1147,35 +1164,25 @@ def build_math_context(f_str, g_str, version_tag="v17"):
                     elif r_type == 'final_math': ax_d.text(5.0, y_pos, f"${content}$", fontsize=18, ha='center', va='center', color='#15803D', fontweight='bold')
                 except: pass
                 curr_y -= h_step
-            tmp_d = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-            try:
-                fig_d.savefig(tmp_d.name, bbox_inches='tight', dpi=300)
-            except Exception:
-                pass
-            plt.close(fig_d)
-            return tmp_d.name
+            return fig_to_bytes(fig_d)
             
-        deriv_image_path = generate_deriv_image()
+        deriv_bytes = generate_deriv_bytes()
         
-        def generate_eq_image():
+        def generate_eq_bytes():
             math_str = fr"f(x) = {sanitize_latex(g_expr)}"
             fig_e, ax_e = plt.subplots(figsize=(8, 0.7))
+            fig_e.patch.set_facecolor('white'); ax_e.set_facecolor('white')
             ax_e.axis('off')
             try: ax_e.text(0.5, 0.5, f"${math_str}$", fontsize=22, ha='center', va='center', color='#1E3A8A', fontweight='bold')
             except: ax_e.text(0.5, 0.5, f"f(x) = {current_g}", fontsize=18, ha='center', va='center', color='#1E3A8A')
-            tmp_e = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-            try:
-                fig_e.savefig(tmp_e.name, bbox_inches='tight', dpi=300)
-            except Exception:
-                pass
-            plt.close(fig_e)
-            return tmp_e.name
+            return fig_to_bytes(fig_e)
             
-        eq_image_path = generate_eq_image()
+        eq_bytes = generate_eq_bytes()
 
-        def generate_pdf_discussion_table():
+        def generate_pdf_discussion_bytes():
             nrows = len(final_table)
             fig_dt, ax_dt = plt.subplots(figsize=(10, nrows * 0.7 + 0.8))
+            fig_dt.patch.set_facecolor('white'); ax_dt.set_facecolor('white')
             ax_dt.axis('off'); ax_dt.set_xlim(-0.05, 10.05); ax_dt.set_ylim(-0.05, nrows * 0.7 + 0.75)
             for i in range(nrows + 1): ax_dt.plot([0, 10], [i * 0.7, i * 0.7], 'k-', lw=1 if 0 < i < nrows else 2)
             for xl in [0, 6, 10]: ax_dt.plot([xl, xl], [0, nrows * 0.7 + 0.7], 'k-', lw=2 if xl!=6 else 1)
@@ -1187,16 +1194,11 @@ def build_math_context(f_str, g_str, version_tag="v17"):
             for i, (m_latex, sol_text, L, H) in enumerate(final_table):
                 y_center = (nrows - i - 1) * 0.7 + 0.35
                 ax_dt.text(3, y_center, fix_arabic_mpl(sol_text), fontsize=14 if len(sol_text) > 35 else 16, ha='center', va='center', color=get_sol_color_pdf(sol_text), fontweight='bold')
-                ax_dt.text(8, y_center, f"${m_latex}$", fontsize=16, ha='center', va='center', color='#1E3A8A')
-            tmp_dt = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-            try:
-                fig_dt.savefig(tmp_dt.name, bbox_inches='tight', dpi=300)
-            except Exception:
-                pass
-            plt.close(fig_dt)
-            return tmp_dt.name
+                try: ax_dt.text(8, y_center, f"${m_latex}$", fontsize=16, ha='center', va='center', color='#1E3A8A')
+                except: ax_dt.text(8, y_center, str(m_latex), fontsize=14, ha='center', va='center', color='#1E3A8A')
+            return fig_to_bytes(fig_dt)
             
-        disc_table_img_path = generate_pdf_discussion_table()
+        disc_table_bytes = generate_pdf_discussion_bytes()
 
         cache.update({
             'valid': True, 'f_func': f_func, 'g_func': g_func,
@@ -1205,18 +1207,18 @@ def build_math_context(f_str, g_str, version_tag="v17"):
             'm_critical_num': m_critical_num, 'final_table': final_table,
             'domain_latex_st': domain_latex_st, 'limits_data_detailed': limits_data_detailed,
             'deriv_steps_detailed': deriv_steps_detailed, 'df_latex_str_safe': df_latex_str_safe,
-            'var_table_image_path': var_table_image_path, 'limits_image_path': limits_image_path,
-            'deriv_image_path': deriv_image_path, 'eq_image_path': eq_image_path,
-            'disc_table_img_path': disc_table_img_path, 'rel_pos_tables_info': rel_pos_tables_info,
+            'var_table_bytes': var_table_bytes, 'limits_bytes': limits_bytes,
+            'deriv_bytes': deriv_bytes, 'eq_bytes': eq_bytes,
+            'disc_table_bytes': disc_table_bytes, 'rel_pos_tables_info': rel_pos_tables_info,
             'm_min_val': m_min_val, 'm_max_val': m_max_val, 'f_expr': f_expr, 'g_expr': g_expr,
         })
     except Exception as e: cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v17":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v18":
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v17")
-        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v17"
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v18")
+        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v18"
 
 cache = st.session_state.math_cache
 
@@ -1327,6 +1329,20 @@ else:
         except: pass
         return fig, ax
 
+    def pdf_add_bytes_image(pdf, img_bytes, x, w):
+        if not img_bytes: return
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_img:
+            tmp_img.write(img_bytes)
+            tmp_path = tmp_img.name
+        try:
+            pdf.image(tmp_path, x=x, w=w)
+        except Exception:
+            pass
+        try:
+            os.remove(tmp_path)
+        except Exception:
+            pass
+
     def generate_pdf():
         if not PDF_ENABLED: return None
         try:
@@ -1344,37 +1360,37 @@ else:
             
             pdf.set_font("Amiri", size=15); pdf.set_text_color(194, 24, 91) 
             pdf.cell(0, 8, fix_arabic_pdf("1. حساب النهايات واستنتاج المقاربات العمودية والأفقية:"), ln=True, align='R')
-            if cache['limits_image_path']: pdf.image(cache['limits_image_path'], x=15, w=180); pdf.ln(2)
+            if cache.get('limits_bytes'): pdf_add_bytes_image(pdf, cache['limits_bytes'], x=15, w=180); pdf.ln(2)
 
             if pdf.get_y() > 195: pdf.add_page()
             pdf.cell(0, 8, fix_arabic_pdf("2. حساب الدالة المشتقة:"), ln=True, align='R')
-            if cache['deriv_image_path']: pdf.image(cache['deriv_image_path'], x=15, w=180); pdf.ln(2)
+            if cache.get('deriv_bytes'): pdf_add_bytes_image(pdf, cache['deriv_bytes'], x=15, w=180); pdf.ln(2)
 
             if pdf.get_y() > 175: pdf.add_page()
             pdf.cell(0, 8, fix_arabic_pdf("3. جدول التغيرات:"), ln=True, align='R')
-            if cache['var_table_image_path']: pdf.image(cache['var_table_image_path'], x=10, w=190); pdf.ln(3)
+            if cache.get('var_table_bytes'): pdf_add_bytes_image(pdf, cache['var_table_bytes'], x=10, w=190); pdf.ln(3)
 
             if cache.get('rel_pos_tables_info'):
                 if pdf.get_y() > 175: pdf.add_page()
                 pdf.cell(0, 8, fix_arabic_pdf("4. استنتاج معادلة المستقيم المقارب المائل وشرح طريقتها:"), ln=True, align='R')
                 for od in cache['rel_pos_tables_info']:
-                    pdf.image(od['oblique_steps_img'], x=15, w=180); pdf.ln(2)
+                    pdf_add_bytes_image(pdf, od.get('oblique_steps_bytes'), x=15, w=180); pdf.ln(2)
                 if pdf.get_y() > 175: pdf.add_page()
                 pdf.cell(0, 8, fix_arabic_pdf("5. جدول الوضع النسبي بين المقارب المائل والمنحنى (Cf):"), ln=True, align='R')
                 for od in cache['rel_pos_tables_info']:
-                    pdf.image(od['rel_pos_img'], x=10, w=190); pdf.ln(2)
+                    pdf_add_bytes_image(pdf, od.get('rel_pos_bytes'), x=10, w=190); pdf.ln(2)
 
             pdf.add_page()
             pdf.set_font("Amiri", size=17); pdf.set_text_color(21, 101, 192)
             pdf.cell(0, 9, fix_arabic_pdf("6. التمثيل البياني للدالة (Cf) والمناقشة البيانية:"), ln=True, align='R')
             fig_light, _ = draw_plot(0, mode='light')
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
-                fig_light.savefig(tmpfile.name, facecolor='#FFFFFF'); pdf.image(tmpfile.name, x=20, w=170)
-            plt.close(fig_light); pdf.ln(3)
-            if cache['eq_image_path']: pdf.image(cache['eq_image_path'], x=60, w=90); pdf.ln(2)
-            if cache['disc_table_img_path']: pdf.image(cache['disc_table_img_path'], x=15, w=180)
+            light_bytes = fig_to_bytes(fig_light)
+            pdf_add_bytes_image(pdf, light_bytes, x=20, w=170); pdf.ln(3)
+            if cache.get('eq_bytes'): pdf_add_bytes_image(pdf, cache['eq_bytes'], x=60, w=90); pdf.ln(2)
+            if cache.get('disc_table_bytes'): pdf_add_bytes_image(pdf, cache['disc_table_bytes'], x=15, w=180)
 
             pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+            pdf_file.close()
             pdf.output(pdf_file.name)
             return pdf_file.name
         except Exception: return None
@@ -1422,8 +1438,8 @@ else:
         st.latex(fr"\color{{#4ADE80}}{{f'(x) = {cache['df_latex_str_safe']}}}")
         
         st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
-        if cache['var_table_image_path']:
-            st.image(cache['var_table_image_path'], use_container_width=True)
+        if cache.get('var_table_bytes'):
+            st.image(cache['var_table_bytes'], use_container_width=True)
 
         if cache.get('rel_pos_tables_info'):
             st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>4. استنتاج معادلة المستقيم المقارب المائل (Δ) وشرح طريقة استنتاجها:</h4>", unsafe_allow_html=True)
@@ -1438,7 +1454,8 @@ else:
             for od in cache['rel_pos_tables_info']:
                 st.markdown("<div class='step-box-deriv'>🔸 ندرس إشارة الفرق بين عبارة الدالة ومعادلة المستقيم المقارب المائل:</div>", unsafe_allow_html=True)
                 st.latex(fr"\color{{#FDE68A}}{{f(x) - y = {od['rem_lat']}}}")
-                st.image(od['rel_pos_img'], use_container_width=True)
+                if od.get('rel_pos_bytes'):
+                    st.image(od['rel_pos_bytes'], use_container_width=True)
 
     if PDF_ENABLED:
         if not st.session_state.auto_play: st.session_state.cached_pdf = generate_pdf()
