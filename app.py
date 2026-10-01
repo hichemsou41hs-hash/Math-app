@@ -77,10 +77,20 @@ st.markdown("""
     div[data-testid="stAlert"] { direction: rtl !important; text-align: right !important; border-radius: 8px !important; }
     div[data-testid="stAlert"] p { font-size: 16px !important; font-weight: bold !important; line-height: 1.8 !important; }
     
-    .katex, .katex-display, .katex-html {
+    /* ضبط اتجاه المعادلات مع السماح بالتمرير الأفقي باللمس للمعادلات الطويلة على الهاتف */
+    .katex {
         direction: ltr !important;
         unicode-bidi: isolate !important;
         display: inline-block !important;
+    }
+    .katex-display, div[data-testid="stLatex"] {
+        direction: ltr !important;
+        display: block !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        max-width: 100% !important;
+        padding-bottom: 4px !important;
+        -webkit-overflow-scrolling: touch !important;
     }
 
     label, div[data-testid="stRadio"] p, div[data-testid="stTextInput"] label p { font-weight: bold !important; font-size: 17px !important; color: #00E5FF !important; }
@@ -341,7 +351,7 @@ if 'f_val' not in st.session_state: st.session_state.f_val = "(x+1)/(e^(2x)+1)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
-with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=False):
+with st.expander("⌨️️ لوحة المفاتيح المساعدة", expanded=False):
     t_sel = st.radio("🎯 تحديد خانة الكتابة:", ["f(x) الدالة", "m المستقيم بدلالة"], horizontal=True, key="kbd_radio")
     st.session_state.kbd_target = "f" if t_sel == "f(x) الدالة" else "g"
     def k_click(char):
@@ -394,7 +404,7 @@ current_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() els
 # ==================== نهاية الجزء الأول (1/2) ====================
 # ==================== بداية الجزء الثاني (2/2) ====================
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v15"):
+def build_math_context(f_str, g_str, version_tag="v16"):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -483,6 +493,7 @@ def build_math_context(f_str, g_str, version_tag="v15"):
         except: pass
         df_latex_str_safe = sanitize_latex(df_simp)
 
+        # فصل u'(x) و v'(x) في معادلتين مستقلتين لمنع اختفاء جزء من المعادلة على شاشة الهاتف
         def build_derivative_steps():
             steps = []
             try:
@@ -492,9 +503,9 @@ def build_math_context(f_str, g_str, version_tag="v15"):
                     dv = sp.simplify(sp.diff(den, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
                     u_l, v_l = sanitize_latex(num), sanitize_latex(den)
                     du_l, dv_l = sanitize_latex(du), sanitize_latex(dv)
-                    steps.append({'label': 'قانون مشتق حاصل قسمة:', 'math': r"f'(x) = \frac{u'(x) \cdot v(x) - v'(x) \cdot u(x)}{(v(x))^2}"})
-                    steps.append({'label': 'حساب مشتق البسط والمقام:', 'math': fr"u(x) = {u_l} \Rightarrow u'(x) = {du_l} \quad , \quad v(x) = {v_l} \Rightarrow v'(x) = {dv_l}"})
-                    steps.append({'label': 'بالتعويض في القانون:', 'math': fr"f'(x) = \frac{{({du_l})({v_l}) - ({dv_l})({u_l})}}{{({v_l})^2}}"})
+                    steps.append({'label': 'قانون مشتق حاصل قسمة:', 'math_list': [r"f'(x) = \frac{u'(x) \cdot v(x) - v'(x) \cdot u(x)}{(v(x))^2}"]})
+                    steps.append({'label': 'حساب مشتق البسط والمقام:', 'math_list': [fr"u(x) = {u_l} \implies u'(x) = {du_l}", fr"v(x) = {v_l} \implies v'(x) = {dv_l}"]})
+                    steps.append({'label': 'بالتعويض في القانون:', 'math_list': [fr"f'(x) = \frac{{({du_l})({v_l}) - ({dv_l})({u_l})}}{{({v_l})^2}}"]})
                 elif f_expr.is_Add:
                     term_derivs, sub_rules = [], []
                     for arg in f_expr.args:
@@ -509,10 +520,10 @@ def build_math_context(f_str, g_str, version_tag="v15"):
                                 sub_rules.append(fr"\left({sanitize_latex(arg)}\right)' = {sanitize_latex(d_arg)}")
                         if d_arg != 0: term_derivs.append(d_arg)
                     for idx_s, rule_str in enumerate(sub_rules):
-                        steps.append({'label': f'مشتق الحد ({idx_s + 1}):', 'math': rule_str})
+                        steps.append({'label': f'مشتق الحد ({idx_s + 1}):', 'math_list': [rule_str]})
                     raw_sum = sp.Add(*term_derivs) if term_derivs else sp.Integer(0)
                     if sanitize_latex(raw_sum) != df_latex_str_safe:
-                        steps.append({'label': 'بجمع المشتقات الجزئية وتوحيد المقامات:', 'math': fr"f'(x) = {sanitize_latex(raw_sum)}"})
+                        steps.append({'label': 'بجمع المشتقات الجزئية وتوحيد المقامات:', 'math_list': [fr"f'(x) = {sanitize_latex(raw_sum)}"]})
                 elif f_expr.is_Mul:
                     x_factors = [f for f in f_expr.as_ordered_factors() if f.has(x_sym)]
                     c_factors = [f for f in f_expr.as_ordered_factors() if not f.has(x_sym)]
@@ -520,9 +531,9 @@ def build_math_context(f_str, g_str, version_tag="v15"):
                         u_p, v_p = x_factors[0] * sp.Mul(*c_factors), sp.Mul(*x_factors[1:])
                         du_p = sp.simplify(sp.diff(u_p, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
                         dv_p = sp.simplify(sp.diff(v_p, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
-                        steps.append({'label': 'قانون مشتق جداء:', 'math': r"f'(x) = u'(x) \cdot v(x) + v'(x) \cdot u(x)"})
-                        steps.append({'label': 'حساب المشتقات الجزئية:', 'math': fr"u(x) = {sanitize_latex(u_p)} \Rightarrow u'(x) = {sanitize_latex(du_p)} \quad , \quad v(x) = {sanitize_latex(v_p)} \Rightarrow v'(x) = {sanitize_latex(dv_p)}"})
-                        steps.append({'label': 'بالتعويض في القانون:', 'math': fr"f'(x) = ({sanitize_latex(du_p)})({sanitize_latex(v_p)}) + ({sanitize_latex(dv_p)})({sanitize_latex(u_p)})"})
+                        steps.append({'label': 'قانون مشتق جداء:', 'math_list': [r"f'(x) = u'(x) \cdot v(x) + v'(x) \cdot u(x)"]})
+                        steps.append({'label': 'حساب المشتقات الجزئية:', 'math_list': [fr"u(x) = {sanitize_latex(u_p)} \implies u'(x) = {sanitize_latex(du_p)}", fr"v(x) = {sanitize_latex(v_p)} \implies v'(x) = {sanitize_latex(dv_p)}"]})
+                        steps.append({'label': 'بالتعويض في القانون:', 'math_list': [fr"f'(x) = ({sanitize_latex(du_p)})({sanitize_latex(v_p)}) + ({sanitize_latex(dv_p)})({sanitize_latex(u_p)})"]})
             except: pass
             return steps
 
@@ -643,13 +654,10 @@ def build_math_context(f_str, g_str, version_tag="v15"):
             except: pass
             return steps_math, step_note
 
-        # تعديل 1: في قسم النهايات، نتخطى التفسير البياني تماماً عندما يؤول x إلى مالانهاية ونجد مالانهاية
-        # ونترك استنتاج المقارب المائل لقسمه الخاص رقم 4 فقط
         def build_geometric_interpretation(val_sym, lim_sym, target_latex):
             try:
                 lim_fl = safe_float(lim_sym)
                 if val_sym in [sp.oo, -sp.oo]:
-                    # إذا كانت النهاية عدداً منتهياً -> مستقيم مقارب أفقي (يُذكر في قسم النهايات)
                     if np.isfinite(lim_fl):
                         b_lat = sanitize_latex(sp.simplify(lim_sym))
                         if not any(a['type'] == 'h' and abs(a['val'] - lim_fl) < 1e-4 for a in unique_asymptotes):
@@ -657,7 +665,6 @@ def build_math_context(f_str, g_str, version_tag="v15"):
                         st_txt = fr"📐 **التفسير البياني:** المنحنى $(C_f)$ يقبل مستقيماً مقارباً أفقياً بجوار ${target_latex}$ معادلته: $y = {b_lat}$"
                         mpl_txt = "التفسير البياني: المنحنى يقبل مستقيماً مقارباً أفقياً معادلته:"
                         return st_txt, mpl_txt, f"y = {b_lat}"
-                    # إذا كانت النهاية ما لا نهاية -> نحفظ بيانات المقارب المائل للقسم 4 ونتخطى التفسير البياني هنا!
                     elif lim_sym in [sp.oo, -sp.oo] or str(lim_sym) in ['oo', '-oo']:
                         a_sym = sp.limit(sp.together(f_expr / x_sym), x_sym, val_sym)
                         a_fl = safe_float(a_sym)
@@ -680,10 +687,8 @@ def build_math_context(f_str, g_str, version_tag="v15"):
                                         'line_expr': line_expr, 'line_lat': line_lat,
                                         'rem_expr': rem_expr, 'rem_lat': rem_lat
                                     })
-                        # نرجع None لكي لا يظهر أي تفسير بياني تحت نهاية المالانهاية في السؤال الأول
                         return None, None, None
                 else:
-                    # النهاية عند عدد حقيقي x0 وتعطي ما لا نهاية -> مستقيم مقارب عمودي
                     if lim_sym in [sp.oo, -sp.oo, sp.zoo] or str(lim_sym) in ['oo', '-oo', 'zoo'] or not np.isfinite(lim_fl):
                         st_txt = fr"📐 **التفسير البياني:** المنحنى $(C_f)$ يقبل مستقيماً مقارباً عمودياً (موازياً لمحور التراتيب) معادلته: $x = {target_latex}$"
                         mpl_txt = "التفسير البياني: المنحنى يقبل مستقيماً مقارباً عمودياً معادلته:"
@@ -734,7 +739,6 @@ def build_math_context(f_str, g_str, version_tag="v15"):
             if abs(val_float - int(round(val_float))) < 1e-2: return str(int(round(val_float)))
             return str(round(val_float, 2)).rstrip('0').rstrip('.') if '.' in str(round(val_float, 2)) else str(round(val_float, 2))
 
-        # تعديل 2: رسم جدول الوضع النسبي بالخلية المثلثية عند نقطة التقاطع مطابقاً للنموذج المرفق
         rel_pos_tables_info = []
         for od in oblique_details_list:
             rem_expr = od['rem_expr']
@@ -760,69 +764,64 @@ def build_math_context(f_str, g_str, version_tag="v15"):
                     rp_signs.append("+" if val_m > 0 else "-") if np.isfinite(val_m) else rp_signs.append(None)
                 except: rp_signs.append(None)
 
+            # توسيع المثلث في جدول الوضع النسبي وإنزال النص للجزء العريض لمنع ملامسة الأضلاع
             N_rp = len(rp_pts)
-            col_w_rp = 3.8; x_st_rp = 2.6; x_max_rp = x_st_rp + N_rp * col_w_rp
-            tri_half_w = 1.25
-            fig_rp, ax_rp = plt.subplots(figsize=(max(9.0, N_rp * 2.9), 3.3))
+            col_w_rp = 4.4; x_st_rp = 2.6; x_max_rp = x_st_rp + N_rp * col_w_rp
+            tri_half_w = 1.70
+            fig_rp, ax_rp = plt.subplots(figsize=(max(9.5, N_rp * 3.1), 3.5))
             ax_rp.axis('off')
-            # الخطوط الأفقية والعمودية للجدول
-            ax_rp.plot([0, x_max_rp], [4.6, 4.6], 'k-', lw=2)
-            ax_rp.plot([0, x_max_rp], [3.6, 3.6], 'k-', lw=1.5)
-            ax_rp.plot([0, x_max_rp], [2.4, 2.4], 'k-', lw=1.5)
+            ax_rp.plot([0, x_max_rp], [4.8, 4.8], 'k-', lw=2)
+            ax_rp.plot([0, x_max_rp], [3.8, 3.8], 'k-', lw=1.5)
+            ax_rp.plot([0, x_max_rp], [2.6, 2.6], 'k-', lw=1.5)
             ax_rp.plot([0, x_max_rp], [0, 0], 'k-', lw=2)
-            ax_rp.plot([0, 0], [0, 4.6], 'k-', lw=2)
-            ax_rp.plot([x_st_rp, x_st_rp], [0, 4.6], 'k-', lw=2)
-            ax_rp.plot([x_max_rp, x_max_rp], [0, 4.6], 'k-', lw=2)
+            ax_rp.plot([0, 0], [0, 4.8], 'k-', lw=2)
+            ax_rp.plot([x_st_rp, x_st_rp], [0, 4.8], 'k-', lw=2)
+            ax_rp.plot([x_max_rp, x_max_rp], [0, 4.8], 'k-', lw=2)
 
-            ax_rp.text(x_st_rp/2, 4.1, '$x$', ha='center', va='center', fontsize=18, color='#1565C0', fontweight='bold')
-            ax_rp.text(x_st_rp/2, 3.0, '$f(x) - y$', ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
-            ax_rp.text(x_st_rp/2, 1.45, fix_arabic_mpl("الوضع"), ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
-            ax_rp.text(x_st_rp/2, 0.85, fix_arabic_mpl("النسبي"), ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
+            ax_rp.text(x_st_rp/2, 4.3, '$x$', ha='center', va='center', fontsize=18, color='#1565C0', fontweight='bold')
+            ax_rp.text(x_st_rp/2, 3.2, '$f(x) - y$', ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
+            ax_rp.text(x_st_rp/2, 1.6, fix_arabic_mpl("الوضع"), ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
+            ax_rp.text(x_st_rp/2, 0.95, fix_arabic_mpl("النسبي"), ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
 
             for idx_rp, p_rp in enumerate(rp_pts):
                 xc = x_st_rp + (col_w_rp / 2.0) + idx_rp * col_w_rp
-                ax_rp.text(xc, 4.1, f"${p_rp['latex_x']}$", ha='center', va='center', fontsize=17)
+                ax_rp.text(xc, 4.3, f"${p_rp['latex_x']}$", ha='center', va='center', fontsize=17)
                 if p_rp['type'] == 'v_asym':
-                    ax_rp.plot([xc-0.05, xc-0.05], [0, 3.6], 'k-', lw=1.5)
-                    ax_rp.plot([xc+0.05, xc+0.05], [0, 3.6], 'k-', lw=1.5)
+                    ax_rp.plot([xc-0.05, xc-0.05], [0, 3.8], 'k-', lw=1.5)
+                    ax_rp.plot([xc+0.05, xc+0.05], [0, 3.8], 'k-', lw=1.5)
                 elif p_rp['type'] == 'root':
-                    # خط عمودي متصل في خانة الإشارة مع الصفر في منتصفه
-                    ax_rp.plot([xc, xc], [2.4, 3.6], 'k-', lw=1.5)
-                    ax_rp.text(xc, 3.0, '$0$', ha='center', va='center', fontsize=17, fontweight='bold')
-                    # رسم المثلث في خانة الوضع النسبي كما في الصورة المرجعية
-                    ax_rp.plot([xc, xc - tri_half_w], [2.4, 0.0], 'k-', lw=1.5)
-                    ax_rp.plot([xc, xc + tri_half_w], [2.4, 0.0], 'k-', lw=1.5)
+                    ax_rp.plot([xc, xc], [2.6, 3.8], 'k-', lw=1.5)
+                    ax_rp.text(xc, 3.2, '$0$', ha='center', va='center', fontsize=17, fontweight='bold')
+                    ax_rp.plot([xc, xc - tri_half_w], [2.6, 0.0], 'k-', lw=1.5)
+                    ax_rp.plot([xc, xc + tri_half_w], [2.6, 0.0], 'k-', lw=1.5)
                     y_inter_sym = sp.simplify(od['line_expr'].subs(x_sym, p_rp['sym']))
                     y_inter_lat = sanitize_latex(y_inter_sym)
-                    # كتابة "(Cf) يقطع (Δ) في النقطة (x0;y0)" داخل المثلث بترتيب سليم من اليمين لليسار
-                    ax_rp.text(xc + 0.28, 1.18, "$(C_f)$", ha='center', va='center', fontsize=13.5, color='#1E293B', fontweight='bold')
-                    ax_rp.text(xc - 0.28, 1.18, fix_arabic_mpl("يقطع"), ha='center', va='center', fontsize=13.5, color='#1E293B', fontweight='bold')
-                    ax_rp.text(xc + 0.42, 0.70, "$(\\Delta)$", ha='center', va='center', fontsize=13.5, color='#1E293B', fontweight='bold')
-                    ax_rp.text(xc - 0.22, 0.70, fix_arabic_mpl("في النقطة"), ha='center', va='center', fontsize=12.5, color='#B45309', fontweight='bold')
-                    ax_rp.text(xc, 0.24, f"$({p_rp['latex_x']} ; {y_inter_lat})$", ha='center', va='center', fontsize=13, color='#B45309', fontweight='bold')
+                    # وضع الكتابة في النصف السفلي العريض من المثلث بعيداً عن ضلعيه المائلين
+                    ax_rp.text(xc + 0.25, 1.25, "$(C_f)$", ha='center', va='center', fontsize=13, color='#1E293B', fontweight='bold')
+                    ax_rp.text(xc - 0.25, 1.25, fix_arabic_mpl("يقطع"), ha='center', va='center', fontsize=13, color='#1E293B', fontweight='bold')
+                    ax_rp.text(xc + 0.42, 0.72, "$(\\Delta)$", ha='center', va='center', fontsize=13, color='#1E293B', fontweight='bold')
+                    ax_rp.text(xc - 0.22, 0.72, fix_arabic_mpl("في النقطة"), ha='center', va='center', fontsize=12, color='#B45309', fontweight='bold')
+                    ax_rp.text(xc, 0.25, f"$({p_rp['latex_x']} ; {y_inter_lat})$", ha='center', va='center', fontsize=13, color='#B45309', fontweight='bold')
 
                 if idx_rp < N_rp - 1:
                     xc_next = x_st_rp + (col_w_rp / 2.0) + (idx_rp + 1) * col_w_rp
                     xic = (xc + xc_next) / 2.0
                     sgn = rp_signs[idx_rp]
                     if sgn is None:
-                        ax_rp.add_patch(plt.Rectangle((xc, 0), col_w_rp, 3.6, facecolor='#EF4444', alpha=0.6))
+                        ax_rp.add_patch(plt.Rectangle((xc, 0), col_w_rp, 3.8, facecolor='#EF4444', alpha=0.6))
                     else:
-                        ax_rp.text(xic, 3.0, f"${sgn}$", ha='center', va='center', fontsize=24, color='#2E7D32' if sgn=='+' else '#D32F2F')
-                        # إزاحة نص الوضع النسبي قليلاً بعيداً عن ضلع المثلث ليتوسط المساحة المتاحة
-                        x_vis_l = xc + (tri_half_w * 0.55 if p_rp['type'] == 'root' else 0.0)
-                        x_vis_r = xc_next - (tri_half_w * 0.55 if rp_pts[idx_rp+1]['type'] == 'root' else 0.0)
+                        ax_rp.text(xic, 3.2, f"${sgn}$", ha='center', va='center', fontsize=24, color='#2E7D32' if sgn=='+' else '#D32F2F')
+                        x_vis_l = xc + (tri_half_w * 0.60 if p_rp['type'] == 'root' else 0.0)
+                        x_vis_r = xc_next - (tri_half_w * 0.60 if rp_pts[idx_rp+1]['type'] == 'root' else 0.0)
                         xic_pos = (x_vis_l + x_vis_r) / 2.0
                         pos_ar = "فوق" if sgn == '+' else "تحت"
                         col_pos = '#15803D' if sgn == '+' else '#B91C1C'
-                        # السطر الأول: "(Cf) يقع"
-                        ax_rp.text(xic_pos + 0.35, 1.45, "$(C_f)$", ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
-                        ax_rp.text(xic_pos - 0.35, 1.45, fix_arabic_mpl("يقع"), ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
-                        # السطر الثاني: "فوق (Δ)" أو "تحت (Δ)"
-                        ax_rp.text(xic_pos + 0.35, 0.75, fix_arabic_mpl(pos_ar), ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
-                        ax_rp.text(xic_pos - 0.35, 0.75, "$(\\Delta)$", ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
+                        ax_rp.text(xic_pos + 0.35, 1.55, "$(C_f)$", ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
+                        ax_rp.text(xic_pos - 0.35, 1.55, fix_arabic_mpl("يقع"), ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
+                        ax_rp.text(xic_pos + 0.35, 0.85, fix_arabic_mpl(pos_ar), ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
+                        ax_rp.text(xic_pos - 0.35, 0.85, "$(\\Delta)$", ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
 
-            ax_rp.set_xlim(0, x_max_rp); ax_rp.set_ylim(0, 4.6)
+            ax_rp.set_xlim(0, x_max_rp); ax_rp.set_ylim(0, 4.8)
             try: fig_rp.tight_layout(pad=0.2)
             except: pass
             tmp_rp = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
@@ -830,13 +829,14 @@ def build_math_context(f_str, g_str, version_tag="v15"):
             plt.close(fig_rp)
             od['rel_pos_img'] = tmp_rp.name
 
-            fig_ob, ax_ob = plt.subplots(figsize=(9.5, 3.2))
-            ax_ob.axis('off'); ax_ob.set_xlim(0, 10); ax_ob.set_ylim(0, 4)
-            ax_ob.text(9.7, 3.5, fix_arabic_mpl("طريقة استنتاج معادلة المستقيم المقارب المائل (Δ):"), fontsize=14, ha='right', va='center', color='#D97706', fontweight='bold')
-            ax_ob.text(5.0, 2.7, fr"$a = \lim_{{x \to {od['target_latex']}}} \frac{{f(x)}}{{x}} = {od['a_lat']} \quad , \quad b = \lim_{{x \to {od['target_latex']}}} [f(x) - ({od['a_lat']})x] = {od['b_lat']}$", fontsize=15, ha='center', va='center', color='#1E3A8A')
-            ax_ob.text(5.0, 1.7, fr"$\lim_{{x \to {od['target_latex']}}} [f(x) - ({od['line_lat']})] = \lim_{{x \to {od['target_latex']}}} \left({od['rem_lat']}\right) = 0$", fontsize=15, ha='center', va='center', color='#6D28D9')
-            ax_ob.text(9.7, 0.7, fix_arabic_mpl("ومنه معادلة المقارب المائل (Δ) ودراسة إشارة الفرق:"), fontsize=14, ha='right', va='center', color='#047857', fontweight='bold')
-            ax_ob.text(3.0, 0.7, fr"$(\Delta): y = {od['line_lat']} \quad , \quad f(x) - y = {od['rem_lat']}$", fontsize=15, ha='center', va='center', color='#047857', fontweight='bold')
+            # فصل الجملة العربية عن معادلة الفرق عمودياً في صورة شرح المقارب المائل لمنع التداخل في الـ PDF
+            fig_ob, ax_ob = plt.subplots(figsize=(9.5, 4.0))
+            ax_ob.axis('off'); ax_ob.set_xlim(0, 10); ax_ob.set_ylim(0, 5.0)
+            ax_ob.text(9.7, 4.4, fix_arabic_mpl("طريقة استنتاج معادلة المستقيم المقارب المائل:"), fontsize=14, ha='right', va='center', color='#D97706', fontweight='bold')
+            ax_ob.text(5.0, 3.5, fr"$a = \lim_{{x \to {od['target_latex']}}} \frac{{f(x)}}{{x}} = {od['a_lat']} \quad , \quad b = \lim_{{x \to {od['target_latex']}}} [f(x) - ({od['a_lat']})x] = {od['b_lat']}$", fontsize=15, ha='center', va='center', color='#1E3A8A')
+            ax_ob.text(5.0, 2.5, fr"$\lim_{{x \to {od['target_latex']}}} [f(x) - ({od['line_lat']})] = \lim_{{x \to {od['target_latex']}}} \left({od['rem_lat']}\right) = 0$", fontsize=15, ha='center', va='center', color='#6D28D9')
+            ax_ob.text(9.7, 1.5, fix_arabic_mpl("ومنه معادلة المقارب المائل وعبارة الفرق للوضع النسبي:"), fontsize=14, ha='right', va='center', color='#047857', fontweight='bold')
+            ax_ob.text(5.0, 0.6, fr"$(\Delta): y = {od['line_lat']} \quad , \quad f(x) - y = {od['rem_lat']}$", fontsize=16, ha='center', va='center', color='#047857', fontweight='bold')
             try: fig_ob.tight_layout(pad=0.2)
             except: pass
             tmp_ob = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
@@ -1077,6 +1077,7 @@ def build_math_context(f_str, g_str, version_tag="v15"):
 
         var_table_image_path = generate_variation_table_image()
 
+        # فصل جملة التفسير البياني عن المعادلة في سطرين داخل صورة النهايات لمنع التداخل في الـ PDF
         def generate_limits_image():
             rows = []
             for idx_item, item in enumerate(limits_mpl_items):
@@ -1087,7 +1088,10 @@ def build_math_context(f_str, g_str, version_tag="v15"):
                         rows.append(('step_label', 'التعليل (لأن):', 0.55))
                     rows.append(('step_math', item['math'], 0.85))
                 elif item['type'] == 'note': rows.append(('note_row', item['text'], 0.6))
-                elif item['type'] == 'geo': rows.append(('geo_row', (item['text'], item['math']), 0.8))
+                elif item['type'] == 'geo':
+                    rows.append(('geo_label', item['text'], 0.60))
+                    if item['math']:
+                        rows.append(('geo_math', item['math'], 0.75))
             total_h = sum(r[2] for r in rows) + 0.4
             fig_l, ax_l = plt.subplots(figsize=(9.5, max(2.2, total_h * 0.78)))
             ax_l.axis('off'); ax_l.set_xlim(0, 10); ax_l.set_ylim(0, total_h)
@@ -1102,9 +1106,8 @@ def build_math_context(f_str, g_str, version_tag="v15"):
                     elif r_type == 'step_label': ax_l.text(9.7, y_pos, fix_arabic_mpl(content), fontsize=13, ha='right', va='center', color='#D97706', fontweight='bold')
                     elif r_type == 'step_math': ax_l.text(5.0, y_pos, f"$({content})$", fontsize=14, ha='center', va='center', color='#6D28D9')
                     elif r_type == 'note_row': ax_l.text(5.0, y_pos, fix_arabic_mpl(content), fontsize=13, ha='center', va='center', color='#B45309', fontweight='bold')
-                    elif r_type == 'geo_row':
-                        ax_l.text(9.7, y_pos, fix_arabic_mpl(content[0]), fontsize=13.5, ha='right', va='center', color='#047857', fontweight='bold')
-                        if content[1]: ax_l.text(2.5, y_pos, f"${content[1]}$", fontsize=15, ha='center', va='center', color='#047857', fontweight='bold')
+                    elif r_type == 'geo_label': ax_l.text(9.7, y_pos, fix_arabic_mpl(content), fontsize=13.5, ha='right', va='center', color='#047857', fontweight='bold')
+                    elif r_type == 'geo_math': ax_l.text(5.0, y_pos, f"${content}$", fontsize=16, ha='center', va='center', color='#047857', fontweight='bold')
                 except: pass
                 curr_y -= h_step
             tmp_l = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
@@ -1116,7 +1119,9 @@ def build_math_context(f_str, g_str, version_tag="v15"):
         def generate_deriv_image():
             rows = []
             for stp in deriv_steps_detailed:
-                rows.append(('label', stp['label'], 0.6)); rows.append(('math', stp['math'], 1.15))
+                rows.append(('label', stp['label'], 0.6))
+                for m_str in stp['math_list']:
+                    rows.append(('math', m_str, 0.95))
             rows.append(('final_label', 'العبارة النهائية للمشتقة:', 0.65))
             rows.append(('final_math', fr"f'(x) = {df_latex_str_safe}", 1.25))
             total_h = sum(r[2] for r in rows) + 0.4
@@ -1186,10 +1191,10 @@ def build_math_context(f_str, g_str, version_tag="v15"):
     except Exception as e: cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v15":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v16":
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v15")
-        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v15"
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v16")
+        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v16"
 
 cache = st.session_state.math_cache
 
@@ -1319,21 +1324,22 @@ else:
             pdf.cell(0, 8, fix_arabic_pdf("1. حساب النهايات واستنتاج المقاربات العمودية والأفقية:"), ln=True, align='R')
             if cache['limits_image_path']: pdf.image(cache['limits_image_path'], x=15, w=180); pdf.ln(2)
 
-            if pdf.get_y() > 220: pdf.add_page()
+            if pdf.get_y() > 195: pdf.add_page()
             pdf.cell(0, 8, fix_arabic_pdf("2. حساب الدالة المشتقة:"), ln=True, align='R')
             if cache['deriv_image_path']: pdf.image(cache['deriv_image_path'], x=15, w=180); pdf.ln(2)
 
-            if pdf.get_y() > 215: pdf.add_page()
+            # الانتقال لصفحة جديدة قبل كتابة عنوان جدول التغيرات إذا لم تتسع الصفحة للجدول كاملاً
+            if pdf.get_y() > 175: pdf.add_page()
             pdf.cell(0, 8, fix_arabic_pdf("3. جدول التغيرات:"), ln=True, align='R')
             if cache['var_table_image_path']: pdf.image(cache['var_table_image_path'], x=10, w=190); pdf.ln(3)
 
             if cache.get('rel_pos_tables_info'):
-                if pdf.get_y() > 190: pdf.add_page()
-                pdf.cell(0, 8, fix_arabic_pdf("4. استنتاج معادلة المستقيم المقارب المائل (Δ) وشرح طريقتها:"), ln=True, align='R')
+                if pdf.get_y() > 175: pdf.add_page()
+                pdf.cell(0, 8, fix_arabic_pdf("4. استنتاج معادلة المستقيم المقارب المائل وشرح طريقتها:"), ln=True, align='R')
                 for od in cache['rel_pos_tables_info']:
                     pdf.image(od['oblique_steps_img'], x=15, w=180); pdf.ln(2)
-                if pdf.get_y() > 210: pdf.add_page()
-                pdf.cell(0, 8, fix_arabic_pdf("5. جدول الوضع النسبي بين المقارب المائل (Δ) والمنحنى (Cf):"), ln=True, align='R')
+                if pdf.get_y() > 175: pdf.add_page()
+                pdf.cell(0, 8, fix_arabic_pdf("5. جدول الوضع النسبي بين المقارب المائل والمنحنى (Cf):"), ln=True, align='R')
                 for od in cache['rel_pos_tables_info']:
                     pdf.image(od['rel_pos_img'], x=10, w=190); pdf.ln(2)
 
@@ -1389,7 +1395,8 @@ else:
         st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
         for d_step in cache.get('deriv_steps_detailed', []):
             st.markdown(f"<div class='step-box-deriv'>🔸 {d_step['label']}</div>", unsafe_allow_html=True)
-            st.latex(fr"\color{{#FDE68A}}{{{d_step['math']}}}")
+            for m_str in d_step['math_list']:
+                st.latex(fr"\color{{#FDE68A}}{{{m_str}}}")
         st.markdown("<div class='step-box-final'>✅ العبارة النهائية للمشتقة:</div>", unsafe_allow_html=True)
         st.latex(fr"\color{{#4ADE80}}{{f'(x) = {cache['df_latex_str_safe']}}}")
         
@@ -1401,7 +1408,8 @@ else:
             st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>4. استنتاج معادلة المستقيم المقارب المائل (Δ) وشرح طريقة استنتاجها:</h4>", unsafe_allow_html=True)
             for od in cache['rel_pos_tables_info']:
                 st.info(fr"🔹 بما أن $\lim_{{x \to {od['target_latex']}}} f(x) = \pm\infty$، نبحث عن معامل التوجيه $a$ ثم $b$ بجوار ${od['target_latex']}$:")
-                st.latex(fr"\color{{#FDE68A}}{{a = \lim_{{x \to {od['target_latex']}}} \frac{{f(x)}}{{x}} = {od['a_lat']} \quad , \quad b = \lim_{{x \to {od['target_latex']}}} [f(x) - ({od['a_lat']})x] = {od['b_lat']}}}")
+                st.latex(fr"\color{{#FDE68A}}{{a = \lim_{{x \to {od['target_latex']}}} \frac{{f(x)}}{{x}} = {od['a_lat']}}}")
+                st.latex(fr"\color{{#FDE68A}}{{b = \lim_{{x \to {od['target_latex']}}} [f(x) - ({od['a_lat']})x] = {od['b_lat']}}}")
                 st.latex(fr"\color{{#34D399}}{{\lim_{{x \to {od['target_latex']}}} \left[ f(x) - ({od['line_lat']}) \right] = \lim_{{x \to {od['target_latex']}}} \left( {od['rem_lat']} \right) = 0}}")
                 st.success(fr"📐 ومنه المنحنى $(C_f)$ يقبل مستقيماً مقارباً مائلاً $(\Delta)$ بجوار ${od['target_latex']}$ معادلته: $y = {od['line_lat']}$")
 
