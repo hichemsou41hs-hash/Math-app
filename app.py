@@ -70,7 +70,7 @@ st.markdown("""
     .ig-btn { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); border: 1px solid #ec4899; }
 
     .step-box-lim { text-align: right; direction: rtl; color: #FBBF24 !important; font-size: 16px !important; font-weight: bold !important; margin-top: 5px; margin-bottom: -8px; }
-    .geo-box-lim { text-align: right; direction: rtl; background-color: #1E293B; border-right: 4px solid #10B981; padding: 8px 12px; border-radius: 6px; color: #6EE7B7 !important; font-size: 16px !important; font-weight: bold !important; margin-top: 6px; margin-bottom: 14px; }
+    .geo-box-lim { text-align: right; direction: rtl; background-color: #1E293B; border-right: 4px solid #10B981; padding: 10px 14px; border-radius: 6px; color: #6EE7B7 !important; font-size: 16px !important; font-weight: bold !important; margin-top: 8px; margin-bottom: 6px; line-height: 1.6; }
     .step-box-deriv { text-align: right; direction: rtl; color: #FB923C !important; font-size: 16px !important; font-weight: bold !important; margin-top: 8px; margin-bottom: -8px; }
     .step-box-final { text-align: right; direction: rtl; color: #4ADE80 !important; font-size: 17px !important; font-weight: bold !important; margin-top: 10px; margin-bottom: -8px; }
 
@@ -444,7 +444,7 @@ with col_img:
     st.markdown("<div style='font-size:14px; color:#94A3B8; text-align:right; direction:rtl; margin-top:-10px; margin-bottom:10px;'>💡 <b>ملاحظة:</b> في حال وجود ضغط على خادم الذكاء الاصطناعي وفشل قراءة الصورة، يرجى كتابة الدالة يدوياً في الخانة المجاورة.</div>", unsafe_allow_html=True)
     if img_file:
         if not api_key:
-            st.error("⚠️️ خاصية الذكاء الاصطناعي غير مفعلة (ينقص مفتاح API).")
+            st.error("⚠ خاصية الذكاء الاصطناعي غير مفعلة (ينقص مفتاح API).")
         else:
             if st.button("استخراج الدالة 🤖", use_container_width=True):
                 with st.spinner("جاري قراءة الصورة..."):
@@ -468,7 +468,7 @@ current_f = st.session_state.f_val.strip()
 current_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() else "m"
 
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v11"):
+def build_math_context(f_str, g_str, version_tag="v12"):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -768,10 +768,10 @@ def build_math_context(f_str, g_str, version_tag="v11"):
         domain_latex_st = r"D_f = \color{#FFD700}{" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset") + r"}"
         domain_latex_mpl = r"D_f = " + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
 
-        # بناء النهايات مع خطوات الحساب والتفسير البياني (الهندسي) لكل نهاية
         limits_data_detailed = []
         limits_mpl_items = [{'type': 'domain', 'latex': domain_latex_mpl}]
 
+        # وضع كل نهاية فرعية في سطر مستقل حتى لا تقتص على شاشة الهاتف
         def build_limit_steps(val_sym, dir_sympy, target_latex, arrow_latex):
             steps_math = []
             try:
@@ -787,17 +787,17 @@ def build_math_context(f_str, g_str, version_tag="v11"):
                             d_val = safe_float(den.subs(x_sym, safe_float(val_sym) + eps))
                             l_den_s = "0^+" if d_val > 0 else "0^-"
                         except: pass
-                    steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(num)}\right) = {l_num_s} \quad , \quad \lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(den)}\right) = {l_den_s}")
+                    steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(num)}\right) = {l_num_s}")
+                    steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(den)}\right) = {l_den_s}")
                 
                 elif f_expr.is_Add:
-                    sub_parts = []
                     has_pos_inf, has_neg_inf = False, False
                     for arg in f_expr.args:
                         if not arg.is_number:
                             l_p = sp.limit(arg, x_sym, val_sym, dir=dir_sympy)
                             if l_p == sp.oo: has_pos_inf = True
                             if l_p == -sp.oo: has_neg_inf = True
-                            sub_parts.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(arg)}\right) = {format_lim_val(l_p)}")
+                            steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(arg)}\right) = {format_lim_val(l_p)}")
                     if has_pos_inf and has_neg_inf:
                         try:
                             fact = sp.factor(f_expr)
@@ -805,8 +805,6 @@ def build_math_context(f_str, g_str, version_tag="v11"):
                                 l_tot = format_lim_val(sp.limit(f_expr, x_sym, val_sym, dir=dir_sympy))
                                 steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(fact)}\right) = {l_tot}")
                         except: pass
-                    if sub_parts:
-                        steps_math.append(r" \quad , \quad ".join(sub_parts[:3]))
 
                 elif f_expr.func in [sp.log, sp.exp, sp.sqrt] and len(f_expr.args) > 0:
                     inner = f_expr.args[0]
@@ -815,68 +813,66 @@ def build_math_context(f_str, g_str, version_tag="v11"):
                     steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(inner)}\right) = {l_in_s}")
 
                 elif f_expr.is_Mul:
-                    sub_parts = []
                     for arg in f_expr.args:
                         if not arg.is_number:
                             l_p = sp.limit(arg, x_sym, val_sym, dir=dir_sympy)
-                            sub_parts.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(arg)}\right) = {format_lim_val(l_p)}")
-                    if sub_parts:
-                        steps_math.append(r" \quad , \quad ".join(sub_parts[:3]))
+                            steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(arg)}\right) = {format_lim_val(l_p)}")
             except: pass
             return steps_math
 
-        # استنتاج التفسير البياني (الهندسي) للنهاية
+        # استنتاج التفسير البياني بصيغة تدعم LaTeX الصافي في كل من المتصفح والـ PDF
         def build_geometric_interpretation(val_sym, lim_sym, target_latex):
             try:
                 lim_fl = safe_float(lim_sym)
-                # الحالة 1: النهاية عند اللانهاية
+                target_disp = "−∞" if val_sym == -sp.oo else ("+∞" if val_sym == sp.oo else target_latex)
+                cf_html = "<span dir='ltr'>(C<sub>f</sub>)</span>"
+                
                 if val_sym in [sp.oo, -sp.oo]:
-                    # إذا كانت النهاية عدداً حقيقياً منتهياً -> مستقيم مقارب أفقي
                     if np.isfinite(lim_fl):
                         b_lat = sanitize_latex(sp.simplify(lim_sym))
                         if not any(a['type'] == 'h' and abs(a['val'] - lim_fl) < 1e-4 for a in unique_asymptotes):
                             unique_asymptotes.append({'type': 'h', 'val': lim_fl, 'label': f"y={b_lat}"})
-                        st_txt = f"التفسير البياني: المنحنى $(C_f)$ يقبل مستقيماً مقارباً أفقياً بجوار ${target_latex}$ معادلته $y = {b_lat}$"
+                        st_txt = f"التفسير البياني: المنحنى {cf_html} يقبل مستقيماً مقارباً أفقياً بجوار <span dir='ltr'>{target_disp}</span> معادلته:"
+                        eq_lat = f"y = {b_lat}"
                         mpl_txt = "التفسير البياني: المنحنى يقبل مستقيماً مقارباً أفقياً معادلته:"
-                        mpl_math = f"y = {b_lat}"
-                        return st_txt, mpl_txt, mpl_math
-                    # إذا كانت النهاية ما لا نهاية -> نبحث عن مستقيم مقارب مائل أو اتجاه مقارب
+                        return st_txt, eq_lat, mpl_txt, eq_lat
                     elif lim_sym in [sp.oo, -sp.oo] or str(lim_sym) in ['oo', '-oo']:
-                        a_sym = sp.limit(f_expr / x_sym, x_sym, val_sym)
+                        a_sym = sp.limit(sp.together(f_expr / x_sym), x_sym, val_sym)
                         a_fl = safe_float(a_sym)
                         if np.isfinite(a_fl):
                             if abs(a_fl) < 1e-7:
-                                st_txt = f"التفسير البياني: المنحنى $(C_f)$ يقبل فرعاً مكافئاً باتجاه محور الفواصل بجوار ${target_latex}$"
-                                return st_txt, "التفسير البياني: المنحنى يقبل فرعاً مكافئاً باتجاه محور الفواصل", ""
+                                st_txt = f"التفسير البياني: المنحنى {cf_html} يقبل فرعاً مكافئاً باتجاه محور الفواصل بجوار <span dir='ltr'>{target_disp}</span>"
+                                return st_txt, None, "التفسير البياني: المنحنى يقبل فرعاً مكافئاً باتجاه محور الفواصل", ""
                             else:
-                                b_sym = sp.limit(f_expr - a_sym * x_sym, x_sym, val_sym)
+                                diff_expr = sp.together(f_expr - a_sym * x_sym)
+                                b_sym = sp.limit(diff_expr, x_sym, val_sym)
                                 b_fl = safe_float(b_sym)
                                 if np.isfinite(b_fl):
                                     line_expr = sp.simplify(a_sym * x_sym + b_sym)
                                     line_lat = sanitize_latex(line_expr)
                                     if not any(a['type'] == 'oblique' and abs(a['a'] - a_fl) < 1e-4 and abs(a['b'] - b_fl) < 1e-4 for a in unique_asymptotes):
                                         unique_asymptotes.append({'type': 'oblique', 'a': a_fl, 'b': b_fl, 'label': f"y={line_lat}"})
-                                    st_txt = f"التفسير البياني: المنحنى $(C_f)$ يقبل مستقيماً مقارباً مائلاً بجوار ${target_latex}$ معادلته $y = {line_lat}$"
+                                    st_txt = f"التفسير البياني: المنحنى {cf_html} يقبل مستقيماً مقارباً مائلاً بجوار <span dir='ltr'>{target_disp}</span> معادلته:"
+                                    eq_lat = f"y = {line_lat}"
                                     mpl_txt = "التفسير البياني: المنحنى يقبل مستقيماً مقارباً مائلاً معادلته:"
-                                    mpl_math = f"y = {line_lat}"
-                                    return st_txt, mpl_txt, mpl_math
+                                    return st_txt, eq_lat, mpl_txt, eq_lat
                                 else:
                                     line_lat = sanitize_latex(sp.simplify(a_sym * x_sym))
-                                    st_txt = f"التفسير البياني: المنحنى $(C_f)$ يقبل فرعاً مكافئاً باتجاه المستقيم ذي المعادلة $y = {line_lat}$ بجوار ${target_latex}$"
-                                    return st_txt, "التفسير البياني: المنحنى يقبل فرعاً مكافئاً باتجاه المستقيم:", f"y = {line_lat}"
+                                    st_txt = f"التفسير البياني: المنحنى {cf_html} يقبل فرعاً مكافئاً بجوار <span dir='ltr'>{target_disp}</span> باتجاه المستقيم ذي المعادلة:"
+                                    eq_lat = f"y = {line_lat}"
+                                    return st_txt, eq_lat, "التفسير البياني: المنحنى يقبل فرعاً مكافئاً باتجاه المستقيم:", eq_lat
                         elif a_sym in [sp.oo, -sp.oo] or str(a_sym) in ['oo', '-oo']:
-                            st_txt = f"التفسير البياني: المنحنى $(C_f)$ يقبل فرعاً مكافئاً باتجاه محور التراتيب بجوار ${target_latex}$"
-                            return st_txt, "التفسير البياني: المنحنى يقبل فرعاً مكافئاً باتجاه محور التراتيب", ""
-                # الحالة 2: النهاية عند عدد حقيقي x0 وتعطي ما لا نهاية -> مستقيم مقارب عمودي
+                            st_txt = f"التفسير البياني: المنحنى {cf_html} يقبل فرعاً مكافئاً باتجاه محور التراتيب بجوار <span dir='ltr'>{target_disp}</span>"
+                            return st_txt, None, "التفسير البياني: المنحنى يقبل فرعاً مكافئاً باتجاه محور التراتيب", ""
                 else:
                     if lim_sym in [sp.oo, -sp.oo, sp.zoo] or str(lim_sym) in ['oo', '-oo', 'zoo'] or not np.isfinite(lim_fl):
-                        st_txt = f"التفسير البياني: المنحنى $(C_f)$ يقبل مستقيماً مقارباً عمودياً (موازياً لمحور التراتيب) معادلته $x = {target_latex}$"
+                        st_txt = f"التفسير البياني: المنحنى {cf_html} يقبل مستقيماً مقارباً عمودياً (موازياً لمحور التراتيب) معادلته:"
+                        eq_lat = f"x = {target_latex}"
                         mpl_txt = "التفسير البياني: المنحنى يقبل مستقيماً مقارباً عمودياً معادلته:"
-                        mpl_math = f"x = {target_latex}"
-                        return st_txt, mpl_txt, mpl_math
+                        return st_txt, eq_lat, mpl_txt, eq_lat
             except Exception:
                 pass
-            return None, None, None
+            return None, None, None, None
 
         def add_limit(val_sym, dir_sympy, target_latex, arrow_latex=r"\to"):
             try:
@@ -885,10 +881,15 @@ def build_math_context(f_str, g_str, version_tag="v11"):
                 expr_latex = sanitize_latex(f_expr)
                 
                 steps_list = build_limit_steps(val_sym, dir_sympy, target_latex, arrow_latex)
-                geo_st, geo_mpl_txt, geo_mpl_math = build_geometric_interpretation(val_sym, lim, target_latex)
+                geo_st_txt, geo_st_math, geo_mpl_txt, geo_mpl_math = build_geometric_interpretation(val_sym, lim, target_latex)
                 
                 latex_streamlit = fr"\lim_{{x {arrow_latex} {target_latex}}} f(x) = \lim_{{x {arrow_latex} {target_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
-                limits_data_detailed.append({'main': latex_streamlit, 'steps': steps_list, 'geo': geo_st})
+                limits_data_detailed.append({
+                    'main': latex_streamlit,
+                    'steps': steps_list,
+                    'geo_txt': geo_st_txt,
+                    'geo_math': geo_st_math
+                })
                 
                 lhs_mpl = fr"\lim_{{x {arrow_latex} {target_latex}}} f(x) = \lim_{{x {arrow_latex} {target_latex}}} \left( {expr_latex} \right) ="
                 rhs_mpl = fr"{lim_latex}"
@@ -1294,16 +1295,17 @@ def build_math_context(f_str, g_str, version_tag="v11"):
 
         def generate_limits_image():
             rows = []
-            for item in limits_mpl_items:
+            for idx_item, item in enumerate(limits_mpl_items):
                 if item['type'] == 'domain':
                     rows.append(('domain', item['latex'], 0.9))
                 elif item['type'] == 'main':
                     rows.append(('main', (item['lhs'], item['rhs']), 1.15))
                 elif item['type'] == 'step':
-                    rows.append(('step_label', 'التعليل (لأن):', 0.55))
+                    if idx_item == 0 or limits_mpl_items[idx_item - 1]['type'] != 'step':
+                        rows.append(('step_label', 'التعليل (لأن):', 0.55))
                     rows.append(('step_math', item['math'], 0.85))
                 elif item['type'] == 'geo':
-                    rows.append(('geo_row', (item['text'], item['math']), 0.75))
+                    rows.append(('geo_row', (item['text'], item['math']), 0.8))
             
             total_h = sum(r[2] for r in rows) + 0.4
             fig_l, ax_l = plt.subplots(figsize=(9.5, max(2.2, total_h * 0.78)))
@@ -1329,7 +1331,7 @@ def build_math_context(f_str, g_str, version_tag="v11"):
                         g_txt, g_math = content
                         ax_l.text(9.7, y_pos, fix_arabic_mpl(g_txt), fontsize=13.5, ha='right', va='center', color='#047857', fontweight='bold')
                         if g_math:
-                            ax_l.text(2.8, y_pos, f"${g_math}$", fontsize=15, ha='center', va='center', color='#047857', fontweight='bold')
+                            ax_l.text(2.5, y_pos, f"${g_math}$", fontsize=15, ha='center', va='center', color='#047857', fontweight='bold')
                 except:
                     pass
                 curr_y -= h_step
@@ -1492,12 +1494,12 @@ def build_math_context(f_str, g_str, version_tag="v11"):
         cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v11":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v12":
     with st.spinner("جاري التحليل الرياضي الدقيق (تتم هذه العملية مرة واحدة لتسريع حركة المناقشة الآلية)..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v11")
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v12")
         st.session_state.last_f = current_f
         st.session_state.last_g = current_g
-        st.session_state.cache_ver = "v11"
+        st.session_state.cache_ver = "v12"
 
 cache = st.session_state.math_cache
 
@@ -1795,11 +1797,14 @@ else:
         st.latex(cache['domain_latex_st'])
         for lim_item in cache['limits_data_detailed']:
             st.latex(lim_item['main'])
-            for stp in lim_item['steps']:
+            if lim_item['steps']:
                 st.markdown("<div class='step-box-lim'>🔹 التعليل (خطوات الحساب):</div>", unsafe_allow_html=True)
-                st.latex(fr"\color{{#C4B5FD}}{{{stp}}}")
-            if lim_item.get('geo'):
-                st.markdown(f"<div class='geo-box-lim'>📐 {lim_item['geo']}</div>", unsafe_allow_html=True)
+                for stp in lim_item['steps']:
+                    st.latex(fr"\color{{#C4B5FD}}{{{stp}}}")
+            if lim_item.get('geo_txt'):
+                st.markdown(f"<div class='geo-box-lim'>📐 {lim_item['geo_txt']}</div>", unsafe_allow_html=True)
+                if lim_item.get('geo_math'):
+                    st.latex(fr"\color{{#34D399}}{{{lim_item['geo_math']}}}")
                 
         st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
         for d_step in cache.get('deriv_steps_detailed', []):
