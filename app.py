@@ -91,7 +91,7 @@ st.markdown("""
         overflow-x: auto !important;
         overflow-y: hidden !important;
         max-width: 100% !important;
-        padding-bottom: 4px !important;
+        padding: 4px 8px !important;
         -webkit-overflow-scrolling: touch !important;
     }
 
@@ -126,7 +126,7 @@ st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>
 def fig_to_bytes(fig):
     try:
         buf = io.BytesIO()
-        fig.savefig(buf, format='png', bbox_inches='tight', dpi=280, facecolor=fig.get_facecolor())
+        fig.savefig(buf, format='png', bbox_inches='tight', pad_inches=0.08, dpi=280, facecolor=fig.get_facecolor())
         plt.close(fig)
         data = buf.getvalue()
         if data and len(data) > 100:
@@ -255,7 +255,6 @@ def validate_extracted_math(candidate_str):
     except Exception:
         return None
 
-# محرك احترافي لاستخراج الدالة من الصورة عبر REST API المباشر واكتشاف النماذج النشطة آلياً
 def extract_math_from_image(image_file, api_key):
     try:
         image_file.seek(0)
@@ -264,7 +263,6 @@ def extract_math_from_image(image_file, api_key):
 
     orig_img = Image.open(image_file).convert("RGB")
     w, h = orig_img.size
-    # تكبير الصور الصغيرة وإحاطتها بهامش أبيض واضح لضمان دقة قراءة الأسس والكسور
     if w < 800 or h < 250:
         scale = max(2, int(900 / max(w, 1)))
         proc_img = orig_img.resize((w * scale, h * scale), Image.Resampling.LANCZOS)
@@ -289,7 +287,6 @@ def extract_math_from_image(image_file, api_key):
         "- Output ONLY the single-line formula with no markdown, no backticks, and no extra words."
     )
 
-    # 1. جلب قائمة النماذج الفعالة حالياً من خادم جوجل مباشرة لتجنب خطأ 404 نهائياً
     active_models = []
     try:
         list_url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
@@ -299,14 +296,12 @@ def extract_math_from_image(image_file, api_key):
             for m in models_data.get('models', []):
                 methods = m.get('supportedGenerationMethods', [])
                 m_name = m.get('name', '').replace('models/', '')
-                # اختيار نماذج gemini التي تدعم generateContent واستبعاد النماذج الموقوفة أو الخاصة بالصوت/الصور فقط
                 if 'generateContent' in methods and m_name.startswith('gemini'):
                     if not any(bad in m_name for bad in ['1.0', '1.5', 'tts', 'image', 'embedding', 'aqa', 'thinking']):
                         active_models.append(m_name)
     except Exception:
         pass
 
-    # ترتيب الأولوية لأسرع وأدق النماذج المتاحة
     preferred_order = [
         'gemini-2.5-flash',
         'gemini-2.5-flash-lite',
@@ -369,7 +364,6 @@ def extract_math_from_image(image_file, api_key):
                     err_body = he.read().decode('utf-8')
                 except Exception:
                     pass
-                # إذا كان النموذج غير موجود في هذه النسخة (404)، ننتقل بصمت للنموذج التالي دون مسح رسالة الخطأ الأهم
                 if he.code == 404:
                     if not last_err:
                         last_err = f"404 ({model_name})"
@@ -521,7 +515,7 @@ current_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() els
 # ==================== نهاية الجزء الأول (1/2) ====================
 # ==================== بداية الجزء الثاني (2/2) ====================
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v20"):
+def build_math_context(f_str, g_str, version_tag="v21"):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -608,6 +602,11 @@ def build_math_context(f_str, g_str, version_tag="v20"):
             df_together = sp.together(df_simp)
             if not df_together.has(sp.Piecewise): df_simp = df_together
         except: pass
+        try:
+            df_factored = sp.factor(sp.expand(df_simp))
+            if not df_factored.has(sp.Piecewise) and len(sanitize_latex(df_factored)) <= len(sanitize_latex(df_simp)) + 10:
+                df_simp = df_factored
+        except: pass
         df_latex_str_safe = sanitize_latex(df_simp)
 
         def build_derivative_steps():
@@ -639,7 +638,7 @@ def build_math_context(f_str, g_str, version_tag="v20"):
                         steps.append({'label': f'مشتق الحد ({idx_s + 1}):', 'math_list': [rule_str]})
                     raw_sum = sp.Add(*term_derivs) if term_derivs else sp.Integer(0)
                     if sanitize_latex(raw_sum) != df_latex_str_safe:
-                        steps.append({'label': 'بجمع المشتقات الجزئية وتوحيد المقامات:', 'math_list': [fr"f'(x) = {sanitize_latex(raw_sum)}"]})
+                        steps.append({'label': 'بجمع المشتقات الجزئية وتبسيط العبارة:', 'math_list': [fr"f'(x) = {sanitize_latex(raw_sum)}"]})
                 elif f_expr.is_Mul:
                     x_factors = [f for f in f_expr.as_ordered_factors() if f.has(x_sym)]
                     c_factors = [f for f in f_expr.as_ordered_factors() if not f.has(x_sym)]
@@ -793,6 +792,12 @@ def build_math_context(f_str, g_str, version_tag="v20"):
                                 line_lat = sanitize_latex(line_expr)
                                 a_lat, b_lat = sanitize_latex(sp.simplify(a_sym)), sanitize_latex(sp.simplify(b_sym))
                                 rem_expr = sp.simplify(sp.together(f_expr - line_expr))
+                                try:
+                                    rem_fact = sp.factor(sp.expand(rem_expr))
+                                    if not rem_fact.has(sp.Piecewise):
+                                        rem_expr = rem_fact
+                                except Exception:
+                                    pass
                                 rem_lat = sanitize_latex(rem_expr)
                                 if not any(a['type'] == 'oblique' and abs(a['a'] - a_fl) < 1e-4 and abs(a['b'] - b_fl) < 1e-4 for a in unique_asymptotes):
                                     unique_asymptotes.append({'type': 'oblique', 'a': a_fl, 'b': b_fl, 'label': f"y={line_lat}"})
@@ -855,6 +860,55 @@ def build_math_context(f_str, g_str, version_tag="v20"):
             if abs(val_float - int(round(val_float))) < 1e-2: return str(int(round(val_float)))
             return str(round(val_float, 2)).rstrip('0').rstrip('.') if '.' in str(round(val_float, 2)) else str(round(val_float, 2))
 
+        # دالة تحليل عوامل الفرق f(x) - y بشكل عام لاستخراج أسطر العوامل (مثل x*e^x و e^x - 2) إن وجدت
+        def extract_sign_factors(rem_expr):
+            try:
+                fact_expr = sp.factor(sp.expand(rem_expr))
+                num_f, den_f = sp.fraction(sp.together(fact_expr))
+                raw_factors = []
+                if num_f.is_Mul:
+                    raw_factors.extend(list(num_f.args))
+                elif num_f != 1:
+                    raw_factors.append(num_f)
+                if den_f != 1:
+                    if den_f.is_Mul:
+                        raw_factors.extend(list(den_f.args))
+                    else:
+                        raw_factors.append(den_f)
+
+                const_coeff = sp.Integer(1)
+                pos_exp_factors = []
+                var_factors = []
+                for rf in raw_factors:
+                    if rf.is_number:
+                        const_coeff *= rf
+                    elif rf.func == sp.exp or (rf.is_Pow and rf.args[0] == sp.E):
+                        pos_exp_factors.append(rf)
+                    else:
+                        var_factors.append(rf)
+
+                if len(var_factors) >= 2 and len(var_factors) <= 3:
+                    final_factors = []
+                    for idx_vf, vf in enumerate(var_factors):
+                        f_item = vf
+                        if idx_vf == 0:
+                            if const_coeff != 1:
+                                f_item = const_coeff * f_item
+                            for pef in pos_exp_factors:
+                                f_item = f_item * pef
+                        f_roots = [safe_float(r) for r in safe_solve_real(vf, x_sym)]
+                        final_factors.append({
+                            'expr': f_item,
+                            'latex': sanitize_latex(f_item),
+                            'func': sp.lambdify(x_sym, f_item, 'numpy'),
+                            'roots': [r for r in f_roots if np.isfinite(r)]
+                        })
+                    return final_factors
+            except Exception:
+                pass
+            return []
+
+        # بناء جدول الوضع النسبي بتصميم الكتاب المدرسي (وضع -oo و +oo على الأطراف، وأسطر العوامل، والمثلث النظيف)
         rel_pos_tables_info = []
         for od in oblique_details_list:
             rem_expr = od['rem_expr']
@@ -873,9 +927,11 @@ def build_math_context(f_str, g_str, version_tag="v20"):
 
             rem_func = sp.lambdify(x_sym, rem_expr, 'numpy')
             rp_signs = []
+            rp_mids = []
             for idx_rp in range(len(rp_pts) - 1):
                 l_v, r_v = rp_pts[idx_rp]['val'], rp_pts[idx_rp+1]['val']
                 mid = 0.0 if (l_v == -np.inf and r_v == np.inf) else (r_v - 1.0 if l_v == -np.inf else (l_v + 1.0 if r_v == np.inf else (l_v + r_v)/2.0))
+                rp_mids.append(mid)
                 try:
                     val_m = float(rem_func(mid))
                     if np.isfinite(val_m):
@@ -885,71 +941,128 @@ def build_math_context(f_str, g_str, version_tag="v20"):
                 except Exception:
                     rp_signs.append(None)
 
+            factor_rows = extract_sign_factors(rem_expr)
+            n_f_rows = len(factor_rows)
+
             N_rp = len(rp_pts)
-            col_w_rp = 5.2; x_st_rp = 2.8; x_max_rp = x_st_rp + N_rp * col_w_rp
-            tri_half_w = 1.95
-            fig_rp, ax_rp = plt.subplots(figsize=(max(10.5, N_rp * 3.4), 3.8))
+            n_intervals_rp = max(1, N_rp - 1)
+            seg_w_rp = 3.6
+            x_st_rp = 2.5
+            x_max_rp = x_st_rp + n_intervals_rp * seg_w_rp
+            tri_half_w = min(0.78, seg_w_rp * 0.22)
+
+            # إحداثيات النقاط: وضع -oo في أقصى اليسار و +oo في أقصى اليمين والنقاط الداخلية على فواصل المجالات
+            def get_rp_xc(idx_pt):
+                return x_st_rp + idx_pt * seg_w_rp
+
+            def get_rp_label_x(idx_pt):
+                if idx_pt == 0: return x_st_rp + 0.50
+                if idx_pt == N_rp - 1: return x_max_rp - 0.50
+                return x_st_rp + idx_pt * seg_w_rp
+
+            y_pos_top = 2.2
+            row_h = 0.95
+            y_rem_top = y_pos_top + row_h
+            y_factors_top = y_rem_top + n_f_rows * row_h
+            y_table_top = y_factors_top + row_h
+
+            fig_rp, ax_rp = plt.subplots(figsize=(max(8.5, x_max_rp * 0.82), max(3.2, y_table_top * 0.65)))
             fig_rp.patch.set_facecolor('white')
             ax_rp.set_facecolor('white')
             ax_rp.axis('off')
-            ax_rp.plot([0, x_max_rp], [5.2, 5.2], 'k-', lw=2)
-            ax_rp.plot([0, x_max_rp], [4.2, 4.2], 'k-', lw=1.5)
-            ax_rp.plot([0, x_max_rp], [3.0, 3.0], 'k-', lw=1.5)
+
+            # رسم الإطار والخطوط الأفقية
+            ax_rp.plot([0, x_max_rp], [y_table_top, y_table_top], 'k-', lw=2)
+            ax_rp.plot([0, x_max_rp], [y_factors_top, y_factors_top], 'k-', lw=1.5)
+            for idx_fr in range(n_f_rows):
+                y_line_f = y_factors_top - (idx_fr + 1) * row_h
+                ax_rp.plot([0, x_max_rp], [y_line_f, y_line_f], 'k-', lw=1.3)
+            ax_rp.plot([0, x_max_rp], [y_pos_top, y_pos_top], 'k-', lw=1.5)
             ax_rp.plot([0, x_max_rp], [0, 0], 'k-', lw=2)
-            ax_rp.plot([0, 0], [0, 5.2], 'k-', lw=2)
-            ax_rp.plot([x_st_rp, x_st_rp], [0, 5.2], 'k-', lw=2)
-            ax_rp.plot([x_max_rp, x_max_rp], [0, 5.2], 'k-', lw=2)
 
-            ax_rp.text(x_st_rp/2, 4.7, '$x$', ha='center', va='center', fontsize=18, color='#1565C0', fontweight='bold')
-            ax_rp.text(x_st_rp/2, 3.6, '$f(x) - y$', ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
-            ax_rp.text(x_st_rp/2, 1.85, fix_arabic_mpl("الوضع"), ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
-            ax_rp.text(x_st_rp/2, 1.15, fix_arabic_mpl("النسبي"), ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
+            ax_rp.plot([0, 0], [0, y_table_top], 'k-', lw=2)
+            ax_rp.plot([x_st_rp, x_st_rp], [0, y_table_top], 'k-', lw=2)
+            ax_rp.plot([x_max_rp, x_max_rp], [0, y_table_top], 'k-', lw=2)
 
-            for idx_rp, p_rp in enumerate(rp_pts):
-                xc = x_st_rp + (col_w_rp / 2.0) + idx_rp * col_w_rp
+            # عناوين العمود الأيسر
+            ax_rp.text(x_st_rp/2, y_factors_top + row_h/2, '$x$', ha='center', va='center', fontsize=16, color='#1E293B', fontweight='bold')
+            for idx_fr, f_info in enumerate(factor_rows):
+                y_f_c = y_factors_top - (idx_fr + 0.5) * row_h
                 try:
-                    ax_rp.text(xc, 4.7, f"${p_rp['latex_x']}$", ha='center', va='center', fontsize=17)
+                    ax_rp.text(x_st_rp/2, y_f_c, f"${f_info['latex']}$", ha='center', va='center', fontsize=14, color='#1E293B', fontweight='bold')
                 except Exception:
-                    ax_rp.text(xc, 4.7, str(p_rp['latex_x']), ha='center', va='center', fontsize=15)
+                    ax_rp.text(x_st_rp/2, y_f_c, str(f_info['expr']), ha='center', va='center', fontsize=12, color='#1E293B')
+
+            ax_rp.text(x_st_rp/2, y_pos_top + row_h/2, '$f(x) - y$', ha='center', va='center', fontsize=14.5, color='#1E293B', fontweight='bold')
+            ax_rp.text(x_st_rp/2, y_pos_top * 0.62, fix_arabic_mpl("الوضع"), ha='center', va='center', fontsize=14, color='#1E293B', fontweight='bold')
+            ax_rp.text(x_st_rp/2, y_pos_top * 0.34, fix_arabic_mpl("النسبي"), ha='center', va='center', fontsize=14, color='#1E293B', fontweight='bold')
+
+            # رسم قيم x، خطوط الجذور، الدوائر، والمثلثات
+            for idx_rp, p_rp in enumerate(rp_pts):
+                xc_line = get_rp_xc(idx_rp)
+                xc_lbl = get_rp_label_x(idx_rp)
+                try:
+                    ax_rp.text(xc_lbl, y_factors_top + row_h/2, f"${p_rp['latex_x']}$", ha='center', va='center', fontsize=15, fontweight='bold')
+                except Exception:
+                    ax_rp.text(xc_lbl, y_factors_top + row_h/2, str(p_rp['latex_x']), ha='center', va='center', fontsize=13)
 
                 if p_rp['type'] == 'v_asym':
-                    ax_rp.plot([xc-0.06, xc-0.06], [0, 4.2], 'k-', lw=1.5)
-                    ax_rp.plot([xc+0.06, xc+0.06], [0, 4.2], 'k-', lw=1.5)
+                    ax_rp.plot([xc_line-0.05, xc_line-0.05], [0, y_factors_top], 'k-', lw=1.4)
+                    ax_rp.plot([xc_line+0.05, xc_line+0.05], [0, y_factors_top], 'k-', lw=1.4)
                 elif p_rp['type'] == 'root':
-                    ax_rp.plot([xc, xc], [3.0, 4.2], 'k-', lw=1.5)
-                    ax_rp.text(xc, 3.6, '$0$', ha='center', va='center', fontsize=17, fontweight='bold')
-                    ax_rp.plot([xc, xc - tri_half_w], [3.0, 0.0], 'k-', lw=1.5)
-                    ax_rp.plot([xc, xc + tri_half_w], [3.0, 0.0], 'k-', lw=1.5)
-                    y_inter_sym = sp.simplify(od['line_expr'].subs(x_sym, p_rp['sym']))
-                    y_inter_lat = sanitize_latex(y_inter_sym)
-                    ax_rp.text(xc + 0.08, 1.55, "$(C_f)$", ha='left', va='center', fontsize=13, color='#1E293B', fontweight='bold')
-                    ax_rp.text(xc - 0.08, 1.55, fix_arabic_mpl("يقطع"), ha='right', va='center', fontsize=13, color='#1E293B', fontweight='bold')
-                    ax_rp.text(xc + 0.30, 0.95, "$(\\Delta)$", ha='left', va='center', fontsize=13, color='#1E293B', fontweight='bold')
-                    ax_rp.text(xc + 0.16, 0.95, fix_arabic_mpl("في النقطة"), ha='right', va='center', fontsize=12, color='#B45309', fontweight='bold')
-                    try:
-                        ax_rp.text(xc, 0.36, f"$({p_rp['latex_x']} , {y_inter_lat})$", ha='center', va='center', fontsize=13, color='#B45309', fontweight='bold')
-                    except Exception:
-                        ax_rp.text(xc, 0.36, f"({fmt(p_rp['val'])} , {fmt(y_inter_sym)})", ha='center', va='center', fontsize=12, color='#B45309', fontweight='bold')
+                    ax_rp.plot([xc_line, xc_line], [y_pos_top, y_factors_top], 'k-', lw=1.3)
+                    # وضع 0 على كل سطر عامل ينعدم عند هذا الجذر
+                    for idx_fr, f_info in enumerate(factor_rows):
+                        if any(abs(p_rp['val'] - r_f) < 1e-3 for r_f in f_info['roots']):
+                            y_f_c = y_factors_top - (idx_fr + 0.5) * row_h
+                            ax_rp.plot(xc_line, y_f_c, marker='o', markersize=9, markerfacecolor='none', markeredgecolor='k', markeredgewidth=1.6)
+                    # وضع 0 على سطر f(x) - y
+                    ax_rp.plot(xc_line, y_pos_top + row_h/2, marker='o', markersize=9, markerfacecolor='none', markeredgecolor='k', markeredgewidth=1.6)
+                    # رسم المثلث في خانة الوضع النسبي مطابقاً للصورة المرجعية
+                    ax_rp.plot([xc_line, xc_line - tri_half_w], [y_pos_top, 0.0], 'k-', lw=1.4)
+                    ax_rp.plot([xc_line, xc_line + tri_half_w], [y_pos_top, 0.0], 'k-', lw=1.4)
+                    # كتابة (Cf) يقطع (Δ) عمودياً داخل المثلث بحجم متناسق
+                    ax_rp.text(xc_line, y_pos_top * 0.58, "$(C_f)$", ha='center', va='center', fontsize=11.5, color='#1E293B', fontweight='bold')
+                    ax_rp.text(xc_line, y_pos_top * 0.35, fix_arabic_mpl("يقطع"), ha='center', va='center', fontsize=11.5, color='#1E293B', fontweight='bold')
+                    ax_rp.text(xc_line, y_pos_top * 0.14, "$(\\Delta)$", ha='center', va='center', fontsize=11.5, color='#1E293B', fontweight='bold')
 
+                # رسم الإشارات والوضع النسبي داخل كل مجال
                 if idx_rp < N_rp - 1:
-                    xc_next = x_st_rp + (col_w_rp / 2.0) + (idx_rp + 1) * col_w_rp
-                    xic = (xc + xc_next) / 2.0
+                    xc_left = get_rp_xc(idx_rp)
+                    xc_right = get_rp_xc(idx_rp + 1)
+                    xic = (xc_left + xc_right) / 2.0
+                    mid_val = rp_mids[idx_rp]
                     sgn = rp_signs[idx_rp]
+
                     if sgn is None:
-                        ax_rp.add_patch(plt.Rectangle((xc, 0), col_w_rp, 4.2, facecolor='#EF4444', alpha=0.6))
+                        ax_rp.add_patch(plt.Rectangle((xc_left, 0), seg_w_rp, y_factors_top, facecolor='#EF4444', alpha=0.5))
                     else:
-                        ax_rp.text(xic, 3.6, f"${sgn}$", ha='center', va='center', fontsize=24, color='#2E7D32' if sgn=='+' else '#D32F2F')
-                        x_vis_l = xc + (tri_half_w * 0.62 if p_rp['type'] == 'root' else 0.0)
-                        x_vis_r = xc_next - (tri_half_w * 0.62 if rp_pts[idx_rp+1]['type'] == 'root' else 0.0)
+                        # إشارات أسطر العوامل
+                        for idx_fr, f_info in enumerate(factor_rows):
+                            y_f_c = y_factors_top - (idx_fr + 0.5) * row_h
+                            try:
+                                vf_m = float(f_info['func'](mid_val))
+                                f_sgn = "+" if vf_m > 0 else "-"
+                                ax_rp.text(xic, y_f_c, f"${f_sgn}$", ha='center', va='center', fontsize=18, color='#1E293B', fontweight='bold')
+                            except Exception:
+                                pass
+                        # إشارة f(x) - y
+                        ax_rp.text(xic, y_pos_top + row_h/2, f"${sgn}$", ha='center', va='center', fontsize=19, color='#2E7D32' if sgn=='+' else '#D32F2F', fontweight='bold')
+                        # حساب المنتصف البصري الصافي بين المثلثات لكتابة الوضع النسبي
+                        x_vis_l = xc_left + (tri_half_w * 0.55 if p_rp['type'] == 'root' else 0.0)
+                        x_vis_r = xc_right - (tri_half_w * 0.55 if rp_pts[idx_rp+1]['type'] == 'root' else 0.0)
                         xic_pos = (x_vis_l + x_vis_r) / 2.0
                         pos_ar = "فوق" if sgn == '+' else "تحت"
                         col_pos = '#15803D' if sgn == '+' else '#B91C1C'
-                        ax_rp.text(xic_pos + 0.10, 1.85, "$(C_f)$", ha='left', va='center', fontsize=14.5, color=col_pos, fontweight='bold')
-                        ax_rp.text(xic_pos - 0.10, 1.85, fix_arabic_mpl("يقع"), ha='right', va='center', fontsize=14.5, color=col_pos, fontweight='bold')
-                        ax_rp.text(xic_pos + 0.10, 1.05, fix_arabic_mpl(pos_ar), ha='left', va='center', fontsize=14.5, color=col_pos, fontweight='bold')
-                        ax_rp.text(xic_pos - 0.10, 1.05, "$(\\Delta)$", ha='right', va='center', fontsize=14.5, color=col_pos, fontweight='bold')
+                        # السطر الأول: (Cf) يقع
+                        ax_rp.text(xic_pos + 0.05, y_pos_top * 0.65, "$(C_f)$", ha='left', va='center', fontsize=12.5, color=col_pos, fontweight='bold')
+                        ax_rp.text(xic_pos - 0.05, y_pos_top * 0.65, fix_arabic_mpl("يقع"), ha='right', va='center', fontsize=12.5, color=col_pos, fontweight='bold')
+                        # السطر الثاني: فوق (Δ) / تحت (Δ)
+                        ax_rp.text(xic_pos + 0.05, y_pos_top * 0.32, fix_arabic_mpl(pos_ar), ha='left', va='center', fontsize=12.5, color=col_pos, fontweight='bold')
+                        ax_rp.text(xic_pos - 0.05, y_pos_top * 0.32, "$(\\Delta)$", ha='right', va='center', fontsize=12.5, color=col_pos, fontweight='bold')
 
-            ax_rp.set_xlim(0, x_max_rp); ax_rp.set_ylim(0, 5.2)
+            ax_rp.set_xlim(-0.05, x_max_rp + 0.05)
+            ax_rp.set_ylim(-0.05, y_table_top + 0.05)
             od['rel_pos_bytes'] = fig_to_bytes(fig_rp)
 
             fig_ob, ax_ob = plt.subplots(figsize=(9.5, 4.0))
@@ -1118,18 +1231,33 @@ def build_math_context(f_str, g_str, version_tag="v20"):
             else: m_latex = fr"m \in ]{L_latex} ; {H_latex}["
             final_table.append((m_latex, sol_text, L, H))
 
+        # رسم جدول التغيرات بسهم واحد متصل عند نقاط الانعطاف (حيث لا تغير المشتقة إشارتها)
         N = len(pts_var_exact)
         def generate_variation_table_bytes():
             if N < 2: return None
-            col_w = 2.8; x_start_data = 2.0; x_max = x_start_data + N * col_w
-            fig_v, ax_v = plt.subplots(figsize=(max(8, N*2.5), 3.5))
+            n_int_v = max(1, N - 1)
+            seg_w_v = 3.2
+            x_start_data = 2.0
+            x_max = x_start_data + n_int_v * seg_w_v
+
+            def get_v_xc(idx_pt):
+                return x_start_data + idx_pt * seg_w_v
+
+            def get_v_label_x(idx_pt):
+                if idx_pt == 0: return x_start_data + 0.50
+                if idx_pt == N - 1: return x_max - 0.50
+                return x_start_data + idx_pt * seg_w_v
+
+            fig_v, ax_v = plt.subplots(figsize=(max(8.0, x_max * 0.85), 3.5))
             fig_v.patch.set_facecolor('white'); ax_v.set_facecolor('white')
             ax_v.axis('off')
-            for y_line, lw_v in [(6, 2), (5, 1.5), (4, 1.5), (0, 2)]: ax_v.plot([0, x_max], [y_line, y_line], 'k-', lw=lw_v)
-            for x_line in [0, x_start_data, x_max]: ax_v.plot([x_line, x_line], [0, 6], 'k-', lw=2)
-            ax_v.text(x_start_data / 2, 5.5, '$x$', ha='center', va='center', fontsize=20, color='#1565C0', fontweight='bold')
-            ax_v.text(x_start_data / 2, 4.5, "$f'(x)$", ha='center', va='center', fontsize=20, color='#1565C0', fontweight='bold')
-            ax_v.text(x_start_data / 2, 2.0, '$f(x)$', ha='center', va='center', fontsize=20, color='#1565C0', fontweight='bold')
+            for y_line, lw_v in [(6, 2), (5, 1.5), (3.8, 1.5), (0, 2)]:
+                ax_v.plot([0, x_max], [y_line, y_line], 'k-', lw=lw_v)
+            for x_line in [0, x_start_data, x_max]:
+                ax_v.plot([x_line, x_line], [0, 6], 'k-', lw=2)
+            ax_v.text(x_start_data / 2, 5.5, '$x$', ha='center', va='center', fontsize=18, color='#1E293B', fontweight='bold')
+            ax_v.text(x_start_data / 2, 4.4, "$f'(x)$", ha='center', va='center', fontsize=18, color='#1E293B', fontweight='bold')
+            ax_v.text(x_start_data / 2, 1.9, '$f(x)$', ha='center', va='center', fontsize=18, color='#1E293B', fontweight='bold')
             
             signs = []
             for i in range(N - 1):
@@ -1139,61 +1267,105 @@ def build_math_context(f_str, g_str, version_tag="v20"):
                     signs.append(None if not np.isfinite(float(f_func(mid))) else ("+" if f_func(mid + 1e-5) > f_func(mid) else "-"))
                 except: signs.append(None)
                     
-            nodes = []
+            right_node = {}
+            left_node = {}
             for i in range(N):
                 p = pts_var_exact[i]
-                x_c = x_start_data + (col_w / 2.0) + i * col_w 
-                ax_v.text(x_c, 5.5, f"${p['latex_x']}$", ha='center', va='center', fontsize=18)
+                xc_line = get_v_xc(i)
+                xc_lbl = get_v_label_x(i)
+                ax_v.text(xc_lbl, 5.5, f"${p['latex_x']}$", ha='center', va='center', fontsize=16, fontweight='bold')
                 if p['type'] == 'v_asym':
-                    ax_v.plot([x_c-0.05, x_c-0.05], [0, 5], 'k-', lw=1.5); ax_v.plot([x_c+0.05, x_c+0.05], [0, 5], 'k-', lw=1.5)
+                    ax_v.plot([xc_line-0.05, xc_line-0.05], [0, 5], 'k-', lw=1.5)
+                    ax_v.plot([xc_line+0.05, xc_line+0.05], [0, 5], 'k-', lw=1.5)
                 elif p['type'] == 'extrema':
-                    ax_v.plot([x_c, x_c], [4, 5], 'k-', lw=1.2); ax_v.text(x_c, 4.5, '0', ha='center', va='center', fontsize=16)
+                    ax_v.plot([xc_line, xc_line], [3.8, 5], 'k-', lw=1.3)
+                    ax_v.plot(xc_line, 4.4, marker='o', markersize=9, markerfacecolor='none', markeredgecolor='k', markeredgewidth=1.6)
                 if i < N - 1:
-                    x_ic = x_c + (col_w / 2.0)
-                    if not valid_intervals[i]: ax_v.add_patch(plt.Rectangle((x_c, 0), col_w, 5, facecolor='#EF4444', alpha=0.7))
-                    else: ax_v.text(x_ic, 4.5, f"${signs[i]}$", ha='center', va='center', fontsize=26, color='#D32F2F' if signs[i]=='-' else '#2E7D32')
+                    x_ic = (get_v_xc(i) + get_v_xc(i+1)) / 2.0
+                    if not valid_intervals[i]:
+                        ax_v.add_patch(plt.Rectangle((xc_line, 0), seg_w_v, 5, facecolor='#EF4444', alpha=0.6))
+                    else:
+                        ax_v.text(x_ic, 4.4, f"${signs[i]}$", ha='center', va='center', fontsize=22, color='#D32F2F' if signs[i]=='-' else '#2E7D32', fontweight='bold')
                 if p['type'] == 'inf':
                     try:
                         lim = sp.limit(f_expr, x_sym, p['sym'])
-                        nodes.append((x_c + (0.5 if p['val'] == -np.inf else -0.5), safe_float(lim), format_lim_val(lim)))
+                        if i == 0: right_node[i] = (xc_lbl, format_lim_val(lim))
+                        if i == N - 1: left_node[i] = (xc_lbl, format_lim_val(lim))
                     except: pass
                 elif p['type'] == 'v_asym':
                     if i > 0 and valid_intervals[i-1]:
                         try:
                             lim_l = sp.limit(f_expr, x_sym, p['sym'], dir='-')
-                            nodes.append((x_c-0.4, safe_float(lim_l), format_lim_val(lim_l)))
+                            left_node[i] = (xc_line - 0.42, format_lim_val(lim_l))
                         except: pass
                     if i < N-1 and valid_intervals[i]:
                         try:
                             lim_r = sp.limit(f_expr, x_sym, p['sym'], dir='+')
-                            nodes.append((x_c+0.4, safe_float(lim_r), format_lim_val(lim_r)))
+                            right_node[i] = (xc_line + 0.42, format_lim_val(lim_r))
                         except: pass
                 elif p['type'] in ['extrema', 'corner']:
                     try:
                         sym_y = sp.simplify(f_expr.subs(x_sym, p['sym']))
                         val_y = safe_float(sym_y)
-                        nodes.append((x_c, val_y, exactify_value(val_y, sym_y)))
+                        lbl_y = exactify_value(val_y, sym_y)
+                        left_node[i] = (xc_line, lbl_y)
+                        right_node[i] = (xc_line, lbl_y)
                     except: pass
 
-            drawn_nodes = set()
-            for i in range(N - 1):
-                if valid_intervals[i]:
-                    x_c_left = x_start_data + (col_w / 2.0) + i * col_w
-                    x_c_right = x_start_data + (col_w / 2.0) + (i+1) * col_w
-                    l_node = next((n for n in nodes if x_c_left <= n[0] <= x_c_left + 0.7), None)
-                    r_node = next((n for n in nodes if x_c_right - 0.7 <= n[0] <= x_c_right), None)
-                    if l_node and r_node:
-                        y_l = 0.8 if signs[i] == "+" else 3.2
-                        y_r = 3.2 if signs[i] == "+" else 0.8
-                        if l_node[0] not in drawn_nodes:
-                            ax_v.text(l_node[0], y_l, f"${l_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
-                            drawn_nodes.add(l_node[0])
-                        if r_node[0] not in drawn_nodes:
-                            ax_v.text(r_node[0], y_r, f"${r_node[2]}$", ha='center', va='center', fontsize=18, color='#D32F2F', fontweight='bold')
-                            drawn_nodes.add(r_node[0])
-                        slope_up = (y_r > y_l)
-                        ax_v.annotate('', xy=(r_node[0]-0.35, y_r + (-0.35 if slope_up else 0.35)), xytext=(l_node[0]+0.35, y_l + (0.35 if slope_up else -0.35)), arrowprops=dict(arrowstyle="->", color="#1565C0", lw=2.5))
-            ax_v.set_xlim(0, x_max); ax_v.set_ylim(0, 6)
+            # دمج المجالات المتتالية ذات الإشارة نفسها في سهم واحد متصل مع وضع قيمة نقطة الانعطاف في منتصف السهم
+            idx_v = 0
+            while idx_v < N - 1:
+                if not valid_intervals[idx_v]:
+                    idx_v += 1
+                    continue
+                j_end = idx_v
+                while (j_end + 1 < N - 1 and valid_intervals[j_end + 1] and
+                       pts_var_exact[j_end + 1]['type'] == 'extrema' and
+                       signs[j_end + 1] == signs[idx_v]):
+                    j_end += 1
+
+                sgn_chain = signs[idx_v]
+                s_info = right_node.get(idx_v)
+                e_info = left_node.get(j_end + 1)
+                if s_info and e_info:
+                    xs_n, ls_n = s_info
+                    xe_n, le_n = e_info
+                    ys_n = 0.65 if sgn_chain == '+' else 3.15
+                    ye_n = 3.15 if sgn_chain == '+' else 0.65
+
+                    ax_v.text(xs_n, ys_n, f"${ls_n}$", ha='center', va='center', fontsize=16, color='#D32F2F', fontweight='bold', zorder=5)
+                    ax_v.text(xe_n, ye_n, f"${le_n}$", ha='center', va='center', fontsize=16, color='#D32F2F', fontweight='bold', zorder=5)
+
+                    dx_tot = xe_n - xs_n
+                    dy_tot = ye_n - ys_n
+                    dist_tot = np.hypot(dx_tot, dy_tot)
+                    if dist_tot > 0.8:
+                        ux, uy = dx_tot / dist_tot, dy_tot / dist_tot
+                        pad_s, pad_e = 0.48, 0.48
+                        ax_v.annotate(
+                            '',
+                            xy=(xe_n - ux * pad_e, ye_n - uy * pad_e),
+                            xytext=(xs_n + ux * pad_s, ys_n + uy * pad_s),
+                            arrowprops=dict(arrowstyle="->", color="#1E293B", lw=2.2),
+                            zorder=3
+                        )
+
+                    # وضع قيم نقاط الانعطاف الوسطى على مسار السهم الواحد بخلفية بيضاء نظيفة
+                    for k_inf in range(idx_v + 1, j_end + 1):
+                        m_info = right_node.get(k_inf)
+                        if m_info and dx_tot != 0:
+                            xm_n, lm_n = m_info
+                            ym_n = ys_n + ((xm_n - xs_n) / dx_tot) * dy_tot
+                            ax_v.text(
+                                xm_n, ym_n, f"${lm_n}$",
+                                ha='center', va='center', fontsize=16, color='#D32F2F', fontweight='bold',
+                                bbox=dict(facecolor='white', edgecolor='none', pad=4.0),
+                                zorder=5
+                            )
+
+                idx_v = j_end + 1
+
+            ax_v.set_xlim(-0.05, x_max + 0.05); ax_v.set_ylim(-0.05, 6.05)
             return fig_to_bytes(fig_v)
 
         var_table_bytes = generate_variation_table_bytes()
@@ -1308,10 +1480,10 @@ def build_math_context(f_str, g_str, version_tag="v20"):
     except Exception as e: cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v20":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v21":
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v20")
-        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v20"
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v21")
+        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v21"
 
 cache = st.session_state.math_cache
 
