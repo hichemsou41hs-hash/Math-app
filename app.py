@@ -159,7 +159,6 @@ def clean_ocr_math(raw_str):
         else:
             s = lines[0]
 
-    # إزالة البادئات مثل f(x) = أو y =
     s = re.sub(r'^[fFgGhHyY]\s*(\(\s*[xX]\s*\))?\s*[:=]\s*', '', s)
     if '=' in s:
         parts = [p.strip() for p in s.split('=') if p.strip()]
@@ -204,7 +203,6 @@ def fix_implicit_mult(expr_str):
     if "()" in expr_str:
         expr_str = expr_str.replace("()", "(1)")
         
-    # موازنة الأقواس تلقائياً إذا نسي المستخدم إغلاق قوس أو فتحه
     open_p = expr_str.count('(')
     close_p = expr_str.count(')')
     if open_p > close_p:
@@ -212,7 +210,6 @@ def fix_implicit_mult(expr_str):
     elif close_p > open_p:
         expr_str = ('(' * (close_p - open_p)) + expr_str
 
-    # معالجة الرموز الزائدة في نهاية السطر مثل + أو - أو * أو / أو ^
     expr_str = re.sub(r'[\+\-\*\/\^]+$', '', expr_str.strip())
 
     expr_str = expr_str.replace('^', '**')
@@ -405,7 +402,7 @@ def get_sol_color_html(sol_text):
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
-if 'f_val' not in st.session_state: st.session_state.f_val = "(x+1)/(e^(2x))"
+if 'f_val' not in st.session_state: st.session_state.f_val = "(x+1)/(e^(2x)+1)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -462,16 +459,15 @@ with col_img:
                         st.error(f"❌ تعذر استخراج الدالة حالياً: {err_msg}")
 
 with col_text:
-    st.text_input("أدخل عبارة الدالة f(x):", key="f_val", placeholder="مثال: (x+1)/(e^(2x))")
+    st.text_input("أدخل عبارة الدالة f(x):", key="f_val", placeholder="مثال: (x+1)/(e^(2x)+1)")
     st.text_input("أدخل معادلة المستقيم بدلالة m (تُترك m للمناقشة الأفقية):", key="g_val", placeholder="m")
     st.button("✅ تأكيد ورسم الدالة", use_container_width=True)
 
 current_f = st.session_state.f_val.strip()
-# إذا كانت خانة المستقيم فارغة، يتم تعويضها تلقائياً بـ m حتى لا ينهار البرنامج أبداً
 current_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() else "m"
 
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v9"):
+def build_math_context(f_str, g_str, version_tag="v10"):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -1238,26 +1234,41 @@ def build_math_context(f_str, g_str, version_tag="v9"):
                     if i > 0 and valid_intervals[i-1]: add_limit(p['sym'], '-', v_latex, r"\overset{<}{\to}")
                     if i < len(valid_intervals) and valid_intervals[i]: add_limit(p['sym'], '+', v_latex, r"\overset{>}{\to}")
 
+        # توليد صورة النهايات بتباعد عمودي مريح وتنسيق مرتب يمنع أي تداخل
         def generate_limits_image():
-            n_lines = len(limits_mpl_items)
-            fig_l, ax_l = plt.subplots(figsize=(9, max(2.0, n_lines * 0.75)))
+            rows = []
+            for item in limits_mpl_items:
+                if item['type'] == 'domain':
+                    rows.append(('domain', item['latex'], 0.9))
+                elif item['type'] == 'main':
+                    rows.append(('main', (item['lhs'], item['rhs']), 1.15))
+                elif item['type'] == 'step':
+                    rows.append(('step_label', 'التعليل (لأن):', 0.55))
+                    rows.append(('step_math', item['math'], 0.85))
+            
+            total_h = sum(r[2] for r in rows) + 0.4
+            fig_l, ax_l = plt.subplots(figsize=(9.5, max(2.2, total_h * 0.78)))
             ax_l.axis('off')
             ax_l.set_xlim(0, 10)
-            ax_l.set_ylim(0, n_lines)
+            ax_l.set_ylim(0, total_h)
             
-            for i, item in enumerate(limits_mpl_items):
-                y_pos = n_lines - i - 0.5
+            curr_y = total_h - 0.2
+            for r_type, content, h_step in rows:
+                y_pos = curr_y - (h_step / 2.0)
                 try:
-                    if item['type'] == 'domain':
-                        ax_l.text(5.0, y_pos, f"${item['latex']}$", fontsize=20, ha='center', va='center', color='#1E3A8A', fontweight='bold')
-                    elif item['type'] == 'main':
-                        ax_l.text(7.2, y_pos, f"${item['lhs']}$", fontsize=18, ha='right', va='center', color='#1E3A8A')
-                        ax_l.text(7.4, y_pos, f"${item['rhs']}$", fontsize=20, ha='left', va='center', color='#D32F2F', fontweight='bold')
-                    elif item['type'] == 'step':
-                        ax_l.text(9.6, y_pos, fix_arabic_mpl("لأن:"), fontsize=14, ha='right', va='center', color='#D97706', fontweight='bold')
-                        ax_l.text(8.8, y_pos, f"$({item['math']})$", fontsize=14, ha='right', va='center', color='#6D28D9')
+                    if r_type == 'domain':
+                        ax_l.text(5.0, y_pos, f"${content}$", fontsize=19, ha='center', va='center', color='#1E3A8A', fontweight='bold')
+                    elif r_type == 'main':
+                        lhs_s, rhs_s = content
+                        ax_l.text(7.2, y_pos, f"${lhs_s}$", fontsize=17, ha='right', va='center', color='#1E3A8A')
+                        ax_l.text(7.4, y_pos, f"${rhs_s}$", fontsize=19, ha='left', va='center', color='#D32F2F', fontweight='bold')
+                    elif r_type == 'step_label':
+                        ax_l.text(9.7, y_pos, fix_arabic_mpl(content), fontsize=13, ha='right', va='center', color='#D97706', fontweight='bold')
+                    elif r_type == 'step_math':
+                        ax_l.text(5.0, y_pos, f"$({content})$", fontsize=14, ha='center', va='center', color='#6D28D9')
                 except:
                     pass
+                curr_y -= h_step
             
             try:
                 fig_l.tight_layout(pad=0.2)
@@ -1269,29 +1280,38 @@ def build_math_context(f_str, g_str, version_tag="v9"):
 
         limits_image_path = generate_limits_image()
 
+        # توليد صورة المشتقة بوضع العنوان العربي في سطر والمعادلة تحته في المنتصف لمنع التداخل نهائياً
         def generate_deriv_image():
-            n_lines = len(deriv_steps_detailed) + 1
-            fig_d, ax_d = plt.subplots(figsize=(9, max(1.6, n_lines * 0.8)))
+            rows = []
+            for stp in deriv_steps_detailed:
+                rows.append(('label', stp['label'], 0.6))
+                rows.append(('math', stp['math'], 1.15))
+            rows.append(('final_label', 'العبارة النهائية للمشتقة:', 0.65))
+            rows.append(('final_math', fr"f'(x) = {df_latex_str_safe}", 1.25))
+            
+            total_h = sum(r[2] for r in rows) + 0.4
+            fig_d, ax_d = plt.subplots(figsize=(9.5, max(2.2, total_h * 0.78)))
             ax_d.axis('off')
             ax_d.set_xlim(0, 10)
-            ax_d.set_ylim(0, n_lines)
+            ax_d.set_ylim(0, total_h)
             
-            for i, stp in enumerate(deriv_steps_detailed):
-                y_pos = n_lines - i - 0.5
+            curr_y = total_h - 0.2
+            for r_type, content, h_step in rows:
+                y_pos = curr_y - (h_step / 2.0)
                 try:
-                    ax_d.text(9.7, y_pos, fix_arabic_mpl(stp['label']), fontsize=13, ha='right', va='center', color='#D97706', fontweight='bold')
-                    ax_d.text(7.1, y_pos, f"${stp['math']}$", fontsize=14, ha='right', va='center', color='#0F766E')
+                    if r_type == 'label':
+                        ax_d.text(9.7, y_pos, fix_arabic_mpl(content), fontsize=14, ha='right', va='center', color='#D97706', fontweight='bold')
+                    elif r_type == 'math':
+                        ax_d.text(5.0, y_pos, f"${content}$", fontsize=15, ha='center', va='center', color='#0F766E')
+                    elif r_type == 'final_label':
+                        ax_d.text(9.7, y_pos, fix_arabic_mpl(content), fontsize=15, ha='right', va='center', color='#2E7D32', fontweight='bold')
+                    elif r_type == 'final_math':
+                        ax_d.text(5.0, y_pos, f"${content}$", fontsize=18, ha='center', va='center', color='#15803D', fontweight='bold')
                 except:
-                    pass
-            
-            y_final = 0.5
-            math_str = fr"f'(x) = {df_latex_str_safe}"
-            try:
-                ax_d.text(9.7, y_final, fix_arabic_mpl("العبارة النهائية:"), fontsize=14, ha='right', va='center', color='#2E7D32', fontweight='bold')
-                ax_d.text(7.1, y_final, f"${math_str}$", fontsize=18, ha='right', va='center', color='#15803D', fontweight='bold')
-            except:
-                safe_str = str(df_simp).replace('**', '^')
-                ax_d.text(5.0, y_final, f"f'(x) = {safe_str}", fontsize=16, ha='center', va='center', color='#15803D', family='serif')
+                    if r_type == 'final_math':
+                        safe_str = str(df_simp).replace('**', '^')
+                        ax_d.text(5.0, y_pos, f"f'(x) = {safe_str}", fontsize=15, ha='center', va='center', color='#15803D', family='serif')
+                curr_y -= h_step
                 
             try:
                 fig_d.tight_layout(pad=0.2)
@@ -1409,12 +1429,12 @@ def build_math_context(f_str, g_str, version_tag="v9"):
         cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v9":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v10":
     with st.spinner("جاري التحليل الرياضي الدقيق (تتم هذه العملية مرة واحدة لتسريع حركة المناقشة الآلية)..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v9")
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v10")
         st.session_state.last_f = current_f
         st.session_state.last_g = current_g
-        st.session_state.cache_ver = "v9"
+        st.session_state.cache_ver = "v10"
 
 cache = st.session_state.math_cache
 
@@ -1433,7 +1453,7 @@ else:
     st.write("") 
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("تشغيل المناقشة آلياً ▶️️", disabled=st.session_state.auto_play):
+        if st.button("تشغيل المناقشة آلياً ▶", disabled=st.session_state.auto_play):
             st.session_state.auto_play = True
             st.session_state.m_anim = m_min_val
             st.rerun()
@@ -1607,7 +1627,7 @@ else:
             pdf.ln(1)
             if cache['limits_image_path']:
                 pdf.image(cache['limits_image_path'], x=15, w=180)
-                pdf.ln(4)
+                pdf.ln(3)
 
             pdf.set_font("Amiri", size=15)
             pdf.set_text_color(194, 24, 91) 
@@ -1615,12 +1635,16 @@ else:
             pdf.ln(1)
             if cache['deriv_image_path']:
                 pdf.image(cache['deriv_image_path'], x=15, w=180)
-                pdf.ln(4)
+                pdf.ln(3)
+
+            # إذا لم يبقَ مكان كافٍ في الصفحة الأولى لجدول التغيرات، ننتقل لصفحة جديدة قبل كتابة العنوان
+            if pdf.get_y() > 215:
+                pdf.add_page()
 
             pdf.set_font("Amiri", size=15)
             pdf.set_text_color(194, 24, 91) 
             pdf.cell(0, 8, fix_arabic_pdf("3. جدول التغيرات:"), ln=True, align='R')
-            pdf.ln(3)
+            pdf.ln(2)
             if cache['var_table_image_path']:
                 pdf.image(cache['var_table_image_path'], x=10, w=190)
 
