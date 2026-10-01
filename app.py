@@ -101,7 +101,6 @@ st.markdown("""
 st.markdown("<div class='title-dis'>المناقشة البيانية ودراسة تغيرات دالة</div>", unsafe_allow_html=True)
 st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>", unsafe_allow_html=True)
 
-# دالة تحويل رقمي محصنة ضد اللانهاية والأعداد المركبة ودالة لامبرت
 def safe_float(expr):
     if expr is None:
         return np.nan
@@ -144,7 +143,6 @@ def fmt(val):
     except:
         return str(val)
 
-# مطهر ومترجم رياضي متطور يعالج كل مخرجات الـ OCR وصيغ exp و LaTeX
 def clean_ocr_math(raw_str):
     if not raw_str:
         return ""
@@ -155,20 +153,28 @@ def clean_ocr_math(raw_str):
     lines = [line.strip() for line in s.splitlines() if line.strip()]
     if lines:
         for line in lines:
-            if any(k in line.lower() for k in ['f(x)', 'x', 'ln', 'exp', 'e^', 'sqrt', '/']):
+            if any(k in line.lower() for k in ['f(x)', 'x', 'ln', 'exp', 'e^', 'sqrt', '/', 'm']):
                 s = line
                 break
         else:
             s = lines[0]
 
+    # إزالة البادئات مثل f(x) = أو y =
     s = re.sub(r'^[fFgGhHyY]\s*(\(\s*[xX]\s*\))?\s*[:=]\s*', '', s)
-    s = s.replace('X', 'x')
+    if '=' in s:
+        parts = [p.strip() for p in s.split('=') if p.strip()]
+        if len(parts) >= 2:
+            s = parts[-1]
+
+    s = s.replace('X', 'x').replace('M', 'm').replace('،', '.').replace(',', '.')
 
     replacements = {
         '−': '-', '–': '-', '—': '-', 'ｰ': '-',
         '×': '*', '÷': '/', '∕': '/', '⁄': '/', '⋅': '*', '·': '*',
         '（': '(', '）': ')', '［': '(', '］': ')', '[': '(', ']': ')',
-        '²': '^2', '³': '^3', '⁴': '^4', '√': 'sqrt',
+        '⁰': '^0', '¹': '^1', '²': '^2', '³': '^3', '⁴': '^4',
+        '⁵': '^5', '⁶': '^6', '⁷': '^7', '⁸': '^8', '⁹': '^9',
+        '√': 'sqrt',
         '\\left': '', '\\right': '', '\\cdot': '*', '\\times': '*',
         '\\ln': 'ln', '\\log': 'ln', '\\exp': 'exp', '\\sqrt': 'sqrt',
         '\\pi': 'pi', '\\mathrm{e}': 'e', '\\text{e}': 'e',
@@ -193,15 +199,30 @@ def clean_ocr_math(raw_str):
 
 def fix_implicit_mult(expr_str):
     expr_str = clean_ocr_math(expr_str)
+    if not expr_str:
+        return ""
     if "()" in expr_str:
         expr_str = expr_str.replace("()", "(1)")
+        
+    # موازنة الأقواس تلقائياً إذا نسي المستخدم إغلاق قوس أو فتحه
+    open_p = expr_str.count('(')
+    close_p = expr_str.count(')')
+    if open_p > close_p:
+        expr_str = expr_str + (')' * (open_p - close_p))
+    elif close_p > open_p:
+        expr_str = ('(' * (close_p - open_p)) + expr_str
+
+    # معالجة الرموز الزائدة في نهاية السطر مثل + أو - أو * أو / أو ^
+    expr_str = re.sub(r'[\+\-\*\/\^]+$', '', expr_str.strip())
+
     expr_str = expr_str.replace('^', '**')
-    expr_str = re.sub(r'([xy0-9\)])\s*(exp|ln|log|cos|sin|tan|sqrt|abs|pi)\b', r'\1*\2', expr_str)
-    expr_str = re.sub(r'([xy0-9\)])\s*(e)\b(?![a-zA-Z])', r'\1*\2', expr_str)
-    expr_str = re.sub(r'\b(e|pi)\s*([xy0-9\(])', r'\1*\2', expr_str)
+    expr_str = re.sub(r'([xym0-9\)])\s*(exp|ln|log|cos|sin|tan|sqrt|abs|pi)\b', r'\1*\2', expr_str)
+    expr_str = re.sub(r'([xym0-9\)])\s*(e)\b(?![a-zA-Z])', r'\1*\2', expr_str)
+    expr_str = re.sub(r'\b(e|pi)\s*([xym0-9\(])', r'\1*\2', expr_str)
     expr_str = re.sub(r'(\))\s*(\()', r'\1*\2', expr_str)
-    expr_str = re.sub(r'([0-9])\s*([xX\(])', r'\1*\2', expr_str)
-    expr_str = re.sub(r'([xX\)])\s*([0-9])', r'\1*\2', expr_str)
+    expr_str = re.sub(r'([0-9])\s*([xym\(])', r'\1*\2', expr_str)
+    expr_str = re.sub(r'([xym\)])\s*([0-9])', r'\1*\2', expr_str)
+    expr_str = re.sub(r'\b([xm])\s*([xm])\b', r'\1*\2', expr_str)
     return expr_str
 
 def validate_extracted_math(candidate_str):
@@ -384,7 +405,7 @@ def get_sol_color_html(sol_text):
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
-if 'f_val' not in st.session_state: st.session_state.f_val = "x - 1 + x / exp(x - 2)"
+if 'f_val' not in st.session_state: st.session_state.f_val = "(x+1)/(e^(2x))"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -394,11 +415,13 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
     
     def k_click(char):
         target = "f_val" if st.session_state.kbd_target == "f" else "g_val"
-        if char == 'DEL': st.session_state[target] = st.session_state[target][:-1]
-        elif char == 'CLR': st.session_state[target] = ""
-        else: st.session_state[target] += char
+        if char == 'DEL':
+            st.session_state[target] = st.session_state[target][:-1]
+        elif char == 'CLR':
+            st.session_state[target] = "" if target == "f_val" else "m"
+        else:
+            st.session_state[target] += char
 
-    # استبدال x² بالحالة العامة xⁿ التي تكتب رمز الأس ^
     keys = [
         [("x", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
         [("m", "m"), ("π", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
@@ -430,6 +453,8 @@ with col_img:
                     extracted_text, err_msg = extract_math_from_image(img_file, api_key)
                     if extracted_text:
                         st.session_state.f_val = extracted_text
+                        if not st.session_state.g_val.strip():
+                            st.session_state.g_val = "m"
                         st.success(f"✅ تم الاستخراج بنجاح: {extracted_text}")
                         time.sleep(0.5)
                         st.rerun()
@@ -437,16 +462,24 @@ with col_img:
                         st.error(f"❌ تعذر استخراج الدالة حالياً: {err_msg}")
 
 with col_text:
-    st.text_input("أدخل عبارة الدالة f(x):", key="f_val")
-    st.text_input("أدخل معادلة المستقيم بدلالة m:", key="g_val")
+    st.text_input("أدخل عبارة الدالة f(x):", key="f_val", placeholder="مثال: (x+1)/(e^(2x))")
+    st.text_input("أدخل معادلة المستقيم بدلالة m (تُترك m للمناقشة الأفقية):", key="g_val", placeholder="m")
+    st.button("✅ تأكيد ورسم الدالة", use_container_width=True)
 
-current_f = st.session_state.f_val
-current_g = st.session_state.g_val
+current_f = st.session_state.f_val.strip()
+# إذا كانت خانة المستقيم فارغة، يتم تعويضها تلقائياً بـ m حتى لا ينهار البرنامج أبداً
+current_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() else "m"
 
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v8"):
+def build_math_context(f_str, g_str, version_tag="v9"):
     cache = {'valid': False, 'error': ''}
     try:
+        if not f_str or not f_str.strip():
+            cache['error'] = 'EMPTY'
+            return cache
+        if not g_str or not g_str.strip():
+            g_str = "m"
+
         x_sym, m_sym = sp.symbols('x m', real=True)
         local_dict = {
             'x': x_sym, 'm': m_sym, 'e': sp.E, 'E': sp.E, 'pi': sp.pi,
@@ -455,7 +488,7 @@ def build_math_context(f_str, g_str, version_tag="v8"):
         }
         transformations = (standard_transformations + (implicit_multiplication_application,))
         f_processed = fix_implicit_mult(f_str)
-        g_processed = fix_implicit_mult(g_str)
+        g_processed = fix_implicit_mult(g_str) or "m"
         f_expr = parse_expr(f_processed, local_dict=local_dict, transformations=transformations)
         g_expr = parse_expr(g_processed, local_dict=local_dict, transformations=transformations)
         
@@ -1376,17 +1409,20 @@ def build_math_context(f_str, g_str, version_tag="v8"):
         cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v8":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v9":
     with st.spinner("جاري التحليل الرياضي الدقيق (تتم هذه العملية مرة واحدة لتسريع حركة المناقشة الآلية)..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v8")
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v9")
         st.session_state.last_f = current_f
         st.session_state.last_g = current_g
-        st.session_state.cache_ver = "v8"
+        st.session_state.cache_ver = "v9"
 
 cache = st.session_state.math_cache
 
 if not cache.get('valid'):
-    st.error(f"⚠️ صيغة غير صالحة أو الخانة فارغة. حاول كتابة الدالة بصيغة رياضية صحيحة.")
+    if cache.get('error') == 'EMPTY' or not current_f:
+        st.info("✏️ الخانة فارغة حالياً؛ اكتب عبارة الدالة f(x) في الأعلى ثم اضغط على زر «تأكيد ورسم الدالة».")
+    else:
+        st.error("⚠️ صيغة الدالة غير مكتملة. تأكد من كتابة العبارة الرياضية بشكل صحيح ثم اضغط على زر «تأكيد ورسم الدالة».")
 else:
     st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {sanitize_latex(cache['f_expr'])} \\ y = {sanitize_latex(cache['g_expr'])} \end{{cases}}")
 
@@ -1397,7 +1433,7 @@ else:
     st.write("") 
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("تشغيل المناقشة آلياً ▶️", disabled=st.session_state.auto_play):
+        if st.button("تشغيل المناقشة آلياً ▶️️", disabled=st.session_state.auto_play):
             st.session_state.auto_play = True
             st.session_state.m_anim = m_min_val
             st.rerun()
