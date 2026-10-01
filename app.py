@@ -77,7 +77,6 @@ st.markdown("""
     div[data-testid="stAlert"] { direction: rtl !important; text-align: right !important; border-radius: 8px !important; }
     div[data-testid="stAlert"] p { font-size: 16px !important; font-weight: bold !important; line-height: 1.8 !important; }
     
-    /* عزل محرك الرياضيات KaTeX لمنع انعكاس (Cf) والمعادلات داخل النصوص العربية */
     .katex, .katex-display, .katex-html {
         direction: ltr !important;
         unicode-bidi: isolate !important;
@@ -395,7 +394,7 @@ current_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() els
 # ==================== نهاية الجزء الأول (1/2) ====================
 # ==================== بداية الجزء الثاني (2/2) ====================
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v14"):
+def build_math_context(f_str, g_str, version_tag="v15"):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -644,10 +643,13 @@ def build_math_context(f_str, g_str, version_tag="v14"):
             except: pass
             return steps_math, step_note
 
+        # تعديل 1: في قسم النهايات، نتخطى التفسير البياني تماماً عندما يؤول x إلى مالانهاية ونجد مالانهاية
+        # ونترك استنتاج المقارب المائل لقسمه الخاص رقم 4 فقط
         def build_geometric_interpretation(val_sym, lim_sym, target_latex):
             try:
                 lim_fl = safe_float(lim_sym)
                 if val_sym in [sp.oo, -sp.oo]:
+                    # إذا كانت النهاية عدداً منتهياً -> مستقيم مقارب أفقي (يُذكر في قسم النهايات)
                     if np.isfinite(lim_fl):
                         b_lat = sanitize_latex(sp.simplify(lim_sym))
                         if not any(a['type'] == 'h' and abs(a['val'] - lim_fl) < 1e-4 for a in unique_asymptotes):
@@ -655,43 +657,33 @@ def build_math_context(f_str, g_str, version_tag="v14"):
                         st_txt = fr"📐 **التفسير البياني:** المنحنى $(C_f)$ يقبل مستقيماً مقارباً أفقياً بجوار ${target_latex}$ معادلته: $y = {b_lat}$"
                         mpl_txt = "التفسير البياني: المنحنى يقبل مستقيماً مقارباً أفقياً معادلته:"
                         return st_txt, mpl_txt, f"y = {b_lat}"
+                    # إذا كانت النهاية ما لا نهاية -> نحفظ بيانات المقارب المائل للقسم 4 ونتخطى التفسير البياني هنا!
                     elif lim_sym in [sp.oo, -sp.oo] or str(lim_sym) in ['oo', '-oo']:
                         a_sym = sp.limit(sp.together(f_expr / x_sym), x_sym, val_sym)
                         a_fl = safe_float(a_sym)
-                        if np.isfinite(a_fl):
-                            if abs(a_fl) < 1e-7:
-                                st_txt = fr"📐 **التفسير البياني:** المنحنى $(C_f)$ يقبل فرعاً مكافئاً باتجاه محور الفواصل بجوار ${target_latex}$"
-                                return st_txt, "التفسير البياني: المنحنى يقبل فرعاً مكافئاً باتجاه محور الفواصل", ""
-                            else:
-                                diff_expr = sp.together(f_expr - a_sym * x_sym)
-                                b_sym = sp.limit(diff_expr, x_sym, val_sym)
-                                b_fl = safe_float(b_sym)
-                                if np.isfinite(b_fl):
-                                    line_expr = sp.simplify(a_sym * x_sym + b_sym)
-                                    line_lat = sanitize_latex(line_expr)
-                                    a_lat, b_lat = sanitize_latex(sp.simplify(a_sym)), sanitize_latex(sp.simplify(b_sym))
-                                    rem_expr = sp.simplify(sp.together(f_expr - line_expr))
-                                    rem_lat = sanitize_latex(rem_expr)
-                                    if not any(a['type'] == 'oblique' and abs(a['a'] - a_fl) < 1e-4 and abs(a['b'] - b_fl) < 1e-4 for a in unique_asymptotes):
-                                        unique_asymptotes.append({'type': 'oblique', 'a': a_fl, 'b': b_fl, 'label': f"y={line_lat}"})
-                                    if not any(abs(od['a_fl'] - a_fl) < 1e-4 and abs(od['b_fl'] - b_fl) < 1e-4 for od in oblique_details_list):
-                                        oblique_details_list.append({
-                                            'target_latex': target_latex, 'a_sym': a_sym, 'b_sym': b_sym,
-                                            'a_fl': a_fl, 'b_fl': b_fl, 'a_lat': a_lat, 'b_lat': b_lat,
-                                            'line_expr': line_expr, 'line_lat': line_lat,
-                                            'rem_expr': rem_expr, 'rem_lat': rem_lat
-                                        })
-                                    st_txt = fr"📐 **التفسير البياني:** المنحنى $(C_f)$ يقبل مستقيماً مقارباً مائلاً $(\Delta)$ بجوار ${target_latex}$ معادلته: $y = {line_lat}$ (تفاصيل استنتاجه في القسم 4)"
-                                    mpl_txt = "التفسير البياني: المنحنى يقبل مستقيماً مقارباً مائلاً معادلته:"
-                                    return st_txt, mpl_txt, f"y = {line_lat}"
-                                else:
-                                    line_lat = sanitize_latex(sp.simplify(a_sym * x_sym))
-                                    st_txt = fr"📐 **التفسير البياني:** المنحنى $(C_f)$ يقبل فرعاً مكافئاً بجوار ${target_latex}$ باتجاه المستقيم: $y = {line_lat}$"
-                                    return st_txt, "التفسير البياني: المنحنى يقبل فرعاً مكافئاً باتجاه المستقيم:", f"y = {line_lat}"
-                        elif a_sym in [sp.oo, -sp.oo] or str(a_sym) in ['oo', '-oo']:
-                            st_txt = fr"📐 **التفسير البياني:** المنحنى $(C_f)$ يقبل فرعاً مكافئاً باتجاه محور التراتيب بجوار ${target_latex}$"
-                            return st_txt, "التفسير البياني: المنحنى يقبل فرعاً مكافئاً باتجاه محور التراتيب", ""
+                        if np.isfinite(a_fl) and abs(a_fl) >= 1e-7:
+                            diff_expr = sp.together(f_expr - a_sym * x_sym)
+                            b_sym = sp.limit(diff_expr, x_sym, val_sym)
+                            b_fl = safe_float(b_sym)
+                            if np.isfinite(b_fl):
+                                line_expr = sp.simplify(a_sym * x_sym + b_sym)
+                                line_lat = sanitize_latex(line_expr)
+                                a_lat, b_lat = sanitize_latex(sp.simplify(a_sym)), sanitize_latex(sp.simplify(b_sym))
+                                rem_expr = sp.simplify(sp.together(f_expr - line_expr))
+                                rem_lat = sanitize_latex(rem_expr)
+                                if not any(a['type'] == 'oblique' and abs(a['a'] - a_fl) < 1e-4 and abs(a['b'] - b_fl) < 1e-4 for a in unique_asymptotes):
+                                    unique_asymptotes.append({'type': 'oblique', 'a': a_fl, 'b': b_fl, 'label': f"y={line_lat}"})
+                                if not any(abs(od['a_fl'] - a_fl) < 1e-4 and abs(od['b_fl'] - b_fl) < 1e-4 for od in oblique_details_list):
+                                    oblique_details_list.append({
+                                        'target_latex': target_latex, 'a_sym': a_sym, 'b_sym': b_sym,
+                                        'a_fl': a_fl, 'b_fl': b_fl, 'a_lat': a_lat, 'b_lat': b_lat,
+                                        'line_expr': line_expr, 'line_lat': line_lat,
+                                        'rem_expr': rem_expr, 'rem_lat': rem_lat
+                                    })
+                        # نرجع None لكي لا يظهر أي تفسير بياني تحت نهاية المالانهاية في السؤال الأول
+                        return None, None, None
                 else:
+                    # النهاية عند عدد حقيقي x0 وتعطي ما لا نهاية -> مستقيم مقارب عمودي
                     if lim_sym in [sp.oo, -sp.oo, sp.zoo] or str(lim_sym) in ['oo', '-oo', 'zoo'] or not np.isfinite(lim_fl):
                         st_txt = fr"📐 **التفسير البياني:** المنحنى $(C_f)$ يقبل مستقيماً مقارباً عمودياً (موازياً لمحور التراتيب) معادلته: $x = {target_latex}$"
                         mpl_txt = "التفسير البياني: المنحنى يقبل مستقيماً مقارباً عمودياً معادلته:"
@@ -742,7 +734,7 @@ def build_math_context(f_str, g_str, version_tag="v14"):
             if abs(val_float - int(round(val_float))) < 1e-2: return str(int(round(val_float)))
             return str(round(val_float, 2)).rstrip('0').rstrip('.') if '.' in str(round(val_float, 2)) else str(round(val_float, 2))
 
-        # بناء صورة خطوات استنتاج المقارب المائل + جدول الوضع النسبي بين (Cf) و (Delta)
+        # تعديل 2: رسم جدول الوضع النسبي بالخلية المثلثية عند نقطة التقاطع مطابقاً للنموذج المرفق
         rel_pos_tables_info = []
         for od in oblique_details_list:
             rem_expr = od['rem_expr']
@@ -768,51 +760,69 @@ def build_math_context(f_str, g_str, version_tag="v14"):
                     rp_signs.append("+" if val_m > 0 else "-") if np.isfinite(val_m) else rp_signs.append(None)
                 except: rp_signs.append(None)
 
-            # توليد صورة جدول الوضع النسبي
             N_rp = len(rp_pts)
-            col_w_rp = 3.0; x_st_rp = 2.6; x_max_rp = x_st_rp + N_rp * col_w_rp
-            fig_rp, ax_rp = plt.subplots(figsize=(max(8.5, N_rp * 2.6), 3.0))
+            col_w_rp = 3.8; x_st_rp = 2.6; x_max_rp = x_st_rp + N_rp * col_w_rp
+            tri_half_w = 1.25
+            fig_rp, ax_rp = plt.subplots(figsize=(max(9.0, N_rp * 2.9), 3.3))
             ax_rp.axis('off')
-            ax_rp.plot([0, x_max_rp], [4.5, 4.5], 'k-', lw=2)
-            ax_rp.plot([0, x_max_rp], [3.5, 3.5], 'k-', lw=1.5)
-            ax_rp.plot([0, x_max_rp], [2.3, 2.3], 'k-', lw=1.5)
+            # الخطوط الأفقية والعمودية للجدول
+            ax_rp.plot([0, x_max_rp], [4.6, 4.6], 'k-', lw=2)
+            ax_rp.plot([0, x_max_rp], [3.6, 3.6], 'k-', lw=1.5)
+            ax_rp.plot([0, x_max_rp], [2.4, 2.4], 'k-', lw=1.5)
             ax_rp.plot([0, x_max_rp], [0, 0], 'k-', lw=2)
-            ax_rp.plot([0, 0], [0, 4.5], 'k-', lw=2)
-            ax_rp.plot([x_st_rp, x_st_rp], [0, 4.5], 'k-', lw=2)
-            ax_rp.plot([x_max_rp, x_max_rp], [0, 4.5], 'k-', lw=2)
+            ax_rp.plot([0, 0], [0, 4.6], 'k-', lw=2)
+            ax_rp.plot([x_st_rp, x_st_rp], [0, 4.6], 'k-', lw=2)
+            ax_rp.plot([x_max_rp, x_max_rp], [0, 4.6], 'k-', lw=2)
 
-            ax_rp.text(x_st_rp/2, 4.0, '$x$', ha='center', va='center', fontsize=18, color='#1565C0', fontweight='bold')
-            ax_rp.text(x_st_rp/2, 2.9, '$f(x) - y$', ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
-            ax_rp.text(x_st_rp/2, 1.15, fix_arabic_mpl("الوضع النسبي"), ha='center', va='center', fontsize=15, color='#1565C0', fontweight='bold')
+            ax_rp.text(x_st_rp/2, 4.1, '$x$', ha='center', va='center', fontsize=18, color='#1565C0', fontweight='bold')
+            ax_rp.text(x_st_rp/2, 3.0, '$f(x) - y$', ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
+            ax_rp.text(x_st_rp/2, 1.45, fix_arabic_mpl("الوضع"), ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
+            ax_rp.text(x_st_rp/2, 0.85, fix_arabic_mpl("النسبي"), ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
 
             for idx_rp, p_rp in enumerate(rp_pts):
                 xc = x_st_rp + (col_w_rp / 2.0) + idx_rp * col_w_rp
-                ax_rp.text(xc, 4.0, f"${p_rp['latex_x']}$", ha='center', va='center', fontsize=16)
+                ax_rp.text(xc, 4.1, f"${p_rp['latex_x']}$", ha='center', va='center', fontsize=17)
                 if p_rp['type'] == 'v_asym':
-                    ax_rp.plot([xc-0.05, xc-0.05], [0, 3.5], 'k-', lw=1.5)
-                    ax_rp.plot([xc+0.05, xc+0.05], [0, 3.5], 'k-', lw=1.5)
+                    ax_rp.plot([xc-0.05, xc-0.05], [0, 3.6], 'k-', lw=1.5)
+                    ax_rp.plot([xc+0.05, xc+0.05], [0, 3.6], 'k-', lw=1.5)
                 elif p_rp['type'] == 'root':
-                    ax_rp.plot([xc, xc], [0, 3.5], 'k--', lw=1.2)
-                    ax_rp.text(xc, 2.9, '0', ha='center', va='center', fontsize=16, fontweight='bold')
+                    # خط عمودي متصل في خانة الإشارة مع الصفر في منتصفه
+                    ax_rp.plot([xc, xc], [2.4, 3.6], 'k-', lw=1.5)
+                    ax_rp.text(xc, 3.0, '$0$', ha='center', va='center', fontsize=17, fontweight='bold')
+                    # رسم المثلث في خانة الوضع النسبي كما في الصورة المرجعية
+                    ax_rp.plot([xc, xc - tri_half_w], [2.4, 0.0], 'k-', lw=1.5)
+                    ax_rp.plot([xc, xc + tri_half_w], [2.4, 0.0], 'k-', lw=1.5)
                     y_inter_sym = sp.simplify(od['line_expr'].subs(x_sym, p_rp['sym']))
                     y_inter_lat = sanitize_latex(y_inter_sym)
-                    ax_rp.text(xc, 1.5, fix_arabic_mpl("يتقاطعان في"), ha='center', va='center', fontsize=12, color='#B45309', fontweight='bold', bbox=dict(facecolor='white', edgecolor='none', pad=1))
-                    ax_rp.text(xc, 0.7, f"$({p_rp['latex_x']} ; {y_inter_lat})$", ha='center', va='center', fontsize=13, color='#B45309', fontweight='bold', bbox=dict(facecolor='white', edgecolor='none', pad=1))
+                    # كتابة "(Cf) يقطع (Δ) في النقطة (x0;y0)" داخل المثلث بترتيب سليم من اليمين لليسار
+                    ax_rp.text(xc + 0.28, 1.18, "$(C_f)$", ha='center', va='center', fontsize=13.5, color='#1E293B', fontweight='bold')
+                    ax_rp.text(xc - 0.28, 1.18, fix_arabic_mpl("يقطع"), ha='center', va='center', fontsize=13.5, color='#1E293B', fontweight='bold')
+                    ax_rp.text(xc + 0.42, 0.70, "$(\\Delta)$", ha='center', va='center', fontsize=13.5, color='#1E293B', fontweight='bold')
+                    ax_rp.text(xc - 0.22, 0.70, fix_arabic_mpl("في النقطة"), ha='center', va='center', fontsize=12.5, color='#B45309', fontweight='bold')
+                    ax_rp.text(xc, 0.24, f"$({p_rp['latex_x']} ; {y_inter_lat})$", ha='center', va='center', fontsize=13, color='#B45309', fontweight='bold')
 
                 if idx_rp < N_rp - 1:
-                    xic = xc + (col_w_rp / 2.0)
+                    xc_next = x_st_rp + (col_w_rp / 2.0) + (idx_rp + 1) * col_w_rp
+                    xic = (xc + xc_next) / 2.0
                     sgn = rp_signs[idx_rp]
                     if sgn is None:
-                        ax_rp.add_patch(plt.Rectangle((xc, 0), col_w_rp, 3.5, facecolor='#EF4444', alpha=0.6))
+                        ax_rp.add_patch(plt.Rectangle((xc, 0), col_w_rp, 3.6, facecolor='#EF4444', alpha=0.6))
                     else:
-                        ax_rp.text(xic, 2.9, f"${sgn}$", ha='center', va='center', fontsize=24, color='#2E7D32' if sgn=='+' else '#D32F2F')
+                        ax_rp.text(xic, 3.0, f"${sgn}$", ha='center', va='center', fontsize=24, color='#2E7D32' if sgn=='+' else '#D32F2F')
+                        # إزاحة نص الوضع النسبي قليلاً بعيداً عن ضلع المثلث ليتوسط المساحة المتاحة
+                        x_vis_l = xc + (tri_half_w * 0.55 if p_rp['type'] == 'root' else 0.0)
+                        x_vis_r = xc_next - (tri_half_w * 0.55 if rp_pts[idx_rp+1]['type'] == 'root' else 0.0)
+                        xic_pos = (x_vis_l + x_vis_r) / 2.0
                         pos_ar = "فوق" if sgn == '+' else "تحت"
                         col_pos = '#15803D' if sgn == '+' else '#B91C1C'
-                        ax_rp.text(xic, 1.55, "$(C_f)$", ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
-                        ax_rp.text(xic, 1.10, fix_arabic_mpl(pos_ar), ha='center', va='center', fontsize=14, color=col_pos, fontweight='bold')
-                        ax_rp.text(xic, 0.60, "$(\\Delta)$", ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
+                        # السطر الأول: "(Cf) يقع"
+                        ax_rp.text(xic_pos + 0.35, 1.45, "$(C_f)$", ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
+                        ax_rp.text(xic_pos - 0.35, 1.45, fix_arabic_mpl("يقع"), ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
+                        # السطر الثاني: "فوق (Δ)" أو "تحت (Δ)"
+                        ax_rp.text(xic_pos + 0.35, 0.75, fix_arabic_mpl(pos_ar), ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
+                        ax_rp.text(xic_pos - 0.35, 0.75, "$(\\Delta)$", ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
 
-            ax_rp.set_xlim(0, x_max_rp); ax_rp.set_ylim(0, 4.5)
+            ax_rp.set_xlim(0, x_max_rp); ax_rp.set_ylim(0, 4.6)
             try: fig_rp.tight_layout(pad=0.2)
             except: pass
             tmp_rp = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
@@ -820,7 +830,6 @@ def build_math_context(f_str, g_str, version_tag="v14"):
             plt.close(fig_rp)
             od['rel_pos_img'] = tmp_rp.name
 
-            # توليد صورة شرح طريقة استنتاج المقارب المائل للـ PDF
             fig_ob, ax_ob = plt.subplots(figsize=(9.5, 3.2))
             ax_ob.axis('off'); ax_ob.set_xlim(0, 10); ax_ob.set_ylim(0, 4)
             ax_ob.text(9.7, 3.5, fix_arabic_mpl("طريقة استنتاج معادلة المستقيم المقارب المائل (Δ):"), fontsize=14, ha='right', va='center', color='#D97706', fontweight='bold')
@@ -1177,10 +1186,10 @@ def build_math_context(f_str, g_str, version_tag="v14"):
     except Exception as e: cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v14":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v15":
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v14")
-        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v14"
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v15")
+        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v15"
 
 cache = st.session_state.math_cache
 
