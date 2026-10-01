@@ -121,7 +121,6 @@ st.markdown("""
 st.markdown("<div class='title-dis'>المناقشة البيانية ودراسة تغيرات دالة</div>", unsafe_allow_html=True)
 st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>", unsafe_allow_html=True)
 
-# دالة مساعدة لتحويل أي شكل في Matplotlib إلى بايتات صورة صالحة ومضمونة 100% في الذاكرة
 def fig_to_bytes(fig):
     try:
         buf = io.BytesIO()
@@ -427,7 +426,7 @@ current_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() els
 # ==================== نهاية الجزء الأول (1/2) ====================
 # ==================== بداية الجزء الثاني (2/2) ====================
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v18"):
+def build_math_context(f_str, g_str, version_tag="v19"):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -761,7 +760,7 @@ def build_math_context(f_str, g_str, version_tag="v18"):
             if abs(val_float - int(round(val_float))) < 1e-2: return str(int(round(val_float)))
             return str(round(val_float, 2)).rstrip('0').rstrip('.') if '.' in str(round(val_float, 2)) else str(round(val_float, 2))
 
-        # توليد جدول الوضع النسبي في الذاكرة مباشرة (BytesIO) مع معالجة جذور البسط فقط كـنقاط تقاطع
+        # رسم جدول الوضع النسبي بمحاذاة عكسية متباعدة (ha='left' و ha='right') تمنع التصادم نهائياً
         rel_pos_tables_info = []
         for od in oblique_details_list:
             rem_expr = od['rem_expr']
@@ -793,70 +792,75 @@ def build_math_context(f_str, g_str, version_tag="v18"):
                     rp_signs.append(None)
 
             N_rp = len(rp_pts)
-            col_w_rp = 4.4; x_st_rp = 2.6; x_max_rp = x_st_rp + N_rp * col_w_rp
-            tri_half_w = 1.65
-            fig_rp, ax_rp = plt.subplots(figsize=(max(9.5, N_rp * 3.1), 3.5))
+            col_w_rp = 5.2; x_st_rp = 2.8; x_max_rp = x_st_rp + N_rp * col_w_rp
+            tri_half_w = 1.95
+            fig_rp, ax_rp = plt.subplots(figsize=(max(10.5, N_rp * 3.4), 3.8))
             fig_rp.patch.set_facecolor('white')
             ax_rp.set_facecolor('white')
             ax_rp.axis('off')
-            ax_rp.plot([0, x_max_rp], [4.8, 4.8], 'k-', lw=2)
-            ax_rp.plot([0, x_max_rp], [3.8, 3.8], 'k-', lw=1.5)
-            ax_rp.plot([0, x_max_rp], [2.6, 2.6], 'k-', lw=1.5)
+            ax_rp.plot([0, x_max_rp], [5.2, 5.2], 'k-', lw=2)
+            ax_rp.plot([0, x_max_rp], [4.2, 4.2], 'k-', lw=1.5)
+            ax_rp.plot([0, x_max_rp], [3.0, 3.0], 'k-', lw=1.5)
             ax_rp.plot([0, x_max_rp], [0, 0], 'k-', lw=2)
-            ax_rp.plot([0, 0], [0, 4.8], 'k-', lw=2)
-            ax_rp.plot([x_st_rp, x_st_rp], [0, 4.8], 'k-', lw=2)
-            ax_rp.plot([x_max_rp, x_max_rp], [0, 4.8], 'k-', lw=2)
+            ax_rp.plot([0, 0], [0, 5.2], 'k-', lw=2)
+            ax_rp.plot([x_st_rp, x_st_rp], [0, 5.2], 'k-', lw=2)
+            ax_rp.plot([x_max_rp, x_max_rp], [0, 5.2], 'k-', lw=2)
 
-            ax_rp.text(x_st_rp/2, 4.3, '$x$', ha='center', va='center', fontsize=18, color='#1565C0', fontweight='bold')
-            ax_rp.text(x_st_rp/2, 3.2, '$f(x) - y$', ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
-            ax_rp.text(x_st_rp/2, 1.6, fix_arabic_mpl("الوضع"), ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
-            ax_rp.text(x_st_rp/2, 0.95, fix_arabic_mpl("النسبي"), ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
+            ax_rp.text(x_st_rp/2, 4.7, '$x$', ha='center', va='center', fontsize=18, color='#1565C0', fontweight='bold')
+            ax_rp.text(x_st_rp/2, 3.6, '$f(x) - y$', ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
+            ax_rp.text(x_st_rp/2, 1.85, fix_arabic_mpl("الوضع"), ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
+            ax_rp.text(x_st_rp/2, 1.15, fix_arabic_mpl("النسبي"), ha='center', va='center', fontsize=16, color='#1565C0', fontweight='bold')
 
             for idx_rp, p_rp in enumerate(rp_pts):
                 xc = x_st_rp + (col_w_rp / 2.0) + idx_rp * col_w_rp
                 try:
-                    ax_rp.text(xc, 4.3, f"${p_rp['latex_x']}$", ha='center', va='center', fontsize=17)
+                    ax_rp.text(xc, 4.7, f"${p_rp['latex_x']}$", ha='center', va='center', fontsize=17)
                 except Exception:
-                    ax_rp.text(xc, 4.3, str(p_rp['latex_x']), ha='center', va='center', fontsize=15)
+                    ax_rp.text(xc, 4.7, str(p_rp['latex_x']), ha='center', va='center', fontsize=15)
 
                 if p_rp['type'] == 'v_asym':
-                    ax_rp.plot([xc-0.06, xc-0.06], [0, 3.8], 'k-', lw=1.5)
-                    ax_rp.plot([xc+0.06, xc+0.06], [0, 3.8], 'k-', lw=1.5)
+                    ax_rp.plot([xc-0.06, xc-0.06], [0, 4.2], 'k-', lw=1.5)
+                    ax_rp.plot([xc+0.06, xc+0.06], [0, 4.2], 'k-', lw=1.5)
                 elif p_rp['type'] == 'root':
-                    ax_rp.plot([xc, xc], [2.6, 3.8], 'k-', lw=1.5)
-                    ax_rp.text(xc, 3.2, '$0$', ha='center', va='center', fontsize=17, fontweight='bold')
-                    ax_rp.plot([xc, xc - tri_half_w], [2.6, 0.0], 'k-', lw=1.5)
-                    ax_rp.plot([xc, xc + tri_half_w], [2.6, 0.0], 'k-', lw=1.5)
+                    ax_rp.plot([xc, xc], [3.0, 4.2], 'k-', lw=1.5)
+                    ax_rp.text(xc, 3.6, '$0$', ha='center', va='center', fontsize=17, fontweight='bold')
+                    ax_rp.plot([xc, xc - tri_half_w], [3.0, 0.0], 'k-', lw=1.5)
+                    ax_rp.plot([xc, xc + tri_half_w], [3.0, 0.0], 'k-', lw=1.5)
                     y_inter_sym = sp.simplify(od['line_expr'].subs(x_sym, p_rp['sym']))
                     y_inter_lat = sanitize_latex(y_inter_sym)
-                    ax_rp.text(xc + 0.25, 1.25, "$(C_f)$", ha='center', va='center', fontsize=13, color='#1E293B', fontweight='bold')
-                    ax_rp.text(xc - 0.25, 1.25, fix_arabic_mpl("يقطع"), ha='center', va='center', fontsize=13, color='#1E293B', fontweight='bold')
-                    ax_rp.text(xc + 0.42, 0.72, "$(\\Delta)$", ha='center', va='center', fontsize=13, color='#1E293B', fontweight='bold')
-                    ax_rp.text(xc - 0.22, 0.72, fix_arabic_mpl("في النقطة"), ha='center', va='center', fontsize=12, color='#B45309', fontweight='bold')
+                    # السطر 1 داخل المثلث: (Cf) على اليمين (ha='left') و "يقطع" على اليسار (ha='right') بفاصل صريح
+                    ax_rp.text(xc + 0.08, 1.55, "$(C_f)$", ha='left', va='center', fontsize=13, color='#1E293B', fontweight='bold')
+                    ax_rp.text(xc - 0.08, 1.55, fix_arabic_mpl("يقطع"), ha='right', va='center', fontsize=13, color='#1E293B', fontweight='bold')
+                    # السطر 2 داخل المثلث: (Δ) على اليمين (ha='left') و "في النقطة" على اليسار (ha='right') بفاصل صريح
+                    ax_rp.text(xc + 0.30, 0.95, "$(\\Delta)$", ha='left', va='center', fontsize=13, color='#1E293B', fontweight='bold')
+                    ax_rp.text(xc + 0.16, 0.95, fix_arabic_mpl("في النقطة"), ha='right', va='center', fontsize=12, color='#B45309', fontweight='bold')
+                    # السطر 3 داخل المثلث: إحداثيات نقطة التقاطع في القاعدة العريضة
                     try:
-                        ax_rp.text(xc, 0.25, f"$({p_rp['latex_x']} , {y_inter_lat})$", ha='center', va='center', fontsize=13, color='#B45309', fontweight='bold')
+                        ax_rp.text(xc, 0.36, f"$({p_rp['latex_x']} , {y_inter_lat})$", ha='center', va='center', fontsize=13, color='#B45309', fontweight='bold')
                     except Exception:
-                        ax_rp.text(xc, 0.25, f"({fmt(p_rp['val'])} , {fmt(y_inter_sym)})", ha='center', va='center', fontsize=12, color='#B45309', fontweight='bold')
+                        ax_rp.text(xc, 0.36, f"({fmt(p_rp['val'])} , {fmt(y_inter_sym)})", ha='center', va='center', fontsize=12, color='#B45309', fontweight='bold')
 
                 if idx_rp < N_rp - 1:
                     xc_next = x_st_rp + (col_w_rp / 2.0) + (idx_rp + 1) * col_w_rp
                     xic = (xc + xc_next) / 2.0
                     sgn = rp_signs[idx_rp]
                     if sgn is None:
-                        ax_rp.add_patch(plt.Rectangle((xc, 0), col_w_rp, 3.8, facecolor='#EF4444', alpha=0.6))
+                        ax_rp.add_patch(plt.Rectangle((xc, 0), col_w_rp, 4.2, facecolor='#EF4444', alpha=0.6))
                     else:
-                        ax_rp.text(xic, 3.2, f"${sgn}$", ha='center', va='center', fontsize=24, color='#2E7D32' if sgn=='+' else '#D32F2F')
-                        x_vis_l = xc + (tri_half_w * 0.60 if p_rp['type'] == 'root' else 0.0)
-                        x_vis_r = xc_next - (tri_half_w * 0.60 if rp_pts[idx_rp+1]['type'] == 'root' else 0.0)
+                        ax_rp.text(xic, 3.6, f"${sgn}$", ha='center', va='center', fontsize=24, color='#2E7D32' if sgn=='+' else '#D32F2F')
+                        x_vis_l = xc + (tri_half_w * 0.62 if p_rp['type'] == 'root' else 0.0)
+                        x_vis_r = xc_next - (tri_half_w * 0.62 if rp_pts[idx_rp+1]['type'] == 'root' else 0.0)
                         xic_pos = (x_vis_l + x_vis_r) / 2.0
                         pos_ar = "فوق" if sgn == '+' else "تحت"
                         col_pos = '#15803D' if sgn == '+' else '#B91C1C'
-                        ax_rp.text(xic_pos + 0.35, 1.55, "$(C_f)$", ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
-                        ax_rp.text(xic_pos - 0.35, 1.55, fix_arabic_mpl("يقع"), ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
-                        ax_rp.text(xic_pos + 0.35, 0.85, fix_arabic_mpl(pos_ar), ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
-                        ax_rp.text(xic_pos - 0.35, 0.85, "$(\\Delta)$", ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
+                        # السطر 1 في الخانة: (Cf) على اليمين (ha='left') و "يقع" على اليسار (ha='right') بفاصل صريح
+                        ax_rp.text(xic_pos + 0.10, 1.85, "$(C_f)$", ha='left', va='center', fontsize=14.5, color=col_pos, fontweight='bold')
+                        ax_rp.text(xic_pos - 0.10, 1.85, fix_arabic_mpl("يقع"), ha='right', va='center', fontsize=14.5, color=col_pos, fontweight='bold')
+                        # السطر 2 في الخانة: "فوق/تحت" على اليمين (ha='left') و (Δ) على اليسار (ha='right') بفاصل صريح
+                        ax_rp.text(xic_pos + 0.10, 1.05, fix_arabic_mpl(pos_ar), ha='left', va='center', fontsize=14.5, color=col_pos, fontweight='bold')
+                        ax_rp.text(xic_pos - 0.10, 1.05, "$(\\Delta)$", ha='right', va='center', fontsize=14.5, color=col_pos, fontweight='bold')
 
-            ax_rp.set_xlim(0, x_max_rp); ax_rp.set_ylim(0, 4.8)
+            ax_rp.set_xlim(0, x_max_rp); ax_rp.set_ylim(0, 5.2)
             od['rel_pos_bytes'] = fig_to_bytes(fig_rp)
 
             fig_ob, ax_ob = plt.subplots(figsize=(9.5, 4.0))
@@ -1215,10 +1219,10 @@ def build_math_context(f_str, g_str, version_tag="v18"):
     except Exception as e: cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v18":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v19":
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v18")
-        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v18"
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v19")
+        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v19"
 
 cache = st.session_state.math_cache
 
