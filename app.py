@@ -77,7 +77,6 @@ st.markdown("""
     div[data-testid="stAlert"] { direction: rtl !important; text-align: right !important; border-radius: 8px !important; }
     div[data-testid="stAlert"] p { font-size: 16px !important; font-weight: bold !important; line-height: 1.8 !important; }
     
-    /* ضبط اتجاه المعادلات مع السماح بالتمرير الأفقي باللمس للمعادلات الطويلة على الهاتف */
     .katex {
         direction: ltr !important;
         unicode-bidi: isolate !important;
@@ -351,7 +350,7 @@ if 'f_val' not in st.session_state: st.session_state.f_val = "(x+1)/(e^(2x)+1)"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
-with st.expander("⌨️️ لوحة المفاتيح المساعدة", expanded=False):
+with st.expander("⌨ لوحة المفاتيح المساعدة", expanded=False):
     t_sel = st.radio("🎯 تحديد خانة الكتابة:", ["f(x) الدالة", "m المستقيم بدلالة"], horizontal=True, key="kbd_radio")
     st.session_state.kbd_target = "f" if t_sel == "f(x) الدالة" else "g"
     def k_click(char):
@@ -404,7 +403,7 @@ current_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() els
 # ==================== نهاية الجزء الأول (1/2) ====================
 # ==================== بداية الجزء الثاني (2/2) ====================
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v16"):
+def build_math_context(f_str, g_str, version_tag="v17"):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -493,7 +492,6 @@ def build_math_context(f_str, g_str, version_tag="v16"):
         except: pass
         df_latex_str_safe = sanitize_latex(df_simp)
 
-        # فصل u'(x) و v'(x) في معادلتين مستقلتين لمنع اختفاء جزء من المعادلة على شاشة الهاتف
         def build_derivative_steps():
             steps = []
             try:
@@ -504,7 +502,7 @@ def build_math_context(f_str, g_str, version_tag="v16"):
                     u_l, v_l = sanitize_latex(num), sanitize_latex(den)
                     du_l, dv_l = sanitize_latex(du), sanitize_latex(dv)
                     steps.append({'label': 'قانون مشتق حاصل قسمة:', 'math_list': [r"f'(x) = \frac{u'(x) \cdot v(x) - v'(x) \cdot u(x)}{(v(x))^2}"]})
-                    steps.append({'label': 'حساب مشتق البسط والمقام:', 'math_list': [fr"u(x) = {u_l} \implies u'(x) = {du_l}", fr"v(x) = {v_l} \implies v'(x) = {dv_l}"]})
+                    steps.append({'label': 'حساب مشتق البسط والمقام:', 'math_list': [fr"u(x) = {u_l} \Rightarrow u'(x) = {du_l}", fr"v(x) = {v_l} \Rightarrow v'(x) = {dv_l}"]})
                     steps.append({'label': 'بالتعويض في القانون:', 'math_list': [fr"f'(x) = \frac{{({du_l})({v_l}) - ({dv_l})({u_l})}}{{({v_l})^2}}"]})
                 elif f_expr.is_Add:
                     term_derivs, sub_rules = [], []
@@ -532,7 +530,7 @@ def build_math_context(f_str, g_str, version_tag="v16"):
                         du_p = sp.simplify(sp.diff(u_p, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
                         dv_p = sp.simplify(sp.diff(v_p, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a)))
                         steps.append({'label': 'قانون مشتق جداء:', 'math_list': [r"f'(x) = u'(x) \cdot v(x) + v'(x) \cdot u(x)"]})
-                        steps.append({'label': 'حساب المشتقات الجزئية:', 'math_list': [fr"u(x) = {sanitize_latex(u_p)} \implies u'(x) = {sanitize_latex(du_p)}", fr"v(x) = {sanitize_latex(v_p)} \implies v'(x) = {sanitize_latex(dv_p)}"]})
+                        steps.append({'label': 'حساب المشتقات الجزئية:', 'math_list': [fr"u(x) = {sanitize_latex(u_p)} \Rightarrow u'(x) = {sanitize_latex(du_p)}", fr"v(x) = {sanitize_latex(v_p)} \Rightarrow v'(x) = {sanitize_latex(dv_p)}"]})
                         steps.append({'label': 'بالتعويض في القانون:', 'math_list': [fr"f'(x) = ({sanitize_latex(du_p)})({sanitize_latex(v_p)}) + ({sanitize_latex(dv_p)})({sanitize_latex(u_p)})"]})
             except: pass
             return steps
@@ -761,10 +759,13 @@ def build_math_context(f_str, g_str, version_tag="v16"):
                 mid = 0.0 if (l_v == -np.inf and r_v == np.inf) else (r_v - 1.0 if l_v == -np.inf else (l_v + 1.0 if r_v == np.inf else (l_v + r_v)/2.0))
                 try:
                     val_m = float(rem_func(mid))
-                    rp_signs.append("+" if val_m > 0 else "-") if np.isfinite(val_m) else rp_signs.append(None)
-                except: rp_signs.append(None)
+                    if np.isfinite(val_m):
+                        rp_signs.append("+" if val_m > 0 else "-")
+                    else:
+                        rp_signs.append(None)
+                except Exception:
+                    rp_signs.append(None)
 
-            # توسيع المثلث في جدول الوضع النسبي وإنزال النص للجزء العريض لمنع ملامسة الأضلاع
             N_rp = len(rp_pts)
             col_w_rp = 4.4; x_st_rp = 2.6; x_max_rp = x_st_rp + N_rp * col_w_rp
             tri_half_w = 1.70
@@ -796,7 +797,6 @@ def build_math_context(f_str, g_str, version_tag="v16"):
                     ax_rp.plot([xc, xc + tri_half_w], [2.6, 0.0], 'k-', lw=1.5)
                     y_inter_sym = sp.simplify(od['line_expr'].subs(x_sym, p_rp['sym']))
                     y_inter_lat = sanitize_latex(y_inter_sym)
-                    # وضع الكتابة في النصف السفلي العريض من المثلث بعيداً عن ضلعيه المائلين
                     ax_rp.text(xc + 0.25, 1.25, "$(C_f)$", ha='center', va='center', fontsize=13, color='#1E293B', fontweight='bold')
                     ax_rp.text(xc - 0.25, 1.25, fix_arabic_mpl("يقطع"), ha='center', va='center', fontsize=13, color='#1E293B', fontweight='bold')
                     ax_rp.text(xc + 0.42, 0.72, "$(\\Delta)$", ha='center', va='center', fontsize=13, color='#1E293B', fontweight='bold')
@@ -822,14 +822,15 @@ def build_math_context(f_str, g_str, version_tag="v16"):
                         ax_rp.text(xic_pos - 0.35, 0.85, "$(\\Delta)$", ha='center', va='center', fontsize=15, color=col_pos, fontweight='bold')
 
             ax_rp.set_xlim(0, x_max_rp); ax_rp.set_ylim(0, 4.8)
-            try: fig_rp.tight_layout(pad=0.2)
-            except: pass
             tmp_rp = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-            fig_rp.savefig(tmp_rp.name, bbox_inches='tight', dpi=300)
+            try:
+                fig_rp.tight_layout(pad=0.2)
+                fig_rp.savefig(tmp_rp.name, bbox_inches='tight', dpi=300)
+            except Exception:
+                pass
             plt.close(fig_rp)
             od['rel_pos_img'] = tmp_rp.name
 
-            # فصل الجملة العربية عن معادلة الفرق عمودياً في صورة شرح المقارب المائل لمنع التداخل في الـ PDF
             fig_ob, ax_ob = plt.subplots(figsize=(9.5, 4.0))
             ax_ob.axis('off'); ax_ob.set_xlim(0, 10); ax_ob.set_ylim(0, 5.0)
             ax_ob.text(9.7, 4.4, fix_arabic_mpl("طريقة استنتاج معادلة المستقيم المقارب المائل:"), fontsize=14, ha='right', va='center', color='#D97706', fontweight='bold')
@@ -837,10 +838,12 @@ def build_math_context(f_str, g_str, version_tag="v16"):
             ax_ob.text(5.0, 2.5, fr"$\lim_{{x \to {od['target_latex']}}} [f(x) - ({od['line_lat']})] = \lim_{{x \to {od['target_latex']}}} \left({od['rem_lat']}\right) = 0$", fontsize=15, ha='center', va='center', color='#6D28D9')
             ax_ob.text(9.7, 1.5, fix_arabic_mpl("ومنه معادلة المقارب المائل وعبارة الفرق للوضع النسبي:"), fontsize=14, ha='right', va='center', color='#047857', fontweight='bold')
             ax_ob.text(5.0, 0.6, fr"$(\Delta): y = {od['line_lat']} \quad , \quad f(x) - y = {od['rem_lat']}$", fontsize=16, ha='center', va='center', color='#047857', fontweight='bold')
-            try: fig_ob.tight_layout(pad=0.2)
-            except: pass
             tmp_ob = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-            fig_ob.savefig(tmp_ob.name, bbox_inches='tight', dpi=300)
+            try:
+                fig_ob.tight_layout(pad=0.2)
+                fig_ob.savefig(tmp_ob.name, bbox_inches='tight', dpi=300)
+            except Exception:
+                pass
             plt.close(fig_ob)
             od['oblique_steps_img'] = tmp_ob.name
             rel_pos_tables_info.append(od)
@@ -1072,12 +1075,15 @@ def build_math_context(f_str, g_str, version_tag="v16"):
                         ax_v.annotate('', xy=(r_node[0]-0.35, y_r + (-0.35 if slope_up else 0.35)), xytext=(l_node[0]+0.35, y_l + (0.35 if slope_up else -0.35)), arrowprops=dict(arrowstyle="->", color="#1565C0", lw=2.5))
             ax_v.set_xlim(0, x_max); ax_v.set_ylim(0, 6)
             tmp_v = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-            fig_v.savefig(tmp_v.name, bbox_inches='tight', dpi=300); plt.close(fig_v)
+            try:
+                fig_v.savefig(tmp_v.name, bbox_inches='tight', dpi=300)
+            except Exception:
+                pass
+            plt.close(fig_v)
             return tmp_v.name
 
         var_table_image_path = generate_variation_table_image()
 
-        # فصل جملة التفسير البياني عن المعادلة في سطرين داخل صورة النهايات لمنع التداخل في الـ PDF
         def generate_limits_image():
             rows = []
             for idx_item, item in enumerate(limits_mpl_items):
@@ -1111,7 +1117,11 @@ def build_math_context(f_str, g_str, version_tag="v16"):
                 except: pass
                 curr_y -= h_step
             tmp_l = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-            fig_l.savefig(tmp_l.name, bbox_inches='tight', dpi=300); plt.close(fig_l)
+            try:
+                fig_l.savefig(tmp_l.name, bbox_inches='tight', dpi=300)
+            except Exception:
+                pass
+            plt.close(fig_l)
             return tmp_l.name
 
         limits_image_path = generate_limits_image()
@@ -1138,7 +1148,11 @@ def build_math_context(f_str, g_str, version_tag="v16"):
                 except: pass
                 curr_y -= h_step
             tmp_d = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-            fig_d.savefig(tmp_d.name, bbox_inches='tight', dpi=300); plt.close(fig_d)
+            try:
+                fig_d.savefig(tmp_d.name, bbox_inches='tight', dpi=300)
+            except Exception:
+                pass
+            plt.close(fig_d)
             return tmp_d.name
             
         deriv_image_path = generate_deriv_image()
@@ -1150,7 +1164,11 @@ def build_math_context(f_str, g_str, version_tag="v16"):
             try: ax_e.text(0.5, 0.5, f"${math_str}$", fontsize=22, ha='center', va='center', color='#1E3A8A', fontweight='bold')
             except: ax_e.text(0.5, 0.5, f"f(x) = {current_g}", fontsize=18, ha='center', va='center', color='#1E3A8A')
             tmp_e = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-            fig_e.savefig(tmp_e.name, bbox_inches='tight', dpi=300); plt.close(fig_e)
+            try:
+                fig_e.savefig(tmp_e.name, bbox_inches='tight', dpi=300)
+            except Exception:
+                pass
+            plt.close(fig_e)
             return tmp_e.name
             
         eq_image_path = generate_eq_image()
@@ -1171,7 +1189,11 @@ def build_math_context(f_str, g_str, version_tag="v16"):
                 ax_dt.text(3, y_center, fix_arabic_mpl(sol_text), fontsize=14 if len(sol_text) > 35 else 16, ha='center', va='center', color=get_sol_color_pdf(sol_text), fontweight='bold')
                 ax_dt.text(8, y_center, f"${m_latex}$", fontsize=16, ha='center', va='center', color='#1E3A8A')
             tmp_dt = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-            fig_dt.savefig(tmp_dt.name, bbox_inches='tight', dpi=300); plt.close(fig_dt)
+            try:
+                fig_dt.savefig(tmp_dt.name, bbox_inches='tight', dpi=300)
+            except Exception:
+                pass
+            plt.close(fig_dt)
             return tmp_dt.name
             
         disc_table_img_path = generate_pdf_discussion_table()
@@ -1191,10 +1213,10 @@ def build_math_context(f_str, g_str, version_tag="v16"):
     except Exception as e: cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v16":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v17":
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v16")
-        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v16"
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v17")
+        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v17"
 
 cache = st.session_state.math_cache
 
@@ -1328,7 +1350,6 @@ else:
             pdf.cell(0, 8, fix_arabic_pdf("2. حساب الدالة المشتقة:"), ln=True, align='R')
             if cache['deriv_image_path']: pdf.image(cache['deriv_image_path'], x=15, w=180); pdf.ln(2)
 
-            # الانتقال لصفحة جديدة قبل كتابة عنوان جدول التغيرات إذا لم تتسع الصفحة للجدول كاملاً
             if pdf.get_y() > 175: pdf.add_page()
             pdf.cell(0, 8, fix_arabic_pdf("3. جدول التغيرات:"), ln=True, align='R')
             if cache['var_table_image_path']: pdf.image(cache['var_table_image_path'], x=10, w=190); pdf.ln(3)
