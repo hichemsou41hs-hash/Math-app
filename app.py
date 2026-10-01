@@ -1,7 +1,7 @@
 import streamlit as st
 manifest_data = """
 {
-  "name": "المناقشة البيانية - الأستاذ سوايسية",
+  "name": "المناقشة البيانية ودراسة تغيرات دالة - الأستاذ سوايسية هشام",
   "short_name": "المناقشة البيانية",
   "description": "تطبيق تعليمي لدراسة اتجاه تغير دالة والمناقشة البيانية",
   "start_url": "/",
@@ -53,13 +53,13 @@ except ImportError:
 
 warnings.filterwarnings("ignore")
 
-st.set_page_config(page_title="المناقشة البيانية", page_icon="📈", layout="centered")
+st.set_page_config(page_title="المناقشة البيانية ودراسة تغيرات دالة", page_icon="📈", layout="centered")
 
 st.markdown("""
     <style>
     .stApp { background-color: #0F172A; color: white; }
-    .title-hes { text-align: center; color: #FFFFFF !important; font-size: 36px; font-weight: bold; white-space: nowrap; margin-bottom: 0px;}
-    .title-dis { text-align: center; color: #FFD700 !important; font-size: 28px; font-weight: bold; margin-top: -5px; margin-bottom: 25px;}
+    .title-dis { text-align: center; color: #FFD700 !important; font-size: 34px; font-weight: bold; margin-bottom: 4px; line-height: 1.3; }
+    .title-hes { text-align: center; color: #FFFFFF !important; font-size: 25px; font-weight: bold; margin-top: 0px; margin-bottom: 25px; }
     
     .footer-social { margin-top: 35px; padding: 15px; background-color: #1E293B; border: 1px solid #334155; border-radius: 12px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 15px; direction: rtl; }
     .footer-text { color: #FFD700 !important; font-size: 17px !important; font-weight: bold !important; margin: 0 !important; }
@@ -98,8 +98,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+st.markdown("<div class='title-dis'>المناقشة البيانية ودراسة تغيرات دالة</div>", unsafe_allow_html=True)
 st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>", unsafe_allow_html=True)
-st.markdown("<div class='title-dis'>المناقشة البيانية ودراسة الدالة</div>", unsafe_allow_html=True)
 
 # دالة تحويل رقمي محصنة ضد اللانهاية والأعداد المركبة ودالة لامبرت
 def safe_float(expr):
@@ -149,7 +149,6 @@ def clean_ocr_math(raw_str):
     if not raw_str:
         return ""
     s = str(raw_str).strip()
-    # إزالة رموز المسافات الخفية أو Unicode غير القياسية
     s = re.sub(r'[\u200b-\u200f\u202a-\u202e\u2060-\u206f\ufeff]', '', s)
     s = s.replace('`', '').replace('$', '').strip()
     
@@ -162,7 +161,6 @@ def clean_ocr_math(raw_str):
         else:
             s = lines[0]
 
-    # إزالة البادئات مثل f(x) = أو g(x) = أو y =
     s = re.sub(r'^[fFgGhHyY]\s*(\(\s*[xX]\s*\))?\s*[:=]\s*', '', s)
     s = s.replace('X', 'x')
 
@@ -179,7 +177,6 @@ def clean_ocr_math(raw_str):
     for k, v in replacements.items():
         s = s.replace(k, v)
 
-    # تحويل كسور LaTeX: \frac{a}{b} -> ((a)/(b))
     for _ in range(5):
         new_s = re.sub(r'\\d?frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}', r'((\1)/(\2))', s)
         if new_s == s:
@@ -191,7 +188,6 @@ def clean_ocr_math(raw_str):
     s = s.replace('{', '(').replace('}', ')')
     s = s.replace('\\', '')
     s = re.sub(r'\|([^|]+)\|', r'abs(\1)', s)
-    # تحويل exp(...) إلى e^(...) لضمان التوافق التام والوضوح البصري
     s = re.sub(r'\bexp\s*\(', 'e^(', s, flags=re.IGNORECASE)
     return s.strip()
 
@@ -200,7 +196,6 @@ def fix_implicit_mult(expr_str):
     if "()" in expr_str:
         expr_str = expr_str.replace("()", "(1)")
     expr_str = expr_str.replace('^', '**')
-    # وضع علامة الضرب الضمني بأمان تام دون المساس بـ exp أو ln أو sqrt
     expr_str = re.sub(r'([xy0-9\)])\s*(exp|ln|log|cos|sin|tan|sqrt|abs|pi)\b', r'\1*\2', expr_str)
     expr_str = re.sub(r'([xy0-9\)])\s*(e)\b(?![a-zA-Z])', r'\1*\2', expr_str)
     expr_str = re.sub(r'\b(e|pi)\s*([xy0-9\(])', r'\1*\2', expr_str)
@@ -209,7 +204,6 @@ def fix_implicit_mult(expr_str):
     expr_str = re.sub(r'([xX\)])\s*([0-9])', r'\1*\2', expr_str)
     return expr_str
 
-# التحقق من أن النص المستخرج يمثل معادلة رياضية صالحة في SymPy
 def validate_extracted_math(candidate_str):
     try:
         x_sym, m_sym = sp.symbols('x m', real=True)
@@ -223,7 +217,6 @@ def validate_extracted_math(candidate_str):
         if not proc:
             return None
         parsed = parse_expr(proc, local_dict=local_dict, transformations=transformations)
-        # التأكد من عدم وجود متغيرات غريبة غير x و m
         unknown_syms = [s for s in parsed.free_symbols if s not in (x_sym, m_sym)]
         if unknown_syms:
             return None
@@ -231,13 +224,11 @@ def validate_extracted_math(candidate_str):
     except Exception:
         return None
 
-# محرك OCR متطور متعدد المراحل مع تحسين بصري للصورة
 def extract_math_from_image(image_file, api_key):
     import google.generativeai as genai
     genai.configure(api_key=api_key)
     
     orig_img = Image.open(image_file).convert("RGB")
-    # تكبير وتحسين تباين الصور الصغيرة (مثل لقطات الشاشة المقصوصة 4KB)
     w, h = orig_img.size
     if w < 600 or h < 200:
         scale = max(2, int(800 / max(w, 1)))
@@ -321,7 +312,6 @@ def format_lim_val(lim_sym):
     if lim_sym == sp.zoo or str(lim_sym) == 'zoo': return r"\pm\infty"
     return sanitize_latex(lim_sym)
 
-# حلال جذور ذكي يتفادى الانهيار مع المعادلات الأسية واللوغاريتمية الهجينة (LambertW)
 def safe_solve_real(expr, x_sym):
     roots = []
     try:
@@ -344,7 +334,6 @@ def safe_solve_real(expr, x_sym):
     except Exception:
         pass
     
-    # البحث العددي المكمل لضمان التقاط الجذور الحقيقية مثل x=2 في 1 + (1-x)e^(2-x) = 0
     try:
         f_num = sp.lambdify(x_sym, expr, 'numpy')
         xs = np.linspace(-15, 15, 3001)
@@ -409,10 +398,11 @@ with st.expander("⌨️ لوحة المفاتيح المساعدة", expanded=F
         elif char == 'CLR': st.session_state[target] = ""
         else: st.session_state[target] += char
 
+    # استبدال x² بالحالة العامة xⁿ التي تكتب رمز الأس ^
     keys = [
         [("x", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
         [("m", "m"), ("π", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
-        [("■/■", "/"), ("√", "sqrt("), ("x²", "^2"), ("1", "1"), ("2", "2"), ("3", "3")],
+        [("■/■", "/"), ("√", "sqrt("), ("xⁿ", "^"), ("1", "1"), ("2", "2"), ("3", "3")],
         [("eˣ", "e^("), ("|x|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
         [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
     ]
@@ -454,7 +444,7 @@ current_f = st.session_state.f_val
 current_g = st.session_state.g_val
 
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v7"):
+def build_math_context(f_str, g_str, version_tag="v8"):
     cache = {'valid': False, 'error': ''}
     try:
         x_sym, m_sym = sp.symbols('x m', real=True)
@@ -1386,12 +1376,12 @@ def build_math_context(f_str, g_str, version_tag="v7"):
         cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v7":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v8":
     with st.spinner("جاري التحليل الرياضي الدقيق (تتم هذه العملية مرة واحدة لتسريع حركة المناقشة الآلية)..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v7")
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v8")
         st.session_state.last_f = current_f
         st.session_state.last_g = current_g
-        st.session_state.cache_ver = "v7"
+        st.session_state.cache_ver = "v8"
 
 cache = st.session_state.math_cache
 
@@ -1569,7 +1559,10 @@ else:
             pdf.add_page()
             pdf.set_font("Amiri", size=22)
             pdf.set_text_color(21, 101, 192)
-            pdf.cell(0, 12, fix_arabic_pdf("الأستاذ سوايسية هشام - دراسة الدالة والمناقشة البيانية"), ln=True, align='C')
+            pdf.cell(0, 10, fix_arabic_pdf("المناقشة البيانية ودراسة تغيرات دالة"), ln=True, align='C')
+            pdf.set_font("Amiri", size=17)
+            pdf.set_text_color(80, 80, 80)
+            pdf.cell(0, 8, fix_arabic_pdf("الأستاذ سوايسية هشام"), ln=True, align='C')
             pdf.ln(3)
             
             pdf.set_font("Amiri", size=15)
