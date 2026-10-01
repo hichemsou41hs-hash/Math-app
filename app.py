@@ -2,6 +2,7 @@
 import streamlit as st
 import base64
 import io
+import json
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -12,6 +13,7 @@ import warnings
 import re
 import os
 import urllib.request
+import urllib.error
 import tempfile
 from PIL import Image, ImageOps, ImageEnhance
 from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
@@ -253,42 +255,135 @@ def validate_extracted_math(candidate_str):
     except Exception:
         return None
 
+# محرك احترافي لاستخراج الدالة من الصورة عبر REST API المباشر واكتشاف النماذج النشطة آلياً
 def extract_math_from_image(image_file, api_key):
-    import google.generativeai as genai
-    genai.configure(api_key=api_key)
+    try:
+        image_file.seek(0)
+    except Exception:
+        pass
+
     orig_img = Image.open(image_file).convert("RGB")
     w, h = orig_img.size
-    if w < 600 or h < 200:
-        scale = max(2, int(800 / max(w, 1)))
+    # تكبير الصور الصغيرة وإحاطتها بهامش أبيض واضح لضمان دقة قراءة الأسس والكسور
+    if w < 800 or h < 250:
+        scale = max(2, int(900 / max(w, 1)))
         proc_img = orig_img.resize((w * scale, h * scale), Image.Resampling.LANCZOS)
-    else: proc_img = orig_img.copy()
-    proc_img = ImageEnhance.Contrast(proc_img).enhance(1.5)
-    proc_img = ImageEnhance.Sharpness(proc_img).enhance(1.8)
+    else:
+        proc_img = orig_img.copy()
+    proc_img = ImageOps.expand(proc_img, border=25, fill='white')
+    proc_img = ImageEnhance.Contrast(proc_img).enhance(1.4)
+    proc_img = ImageEnhance.Sharpness(proc_img).enhance(1.6)
+
+    buf = io.BytesIO()
+    proc_img.save(buf, format="PNG")
+    img_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
 
     prompt = (
         "You are a specialized mathematical OCR engine. Read the mathematical function from the image.\n"
         "Output ONLY the right-hand side expression in plain mathematical notation.\n"
         "Strict rules:\n"
         "- Do NOT include 'f(x) =' or 'y ='.\n"
-        "- For exponentials, write e^(...) instead of exp(...). Example: e^(x - 2).\n"
+        "- For exponentials, write e^(...) instead of exp(...). Example: x + (x - 1)*e^(-x).\n"
         "- For fractions, wrap numerator and denominator in parentheses: (numerator)/(denominator).\n"
         "- For natural log, write ln(...). For square root, write sqrt(...). For |x|, write abs(x).\n"
         "- Output ONLY the single-line formula with no markdown, no backticks, and no extra words."
     )
-    candidate_models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro']
+
+    # 1. جلب قائمة النماذج الفعالة حالياً من خادم جوجل مباشرة لتجنب خطأ 404 نهائياً
+    active_models = []
+    try:
+        list_url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
+        req_list = urllib.request.Request(list_url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req_list, timeout=10) as resp:
+            models_data = json.loads(resp.read().decode('utf-8'))
+            for m in models_data.get('models', []):
+                methods = m.get('supportedGenerationMethods', [])
+                m_name = m.get('name', '').replace('models/', '')
+                # اختيار نماذج gemini التي تدعم generateContent واستبعاد النماذج الموقوفة أو الخاصة بالصوت/الصور فقط
+                if 'generateContent' in methods and m_name.startswith('gemini'):
+                    if not any(bad in m_name for bad in ['1.0', '1.5', 'tts', 'image', 'embedding', 'aqa', 'thinking']):
+                        active_models.append(m_name)
+    except Exception:
+        pass
+
+    # ترتيب الأولوية لأسرع وأدق النماذج المتاحة
+    preferred_order = [
+        'gemini-2.5-flash',
+        'gemini-2.5-flash-lite',
+        'gemini-2.0-flash',
+        'gemini-2.0-flash-lite',
+        'gemini-flash-latest',
+        'gemini-2.5-pro',
+        'gemini-pro-latest'
+    ]
+
+    candidate_models = []
+    for pm in preferred_order:
+        if not active_models or pm in active_models:
+            candidate_models.append(pm)
+    for am in active_models:
+        if am not in candidate_models:
+            candidate_models.append(am)
+
+    payload_dict = {
+        "contents": [{
+            "parts": [
+                {"text": prompt},
+                {"inline_data": {"mime_type": "image/png", "data": img_b64}}
+            ]
+        }],
+        "generationConfig": {
+            "temperature": 0.0,
+            "maxOutputTokens": 150
+        }
+    }
+    payload_bytes = json.dumps(payload_dict).encode('utf-8')
+
     last_err = ""
     for model_name in candidate_models:
-        for img_to_use in (proc_img, orig_img):
+        for api_ver in ["v1beta", "v1"]:
+            url = f"https://generativelanguage.googleapis.com/{api_ver}/models/{model_name}:generateContent?key={api_key}"
+            req = urllib.request.Request(
+                url,
+                data=payload_bytes,
+                headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'},
+                method='POST'
+            )
             try:
-                model = genai.GenerativeModel(model_name)
-                response = model.generate_content([prompt, img_to_use])
-                if response and response.text:
-                    valid_expr = validate_extracted_math(response.text)
-                    if valid_expr: return valid_expr, None
-                    cleaned = clean_ocr_math(response.text)
-                    if cleaned: return cleaned, None
+                with urllib.request.urlopen(req, timeout=20) as resp:
+                    res_json = json.loads(resp.read().decode('utf-8'))
+                    candidates = res_json.get('candidates', [])
+                    if candidates:
+                        parts = candidates[0].get('content', {}).get('parts', [])
+                        raw_text = "".join(p.get('text', '') for p in parts).strip()
+                        if raw_text:
+                            valid_expr = validate_extracted_math(raw_text)
+                            if valid_expr:
+                                return valid_expr, None
+                            cleaned = clean_ocr_math(raw_text)
+                            if cleaned:
+                                return cleaned, None
+            except urllib.error.HTTPError as he:
+                err_body = ""
+                try:
+                    err_body = he.read().decode('utf-8')
+                except Exception:
+                    pass
+                # إذا كان النموذج غير موجود في هذه النسخة (404)، ننتقل بصمت للنموذج التالي دون مسح رسالة الخطأ الأهم
+                if he.code == 404:
+                    if not last_err:
+                        last_err = f"404 ({model_name})"
+                    continue
+                elif he.code == 429:
+                    last_err = "الخادم مشغول حالياً (تم تجاوز حد الطلبات في الدقيقة)، يرجى الانتظار ثواني والمحاولة مجدداً."
+                    break
+                else:
+                    last_err = f"HTTP {he.code}: {err_body[:120]}"
+                    break
             except Exception as e:
-                last_err = str(e); continue
+                last_err = str(e)
+                break
+
     return None, last_err
 
 def fix_arabic_pdf(text):
@@ -407,13 +502,13 @@ with col_img:
         if not api_key: st.error("⚠ خاصية الذكاء الاصطناعي غير مفعلة (ينقص مفتاح API).")
         else:
             if st.button("استخراج الدالة 🤖", use_container_width=True):
-                with st.spinner("جاري قراءة الصورة..."):
+                with st.spinner("جاري قراءة الصورة واستخراج العبارة الرياضية..."):
                     extracted_text, err_msg = extract_math_from_image(img_file, api_key)
                     if extracted_text:
                         st.session_state.f_val = extracted_text
                         if not st.session_state.g_val.strip(): st.session_state.g_val = "m"
                         st.success(f"✅ تم الاستخراج بنجاح: {extracted_text}")
-                        time.sleep(0.5); st.rerun()
+                        time.sleep(0.4); st.rerun()
                     else: st.error(f"❌ تعذر استخراج الدالة حالياً: {err_msg}")
 
 with col_text:
@@ -426,7 +521,7 @@ current_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() els
 # ==================== نهاية الجزء الأول (1/2) ====================
 # ==================== بداية الجزء الثاني (2/2) ====================
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v19"):
+def build_math_context(f_str, g_str, version_tag="v20"):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -760,7 +855,6 @@ def build_math_context(f_str, g_str, version_tag="v19"):
             if abs(val_float - int(round(val_float))) < 1e-2: return str(int(round(val_float)))
             return str(round(val_float, 2)).rstrip('0').rstrip('.') if '.' in str(round(val_float, 2)) else str(round(val_float, 2))
 
-        # رسم جدول الوضع النسبي بمحاذاة عكسية متباعدة (ha='left' و ha='right') تمنع التصادم نهائياً
         rel_pos_tables_info = []
         for od in oblique_details_list:
             rem_expr = od['rem_expr']
@@ -828,13 +922,10 @@ def build_math_context(f_str, g_str, version_tag="v19"):
                     ax_rp.plot([xc, xc + tri_half_w], [3.0, 0.0], 'k-', lw=1.5)
                     y_inter_sym = sp.simplify(od['line_expr'].subs(x_sym, p_rp['sym']))
                     y_inter_lat = sanitize_latex(y_inter_sym)
-                    # السطر 1 داخل المثلث: (Cf) على اليمين (ha='left') و "يقطع" على اليسار (ha='right') بفاصل صريح
                     ax_rp.text(xc + 0.08, 1.55, "$(C_f)$", ha='left', va='center', fontsize=13, color='#1E293B', fontweight='bold')
                     ax_rp.text(xc - 0.08, 1.55, fix_arabic_mpl("يقطع"), ha='right', va='center', fontsize=13, color='#1E293B', fontweight='bold')
-                    # السطر 2 داخل المثلث: (Δ) على اليمين (ha='left') و "في النقطة" على اليسار (ha='right') بفاصل صريح
                     ax_rp.text(xc + 0.30, 0.95, "$(\\Delta)$", ha='left', va='center', fontsize=13, color='#1E293B', fontweight='bold')
                     ax_rp.text(xc + 0.16, 0.95, fix_arabic_mpl("في النقطة"), ha='right', va='center', fontsize=12, color='#B45309', fontweight='bold')
-                    # السطر 3 داخل المثلث: إحداثيات نقطة التقاطع في القاعدة العريضة
                     try:
                         ax_rp.text(xc, 0.36, f"$({p_rp['latex_x']} , {y_inter_lat})$", ha='center', va='center', fontsize=13, color='#B45309', fontweight='bold')
                     except Exception:
@@ -853,10 +944,8 @@ def build_math_context(f_str, g_str, version_tag="v19"):
                         xic_pos = (x_vis_l + x_vis_r) / 2.0
                         pos_ar = "فوق" if sgn == '+' else "تحت"
                         col_pos = '#15803D' if sgn == '+' else '#B91C1C'
-                        # السطر 1 في الخانة: (Cf) على اليمين (ha='left') و "يقع" على اليسار (ha='right') بفاصل صريح
                         ax_rp.text(xic_pos + 0.10, 1.85, "$(C_f)$", ha='left', va='center', fontsize=14.5, color=col_pos, fontweight='bold')
                         ax_rp.text(xic_pos - 0.10, 1.85, fix_arabic_mpl("يقع"), ha='right', va='center', fontsize=14.5, color=col_pos, fontweight='bold')
-                        # السطر 2 في الخانة: "فوق/تحت" على اليمين (ha='left') و (Δ) على اليسار (ha='right') بفاصل صريح
                         ax_rp.text(xic_pos + 0.10, 1.05, fix_arabic_mpl(pos_ar), ha='left', va='center', fontsize=14.5, color=col_pos, fontweight='bold')
                         ax_rp.text(xic_pos - 0.10, 1.05, "$(\\Delta)$", ha='right', va='center', fontsize=14.5, color=col_pos, fontweight='bold')
 
@@ -1219,10 +1308,10 @@ def build_math_context(f_str, g_str, version_tag="v19"):
     except Exception as e: cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v19":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v20":
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v19")
-        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v19"
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v20")
+        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v20"
 
 cache = st.session_state.math_cache
 
