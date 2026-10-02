@@ -123,6 +123,12 @@ st.markdown("""
 st.markdown("<div class='title-dis'>المناقشة البيانية ودراسة تغيرات دالة</div>", unsafe_allow_html=True)
 st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>", unsafe_allow_html=True)
 
+# قاموس ربط صريح للثابت النيبيري E و pi داخل NumPy لمنع خطأ NameError: name 'E' is not defined نهائياً
+NUMPY_MATH_MAP = {'E': np.e, 'e': np.e, 'pi': np.pi}
+
+def safe_lambdify(vars_sym, expr):
+    return sp.lambdify(vars_sym, expr, modules=[NUMPY_MATH_MAP, 'numpy'])
+
 def fig_to_bytes(fig):
     try:
         buf = io.BytesIO()
@@ -165,12 +171,13 @@ def safe_float(expr):
         except Exception:
             return np.nan
 
-# دالة تحويل الدوال الزائدية (sinh, cosh, tanh) إلى عباراتها الأسية المقررة في المنهاج الدراسي
+# دالة محصنة لتحويل الدوال الزائدية (sinh, cosh, tanh) إلى عباراتها الأسية بدلالة e
 def elim_hyperbolic(expr):
     if expr is None or isinstance(expr, (int, float, str, np.number)):
         return expr
     try:
-        if hasattr(expr, 'has') and expr.has(sp.sinh, sp.cosh, sp.tanh, sp.coth):
+        s_rep = str(expr)
+        if any(h_name in s_rep for h_name in ('sinh', 'cosh', 'tanh', 'coth')):
             expr = sp.expand(expr.rewrite(sp.exp))
     except Exception:
         pass
@@ -397,7 +404,6 @@ def fix_arabic_pdf(text):
 def fix_arabic_mpl(text):
     return arabic_reshaper.reshape(text) if PDF_ENABLED else text
 
-# تنسيق LaTeX مع إزالة الدوال الزائدية وترتيب الحدود الثابتة (مثل كتابة e - 2 و e - 2 - e^{-1})
 def sanitize_latex(expr):
     expr = elim_hyperbolic(expr)
     if hasattr(expr, 'has'):
@@ -407,33 +413,35 @@ def sanitize_latex(expr):
                 if np.isfinite(fl):
                     return str(int(round(fl))) if abs(fl - round(fl)) < 1e-5 else str(round(fl, 2))
             except: pass
-        # إذا كان المقدار ثابتاً عددياً بدلالة e (مثل -2 + e - e^-1)، نرتب حدوده ليبدأ بالموجب e ثم العدد ثم e^-1
-        if not expr.free_symbols and expr.is_Add:
-            pos_e, nums, neg_e = [], [], []
-            for arg in expr.args:
-                if arg == sp.E or (arg.is_Mul and arg.has(sp.E) and not arg.has(sp.exp(-1)) and not arg.has(1/sp.E) and safe_float(arg) > 0):
-                    pos_e.append(sp.latex(arg))
-                elif arg.is_Rational or arg.is_Integer:
-                    nums.append(arg)
-                else:
-                    neg_e.append(arg)
-            if pos_e:
-                res_parts = [pos_e[0]]
-                for pe in pos_e[1:]:
-                    res_parts.append(f"+ {pe}" if not pe.startswith('-') else pe)
-                for n_arg in nums:
-                    n_lat = sp.latex(n_arg)
-                    res_parts.append(f"+ {n_lat}" if not n_lat.startswith('-') else n_lat)
-                for ne_arg in neg_e:
-                    if ne_arg == -sp.exp(-1) or ne_arg == -1/sp.E:
-                        res_parts.append("- e^{-1}")
-                    elif ne_arg == sp.exp(-1) or ne_arg == 1/sp.E:
-                        res_parts.append("+ e^{-1}")
+        try:
+            if not expr.free_symbols and expr.is_Add:
+                pos_e, nums, neg_e = [], [], []
+                for arg in expr.args:
+                    if arg == sp.E or (arg.is_Mul and arg.has(sp.E) and not arg.has(sp.exp(-1)) and not arg.has(1/sp.E) and safe_float(arg) > 0):
+                        pos_e.append(sp.latex(arg))
+                    elif arg.is_Rational or arg.is_Integer:
+                        nums.append(arg)
                     else:
-                        ne_lat = sp.latex(ne_arg)
-                        res_parts.append(f"+ {ne_lat}" if not ne_lat.startswith('-') else ne_lat)
-                s_custom = " ".join(res_parts)
-                return s_custom.replace('log', 'ln').replace(r'\left', '').replace(r'\right', '')
+                        neg_e.append(arg)
+                if pos_e:
+                    res_parts = [pos_e[0]]
+                    for pe in pos_e[1:]:
+                        res_parts.append(f"+ {pe}" if not pe.startswith('-') else pe)
+                    for n_arg in nums:
+                        n_lat = sp.latex(n_arg)
+                        res_parts.append(f"+ {n_lat}" if not n_lat.startswith('-') else n_lat)
+                    for ne_arg in neg_e:
+                        if ne_arg == -sp.exp(-1) or ne_arg == -1/sp.E:
+                            res_parts.append("- e^{-1}")
+                        elif ne_arg == sp.exp(-1) or ne_arg == 1/sp.E:
+                            res_parts.append("+ e^{-1}")
+                        else:
+                            ne_lat = sp.latex(ne_arg)
+                            res_parts.append(f"+ {ne_lat}" if not ne_lat.startswith('-') else ne_lat)
+                    s_custom = " ".join(res_parts)
+                    return s_custom.replace('log', 'ln').replace(r'\left', '').replace(r'\right', '')
+        except Exception:
+            pass
 
     if not isinstance(expr, str): expr = sp.latex(expr)
     s = str(expr).replace('log', 'ln').replace(r'\left', '').replace(r'\right', '').replace(r'\operatorname', r'\mathrm')
@@ -459,7 +467,7 @@ def safe_solve_real(expr, x_sym):
                 else: roots.append(elim_hyperbolic(sp.simplify(r)))
     except Exception: pass
     try:
-        f_num = sp.lambdify(x_sym, expr, 'numpy')
+        f_num = safe_lambdify(x_sym, expr)
         xs = np.linspace(-15, 15, 3001)
         with np.errstate(all='ignore'): ys = f_num(xs)
         if np.iscomplexobj(ys): ys = np.where(np.isreal(ys), ys.real, np.nan)
@@ -560,7 +568,7 @@ current_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() els
 # ==================== نهاية الجزء الأول (1/2) ====================
 # ==================== بداية الجزء الثاني (2/2) ====================
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v25"):
+def build_math_context(f_str, g_str, version_tag="v26"):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -579,8 +587,8 @@ def build_math_context(f_str, g_str, version_tag="v25"):
         f_expr = elim_hyperbolic(parse_expr(f_processed, local_dict=local_dict, transformations=transformations))
         g_expr = elim_hyperbolic(parse_expr(g_processed, local_dict=local_dict, transformations=transformations))
         
-        f_func = sp.lambdify(x_sym, f_expr, 'numpy')
-        g_func = sp.lambdify((x_sym, m_sym), g_expr, 'numpy')
+        f_func = safe_lambdify(x_sym, f_expr)
+        g_func = safe_lambdify((x_sym, m_sym), g_expr)
         
         candidate_v_asymptotes = []
         try:
@@ -735,7 +743,7 @@ def build_math_context(f_str, g_str, version_tag="v25"):
         pts_var_exact.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
         pts_var_exact.sort(key=lambda p: p['val'])
 
-        df_func_test = sp.lambdify(x_sym, df_expr, 'numpy')
+        df_func_test = safe_lambdify(x_sym, df_expr)
         for p in pts_var_exact:
             if p['type'] == 'extrema':
                 v_test = p['val']
@@ -894,8 +902,6 @@ def build_math_context(f_str, g_str, version_tag="v25"):
             if sym_val is not None:
                 try:
                     sym_val = elim_hyperbolic(sp.simplify(sym_val))
-                    if hasattr(sym_val, 'has') and sym_val.has(sp.sinh, sp.cosh, sp.tanh):
-                        sym_val = sp.expand(sym_val.rewrite(sp.exp))
                     if not any(bad in str(sym_val) for bad in ["LambertW", "RootOf", "Integral", "zoo", "I", "sinh", "cosh"]):
                         l_str = sanitize_latex(sym_val)
                         if len(l_str) < 30: return l_str
@@ -943,7 +949,7 @@ def build_math_context(f_str, g_str, version_tag="v25"):
                         f_roots = [safe_float(r) for r in safe_solve_real(vf, x_sym)]
                         final_factors.append({
                             'expr': f_item, 'latex': sanitize_latex(f_item),
-                            'func': sp.lambdify(x_sym, f_item, 'numpy'),
+                            'func': safe_lambdify(x_sym, f_item),
                             'roots': [r for r in f_roots if np.isfinite(r)]
                         })
                     return final_factors
@@ -966,7 +972,7 @@ def build_math_context(f_str, g_str, version_tag="v25"):
             rp_pts.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
             rp_pts.sort(key=lambda p: p['val'])
 
-            rem_func = sp.lambdify(x_sym, rem_expr, 'numpy')
+            rem_func = safe_lambdify(x_sym, rem_expr)
             rp_signs, rp_mids = [], []
             for idx_rp in range(len(rp_pts) - 1):
                 l_v, r_v = rp_pts[idx_rp]['val'], rp_pts[idx_rp+1]['val']
@@ -1114,7 +1120,7 @@ def build_math_context(f_str, g_str, version_tag="v25"):
         except Exception:
             m_expr = elim_hyperbolic(sp.simplify(f_expr))
 
-        m_func_eval = sp.lambdify(x_sym, m_expr, 'numpy')
+        m_func_eval = safe_lambdify(x_sym, m_expr)
 
         x_split_syms = [sp.Integer(0)]
         for r in candidate_v_asymptotes:
@@ -1171,7 +1177,7 @@ def build_math_context(f_str, g_str, version_tag="v25"):
         unique_x_splits.append({'val': np.inf, 'sym': sp.oo})
         unique_x_splits.sort(key=lambda item: item['val'])
 
-        dm_func = sp.lambdify(x_sym, dm_expr, 'numpy')
+        dm_func = safe_lambdify(x_sym, dm_expr)
         double_root_x_vals = set()
         for item in unique_x_splits:
             xv = item['val']
@@ -1616,10 +1622,10 @@ def build_math_context(f_str, g_str, version_tag="v25"):
     except Exception as e: cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v25":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v26":
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v25")
-        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v25"
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v26")
+        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v26"
 
 cache = st.session_state.math_cache
 
