@@ -600,7 +600,7 @@ current_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() els
 # ==================== نهاية الجزء الأول (1/2) ====================
 # ==================== بداية الجزء الثاني (2/2) ====================
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v28"):
+def build_math_context(f_str, g_str, version_tag="v29"):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -1605,7 +1605,6 @@ def build_math_context(f_str, g_str, version_tag="v28"):
 
         var_table_bytes = generate_variation_table_bytes()
 
-        # تقسيم النهايات إلى كتل رشيقة (Chunks) حتى لا تترك فراغاً في الصفحة الأولى وتنتقل بانتظام بين الصفحات
         def render_rows_chunk_to_bytes(rows_chunk):
             if not rows_chunk: return None
             total_h = sum(r[2] for r in rows_chunk) + 0.25
@@ -1641,7 +1640,6 @@ def build_math_context(f_str, g_str, version_tag="v28"):
                 if item['type'] == 'domain':
                     current_block.append(('domain', item['latex'], 0.85))
                 elif item['type'] == 'main':
-                    # إذا تجاوزت الكتلة الحالية ارتفاعاً مناسباً، نحفظها كصورة مستقلة ونبدأ كتلة جديدة للنهاية التالية
                     if sum(r[2] for r in current_block) >= 2.8:
                         b_img = render_rows_chunk_to_bytes(current_block)
                         if b_img: chunks_bytes.append(b_img)
@@ -1688,12 +1686,18 @@ def build_math_context(f_str, g_str, version_tag="v28"):
             
         deriv_chunks_bytes = generate_deriv_chunks()
         
+        # توليد صورة التمهيد المنهجي للمناقشة البيانية فوق الجدول في ملف الـ PDF
         def generate_eq_bytes():
-            math_str = fr"f(x) = {sanitize_latex(g_expr)}"
-            fig_e, ax_e = plt.subplots(figsize=(8, 0.7))
+            g_lat = sanitize_latex(g_expr)
+            fig_e, ax_e = plt.subplots(figsize=(9.5, 1.55))
             fig_e.patch.set_facecolor('white'); ax_e.set_facecolor('white'); ax_e.axis('off')
-            try: ax_e.text(0.5, 0.5, f"${math_str}$", fontsize=22, ha='center', va='center', color='#1E3A8A', fontweight='bold')
-            except: ax_e.text(0.5, 0.5, f"f(x) = {current_g}", fontsize=18, ha='center', va='center', color='#1E3A8A')
+            ax_e.set_xlim(0, 10); ax_e.set_ylim(0, 2.0)
+            intro_txt = "حلول المعادلة هي فواصل نقط تقاطع منحنى الدالة f مع المستقيم ذو المعادلة:"
+            ax_e.text(9.7, 1.45, fix_arabic_mpl(intro_txt), fontsize=14.5, ha='right', va='center', color='#047857', fontweight='bold')
+            try:
+                ax_e.text(5.0, 0.55, fr"$f(x) = {g_lat} \quad \Longleftrightarrow \quad y = {g_lat}$", fontsize=17.5, ha='center', va='center', color='#1E3A8A', fontweight='bold')
+            except Exception:
+                ax_e.text(5.0, 0.55, f"y = {current_g}", fontsize=16, ha='center', va='center', color='#1E3A8A', fontweight='bold')
             return fig_to_bytes(fig_e)
             
         eq_bytes = generate_eq_bytes()
@@ -1736,10 +1740,10 @@ def build_math_context(f_str, g_str, version_tag="v28"):
     except Exception as e: cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v28":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v29":
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v28")
-        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v28"
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v29")
+        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v29"
 
 cache = st.session_state.math_cache
 
@@ -1749,7 +1753,8 @@ if not cache.get('valid'):
     else:
         st.error(f"⚠️ صيغة الدالة غير مكتملة. تأكد من كتابة العبارة الرياضية بشكل صحيح ثم اضغط على زر «تأكيد ورسم الدالة». ({cache.get('error', '')})")
 else:
-    st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {sanitize_latex(cache['f_expr'])} \\ y = {sanitize_latex(cache['g_expr'])} \end{{cases}}")
+    g_latex_disp = sanitize_latex(cache['g_expr'])
+    st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {sanitize_latex(cache['f_expr'])} \\ y = {g_latex_disp} \end{{cases}}")
     m_min_val, m_max_val, m_critical_num = cache['m_min_val'], cache['m_max_val'], cache['m_critical_num']
 
     col1, col2 = st.columns(2)
@@ -1762,6 +1767,11 @@ else:
     
     m_val_manual = st.slider("تحكم يدوي:", m_min_val, m_max_val, m_min_val, 0.05, format="%g", key="manual_m", disabled=st.session_state.auto_play)
     anim_placeholder = st.empty()
+
+    # عنوان المناقشة البيانية والتمهيد المنهجي فوق الجدول مباشرة في واجهة التطبيق
+    st.markdown("<h3 style='color:#FFD700; text-align:center; direction:rtl; margin-top:15px; margin-bottom:5px;'>📌 المناقشة البيانية</h3>", unsafe_allow_html=True)
+    st.info(fr"🔹 حلول المعادلة $f(x) = {g_latex_disp}$ هي فواصل نقط تقاطع منحنى الدالة $f$ مع المستقيم ذو المعادلة: $y = {g_latex_disp}$")
+
     table_placeholder = st.empty()
 
     def generate_st_markdown_table(current_m):
@@ -1855,7 +1865,6 @@ else:
         except: pass
         return fig, ax
 
-    # حساب الارتفاع الفعلي لأي صورة بالمليمتر على ورقة A4 لمنع الفراغات أو انقطاع الجداول
     def get_img_height_mm(img_bytes, target_w_mm):
         if not img_bytes: return 0.0
         try:
@@ -1881,7 +1890,6 @@ else:
     def pdf_add_section_with_chunks(pdf, title_text, chunks_list, x, w):
         if not chunks_list: return
         first_h = get_img_height_mm(chunks_list[0], w)
-        # إذا لم تتسع الصفحة الحالية للعنوان مع أول كتلة، ننتقل لصفحة جديدة قبل كتابة العنوان
         if pdf.get_y() + 10 + first_h > 280 and pdf.get_y() > 35:
             pdf.add_page()
         pdf.set_font("Amiri", size=15); pdf.set_text_color(194, 24, 91)
@@ -1929,7 +1937,8 @@ else:
                     x=10, w=190
                 )
 
-            if cache.get('rel_pos_tables_info'):
+            has_oblique = bool(cache.get('rel_pos_tables_info'))
+            if has_oblique:
                 ob_chunks = [od['oblique_steps_bytes'] for od in cache['rel_pos_tables_info'] if od.get('oblique_steps_bytes')]
                 pdf_add_section_with_chunks(
                     pdf,
@@ -1945,21 +1954,27 @@ else:
                     x=10, w=190
                 )
 
-            # القسم 6: الرسم البياني وجدول المناقشة البيانية
+            # قسم التمثيل البياني للدالة (Cf)
+            plot_sec_num = 6 if has_oblique else 4
             fig_light, _ = draw_plot(0, mode='light')
             light_bytes = fig_to_bytes(fig_light)
             plot_h = get_img_height_mm(light_bytes, 165)
-            eq_h = get_img_height_mm(cache.get('eq_bytes'), 85)
-            disc_h = get_img_height_mm(cache.get('disc_table_bytes'), 180)
 
-            if pdf.get_y() + 12 + plot_h > 280:
+            if pdf.get_y() + 10 + plot_h > 280 and pdf.get_y() > 35:
+                pdf.add_page()
+            pdf.set_font("Amiri", size=15); pdf.set_text_color(194, 24, 91)
+            pdf.cell(0, 8, fix_arabic_pdf(f"{plot_sec_num}. التمثيل البياني للدالة (Cf):"), ln=True, align='R')
+            pdf_add_bytes_image(pdf, light_bytes, x=22, w=165); pdf.ln(3)
+
+            # قسم المناقشة البيانية (العنوان + جملة التمهيد + جدول المناقشة في كتلة مترابطة)
+            disc_sec_num = plot_sec_num + 1
+            eq_h = get_img_height_mm(cache.get('eq_bytes'), 180)
+            disc_h = get_img_height_mm(cache.get('disc_table_bytes'), 180)
+            if pdf.get_y() + 10 + eq_h + disc_h > 282 and pdf.get_y() > 35:
                 pdf.add_page()
             pdf.set_font("Amiri", size=16); pdf.set_text_color(21, 101, 192)
-            pdf.cell(0, 9, fix_arabic_pdf("6. التمثيل البياني للدالة (Cf) والمناقشة البيانية:"), ln=True, align='R')
-            pdf_add_bytes_image(pdf, light_bytes, x=22, w=165); pdf.ln(2)
-            if pdf.get_y() + eq_h + disc_h > 282 and pdf.get_y() > 40:
-                pdf.add_page()
-            if cache.get('eq_bytes'): pdf_add_bytes_image(pdf, cache['eq_bytes'], x=62, w=85); pdf.ln(1)
+            pdf.cell(0, 9, fix_arabic_pdf(f"{disc_sec_num}. المناقشة البيانية:"), ln=True, align='R')
+            if cache.get('eq_bytes'): pdf_add_bytes_image(pdf, cache['eq_bytes'], x=15, w=180); pdf.ln(1)
             if cache.get('disc_table_bytes'): pdf_add_bytes_image(pdf, cache['disc_table_bytes'], x=15, w=180)
 
             pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
