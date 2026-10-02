@@ -134,7 +134,7 @@ def safe_lambdify(vars_sym, expr):
 def fig_to_bytes(fig):
     try:
         buf = io.BytesIO()
-        fig.savefig(buf, format='png', bbox_inches='tight', pad_inches=0.08, dpi=280, facecolor=fig.get_facecolor())
+        fig.savefig(buf, format='png', bbox_inches='tight', pad_inches=0.06, dpi=260, facecolor=fig.get_facecolor())
         plt.close(fig)
         data = buf.getvalue()
         if data and len(data) > 100:
@@ -455,7 +455,6 @@ def format_lim_val(lim_sym):
     if lim_sym == sp.zoo or str(lim_sym) == 'zoo': return r"\pm\infty"
     return sanitize_latex(lim_sym)
 
-# دالة سريعة ومحصنة لحل المعادلات (تتجنب تعليق sp.solve أو sp.nsolve مع القيمة المطلقة Abs و sign)
 def safe_solve_real(expr, x_sym):
     roots = []
     has_non_alg = hasattr(expr, 'has') and (expr.has(sp.Abs) or expr.has(sp.sign))
@@ -472,7 +471,6 @@ def safe_solve_real(expr, x_sym):
         except Exception:
             pass
     else:
-        # إذا كانت العبارة تحتوي على Abs(u)، نحل u = 0 أيضاً بشكل مباشر وسريع
         try:
             for abs_atom in expr.atoms(sp.Abs):
                 inner_arg = abs_atom.args[0]
@@ -486,7 +484,6 @@ def safe_solve_real(expr, x_sym):
         except Exception:
             pass
 
-    # البحث العددي السريع بطريقة التنصيف (Fast Bisection) عبر NumPy دون استدعاء sp.nsolve الثقيلة
     try:
         f_num = safe_lambdify(x_sym, expr)
         xs = np.linspace(-15, 15, 3001)
@@ -546,7 +543,7 @@ def get_sol_color_html(sol_text):
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
-if 'f_val' not in st.session_state: st.session_state.f_val = "abs(x^2-1)"
+if 'f_val' not in st.session_state: st.session_state.f_val = "abs(x)/(1-abs(x))"
 if 'g_val' not in st.session_state: st.session_state.g_val = "m"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
@@ -594,7 +591,7 @@ with col_img:
                     else: st.error(f"❌ تعذر استخراج الدالة حالياً: {err_msg}")
 
 with col_text:
-    st.text_input("أدخل عبارة الدالة f(x):", key="f_val", placeholder="مثال: abs(x^2-1)")
+    st.text_input("أدخل عبارة الدالة f(x):", key="f_val", placeholder="مثال: abs(x)/(1-abs(x))")
     st.text_input("أدخل معادلة المستقيم بدلالة m (تُترك m للمناقشة الأفقية):", key="g_val", placeholder="m")
     st.button("✅ تأكيد ورسم الدالة", use_container_width=True)
 
@@ -603,7 +600,7 @@ current_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() els
 # ==================== نهاية الجزء الأول (1/2) ====================
 # ==================== بداية الجزء الثاني (2/2) ====================
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v27"):
+def build_math_context(f_str, g_str, version_tag="v28"):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -660,7 +657,6 @@ def build_math_context(f_str, g_str, version_tag="v27"):
 
         unique_asymptotes = [{'type': 'v', 'val': safe_float(r), 'label': f"x={sanitize_latex(r)}"} for r in true_v_asymptotes]
 
-        # استخراج نقاط انعدام ما بداخل القيمة المطلقة (نقاط الزاوية Corner Points) بسرعة فائقة
         abs_corner_syms = []
         try:
             for abs_atom in f_expr.atoms(sp.Abs):
@@ -774,7 +770,6 @@ def build_math_context(f_str, g_str, version_tag="v27"):
         
         sym_extrema = []
         try:
-            # استخراج جذور البسط للمشتقة لتفادي التعليق مع مقام القيمة المطلقة
             num_df, _ = sp.fraction(df_clean)
             for r_simp in safe_solve_real(num_df, x_sym):
                 if np.isfinite(safe_float(f_expr.subs(x_sym, r_simp))):
@@ -1149,7 +1144,7 @@ def build_math_context(f_str, g_str, version_tag="v27"):
             ax_rp.set_xlim(-0.05, x_max_rp + 0.05); ax_rp.set_ylim(-0.05, y_table_top + 0.05)
             od['rel_pos_bytes'] = fig_to_bytes(fig_rp)
 
-            fig_ob, ax_ob = plt.subplots(figsize=(9.5, 4.0))
+            fig_ob, ax_ob = plt.subplots(figsize=(9.5, 3.6))
             fig_ob.patch.set_facecolor('white'); ax_ob.set_facecolor('white'); ax_ob.axis('off')
             ax_ob.set_xlim(0, 10); ax_ob.set_ylim(0, 5.0)
             ax_ob.text(9.7, 4.4, fix_arabic_mpl("طريقة استنتاج معادلة المستقيم المقارب المائل:"), fontsize=14, ha='right', va='center', color='#D97706', fontweight='bold')
@@ -1271,7 +1266,6 @@ def build_math_context(f_str, g_str, version_tag="v27"):
             xv = item['val']
             if not np.isfinite(xv): continue
             if any(abs(xv - safe_float(va)) < 1e-4 for va in candidate_v_asymptotes): continue
-            # نقاط الزاوية في القيمة المطلقة ليست نقاط تماس (بل حلول بسيطة عند الرأس)
             if any(abs(xv - safe_float(ac)) < 1e-4 for ac in abs_corner_syms): continue
             try:
                 with np.errstate(all='ignore'):
@@ -1549,7 +1543,6 @@ def build_math_context(f_str, g_str, version_tag="v27"):
                     ax_v.plot([xc_line, xc_line], [3.8, 5], 'k-', lw=1.3)
                     ax_v.plot(xc_line, 4.4, marker='o', markersize=9, markerfacecolor='none', markeredgecolor='k', markeredgewidth=1.6)
                 elif p['type'] == 'corner':
-                    # رسم خطين متوازيين في صف المشتقة فقط للدلالة على عدم قابلية الاشتقاق عند نقطة الزاوية
                     ax_v.plot([xc_line-0.04, xc_line-0.04], [3.8, 5], 'k-', lw=1.4)
                     ax_v.plot([xc_line+0.04, xc_line+0.04], [3.8, 5], 'k-', lw=1.4)
                 if i < N - 1:
@@ -1612,66 +1605,88 @@ def build_math_context(f_str, g_str, version_tag="v27"):
 
         var_table_bytes = generate_variation_table_bytes()
 
-        def generate_limits_bytes():
-            rows = []
+        # تقسيم النهايات إلى كتل رشيقة (Chunks) حتى لا تترك فراغاً في الصفحة الأولى وتنتقل بانتظام بين الصفحات
+        def render_rows_chunk_to_bytes(rows_chunk):
+            if not rows_chunk: return None
+            total_h = sum(r[2] for r in rows_chunk) + 0.25
+            fig_c, ax_c = plt.subplots(figsize=(9.5, max(0.85, total_h * 0.70)))
+            fig_c.patch.set_facecolor('white'); ax_c.set_facecolor('white'); ax_c.axis('off')
+            ax_c.set_xlim(0, 10); ax_c.set_ylim(0, total_h)
+            curr_y = total_h - 0.12
+            for r_type, content, h_step in rows_chunk:
+                y_pos = curr_y - (h_step / 2.0)
+                try:
+                    if r_type == 'domain': ax_c.text(5.0, y_pos, f"${content}$", fontsize=18, ha='center', va='center', color='#1E3A8A', fontweight='bold')
+                    elif r_type == 'main':
+                        ax_c.text(7.2, y_pos, f"${content[0]}$", fontsize=16.5, ha='right', va='center', color='#1E3A8A')
+                        ax_c.text(7.4, y_pos, f"${content[1]}$", fontsize=18, ha='left', va='center', color='#D32F2F', fontweight='bold')
+                    elif r_type == 'step_label': ax_c.text(9.7, y_pos, fix_arabic_mpl(content), fontsize=13, ha='right', va='center', color='#D97706', fontweight='bold')
+                    elif r_type == 'step_math': ax_c.text(5.0, y_pos, f"$({content})$", fontsize=14, ha='center', va='center', color='#6D28D9')
+                    elif r_type == 'note_row': ax_c.text(5.0, y_pos, fix_arabic_mpl(content), fontsize=13, ha='center', va='center', color='#B45309', fontweight='bold')
+                    elif r_type == 'geo_label': ax_c.text(9.7, y_pos, fix_arabic_mpl(content), fontsize=13.5, ha='right', va='center', color='#047857', fontweight='bold')
+                    elif r_type == 'geo_math': ax_c.text(5.0, y_pos, f"${content}$", fontsize=15.5, ha='center', va='center', color='#047857', fontweight='bold')
+                    elif r_type == 'deriv_label': ax_c.text(9.7, y_pos, fix_arabic_mpl(content), fontsize=14, ha='right', va='center', color='#D97706', fontweight='bold')
+                    elif r_type == 'deriv_math': ax_c.text(5.0, y_pos, f"${content}$", fontsize=15, ha='center', va='center', color='#0F766E')
+                    elif r_type == 'final_label': ax_c.text(9.7, y_pos, fix_arabic_mpl(content), fontsize=14.5, ha='right', va='center', color='#2E7D32', fontweight='bold')
+                    elif r_type == 'final_math': ax_c.text(5.0, y_pos, f"${content}$", fontsize=17.5, ha='center', va='center', color='#15803D', fontweight='bold')
+                except Exception:
+                    pass
+                curr_y -= h_step
+            return fig_to_bytes(fig_c)
+
+        def generate_limits_chunks():
+            chunks_bytes = []
+            current_block = []
             for idx_item, item in enumerate(limits_mpl_items):
-                if item['type'] == 'domain': rows.append(('domain', item['latex'], 0.9))
-                elif item['type'] == 'main': rows.append(('main', (item['lhs'], item['rhs']), 1.15))
+                if item['type'] == 'domain':
+                    current_block.append(('domain', item['latex'], 0.85))
+                elif item['type'] == 'main':
+                    # إذا تجاوزت الكتلة الحالية ارتفاعاً مناسباً، نحفظها كصورة مستقلة ونبدأ كتلة جديدة للنهاية التالية
+                    if sum(r[2] for r in current_block) >= 2.8:
+                        b_img = render_rows_chunk_to_bytes(current_block)
+                        if b_img: chunks_bytes.append(b_img)
+                        current_block = []
+                    current_block.append(('main', (item['lhs'], item['rhs']), 1.05))
                 elif item['type'] == 'step':
                     if idx_item == 0 or limits_mpl_items[idx_item - 1]['type'] not in ['step', 'geo']:
-                        rows.append(('step_label', 'التعليل (لأن):', 0.55))
-                    rows.append(('step_math', item['math'], 0.85))
-                elif item['type'] == 'note': rows.append(('note_row', item['text'], 0.6))
+                        current_block.append(('step_label', 'التعليل (لأن):', 0.50))
+                    current_block.append(('step_math', item['math'], 0.78))
+                elif item['type'] == 'note':
+                    current_block.append(('note_row', item['text'], 0.55))
                 elif item['type'] == 'geo':
-                    rows.append(('geo_label', item['text'], 0.60))
-                    if item['math']: rows.append(('geo_math', item['math'], 0.75))
-            total_h = sum(r[2] for r in rows) + 0.4
-            fig_l, ax_l = plt.subplots(figsize=(9.5, max(2.2, total_h * 0.78)))
-            fig_l.patch.set_facecolor('white'); ax_l.set_facecolor('white'); ax_l.axis('off')
-            ax_l.set_xlim(0, 10); ax_l.set_ylim(0, total_h)
-            curr_y = total_h - 0.2
-            for r_type, content, h_step in rows:
-                y_pos = curr_y - (h_step / 2.0)
-                try:
-                    if r_type == 'domain': ax_l.text(5.0, y_pos, f"${content}$", fontsize=19, ha='center', va='center', color='#1E3A8A', fontweight='bold')
-                    elif r_type == 'main':
-                        ax_l.text(7.2, y_pos, f"${content[0]}$", fontsize=17, ha='right', va='center', color='#1E3A8A')
-                        ax_l.text(7.4, y_pos, f"${content[1]}$", fontsize=19, ha='left', va='center', color='#D32F2F', fontweight='bold')
-                    elif r_type == 'step_label': ax_l.text(9.7, y_pos, fix_arabic_mpl(content), fontsize=13, ha='right', va='center', color='#D97706', fontweight='bold')
-                    elif r_type == 'step_math': ax_l.text(5.0, y_pos, f"$({content})$", fontsize=14, ha='center', va='center', color='#6D28D9')
-                    elif r_type == 'note_row': ax_l.text(5.0, y_pos, fix_arabic_mpl(content), fontsize=13, ha='center', va='center', color='#B45309', fontweight='bold')
-                    elif r_type == 'geo_label': ax_l.text(9.7, y_pos, fix_arabic_mpl(content), fontsize=13.5, ha='right', va='center', color='#047857', fontweight='bold')
-                    elif r_type == 'geo_math': ax_l.text(5.0, y_pos, f"${content}$", fontsize=16, ha='center', va='center', color='#047857', fontweight='bold')
-                except: pass
-                curr_y -= h_step
-            return fig_to_bytes(fig_l)
+                    current_block.append(('geo_label', item['text'], 0.55))
+                    if item['math']:
+                        current_block.append(('geo_math', item['math'], 0.70))
+            if current_block:
+                b_img = render_rows_chunk_to_bytes(current_block)
+                if b_img: chunks_bytes.append(b_img)
+            return chunks_bytes
 
-        limits_bytes = generate_limits_bytes()
+        limits_chunks_bytes = generate_limits_chunks()
 
-        def generate_deriv_bytes():
-            rows = []
+        def generate_deriv_chunks():
+            chunks_bytes = []
+            current_block = []
             for stp in deriv_steps_detailed:
-                rows.append(('label', stp['label'], 0.6))
-                for m_str in stp['math_list']: rows.append(('math', m_str, 0.95))
-            rows.append(('final_label', 'العبارة النهائية للمشتقة:', 0.65))
-            rows.append(('final_math', fr"f'(x) = {df_latex_str_safe}", 1.25))
-            total_h = sum(r[2] for r in rows) + 0.4
-            fig_d, ax_d = plt.subplots(figsize=(9.5, max(2.2, total_h * 0.78)))
-            fig_d.patch.set_facecolor('white'); ax_d.set_facecolor('white'); ax_d.axis('off')
-            ax_d.set_xlim(0, 10); ax_d.set_ylim(0, total_h)
-            curr_y = total_h - 0.2
-            for r_type, content, h_step in rows:
-                y_pos = curr_y - (h_step / 2.0)
-                try:
-                    if r_type == 'label': ax_d.text(9.7, y_pos, fix_arabic_mpl(content), fontsize=14, ha='right', va='center', color='#D97706', fontweight='bold')
-                    elif r_type == 'math': ax_d.text(5.0, y_pos, f"${content}$", fontsize=15, ha='center', va='center', color='#0F766E')
-                    elif r_type == 'final_label': ax_d.text(9.7, y_pos, fix_arabic_mpl(content), fontsize=15, ha='right', va='center', color='#2E7D32', fontweight='bold')
-                    elif r_type == 'final_math': ax_d.text(5.0, y_pos, f"${content}$", fontsize=18, ha='center', va='center', color='#15803D', fontweight='bold')
-                except: pass
-                curr_y -= h_step
-            return fig_to_bytes(fig_d)
+                if sum(r[2] for r in current_block) >= 3.2:
+                    b_img = render_rows_chunk_to_bytes(current_block)
+                    if b_img: chunks_bytes.append(b_img)
+                    current_block = []
+                current_block.append(('deriv_label', stp['label'], 0.55))
+                for m_str in stp['math_list']:
+                    current_block.append(('deriv_math', m_str, 0.88))
+            if sum(r[2] for r in current_block) >= 3.2:
+                b_img = render_rows_chunk_to_bytes(current_block)
+                if b_img: chunks_bytes.append(b_img)
+                current_block = []
+            current_block.append(('final_label', 'العبارة النهائية للمشتقة:', 0.60))
+            current_block.append(('final_math', fr"f'(x) = {df_latex_str_safe}", 1.15))
+            if current_block:
+                b_img = render_rows_chunk_to_bytes(current_block)
+                if b_img: chunks_bytes.append(b_img)
+            return chunks_bytes
             
-        deriv_bytes = generate_deriv_bytes()
+        deriv_chunks_bytes = generate_deriv_chunks()
         
         def generate_eq_bytes():
             math_str = fr"f(x) = {sanitize_latex(g_expr)}"
@@ -1711,18 +1726,20 @@ def build_math_context(f_str, g_str, version_tag="v27"):
             'm_critical_num': m_critical_num, 'final_table': final_table,
             'domain_latex_st': domain_latex_st, 'limits_data_detailed': limits_data_detailed,
             'deriv_steps_detailed': deriv_steps_detailed, 'df_latex_str_safe': df_latex_str_safe,
-            'var_table_bytes': var_table_bytes, 'limits_bytes': limits_bytes,
-            'deriv_bytes': deriv_bytes, 'eq_bytes': eq_bytes,
+            'var_table_bytes': var_table_bytes,
+            'limits_chunks_bytes': limits_chunks_bytes,
+            'deriv_chunks_bytes': deriv_chunks_bytes,
+            'eq_bytes': eq_bytes,
             'disc_table_bytes': disc_table_bytes, 'rel_pos_tables_info': rel_pos_tables_info,
             'm_min_val': m_min_val, 'm_max_val': m_max_val, 'f_expr': f_expr, 'g_expr': g_expr,
         })
     except Exception as e: cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v27":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v28":
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v27")
-        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v27"
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v28")
+        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v28"
 
 cache = st.session_state.math_cache
 
@@ -1838,8 +1855,21 @@ else:
         except: pass
         return fig, ax
 
+    # حساب الارتفاع الفعلي لأي صورة بالمليمتر على ورقة A4 لمنع الفراغات أو انقطاع الجداول
+    def get_img_height_mm(img_bytes, target_w_mm):
+        if not img_bytes: return 0.0
+        try:
+            im = Image.open(io.BytesIO(img_bytes))
+            w_px, h_px = im.size
+            return (h_px / float(w_px)) * target_w_mm if w_px > 0 else 0.0
+        except Exception:
+            return 35.0
+
     def pdf_add_bytes_image(pdf, img_bytes, x, w):
         if not img_bytes: return
+        h_mm = get_img_height_mm(img_bytes, w)
+        if pdf.get_y() + h_mm > 280 and pdf.get_y() > 35:
+            pdf.add_page()
         with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_img:
             tmp_img.write(img_bytes)
             tmp_path = tmp_img.name
@@ -1848,10 +1878,24 @@ else:
         try: os.remove(tmp_path)
         except Exception: pass
 
+    def pdf_add_section_with_chunks(pdf, title_text, chunks_list, x, w):
+        if not chunks_list: return
+        first_h = get_img_height_mm(chunks_list[0], w)
+        # إذا لم تتسع الصفحة الحالية للعنوان مع أول كتلة، ننتقل لصفحة جديدة قبل كتابة العنوان
+        if pdf.get_y() + 10 + first_h > 280 and pdf.get_y() > 35:
+            pdf.add_page()
+        pdf.set_font("Amiri", size=15); pdf.set_text_color(194, 24, 91)
+        pdf.cell(0, 8, fix_arabic_pdf(title_text), ln=True, align='R')
+        for chunk_b in chunks_list:
+            pdf_add_bytes_image(pdf, chunk_b, x=x, w=w)
+            pdf.ln(1)
+        pdf.ln(2)
+
     def generate_pdf():
         if not PDF_ENABLED: return None
         try:
             pdf = FPDF(orientation='P', unit='mm', format='A4')
+            pdf.set_auto_page_break(auto=True, margin=12)
             font_path = "Amiri-Regular.ttf"
             if not os.path.exists(font_path) or os.path.getsize(font_path) < 10000:
                 req = urllib.request.Request("https://github.com/google/fonts/raw/main/ofl/amiri/Amiri-Regular.ttf", headers={'User-Agent': 'Mozilla/5.0'})
@@ -1861,37 +1905,61 @@ else:
             pdf.set_font("Amiri", size=22); pdf.set_text_color(21, 101, 192)
             pdf.cell(0, 10, fix_arabic_pdf("المناقشة البيانية ودراسة تغيرات دالة"), ln=True, align='C')
             pdf.set_font("Amiri", size=17); pdf.set_text_color(80, 80, 80)
-            pdf.cell(0, 8, fix_arabic_pdf("الأستاذ سوايسية هشام"), ln=True, align='C'); pdf.ln(3)
+            pdf.cell(0, 8, fix_arabic_pdf("الأستاذ سوايسية هشام"), ln=True, align='C'); pdf.ln(2)
             
-            pdf.set_font("Amiri", size=15); pdf.set_text_color(194, 24, 91) 
-            pdf.cell(0, 8, fix_arabic_pdf("1. حساب النهايات واستنتاج المقاربات العمودية والأفقية:"), ln=True, align='R')
-            if cache.get('limits_bytes'): pdf_add_bytes_image(pdf, cache['limits_bytes'], x=15, w=180); pdf.ln(2)
+            pdf_add_section_with_chunks(
+                pdf,
+                "1. حساب النهايات واستنتاج المقاربات العمودية والأفقية:",
+                cache.get('limits_chunks_bytes', []),
+                x=15, w=180
+            )
 
-            if pdf.get_y() > 195: pdf.add_page()
-            pdf.cell(0, 8, fix_arabic_pdf("2. حساب الدالة المشتقة:"), ln=True, align='R')
-            if cache.get('deriv_bytes'): pdf_add_bytes_image(pdf, cache['deriv_bytes'], x=15, w=180); pdf.ln(2)
+            pdf_add_section_with_chunks(
+                pdf,
+                "2. حساب الدالة المشتقة:",
+                cache.get('deriv_chunks_bytes', []),
+                x=15, w=180
+            )
 
-            if pdf.get_y() > 175: pdf.add_page()
-            pdf.cell(0, 8, fix_arabic_pdf("3. جدول التغيرات:"), ln=True, align='R')
-            if cache.get('var_table_bytes'): pdf_add_bytes_image(pdf, cache['var_table_bytes'], x=10, w=190); pdf.ln(3)
+            if cache.get('var_table_bytes'):
+                pdf_add_section_with_chunks(
+                    pdf,
+                    "3. جدول التغيرات:",
+                    [cache['var_table_bytes']],
+                    x=10, w=190
+                )
 
             if cache.get('rel_pos_tables_info'):
-                if pdf.get_y() > 175: pdf.add_page()
-                pdf.cell(0, 8, fix_arabic_pdf("4. استنتاج معادلة المستقيم المقارب المائل وشرح طريقتها:"), ln=True, align='R')
-                for od in cache['rel_pos_tables_info']:
-                    pdf_add_bytes_image(pdf, od.get('oblique_steps_bytes'), x=15, w=180); pdf.ln(2)
-                if pdf.get_y() > 175: pdf.add_page()
-                pdf.cell(0, 8, fix_arabic_pdf("5. جدول الوضع النسبي بين المقارب المائل والمنحنى (Cf):"), ln=True, align='R')
-                for od in cache['rel_pos_tables_info']:
-                    pdf_add_bytes_image(pdf, od.get('rel_pos_bytes'), x=10, w=190); pdf.ln(2)
+                ob_chunks = [od['oblique_steps_bytes'] for od in cache['rel_pos_tables_info'] if od.get('oblique_steps_bytes')]
+                pdf_add_section_with_chunks(
+                    pdf,
+                    "4. استنتاج معادلة المستقيم المقارب المائل وشرح طريقتها:",
+                    ob_chunks,
+                    x=15, w=180
+                )
+                rp_chunks = [od['rel_pos_bytes'] for od in cache['rel_pos_tables_info'] if od.get('rel_pos_bytes')]
+                pdf_add_section_with_chunks(
+                    pdf,
+                    "5. جدول الوضع النسبي بين المقارب المائل والمنحنى (Cf):",
+                    rp_chunks,
+                    x=10, w=190
+                )
 
-            pdf.add_page()
-            pdf.set_font("Amiri", size=17); pdf.set_text_color(21, 101, 192)
-            pdf.cell(0, 9, fix_arabic_pdf("6. التمثيل البياني للدالة (Cf) والمناقشة البيانية:"), ln=True, align='R')
+            # القسم 6: الرسم البياني وجدول المناقشة البيانية
             fig_light, _ = draw_plot(0, mode='light')
             light_bytes = fig_to_bytes(fig_light)
-            pdf_add_bytes_image(pdf, light_bytes, x=20, w=170); pdf.ln(3)
-            if cache.get('eq_bytes'): pdf_add_bytes_image(pdf, cache['eq_bytes'], x=60, w=90); pdf.ln(2)
+            plot_h = get_img_height_mm(light_bytes, 165)
+            eq_h = get_img_height_mm(cache.get('eq_bytes'), 85)
+            disc_h = get_img_height_mm(cache.get('disc_table_bytes'), 180)
+
+            if pdf.get_y() + 12 + plot_h > 280:
+                pdf.add_page()
+            pdf.set_font("Amiri", size=16); pdf.set_text_color(21, 101, 192)
+            pdf.cell(0, 9, fix_arabic_pdf("6. التمثيل البياني للدالة (Cf) والمناقشة البيانية:"), ln=True, align='R')
+            pdf_add_bytes_image(pdf, light_bytes, x=22, w=165); pdf.ln(2)
+            if pdf.get_y() + eq_h + disc_h > 282 and pdf.get_y() > 40:
+                pdf.add_page()
+            if cache.get('eq_bytes'): pdf_add_bytes_image(pdf, cache['eq_bytes'], x=62, w=85); pdf.ln(1)
             if cache.get('disc_table_bytes'): pdf_add_bytes_image(pdf, cache['disc_table_bytes'], x=15, w=180)
 
             pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
