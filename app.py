@@ -281,7 +281,7 @@ def extract_math_from_image(image_file, api_key):
         "Output ONLY the right-hand side expression in plain mathematical notation.\n"
         "Strict rules:\n"
         "- Do NOT include 'f(x) =' or 'y ='.\n"
-        "- For exponentials, write e^(...) instead of exp(...). Example: x - (x + 2)*e^(-x).\n"
+        "- For exponentials, write e^(...) instead of exp(...). Example: x*(e^x - 1)^2.\n"
         "- For fractions, wrap numerator and denominator in parentheses: (numerator)/(denominator).\n"
         "- For natural log, write ln(...). For square root, write sqrt(...). For |x|, write abs(x).\n"
         "- Output ONLY the single-line formula with no markdown, no backticks, and no extra words."
@@ -441,27 +441,27 @@ def safe_solve_real(expr, x_sym):
 
 def get_sol_color_pdf(sol_text):
     if "لا توجد" in sol_text or "ليس لها" in sol_text: return "#D32F2F"
+    if "ثلاثة" in sol_text: return "#C2185B"
+    if "أربعة" in sol_text: return "#00796B"
+    if "حلان" in sol_text or "مختلفان" in sol_text: return "#0284C7"
     if "مضاعف" in sol_text: return "#D97706"
     if "حل وحيد" in sol_text or "حل واحد" in sol_text: return "#2E7D32"
     if "معدوم" in sol_text: return "#0D9488"
-    if "حلان" in sol_text or "مختلفان" in sol_text: return "#0284C7"
-    if "ثلاثة" in sol_text: return "#C2185B"
-    if "أربعة" in sol_text: return "#00796B"
     return "#6D28D9"
 
 def get_sol_color_html(sol_text):
     if "لا توجد" in sol_text or "ليس لها" in sol_text: return "#EF4444"
+    if "ثلاثة" in sol_text: return "#F472B6"
+    if "أربعة" in sol_text: return "#2DD4BF"
+    if "حلان" in sol_text or "مختلفان" in sol_text: return "#38BDF8"
     if "مضاعف" in sol_text: return "#F59E0B"
     if "حل وحيد" in sol_text or "حل واحد" in sol_text: return "#4ADE80"
     if "معدوم" in sol_text: return "#2DD4BF"
-    if "حلان" in sol_text or "مختلفان" in sol_text: return "#38BDF8"
-    if "ثلاثة" in sol_text: return "#F472B6"
-    if "أربعة" in sol_text: return "#2DD4BF"
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
-if 'f_val' not in st.session_state: st.session_state.f_val = "x - (x+2)*e^(-x)"
-if 'g_val' not in st.session_state: st.session_state.g_val = "x + m"
+if 'f_val' not in st.session_state: st.session_state.f_val = "x*(e^x - 1)^2"
+if 'g_val' not in st.session_state: st.session_state.g_val = "m*x"
 if 'kbd_target' not in st.session_state: st.session_state.kbd_target = "f"
 
 with st.expander("⌨ لوحة المفاتيح المساعدة", expanded=False):
@@ -508,8 +508,8 @@ with col_img:
                     else: st.error(f"❌ تعذر استخراج الدالة حالياً: {err_msg}")
 
 with col_text:
-    st.text_input("أدخل عبارة الدالة f(x):", key="f_val", placeholder="مثال: x - (x+2)*e^(-x)")
-    st.text_input("أدخل معادلة المستقيم بدلالة m (تُترك m للمناقشة الأفقية):", key="g_val", placeholder="m")
+    st.text_input("أدخل عبارة الدالة f(x):", key="f_val", placeholder="مثال: x*(e^x - 1)^2")
+    st.text_input("أدخل معادلة المستقيم بدلالة m (تُترك m للمناقشة الأفقية):", key="g_val", placeholder="m*x")
     st.button("✅ تأكيد ورسم الدالة", use_container_width=True)
 
 current_f = st.session_state.f_val.strip()
@@ -517,7 +517,7 @@ current_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() els
 # ==================== نهاية الجزء الأول (1/2) ====================
 # ==================== بداية الجزء الثاني (2/2) ====================
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v23"):
+def build_math_context(f_str, g_str, version_tag="v24"):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -1029,6 +1029,40 @@ def build_math_context(f_str, g_str, version_tag="v23"):
             od['oblique_steps_bytes'] = fig_to_bytes(fig_ob)
             rel_pos_tables_info.append(od)
 
+        # ==================== المحرك الشامل للمناقشة البيانية (الأفقية + المائلة + الدورانية) ====================
+        def check_x_in_f_domain(xv, x_sym_val=None):
+            if not np.isfinite(xv): return False
+            if any(abs(xv - safe_float(va)) < 1e-4 for va in true_v_asymptotes): return False
+            if any(abs(xv - h['val']) < 1e-4 for h in holes): return False
+            try:
+                sub_target = x_sym_val if x_sym_val is not None else xv
+                fv = safe_float(f_expr.subs(x_sym, sub_target))
+                return bool(np.isfinite(fv))
+            except Exception:
+                return False
+
+        # 1. اكتشاف الحلول الثابتة الدائمة (مراكز الدوران في المناقشة الدورانية حيث تنعدم المعادلة مهما كان m)
+        always_roots = []
+        try:
+            diff_fg = sp.expand(f_expr - g_expr)
+            coeff_m = sp.simplify(diff_fg.coeff(m_sym, 1))
+            rest_no_m = sp.simplify(diff_fg.subs(m_sym, 0))
+            if coeff_m != 0 and coeff_m.has(x_sym):
+                for r_piv in safe_solve_real(coeff_m, x_sym):
+                    r_fl = safe_float(r_piv)
+                    if check_x_in_f_domain(r_fl, r_piv):
+                        val_rest = safe_float(rest_no_m.subs(x_sym, r_piv))
+                        if np.isfinite(val_rest) and abs(val_rest) < 1e-6:
+                            if not any(abs(r_fl - ar['x_val']) < 1e-4 for ar in always_roots):
+                                always_roots.append({
+                                    'x_val': r_fl,
+                                    'sym': r_piv,
+                                    'sign': 'zero' if abs(r_fl) < 1e-5 else ('pos' if r_fl > 0 else 'neg')
+                                })
+        except Exception:
+            pass
+
+        # 2. عزل الوسيط m = M(x) لدراسة بقية الحلول المتحركة بدلالة x
         try:
             m_expr_list = sp.solve(sp.simplify(f_expr - g_expr), m_sym)
             m_expr = sp.simplify(m_expr_list[0]) if m_expr_list else sp.simplify(f_expr)
@@ -1038,6 +1072,8 @@ def build_math_context(f_str, g_str, version_tag="v23"):
         m_func_eval = sp.lambdify(x_sym, m_expr, 'numpy')
 
         x_split_syms = [sp.Integer(0)]
+        for ar in always_roots:
+            x_split_syms.append(ar['sym'])
         for r in candidate_v_asymptotes:
             x_split_syms.append(r)
 
@@ -1107,15 +1143,12 @@ def build_math_context(f_str, g_str, version_tag="v23"):
             except Exception:
                 pass
 
-        def is_x_in_domain(x_item):
+        def is_x_in_m_domain(x_item):
             xv = x_item['val']
-            if not np.isfinite(xv): return False
-            if any(abs(xv - safe_float(va)) < 1e-4 for va in true_v_asymptotes): return False
-            if any(abs(xv - h['val']) < 1e-4 for h in holes): return False
+            if not check_x_in_f_domain(xv, x_item['sym']): return False
             try:
-                fv = safe_float(f_expr.subs(x_sym, x_item['sym']))
                 mv = safe_float(m_expr.subs(x_sym, x_item['sym']))
-                return bool(np.isfinite(fv) and np.isfinite(mv))
+                return bool(np.isfinite(mv))
             except Exception:
                 return False
 
@@ -1132,7 +1165,7 @@ def build_math_context(f_str, g_str, version_tag="v23"):
                     m_critical_floats.append(fl)
 
         for item in unique_x_splits:
-            if is_x_in_domain(item):
+            if is_x_in_m_domain(item):
                 try:
                     m_exact_pt = sp.simplify(m_expr.subs(x_sym, item['sym']))
                     m_fl_pt = safe_float(m_exact_pt)
@@ -1199,16 +1232,19 @@ def build_math_context(f_str, g_str, version_tag="v23"):
                 except Exception: pass
             return exactify_value(val_float)
 
+        # حساب عدد وإشارة الحلول لأي قيمة m مع دمج الحلول الثابتة (مراكز الدوران) والحلول المتحركة
         def get_roots_text_exact(m_test):
             pos_s, neg_s, zero_s = 0, 0, 0
             pos_d, neg_d, zero_d = 0, 0, 0
 
+            # 1. الحلول داخل المجالات المفتوحة لكل فرع رتيب
             for br in monotonic_branches:
                 if not br['is_const']:
                     if br['m_low'] + 1e-5 < m_test < br['m_high'] - 1e-5:
                         if br['sign'] == 'pos': pos_s += 1
                         else: neg_s += 1
 
+            # 2. الحلول الواقعة على نقاط التقطيع نفسها
             for pt in point_evaluations:
                 if abs(m_test - pt['m_val']) < 1e-4:
                     if pt['mult'] == 'double':
@@ -1219,6 +1255,22 @@ def build_math_context(f_str, g_str, version_tag="v23"):
                         if pt['sign'] == 'pos': pos_s += 1
                         elif pt['sign'] == 'neg': neg_s += 1
                         else: zero_s += 1
+
+            # 3. إضافة الحلول الثابتة الدائمة (مراكز الدوران مثل x=0 في المناقشة الدورانية) إن لم تكن قد أُحصيت في نفس النقطة
+            for ar in always_roots:
+                already_counted_at_m = any(
+                    abs(pt['x_val'] - ar['x_val']) < 1e-4 and abs(m_test - pt['m_val']) < 1e-4
+                    for pt in point_evaluations
+                )
+                if not already_counted_at_m:
+                    if ar['sign'] == 'pos': pos_s += 1
+                    elif ar['sign'] == 'neg': neg_s += 1
+                    else: zero_s += 1
+
+            # إذا كانت هناك نقطة دوران ثابتة (مثل y=mx)، فإن تماس المستقيم مع المنحنى عند مركز الدوران يبقيها حلاً وحيداً (قيمته 0)
+            if always_roots and (pos_s + neg_s + pos_d + neg_d == 0) and (zero_d == 1 and zero_s == 0):
+                zero_d = 0
+                zero_s = 1
 
             total_roots = pos_s + neg_s + zero_s + pos_d + neg_d + zero_d
             if total_roots == 0:
@@ -1239,6 +1291,18 @@ def build_math_context(f_str, g_str, version_tag="v23"):
                 if pos_s == 1 and zero_s == 1: return "حلان أحدهما موجب والآخر معدوم"
                 if neg_s == 1 and zero_s == 1: return "حلان أحدهما سالب والآخر معدوم"
 
+            if total_roots == 3 and pos_d == 0 and neg_d == 0 and zero_d == 0:
+                if pos_s == 1 and neg_s == 1 and zero_s == 1:
+                    return "ثلاثة حلول: حل معدوم وحلان مختلفان في الإشارة"
+                if pos_s == 2 and zero_s == 1:
+                    return "ثلاثة حلول: حل معدوم وحلان موجبان"
+                if neg_s == 2 and zero_s == 1:
+                    return "ثلاثة حلول: حل معدوم وحلان سالبان"
+                if pos_s == 2 and neg_s == 1:
+                    return "ثلاثة حلول: حل سالب وحلان موجبان"
+                if pos_s == 1 and neg_s == 2:
+                    return "ثلاثة حلول: حل موجب وحلان سالبان"
+
             desc = []
             if pos_d == 1 and neg_d == 1: desc.append("حلان مضاعفان (أحدهما موجب والآخر سالب)")
             else:
@@ -1257,11 +1321,6 @@ def build_math_context(f_str, g_str, version_tag="v23"):
             elif neg_s > 2: desc.append(f"{neg_s} حلول سالبة")
 
             if zero_s == 1: desc.append("حل معدوم")
-
-            if pos_s == 2 and neg_s == 1 and pos_d == 0 and neg_d == 0 and zero_s == 0:
-                return "ثلاثة حلول: حل سالب وحلان موجبان"
-            if pos_s == 1 and neg_s == 2 and pos_d == 0 and neg_d == 0 and zero_s == 0:
-                return "ثلاثة حلول: حل موجب وحلان سالبان"
 
             return " و ".join(desc) if desc else f"{total_roots} حلول"
 
@@ -1488,7 +1547,7 @@ def build_math_context(f_str, g_str, version_tag="v23"):
             ax_dt.text(8, nrows * 0.7 + 0.35, fix_arabic_mpl("المجال / القيمة المضبوطة"), color='white', fontsize=16, fontweight='bold', ha='center', va='center')
             for i, (m_latex, sol_text, L, H) in enumerate(final_table):
                 y_center = (nrows - i - 1) * 0.7 + 0.35
-                ax_dt.text(3, y_center, fix_arabic_mpl(sol_text), fontsize=14 if len(sol_text) > 35 else 15.5, ha='center', va='center', color=get_sol_color_pdf(sol_text), fontweight='bold')
+                ax_dt.text(3, y_center, fix_arabic_mpl(sol_text), fontsize=13.5 if len(sol_text) > 35 else 15.5, ha='center', va='center', color=get_sol_color_pdf(sol_text), fontweight='bold')
                 try: ax_dt.text(8, y_center, f"${m_latex}$", fontsize=16, ha='center', va='center', color='#1E3A8A')
                 except: ax_dt.text(8, y_center, str(m_latex), fontsize=14, ha='center', va='center', color='#1E3A8A')
             return fig_to_bytes(fig_dt)
@@ -1510,10 +1569,10 @@ def build_math_context(f_str, g_str, version_tag="v23"):
     except Exception as e: cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v23":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v24":
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v23")
-        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v23"
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v24")
+        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v24"
 
 cache = st.session_state.math_cache
 
@@ -1604,11 +1663,16 @@ else:
             diff_plot = cache['y_vals_plot'] - y_g_plot
             intersect_x = []
             for i in range(len(diff_plot)-1):
-                if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]) and diff_plot[i] * diff_plot[i+1] < 0:
-                    x_c = cache['x_vals_plot'][i] - diff_plot[i] * (cache['x_vals_plot'][i+1] - cache['x_vals_plot'][i]) / (diff_plot[i+1] - diff_plot[i])
-                    if abs(x_c) <= 12.0 and not any(abs(x_c - safe_float(a['val'])) < 1e-3 for a in cache['unique_asymptotes'] if a['type'] == 'v'):
-                        if abs(cache['y_vals_plot'][i+1] - cache['y_vals_plot'][i]) > 1e-9 or abs(y_g_plot[i+1] - y_g_plot[i]) > 1e-9:
-                            intersect_x.append(float(x_c))
+                if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
+                    if diff_plot[i] * diff_plot[i+1] < 0:
+                        x_c = cache['x_vals_plot'][i] - diff_plot[i] * (cache['x_vals_plot'][i+1] - cache['x_vals_plot'][i]) / (diff_plot[i+1] - diff_plot[i])
+                        if abs(x_c) <= 12.0 and not any(abs(x_c - safe_float(a['val'])) < 1e-3 for a in cache['unique_asymptotes'] if a['type'] == 'v'):
+                            if abs(cache['y_vals_plot'][i+1] - cache['y_vals_plot'][i]) > 1e-9 or abs(y_g_plot[i+1] - y_g_plot[i]) > 1e-9:
+                                intersect_x.append(float(x_c))
+                    elif abs(diff_plot[i]) < 1e-9:
+                        x_c = float(cache['x_vals_plot'][i])
+                        if abs(x_c) <= 12.0 and not any(abs(x_c - safe_float(a['val'])) < 1e-3 for a in cache['unique_asymptotes'] if a['type'] == 'v'):
+                            intersect_x.append(x_c)
             unique_ix = []
             for ix in intersect_x:
                 if not any(abs(ix - u) < 0.12 for u in unique_ix): unique_ix.append(ix)
