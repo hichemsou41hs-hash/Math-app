@@ -165,6 +165,17 @@ def safe_float(expr):
         except Exception:
             return np.nan
 
+# دالة تحويل الدوال الزائدية (sinh, cosh, tanh) إلى عباراتها الأسية المقررة في المنهاج الدراسي
+def elim_hyperbolic(expr):
+    if expr is None or isinstance(expr, (int, float, str, np.number)):
+        return expr
+    try:
+        if hasattr(expr, 'has') and expr.has(sp.sinh, sp.cosh, sp.tanh, sp.coth):
+            expr = sp.expand(expr.rewrite(sp.exp))
+    except Exception:
+        pass
+    return expr
+
 def fmt(val):
     if str(val) == 'oo' or val == float('inf'): return "+\infty"
     if str(val) == '-oo' or val == float('-inf'): return "-\infty"
@@ -386,65 +397,50 @@ def fix_arabic_pdf(text):
 def fix_arabic_mpl(text):
     return arabic_reshaper.reshape(text) if PDF_ENABLED else text
 
-# منع ظهور sinh و cosh و tanh وتحويلها دائماً إلى الأسية e مع ترتيب الحدود الموجبة أولاً
+# تنسيق LaTeX مع إزالة الدوال الزائدية وترتيب الحدود الثابتة (مثل كتابة e - 2 و e - 2 - e^{-1})
 def sanitize_latex(expr):
+    expr = elim_hyperbolic(expr)
     if hasattr(expr, 'has'):
         if expr.has(sp.LambertW) or (hasattr(sp, 'RootOf') and expr.has(sp.RootOf)):
             try:
                 fl = safe_float(expr)
                 if np.isfinite(fl):
                     return str(int(round(fl))) if abs(fl - round(fl)) < 1e-5 else str(round(fl, 2))
-            except Exception:
-                pass
-        if expr.has(sp.sinh, sp.cosh, sp.tanh, sp.csch, sp.sech, sp.coth):
-            try:
-                expr = sp.expand(expr.rewrite(sp.exp))
-            except Exception:
-                pass
-        # ترتيب الحدود الثابتة التي تحتوي على e لتبدأ بالحد الموجب (مثل e - 2 و e - 2 - e^-1 بدلاً من -2 + e)
+            except: pass
+        # إذا كان المقدار ثابتاً عددياً بدلالة e (مثل -2 + e - e^-1)، نرتب حدوده ليبدأ بالموجب e ثم العدد ثم e^-1
         if not expr.free_symbols and expr.is_Add:
-            try:
-                pos_e_terms = []
-                neg_num_terms = []
-                neg_e_inv_terms = []
-                other_terms = []
-                for arg in expr.args:
-                    fl_a = safe_float(arg)
-                    if arg.has(sp.E) and fl_a > 0:
-                        pos_e_terms.append(sp.latex(arg))
-                    elif not arg.has(sp.E) and fl_a < 0:
-                        neg_num_terms.append(sp.latex(arg))
-                    elif arg.has(sp.E) and fl_a < 0:
-                        if arg == -sp.exp(-1) or str(arg) == '-exp(-1)':
-                            neg_e_inv_terms.append("- e^{-1}")
-                        else:
-                            neg_e_inv_terms.append(sp.latex(arg))
+            pos_e, nums, neg_e = [], [], []
+            for arg in expr.args:
+                if arg == sp.E or (arg.is_Mul and arg.has(sp.E) and not arg.has(sp.exp(-1)) and not arg.has(1/sp.E) and safe_float(arg) > 0):
+                    pos_e.append(sp.latex(arg))
+                elif arg.is_Rational or arg.is_Integer:
+                    nums.append(arg)
+                else:
+                    neg_e.append(arg)
+            if pos_e:
+                res_parts = [pos_e[0]]
+                for pe in pos_e[1:]:
+                    res_parts.append(f"+ {pe}" if not pe.startswith('-') else pe)
+                for n_arg in nums:
+                    n_lat = sp.latex(n_arg)
+                    res_parts.append(f"+ {n_lat}" if not n_lat.startswith('-') else n_lat)
+                for ne_arg in neg_e:
+                    if ne_arg == -sp.exp(-1) or ne_arg == -1/sp.E:
+                        res_parts.append("- e^{-1}")
+                    elif ne_arg == sp.exp(-1) or ne_arg == 1/sp.E:
+                        res_parts.append("+ e^{-1}")
                     else:
-                        l_a = sp.latex(arg)
-                        other_terms.append(l_a if l_a.startswith('-') else f"+ {l_a}")
-                ordered_parts = []
-                for idx_p, pt in enumerate(pos_e_terms + other_terms + neg_num_terms + neg_e_inv_terms):
-                    pt_s = pt.strip()
-                    if idx_p == 0:
-                        if pt_s.startswith('+'): pt_s = pt_s[1:].strip()
-                        ordered_parts.append(pt_s)
-                    else:
-                        if pt_s.startswith('-') or pt_s.startswith('+'):
-                            ordered_parts.append(pt_s)
-                        else:
-                            ordered_parts.append(f"+ {pt_s}")
-                if ordered_parts:
-                    s_custom = " ".join(ordered_parts)
-                    return s_custom.replace('log', 'ln').replace(r'\left', '').replace(r'\right', '').replace(r'\operatorname', r'\mathrm')
-            except Exception:
-                pass
+                        ne_lat = sp.latex(ne_arg)
+                        res_parts.append(f"+ {ne_lat}" if not ne_lat.startswith('-') else ne_lat)
+                s_custom = " ".join(res_parts)
+                return s_custom.replace('log', 'ln').replace(r'\left', '').replace(r'\right', '')
 
-    if not isinstance(expr, str):
-        expr = sp.latex(expr)
+    if not isinstance(expr, str): expr = sp.latex(expr)
     s = str(expr).replace('log', 'ln').replace(r'\left', '').replace(r'\right', '').replace(r'\operatorname', r'\mathrm')
     return s
 
 def format_lim_val(lim_sym):
+    lim_sym = elim_hyperbolic(lim_sym)
     if lim_sym == sp.oo or str(lim_sym) == 'oo': return r"+\infty"
     if lim_sym == -sp.oo or str(lim_sym) == '-oo': return r"-\infty"
     if lim_sym == sp.zoo or str(lim_sym) == 'zoo': return r"\pm\infty"
@@ -454,14 +450,13 @@ def safe_solve_real(expr, x_sym):
     roots = []
     try:
         for r in sp.solve(expr, x_sym):
+            r = elim_hyperbolic(r)
             fl = safe_float(r)
             if np.isfinite(fl):
                 if abs(fl - round(fl)) < 1e-6: roots.append(sp.Integer(int(round(fl))))
                 elif hasattr(r, 'has') and (r.has(sp.LambertW) or (hasattr(sp, 'RootOf') and r.has(sp.RootOf))):
                     roots.append(sp.nsimplify(round(fl, 4), tolerance=1e-3))
-                else:
-                    r_clean = r.rewrite(sp.exp) if hasattr(r, 'rewrite') else r
-                    roots.append(sp.expand(r_clean))
+                else: roots.append(elim_hyperbolic(sp.simplify(r)))
     except Exception: pass
     try:
         f_num = sp.lambdify(x_sym, expr, 'numpy')
@@ -489,22 +484,22 @@ def safe_solve_real(expr, x_sym):
 
 def get_sol_color_pdf(sol_text):
     if "لا توجد" in sol_text or "ليس لها" in sol_text: return "#D32F2F"
-    if "ثلاثة" in sol_text: return "#C2185B"
-    if "أربعة" in sol_text: return "#00796B"
-    if "حلان" in sol_text or "مختلفان" in sol_text: return "#0284C7"
     if "مضاعف" in sol_text: return "#D97706"
     if "حل وحيد" in sol_text or "حل واحد" in sol_text: return "#2E7D32"
     if "معدوم" in sol_text: return "#0D9488"
+    if "حلان" in sol_text or "مختلفان" in sol_text: return "#0284C7"
+    if "ثلاثة" in sol_text: return "#C2185B"
+    if "أربعة" in sol_text: return "#00796B"
     return "#6D28D9"
 
 def get_sol_color_html(sol_text):
     if "لا توجد" in sol_text or "ليس لها" in sol_text: return "#EF4444"
-    if "ثلاثة" in sol_text: return "#F472B6"
-    if "أربعة" in sol_text: return "#2DD4BF"
-    if "حلان" in sol_text or "مختلفان" in sol_text: return "#38BDF8"
     if "مضاعف" in sol_text: return "#F59E0B"
     if "حل وحيد" in sol_text or "حل واحد" in sol_text: return "#4ADE80"
     if "معدوم" in sol_text: return "#2DD4BF"
+    if "حلان" in sol_text or "مختلفان" in sol_text: return "#38BDF8"
+    if "ثلاثة" in sol_text: return "#F472B6"
+    if "أربعة" in sol_text: return "#2DD4BF"
     return "#A78BFA"
 
 if 'auto_play' not in st.session_state: st.session_state.auto_play = False
