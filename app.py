@@ -517,7 +517,7 @@ current_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() els
 # ==================== نهاية الجزء الأول (1/2) ====================
 # ==================== بداية الجزء الثاني (2/2) ====================
 @st.cache_resource
-def build_math_context(f_str, g_str, version_tag="v22"):
+def build_math_context(f_str, g_str, version_tag="v23"):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -1029,7 +1029,6 @@ def build_math_context(f_str, g_str, version_tag="v22"):
             od['oblique_steps_bytes'] = fig_to_bytes(fig_ob)
             rel_pos_tables_info.append(od)
 
-        # ==================== المحرك الدقيق للمناقشة البيانية (Exact Monotonic Branch Engine) ====================
         try:
             m_expr_list = sp.solve(sp.simplify(f_expr - g_expr), m_sym)
             m_expr = sp.simplify(m_expr_list[0]) if m_expr_list else sp.simplify(f_expr)
@@ -1038,7 +1037,6 @@ def build_math_context(f_str, g_str, version_tag="v22"):
 
         m_func_eval = sp.lambdify(x_sym, m_expr, 'numpy')
 
-        # 1. جمع كافة فواصل تقطيع الدالة الوسيطية M(x): القيم الممنوعة، المبدأ x=0، ونقاط انعدام المشتقة M'(x)=0
         x_split_syms = [sp.Integer(0)]
         for r in candidate_v_asymptotes:
             x_split_syms.append(r)
@@ -1058,7 +1056,6 @@ def build_math_context(f_str, g_str, version_tag="v22"):
         except Exception:
             pass
 
-        # التقاط أي ذروة عددية إضافية لـ M(x)
         try:
             x_scan_m = np.linspace(-20, 20, 8001)
             with np.errstate(all='ignore'):
@@ -1085,7 +1082,6 @@ def build_math_context(f_str, g_str, version_tag="v22"):
         except Exception:
             pass
 
-        # ترتيب وتوحيد نقاط تقطيع المحور x
         unique_x_splits = [{'val': -np.inf, 'sym': -sp.oo}]
         for r_s in x_split_syms:
             fl = safe_float(r_s)
@@ -1094,7 +1090,6 @@ def build_math_context(f_str, g_str, version_tag="v22"):
         unique_x_splits.append({'val': np.inf, 'sym': sp.oo})
         unique_x_splits.sort(key=lambda item: item['val'])
 
-        # تحديد نقاط التماس الحقيقية (حيث تنعدم M'(x) وتغير إشارتها حول النقطة)
         dm_func = sp.lambdify(x_sym, dm_expr, 'numpy')
         double_root_x_vals = set()
         for item in unique_x_splits:
@@ -1112,7 +1107,6 @@ def build_math_context(f_str, g_str, version_tag="v22"):
             except Exception:
                 pass
 
-        # فحص انتماء النقطة x لمجموعة تعريف الدالة والمعادلة
         def is_x_in_domain(x_item):
             xv = x_item['val']
             if not np.isfinite(xv): return False
@@ -1125,7 +1119,6 @@ def build_math_context(f_str, g_str, version_tag="v22"):
             except Exception:
                 return False
 
-        # بناء قائمة الفروع الرتيبة (Monotonic Branches) وقائمة النقاط الفردية على محور الفواصل
         monotonic_branches = []
         point_evaluations = []
         sym_m_critical = []
@@ -1141,7 +1134,7 @@ def build_math_context(f_str, g_str, version_tag="v22"):
         for item in unique_x_splits:
             if is_x_in_domain(item):
                 try:
-                    m_ exact_pt = sp.simplify(m_expr.subs(x_sym, item['sym']))
+                    m_exact_pt = sp.simplify(m_expr.subs(x_sym, item['sym']))
                     m_fl_pt = safe_float(m_exact_pt)
                     if np.isfinite(m_fl_pt):
                         register_crit_m(m_exact_pt)
@@ -1206,19 +1199,16 @@ def build_math_context(f_str, g_str, version_tag="v22"):
                 except Exception: pass
             return exactify_value(val_float)
 
-        # حساب عدد وإشارة الحلول لأي قيمة m بالاعتماد على الفروع الرتيبة المضبوطة (دون أي خطأ تقريب للأسية)
         def get_roots_text_exact(m_test):
             pos_s, neg_s, zero_s = 0, 0, 0
             pos_d, neg_d, zero_d = 0, 0, 0
 
-            # 1. الحلول داخل المجالات المفتوحة لكل فرع رتيب
             for br in monotonic_branches:
                 if not br['is_const']:
                     if br['m_low'] + 1e-5 < m_test < br['m_high'] - 1e-5:
                         if br['sign'] == 'pos': pos_s += 1
                         else: neg_s += 1
 
-            # 2. الحلول الواقعة على نقاط التقطيع نفسها (عندما يساوي m إحدى القيم الحدية)
             for pt in point_evaluations:
                 if abs(m_test - pt['m_val']) < 1e-4:
                     if pt['mult'] == 'double':
@@ -1234,7 +1224,6 @@ def build_math_context(f_str, g_str, version_tag="v22"):
             if total_roots == 0:
                 return "لا توجد حلول"
 
-            # صياغة منهجية دقيقة لعدد وإشارة الحلول مطابقة لتصحيح البكالوريا
             if total_roots == 1:
                 if pos_d == 1: return "حل مضاعف موجب تماماً"
                 if neg_d == 1: return "حل مضاعف سالب تماماً"
@@ -1276,7 +1265,6 @@ def build_math_context(f_str, g_str, version_tag="v22"):
 
             return " و ".join(desc) if desc else f"{total_roots} حلول"
 
-        # بناء المجالات الأولية للوسيط m ثم دمج الحالات المتجاورة المتطابقة تلقائياً (مثل دمج m=0 مع ]0;+oo[ في [0;+oo[)
         atomic_items = []
         if m_critical_num:
             atomic_items.append({'type': 'interval', 'L': float('-inf'), 'H': m_critical_num[0], 'l_closed': False, 'r_closed': False, 'sol': get_roots_text_exact(m_critical_num[0] - 1.0)})
@@ -1297,7 +1285,6 @@ def build_math_context(f_str, g_str, version_tag="v22"):
             else:
                 prev = merged_items[-1]
                 if prev['sol'] == item['sol']:
-                    # دمج نقطة مع مجال أو مجال مع نقطة إذا كان لهما نفس عدد وإشارة الحلول تماماً
                     prev['H'] = item['H']
                     prev['r_closed'] = item['r_closed']
                     prev['type'] = 'interval' if prev['L'] != prev['H'] else 'point'
@@ -1523,10 +1510,10 @@ def build_math_context(f_str, g_str, version_tag="v22"):
     except Exception as e: cache['error'] = str(e)
     return cache
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v22":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v23":
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v22")
-        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v22"
+        st.session_state.math_cache = build_math_context(current_f, current_g, "v23")
+        st.session_state.last_f, st.session_state.last_g, st.session_state.cache_ver = current_f, current_g, "v23"
 
 cache = st.session_state.math_cache
 
@@ -1620,7 +1607,6 @@ else:
                 if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]) and diff_plot[i] * diff_plot[i+1] < 0:
                     x_c = cache['x_vals_plot'][i] - diff_plot[i] * (cache['x_vals_plot'][i+1] - cache['x_vals_plot'][i]) / (diff_plot[i+1] - diff_plot[i])
                     if abs(x_c) <= 12.0 and not any(abs(x_c - safe_float(a['val'])) < 1e-3 for a in cache['unique_asymptotes'] if a['type'] == 'v'):
-                        # فلتر لمنع رسم تقاطع وهمي ناتج عن تلاشي الأسية عند القيم الكبيرة
                         if abs(cache['y_vals_plot'][i+1] - cache['y_vals_plot'][i]) > 1e-9 or abs(y_g_plot[i+1] - y_g_plot[i]) > 1e-9:
                             intersect_x.append(float(x_c))
             unique_ix = []
