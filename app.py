@@ -1794,4 +1794,327 @@ cache = st.session_state.math_cache
 
 if not cache.get('valid'):
     if cache.get('error') == 'EMPTY' or not current_f:
-   
+        
+           st.info("✏️ الخانة فارغة حالياً؛ اكتب عبارة الدالة f(x) في الأعلى ثم اضغط على زر «تأكيد ورسم الدالة».")
+    else:
+        st.error(f"⚠️ صيغة الدالة غير مكتملة. تأكد من كتابة العبارة الرياضية بشكل صحيح ثم اضغط على زر «تأكيد ورسم الدالة». ({cache.get('error', '')})")
+else:
+    g_latex_disp = sanitize_latex(cache['g_expr'])
+    st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {sanitize_latex(cache['f_expr'])} \\ y = {g_latex_disp} \end{{cases}}")
+    m_min_val, m_max_val, m_critical_num = cache['m_min_val'], cache['m_max_val'], cache['m_critical_num']
+
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("تشغيل المناقشة آلياً ▶", disabled=st.session_state.auto_play):
+            st.session_state.auto_play = True; st.session_state.m_anim = m_min_val; st.rerun()
+    with col2:
+        if st.button("إيقاف ⏹", disabled=not st.session_state.auto_play):
+            st.session_state.auto_play = False; st.rerun()
+
+    m_val_manual = st.slider("تحكم يدوي:", m_min_val, m_max_val, m_min_val, 0.05, format="%g", key="manual_m", disabled=st.session_state.auto_play)
+    anim_placeholder = st.empty()
+
+    st.markdown("<h3 style='color:#FFD700; text-align:center; direction:rtl; margin-top:15px; margin-bottom:5px;'>📌 المناقشة البيانية</h3>", unsafe_allow_html=True)
+    st.info(fr"🔹 حلول المعادلة $f(x) = {g_latex_disp}$ هي فواصل نقط تقاطع منحنى الدالة $f$ مع المستقيم ذو المعادلة: $y = {g_latex_disp}$")
+
+    table_placeholder = st.empty()
+
+    def generate_st_markdown_table(current_m):
+        md = "| عدد و إشارة حلول المعادلة | المجال / القيمة المضبوطة |\n| :---: | :---: |\n"
+        active_idx = 0
+        for idx, (m_latex, sol_text, L, H) in enumerate(cache['final_table']):
+            if (L == H and abs(current_m - L) <= 0.04) or (L == float('-inf') and current_m <= H - 0.04) or (H == float('inf') and current_m >= L + 0.04) or (L + 0.04 <= current_m <= H - 0.04):
+                active_idx = idx
+        for idx, (m_latex, sol_text, L, H) in enumerate(cache['final_table']):
+            c_text = get_sol_color_html(sol_text)
+            if idx == active_idx:
+                text_cell = f"<span style='display:inline-block; width:90%; background-color:#334155; border:2px solid #FFD700; padding:4px; border-radius:6px; color:{c_text}; font-weight:bold; font-size:17px;'>{sol_text}</span>"
+                math_cell = f"<span style='display:inline-block; width:90%; background-color:#334155; border:2px solid #FFD700; padding:4px; border-radius:6px; white-space:nowrap; font-size:16px;'>**${m_latex}$**</span>"
+            else:
+                text_cell = f"<span style='color:{c_text}; font-weight:bold; font-size:17px;'>{sol_text}</span>"
+                math_cell = f"<span style='white-space:nowrap; font-size:16px;'>${m_latex}$</span>"
+            md += f"| {text_cell} | {math_cell} |\n"
+        return md
+
+# ==================== نهاية الجزء 6 من 8 ====================
+# ==================== الجزء 7 من 8 ====================
+    def draw_plot(m_val, mode='dark'):
+        fig, ax = plt.subplots(figsize=(10, 6.5))
+        if mode == 'dark':
+            fig.patch.set_facecolor('#0F172A'); ax.set_facecolor('#0F172A')
+            ax.tick_params(colors='#E2E8F0', labelsize=9)
+            for spine in ax.spines.values(): spine.set_edgecolor('#475569')
+            ax.axhline(0, color='#E2E8F0', linewidth=2.5, zorder=3); ax.axvline(0, color='#E2E8F0', linewidth=2.5, zorder=3)
+            ax.minorticks_on()
+            ax.xaxis.set_major_locator(ticker.MultipleLocator(1)); ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+            ax.grid(True, which='major', color='#475569', linestyle='-', linewidth=1.2, zorder=1)
+            ax.grid(True, which='minor', color='#1E293B', linestyle='-', linewidth=0.8, zorder=1)
+            c_asym, c_cf, c_cg, c_pts, c_text, bg_leg, edge_leg = '#F472B6', '#00E5FF', '#FFD700', '#EF4444', '#E2E8F0', '#1E293B', '#475569'
+        else:
+            fig.patch.set_facecolor('#FFFFFF'); ax.set_facecolor('#FFFFFF')
+            ax.tick_params(colors='black', labelsize=9)
+            for spine in ax.spines.values(): spine.set_edgecolor('#A0A0A0')
+            ax.axhline(0, color='black', linewidth=2, zorder=3); ax.axvline(0, color='black', linewidth=2, zorder=3)
+            ax.minorticks_on()
+            ax.xaxis.set_major_locator(ticker.MultipleLocator(1)); ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+            ax.grid(True, which='major', color='#CCCCCC', linestyle='-', linewidth=1.2, zorder=1)
+            ax.grid(True, which='minor', color='#EBEBEB', linestyle='-', linewidth=0.6, zorder=1)
+            c_asym, c_cf, c_cg, c_pts, c_text, bg_leg, edge_leg = '#D32F2F', '#2E7D32', '#1565C0', '#FF8C00', 'black', '#FFFFFF', '#A0A0A0'
+
+        for asym in cache['unique_asymptotes']:
+            try:
+                if asym['type'] == 'h':
+                    ax.axhline(asym['val'], color=c_asym, linestyle='--', linewidth=2.0, zorder=4)
+                    ax.text(-11.5, asym['val'] + 0.25, f"${asym['label']}$", color=c_asym, fontsize=13, fontweight='bold', ha='left')
+                elif asym['type'] == 'v':
+                    ax.axvline(asym['val'], color=c_asym, linestyle='--', linewidth=2.0, zorder=4)
+                    ax.text(asym['val'] + 0.15, 7.2, f"${asym['label']}$", color=c_asym, fontsize=13, fontweight='bold', va='top')
+                elif asym['type'] == 'oblique':
+                    x_ob = np.array([-12.0, 12.0])
+                    ax.plot(x_ob, asym['a'] * x_ob + asym['b'], color=c_asym, linestyle='-.', linewidth=2.0, zorder=4, label=f"$(\\Delta): {asym['label']}$")
+            except Exception: pass
+
+        for hole in cache['holes']:
+            ax.plot(hole['val'], hole['lim'], marker='o', markerfacecolor=bg_leg, markeredgecolor=c_cf, markersize=8, markeredgewidth=2, zorder=6)
+        ax.plot(cache['x_vals_plot'], cache['y_vals_plot'], color=c_cf, linewidth=3.5, label=r'$(C_f)$', zorder=5)
+
+        if mode == 'dark':
+            with np.errstate(divide='ignore', invalid='ignore', over='ignore'): y_g_plot = cache['g_func'](cache['x_vals_plot'], m_val)
+            if np.isscalar(y_g_plot): y_g_plot = np.full_like(cache['x_vals_plot'], y_g_plot, dtype=float)
+            m_val_str = str(int(m_val)) if int(m_val)==m_val else str(round(m_val, 2))
+            m_eq_label = f"y = {m_val_str}" if current_g.strip() == 'm' else "y = " + current_g.replace('m', f"({m_val_str})" if m_val < 0 else m_val_str).replace('*', '')
+            ax.plot(cache['x_vals_plot'], y_g_plot, color=c_cg, linestyle='--', linewidth=3, label=f"${m_eq_label}$", zorder=5)
+            diff_plot = cache['y_vals_plot'] - y_g_plot
+            intersect_x = []
+            for i in range(len(diff_plot)-1):
+                if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
+                    if abs(diff_plot[i]) < 1e-7:
+                        x_c = float(cache['x_vals_plot'][i])
+                        if abs(x_c) <= 12.0: intersect_x.append(x_c)
+                    elif diff_plot[i] * diff_plot[i+1] < 0:
+                        x_c = cache['x_vals_plot'][i] - diff_plot[i] * (cache['x_vals_plot'][i+1] - cache['x_vals_plot'][i]) / (diff_plot[i+1] - diff_plot[i])
+                        if abs(x_c) <= 12.0 and not any(abs(x_c - safe_float(a['val'])) < 1e-3 for a in cache['unique_asymptotes'] if a['type'] == 'v'):
+                            if abs(cache['y_vals_plot'][i+1] - cache['y_vals_plot'][i]) > 1e-9 or abs(y_g_plot[i+1] - y_g_plot[i]) > 1e-9:
+                                intersect_x.append(float(x_c))
+            unique_ix = []
+            for ix in intersect_x:
+                if not any(abs(ix - u) < 0.12 for u in unique_ix): unique_ix.append(ix)
+            if unique_ix:
+                iy = [m_val if current_g.strip() == 'm' else float(cache['g_func'](ix, m_val)) for ix in unique_ix]
+                ax.scatter(unique_ix, iy, color=c_pts, s=130, zorder=6, edgecolor='white', linewidth=1.5, label=fix_arabic_mpl('نقاط التقاطع'))
+            ax.text(4, m_val + 0.35, f"${m_eq_label}$", color=c_cg, fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
+
+        ax.set_xlim(-12, 12); ax.set_ylim(-8, 8)
+        try:
+            legend = ax.legend(facecolor=bg_leg, edgecolor=edge_leg, loc='upper right', fontsize=12)
+            for text in legend.get_texts(): text.set_color(c_text)
+            fig.tight_layout()
+        except Exception: pass
+        return fig, ax
+
+    def get_img_height_mm(img_bytes, target_w_mm):
+        if not img_bytes: return 0.0
+        try:
+            im = Image.open(io.BytesIO(img_bytes))
+            w_px, h_px = im.size
+            return (h_px / float(w_px)) * target_w_mm if w_px > 0 else 0.0
+        except Exception:
+            return 35.0
+
+    def pdf_add_bytes_image(pdf, img_bytes, x, w):
+        if not img_bytes: return
+        h_mm = get_img_height_mm(img_bytes, w)
+        if pdf.get_y() + h_mm > 280 and pdf.get_y() > 35:
+            pdf.add_page()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_img:
+            tmp_img.write(img_bytes)
+            tmp_path = tmp_img.name
+        try: pdf.image(tmp_path, x=x, w=w)
+        except Exception: pass
+        try: os.remove(tmp_path)
+        except Exception: pass
+
+    def pdf_add_section_with_chunks(pdf, title_text, chunks_list, x, w):
+        if not chunks_list: return
+        first_h = get_img_height_mm(chunks_list[0], w)
+        if pdf.get_y() + 10 + first_h > 280 and pdf.get_y() > 35:
+            pdf.add_page()
+        pdf.set_font("Amiri", size=15); pdf.set_text_color(194, 24, 91)
+        pdf.cell(0, 8, fix_arabic_pdf(title_text), ln=True, align='R')
+        for chunk_b in chunks_list:
+            pdf_add_bytes_image(pdf, chunk_b, x=x, w=w)
+            pdf.ln(1)
+        pdf.ln(2)
+
+    def generate_pdf():
+        if not PDF_ENABLED: return None
+        try:
+            pdf = FPDF(orientation='P', unit='mm', format='A4')
+            pdf.set_auto_page_break(auto=True, margin=12)
+            font_path = "Amiri-Regular.ttf"
+            if not os.path.exists(font_path) or os.path.getsize(font_path) < 10000:
+                req = urllib.request.Request("https://github.com/google/fonts/raw/main/ofl/amiri/Amiri-Regular.ttf", headers={'User-Agent': 'Mozilla/5.0'})
+                with urllib.request.urlopen(req) as response, open(font_path, 'wb') as out_file: out_file.write(response.read())
+            pdf.add_font("Amiri", "", font_path, uni=True)
+            pdf.add_page()
+            pdf.set_font("Amiri", size=22); pdf.set_text_color(21, 101, 192)
+            pdf.cell(0, 10, fix_arabic_pdf("المناقشة البيانية ودراسة تغيرات دالة"), ln=True, align='C')
+            pdf.set_font("Amiri", size=17); pdf.set_text_color(80, 80, 80)
+            pdf.cell(0, 8, fix_arabic_pdf("الأستاذ سوايسية هشام"), ln=True, align='C'); pdf.ln(2)
+
+            pdf_add_section_with_chunks(
+                pdf,
+                "1. حساب النهايات واستنتاج المقاربات العمودية والأفقية:",
+                cache.get('limits_chunks_bytes', []),
+                x=15, w=180
+            )
+
+            pdf_add_section_with_chunks(
+                pdf,
+                "2. حساب الدالة المشتقة:",
+                cache.get('deriv_chunks_bytes', []),
+                x=15, w=180
+            )
+
+            if cache.get('var_table_bytes'):
+                pdf_add_section_with_chunks(
+                    pdf,
+                    "3. جدول التغيرات:",
+                    [cache['var_table_bytes']],
+                    x=10, w=190
+                )
+
+            has_oblique = bool(cache.get('rel_pos_tables_info'))
+            if has_oblique:
+                ob_chunks = [od['oblique_steps_bytes'] for od in cache['rel_pos_tables_info'] if od.get('oblique_steps_bytes')]
+                pdf_add_section_with_chunks(
+                    pdf,
+                    "4. استنتاج معادلة المستقيم المقارب المائل وشرح طريقتها:",
+                    ob_chunks,
+                    x=15, w=180
+                )
+                rp_chunks = [od['rel_pos_bytes'] for od in cache['rel_pos_tables_info'] if od.get('rel_pos_bytes')]
+                pdf_add_section_with_chunks(
+                    pdf,
+                    "5. جدول الوضع النسبي بين المقارب المائل والمنحنى (Cf):",
+                    rp_chunks,
+                    x=10, w=190
+                )
+
+            plot_sec_num = 6 if has_oblique else 4
+            fig_light, _ = draw_plot(0, mode='light')
+            light_bytes = fig_to_bytes(fig_light)
+            plot_h = get_img_height_mm(light_bytes, 165)
+
+            if pdf.get_y() + 10 + plot_h > 280 and pdf.get_y() > 35:
+                pdf.add_page()
+            pdf.set_font("Amiri", size=15); pdf.set_text_color(194, 24, 91)
+            pdf.cell(0, 8, fix_arabic_pdf(f"{plot_sec_num}. التمثيل البياني للدالة (Cf):"), ln=True, align='R')
+            pdf_add_bytes_image(pdf, light_bytes, x=22, w=165); pdf.ln(3)
+
+            disc_sec_num = plot_sec_num + 1
+            eq_h = get_img_height_mm(cache.get('eq_bytes'), 180)
+            disc_h = get_img_height_mm(cache.get('disc_table_bytes'), 180)
+            if pdf.get_y() + 10 + eq_h + disc_h > 282 and pdf.get_y() > 35:
+                pdf.add_page()
+            pdf.set_font("Amiri", size=16); pdf.set_text_color(21, 101, 192)
+            pdf.cell(0, 9, fix_arabic_pdf(f"{disc_sec_num}. المناقشة البيانية:"), ln=True, align='R')
+            if cache.get('eq_bytes'): pdf_add_bytes_image(pdf, cache['eq_bytes'], x=15, w=180); pdf.ln(1)
+            if cache.get('disc_table_bytes'): pdf_add_bytes_image(pdf, cache['disc_table_bytes'], x=15, w=180)
+
+            pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+            pdf_file.close()
+            pdf.output(pdf_file.name)
+            return pdf_file.name
+        except Exception:
+            return None
+
+# ==================== نهاية الجزء 7 من 8 ====================
+# ==================== الجزء 8 من 8 ====================
+    if st.session_state.auto_play:
+        m_val = st.session_state.m_anim
+        stop_points = sorted(list(set(([0.0] if not m_critical_num else m_critical_num + [m_critical_num[0]-1.5, m_critical_num[-1]+1.5] + [(m_critical_num[i]+m_critical_num[i+1])/2.0 for i in range(len(m_critical_num)-1)]))))
+        while m_val <= m_max_val and st.session_state.auto_play:
+            fig_dark, _ = draw_plot(m_val, mode='dark')
+            anim_placeholder.pyplot(fig_dark, use_container_width=True, clear_figure=True)
+            table_placeholder.markdown(generate_st_markdown_table(m_val), unsafe_allow_html=True)
+            plt.close(fig_dark)
+            time.sleep(1.5 if any(abs(m_val - sp_val) < 1e-4 for sp_val in stop_points) else 0.02)
+            next_m = m_val + 0.2
+            for sp_val in stop_points:
+                if m_val < sp_val - 1e-4 and next_m >= sp_val - 1e-4: next_m = float(sp_val); break
+            m_val = next_m
+        st.session_state.auto_play = False; st.rerun()
+    else:
+        m_val = m_val_manual
+        fig_dark, _ = draw_plot(m_val, mode='dark')
+        anim_placeholder.pyplot(fig_dark, use_container_width=True, clear_figure=True)
+        table_placeholder.markdown(generate_st_markdown_table(m_val), unsafe_allow_html=True)
+        plt.close(fig_dark)
+
+    with st.expander("📊 عرض دراسة الدالة الشاملة بالترتيب المنهجي", expanded=True):
+        st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. حساب النهايات واستنتاج المقارب العمودي أو الأفقي:</h4>", unsafe_allow_html=True)
+        st.latex(cache['domain_latex_st'])
+        for lim_item in cache['limits_data_detailed']:
+            st.latex(lim_item['main'])
+            if lim_item['steps']:
+                st.markdown("<div class='step-box-lim'>🔹 التعليل (خطوات الحساب):</div>", unsafe_allow_html=True)
+                for stp in lim_item['steps']: st.latex(fr"\color{{#C4B5FD}}{{{stp}}}")
+                if lim_item.get('step_note'):
+                    st.markdown(f"<div style='text-align:center; direction:rtl; color:#FDE047; font-size:15px; font-weight:bold;'>💡 ({lim_item['step_note']})</div>", unsafe_allow_html=True)
+            if lim_item.get('geo_txt'):
+                st.success(lim_item['geo_txt'])
+
+        st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
+        for d_step in cache.get('deriv_steps_detailed', []):
+            st.markdown(f"<div class='step-box-deriv'>🔸 {d_step['label']}</div>", unsafe_allow_html=True)
+            for m_str in d_step['math_list']:
+                st.latex(fr"\color{{#FDE68A}}{{{m_str}}}")
+        st.markdown("<div class='step-box-final'>✅ العبارة النهائية للمشتقة:</div>", unsafe_allow_html=True)
+        df_final_latex = cache['df_latex_str_safe']
+        st.latex(r"\color{#4ADE80}{f'(x) = " + df_final_latex + "}")
+
+        st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
+        if cache.get('var_table_bytes'):
+            st.image(cache['var_table_bytes'], use_container_width=True)
+
+        if cache.get('rel_pos_tables_info'):
+            st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>4. استنتاج معادلة المستقيم المقارب المائل (Δ) وشرح طريقة استنتاجها:</h4>", unsafe_allow_html=True)
+            for od in cache['rel_pos_tables_info']:
+                st.info(fr"🔹 بما أن $\lim_{{x \to {od['target_latex']}}} f(x) = \pm\infty$، نبحث عن معامل التوجيه $a$ ثم $b$ بجوار ${od['target_latex']}$:")
+                st.latex(fr"\color{{#FDE68A}}{{a = \lim_{{x \to {od['target_latex']}}} \frac{{f(x)}}{{x}} = {od['a_lat']}}}")
+                st.latex(fr"\color{{#FDE68A}}{{b = \lim_{{x \to {od['target_latex']}}} [f(x) - ({od['a_lat']})x] = {od['b_lat']}}}")
+                st.latex(fr"\color{{#34D399}}{{\lim_{{x \to {od['target_latex']}}} \left[ f(x) - ({od['line_lat']}) \right] = \lim_{{x \to {od['target_latex']}}} \left( {od['rem_lat']} \right) = 0}}")
+                st.success(fr"📐 ومنه المنحنى $(C_f)$ يقبل مستقيماً مقارباً مائلاً $(\Delta)$ بجوار ${od['target_latex']}$ معادلته: $y = {od['line_lat']}$")
+
+            st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>5. جدول الوضع النسبي بين المقارب المائل (Δ) والمنحنى (Cf):</h4>", unsafe_allow_html=True)
+            for od in cache['rel_pos_tables_info']:
+                st.markdown("<div class='step-box-deriv'>🔸 ندرس إشارة الفرق بين عبارة الدالة ومعادلة المستقيم المقارب المائل:</div>", unsafe_allow_html=True)
+                st.latex(fr"\color{{#FDE68A}}{{f(x) - y = {od['rem_lat']}}}")
+                if od.get('rel_pos_bytes'):
+                    st.image(od['rel_pos_bytes'], use_container_width=True)
+
+    # الـ PDF يُنشأ عند الضغط على الزر فقط (وليس عند كل تفاعل)
+    if PDF_ENABLED:
+        if st.button("📄 تجهيز ملف PDF", disabled=st.session_state.auto_play):
+            with st.spinner("جاري إنشاء الملف..."):
+                st.session_state.cached_pdf = generate_pdf()
+        if st.session_state.get('cached_pdf'):
+            try:
+                with open(st.session_state.cached_pdf, "rb") as pdf_file:
+                    pdf_bytes = pdf_file.read()
+                st.download_button(label="📥 تحميل الحل والدراسة كملف PDF", data=pdf_bytes, file_name="monaqasha_souaissia.pdf", mime="application/pdf", disabled=st.session_state.auto_play)
+            except Exception:
+                st.session_state.cached_pdf = None
+
+st.markdown("""
+<div class='footer-social'>
+    <span class='footer-text'>رابط صفحتي في كل من الفايسبوك والانستغرام:</span>
+    <div class='social-links-group'>
+        <a href="https://www.facebook.com/share/1KHcAq6bVm/" target="_blank" class="social-btn fb-btn"><span>Facebook</span></a>
+        <a href="https://www.instagram.com/prof_hicham_math?stkn=dzh0OWgxZ2ltb3Uw" target="_blank" class="social-btn ig-btn"><span>Instagram</span></a>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+# ==================== نهاية الكود ====================
+
