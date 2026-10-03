@@ -4,7 +4,11 @@ import base64
 import io
 import json
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import threading
+import ctypes
 import matplotlib.ticker as ticker
 import sympy as sp
 from scipy.signal import find_peaks
@@ -16,7 +20,22 @@ import urllib.request
 import urllib.error
 import tempfile
 from PIL import Image, ImageOps, ImageEnhance
-from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
+from sympy.parsing.sympy_parser import parse_expr as _raw_parse_expr, standard_transformations, implicit_multiplication_application
+
+# ---- طبقة أمان: قائمة بيضاء قبل تحليل أي عبارة (تمنع تنفيذ كود عشوائي) ----
+_SAFE_TOKEN = re.compile(r'(?:x|m|e|E|pi|ln|log|exp|sqrt|abs|Abs|cos|sin|tan)+')
+
+def parse_expr(s, *args, **kwargs):
+    s = str(s)
+    if len(s) > 200 or re.search(r'[^0-9A-Za-z+\-*/().\s]', s):
+        raise ValueError("رمز غير مسموح في العبارة")
+    for tok in re.findall(r'[A-Za-z_]+', s):
+        if not _SAFE_TOKEN.fullmatch(tok):
+            raise ValueError("كلمة غير مسموحة: " + tok)
+    res = _raw_parse_expr(s, *args, **kwargs)
+    if sp.count_ops(res) > 300:
+        raise ValueError("العبارة معقدة جداً")
+    return res
 
 # إيقاف الطباعة التلقائية للقيم الفارغة (لمنع ظهور كلمة None الخضراء في الشاشة نهائياً)
 try:
@@ -223,11 +242,11 @@ def elim_hyperbolic(expr):
 
 def fmt(val):
     if str(val) == 'oo' or val == float('inf'):
-        return "+\infty"
+        return r"+\infty"
     if str(val) == '-oo' or val == float('-inf'):
-        return "-\infty"
+        return r"-\infty"
     if str(val) == 'zoo':
-        return "\pm\infty"
+        return r"\pm\infty"
     try:
         f_val = safe_float(val)
         if not np.isfinite(f_val):
@@ -364,8 +383,8 @@ def extract_math_from_image(image_file, api_key):
 
     active_models = []
     try:
-        list_url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
-        req_list = urllib.request.Request(list_url, headers={'User-Agent': 'Mozilla/5.0'})
+        list_url = "https://generativelanguage.googleapis.com/v1beta/models"
+        req_list = urllib.request.Request(list_url, headers={'User-Agent': 'Mozilla/5.0', 'x-goog-api-key': api_key})
         with urllib.request.urlopen(req_list, timeout=10) as resp:
             models_data = json.loads(resp.read().decode('utf-8'))
             for m in models_data.get('models', []):
@@ -412,11 +431,11 @@ def extract_math_from_image(image_file, api_key):
     last_err = ""
     for model_name in candidate_models:
         for api_ver in ["v1beta", "v1"]:
-            url = f"https://generativelanguage.googleapis.com/{api_ver}/models/{model_name}:generateContent?key={api_key}"
+            url = f"https://generativelanguage.googleapis.com/{api_ver}/models/{model_name}:generateContent"
             req = urllib.request.Request(
                 url,
                 data=payload_bytes,
-                headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'},
+                headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0', 'x-goog-api-key': api_key},
                 method='POST'
             )
             try:
@@ -745,8 +764,8 @@ with col_img:
                         st.error(f"❌ تعذر استخراج الدالة حالياً: {err_msg}")
 
 with col_text:
-    st.text_input("أدخل عبارة الدالة f(x):", key="f_val", placeholder="مثال: x+1+x*e^(-2*x)", on_change=apply_current_inputs)
-    st.text_input("أدخل معادلة المستقيم بدلالة m (تُترك m للمناقشة الأفقية):", key="g_val", placeholder="m", on_change=apply_current_inputs)
+    st.text_input("أدخل عبارة الدالة f(x):", key="f_val", max_chars=200, placeholder="مثال: x+1+x*e^(-2*x)", on_change=apply_current_inputs)
+    st.text_input("أدخل معادلة المستقيم بدلالة m (تُترك m للمناقشة الأفقية):", key="g_val", max_chars=200, placeholder="m", on_change=apply_current_inputs)
     if st.button("✅ تأكيد ورسم الدالة", use_container_width=True):
         apply_current_inputs()
 
@@ -754,7 +773,6 @@ current_f = st.session_state.active_f
 current_g = st.session_state.active_g
 # ==================== نهاية الجزء الأول (1/2) ====================
 # ==================== بداية الجزء الثاني (2/2) ====================
-@st.cache_resource(show_spinner=False)
 def build_math_context(f_str, g_str, version_tag="v33"):
     cache = {'valid': False, 'error': ''}
     try:
@@ -1120,8 +1138,1299 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                 end_idx = i
                 l_pt = pts_var_exact[start_idx]
                 r_pt = pts_var_exact[end_idx+1]
-                l_b = "-\infty" if l_pt['val'] == -np.inf else l_pt['latex_x']
-                r_b = "+\infty" if r_pt['val'] == np.inf else r_pt['latex_x']
+                l_b = r"-\infty" if l_pt['val'] == -np.inf else l_pt['latex_x']
+                r_b = r"+\infty" if r_pt['val'] == np.inf else r_pt['latex_x']
+                l_br = "[" if l_pt['type'] == 'bound' else "]"
+                r_br = "]" if r_pt['type'] == 'bound' else "["
+                domain_intervals_str.append(fr"{l_br}{l_b}; {r_b}{r_br}")
+            i += 1
+                
+        domain_latex_st = r"D_f = \color{#FFD700}{" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset") + r"}"
+        domain_latex_mpl = r"D_f = " + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
+
+        limits_data_detailed = []
+        limits_mpl_items = [{'type': 'domain', 'latex': domain_latex_mpl}]
+        oblique_details_list = []
+
+        def build_limit_steps(val_sym, dir_sympy, target_latex, arrow_latex):
+            steps_math = []
+            step_note = None
+            try:
+                num, den = sp.fraction(f_expr)
+                if den != 1 and not den.is_number:
+                    l_num = cached_limit(num, val_sym, dir_sympy)
+                    l_den = cached_limit(den, val_sym, dir_sympy)
+                    l_num_s, l_den_s = format_lim_val(l_num), format_lim_val(l_den)
+                    if l_den == 0 and val_sym not in [sp.oo, -sp.oo]:
+                        try:
+                            eps = 1e-5 if dir_sympy == '+' else -1e-5
+                            d_val = safe_float(den.subs(x_sym, safe_float(val_sym) + eps))
+                            l_den_s = "0^+" if d_val > 0 else "0^-"
+                        except Exception:
+                            pass
+                    steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(num)}\right) = {l_num_s}")
+                    steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(den)}\right) = {l_den_s}")
+                    if l_num in [sp.oo, -sp.oo] and l_den in [sp.oo, -sp.oo]:
+                        step_note = "إزالة حالة عدم التعيين بالتزايد المقارن" if (f_expr.has(sp.exp) or f_expr.has(sp.log)) else "إزالة حالة عدم التعيين بأخذ أكبر حد على أكبر حد"
+                elif f_expr.is_Add:
+                    has_pos_inf, has_neg_inf = False, False
+                    for arg in f_expr.args:
+                        if not arg.is_number:
+                            l_p = cached_limit(arg, val_sym, dir_sympy)
+                            if l_p == sp.oo:
+                                has_pos_inf = True
+                            if l_p == -sp.oo:
+                                has_neg_inf = True
+                            steps_math.append(fr"\lim_{{x {arrow_latex} {target_latex}}} \left({sanitize_latex(arg)}\right) = {format_lim_val(l_p)}")
+                    if has_pos_inf and has_neg_inf and (f_expr.has(sp.exp) or f_expr.has(sp.log)):
+                        step_note = "إزالة حالة عدم التعيين بالتزايد المقارن"
+            except Exception:
+                pass
+            return steps_math, step_note
+
+        def build_geometric_interpretation(val_sym, lim_sym, target_latex):
+            try:
+                lim_sym = elim_hyperbolic(lim_sym)
+                lim_fl = safe_float(lim_sym)
+                if val_sym in [sp.oo, -sp.oo]:
+                    if np.isfinite(lim_fl):
+                        b_lat = sanitize_latex(elim_hyperbolic(sp.simplify(lim_sym)))
+                        if not any(a['type'] == 'h' and abs(a['val'] - lim_fl) < 1e-4 for a in unique_asymptotes):
+                            unique_asymptotes.append({'type': 'h', 'val': lim_fl, 'label': f"y={b_lat}"})
+                        st_txt = fr"📐 **التفسير البياني:** المنحنى $(C_f)$ يقبل مستقيماً مقارباً أفقياً بجوار ${target_latex}$ معادلته: $y = {b_lat}$"
+                        mpl_txt = "التفسير البياني: المنحنى يقبل مستقيماً مقارباً أفقياً معادلته:"
+                        return st_txt, mpl_txt, f"y = {b_lat}"
+                    elif lim_sym in [sp.oo, -sp.oo] or str(lim_sym) in ['oo', '-oo']:
+                        x_test_inf = 1e4 if val_sym == sp.oo else -1e4
+                        with np.errstate(all='ignore'):
+                            a_est = float(f_func(x_test_inf)) / x_test_inf
+                        if not np.isfinite(a_est) or abs(a_est) > 500 or abs(a_est) < 1e-5:
+                            return None, None, None
+                        a_sym = cached_limit(sp.together(f_expr / x_sym), val_sym)
+                        a_fl = safe_float(a_sym)
+                        if np.isfinite(a_fl) and abs(a_fl) >= 1e-7:
+                            diff_expr = sp.together(f_expr - a_sym * x_sym)
+                            b_sym = cached_limit(diff_expr, val_sym)
+                            b_fl = safe_float(b_sym)
+                            if np.isfinite(b_fl):
+                                line_expr = elim_hyperbolic(sp.simplify(a_sym * x_sym + b_sym))
+                                line_lat = sanitize_latex(line_expr)
+                                a_lat = sanitize_latex(elim_hyperbolic(sp.simplify(a_sym)))
+                                b_lat = sanitize_latex(elim_hyperbolic(sp.simplify(b_sym)))
+                                rem_expr = elim_hyperbolic(sp.simplify(sp.together(f_expr - line_expr)))
+                                if not rem_expr.has(sp.Abs):
+                                    try:
+                                        rem_fact = elim_hyperbolic(sp.factor(sp.expand(rem_expr)))
+                                        if not rem_fact.has(sp.Piecewise):
+                                            rem_expr = rem_fact
+                                    except Exception:
+                                        pass
+                                rem_lat = sanitize_latex(rem_expr)
+                                if not any(a['type'] == 'oblique' and abs(a['a'] - a_fl) < 1e-4 and abs(a['b'] - b_fl) < 1e-4 for a in unique_asymptotes):
+                                    unique_asymptotes.append({'type': 'oblique', 'a': a_fl, 'b': b_fl, 'label': f"y={line_lat}"})
+                                if not any(abs(od['a_fl'] - a_fl) < 1e-4 and abs(od['b_fl'] - b_fl) < 1e-4 for od in oblique_details_list):
+                                    oblique_details_list.append({
+                                        'target_latex': target_latex, 'a_sym': a_sym, 'b_sym': b_sym,
+                                        'a_fl': a_fl, 'b_fl': b_fl, 'a_lat': a_lat, 'b_lat': b_lat,
+                                        'line_expr': line_expr, 'line_lat': line_lat,
+                                        'rem_expr': rem_expr, 'rem_lat': rem_lat
+                                    })
+                        return None, None, None
+                else:
+                    if lim_sym in [sp.oo, -sp.oo, sp.zoo] or str(lim_sym) in ['oo', '-oo', 'zoo'] or not np.isfinite(lim_fl):
+                        st_txt = fr"📐 **التفسير البياني:** المنحنى $(C_f)$ يقبل مستقيماً مقارباً عمودياً (موازياً لمحور التراتيب) معادلته: $x = {target_latex}$"
+                        mpl_txt = "التفسير البياني: المنحنى يقبل مستقيماً مقارباً عمودياً معادلته:"
+                        return st_txt, mpl_txt, f"x = {target_latex}"
+            except Exception:
+                pass
+            return None, None, None
+
+        def add_limit(val_sym, dir_sympy, target_latex, arrow_latex=r"\to"):
+            try:
+                lim = cached_limit(f_expr, val_sym, dir_sympy)
+                lim_latex = format_lim_val(lim)
+                expr_latex = sanitize_latex(f_expr)
+                steps_list, step_note = build_limit_steps(val_sym, dir_sympy, target_latex, arrow_latex)
+                geo_st_txt, geo_mpl_txt, geo_mpl_math = build_geometric_interpretation(val_sym, lim, target_latex)
+                
+                latex_streamlit = fr"\lim_{{x {arrow_latex} {target_latex}}} f(x) = \lim_{{x {arrow_latex} {target_latex}}} \left( {expr_latex} \right) = \mathbf{{\color{{#EF4444}}{{{lim_latex}}}}}"
+                limits_data_detailed.append({
+                    'main': latex_streamlit, 'steps': steps_list, 'step_note': step_note, 'geo_txt': geo_st_txt
+                })
+                lhs_mpl = fr"\lim_{{x {arrow_latex} {target_latex}}} f(x) = \lim_{{x {arrow_latex} {target_latex}}} \left( {expr_latex} \right) ="
+                limits_mpl_items.append({'type': 'main', 'lhs': lhs_mpl, 'rhs': fr"{lim_latex}"})
+                for stp in steps_list:
+                    limits_mpl_items.append({'type': 'step', 'math': stp})
+                if step_note:
+                    limits_mpl_items.append({'type': 'note', 'text': f"({step_note})"})
+                if geo_mpl_txt:
+                    limits_mpl_items.append({'type': 'geo', 'text': geo_mpl_txt, 'math': geo_mpl_math})
+            except Exception:
+                pass
+
+        if len(pts_var_exact) > 0:
+            if valid_intervals and valid_intervals[0] and pts_var_exact[0]['sym'] == -sp.oo:
+                add_limit(-sp.oo, '+', r"-\infty", r"\to")
+            if valid_intervals and valid_intervals[-1] and pts_var_exact[-1]['sym'] == sp.oo:
+                add_limit(sp.oo, '-', r"+\infty", r"\to")
+            for i, p in enumerate(pts_var_exact):
+                if p['type'] == 'v_asym':
+                    v_latex = p['latex_x']
+                    if i > 0 and valid_intervals[i-1]:
+                        add_limit(p['sym'], '-', v_latex, r"\overset{<}{\to}")
+                    if i < len(valid_intervals) and valid_intervals[i]:
+                        add_limit(p['sym'], '+', v_latex, r"\overset{>}{\to}")
+
+        def exactify_value(val_float, sym_val=None):
+            if sym_val is not None:
+                try:
+                    sym_val = elim_hyperbolic(sp.simplify(sym_val))
+                    if not any(bad in str(sym_val) for bad in ["LambertW", "RootOf", "Integral", "zoo", "I", "sinh", "cosh"]):
+                        l_str = sanitize_latex(sym_val)
+                        if len(l_str) < 30:
+                            return l_str
+                except Exception:
+                    pass
+            if abs(val_float - np.e) < 1e-3:
+                return "e"
+            if abs(val_float + np.e) < 1e-3:
+                return "-e"
+            if abs(val_float - 1/np.e) < 1e-3:
+                return r"\frac{1}{e}"
+            if abs(val_float + 1/np.e) < 1e-3:
+                return r"-\frac{1}{e}"
+            if abs(val_float - (np.e - 2)) < 1e-3:
+                return "e - 2"
+            if abs(val_float - (np.e - 2 - 1/np.e)) < 1e-3:
+                return "e - 2 - e^{-1}"
+            if abs(val_float - np.pi) < 1e-3:
+                return r"\pi"
+            if abs(val_float + np.pi) < 1e-3:
+                return r"-\pi"
+            if abs(val_float - np.e**2) < 1e-3:
+                return "e^2"
+            if abs(val_float + np.e**2) < 1e-3:
+                return "-e^2"
+            if abs(val_float - 2*np.e) < 1e-3:
+                return "2e"
+            if abs(val_float + 2*np.e) < 1e-3:
+                return "-2e"
+            if abs(val_float - int(round(val_float))) < 1e-3:
+                return str(int(round(val_float)))
+            return str(round(val_float, 2)).rstrip('0').rstrip('.') if '.' in str(round(val_float, 2)) else str(round(val_float, 2))
+
+        def extract_sign_factors(rem_expr):
+            try:
+                if rem_expr.has(sp.Abs):
+                    return []
+                fact_expr = elim_hyperbolic(sp.factor(sp.expand(rem_expr)))
+                num_f, den_f = sp.fraction(sp.together(fact_expr))
+                raw_factors = []
+                if num_f.is_Mul:
+                    raw_factors.extend(list(num_f.args))
+                elif num_f != 1:
+                    raw_factors.append(num_f)
+                if den_f != 1:
+                    if den_f.is_Mul:
+                        raw_factors.extend(list(den_f.args))
+                    else:
+                        raw_factors.append(den_f)
+
+                const_coeff = sp.Integer(1)
+                pos_exp_factors, var_factors = [], []
+                for rf in raw_factors:
+                    if rf.is_number:
+                        const_coeff *= rf
+                    elif rf.func == sp.exp or (rf.is_Pow and rf.args[0] == sp.E):
+                        pos_exp_factors.append(rf)
+                    else:
+                        var_factors.append(rf)
+
+                if 2 <= len(var_factors) <= 3:
+                    final_factors = []
+                    for idx_vf, vf in enumerate(var_factors):
+                        f_item = vf
+                        if idx_vf == 0:
+                            if const_coeff != 1:
+                                f_item = const_coeff * f_item
+                            for pef in pos_exp_factors:
+                                f_item = f_item * pef
+                        f_roots = [safe_float(r) for r in safe_solve_real(vf, x_sym)]
+                        final_factors.append({
+                            'expr': f_item, 'latex': sanitize_latex(f_item),
+                            'func': safe_lambdify(x_sym, f_item),
+                            'roots': [r for r in f_roots if np.isfinite(r)]
+                        })
+                    return final_factors
+            except Exception:
+                pass
+            return []
+
+        rel_pos_tables_info = []
+        for od in oblique_details_list:
+            rem_expr = od['rem_expr']
+            num_rem, den_rem = sp.fraction(sp.together(rem_expr))
+            diff_roots = safe_solve_real(num_rem, x_sym)
+            rp_pts = [{'val': -np.inf, 'sym': -sp.oo, 'latex_x': r"-\infty", 'type': 'inf'}]
+            for r in candidate_v_asymptotes:
+                rp_pts.append({'val': safe_float(r), 'sym': r, 'latex_x': sanitize_latex(r), 'type': 'v_asym'})
+            for r in diff_roots:
+                fl = safe_float(r)
+                if np.isfinite(fl) and not any(abs(p['val'] - fl) < 1e-4 for p in rp_pts):
+                    if np.isfinite(safe_float(f_expr.subs(x_sym, r))):
+                        rp_pts.append({'val': fl, 'sym': r, 'latex_x': sanitize_latex(r), 'type': 'root'})
+            rp_pts.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
+            rp_pts.sort(key=lambda p: p['val'])
+
+            rem_func = safe_lambdify(x_sym, rem_expr)
+            rp_signs, rp_mids = [], []
+            for idx_rp in range(len(rp_pts) - 1):
+                l_v, r_v = rp_pts[idx_rp]['val'], rp_pts[idx_rp+1]['val']
+                mid = 0.0 if (l_v == -np.inf and r_v == np.inf) else (r_v - 1.0 if l_v == -np.inf else (l_v + 1.0 if r_v == np.inf else (l_v + r_v)/2.0))
+                rp_mids.append(mid)
+                try:
+                    val_m = float(rem_func(mid))
+                    if np.isfinite(val_m):
+                        rp_signs.append("+" if val_m > 0 else "-")
+                    else:
+                        rp_signs.append(None)
+                except Exception:
+                    rp_signs.append(None)
+
+            factor_rows = extract_sign_factors(rem_expr)
+            n_f_rows = len(factor_rows)
+            N_rp = len(rp_pts)
+            n_intervals_rp = max(1, N_rp - 1)
+            seg_w_rp = 3.6
+            x_st_rp = 2.5
+            x_max_rp = x_st_rp + n_intervals_rp * seg_w_rp
+            tri_half_w = min(0.78, seg_w_rp * 0.22)
+
+            def get_rp_xc(idx_pt):
+                return x_st_rp + idx_pt * seg_w_rp
+            def get_rp_label_x(idx_pt):
+                if idx_pt == 0:
+                    return x_st_rp + 0.50
+                if idx_pt == N_rp - 1:
+                    return x_max_rp - 0.50
+                return x_st_rp + idx_pt * seg_w_rp
+
+            y_pos_top = 2.2
+            row_h = 0.95
+            y_rem_top = y_pos_top + row_h
+            y_factors_top = y_rem_top + n_f_rows * row_h
+            y_table_top = y_factors_top + row_h
+
+            fig_rp, ax_rp = plt.subplots(figsize=(max(8.5, x_max_rp * 0.82), max(3.2, y_table_top * 0.65)))
+            fig_rp.patch.set_facecolor('white')
+            ax_rp.set_facecolor('white')
+            ax_rp.axis('off')
+
+            ax_rp.plot([0, x_max_rp], [y_table_top, y_table_top], 'k-', lw=2)
+            ax_rp.plot([0, x_max_rp], [y_factors_top, y_factors_top], 'k-', lw=1.5)
+            for idx_fr in range(n_f_rows):
+                y_line_f = y_factors_top - (idx_fr + 1) * row_h
+                ax_rp.plot([0, x_max_rp], [y_line_f, y_line_f], 'k-', lw=1.3)
+            ax_rp.plot([0, x_max_rp], [y_pos_top, y_pos_top], 'k-', lw=1.5)
+            ax_rp.plot([0, x_max_rp], [0, 0], 'k-', lw=2)
+            for xl_rp in [0, x_st_rp, x_max_rp]:
+                ax_rp.plot([xl_rp, xl_rp], [0, y_table_top], 'k-', lw=2)
+
+            ax_rp.text(x_st_rp/2, y_factors_top + row_h/2, '$x$', ha='center', va='center', fontsize=16, color='#1E293B', fontweight='bold')
+            for idx_fr, f_info in enumerate(factor_rows):
+                y_f_c = y_factors_top - (idx_fr + 0.5) * row_h
+                try:
+                    ax_rp.text(x_st_rp/2, y_f_c, f"${f_info['latex']}$", ha='center', va='center', fontsize=14, color='#1E293B', fontweight='bold')
+                except Exception:
+                    ax_rp.text(x_st_rp/2, y_f_c, str(f_info['expr']), ha='center', va='center', fontsize=12, color='#1E293B')
+
+            ax_rp.text(x_st_rp/2, y_pos_top + row_h/2, '$f(x) - y$', ha='center', va='center', fontsize=14.5, color='#1E293B', fontweight='bold')
+            ax_rp.text(x_st_rp/2, y_pos_top * 0.62, fix_arabic_mpl("الوضع"), ha='center', va='center', fontsize=14, color='#1E293B', fontweight='bold')
+            ax_rp.text(x_st_rp/2, y_pos_top * 0.34, fix_arabic_mpl("النسبي"), ha='center', va='center', fontsize=14, color='#1E293B', fontweight='bold')
+
+            for idx_rp, p_rp in enumerate(rp_pts):
+                xc_line = get_rp_xc(idx_rp)
+                xc_lbl = get_rp_label_x(idx_rp)
+                try:
+                    ax_rp.text(xc_lbl, y_factors_top + row_h/2, f"${p_rp['latex_x']}$", ha='center', va='center', fontsize=15, fontweight='bold')
+                except Exception:
+                    ax_rp.text(xc_lbl, y_factors_top + row_h/2, str(p_rp['latex_x']), ha='center', va='center', fontsize=13)
+
+                if p_rp['type'] == 'v_asym':
+                    ax_rp.plot([xc_line-0.05, xc_line-0.05], [0, y_factors_top], 'k-', lw=1.4)
+                    ax_rp.plot([xc_line+0.05, xc_line+0.05], [0, y_factors_top], 'k-', lw=1.4)
+                elif p_rp['type'] == 'root':
+                    ax_rp.plot([xc_line, xc_line], [y_pos_top, y_factors_top], 'k-', lw=1.3)
+                    for idx_fr, f_info in enumerate(factor_rows):
+                        if any(abs(p_rp['val'] - r_f) < 1e-3 for r_f in f_info['roots']):
+                            y_f_c = y_factors_top - (idx_fr + 0.5) * row_h
+                            ax_rp.plot(xc_line, y_f_c, marker='o', markersize=9, markerfacecolor='none', markeredgecolor='k', markeredgewidth=1.6)
+                    ax_rp.plot(xc_line, y_pos_top + row_h/2, marker='o', markersize=9, markerfacecolor='none', markeredgecolor='k', markeredgewidth=1.6)
+                    ax_rp.plot([xc_line, xc_line - tri_half_w], [y_pos_top, 0.0], 'k-', lw=1.4)
+                    ax_rp.plot([xc_line, xc_line + tri_half_w], [y_pos_top, 0.0], 'k-', lw=1.4)
+                    ax_rp.text(xc_line, y_pos_top * 0.58, "$(C_f)$", ha='center', va='center', fontsize=11.5, color='#1E293B', fontweight='bold')
+                    ax_rp.text(xc_line, y_pos_top * 0.35, fix_arabic_mpl("يقطع"), ha='center', va='center', fontsize=11.5, color='#1E293B', fontweight='bold')
+                    ax_rp.text(xc_line, y_pos_top * 0.14, "$(\\Delta)$", ha='center', va='center', fontsize=11.5, color='#1E293B', fontweight='bold')
+
+                if idx_rp < N_rp - 1:
+                    xc_left, xc_right = get_rp_xc(idx_rp), get_rp_xc(idx_rp + 1)
+                    xic = (xc_left + xc_right) / 2.0
+                    mid_val = rp_mids[idx_rp]
+                    sgn = rp_signs[idx_rp]
+                    if sgn is None:
+                        ax_rp.add_patch(plt.Rectangle((xc_left, 0), seg_w_rp, y_factors_top, facecolor='#EF4444', alpha=0.5))
+                    else:
+                        for idx_fr, f_info in enumerate(factor_rows):
+                            y_f_c = y_factors_top - (idx_fr + 0.5) * row_h
+                            try:
+                                vf_m = float(f_info['func'](mid_val))
+                                f_sgn = "+" if vf_m > 0 else "-"
+                                ax_rp.text(xic, y_f_c, f"${f_sgn}$", ha='center', va='center', fontsize=18, color='#1E293B', fontweight='bold')
+                            except Exception:
+                                pass
+                        ax_rp.text(xic, y_pos_top + row_h/2, f"${sgn}$", ha='center', va='center', fontsize=19, color='#2E7D32' if sgn=='+' else '#D32F2F', fontweight='bold')
+                        x_vis_l = xc_left + (tri_half_w * 0.55 if p_rp['type'] == 'root' else 0.0)
+                        x_vis_r = xc_right - (tri_half_w * 0.55 if rp_pts[idx_rp+1]['type'] == 'root' else 0.0)
+                        xic_pos = (x_vis_l + x_vis_r) / 2.0
+                        pos_ar = "فوق" if sgn == '+' else "تحت"
+                        col_pos = '#15803D' if sgn == '+' else '#B91C1C'
+                        ax_rp.text(xic_pos + 0.05, y_pos_top * 0.65, "$(C_f)$", ha='left', va='center', fontsize=12.5, color=col_pos, fontweight='bold')
+                        ax_rp.text(xic_pos - 0.05, y_pos_top * 0.65, fix_arabic_mpl("يقع"), ha='right', va='center', fontsize=12.5, color=col_pos, fontweight='bold')
+                        ax_rp.text(xic_pos + 0.05, y_pos_top * 0.32, fix_arabic_mpl(pos_ar), ha='left', va='center', fontsize=12.5, color=col_pos, fontweight='bold')
+                        ax_rp.text(xic_pos - 0.05, y_pos_top * 0.32, "$(\\Delta)$", ha='right', va='center', fontsize=12.5, color=col_pos, fontweight='bold')
+
+            ax_rp.set_xlim(-0.05, x_max_rp + 0.05)
+            ax_rp.set_ylim(-0.05, y_table_top + 0.05)
+            od['rel_pos_bytes'] = fig_to_bytes(fig_rp)
+
+            fig_ob, ax_ob = plt.subplots(figsize=(9.5, 3.6))
+            fig_ob.patch.set_facecolor('white')
+            ax_ob.set_facecolor('white')
+            ax_ob.axis('off')
+            ax_ob.set_xlim(0, 10)
+            ax_ob.set_ylim(0, 5.0)
+            ax_ob.text(9.7, 4.4, fix_arabic_mpl("طريقة استنتاج معادلة المستقيم المقارب المائل:"), fontsize=14, ha='right', va='center', color='#D97706', fontweight='bold')
+            try:
+                ax_ob.text(5.0, 3.5, fr"$a = \lim_{{x \to {od['target_latex']}}} \frac{{f(x)}}{{x}} = {od['a_lat']} \quad , \quad b = \lim_{{x \to {od['target_latex']}}} [f(x) - ({od['a_lat']})x] = {od['b_lat']}$", fontsize=15, ha='center', va='center', color='#1E3A8A')
+                ax_ob.text(5.0, 2.5, fr"$\lim_{{x \to {od['target_latex']}}} [f(x) - ({od['line_lat']})] = \lim_{{x \to {od['target_latex']}}} \left({od['rem_lat']}\right) = 0$", fontsize=15, ha='center', va='center', color='#6D28D9')
+                ax_ob.text(9.7, 1.5, fix_arabic_mpl("ومنه معادلة المقارب المائل وعبارة الفرق للوضع النسبي:"), fontsize=14, ha='right', va='center', color='#047857', fontweight='bold')
+                ax_ob.text(5.0, 0.6, fr"$(\Delta): y = {od['line_lat']} \quad , \quad f(x) - y = {od['rem_lat']}$", fontsize=16, ha='center', va='center', color='#047857', fontweight='bold')
+            except Exception:
+                pass
+            od['oblique_steps_bytes'] = fig_to_bytes(fig_ob)
+            rel_pos_tables_info.append(od)
+
+        diff_fg = sp.together(f_expr - g_expr)
+        A_m = elim_hyperbolic(sp.simplify(sp.diff(diff_fg, m_sym)))
+        B_m = elim_hyperbolic(sp.simplify(diff_fg.subs(m_sym, 0)))
+
+        pivot_roots = []
+        pivot_x_floats = set()
+        try:
+            if A_m != 0 and not A_m.has(m_sym) and A_m.has(x_sym):
+                for r_piv in safe_solve_real(A_m, x_sym):
+                    fl_piv = safe_float(r_piv)
+                    if not np.isfinite(fl_piv):
+                        continue
+                    if any(abs(fl_piv - safe_float(va)) < 1e-4 for va in true_v_asymptotes):
+                        continue
+                    if any(abs(fl_piv - h['val']) < 1e-4 for h in holes):
+                        continue
+                    b_val_piv = safe_float(B_m.subs(x_sym, r_piv))
+                    f_val_piv = safe_float(f_expr.subs(x_sym, r_piv))
+                    if np.isfinite(b_val_piv) and abs(b_val_piv) < 1e-6 and np.isfinite(f_val_piv):
+                        if not any(abs(fl_piv - px) < 1e-4 for px in pivot_x_floats):
+                            pivot_x_floats.add(fl_piv)
+                            pivot_roots.append({
+                                'x_val': fl_piv,
+                                'sym': r_piv,
+                                'sign': 'zero' if abs(fl_piv) < 1e-5 else ('pos' if fl_piv > 0 else 'neg')
+                            })
+        except Exception:
+            pass
+
+        try:
+            if g_expr == m_sym:
+                m_expr = f_expr
+            elif A_m != 0 and not A_m.has(m_sym):
+                m_expr = elim_hyperbolic(sp.simplify(-B_m / A_m))
+            else:
+                m_expr_list = sp.solve(diff_fg, m_sym)
+                m_expr = elim_hyperbolic(sp.simplify(m_expr_list[0])) if m_expr_list else f_expr
+        except Exception:
+            m_expr = f_expr
+
+        m_func_eval = safe_lambdify(x_sym, m_expr)
+        m_equals_f = (g_expr == m_sym) or (m_expr == f_expr)
+
+        x_split_syms = [sp.Integer(0)]
+        for r in candidate_v_asymptotes:
+            x_split_syms.append(r)
+        for ac in abs_corner_syms:
+            x_split_syms.append(ac)
+        for piv in pivot_roots:
+            x_split_syms.append(piv['sym'])
+
+        if m_equals_f:
+            for r_ex in sym_extrema:
+                x_split_syms.append(r_ex)
+            dm_expr = df_clean
+        else:
+            try:
+                for abs_atom_m in m_expr.atoms(sp.Abs):
+                    for r_cm in safe_solve_real(abs_atom_m.args[0], x_sym):
+                        x_split_syms.append(r_cm)
+            except Exception:
+                pass
+            try:
+                n_m, d_m = sp.fraction(sp.together(m_expr))
+                if d_m != 1:
+                    for r in safe_solve_real(d_m, x_sym):
+                        x_split_syms.append(r)
+            except Exception:
+                pass
+
+            dm_raw = sp.diff(m_expr, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a))
+            dm_expr = elim_hyperbolic(sp.simplify(dm_raw)) if not dm_raw.has(sp.Abs) else dm_raw
+            try:
+                num_dm, _ = sp.fraction(dm_expr)
+                for r in safe_solve_real(num_dm, x_sym):
+                    x_split_syms.append(r)
+            except Exception:
+                pass
+
+            try:
+                x_scan_m = np.linspace(-20, 20, 4001)
+                with np.errstate(all='ignore'):
+                    y_scan_m = m_func_eval(x_scan_m)
+                if np.iscomplexobj(y_scan_m):
+                    y_scan_m = np.where(np.isreal(y_scan_m), y_scan_m.real, np.nan)
+                y_scan_m = np.array(y_scan_m, dtype=float)
+                is_v_m = np.isfinite(y_scan_m)
+                edges_m = np.diff(is_v_m.astype(int))
+                s_m = np.where(edges_m == 1)[0] + 1
+                if is_v_m[0]:
+                    s_m = np.insert(s_m, 0, 0)
+                e_m = np.where(edges_m == -1)[0]
+                if is_v_m[-1]:
+                    e_m = np.append(e_m, len(y_scan_m) - 1)
+                for s_i, e_i in zip(s_m, e_m):
+                    seg = y_scan_m[s_i:e_i+1]
+                    sx = x_scan_m[s_i:e_i+1]
+                    if len(seg) > 10:
+                        pks, _ = find_peaks(seg, prominence=0.02)
+                        vls, _ = find_peaks(-seg, prominence=0.02)
+                        for idx_p in list(pks) + list(vls):
+                            xv = float(sx[idx_p])
+                            if not any(abs(safe_float(xs) - xv) < 0.08 for xs in x_split_syms):
+                                x_split_syms.append(sp.Float(round(xv, 2)))
+            except Exception:
+                pass
+
+        unique_x_splits = [{'val': -np.inf, 'sym': -sp.oo}]
+        for r_s in x_split_syms:
+            fl = safe_float(r_s)
+            if np.isfinite(fl) and not any(abs(p['val'] - fl) < 1e-4 for p in unique_x_splits):
+                unique_x_splits.append({'val': fl, 'sym': r_s})
+        unique_x_splits.append({'val': np.inf, 'sym': sp.oo})
+        unique_x_splits.sort(key=lambda item: item['val'])
+
+        dm_func = df_func_test if m_equals_f else safe_lambdify(x_sym, dm_expr)
+        double_root_x_vals = set()
+        for item in unique_x_splits:
+            xv = item['val']
+            if not np.isfinite(xv):
+                continue
+            if any(abs(xv - safe_float(va)) < 1e-4 for va in candidate_v_asymptotes):
+                continue
+            if any(abs(xv - safe_float(ac)) < 1e-4 for ac in abs_corner_syms):
+                continue
+            try:
+                with np.errstate(all='ignore'):
+                    dm_l = float(dm_func(xv - 1e-3))
+                    dm_r = float(dm_func(xv + 1e-3))
+                    dm_c = float(dm_func(xv))
+                if np.isfinite(dm_l) and np.isfinite(dm_r) and np.isfinite(dm_c):
+                    if dm_l * dm_r < 0 and abs(dm_c) < 0.05 and abs(dm_r - dm_l) < 0.5:
+                        double_root_x_vals.add(round(xv, 4))
+            except Exception:
+                pass
+
+        def is_x_in_reduced_domain(x_item):
+            xv = x_item['val']
+            if not np.isfinite(xv):
+                return False
+            if any(abs(xv - safe_float(va)) < 1e-4 for va in true_v_asymptotes):
+                return False
+            if any(abs(xv - h['val']) < 1e-4 for h in holes):
+                return False
+            if any(abs(xv - px) < 1e-4 for px in pivot_x_floats):
+                return False
+            try:
+                with np.errstate(all='ignore'):
+                    fv = float(f_func(xv))
+                    mv = float(m_func_eval(xv))
+                if np.isfinite(fv) and np.isfinite(mv):
+                    return True
+                fv_s = safe_float(f_expr.subs(x_sym, x_item['sym']))
+                mv_s = safe_float(m_expr.subs(x_sym, x_item['sym']))
+                return bool(np.isfinite(fv_s) and np.isfinite(mv_s))
+            except Exception:
+                return False
+
+        monotonic_branches = []
+        point_evaluations = []
+        sym_m_critical = []
+        m_critical_floats = []
+        point_m_map = {}
+
+        def register_crit_m(m_sym_val):
+            m_sym_val = elim_hyperbolic(m_sym_val)
+            fl = safe_float(m_sym_val)
+            if np.isfinite(fl) and abs(fl) < 500:
+                sym_m_critical.append(elim_hyperbolic(sp.simplify(m_sym_val)))
+                if not any(abs(fl - mc) < 1e-4 for mc in m_critical_floats):
+                    m_critical_floats.append(fl)
+
+        for item in unique_x_splits:
+            if is_x_in_reduced_domain(item):
+                try:
+                    m_exact_pt = elim_hyperbolic(sp.simplify(m_expr.subs(x_sym, item['sym'])))
+                    m_fl_pt = safe_float(m_exact_pt)
+                    if np.isfinite(m_fl_pt):
+                        point_m_map[round(item['val'], 5)] = m_exact_pt
+                        register_crit_m(m_exact_pt)
+                        is_dbl = any(abs(item['val'] - dxv) < 1e-3 for dxv in double_root_x_vals)
+                        point_evaluations.append({
+                            'x_val': item['val'],
+                            'm_val': m_fl_pt,
+                            'sign': 'zero' if abs(item['val']) < 1e-5 else ('pos' if item['val'] > 0 else 'neg'),
+                            'mult': 'double' if is_dbl else 'single'
+                        })
+                except Exception:
+                    pass
+
+        for idx_b in range(len(unique_x_splits) - 1):
+            p_left = unique_x_splits[idx_b]
+            p_right = unique_x_splits[idx_b + 1]
+            l_v, r_v = p_left['val'], p_right['val']
+            mid_x = 0.0 if (l_v == -np.inf and r_v == np.inf) else (r_v - 1.5 if l_v == -np.inf else (l_v + 1.5 if r_v == np.inf else (l_v + r_v) / 2.0))
+            try:
+                with np.errstate(all='ignore'):
+                    f_mid = f_func(mid_x)
+                    m_mid = m_func_eval(mid_x)
+                if np.iscomplexobj(f_mid) or np.iscomplexobj(m_mid):
+                    continue
+                if not (np.isfinite(float(f_mid)) and np.isfinite(float(m_mid))):
+                    continue
+            except Exception:
+                continue
+
+            try:
+                if np.isfinite(l_v) and round(l_v, 5) in point_m_map:
+                    m_left_sym = point_m_map[round(l_v, 5)]
+                else:
+                    m_left_sym = cached_limit(m_expr, -sp.oo if l_v == -np.inf else p_left['sym'], '+')
+
+                if np.isfinite(r_v) and round(r_v, 5) in point_m_map:
+                    m_right_sym = point_m_map[round(r_v, 5)]
+                else:
+                    m_right_sym = cached_limit(m_expr, sp.oo if r_v == np.inf else p_right['sym'], '-')
+
+                register_crit_m(m_left_sym)
+                register_crit_m(m_right_sym)
+                ml_fl = safe_float(m_left_sym)
+                mr_fl = safe_float(m_right_sym)
+                if np.isnan(ml_fl) or np.isnan(mr_fl):
+                    continue
+                m_low, m_high = min(ml_fl, mr_fl), max(ml_fl, mr_fl)
+                branch_sign = 'pos' if mid_x > 0 else 'neg'
+                monotonic_branches.append({
+                    'm_low': m_low,
+                    'm_high': m_high,
+                    'sign': branch_sign,
+                    'is_const': abs(m_high - m_low) < 1e-5
+                })
+            except Exception:
+                continue
+
+        m_critical_num = sorted(m_critical_floats)
+
+        m_min_val, m_max_val = -6.0, 6.0
+        if m_critical_num:
+            if m_critical_num[0] - 1.5 < m_min_val:
+                m_min_val = float(np.floor(m_critical_num[0] - 1.5))
+            if m_critical_num[-1] + 1.5 > m_max_val:
+                m_max_val = float(np.ceil(m_critical_num[-1] + 1.5))
+        m_min_val, m_max_val = float(max(-25.0, m_min_val)), float(min(25.0, m_max_val))
+
+        def get_exact_m(val_float):
+            for sm in sym_m_critical:
+                try:
+                    sm_fl = safe_float(sm)
+                    if np.isfinite(sm_fl) and abs(sm_fl - val_float) < 1e-3:
+                        res = exactify_value(val_float, sm)
+                        if not re.match(r'^-?\d+(\.\d+)?$', res):
+                            return res
+                except Exception:
+                    pass
+            return exactify_value(val_float)
+
+        is_rotational_disc = (len(pivot_roots) > 0)
+
+        def get_roots_text_exact(m_test):
+            pos_s, neg_s, zero_s = 0, 0, 0
+            pos_d, neg_d, zero_d = 0, 0, 0
+
+            for piv in pivot_roots:
+                if piv['sign'] == 'pos':
+                    pos_s += 1
+                elif piv['sign'] == 'neg':
+                    neg_s += 1
+                else:
+                    zero_s += 1
+
+            for br in monotonic_branches:
+                if not br['is_const']:
+                    if br['m_low'] + 1e-5 < m_test < br['m_high'] - 1e-5:
+                        if br['sign'] == 'pos':
+                            pos_s += 1
+                        else:
+                            neg_s += 1
+
+            for pt in point_evaluations:
+                if abs(m_test - pt['m_val']) < 1e-4:
+                    if pt['mult'] == 'double':
+                        if pt['sign'] == 'pos':
+                            pos_d += 1
+                        elif pt['sign'] == 'neg':
+                            neg_d += 1
+                        else:
+                            zero_d += 1
+                    else:
+                        if pt['sign'] == 'pos':
+                            pos_s += 1
+                        elif pt['sign'] == 'neg':
+                            neg_s += 1
+                        else:
+                            zero_s += 1
+
+            total_roots = pos_s + neg_s + zero_s + pos_d + neg_d + zero_d
+            if total_roots == 0:
+                return "لا توجد حلول"
+
+            if is_rotational_disc:
+                if total_roots == 1:
+                    if zero_s == 1:
+                        return "حل وحيد معدوم"
+                    if pos_s == 1:
+                        return "حل وحيد موجب"
+                    if neg_s == 1:
+                        return "حل وحيد سالب"
+                    return "حل وحيد"
+                if total_roots == 2:
+                    if zero_s == 1 and pos_s == 1:
+                        return "حلان (أحدهما معدوم والآخر موجب)"
+                    if zero_s == 1 and neg_s == 1:
+                        return "حلان (أحدهما معدوم والآخر سالب)"
+                    if pos_s == 1 and neg_s == 1:
+                        return "حلان مختلفان في الإشارة"
+                    return "حلان متمايزان"
+                if total_roots == 3:
+                    if zero_s == 1 and pos_s == 1 and neg_s == 1:
+                        return "ثلاثة حلول (معدوم، وموجب، وسالب)"
+                    return "ثلاثة حلول متمايزة"
+
+            if total_roots == 1:
+                if pos_d == 1:
+                    return "حل مضاعف موجب تماماً"
+                if neg_d == 1:
+                    return "حل مضاعف سالب تماماً"
+                if zero_d == 1:
+                    return "حل مضاعف معدوم"
+                if pos_s == 1:
+                    return "حل وحيد موجب تماماً"
+                if neg_s == 1:
+                    return "حل وحيد سالب تماماً"
+                if zero_s == 1:
+                    return "حل وحيد معدوم"
+
+            if total_roots == 2 and pos_d == 0 and neg_d == 0 and zero_d == 0:
+                if pos_s == 2:
+                    return "حلان موجبان تماماً"
+                if neg_s == 2:
+                    return "حلان سالبان تماماً"
+                if pos_s == 1 and neg_s == 1:
+                    return "حلان مختلفان في الإشارة"
+                if pos_s == 1 and zero_s == 1:
+                    return "حلان أحدهما موجب والآخر معدوم"
+                if neg_s == 1 and zero_s == 1:
+                    return "حلان أحدهما سالب والآخر معدوم"
+
+            if total_roots == 4 and pos_s == 2 and neg_s == 2:
+                return "أربعة حلول (حلان موجبان وحلان سالبان)"
+
+            desc = []
+            if pos_d == 1 and neg_d == 1:
+                desc.append("حلان مضاعفان (أحدهما موجب والآخر سالب)")
+            else:
+                if pos_d == 1:
+                    desc.append("حل مضاعف موجب")
+                elif pos_d > 1:
+                    desc.append(f"{pos_d} حلول مضاعفة موجبة")
+                if neg_d == 1:
+                    desc.append("حل مضاعف سالب")
+                elif neg_d > 1:
+                    desc.append(f"{neg_d} حلول مضاعفة سالبة")
+                if zero_d == 1:
+                    desc.append("حل مضاعف معدوم")
+
+            if pos_s == 1:
+                desc.append("حل موجب")
+            elif pos_s == 2:
+                desc.append("حلان موجبان")
+            elif pos_s > 2:
+                desc.append(f"{pos_s} حلول موجبة")
+
+            if neg_s == 1:
+                desc.append("حل سالب")
+            elif neg_s == 2:
+                desc.append("حلان سالبان")
+            elif neg_s > 2:
+                desc.append(f"{neg_s} حلول سالبة")
+
+            if zero_s == 1:
+                desc.append("حل معدوم")
+
+            if pos_s == 2 and neg_s == 1 and pos_d == 0 and neg_d == 0 and zero_s == 0:
+                return "ثلاثة حلول: حل سالب وحلان موجبان"
+            if pos_s == 1 and neg_s == 2 and pos_d == 0 and neg_d == 0 and zero_s == 0:
+                return "ثلاثة حلول: حل موجب وحلان سالبان"
+
+            return " و ".join(desc) if desc else f"{total_roots} حلول"
+
+        atomic_items = []
+        if m_critical_num:
+            atomic_items.append({'type': 'interval', 'L': float('-inf'), 'H': m_critical_num[0], 'l_closed': False, 'r_closed': False, 'sol': get_roots_text_exact(m_critical_num[0] - 1.0)})
+            for i in range(len(m_critical_num)):
+                mc = m_critical_num[i]
+                atomic_items.append({'type': 'point', 'L': mc, 'H': mc, 'l_closed': True, 'r_closed': True, 'sol': get_roots_text_exact(mc)})
+                if i < len(m_critical_num) - 1:
+                    mc_next = m_critical_num[i + 1]
+                    atomic_items.append({'type': 'interval', 'L': mc, 'H': mc_next, 'l_closed': False, 'r_closed': False, 'sol': get_roots_text_exact((mc + mc_next) / 2.0)})
+            atomic_items.append({'type': 'interval', 'L': m_critical_num[-1], 'H': float('inf'), 'l_closed': False, 'r_closed': False, 'sol': get_roots_text_exact(m_critical_num[-1] + 1.0)})
+        else:
+            atomic_items.append({'type': 'interval', 'L': float('-inf'), 'H': float('inf'), 'l_closed': False, 'r_closed': False, 'sol': get_roots_text_exact(0.0)})
+
+        merged_items = []
+        for item in atomic_items:
+            if not merged_items:
+                merged_items.append(item)
+            else:
+                prev = merged_items[-1]
+                if prev['sol'] == item['sol']:
+                    prev['H'] = item['H']
+                    prev['r_closed'] = item['r_closed']
+                    prev['type'] = 'interval' if prev['L'] != prev['H'] else 'point'
+                else:
+                    merged_items.append(item)
+
+        final_table = []
+        for it in merged_items:
+            L, H, sol_text = it['L'], it['H'], it['sol']
+            L_latex = r"-\infty" if L == float('-inf') else get_exact_m(L)
+            H_latex = r"+\infty" if H == float('inf') else get_exact_m(H)
+            if L == float('-inf') and H == float('inf'):
+                m_latex = r"m \in \mathbb{R}"
+            elif L == H:
+                m_latex = fr"m = {L_latex}"
+            else:
+                l_br = "[" if (it['l_closed'] and L != float('-inf')) else "]"
+                r_br = "]" if (it['r_closed'] and H != float('inf')) else "["
+                m_latex = fr"m \in {l_br}{L_latex} ; {H_latex}{r_br}"
+            final_table.append((m_latex, sol_text, L, H))
+
+        N = len(pts_var_exact)
+        def generate_variation_table_bytes():
+            if N < 2:
+                return None
+            n_int_v = max(1, N - 1)
+            seg_w_v = 3.2
+            x_start_data = 2.0
+            x_max = x_start_data + n_int_v * seg_w_v
+
+            def get_v_xc(idx_pt):
+                return x_start_data + idx_pt * seg_w_v
+            def get_v_label_x(idx_pt):
+                if idx_pt == 0:
+                    return x_start_data + 0.50
+                if idx_pt == N - 1:
+                    return x_max - 0.50
+                return x_start_data + idx_pt * seg_w_v
+
+            fig_v, ax_v = plt.subplots(figsize=(max(8.0, x_max * 0.85), 3.5))
+            fig_v.patch.set_facecolor('white')
+            ax_v.set_facecolor('white')
+            ax_v.axis('off')
+            for y_line, lw_v in [(6, 2), (5, 1.5), (3.8, 1.5), (0, 2)]:
+                ax_v.plot([0, x_max], [y_line, y_line], 'k-', lw=lw_v)
+            for x_line in [0, x_start_data, x_max]:
+                ax_v.plot([x_line, x_line], [0, 6], 'k-', lw=2)
+            ax_v.text(x_start_data / 2, 5.5, '$x$', ha='center', va='center', fontsize=18, color='#1E293B', fontweight='bold')
+            ax_v.text(x_start_data / 2, 4.4, "$f'(x)$", ha='center', va='center', fontsize=18, color='#1E293B', fontweight='bold')
+            ax_v.text(x_start_data / 2, 1.9, '$f(x)$', ha='center', va='center', fontsize=18, color='#1E293B', fontweight='bold')
+            
+            signs = []
+            for i in range(N - 1):
+                left, right = pts_var_exact[i]['val'], pts_var_exact[i+1]['val']
+                mid = 0 if (left == -np.inf and right == np.inf) else (right - 1 if left == -np.inf else (left + 1 if right == np.inf else (left + right) / 2.0))
+                try:
+                    signs.append(None if not np.isfinite(float(f_func(mid))) else ("+" if f_func(mid + 1e-5) > f_func(mid) else "-"))
+                except Exception:
+                    signs.append(None)
+                    
+            right_node, left_node = {}, {}
+            for i in range(N):
+                p = pts_var_exact[i]
+                xc_line = get_v_xc(i)
+                xc_lbl = get_v_label_x(i)
+                ax_v.text(xc_lbl, 5.5, f"${p['latex_x']}$", ha='center', va='center', fontsize=16, fontweight='bold')
+                if p['type'] == 'v_asym':
+                    ax_v.plot([xc_line-0.05, xc_line-0.05], [0, 5], 'k-', lw=1.5)
+                    ax_v.plot([xc_line+0.05, xc_line+0.05], [0, 5], 'k-', lw=1.5)
+                elif p['type'] == 'extrema':
+                    ax_v.plot([xc_line, xc_line], [3.8, 5], 'k-', lw=1.3)
+                    ax_v.plot(xc_line, 4.4, marker='o', markersize=9, markerfacecolor='none', markeredgecolor='k', markeredgewidth=1.6)
+                elif p['type'] in ['corner', 'bound']:
+                    if 0 < i < N - 1:
+                        ax_v.plot([xc_line-0.04, xc_line-0.04], [3.8, 5], 'k-', lw=1.4)
+                        ax_v.plot([xc_line+0.04, xc_line+0.04], [3.8, 5], 'k-', lw=1.4)
+                if i < N - 1:
+                    x_ic = (get_v_xc(i) + get_v_xc(i+1)) / 2.0
+                    if not valid_intervals[i]:
+                        ax_v.add_patch(plt.Rectangle((xc_line, 0), seg_w_v, 5, facecolor='#EF4444', alpha=0.6))
+                    else:
+                        ax_v.text(x_ic, 4.4, f"${signs[i]}$", ha='center', va='center', fontsize=22, color='#D32F2F' if signs[i]=='-' else '#2E7D32', fontweight='bold')
+                if p['type'] == 'inf':
+                    try:
+                        lim = cached_limit(f_expr, p['sym'])
+                        if i == 0:
+# -*- coding: utf-8 -*-
+# ملف التشغيل: يحمّل الأجزاء الثلاثة بالترتيب داخل نفس النطاق.
+import os
+import streamlit as st
+
+_g = globals()
+_dir = os.path.dirname(os.path.abspath(__file__))
+for _name in ("app_p1.py", "app_p2.py", "app_p3.py"):
+    _path = os.path.join(_dir, _name)
+    if not os.path.exists(_path):
+        st.error("الملف الناقص في المستودع: " + _name)
+        st.stop()
+    with open(_path, encoding="utf-8") as _f:
+        _code = compile(_f.read(), _path, "exec")
+    exec(_code, _g)
+# ==================== بداية الجزء الأول (1/2) ====================
+import streamlit as st
+import base64
+import io
+import json
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import threading
+import ctypes
+import matplotlib.ticker as ticker
+import sympy as sp
+from scipy.signal import find_peaks
+import time
+import warnings
+import re
+import os
+import urllib.request
+import urllib.error
+import tempfile
+from PIL import Image, ImageOps, ImageEnhance
+from sympy.parsing.sympy_parser import parse_expr as _raw_parse_expr, standard_transformations, implicit_multiplication_application
+
+# ---- طبقة أمان: قائمة بيضاء قبل تحليل أي عبارة (تمنع تنفيذ كود عشوائي) ----
+_SAFE_TOKEN = re.compile(r'(?:x|m|e|E|pi|ln|log|exp|sqrt|abs|Abs|cos|sin|tan)+')
+
+def parse_expr(s, *args, **kwargs):
+    s = str(s)
+    if len(s) > 200 or re.search(r'[^0-9A-Za-z+\-*/().\s]', s):
+        raise ValueError("رمز غير مسموح في العبارة")
+    for tok in re.findall(r'[A-Za-z_]+', s):
+        if not _SAFE_TOKEN.fullmatch(tok):
+            raise ValueError("كلمة غير مسموحة: " + tok)
+            def build_math_context(f_str, g_str, version_tag="v33"):
+    cache = {'valid': False, 'error': ''}
+    try:
+        if not f_str or not f_str.strip():
+            cache['error'] = 'EMPTY'
+            return cache
+        if not g_str or not g_str.strip():
+            g_str = "m"
+
+        x_sym, m_sym = sp.symbols('x m', real=True)
+        local_dict = {
+            'x': x_sym, 'm': m_sym, 'e': sp.E, 'E': sp.E, 'pi': sp.pi,
+            'ln': sp.log, 'log': sp.log, 'exp': sp.exp, 'sqrt': sp.sqrt,
+            'abs': sp.Abs, 'Abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin, 'tan': sp.tan
+        }
+        transformations = (standard_transformations + (implicit_multiplication_application,))
+        f_processed = fix_implicit_mult(f_str)
+        g_processed = fix_implicit_mult(g_str) or "m"
+        f_expr = elim_hyperbolic(parse_expr(f_processed, local_dict=local_dict, transformations=transformations))
+        g_expr = elim_hyperbolic(parse_expr(g_processed, local_dict=local_dict, transformations=transformations))
+        
+        f_func = safe_lambdify(x_sym, f_expr)
+        g_func = safe_lambdify((x_sym, m_sym), g_expr)
+        
+        candidate_v_asymptotes = []
+        try:
+            if not f_expr.has(sp.Abs):
+                n_expr, d_expr = sp.fraction(sp.together(f_expr))
+            else:
+                n_expr, d_expr = sp.fraction(f_expr)
+            if d_expr != 1:
+                for r in safe_solve_real(d_expr, x_sym):
+                    candidate_v_asymptotes.append(r)
+        except Exception:
+            pass
+        try:
+            for pow_atom in f_expr.atoms(sp.Pow):
+                base_p, exp_p = pow_atom.args
+                fl_exp = safe_float(exp_p)
+                if np.isfinite(fl_exp) and base_p.has(x_sym):
+                    if fl_exp < 0:
+                        for r in safe_solve_real(base_p, x_sym):
+                            candidate_v_asymptotes.append(r)
+                    elif 0 < fl_exp < 1 or (isinstance(exp_p, sp.Rational) and exp_p.q % 2 == 0):
+                        for r in safe_solve_real(base_p, x_sym):
+                            candidate_v_asymptotes.append(r)
+        except Exception:
+            pass
+        try:
+            for log_expr in f_expr.atoms(sp.log):
+                for r in safe_solve_real(log_expr.args[0], x_sym):
+                    candidate_v_asymptotes.append(r)
+        except Exception:
+            pass
+        
+        unique_cands = []
+        for r in candidate_v_asymptotes:
+            fl = safe_float(r)
+            if np.isfinite(fl) and not any(abs(safe_float(uc) - fl) < 1e-4 for uc in unique_cands):
+                unique_cands.append(r)
+        candidate_v_asymptotes = unique_cands
+
+        limit_memo = {}
+        def cached_limit(expr_l, val_s, dir_s='+'):
+            key = (str(expr_l), str(val_s), str(dir_s))
+            if key in limit_memo:
+                return limit_memo[key]
+            res = None
+            try:
+                if val_s == sp.oo:
+                    res = elim_hyperbolic(sp.limit(expr_l, x_sym, sp.oo))
+                elif val_s == -sp.oo:
+                    res = elim_hyperbolic(sp.limit(expr_l, x_sym, -sp.oo))
+                else:
+                    res = elim_hyperbolic(sp.limit(expr_l, x_sym, val_s, dir=dir_s))
+            except Exception:
+                res = None
+
+            if res is None or (hasattr(res, 'func') and (res.func == sp.Limit or 'AccumBounds' in str(res))):
+                try:
+                    fn_tmp = safe_lambdify(x_sym, expr_l)
+                    if val_s == sp.oo:
+                        for x_t in [1e5, 1e3, 200.0, 50.0]:
+                            with np.errstate(all='ignore'):
+                                y_t = float(fn_tmp(x_t))
+                            if np.isfinite(y_t):
+                                if abs(y_t) > 1e5:
+                                    res = sp.oo if y_t > 0 else -sp.oo
+                                else:
+                                    res = sp.nsimplify(round(y_t, 3), tolerance=1e-2)
+                                break
+                    elif val_s == -sp.oo:
+                        for x_t in [-1e5, -1e3, -200.0, -50.0]:
+                            with np.errstate(all='ignore'):
+                                y_t = float(fn_tmp(x_t))
+                            if np.isfinite(y_t):
+                                if abs(y_t) > 1e5:
+                                    res = sp.oo if y_t > 0 else -sp.oo
+                                else:
+                                    res = sp.nsimplify(round(y_t, 3), tolerance=1e-2)
+                                break
+                    else:
+                        v_fl = safe_float(val_s)
+                        sgn_d = 1.0 if dir_s == '+' else -1.0
+                        with np.errstate(all='ignore'):
+                            y1 = float(fn_tmp(v_fl + sgn_d * 1e-6))
+                            y2 = float(fn_tmp(v_fl + sgn_d * 1e-4))
+                        if np.isfinite(y1):
+                            if abs(y1) > 1e4 and abs(y1) > abs(y2) * 5:
+                                res = sp.oo if y1 > 0 else -sp.oo
+                            else:
+                                res = sp.nsimplify(round(y1, 3), tolerance=1e-2)
+                except Exception:
+                    res = sp.nan
+            limit_memo[key] = res
+            return res
+
+        true_v_asymptotes, holes, domain_closed_bounds = [], [], set()
+        for r in candidate_v_asymptotes:
+            fl_r = safe_float(r)
+            try:
+                with np.errstate(all='ignore'):
+                    ok_right = np.isfinite(float(f_func(fl_r + 1e-4)))
+                    ok_left = np.isfinite(float(f_func(fl_r - 1e-4)))
+                lim_p = cached_limit(f_expr, r, '+') if ok_right else sp.nan
+                lim_m = cached_limit(f_expr, r, '-') if ok_left else sp.nan
+                if lim_p in [sp.oo, -sp.oo, sp.zoo] or lim_m in [sp.oo, -sp.oo, sp.zoo]:
+                    true_v_asymptotes.append(r)
+                else:
+                    val_at_r = safe_float(f_expr.subs(x_sym, r))
+                    if np.isfinite(val_at_r):
+                        domain_closed_bounds.add(round(fl_r, 4))
+                    else:
+                        val_p = safe_float(lim_p) if ok_right else safe_float(lim_m)
+                        if np.isfinite(val_p):
+                            holes.append({'sym': r, 'val': fl_r, 'lim': val_p})
+            except Exception:
+                true_v_asymptotes.append(r)
+
+        unique_asymptotes = [{'type': 'v', 'val': safe_float(r), 'label': f"x={sanitize_latex(r)}"} for r in true_v_asymptotes]
+
+        abs_corner_syms = []
+        try:
+            for abs_atom in f_expr.atoms(sp.Abs):
+                for r_c in safe_solve_real(abs_atom.args[0], x_sym):
+                    fl_c = safe_float(r_c)
+                    if np.isfinite(fl_c) and not any(abs(fl_c - safe_float(ac)) < 1e-4 for ac in abs_corner_syms):
+                        abs_corner_syms.append(r_c)
+        except Exception:
+            pass
+
+        x_base = np.linspace(-15, 15, 3501)
+        extra_x = []
+        for a in candidate_v_asymptotes:
+            val = safe_float(a)
+            if np.isfinite(val) and -16 <= val <= 16:
+                extra_x.append(val)
+                for delta in [1e-3, 1e-4, 1e-5]:
+                    extra_x.extend([val - delta, val + delta])
+        for ac in abs_corner_syms:
+            val_c = safe_float(ac)
+            if np.isfinite(val_c) and -16 <= val_c <= 16:
+                extra_x.append(val_c)
+                    
+        x_vals_plot = np.sort(np.concatenate([x_base, extra_x])) if extra_x else x_base
+
+        def process_y_vals(x_arr):
+            with np.errstate(divide='ignore', invalid='ignore', over='ignore'):
+                y_arr = f_func(x_arr)
+            if np.iscomplexobj(y_arr):
+                y_arr = np.where(np.isreal(y_arr), y_arr.real, np.nan)
+            if np.isscalar(y_arr):
+                y_arr = np.full_like(x_arr, y_arr, dtype=float)
+            y_arr = np.array(y_arr, dtype=float)
+            y_arr[~np.isfinite(y_arr)] = np.nan
+            dy = np.abs(np.diff(y_arr))
+            for idx in np.where(dy > 30)[0]:
+                y_arr[idx] = np.nan
+                y_arr[idx+1] = np.nan
+            return y_arr
+
+        y_vals_plot = process_y_vals(x_vals_plot)
+
+        df_expr = sp.diff(f_expr, x_sym)
+        df_clean = df_expr.replace(sp.sign, lambda arg: arg / sp.Abs(arg))
+        if not df_clean.has(sp.Abs):
+            df_simp = elim_hyperbolic(sp.simplify(df_clean))
+            if df_simp.has(sp.Piecewise):
+                df_simp = df_clean 
+            try:
+                df_together = elim_hyperbolic(sp.together(df_simp))
+                if not df_together.has(sp.Piecewise):
+                    df_simp = df_together
+            except Exception:
+                pass
+            try:
+                df_factored = elim_hyperbolic(sp.factor(sp.expand(df_simp)))
+                if not df_factored.has(sp.Piecewise) and len(sanitize_latex(df_factored)) <= len(sanitize_latex(df_simp)) + 10:
+                    df_simp = df_factored
+            except Exception:
+                pass
+        else:
+            df_simp = df_clean
+        df_latex_str_safe = sanitize_latex(df_simp)
+
+        def build_derivative_steps():
+            steps = []
+            try:
+                if f_expr.func == sp.Abs and len(f_expr.args) > 0:
+                    inner = f_expr.args[0]
+                    d_in = elim_hyperbolic(sp.simplify(sp.diff(inner, x_sym)))
+                    steps.append({
+                        'label': 'قانون مشتق دالة القيمة المطلقة:',
+                        'math_list': [
+                            r"\left(|u(x)|\right)' = \frac{u'(x) \cdot u(x)}{|u(x)|}",
+                            fr"f'(x) = \frac{{({sanitize_latex(d_in)})({sanitize_latex(inner)})}}{{\left|{sanitize_latex(inner)}\right|}}"
+                        ]
+                    })
+                    return steps
+                if f_expr.is_Pow and f_expr.args[1] == sp.Rational(1, 2):
+                    inner = f_expr.args[0]
+                    d_in = elim_hyperbolic(sp.simplify(sp.diff(inner, x_sym)))
+                    steps.append({
+                        'label': 'قانون مشتق الدالة الجذرية:',
+                        'math_list': [
+                            r"\left(\sqrt{u(x)}\right)' = \frac{u'(x)}{2\sqrt{u(x)}}",
+                            fr"f'(x) = \frac{{{sanitize_latex(d_in)}}}{{2\sqrt{{{sanitize_latex(inner)}}}}}"
+                        ]
+                    })
+                    return steps
+                num, den = sp.fraction(f_expr)
+                if den != 1 and den.has(x_sym):
+                    du = elim_hyperbolic(sp.simplify(sp.diff(num, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a))))
+                    dv = elim_hyperbolic(sp.simplify(sp.diff(den, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a))))
+                    u_l, v_l = sanitize_latex(num), sanitize_latex(den)
+                    du_l, dv_l = sanitize_latex(du), sanitize_latex(dv)
+                    steps.append({'label': 'قانون مشتق حاصل قسمة:', 'math_list': [r"f'(x) = \frac{u'(x) \cdot v(x) - v'(x) \cdot u(x)}{(v(x))^2}"]})
+                    steps.append({'label': 'حساب مشتق البسط والمقام:', 'math_list': [fr"u(x) = {u_l} \Rightarrow u'(x) = {du_l}", fr"v(x) = {v_l} \Rightarrow v'(x) = {dv_l}"]})
+                    steps.append({'label': 'بالتعويض في القانون:', 'math_list': [fr"f'(x) = \frac{{({du_l})({v_l}) - ({dv_l})({u_l})}}{{({v_l})^2}}"]})
+                elif f_expr.is_Add:
+                    term_derivs, sub_rules = [], []
+                    for arg in f_expr.args:
+                        d_arg = elim_hyperbolic(sp.simplify(sp.diff(arg, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a))))
+                        if arg.is_number:
+                            sub_rules.append(fr"({sanitize_latex(arg)})' = 0")
+                        else:
+                            num_a, den_a = sp.fraction(arg)
+                            if den_a != 1 and den_a.has(x_sym):
+                                du_a = elim_hyperbolic(sp.simplify(sp.diff(num_a, x_sym)))
+                                dv_a = elim_hyperbolic(sp.simplify(sp.diff(den_a, x_sym)))
+                                sub_rules.append(fr"\left({sanitize_latex(arg)}\right)' = \frac{{({sanitize_latex(du_a)})({sanitize_latex(den_a)}) - ({sanitize_latex(dv_a)})({sanitize_latex(num_a)})}}{{({sanitize_latex(den_a)})^2}} = {sanitize_latex(d_arg)}")
+                            else:
+                                sub_rules.append(fr"\left({sanitize_latex(arg)}\right)' = {sanitize_latex(d_arg)}")
+                        if d_arg != 0:
+                            term_derivs.append(d_arg)
+                    for idx_s, rule_str in enumerate(sub_rules):
+                        steps.append({'label': f'مشتق الحد ({idx_s + 1}):', 'math_list': [rule_str]})
+                    raw_sum = elim_hyperbolic(sp.Add(*term_derivs)) if term_derivs else sp.Integer(0)
+                    if sanitize_latex(raw_sum) != df_latex_str_safe:
+                        steps.append({'label': 'بجمع المشتقات الجزئية وتبسيط العبارة:', 'math_list': [fr"f'(x) = {sanitize_latex(raw_sum)}"]})
+                elif f_expr.is_Mul:
+                    x_factors = [f for f in f_expr.as_ordered_factors() if f.has(x_sym)]
+                    c_factors = [f for f in f_expr.as_ordered_factors() if not f.has(x_sym)]
+                    if len(x_factors) >= 2:
+                        u_p, v_p = x_factors[0] * sp.Mul(*c_factors), sp.Mul(*x_factors[1:])
+                        du_p = elim_hyperbolic(sp.simplify(sp.diff(u_p, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a))))
+                        dv_p = elim_hyperbolic(sp.simplify(sp.diff(v_p, x_sym).replace(sp.sign, lambda a: a/sp.Abs(a))))
+                        steps.append({'label': 'قانون مشتق جداء:', 'math_list': [r"f'(x) = u'(x) \cdot v(x) + v'(x) \cdot u(x)"]})
+                        steps.append({'label': 'حساب المشتقات الجزئية:', 'math_list': [fr"u(x) = {sanitize_latex(u_p)} \Rightarrow u'(x) = {sanitize_latex(du_p)}", fr"v(x) = {sanitize_latex(v_p)} \Rightarrow v'(x) = {sanitize_latex(dv_p)}"]})
+                        steps.append({'label': 'بالتعويض في القانون:', 'math_list': [fr"f'(x) = ({sanitize_latex(du_p)})({sanitize_latex(v_p)}) + ({sanitize_latex(dv_p)})({sanitize_latex(u_p)})"]})
+            except Exception:
+                pass
+            return steps
+
+        deriv_steps_detailed = build_derivative_steps()
+        
+        sym_extrema = []
+        try:
+            num_df, _ = sp.fraction(sp.together(df_clean) if not df_clean.has(sp.Abs) else df_clean)
+            for r_simp in safe_solve_real(num_df, x_sym):
+                if np.isfinite(safe_float(f_expr.subs(x_sym, r_simp))):
+                    sym_extrema.append(r_simp)
+        except Exception:
+            pass
+
+        pts_var_exact = [{'val': -np.inf, 'sym': -sp.oo, 'latex_x': r"-\infty", 'type': 'inf'}]
+        for r in candidate_v_asymptotes:
+            fl_r = safe_float(r)
+            p_type = 'bound' if round(fl_r, 4) in domain_closed_bounds else 'v_asym'
+            pts_var_exact.append({'val': fl_r, 'sym': r, 'latex_x': sanitize_latex(r), 'type': p_type})
+        for r_c in abs_corner_syms:
+            val_c = safe_float(r_c)
+            if np.isfinite(val_c) and not any(abs(p['val'] - val_c) < 1e-4 for p in pts_var_exact):
+                if np.isfinite(safe_float(f_expr.subs(x_sym, r_c))):
+                    pts_var_exact.append({'val': val_c, 'sym': r_c, 'latex_x': sanitize_latex(r_c), 'type': 'corner'})
+        for r in sym_extrema:
+            val = safe_float(r)
+            if np.isfinite(val) and not any(abs(p['val'] - val) < 1e-4 for p in pts_var_exact):
+                pts_var_exact.append({'val': val, 'sym': r, 'latex_x': sanitize_latex(r), 'type': 'extrema'})
+
+        is_valid_plot = ~np.isnan(y_vals_plot)
+        edges = np.diff(is_valid_plot.astype(int))
+        starts = np.where(edges == 1)[0] + 1
+        if is_valid_plot[0]:
+            starts = np.insert(starts, 0, 0)
+        ends = np.where(edges == -1)[0]
+        if is_valid_plot[-1]:
+            ends = np.append(ends, len(y_vals_plot) - 1)
+
+        for s, e in zip(starts, ends):
+            segment, seg_x = y_vals_plot[s:e+1], x_vals_plot[s:e+1]
+            if len(segment) > 10:
+                peaks, _ = find_peaks(segment, prominence=0.02)
+                valleys, _ = find_peaks(-segment, prominence=0.02)
+                for p_idx in list(peaks) + list(valleys):
+                    nx = float(seg_x[p_idx])
+                    if not any(abs(p['val'] - nx) < 0.1 for p in pts_var_exact):
+                        try:
+                            sym_nx = sp.Float(round(nx, 2))
+                            if np.isfinite(safe_float(f_expr.subs(x_sym, sym_nx))):
+                                pts_var_exact.append({'val': safe_float(sym_nx), 'sym': sym_nx, 'latex_x': sanitize_latex(sym_nx), 'type': 'extrema'})
+                        except Exception:
+                            pass
+                
+        pts_var_exact.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
+        pts_var_exact.sort(key=lambda p: p['val'])
+
+        df_func_test = safe_lambdify(x_sym, df_clean)
+        for p in pts_var_exact:
+            if p['type'] == 'extrema':
+                v_test = p['val']
+                with np.errstate(all='ignore'):
+                    df_val = df_func_test(v_test)
+                    df_p, df_m = df_func_test(v_test + 1e-4), df_func_test(v_test - 1e-4)
+                diff_lr = abs(df_p - df_m) if (np.isfinite(df_p) and np.isfinite(df_m)) else 999.0
+                if not np.isfinite(df_val) or abs(df_p) > 20 or abs(df_m) > 20 or diff_lr > 0.05:
+                    p['type'] = 'corner'
+
+        valid_intervals = []
+        for i in range(len(pts_var_exact) - 1):
+            left, right = pts_var_exact[i]['val'], pts_var_exact[i+1]['val']
+            mid = 0 if (left == -np.inf and right == np.inf) else (right - 1 if left == -np.inf else (left + 1 if right == np.inf else (left + right) / 2.0))
+            try:
+                v_mid = f_func(mid)
+                valid_intervals.append(not np.iscomplexobj(v_mid) and np.isfinite(float(v_mid)))
+            except Exception:
+                valid_intervals.append(False)
+            
+        while len(valid_intervals) > 0 and not valid_intervals[0]:
+            valid_intervals.pop(0)
+            pts_var_exact.pop(0)
+        while len(valid_intervals) > 0 and not valid_intervals[-1]:
+            valid_intervals.pop(-1)
+            pts_var_exact.pop(-1)
+
+        domain_intervals_str = []
+        i = 0
+        while i < len(valid_intervals):
+            if valid_intervals[i]:
+                start_idx = i
+                while i < len(valid_intervals) - 1 and valid_intervals[i+1] and pts_var_exact[i+1]['type'] != 'v_asym':
+                    i += 1
+                end_idx = i
+                l_pt = pts_var_exact[start_idx]
+                r_pt = pts_var_exact[end_idx+1]
+                l_b = r"-\infty" if l_pt['val'] == -np.inf else l_pt['latex_x']
+                r_b = r"+\infty" if r_pt['val'] == np.inf else r_pt['latex_x']
                 l_br = "[" if l_pt['type'] == 'bound' else "]"
                 r_br = "]" if r_pt['type'] == 'bound' else "["
                 domain_intervals_str.append(fr"{l_br}{l_b}; {r_b}{r_br}")
@@ -2136,7 +3445,7 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                     chunks_bytes.append(b_img)
             return chunks_bytes
 
-        limits_chunks_bytes = generate_limits_chunks()
+        limits_chunks_bytes = generate_limits_chunks  # يُنشأ عند طلب PDF
 
         def generate_deriv_chunks():
             chunks_bytes = []
@@ -2163,7 +3472,7 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                     chunks_bytes.append(b_img)
             return chunks_bytes
             
-        deriv_chunks_bytes = generate_deriv_chunks()
+        deriv_chunks_bytes = generate_deriv_chunks  # يُنشأ عند طلب PDF
         
         def generate_eq_bytes():
             g_lat = sanitize_latex(g_expr)
@@ -2181,7 +3490,7 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                 ax_e.text(5.0, 0.55, f"y = {current_g}", fontsize=16, ha='center', va='center', color='#1E3A8A', fontweight='bold')
             return fig_to_bytes(fig_e)
             
-        eq_bytes = generate_eq_bytes()
+        eq_bytes = generate_eq_bytes  # يُنشأ عند طلب PDF
 
         def generate_pdf_discussion_bytes():
             nrows = len(final_table)
@@ -2209,7 +3518,7 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                     ax_dt.text(8, y_center, str(m_latex), fontsize=14, ha='center', va='center', color='#1E3A8A')
             return fig_to_bytes(fig_dt)
             
-        disc_table_bytes = generate_pdf_discussion_bytes()
+        disc_table_bytes = generate_pdf_discussion_bytes  # يُنشأ عند طلب PDF
 
         cache.update({
             'valid': True, 'f_func': f_func, 'g_func': g_func,
@@ -2229,9 +3538,53 @@ def build_math_context(f_str, g_str, version_tag="v33"):
         cache['error'] = str(e)
     return cache
 
+class _AbortAnalysis(BaseException):
+    """تُرفع داخل خيط التحليل لإيقافه فعلاً عند انتهاء المهلة."""
+    pass
+
+@st.cache_resource
+def _ctx_store():
+    return {}
+
+def _run_with_deadline(fn, args, seconds):
+    box = {}
+    def worker():
+        box['tid'] = threading.get_ident()
+        try:
+            box['res'] = fn(*args)
+        except _AbortAnalysis:
+            box['aborted'] = True
+        except BaseException as e_w:
+            box['res'] = {'valid': False, 'error': str(e_w)}
+    t = threading.Thread(target=worker, daemon=True)
+    t.start()
+    t.join(seconds)
+    if t.is_alive():
+        tid = box.get('tid')
+        if tid:
+            ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_ulong(tid), ctypes.py_object(_AbortAnalysis))
+        t.join(5)
+        return None
+    return box.get('res')
+
+def build_with_timeout(f_str, g_str, tag, seconds=100):
+    store = _ctx_store()
+    key = (f_str, g_str, tag)
+    if key in store:
+        return store[key]
+    res = _run_with_deadline(build_math_context, (f_str, g_str, tag), seconds)
+    if res is None:
+        return {'valid': False, 'error': 'انتهت مهلة التحليل؛ الدالة معقدة جداً لهذا الخادم. جرّب دالة أبسط.'}
+    if res.get('valid'):
+        if len(store) >= 30:
+            store.pop(next(iter(store)))
+        store[key] = res
+    return res
+
 if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v33":
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_math_context(current_f, current_g, "v33")
+        st.session_state.math_cache = build_with_timeout(current_f, current_g, "v33")
+        st.session_state.pdf_data = None
         st.session_state.last_f = current_f
         st.session_state.last_g = current_g
         st.session_state.cache_ver = "v33"
@@ -2416,7 +3769,7 @@ else:
             pdf.ln(1)
         pdf.ln(2)
 
-    @st.cache_data(show_spinner=False)
+    @st.cache_data(show_spinner=False, max_entries=5)
     def get_cached_pdf_bytes(f_key, g_key, ver_key="v33"):
         if not PDF_ENABLED:
             return None
@@ -2441,14 +3794,14 @@ else:
             pdf_add_section_with_chunks(
                 pdf,
                 "1. حساب النهايات واستنتاج المقاربات العمودية والأفقية:",
-                cache.get('limits_chunks_bytes', []),
+                cache['limits_chunks_bytes'](),
                 x=15, w=180
             )
 
             pdf_add_section_with_chunks(
                 pdf,
                 "2. حساب الدالة المشتقة:",
-                cache.get('deriv_chunks_bytes', []),
+                cache['deriv_chunks_bytes'](),
                 x=15, w=180
             )
 
@@ -2491,18 +3844,20 @@ else:
             pdf.ln(3)
 
             disc_sec_num = plot_sec_num + 1
-            eq_h = get_img_height_mm(cache.get('eq_bytes'), 180)
-            disc_h = get_img_height_mm(cache.get('disc_table_bytes'), 180)
+            eq_img = cache['eq_bytes']()
+            disc_img = cache['disc_table_bytes']()
+            eq_h = get_img_height_mm(eq_img, 180)
+            disc_h = get_img_height_mm(disc_img, 180)
             if pdf.get_y() + 10 + eq_h + disc_h > 282 and pdf.get_y() > 35:
                 pdf.add_page()
             pdf.set_font("Amiri", size=16)
             pdf.set_text_color(21, 101, 192)
             pdf.cell(0, 9, fix_arabic_pdf(f"{disc_sec_num}. المناقشة البيانية:"), ln=True, align='R')
-            if cache.get('eq_bytes'):
-                pdf_add_bytes_image(pdf, cache['eq_bytes'], x=15, w=180)
+            if eq_img:
+                pdf_add_bytes_image(pdf, eq_img, x=15, w=180)
                 pdf.ln(1)
-            if cache.get('disc_table_bytes'):
-                pdf_add_bytes_image(pdf, cache['disc_table_bytes'], x=15, w=180)
+            if disc_img:
+                pdf_add_bytes_image(pdf, disc_img, x=15, w=180)
 
             pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
             pdf_file.close()
@@ -2584,7 +3939,12 @@ else:
                     st.image(od['rel_pos_bytes'], use_container_width=True)
 
     if PDF_ENABLED and not st.session_state.auto_play:
-        pdf_bytes = get_cached_pdf_bytes(current_f, current_g, "v33")
+        pdf_key = (current_f, current_g)
+        if st.button("📄 تجهيز ملف PDF", use_container_width=True):
+            with st.spinner("جاري إنشاء ملف الـ PDF..."):
+                st.session_state.pdf_data = (pdf_key, get_cached_pdf_bytes(current_f, current_g, "v33"))
+        _pd = st.session_state.get("pdf_data")
+        pdf_bytes = _pd[1] if (_pd and _pd[0] == pdf_key) else None
         if pdf_bytes:
             st.download_button(
                 label="📥 تحميل الحل والدراسة كملف PDF",
