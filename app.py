@@ -786,7 +786,8 @@ def build_parametric_family_info(f_str, ver_tag="v36"):
         num_poly_latex = sanitize_latex(num_dfm)
 
         # استخراج جذور المقام الثابتة لاستبعاد انعدام المشتقة عند القيم الممنوعة
-         forbidden_x = []
+        # استخراج جذور المقام الثابتة لاستبعاد انعدام المشتقة عند القيم الممنوعة
+        forbidden_x = []
         if den_dfm != 1 and not den_dfm.has(m_sym):
             forbidden_x = safe_solve_real(den_dfm, x_sym)
 
