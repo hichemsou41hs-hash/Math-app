@@ -337,13 +337,13 @@ def clean_ocr_math(raw_str):
     lines = [line.strip() for line in s.splitlines() if line.strip()]
     if lines:
         for line in lines:
-            if any(k in line.lower() for k in ['f(x)', 'x', 'ln', 'exp', 'e^', 'sqrt', '/', 'm', 'abs', '|']):
+            if any(k in line.lower() for k in ['f(x)', 'f_m(x)', 'x', 'ln', 'exp', 'e^', 'sqrt', '/', 'm', 'abs', '|']):
                 s = line
                 break
         else:
             s = lines[0]
 
-    s = re.sub(r'^[fFgGhHyY]\s*(\(\s*[xX]\s*\))?\s*[:=]\s*', '', s)
+    s = re.sub(r'^[fFgGhHyY]\s*(_\s*\{?[mM]\}?)?\s*(\(\s*[xX]\s*\))?\s*[:=]\s*', '', s)
     if '=' in s:
         parts = [p.strip() for p in s.split('=') if p.strip()]
         if len(parts) >= 2:
@@ -446,7 +446,7 @@ def extract_math_from_image(image_file, api_key):
         "You are a specialized mathematical OCR engine. Read the mathematical function from the image.\n"
         "Output ONLY the right-hand side expression in plain mathematical notation.\n"
         "Strict rules:\n"
-        "- Do NOT include 'f(x) =' or 'y ='.\n"
+        "- Do NOT include 'f(x) =' or 'f_m(x) =' or 'y ='.\n"
         "- For exponentials, write e^(...) instead of exp(...). Example: x*e^x - e*x - 2 + e.\n"
         "- For fractions, wrap numerator and denominator in parentheses: (numerator)/(denominator).\n"
         "- For natural log, write ln(...). For square root, write sqrt(...). For |x|, write abs(x).\n"
@@ -636,6 +636,8 @@ def safe_solve_real(expr, x_sym, scan_limit=30.0):
     roots = []
     if expr is None or expr == 0:
         return roots
+    if hasattr(expr, 'free_symbols') and any(s != x_sym for s in expr.free_symbols):
+        return roots
     try:
         if expr.func == sp.exp or (expr.is_Pow and expr.args[0] == sp.E):
             return roots
@@ -675,7 +677,6 @@ def safe_solve_real(expr, x_sym, scan_limit=30.0):
 
     try:
         f_num = safe_lambdify(x_sym, expr)
-        # إذا كانت الدالة دورية مثلثية نحصر الفحص العددي في [-2pi, 2pi] لمنع ازدحام الجداول
         is_periodic_trig = hasattr(expr, 'has') and expr.has(sp.sin, sp.cos, sp.tan)
         bound_s = 6.5 if is_periodic_trig else scan_limit
         xs = np.linspace(-bound_s, bound_s, 2401)
@@ -753,6 +754,208 @@ def safe_solve_real(expr, x_sym, scan_limit=30.0):
             unique_roots.append(r)
     return unique_roots
 
+@st.cache_resource(show_spinner=False, max_entries=20)
+def build_parametric_family_info(f_str, ver_tag="v36"):
+    """تحليل شامل لعائلة الدوال الوسيطية f_m(x): حساب f'_m(x) وتحديد قيم m التي تقبل عندها الدالة قيماً حدية."""
+    info = {'is_param': False}
+    try:
+        x_sym, m_sym = sp.symbols('x m', real=True)
+        local_dict = {
+            'x': x_sym, 'm': m_sym, 'e': sp.E, 'E': sp.E, 'pi': sp.pi,
+            'ln': sp.log, 'log': sp.log, 'exp': sp.exp, 'sqrt': sp.sqrt,
+            'cbrt': lambda arg: sp.Pow(arg, sp.Rational(1, 3)),
+            'abs': sp.Abs, 'Abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin, 'tan': sp.tan,
+            'asin': sp.asin, 'acos': sp.acos, 'atan': sp.atan
+        }
+        transformations = (standard_transformations + (implicit_multiplication_application,))
+        f_proc = fix_implicit_mult(f_str)
+        if not f_proc:
+            return info
+        fm_expr = elim_hyperbolic(parse_expr(f_proc, local_dict=local_dict, transformations=transformations))
+        if not fm_expr.has(m_sym):
+            return info
+
+        dfm_raw = sp.diff(fm_expr, x_sym).replace(sp.sign, lambda a: a / sp.Abs(a))
+        dfm_tog = elim_hyperbolic(sp.together(dfm_raw))
+        num_dfm, den_dfm = sp.fraction(dfm_tog)
+        num_dfm = elim_hyperbolic(sp.expand(num_dfm))
+        dfm_disp = sp.Mul(num_dfm, sp.Pow(den_dfm, -1, evaluate=False), evaluate=False) if den_dfm != 1 else num_dfm
+
+        crit_m_syms = []
+        delta_latex = None
+        num_poly_latex = sanitize_latex(num_dfm)
+
+        # استخراج جذور المقام الثابتة لاستبعاد انعدام المشتقة عند القيم الممنوعة
+         forbidden_x = []
+        if den_dfm != 1 and not den_dfm.has(m_sym):
+            forbidden_x = safe_solve_real(den_dfm, x_sym)
+
+        try:
+            poly_x = sp.Poly(num_dfm, x_sym)
+            deg_x = poly_x.degree()
+            if deg_x == 2:
+                a_c, b_c, c_c = poly_x.all_coeffs()
+                disc_m = elim_hyperbolic(sp.simplify(b_c**2 - 4 * a_c * c_c))
+                delta_latex = fr"\Delta_m = ({sanitize_latex(b_c)})^2 - 4({sanitize_latex(a_c)})({sanitize_latex(c_c)}) = {sanitize_latex(disc_m)}"
+                for rm in safe_solve_real(disc_m, m_sym):
+                    crit_m_syms.append(rm)
+                if a_c.has(m_sym):
+                    for rm in safe_solve_real(a_c, m_sym):
+                        crit_m_syms.append(rm)
+            elif deg_x == 1:
+                a_c, b_c = poly_x.all_coeffs()
+                if a_c.has(m_sym):
+                    for rm in safe_solve_real(a_c, m_sym):
+                        crit_m_syms.append(rm)
+        except Exception:
+            pass
+
+        # في حال لم يكن كثير حدود من الدرجة الثانية، نعزل m من البسط وندرس قيمه الحرجة
+        if not crit_m_syms:
+            try:
+                A_nm = elim_hyperbolic(sp.simplify(sp.diff(num_dfm, m_sym)))
+                B_nm = elim_hyperbolic(sp.simplify(num_dfm.subs(m_sym, 0)))
+                if A_nm != 0 and not A_nm.has(m_sym):
+                    m_of_x = elim_hyperbolic(sp.simplify(-B_nm / A_nm))
+                    dm_of_x = sp.diff(m_of_x, x_sym)
+                    num_dmx, _ = sp.fraction(sp.together(dm_of_x))
+                    for rx in safe_solve_real(num_dmx, x_sym):
+                        mv = elim_hyperbolic(sp.simplify(m_of_x.subs(x_sym, rx)))
+                        if np.isfinite(safe_float(mv)):
+                            crit_m_syms.append(mv)
+            except Exception:
+                pass
+
+        for fx in forbidden_x:
+            try:
+                sub_f = elim_hyperbolic(sp.simplify(num_dfm.subs(x_sym, fx)))
+                if sub_f.has(m_sym):
+                    for rm in safe_solve_real(sub_f, m_sym):
+                        crit_m_syms.append(rm)
+            except Exception:
+                pass
+
+        crit_m_floats = []
+        for cm in crit_m_syms:
+            fl = safe_float(cm)
+            if np.isfinite(fl) and abs(fl) < 200 and not any(abs(fl - c) < 1e-4 for c in crit_m_floats):
+                crit_m_floats.append(fl)
+        crit_m_floats.sort()
+
+        def describe_extrema_for_m(m_val_test):
+            try:
+                f_sub = elim_hyperbolic(fm_expr.subs(m_sym, m_val_test))
+                df_sub = elim_hyperbolic(sp.together(sp.diff(f_sub, x_sym)))
+                num_s, den_s = sp.fraction(df_sub)
+                if num_s == 0:
+                    return "الدالة ثابتة على مجالات تعريفها (لا توجد قيم حدية)"
+                den_roots = [safe_float(r) for r in safe_solve_real(den_s, x_sym)] if den_s != 1 else []
+                cand_roots = safe_solve_real(num_s, x_sym)
+                df_fn = safe_lambdify(x_sym, df_sub)
+                max_cnt, min_cnt = 0, 0
+                for cr in cand_roots:
+                    xr = safe_float(cr)
+                    if not np.isfinite(xr) or any(abs(xr - dr) < 1e-3 for dr in den_roots):
+                        continue
+                    with np.errstate(all='ignore'):
+                        vl = float(df_fn(xr - 1e-3))
+                        vr = float(df_fn(xr + 1e-3))
+                    if np.isfinite(vl) and np.isfinite(vr):
+                        if vl > 1e-7 and vr < -1e-7:
+                            max_cnt += 1
+                        elif vl < -1e-7 and vr > 1e-7:
+                            min_cnt += 1
+                if max_cnt == 0 and min_cnt == 0:
+                    test_pt = 0.37 if not any(abs(0.37 - dr) < 0.1 for dr in den_roots) else 2.37
+                    with np.errstate(all='ignore'):
+                        v_t = float(df_fn(test_pt))
+                    if np.isfinite(v_t) and v_t > 0:
+                        return "لا توجد قيم حدية (الدالة متزايدة تماماً على كل مجال من مجموعة تعريفها)"
+                    elif np.isfinite(v_t) and v_t < 0:
+                        return "لا توجد قيم حدية (الدالة متناقصة تماماً على كل مجال من مجموعة تعريفها)"
+                    return "لا توجد قيم حدية محلية"
+                parts = []
+                if max_cnt == 1 and min_cnt == 1:
+                    return "تقبل الدالة قيمتين حديتين محليتين (قيمة حدية عظمى وقيمة حدية صغرى)"
+                if max_cnt == 1:
+                    parts.append("قيمة حدية عظمى وحيدة")
+                elif max_cnt > 1:
+                    parts.append(f"{max_cnt} قيم حدية عظمى")
+                if min_cnt == 1:
+                    parts.append("قيمة حدية صغرى وحيدة")
+                elif min_cnt > 1:
+                    parts.append(f"{min_cnt} قيم حدية صغرى")
+                return "تقبل الدالة " + " و ".join(parts)
+            except Exception:
+                return "تتغير رتابة الدالة حسب المجالات"
+
+        def fmt_m_sym(val_fl):
+            for s_cm in crit_m_syms:
+                if abs(safe_float(s_cm) - val_fl) < 1e-3:
+                    return sanitize_latex(s_cm)
+            if abs(val_fl - round(val_fl)) < 1e-4:
+                return str(int(round(val_fl)))
+            return str(round(val_fl, 2))
+
+        raw_rows = []
+        if crit_m_floats:
+            raw_rows.append({'L': float('-inf'), 'H': crit_m_floats[0], 'lc': False, 'rc': False, 'desc': describe_extrema_for_m(crit_m_floats[0] - 1.0)})
+            for i_c, mc in enumerate(crit_m_floats):
+                raw_rows.append({'L': mc, 'H': mc, 'lc': True, 'rc': True, 'desc': describe_extrema_for_m(mc)})
+                if i_c < len(crit_m_floats) - 1:
+                    mc_n = crit_m_floats[i_c + 1]
+                    raw_rows.append({'L': mc, 'H': mc_n, 'lc': False, 'rc': False, 'desc': describe_extrema_for_m(0.5 * (mc + mc_n))})
+            raw_rows.append({'L': crit_m_floats[-1], 'H': float('inf'), 'lc': False, 'rc': False, 'desc': describe_extrema_for_m(crit_m_floats[-1] + 1.0)})
+        else:
+            raw_rows.append({'L': float('-inf'), 'H': float('inf'), 'lc': False, 'rc': False, 'desc': describe_extrema_for_m(1.0)})
+
+        merged_rows = []
+        for r_it in raw_rows:
+            if not merged_rows:
+                merged_rows.append(r_it)
+            else:
+                prev = merged_rows[-1]
+                if prev['desc'] == r_it['desc']:
+                    prev['H'] = r_it['H']
+                    prev['rc'] = r_it['rc']
+                else:
+                    merged_rows.append(r_it)
+
+        extrema_table = []
+        for it in merged_rows:
+            L, H, d_txt = it['L'], it['H'], it['desc']
+            L_s = r"-\infty" if L == float('-inf') else fmt_m_sym(L)
+            H_s = r"+\infty" if H == float('inf') else fmt_m_sym(H)
+            if L == float('-inf') and H == float('inf'):
+                m_lat = r"m \in \mathbb{R}"
+            elif L == H:
+                m_lat = fr"m = {L_s}"
+            else:
+                lb = "[" if (it['lc'] and L != float('-inf')) else "]"
+                rb = "]" if (it['rc'] and H != float('inf')) else "["
+                m_lat = fr"m \in {lb}{L_s} ; {H_s}{rb}"
+            extrema_table.append((m_lat, d_txt, L, H))
+
+        m_min_p, m_max_p = -6.0, 6.0
+        if crit_m_floats:
+            m_min_p = float(min(-6.0, np.floor(crit_m_floats[0] - 2.5)))
+            m_max_p = float(max(6.0, np.ceil(crit_m_floats[-1] + 2.5)))
+
+        info.update({
+            'is_param': True,
+            'fm_latex': sanitize_latex(fm_expr),
+            'dfm_latex': sanitize_latex(dfm_disp),
+            'num_poly_latex': num_poly_latex,
+            'delta_latex': delta_latex,
+            'crit_m_floats': crit_m_floats,
+            'extrema_table': extrema_table,
+            'm_min_p': max(-25.0, m_min_p),
+            'm_max_p': min(25.0, m_max_p)
+        })
+    except Exception:
+        pass
+    return info
+
 def get_sol_color_pdf(sol_text):
     if "لا توجد" in sol_text or "ليس لها" in sol_text:
         return "#9B2226"
@@ -761,8 +964,8 @@ def get_sol_color_pdf(sol_text):
 def get_sol_color_html(sol_text):
     if "لا توجد" in sol_text or "ليس لها" in sol_text:
         return "#EF4444"
-    if "مضاعف" in sol_text:
-        return "#F59E0B"
+    if "مضاعف" in sol_text or "عظمى" in sol_text or "صغرى" in sol_text:
+        return "#4ADE80"
     if "حل وحيد" in sol_text or "حل واحد" in sol_text:
         return "#4ADE80"
     if "معدوم" in sol_text:
@@ -846,7 +1049,7 @@ with col_img:
                         st.error(f"❌ تعذر استخراج الدالة حالياً: {err_msg}")
 
 with col_text:
-    st.text_input("أدخل عبارة الدالة f(x):", key="f_val", max_chars=200, placeholder="مثال: x+1+x*e^(-2*x)", on_change=apply_current_inputs)
+    st.text_input("أدخل عبارة الدالة f(x) أو الدالة الوسيطية f_m(x):", key="f_val", max_chars=200, placeholder="مثال: (x^2+m*x+1)/(x-1)", on_change=apply_current_inputs)
     st.text_input("أدخل معادلة المستقيم بدلالة m (تُترك m للمناقشة الأفقية):", key="g_val", max_chars=200, placeholder="m", on_change=apply_current_inputs)
     if st.button("✅ تأكيد ورسم الدالة", use_container_width=True):
         apply_current_inputs()
@@ -855,7 +1058,7 @@ current_f = st.session_state.active_f
 current_g = st.session_state.active_g
 # ==================== نهاية الجزء (2/4) ====================
 # ==================== بداية الجزء (3/4) ====================
-def build_math_context(f_str, g_str, version_tag="v35"):
+def build_math_context(f_str, g_str, version_tag="v36", m_sub_val=None):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -875,8 +1078,17 @@ def build_math_context(f_str, g_str, version_tag="v35"):
         transformations = (standard_transformations + (implicit_multiplication_application,))
         f_processed = fix_implicit_mult(f_str)
         g_processed = fix_implicit_mult(g_str) or "m"
-        f_expr = elim_hyperbolic(parse_expr(f_processed, local_dict=local_dict, transformations=transformations))
+        f_expr_raw = elim_hyperbolic(parse_expr(f_processed, local_dict=local_dict, transformations=transformations))
         g_expr = elim_hyperbolic(parse_expr(g_processed, local_dict=local_dict, transformations=transformations))
+
+        # إذا كانت الدالة وسيطية f_m(x) تحتوي على m، نعوض بقيمة m المختارة لرسم المنحنى وجدول التغيرات بدقة
+        is_parametric_f = bool(f_expr_raw.has(m_sym))
+        if is_parametric_f:
+            m_num_use = 1.0 if m_sub_val is None else float(m_sub_val)
+            m_sym_sub = sp.Integer(int(round(m_num_use))) if abs(m_num_use - round(m_num_use)) < 1e-5 else sp.nsimplify(round(m_num_use, 2), tolerance=1e-2)
+            f_expr = elim_hyperbolic(f_expr_raw.subs(m_sym, m_sym_sub))
+        else:
+            f_expr = f_expr_raw
         
         f_func = safe_lambdify(x_sym, f_expr)
         g_func = safe_lambdify((x_sym, m_sym), g_expr)
@@ -1051,7 +1263,6 @@ def build_math_context(f_str, g_str, version_tag="v35"):
         except Exception:
             pass
 
-        # تحديد نافذة الرسم الديناميكية التلقائية (Auto-Adaptive Viewport) لتشمل جميع النقاط المهمة
         key_x_floats = [safe_float(r) for r in candidate_v_asymptotes + abs_corner_syms + sym_extrema if np.isfinite(safe_float(r))]
         max_abs_x = max([abs(v) for v in key_x_floats if abs(v) <= 40.0], default=8.0)
         plot_x_bound = float(max(12.0, min(35.0, np.ceil(max_abs_x + 4.0))))
@@ -1204,7 +1415,6 @@ def build_math_context(f_str, g_str, version_tag="v35"):
         pts_var_exact.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
         pts_var_exact.sort(key=lambda p: p['val'])
 
-        # إذا كانت الدالة دورية مثلثية وكثرت النقاط، نحتفظ بأقرب 7 فواصل للمركز لتفادي ازدحام جدول التغيرات
         if len(pts_var_exact) > 9:
             inner_pts = pts_var_exact[1:-1]
             inner_pts.sort(key=lambda p: abs(p['val']))
@@ -1888,7 +2098,6 @@ def build_math_context(f_str, g_str, version_tag="v35"):
                 m_max_val = float(np.ceil(m_critical_num[-1] + 1.5))
         m_min_val, m_max_val = float(max(-30.0, m_min_val)), float(min(30.0, m_max_val))
 
-        # تحديد الارتفاع العمودي التلقائي للمعلم ليشمل الذرى والمقاربات الأفقية
         key_y_floats = [a['val'] for a in unique_asymptotes if a['type'] == 'h' and np.isfinite(a['val'])]
         if m_equals_f:
             key_y_floats.extend([pt['m_val'] for pt in point_evaluations if np.isfinite(pt['m_val'])])
@@ -2363,7 +2572,8 @@ def build_math_context(f_str, g_str, version_tag="v35"):
         disc_table_bytes = generate_pdf_discussion_bytes
 
         cache.update({
-            'valid': True, 'f_func': f_func, 'g_func': g_func,
+            'valid': True, 'is_parametric_f': is_parametric_f,
+            'f_func': f_func, 'g_func': g_func,
             'x_vals_plot': x_vals_plot, 'y_vals_plot': y_vals_plot,
             'plot_x_bound': plot_x_bound, 'plot_y_bound': plot_y_bound,
             'unique_asymptotes': unique_asymptotes, 'holes': holes,
@@ -2404,12 +2614,13 @@ def _run_with_deadline(fn, args, seconds):
         return None
     return box.get('res')
 
-def build_with_timeout(f_str, g_str, tag, seconds=100):
+def build_with_timeout(f_str, g_str, tag, m_sub_val=None, seconds=100):
     store = _ctx_store()
-    key = (f_str, g_str, tag)
+    m_key = None if m_sub_val is None else round(float(m_sub_val), 2)
+    key = (f_str, g_str, tag, m_key)
     if key in store:
         return store[key]
-    res = _run_with_deadline(build_math_context, (f_str, g_str, tag), seconds)
+    res = _run_with_deadline(build_math_context, (f_str, g_str, tag, m_key), seconds)
     if res is None:
         return {'valid': False, 'error': 'انتهت مهلة التحليل؛ الدالة معقدة جداً لهذا الخادم. جرّب دالة أبسط.'}
     if res.get('valid'):
@@ -2418,13 +2629,28 @@ def build_with_timeout(f_str, g_str, tag, seconds=100):
         store[key] = res
     return res
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v35":
+param_family_info = build_parametric_family_info(current_f, "v36")
+is_param_mode = param_family_info.get('is_param', False)
+
+if is_param_mode:
+    m_min_slider = param_family_info.get('m_min_p', -6.0)
+    m_max_slider = param_family_info.get('m_max_p', 6.0)
+    m_val_param_selected = st.slider("🎛️ اختر قيمة المعلمة m لرسم المنحنى (Cf_m) وإنشاء جدول التغيرات الموافق لها:", m_min_slider, m_max_slider, 1.0, 0.25, format="%g", key="param_m_slider")
+else:
+    m_val_param_selected = None
+
+if ('math_cache' not in st.session_state or
+    st.session_state.get('last_f') != current_f or
+    st.session_state.get('last_g') != current_g or
+    st.session_state.get('last_m_sub') != m_val_param_selected or
+    st.session_state.get('cache_ver') != "v36"):
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_with_timeout(current_f, current_g, "v35")
+        st.session_state.math_cache = build_with_timeout(current_f, current_g, "v36", m_sub_val=m_val_param_selected)
         st.session_state.pdf_data = None
         st.session_state.last_f = current_f
         st.session_state.last_g = current_g
-        st.session_state.cache_ver = "v35"
+        st.session_state.last_m_sub = m_val_param_selected
+        st.session_state.cache_ver = "v36"
 
 cache = st.session_state.math_cache
 
@@ -2435,22 +2661,49 @@ if not cache.get('valid'):
         st.error(f"⚠️ صيغة الدالة غير مكتملة. تأكد من كتابة العبارة الرياضية بشكل صحيح ثم اضغط على زر «تأكيد ورسم الدالة». ({cache.get('error', '')})")
 else:
     g_latex_disp = sanitize_latex(cache['g_expr'])
-    st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {sanitize_latex(cache['f_expr'])} \\ y = {g_latex_disp} \end{{cases}}")
+    if is_param_mode:
+        st.latex(rf"\color{{#FFD700}} \begin{{cases}} f_m(x) = {param_family_info['fm_latex']} \\ f_{{{fmt(m_val_param_selected)}}}(x) = {sanitize_latex(cache['f_expr'])} \end{{cases}}")
+    else:
+        st.latex(rf"\color{{#FFD700}} \begin{{cases}} f(x) = {sanitize_latex(cache['f_expr'])} \\ y = {g_latex_disp} \end{{cases}}")
+
     m_min_val, m_max_val, m_critical_num = cache['m_min_val'], cache['m_max_val'], cache['m_critical_num']
 
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("تشغيل المناقشة آلياً ▶", disabled=st.session_state.auto_play):
-            st.session_state.auto_play = True
-            st.session_state.m_anim = m_min_val
-            st.rerun()
-    with col2:
-        if st.button("إيقاف ⏹", disabled=not st.session_state.auto_play):
-            st.session_state.auto_play = False
-            st.rerun()
-    
-    m_val_manual = st.slider("تحكم يدوي:", m_min_val, m_max_val, m_min_val, 0.05, format="%g", key="manual_m", disabled=st.session_state.auto_play)
+    if not is_param_mode:
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("تشغيل المناقشة آلياً ▶", disabled=st.session_state.auto_play):
+                st.session_state.auto_play = True
+                st.session_state.m_anim = m_min_val
+                st.rerun()
+        with col2:
+            if st.button("إيقاف ⏹", disabled=not st.session_state.auto_play):
+                st.session_state.auto_play = False
+                st.rerun()
+        m_val_manual = st.slider("تحكم يدوي:", m_min_val, m_max_val, m_min_val, 0.05, format="%g", key="manual_m", disabled=st.session_state.auto_play)
+    else:
+        m_val_manual = m_val_param_selected
+
     anim_placeholder = st.empty()
+
+    if is_param_mode:
+        st.markdown("<h3 style='color:#FFD700; text-align:center; direction:rtl; margin-top:15px; margin-bottom:5px;'>📌 دراسة تغيرات الدالة الوسيطية f_m(x) حسب قيم المعلمة m</h3>", unsafe_allow_html=True)
+        st.info("🔹 عبارة الدالة المشتقة بدلالة المعلمة الحقيقية $m$:")
+        st.latex(fr"\color{{#4ADE80}}{{f'_m(x) = {param_family_info['dfm_latex']}}}")
+        if param_family_info.get('delta_latex'):
+            st.markdown("<div class='step-box-deriv'>🔸 إشارة المشتقة من إشارة البسط، نحسب المميز Δ_m بدلالة m:</div>", unsafe_allow_html=True)
+            st.latex(fr"\color{{#FDE68A}}{{{param_family_info['delta_latex']}}}")
+        md_param = "| اتجاه التغير ووجود القيم الحدية (العظمى أو الصغرى) | مجال / قيم المعلمة $m$ |\n| :---: | :---: |\n"
+        for m_lat_p, desc_p, Lp, Hp in param_family_info.get('extrema_table', []):
+            c_p = get_sol_color_html(desc_p)
+            is_act_p = (Lp == Hp and abs(m_val_param_selected - Lp) <= 0.1) or (Lp < m_val_param_selected < Hp)
+            if is_act_p:
+                t_c = f"<span style='display:inline-block; width:92%; background-color:#334155; border:2px solid #FFD700; padding:4px; border-radius:6px; color:{c_p}; font-weight:bold; font-size:16px;'>{desc_p}</span>"
+                m_c = f"<span style='display:inline-block; width:92%; background-color:#334155; border:2px solid #FFD700; padding:4px; border-radius:6px; white-space:nowrap; font-size:16px;'>**${m_lat_p}$**</span>"
+            else:
+                t_c = f"<span style='color:{c_p}; font-weight:bold; font-size:16px;'>{desc_p}</span>"
+                m_c = f"<span style='white-space:nowrap; font-size:16px;'>${m_lat_p}$</span>"
+            md_param += f"| {t_c} | {m_c} |\n"
+        st.markdown(md_param, unsafe_allow_html=True)
 
     st.markdown("<h3 style='color:#FFD700; text-align:center; direction:rtl; margin-top:15px; margin-bottom:5px;'>📌 المناقشة البيانية</h3>", unsafe_allow_html=True)
     st.info(fr"🔹 حلول المعادلة $f(x) = {g_latex_disp}$ هي فواصل نقط تقاطع منحنى الدالة $f$ مع المستقيم ذو المعادلة: $y = {g_latex_disp}$")
@@ -2526,9 +2779,10 @@ else:
             
         for hole in cache['holes']:
             ax.plot(hole['val'], hole['lim'], marker='o', markerfacecolor=bg_leg, markeredgecolor=c_cf, markersize=8, markeredgewidth=2, zorder=6)
-        ax.plot(cache['x_vals_plot'], cache['y_vals_plot'], color=c_cf, linewidth=3.3, label=r'$(C_f)$', zorder=5)
+        cf_lbl = rf'$(C_{{f_{{{fmt(m_val)}}}}})$' if is_param_mode else r'$(C_f)$'
+        ax.plot(cache['x_vals_plot'], cache['y_vals_plot'], color=c_cf, linewidth=3.3, label=cf_lbl, zorder=5)
         
-        if mode == 'dark':
+        if mode == 'dark' and not is_param_mode:
             with np.errstate(divide='ignore', invalid='ignore', over='ignore'):
                 y_g_plot = cache['g_func'](cache['x_vals_plot'], m_val)
             if np.isscalar(y_g_plot):
@@ -2623,7 +2877,7 @@ else:
         pdf.ln(2)
 
     @st.cache_data(show_spinner=False, max_entries=5)
-    def get_cached_pdf_bytes(f_key, g_key, ver_key="v35"):
+    def get_cached_pdf_bytes(f_key, g_key, m_sub_k=None, ver_key="v36"):
         if not PDF_ENABLED:
             return None
         try:
@@ -2752,7 +3006,7 @@ else:
         except Exception:
             return None
 
-    if st.session_state.auto_play:
+    if st.session_state.auto_play and not is_param_mode:
         m_val = st.session_state.m_anim
         stop_points = sorted(list(set(([0.0] if not m_critical_num else m_critical_num + [m_critical_num[0]-1.5, m_critical_num[-1]+1.5] + [(m_critical_num[i]+m_critical_num[i+1])/2.0 for i in range(len(m_critical_num)-1)]))))
         while m_val <= m_max_val and st.session_state.auto_play:
@@ -2819,10 +3073,10 @@ else:
                     st.image(od['rel_pos_bytes'], use_container_width=True)
 
     if PDF_ENABLED and not st.session_state.auto_play:
-        pdf_key = (current_f, current_g)
+        pdf_key = (current_f, current_g, m_val_param_selected)
         if st.button("📄 تجهيز ملف PDF", use_container_width=True):
             with st.spinner("جاري إنشاء ملف الـ PDF..."):
-                st.session_state.pdf_data = (pdf_key, get_cached_pdf_bytes(current_f, current_g, "v35"))
+                st.session_state.pdf_data = (pdf_key, get_cached_pdf_bytes(current_f, current_g, m_val_param_selected, "v36"))
         _pd = st.session_state.get("pdf_data")
         pdf_bytes = _pd[1] if (_pd and _pd[0] == pdf_key) else None
         if pdf_bytes:
