@@ -1851,7 +1851,7 @@ def build_math_context(f_str, g_str, version_tag="v36", m_sub_val=None):
                 pass
             od['oblique_steps_bytes'] = fig_to_bytes(fig_ob)
             rel_pos_tables_info.append(od)
-# ==================== نهاية الجزء (3/4) ====================
+# ==================== نهاية الجزء (3/4) ================≈===
 # ==================== بداية الجزء (4/4) ====================
         diff_fg = sp.together(f_expr - g_expr)
         A_m = elim_hyperbolic(sp.simplify(sp.diff(diff_fg, m_sym)))
@@ -2093,17 +2093,47 @@ def build_math_context(f_str, g_str, version_tag="v36", m_sub_val=None):
 
         m_min_val, m_max_val = -6.0, 6.0
         if m_critical_num:
-            if m_critical_num[0] - 1.5 < m_min_val:
-                m_min_val = float(np.floor(m_critical_num[0] - 1.5))
-            if m_critical_num[-1] + 1.5 > m_max_val:
-                m_max_val = float(np.ceil(m_critical_num[-1] + 1.5))
-        m_min_val, m_max_val = float(max(-30.0, m_min_val)), float(min(30.0, m_max_val))
+            if m_critical_num[0] - 2.5 < m_min_val:
+                m_min_val = float(np.floor(m_critical_num[0] - 2.5))
+            if m_critical_num[-1] + 2.5 > m_max_val:
+                m_max_val = float(np.ceil(m_critical_num[-1] + 2.5))
+        m_min_val, m_max_val = float(max(-35.0, m_min_val)), float(min(35.0, m_max_val))
 
-        key_y_floats = [a['val'] for a in unique_asymptotes if a['type'] == 'h' and np.isfinite(a['val'])]
+        # تأطير عمودي ذكي وغير متناظر (Smart Asymmetric Y-Framing) لإظهار الفروع العليا والسفلى بوضوح تام
+        key_y_floats = [0.0]
+        for a in unique_asymptotes:
+            if a['type'] == 'h' and np.isfinite(a['val']):
+                key_y_floats.append(float(a['val']))
+            elif a['type'] == 'oblique':
+                key_y_floats.append(float(a['b']))
+                for va in unique_asymptotes:
+                    if va['type'] == 'v' and np.isfinite(va['val']):
+                        key_y_floats.append(float(a['a'] * va['val'] + a['b']))
+        for h_pt in holes:
+            if np.isfinite(h_pt['lim']):
+                key_y_floats.append(float(h_pt['lim']))
+        for p_v in pts_var_exact:
+            if p_v['type'] in ['extrema', 'corner', 'bound']:
+                try:
+                    yv_p = float(f_func(p_v['val']))
+                    if np.isfinite(yv_p):
+                        key_y_floats.append(yv_p)
+                except Exception:
+                    pass
         if m_equals_f:
-            key_y_floats.extend([pt['m_val'] for pt in point_evaluations if np.isfinite(pt['m_val'])])
-        max_abs_y = max([abs(v) for v in key_y_floats if abs(v) <= 35.0], default=5.0)
-        plot_y_bound = float(max(8.0, min(28.0, np.ceil(max_abs_y + 2.5))))
+            for pt in point_evaluations:
+                if np.isfinite(pt['m_val']):
+                    key_y_floats.append(float(pt['m_val']))
+
+        valid_key_y = [v for v in key_y_floats if np.isfinite(v) and abs(v) <= 45.0]
+        if valid_key_y:
+            min_ky = min(valid_key_y)
+            max_ky = max(valid_key_y)
+        else:
+            min_ky, max_ky = -4.0, 4.0
+
+        plot_y_min = float(max(-45.0, min(-8.0, np.floor(min_ky - 6.0))))
+        plot_y_max = float(min(45.0, max(8.0, np.ceil(max_ky + 6.0))))
 
         def get_exact_m(val_float):
             for sm in sym_m_critical:
@@ -2576,7 +2606,7 @@ def build_math_context(f_str, g_str, version_tag="v36", m_sub_val=None):
             'valid': True, 'is_parametric_f': is_parametric_f,
             'f_func': f_func, 'g_func': g_func,
             'x_vals_plot': x_vals_plot, 'y_vals_plot': y_vals_plot,
-            'plot_x_bound': plot_x_bound, 'plot_y_bound': plot_y_bound,
+            'plot_x_bound': plot_x_bound, 'plot_y_min': plot_y_min, 'plot_y_max': plot_y_max,
             'unique_asymptotes': unique_asymptotes, 'holes': holes,
             'm_critical_num': m_critical_num, 'final_table': final_table,
             'domain_latex_st': domain_latex_st, 'limits_data_detailed': limits_data_detailed,
@@ -2630,7 +2660,7 @@ def build_with_timeout(f_str, g_str, tag, m_sub_val=None, seconds=100):
         store[key] = res
     return res
 
-param_family_info = build_parametric_family_info(current_f, "v36")
+param_family_info = build_parametric_family_info(current_f, "v37")
 is_param_mode = param_family_info.get('is_param', False)
 
 if is_param_mode:
@@ -2644,14 +2674,14 @@ if ('math_cache' not in st.session_state or
     st.session_state.get('last_f') != current_f or
     st.session_state.get('last_g') != current_g or
     st.session_state.get('last_m_sub') != m_val_param_selected or
-    st.session_state.get('cache_ver') != "v36"):
+    st.session_state.get('cache_ver') != "v37"):
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_with_timeout(current_f, current_g, "v36", m_sub_val=m_val_param_selected)
+        st.session_state.math_cache = build_with_timeout(current_f, current_g, "v37", m_sub_val=m_val_param_selected)
         st.session_state.pdf_data = None
         st.session_state.last_f = current_f
         st.session_state.last_g = current_g
         st.session_state.last_m_sub = m_val_param_selected
-        st.session_state.cache_ver = "v36"
+        st.session_state.cache_ver = "v37"
 
 cache = st.session_state.math_cache
 
@@ -2731,9 +2761,16 @@ else:
     def draw_plot(m_val, mode='dark'):
         fig, ax = new_fig(figsize=(9.5, 6.0))
         x_lim_b = cache.get('plot_x_bound', 12.0)
-        y_lim_b = cache.get('plot_y_bound', 8.0)
+        y_min_b = cache.get('plot_y_min', -8.0)
+        y_max_b = cache.get('plot_y_max', 8.0)
+        if mode == 'dark' and not is_param_mode and current_g.strip() == 'm':
+            if m_val - 2.0 < y_min_b:
+                y_min_b = float(np.floor(m_val - 2.0))
+            if m_val + 2.0 > y_max_b:
+                y_max_b = float(np.ceil(m_val + 2.0))
+        y_span = y_max_b - y_min_b
         major_step_x = 1 if x_lim_b <= 15 else (2 if x_lim_b <= 26 else 5)
-        major_step_y = 1 if y_lim_b <= 12 else (2 if y_lim_b <= 22 else 5)
+        major_step_y = 1 if y_span <= 22 else (2 if y_span <= 42 else 5)
 
         if mode == 'dark':
             fig.patch.set_facecolor('#0F172A')
@@ -2771,7 +2808,7 @@ else:
                     ax.text(-x_lim_b + 0.5, asym['val'] + 0.25, f"${asym['label']}$", color=c_asym, fontsize=13, fontweight='bold', ha='left')
                 elif asym['type'] == 'v':
                     ax.axvline(asym['val'], color=c_asym, linestyle='--', linewidth=2.0, zorder=4)
-                    ax.text(asym['val'] + 0.15, y_lim_b - 0.8, f"${asym['label']}$", color=c_asym, fontsize=13, fontweight='bold', va='top')
+                    ax.text(asym['val'] + 0.15, y_max_b - 0.8, f"${asym['label']}$", color=c_asym, fontsize=13, fontweight='bold', va='top')
                 elif asym['type'] == 'oblique':
                     x_ob = np.array([-x_lim_b, x_lim_b])
                     ax.plot(x_ob, asym['a'] * x_ob + asym['b'], color=c_asym, linestyle='-.', linewidth=2.0, zorder=4, label=f"$(\\Delta): {asym['label']}$")
@@ -2814,7 +2851,7 @@ else:
             ax.text(x_lim_b * 0.33, m_val + 0.35, f"${m_eq_label}$", color=c_cg, fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
             
         ax.set_xlim(-x_lim_b, x_lim_b)
-        ax.set_ylim(-y_lim_b, y_lim_b)
+        ax.set_ylim(y_min_b, y_max_b)
         try:
             legend = ax.legend(facecolor=bg_leg, edgecolor=edge_leg, loc='upper right', fontsize=12)
             for text in legend.get_texts():
@@ -2878,7 +2915,7 @@ else:
         pdf.ln(2)
 
     @st.cache_data(show_spinner=False, max_entries=5)
-    def get_cached_pdf_bytes(f_key, g_key, m_sub_k=None, ver_key="v36"):
+    def get_cached_pdf_bytes(f_key, g_key, m_sub_k=None, ver_key="v37"):
         if not PDF_ENABLED:
             return None
         try:
@@ -3077,7 +3114,7 @@ else:
         pdf_key = (current_f, current_g, m_val_param_selected)
         if st.button("📄 تجهيز ملف PDF", use_container_width=True):
             with st.spinner("جاري إنشاء ملف الـ PDF..."):
-                st.session_state.pdf_data = (pdf_key, get_cached_pdf_bytes(current_f, current_g, m_val_param_selected, "v36"))
+                st.session_state.pdf_data = (pdf_key, get_cached_pdf_bytes(current_f, current_g, m_val_param_selected, "v37"))
         _pd = st.session_state.get("pdf_data")
         pdf_bytes = _pd[1] if (_pd and _pd[0] == pdf_key) else None
         if pdf_bytes:
@@ -3098,4 +3135,5 @@ st.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
+# ==================== نهاية الجزء (4/4) ====================
 # ==================== نهاية الجزء (4/4) ====================
