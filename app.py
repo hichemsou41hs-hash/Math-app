@@ -1,4 +1,4 @@
-# ==================== بداية الجزء الأول (1/2) ====================
+# ==================== بداية الجزء (1/4) ====================
 import streamlit as st
 import base64
 import io
@@ -22,10 +22,10 @@ def _check_deadline():
         raise _AbortAnalysis()
 
 def new_fig(figsize=None):
-    # واجهة Figure المباشرة بدل pyplot: لا حالة عامة مشتركة بين الجلسات
     fig = Figure(figsize=figsize)
     ax = fig.subplots()
     return fig, ax
+
 import matplotlib.ticker as ticker
 import sympy as sp
 from scipy.signal import find_peaks
@@ -39,28 +39,46 @@ import tempfile
 from PIL import Image, ImageOps, ImageEnhance
 from sympy.parsing.sympy_parser import parse_expr as _raw_parse_expr, standard_transformations, implicit_multiplication_application
 
-# ---- طبقة أمان: قائمة بيضاء قبل تحليل أي عبارة (تمنع تنفيذ كود عشوائي) ----
-_SAFE_TOKEN = re.compile(r'(?:x|m|e|E|pi|ln|log|exp|sqrt|abs|Abs|cos|sin|tan)+')
+# ---- طبقة أمان موسعة: تشمل الدوال المثلثية العكسية والجذر التكعيبي ----
+_SAFE_TOKEN = re.compile(r'(?:x|m|e|E|pi|ln|log|exp|sqrt|cbrt|abs|Abs|cos|sin|tan|asin|acos|atan|sign)+')
+
+def real_odd_powers(expr):
+    """تحويل القوى الكسرية ذات المقام الفردي (مثل x^(1/3)) إلى صيغة حقيقية صالحة للأعداد السالبة والموجبة."""
+    if expr is None or not hasattr(expr, 'replace'):
+        return expr
+    try:
+        def _is_odd_rat_pow(e):
+            return e.is_Pow and isinstance(e.args[1], sp.Rational) and e.args[1].q > 1 and (e.args[1].q % 2 == 1)
+        def _conv_odd_pow(e):
+            base, r = e.args
+            if not base.free_symbols:
+                return e
+            p_num, q_den = int(r.p), int(r.q)
+            abs_part = sp.Pow(sp.Abs(base), sp.Rational(p_num, q_den))
+            if p_num % 2 != 0:
+                return sp.sign(base) * abs_part
+            return abs_part
+        return expr.replace(_is_odd_rat_pow, _conv_odd_pow)
+    except Exception:
+        return expr
 
 def parse_expr(s, *args, **kwargs):
     s = str(s)
-    if len(s) > 200 or re.search(r'[^0-9A-Za-z+\-*/().\s]', s):
+    if len(s) > 220 or re.search(r'[^0-9A-Za-z+\-*/().\s]', s):
         raise ValueError("رمز غير مسموح في العبارة")
     for tok in re.findall(r'[A-Za-z_]+', s):
         if not _SAFE_TOKEN.fullmatch(tok):
             raise ValueError("كلمة غير مسموحة: " + tok)
     res = _raw_parse_expr(s, *args, **kwargs)
-    if sp.count_ops(res) > 300:
+    if sp.count_ops(res) > 350:
         raise ValueError("العبارة معقدة جداً")
-    return res
+    return real_odd_powers(res)
 
-# إيقاف الطباعة التلقائية للقيم الفارغة (لمنع ظهور كلمة None الخضراء في الشاشة نهائياً)
 try:
     st.set_option('runner.magicEnabled', False)
 except Exception:
     pass
 
-# ---- خطوط التقرير: Amiri للعربية و STIX للصيغ الرياضية (مع بدائل آمنة عند فشل التحميل) ----
 from matplotlib import font_manager as _fm
 
 def _fetch_font(fname, url):
@@ -199,25 +217,26 @@ st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>
 NUMPY_MATH_MAP = {
     'E': np.e, 'e': np.e, 'pi': np.pi,
     'Abs': np.abs, 'abs': np.abs, 'sign': np.sign,
-    'sqrt': np.sqrt, 'exp': np.exp, 'log': np.log, 'ln': np.log,
+    'sqrt': np.sqrt, 'cbrt': np.cbrt, 'exp': np.exp, 'log': np.log, 'ln': np.log,
     'sin': np.sin, 'cos': np.cos, 'tan': np.tan,
     'asin': np.arcsin, 'acos': np.arccos, 'atan': np.arctan
 }
 
 def safe_lambdify(vars_sym, expr):
+    expr_real = real_odd_powers(expr)
     try:
-        return sp.lambdify(vars_sym, expr, modules=[NUMPY_MATH_MAP, 'numpy'])
+        return sp.lambdify(vars_sym, expr_real, modules=[NUMPY_MATH_MAP, 'numpy'])
     except Exception:
         def fallback_fn(*args):
             try:
                 if isinstance(vars_sym, (tuple, list)):
                     sub_d = {v: a for v, a in zip(vars_sym, args)}
-                    return float(sp.N(expr.subs(sub_d)))
+                    return float(sp.N(expr_real.subs(sub_d)))
                 else:
                     arr = args[0]
                     if isinstance(arr, np.ndarray):
-                        return np.array([safe_float(expr.subs(vars_sym, float(val))) for val in arr], dtype=float)
-                    return safe_float(expr.subs(vars_sym, float(arr)))
+                        return np.array([safe_float(expr_real.subs(vars_sym, float(val))) for val in arr], dtype=float)
+                    return safe_float(expr_real.subs(vars_sym, float(arr)))
             except Exception:
                 return np.nan
         return fallback_fn
@@ -307,7 +326,8 @@ def fmt(val):
         return str(round(f_val, 2))
     except Exception:
         return str(val)
-
+# ==================== نهاية الجزء (1/4) ====================
+# ==================== بداية الجزء (2/4) ====================
 def clean_ocr_math(raw_str):
     if not raw_str:
         return ""
@@ -336,7 +356,7 @@ def clean_ocr_math(raw_str):
         '（': '(', '）': ')', '［': '(', '］': ')', '[': '(', ']': ')',
         '⁰': '^0', '¹': '^1', '²': '^2', '³': '^3', '⁴': '^4',
         '⁵': '^5', '⁶': '^6', '⁷': '^7', '⁸': '^8', '⁹': '^9',
-        '√': 'sqrt', '\\left': '', '\\right': '', '\\cdot': '*', '\\times': '*',
+        '∛': 'cbrt', '√': 'sqrt', '\\left': '', '\\right': '', '\\cdot': '*', '\\times': '*',
         '\\ln': 'ln', '\\log': 'ln', '\\exp': 'exp', '\\sqrt': 'sqrt',
         '\\pi': 'pi', '\\mathrm{e}': 'e', '\\text{e}': 'e',
         'In(': 'ln(', '1n(': 'ln(', 'LN(': 'ln(', 'EXP(': 'exp(', 'Exp(': 'exp('
@@ -370,7 +390,8 @@ def fix_implicit_mult(expr_str):
     expr_str = re.sub(r'[\+\-\*\/\^]+$', '', expr_str.strip())
     expr_str = expr_str.replace('^', '**')
     expr_str = re.sub(r'sqrt\s*([xym0-9])', r'sqrt(\1)', expr_str)
-    expr_str = re.sub(r'([xym0-9\)])\s*(exp|ln|log|cos|sin|tan|sqrt|abs|pi)\b', r'\1*\2', expr_str)
+    expr_str = re.sub(r'cbrt\s*([xym0-9])', r'cbrt(\1)', expr_str)
+    expr_str = re.sub(r'([xym0-9\)])\s*(exp|ln|log|cos|sin|tan|asin|acos|atan|sqrt|cbrt|abs|pi)\b', r'\1*\2', expr_str)
     expr_str = re.sub(r'([xym0-9\)])\s*(e)\b(?![a-zA-Z])', r'\1*\2', expr_str)
     expr_str = re.sub(r'\b(e|pi)\s*([xym0-9\(])', r'\1*\2', expr_str)
     expr_str = re.sub(r'(\))\s*(\()', r'\1*\2', expr_str)
@@ -385,7 +406,9 @@ def validate_extracted_math(candidate_str):
         local_dict = {
             'x': x_sym, 'm': m_sym, 'e': sp.E, 'E': sp.E, 'pi': sp.pi,
             'ln': sp.log, 'log': sp.log, 'exp': sp.exp, 'sqrt': sp.sqrt,
-            'abs': sp.Abs, 'Abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin, 'tan': sp.tan
+            'cbrt': lambda arg: sp.Pow(arg, sp.Rational(1, 3)),
+            'abs': sp.Abs, 'Abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin, 'tan': sp.tan,
+            'asin': sp.asin, 'acos': sp.acos, 'atan': sp.atan
         }
         transformations = (standard_transformations + (implicit_multiplication_application,))
         proc = fix_implicit_mult(candidate_str)
@@ -582,21 +605,21 @@ def format_lim_val(lim_sym):
         return r"-\infty"
     if lim_sym == sp.zoo or str(lim_sym) == 'zoo':
         return r"\pm\infty"
+    if lim_sym == sp.nan or str(lim_sym) == 'nan' or 'AccumBounds' in str(lim_sym):
+        return r"\text{غير موجودة}"
     return sanitize_latex(lim_sym)
 
-# فحص ما إذا كانت العبارة معادلة متسامية مختلطة (تجمع x مع أسية أو لوغاريتم في جمع/طرح) لتفادي بطء sp.solve
 def is_mixed_transcendental(expr, x_sym):
     if not hasattr(expr, 'has'):
         return False
     try:
-        has_tr = expr.has(sp.exp, sp.log, sp.sin, sp.cos, sp.tan) or any(
+        has_tr = expr.has(sp.exp, sp.log, sp.sin, sp.cos, sp.tan, sp.asin, sp.acos, sp.atan) or any(
             p.args[0] == sp.E and p.args[1].has(x_sym) for p in expr.atoms(sp.Pow)
         )
         if not has_tr:
             return False
-        # إذا استبدلنا الدوال المتسامية بثابت وبقي x موجوداً مع كون العبارة مجموع حدود غير صفرية، فهي مختلطة (تنتج LambertW بطيئة)
         stripped = expr
-        for a in list(expr.atoms(sp.exp, sp.log, sp.sin, sp.cos, sp.tan)):
+        for a in list(expr.atoms(sp.exp, sp.log, sp.sin, sp.cos, sp.tan, sp.asin, sp.acos, sp.atan)):
             if a.has(x_sym):
                 stripped = stripped.subs(a, sp.Symbol('C_tr'))
         for p in list(expr.atoms(sp.Pow)):
@@ -608,12 +631,11 @@ def is_mixed_transcendental(expr, x_sym):
         pass
     return False
 
-def safe_solve_real(expr, x_sym):
+def safe_solve_real(expr, x_sym, scan_limit=30.0):
     _check_deadline()
     roots = []
     if expr is None or expr == 0:
         return roots
-    # الدالة الأسية الصرفة موجبة دائماً: لا جذور لها
     try:
         if expr.func == sp.exp or (expr.is_Pow and expr.args[0] == sp.E):
             return roots
@@ -642,7 +664,7 @@ def safe_solve_real(expr, x_sym):
             for abs_atom in expr.atoms(sp.Abs):
                 inner_arg = abs_atom.args[0]
                 if not (inner_arg.has(sp.Abs) or inner_arg.has(sp.sign)):
-                    for r in safe_solve_real(inner_arg, x_sym):
+                    for r in safe_solve_real(inner_arg, x_sym, scan_limit=scan_limit):
                         fl = safe_float(r)
                         if np.isfinite(fl):
                             chk = safe_float(expr.subs(x_sym, r))
@@ -653,7 +675,10 @@ def safe_solve_real(expr, x_sym):
 
     try:
         f_num = safe_lambdify(x_sym, expr)
-        xs = np.linspace(-15, 15, 2001)
+        # إذا كانت الدالة دورية مثلثية نحصر الفحص العددي في [-2pi, 2pi] لمنع ازدحام الجداول
+        is_periodic_trig = hasattr(expr, 'has') and expr.has(sp.sin, sp.cos, sp.tan)
+        bound_s = 6.5 if is_periodic_trig else scan_limit
+        xs = np.linspace(-bound_s, bound_s, 2401)
         with np.errstate(all='ignore'):
             ys = f_num(xs)
         if np.iscomplexobj(ys):
@@ -664,7 +689,6 @@ def safe_solve_real(expr, x_sym):
         for i in range(len(ys) - 1):
             if np.isfinite(ys[i]) and np.isfinite(ys[i+1]):
                 if abs(ys[i]) < 1e-9:
-                    # جذر حقيقي فقط إذا كانت |y| في نهاية صغرى محلية (لا ذيل متناقص نحو الصفر)
                     if i == 0:
                         if ys[i] != 0:
                             continue
@@ -709,6 +733,14 @@ def safe_solve_real(expr, x_sym):
                                 roots.append(sp.exp(-1))
                             elif abs(r_num + 1/np.e) < 1e-4:
                                 roots.append(-sp.exp(-1))
+                            elif abs(r_num - np.pi) < 1e-4:
+                                roots.append(sp.pi)
+                            elif abs(r_num + np.pi) < 1e-4:
+                                roots.append(-sp.pi)
+                            elif abs(r_num - np.pi/2) < 1e-4:
+                                roots.append(sp.pi/2)
+                            elif abs(r_num + np.pi/2) < 1e-4:
+                                roots.append(-sp.pi/2)
                             else:
                                 roots.append(sp.Float(round(r_num, 2)))
     except Exception:
@@ -821,9 +853,9 @@ with col_text:
 
 current_f = st.session_state.active_f
 current_g = st.session_state.active_g
-# ==================== نهاية الجزء الأول (1/2) ====================
-# ==================== بداية الجزء الثاني (2/2) ====================
-def build_math_context(f_str, g_str, version_tag="v33"):
+# ==================== نهاية الجزء (2/4) ====================
+# ==================== بداية الجزء (3/4) ====================
+def build_math_context(f_str, g_str, version_tag="v35"):
     cache = {'valid': False, 'error': ''}
     try:
         if not f_str or not f_str.strip():
@@ -836,7 +868,9 @@ def build_math_context(f_str, g_str, version_tag="v33"):
         local_dict = {
             'x': x_sym, 'm': m_sym, 'e': sp.E, 'E': sp.E, 'pi': sp.pi,
             'ln': sp.log, 'log': sp.log, 'exp': sp.exp, 'sqrt': sp.sqrt,
-            'abs': sp.Abs, 'Abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin, 'tan': sp.tan
+            'cbrt': lambda arg: sp.Pow(arg, sp.Rational(1, 3)),
+            'abs': sp.Abs, 'Abs': sp.Abs, 'cos': sp.cos, 'sin': sp.sin, 'tan': sp.tan,
+            'asin': sp.asin, 'acos': sp.acos, 'atan': sp.atan
         }
         transformations = (standard_transformations + (implicit_multiplication_application,))
         f_processed = fix_implicit_mult(f_str)
@@ -846,6 +880,7 @@ def build_math_context(f_str, g_str, version_tag="v33"):
         
         f_func = safe_lambdify(x_sym, f_expr)
         g_func = safe_lambdify((x_sym, m_sym), g_expr)
+        is_periodic_f = hasattr(f_expr, 'has') and f_expr.has(sp.sin, sp.cos, sp.tan)
         
         candidate_v_asymptotes = []
         try:
@@ -866,7 +901,7 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                     if fl_exp < 0:
                         for r in safe_solve_real(base_p, x_sym):
                             candidate_v_asymptotes.append(r)
-                    elif 0 < fl_exp < 1 or (isinstance(exp_p, sp.Rational) and exp_p.q % 2 == 0):
+                    elif isinstance(exp_p, sp.Rational) and exp_p.q % 2 == 0:
                         for r in safe_solve_real(base_p, x_sym):
                             candidate_v_asymptotes.append(r)
         except Exception:
@@ -874,6 +909,12 @@ def build_math_context(f_str, g_str, version_tag="v33"):
         try:
             for log_expr in f_expr.atoms(sp.log):
                 for r in safe_solve_real(log_expr.args[0], x_sym):
+                    candidate_v_asymptotes.append(r)
+        except Exception:
+            pass
+        try:
+            for tan_expr in f_expr.atoms(sp.tan):
+                for r in safe_solve_real(sp.cos(tan_expr.args[0]), x_sym, scan_limit=6.5):
                     candidate_v_asymptotes.append(r)
         except Exception:
             pass
@@ -903,6 +944,10 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                 res = None
 
             if res is None or (hasattr(res, 'func') and (res.func == sp.Limit or 'AccumBounds' in str(res))):
+                if val_s in [sp.oo, -sp.oo] and hasattr(expr_l, 'has') and expr_l.has(sp.sin, sp.cos, sp.tan):
+                    if res is not None and 'AccumBounds' in str(res):
+                        limit_memo[key] = sp.nan
+                        return sp.nan
                 try:
                     fn_tmp = safe_lambdify(x_sym, expr_l)
                     if val_s == sp.oo:
@@ -975,38 +1020,6 @@ def build_math_context(f_str, g_str, version_tag="v33"):
         except Exception:
             pass
 
-        x_base = np.linspace(-15, 15, 3501)
-        extra_x = []
-        for a in candidate_v_asymptotes:
-            val = safe_float(a)
-            if np.isfinite(val) and -16 <= val <= 16:
-                extra_x.append(val)
-                for delta in [1e-3, 1e-4, 1e-5]:
-                    extra_x.extend([val - delta, val + delta])
-        for ac in abs_corner_syms:
-            val_c = safe_float(ac)
-            if np.isfinite(val_c) and -16 <= val_c <= 16:
-                extra_x.append(val_c)
-                    
-        x_vals_plot = np.sort(np.concatenate([x_base, extra_x])) if extra_x else x_base
-
-        def process_y_vals(x_arr):
-            with np.errstate(divide='ignore', invalid='ignore', over='ignore'):
-                y_arr = f_func(x_arr)
-            if np.iscomplexobj(y_arr):
-                y_arr = np.where(np.isreal(y_arr), y_arr.real, np.nan)
-            if np.isscalar(y_arr):
-                y_arr = np.full_like(x_arr, y_arr, dtype=float)
-            y_arr = np.array(y_arr, dtype=float)
-            y_arr[~np.isfinite(y_arr)] = np.nan
-            dy = np.abs(np.diff(y_arr))
-            for idx in np.where(dy > 30)[0]:
-                y_arr[idx] = np.nan
-                y_arr[idx+1] = np.nan
-            return y_arr
-
-        y_vals_plot = process_y_vals(x_vals_plot)
-
         df_expr = sp.diff(f_expr, x_sym)
         df_clean = df_expr.replace(sp.sign, lambda arg: arg / sp.Abs(arg))
         if not df_clean.has(sp.Abs):
@@ -1028,6 +1041,53 @@ def build_math_context(f_str, g_str, version_tag="v33"):
         else:
             df_simp = df_clean
         df_latex_str_safe = sanitize_latex(df_simp)
+
+        sym_extrema = []
+        try:
+            num_df, _ = sp.fraction(sp.together(df_clean) if not df_clean.has(sp.Abs) else df_clean)
+            for r_simp in safe_solve_real(num_df, x_sym):
+                if np.isfinite(safe_float(f_expr.subs(x_sym, r_simp))):
+                    sym_extrema.append(r_simp)
+        except Exception:
+            pass
+
+        # تحديد نافذة الرسم الديناميكية التلقائية (Auto-Adaptive Viewport) لتشمل جميع النقاط المهمة
+        key_x_floats = [safe_float(r) for r in candidate_v_asymptotes + abs_corner_syms + sym_extrema if np.isfinite(safe_float(r))]
+        max_abs_x = max([abs(v) for v in key_x_floats if abs(v) <= 40.0], default=8.0)
+        plot_x_bound = float(max(12.0, min(35.0, np.ceil(max_abs_x + 4.0))))
+        scan_x_bound = float(plot_x_bound + 3.0)
+
+        x_base = np.linspace(-scan_x_bound, scan_x_bound, 3601)
+        extra_x = []
+        for a in candidate_v_asymptotes:
+            val = safe_float(a)
+            if np.isfinite(val) and -scan_x_bound <= val <= scan_x_bound:
+                extra_x.append(val)
+                for delta in [1e-3, 1e-4, 1e-5]:
+                    extra_x.extend([val - delta, val + delta])
+        for ac in abs_corner_syms:
+            val_c = safe_float(ac)
+            if np.isfinite(val_c) and -scan_x_bound <= val_c <= scan_x_bound:
+                extra_x.append(val_c)
+                    
+        x_vals_plot = np.sort(np.concatenate([x_base, extra_x])) if extra_x else x_base
+
+        def process_y_vals(x_arr):
+            with np.errstate(divide='ignore', invalid='ignore', over='ignore'):
+                y_arr = f_func(x_arr)
+            if np.iscomplexobj(y_arr):
+                y_arr = np.where(np.isreal(y_arr), y_arr.real, np.nan)
+            if np.isscalar(y_arr):
+                y_arr = np.full_like(x_arr, y_arr, dtype=float)
+            y_arr = np.array(y_arr, dtype=float)
+            y_arr[~np.isfinite(y_arr)] = np.nan
+            dy = np.abs(np.diff(y_arr))
+            for idx in np.where(dy > 35)[0]:
+                y_arr[idx] = np.nan
+                y_arr[idx+1] = np.nan
+            return y_arr
+
+        y_vals_plot = process_y_vals(x_vals_plot)
 
         def build_derivative_steps():
             steps = []
@@ -1099,15 +1159,6 @@ def build_math_context(f_str, g_str, version_tag="v33"):
             return steps
 
         deriv_steps_detailed = build_derivative_steps()
-        
-        sym_extrema = []
-        try:
-            num_df, _ = sp.fraction(sp.together(df_clean) if not df_clean.has(sp.Abs) else df_clean)
-            for r_simp in safe_solve_real(num_df, x_sym):
-                if np.isfinite(safe_float(f_expr.subs(x_sym, r_simp))):
-                    sym_extrema.append(r_simp)
-        except Exception:
-            pass
 
         pts_var_exact = [{'val': -np.inf, 'sym': -sp.oo, 'latex_x': r"-\infty", 'type': 'inf'}]
         for r in candidate_v_asymptotes:
@@ -1140,6 +1191,8 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                 valleys, _ = find_peaks(-segment, prominence=0.02)
                 for p_idx in list(peaks) + list(valleys):
                     nx = float(seg_x[p_idx])
+                    if is_periodic_f and abs(nx) > 6.5:
+                        continue
                     if not any(abs(p['val'] - nx) < 0.1 for p in pts_var_exact):
                         try:
                             sym_nx = sp.Float(round(nx, 2))
@@ -1150,6 +1203,13 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                 
         pts_var_exact.append({'val': np.inf, 'sym': sp.oo, 'latex_x': r"+\infty", 'type': 'inf'})
         pts_var_exact.sort(key=lambda p: p['val'])
+
+        # إذا كانت الدالة دورية مثلثية وكثرت النقاط، نحتفظ بأقرب 7 فواصل للمركز لتفادي ازدحام جدول التغيرات
+        if len(pts_var_exact) > 9:
+            inner_pts = pts_var_exact[1:-1]
+            inner_pts.sort(key=lambda p: abs(p['val']))
+            kept_inner = sorted(inner_pts[:7], key=lambda p: p['val'])
+            pts_var_exact = [pts_var_exact[0]] + kept_inner + [pts_var_exact[-1]]
 
         df_func_test = safe_lambdify(x_sym, df_clean)
         for p in pts_var_exact:
@@ -1449,7 +1509,6 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                 except Exception:
                     rp_signs.append(None)
 
-            # حصر الجدول في مجموعة التعريف: حذف الأجزاء الطرفية غير المعرَّفة (لا نكتب -∞ إن بدأ التعريف من 0)
             while len(rp_signs) > 1 and rp_signs[0] is None:
                 rp_signs.pop(0)
                 rp_mids.pop(0)
@@ -1581,7 +1640,8 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                 pass
             od['oblique_steps_bytes'] = fig_to_bytes(fig_ob)
             rel_pos_tables_info.append(od)
-
+# ==================== نهاية الجزء (3/4) ====================
+# ==================== بداية الجزء (4/4) ====================
         diff_fg = sp.together(f_expr - g_expr)
         A_m = elim_hyperbolic(sp.simplify(sp.diff(diff_fg, m_sym)))
         B_m = elim_hyperbolic(sp.simplify(diff_fg.subs(m_sym, 0)))
@@ -1662,7 +1722,7 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                 pass
 
             try:
-                x_scan_m = np.linspace(-20, 20, 4001)
+                x_scan_m = np.linspace(-scan_x_bound, scan_x_bound, 4001)
                 with np.errstate(all='ignore'):
                     y_scan_m = m_func_eval(x_scan_m)
                 if np.iscomplexobj(y_scan_m):
@@ -1684,6 +1744,8 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                         vls, _ = find_peaks(-seg, prominence=0.02)
                         for idx_p in list(pks) + list(vls):
                             xv = float(sx[idx_p])
+                            if is_periodic_f and abs(xv) > 6.5:
+                                continue
                             if not any(abs(safe_float(xs) - xv) < 0.08 for xs in x_split_syms):
                                 x_split_syms.append(sp.Float(round(xv, 2)))
             except Exception:
@@ -1824,7 +1886,14 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                 m_min_val = float(np.floor(m_critical_num[0] - 1.5))
             if m_critical_num[-1] + 1.5 > m_max_val:
                 m_max_val = float(np.ceil(m_critical_num[-1] + 1.5))
-        m_min_val, m_max_val = float(max(-25.0, m_min_val)), float(min(25.0, m_max_val))
+        m_min_val, m_max_val = float(max(-30.0, m_min_val)), float(min(30.0, m_max_val))
+
+        # تحديد الارتفاع العمودي التلقائي للمعلم ليشمل الذرى والمقاربات الأفقية
+        key_y_floats = [a['val'] for a in unique_asymptotes if a['type'] == 'h' and np.isfinite(a['val'])]
+        if m_equals_f:
+            key_y_floats.extend([pt['m_val'] for pt in point_evaluations if np.isfinite(pt['m_val'])])
+        max_abs_y = max([abs(v) for v in key_y_floats if abs(v) <= 35.0], default=5.0)
+        plot_y_bound = float(max(8.0, min(28.0, np.ceil(max_abs_y + 2.5))))
 
         def get_exact_m(val_float):
             for sm in sym_m_critical:
@@ -2076,10 +2145,11 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                 if p['type'] == 'inf':
                     try:
                         lim = cached_limit(f_expr, p['sym'])
-                        if i == 0:
-                            right_node[i] = (xc_lbl, format_lim_val(lim))
-                        if i == N - 1:
-                            left_node[i] = (xc_lbl, format_lim_val(lim))
+                        if lim is not None and str(lim) != 'nan' and 'AccumBounds' not in str(lim):
+                            if i == 0:
+                                right_node[i] = (xc_lbl, format_lim_val(lim))
+                            if i == N - 1:
+                                left_node[i] = (xc_lbl, format_lim_val(lim))
                     except Exception:
                         pass
                 elif p['type'] == 'v_asym':
@@ -2119,24 +2189,25 @@ def build_math_context(f_str, g_str, version_tag="v33"):
 
                 sgn_chain = signs[idx_v]
                 s_info, e_info = right_node.get(idx_v), left_node.get(j_end + 1)
-                if s_info and e_info:
-                    xs_n, ls_n = s_info
-                    xe_n, le_n = e_info
-                    ys_n = 0.65 if sgn_chain == '+' else 3.15
-                    ye_n = 3.15 if sgn_chain == '+' else 0.65
-                    ax_v.text(xs_n, ys_n, f"${ls_n}$", ha='center', va='center', fontsize=15, color='#9B2226', fontweight='bold', zorder=5)
-                    ax_v.text(xe_n, ye_n, f"${le_n}$", ha='center', va='center', fontsize=15, color='#9B2226', fontweight='bold', zorder=5)
-                    dx_tot, dy_tot = xe_n - xs_n, ye_n - ys_n
-                    dist_tot = np.hypot(dx_tot, dy_tot)
-                    if dist_tot > 0.8:
-                        ux, uy = dx_tot / dist_tot, dy_tot / dist_tot
-                        ax_v.annotate('', xy=(xe_n - ux * 0.48, ye_n - uy * 0.48), xytext=(xs_n + ux * 0.48, ys_n + uy * 0.48), arrowprops=dict(arrowstyle="->", color="#1F2937", lw=2.2), zorder=3)
-                    for k_inf in range(idx_v + 1, j_end + 1):
-                        m_info = right_node.get(k_inf)
-                        if m_info and dx_tot != 0:
-                            xm_n, lm_n = m_info
-                            ym_n = ys_n + ((xm_n - xs_n) / dx_tot) * dy_tot
-                            ax_v.text(xm_n, ym_n, f"${lm_n}$", ha='center', va='center', fontsize=15, color='#9B2226', fontweight='bold', bbox=dict(facecolor='white', edgecolor='none', pad=4.0), zorder=5)
+                xs_n = s_info[0] if s_info else get_v_label_x(idx_v)
+                xe_n = e_info[0] if e_info else get_v_label_x(j_end + 1)
+                ys_n = 0.65 if sgn_chain == '+' else 3.15
+                ye_n = 3.15 if sgn_chain == '+' else 0.65
+                if s_info:
+                    ax_v.text(xs_n, ys_n, f"${s_info[1]}$", ha='center', va='center', fontsize=15, color='#9B2226', fontweight='bold', zorder=5)
+                if e_info:
+                    ax_v.text(xe_n, ye_n, f"${e_info[1]}$", ha='center', va='center', fontsize=15, color='#9B2226', fontweight='bold', zorder=5)
+                dx_tot, dy_tot = xe_n - xs_n, ye_n - ys_n
+                dist_tot = np.hypot(dx_tot, dy_tot)
+                if dist_tot > 0.8:
+                    ux, uy = dx_tot / dist_tot, dy_tot / dist_tot
+                    ax_v.annotate('', xy=(xe_n - ux * 0.48, ye_n - uy * 0.48), xytext=(xs_n + ux * 0.48, ys_n + uy * 0.48), arrowprops=dict(arrowstyle="->", color="#1F2937", lw=2.2), zorder=3)
+                for k_inf in range(idx_v + 1, j_end + 1):
+                    m_info = right_node.get(k_inf)
+                    if m_info and dx_tot != 0:
+                        xm_n, lm_n = m_info
+                        ym_n = ys_n + ((xm_n - xs_n) / dx_tot) * dy_tot
+                        ax_v.text(xm_n, ym_n, f"${lm_n}$", ha='center', va='center', fontsize=15, color='#9B2226', fontweight='bold', bbox=dict(facecolor='white', edgecolor='none', pad=4.0), zorder=5)
                 idx_v = j_end + 1
 
             ax_v.set_xlim(-0.05, x_max + 0.05)
@@ -2216,7 +2287,7 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                     chunks_bytes.append(b_img)
             return chunks_bytes
 
-        limits_chunks_bytes = generate_limits_chunks  # يُنشأ عند طلب PDF
+        limits_chunks_bytes = generate_limits_chunks
 
         def generate_deriv_chunks():
             chunks_bytes = []
@@ -2243,7 +2314,7 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                     chunks_bytes.append(b_img)
             return chunks_bytes
             
-        deriv_chunks_bytes = generate_deriv_chunks  # يُنشأ عند طلب PDF
+        deriv_chunks_bytes = generate_deriv_chunks
         
         def generate_eq_bytes():
             g_lat = sanitize_latex(g_expr)
@@ -2261,7 +2332,7 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                 ax_e.text(5.0, 0.55, f"y = {current_g}", fontsize=16, ha='center', va='center', color='#1F3A5F', fontweight='bold')
             return fig_to_bytes(fig_e)
             
-        eq_bytes = generate_eq_bytes  # يُنشأ عند طلب PDF
+        eq_bytes = generate_eq_bytes
 
         def generate_pdf_discussion_bytes():
             nrows = len(final_table)
@@ -2289,11 +2360,12 @@ def build_math_context(f_str, g_str, version_tag="v33"):
                     ax_dt.text(8, y_center, str(m_latex), fontsize=14, ha='center', va='center', color='#1F3A5F')
             return fig_to_bytes(fig_dt)
             
-        disc_table_bytes = generate_pdf_discussion_bytes  # يُنشأ عند طلب PDF
+        disc_table_bytes = generate_pdf_discussion_bytes
 
         cache.update({
             'valid': True, 'f_func': f_func, 'g_func': g_func,
             'x_vals_plot': x_vals_plot, 'y_vals_plot': y_vals_plot,
+            'plot_x_bound': plot_x_bound, 'plot_y_bound': plot_y_bound,
             'unique_asymptotes': unique_asymptotes, 'holes': holes,
             'm_critical_num': m_critical_num, 'final_table': final_table,
             'domain_latex_st': domain_latex_st, 'limits_data_detailed': limits_data_detailed,
@@ -2329,7 +2401,7 @@ def _run_with_deadline(fn, args, seconds):
     t.start()
     t.join(seconds + 15)
     if t.is_alive():
-        return None  # سيتوقف الخيط بنفسه عند أقرب نقطة فحص
+        return None
     return box.get('res')
 
 def build_with_timeout(f_str, g_str, tag, seconds=100):
@@ -2346,13 +2418,13 @@ def build_with_timeout(f_str, g_str, tag, seconds=100):
         store[key] = res
     return res
 
-if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v33":
+if 'math_cache' not in st.session_state or st.session_state.get('last_f') != current_f or st.session_state.get('last_g') != current_g or st.session_state.get('cache_ver') != "v35":
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_with_timeout(current_f, current_g, "v33")
+        st.session_state.math_cache = build_with_timeout(current_f, current_g, "v35")
         st.session_state.pdf_data = None
         st.session_state.last_f = current_f
         st.session_state.last_g = current_g
-        st.session_state.cache_ver = "v33"
+        st.session_state.cache_ver = "v35"
 
 cache = st.session_state.math_cache
 
@@ -2404,6 +2476,11 @@ else:
 
     def draw_plot(m_val, mode='dark'):
         fig, ax = new_fig(figsize=(9.5, 6.0))
+        x_lim_b = cache.get('plot_x_bound', 12.0)
+        y_lim_b = cache.get('plot_y_bound', 8.0)
+        major_step_x = 1 if x_lim_b <= 15 else (2 if x_lim_b <= 26 else 5)
+        major_step_y = 1 if y_lim_b <= 12 else (2 if y_lim_b <= 22 else 5)
+
         if mode == 'dark':
             fig.patch.set_facecolor('#0F172A')
             ax.set_facecolor('#0F172A')
@@ -2413,8 +2490,8 @@ else:
             ax.axhline(0, color='#E2E8F0', linewidth=2.5, zorder=3)
             ax.axvline(0, color='#E2E8F0', linewidth=2.5, zorder=3)
             ax.minorticks_on()
-            ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
-            ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+            ax.xaxis.set_major_locator(ticker.MultipleLocator(major_step_x))
+            ax.yaxis.set_major_locator(ticker.MultipleLocator(major_step_y))
             ax.grid(True, which='major', color='#475569', linestyle='-', linewidth=1.2, zorder=1)
             ax.grid(True, which='minor', color='#1E293B', linestyle='-', linewidth=0.8, zorder=1)
             c_asym, c_cf, c_cg, c_pts, c_text, bg_leg, edge_leg = '#F472B6', '#00E5FF', '#FFD700', '#EF4444', '#E2E8F0', '#1E293B', '#475569'
@@ -2427,8 +2504,8 @@ else:
             ax.axhline(0, color='black', linewidth=2, zorder=3)
             ax.axvline(0, color='black', linewidth=2, zorder=3)
             ax.minorticks_on()
-            ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
-            ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+            ax.xaxis.set_major_locator(ticker.MultipleLocator(major_step_x))
+            ax.yaxis.set_major_locator(ticker.MultipleLocator(major_step_y))
             ax.grid(True, which='major', color='#D9DEE5', linestyle='-', linewidth=1.0, zorder=1)
             ax.grid(True, which='minor', color='#EEF1F5', linestyle='-', linewidth=0.6, zorder=1)
             c_asym, c_cf, c_cg, c_pts, c_text, bg_leg, edge_leg = '#9B2226', '#1F4E79', '#0F5E6B', '#B7791F', '#1F2937', '#FFFFFF', '#B8C0CC'
@@ -2437,12 +2514,12 @@ else:
             try:
                 if asym['type'] == 'h':
                     ax.axhline(asym['val'], color=c_asym, linestyle='--', linewidth=2.0, zorder=4)
-                    ax.text(-11.5, asym['val'] + 0.25, f"${asym['label']}$", color=c_asym, fontsize=13, fontweight='bold', ha='left')
+                    ax.text(-x_lim_b + 0.5, asym['val'] + 0.25, f"${asym['label']}$", color=c_asym, fontsize=13, fontweight='bold', ha='left')
                 elif asym['type'] == 'v':
                     ax.axvline(asym['val'], color=c_asym, linestyle='--', linewidth=2.0, zorder=4)
-                    ax.text(asym['val'] + 0.15, 7.2, f"${asym['label']}$", color=c_asym, fontsize=13, fontweight='bold', va='top')
+                    ax.text(asym['val'] + 0.15, y_lim_b - 0.8, f"${asym['label']}$", color=c_asym, fontsize=13, fontweight='bold', va='top')
                 elif asym['type'] == 'oblique':
-                    x_ob = np.array([-12.0, 12.0])
+                    x_ob = np.array([-x_lim_b, x_lim_b])
                     ax.plot(x_ob, asym['a'] * x_ob + asym['b'], color=c_asym, linestyle='-.', linewidth=2.0, zorder=4, label=f"$(\\Delta): {asym['label']}$")
             except Exception:
                 pass
@@ -2465,11 +2542,11 @@ else:
                 if np.isfinite(diff_plot[i]) and np.isfinite(diff_plot[i+1]):
                     if abs(diff_plot[i]) < 1e-7:
                         x_c = float(cache['x_vals_plot'][i])
-                        if abs(x_c) <= 12.0:
+                        if abs(x_c) <= x_lim_b:
                             intersect_x.append(x_c)
                     elif diff_plot[i] * diff_plot[i+1] < 0:
                         x_c = cache['x_vals_plot'][i] - diff_plot[i] * (cache['x_vals_plot'][i+1] - cache['x_vals_plot'][i]) / (diff_plot[i+1] - diff_plot[i])
-                        if abs(x_c) <= 12.0 and not any(abs(x_c - safe_float(a['val'])) < 1e-3 for a in cache['unique_asymptotes'] if a['type'] == 'v'):
+                        if abs(x_c) <= x_lim_b and not any(abs(x_c - safe_float(a['val'])) < 1e-3 for a in cache['unique_asymptotes'] if a['type'] == 'v'):
                             if abs(cache['y_vals_plot'][i+1] - cache['y_vals_plot'][i]) > 1e-9 or abs(y_g_plot[i+1] - y_g_plot[i]) > 1e-9:
                                 intersect_x.append(float(x_c))
             unique_ix = []
@@ -2479,10 +2556,10 @@ else:
             if unique_ix:
                 iy = [m_val if current_g.strip() == 'm' else float(cache['g_func'](ix, m_val)) for ix in unique_ix]
                 ax.scatter(unique_ix, iy, color=c_pts, s=125, zorder=6, edgecolor='white', linewidth=1.5, label=fix_arabic_mpl('نقاط التقاطع'))
-            ax.text(4, m_val + 0.35, f"${m_eq_label}$", color=c_cg, fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
+            ax.text(x_lim_b * 0.33, m_val + 0.35, f"${m_eq_label}$", color=c_cg, fontsize=15, fontweight='bold', ha='center', va='bottom', zorder=6)
             
-        ax.set_xlim(-12, 12)
-        ax.set_ylim(-8, 8)
+        ax.set_xlim(-x_lim_b, x_lim_b)
+        ax.set_ylim(-y_lim_b, y_lim_b)
         try:
             legend = ax.legend(facecolor=bg_leg, edgecolor=edge_leg, loc='upper right', fontsize=12)
             for text in legend.get_texts():
@@ -2546,7 +2623,7 @@ else:
         pdf.ln(2)
 
     @st.cache_data(show_spinner=False, max_entries=5)
-    def get_cached_pdf_bytes(f_key, g_key, ver_key="v33"):
+    def get_cached_pdf_bytes(f_key, g_key, ver_key="v35"):
         if not PDF_ENABLED:
             return None
         try:
@@ -2745,7 +2822,7 @@ else:
         pdf_key = (current_f, current_g)
         if st.button("📄 تجهيز ملف PDF", use_container_width=True):
             with st.spinner("جاري إنشاء ملف الـ PDF..."):
-                st.session_state.pdf_data = (pdf_key, get_cached_pdf_bytes(current_f, current_g, "v33"))
+                st.session_state.pdf_data = (pdf_key, get_cached_pdf_bytes(current_f, current_g, "v35"))
         _pd = st.session_state.get("pdf_data")
         pdf_bytes = _pd[1] if (_pd and _pd[0] == pdf_key) else None
         if pdf_bytes:
@@ -2766,4 +2843,4 @@ st.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
-# ==================== نهاية الجزء الثاني (2/2) ====================
+# ==================== نهاية الجزء (4/4) ====================
