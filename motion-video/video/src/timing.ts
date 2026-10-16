@@ -7,14 +7,16 @@
 //   const start = cutBefore('يصبح الأمر'); // where a scene that opens on this line should start (s)
 //   const k = prog(t, w.start, w.start + 0.45, Easing.out(Easing.cubic)); // 0 -> 1 as the word is said
 import data from './data/words.json';
+import keys from './data/keys.json';
 import { Easing, interpolate } from 'remotion';
 import { VIDEO } from './config';
 
 export interface Word { w: string; start: number; end: number; conf?: number }
-export interface Line { text: string; start: number; end: number; words: Word[] }
+export interface Line { text: string; start: number; end: number; words: Word[]; key?: string }
 export interface Timing { source?: string; audio: string | null; duration: number; lines: Line[] }
 
 export const TIMING = data as Timing;
+const KEYS = keys as string[];
 export const FPS = VIDEO.fps;
 
 /** Seconds -> frame. */
@@ -36,22 +38,34 @@ export function norm(s: string) {
     .toLowerCase();
 }
 
-/** The first line whose text contains `query`. */
+/** The first line whose text contains `query`. Queries may also be written against the first draft of the
+ *  script (data/keys.json, same lines in the same order): they then find the same line of the narration. */
 export function line(query: string): Line {
   const q = norm(query);
+  const k = KEYS.findIndex((x) => norm(x).includes(q));
+  if (k >= 0 && TIMING.lines[k]) return Object.assign({}, TIMING.lines[k], { key: KEYS[k] });
   const l = TIMING.lines.find((x) => norm(x.text).includes(q));
   if (!l) throw new Error(`No line contains «${query}». Lines: ${TIMING.lines.map((x) => x.text).join(' | ')}`);
   return l;
 }
 
-/** A word of a line (or of the line containing `inLine`); `nth` picks a later repeat. */
+/** A word of a line (or of the line containing `inLine`); `nth` picks a later repeat. A word that is only in
+ *  the first draft of the line is placed at the same relative position in the narrated line. */
 export function word(inLine: Line | string, query: string, nth = 0): Word {
   const l = typeof inLine === 'string' ? line(inLine) : inLine;
   const q = norm(query);
-  const hits = l.words.filter((w) => norm(w.w) === q || norm(w.w).includes(q));
-  const w = hits[nth];
-  if (!w) throw new Error(`No word «${query}» in «${l.text}»`);
-  return w;
+  const find = (ws: string[]) => ws.map((w, i) => [norm(w), i] as const).filter(([w]) => w === q || w.includes(q)).map(([, i]) => i);
+  const hits = find(l.words.map((w) => w.w));
+  const keyWords = l.key ? l.key.split(/\s+/) : [];
+  const keyHits = find(keyWords);
+  if (hits[nth] !== undefined && (!l.key || hits.length >= keyHits.length)) return l.words[hits[nth]];
+  if (keyHits[nth] !== undefined) {
+    const f = keyHits[nth] / keyWords.length;
+    const t = l.start + (l.end - l.start) * f;
+    return { w: keyWords[keyHits[nth]], start: t, end: t + (l.end - l.start) / keyWords.length };
+  }
+  if (hits[nth] !== undefined) return l.words[hits[nth]];
+  throw new Error(`No word «${query}» in «${l.text}»`);
 }
 
 /** Where a scene that opens on the line containing `query` starts: just before its first word. */
