@@ -13,6 +13,8 @@ export const TEACHER = 'الأستاذ سوايسية هشام';
 export const TITLE = 'الدالة الأسية النيبيرية';
 /** Seconds a reel holds its finished board at the end. */
 export const HOLD = 2.5;
+/** Chalk scratches and taps under every write. Off: the teacher found them distracting under the voice. */
+const CHALK_SOUND = false;
 
 export const Video: React.FC<{ part?: number }> = ({ part }) => (
   <AbsoluteFill style={{ backgroundColor: C.board }}>
@@ -272,7 +274,7 @@ const Frame: React.FC<{ W: number; H: number; u: number; chapter: string; part?:
 const Sounds: React.FC<{ tl: Timeline }> = ({ tl }) => {
   const out: React.ReactNode[] = [];
   for (const it of tl.items) {
-    if (!it.sound) continue;
+    if (!CHALK_SOUND || !it.sound) continue;
     const d = Math.max(1, toFrame(it.t1) - toFrame(it.t0));
     const skip = Math.floor(random(it.id + 's') * 60);
     out.push(
