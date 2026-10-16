@@ -6,7 +6,7 @@ line in script.txt; when the counts differ, the line's time is shared out by wor
 
     python3 tools/edge_to_words.py lesson_voice.zip      (or: ... voice.mp3 timings.json)
 """
-import json, shutil, sys, zipfile
+import json, re, shutil, sys, zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -30,21 +30,24 @@ def main():
         raise SystemExit(f"script.txt has {len(script)} lines, timings.json {len(t['lines'])}")
     lines, shared = [], 0
     for toks, L in zip(script, t["lines"]):
-        ws = L["words"]
-        if len(ws) == len(toks):
+        ws = L.get("words") or []
+        if ws and len(ws) == len(toks):
             words = [{"w": tok, "start": round(w["start"], 3), "end": round(w["end"], 3)} for tok, w in zip(toks, ws)]
         else:
             shared += 1
             a = ws[0]["start"] if ws else L["start"]
             b = ws[-1]["end"] if ws else L["end"]
-            n = [max(1, len(x)) for x in toks]
+            # share the line's time by how long each word is when spoken (diacritics stripped)
+            spoken = (L.get("spoken") or "").split()
+            src = spoken if len(spoken) == len(toks) else toks
+            n = [max(1, len(re.sub(r"[\u064B-\u0652\u0670\W]", "", x))) + 1 for x in src]
             tot, acc, words = sum(n), 0, []
             for tok, k in zip(toks, n):
                 s = a + (b - a) * acc / tot
                 acc += k
                 words.append({"w": tok, "start": round(s, 3), "end": round(a + (b - a) * acc / tot, 3)})
         lines.append({"text": " ".join(toks), "start": words[0]["start"], "end": words[-1]["end"], "words": words})
-    out = {"source": f"edge-tts {t.get('voice')} ({t.get('rate')})", "audio": "voice.mp3", "duration": round(t["duration"], 3), "lines": lines}
+    out = {"source": f"edge-tts {t.get('voice')} ({t.get('rate')})", "audio": "voice.mp3", "duration": round(t.get("duration") or t["totalDuration"], 3), "lines": lines}
     (ROOT / "video/src/data/words.json").write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"{len(lines)} lines, {shared} with shared-out word times, duration {out['duration']:.1f}s")
 
