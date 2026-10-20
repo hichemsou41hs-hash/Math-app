@@ -7,6 +7,8 @@ import ex1Data from './data/ex1.words.json';
 import { buildEx1 } from './episodes/ex1';
 import ex2Data from './data/ex2.words.json';
 import { buildEx2 } from './episodes/ex2';
+import ex3Data from './data/ex3.words.json';
+import { buildEx3 } from './episodes/ex3';
 
 export interface Episode {
   id: string;
@@ -47,6 +49,15 @@ export const EPISODES: Record<string, Episode> = {
     keys: [],
     build: buildEx2,
     parts: ['السلام عليكم', 'التمرين الرابع'],
+  },
+  ex3: {
+    id: 'ex3',
+    title: 'تمارين محلولة: الدالة الأسية',
+    badge: 'الحلقة 3 من 5',
+    timing: ex3Data as Timing,
+    keys: [],
+    build: buildEx3,
+    parts: ['السلام عليكم', 'التمرين الثالث', 'التمرين الخامس'],
   },
 };
 
