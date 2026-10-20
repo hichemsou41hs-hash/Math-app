@@ -34,7 +34,7 @@ md = f"""# تسجيل صوت الأستاذ سوايسية هشام — {title}
 """
 
 cell1 = """# 1) التثبيت وربط Google Drive (لحفظ التسجيلات)
-!pip -q install pydub faster-whisper "audioop-lts; python_version>='3.13'"
+!pip -q install pydub "audioop-lts; python_version>='3.13'"
 from google.colab import drive
 drive.mount('/content/drive')
 """
@@ -150,7 +150,6 @@ cell5 = """# 5) تنظيف الصوت + توقيت كل كلمة (Whisper) + ا�
 import json, zipfile, subprocess
 from pydub import AudioSegment
 from google.colab import files
-from faster_whisper import WhisperModel
 
 missing = [i for i in range(1, len(LINES) + 1) if not os.path.exists(clip(i))]
 assert not missing, f"جمل غير مسجَّلة: {missing} (أعد تشغيل الخلية 4)"
@@ -161,26 +160,41 @@ os.makedirs("clean", exist_ok=True)
 for i in range(1, len(LINES) + 1):
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", clip(i), "-af", CLEAN, "-ar", "48000", "-ac", "1", f"clean/{i:02d}.wav"], check=True)
 
-try:
-    import torch; gpu = torch.cuda.is_available()
-except Exception:
-    gpu = False
-model = WhisperModel("large-v3" if gpu else "medium", device="cuda" if gpu else "cpu", compute_type="float16" if gpu else "int8")
-print("Whisper:", "large-v3 على GPU" if gpu else "medium على CPU (أبطأ؛ فعّل T4 GPU لنتيجة أدق)")
+# Whisper الرسمي عبر transformers (مثبتة في Colab ومتوافقة مع بطاقته؛ لا مكتبات NVIDIA إضافية)
+import numpy as np, torch
+from transformers import pipeline
+gpu = torch.cuda.is_available()
+asr = pipeline("automatic-speech-recognition", model="openai/whisper-large-v3" if gpu else "openai/whisper-small",
+               torch_dtype=torch.float16 if gpu else torch.float32, device=0 if gpu else -1, chunk_length_s=30,
+               model_kwargs={"attn_implementation": "eager"})  # eager: يلزم لحساب توقيت الكلمات
+print("Whisper:", "large-v3 على GPU" if gpu else "small على CPU (أبطأ؛ فعّل T4 GPU لنتيجة أدق)")
 
-import numpy as np
 def load16k(path):
-    # نقرأ الصوت بأنفسنا (16 kHz) ونمرّره لـ Whisper مباشرة: لا نعتمد على مكتبة PyAV التي تتعطل مع بعض نسخ Colab
     s = AudioSegment.from_wav(path).set_frame_rate(16000).set_channels(1).set_sample_width(2)
     return np.array(s.get_array_of_samples(), dtype=np.float32) / 32768
+
+def words_of(path, t0):
+    # توقيت كل كلمة في الجملة. إن تعذّر، يُقدَّر التوقيت داخل الجملة بطول الكلمات (الفيديو يبقى متزامنًا مع الجمل)
+    try:
+        r = asr({"raw": load16k(path), "sampling_rate": 16000}, return_timestamps="word",
+                generate_kwargs={"language": "arabic", "task": "transcribe"})
+        out = []
+        for c in r.get("chunks", []):
+            s, e = c["timestamp"]
+            if s is None:
+                continue
+            out.append({"text": c["text"].strip(), "start": t0 + s, "end": t0 + (e if e is not None else s + 0.3)})
+        return out
+    except Exception as err:
+        print("   ⚠ Whisper:", str(err)[:150])
+        return []
 
 full = AudioSegment.silent(duration=int(LEAD * 1000), frame_rate=48000)
 out = []
 for i, text in enumerate(LINES, 1):
     seg = AudioSegment.from_wav(f"clean/{i:02d}.wav").fade_in(15).fade_out(40)
-    segs, _ = model.transcribe(load16k(f"clean/{i:02d}.wav"), language="ar", word_timestamps=True, initial_prompt=text, vad_filter=False, beam_size=5)
     t0 = len(full) / 1000
-    words = [{"text": w.word.strip(), "start": t0 + w.start, "end": t0 + w.end} for s in segs for w in (s.words or [])]
+    words = words_of(f"clean/{i:02d}.wav", t0)
     out.append({"i": i, "spoken": text, "start": t0, "end": t0 + len(seg) / 1000, "words": words})
     pause = GAP + (PAUSE if "حَاوِلْ بِنَفْسِكَ" in text else 0)
     full += seg + AudioSegment.silent(duration=int(pause * 1000), frame_rate=48000)
