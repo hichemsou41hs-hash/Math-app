@@ -21,12 +21,12 @@ function intro(P: boolean, W: number, H: number) {
   const rows = P
     ? [
         b.math(`${LIM_P} \\frac{e^{x}}{x^{n}} = +\\infty`, { x: cx, y: 990, size: S, color: C.yellow, at: at(q, 'أس') }),
-        b.math(`${LIM_M} x^{n} e^{x} = 0`, { x: cx, y: 1150, size: S, color: C.yellow, at: at(q, 'ضرب') }),
+        b.math(`${LIM_M} x^{n} e^{x} = 0`, { x: cx, y: 1150, size: S, color: C.yellow, at: at(q, 'في') }),
         b.math(`${LIM_0} \\frac{e^{x} - 1}{x} = 1`, { x: cx, y: 1310, size: S, color: C.yellow, at: at(q, 'ناقص') }),
       ]
     : [
         b.math(`${LIM_P} \\frac{e^{x}}{x^{n}} = +\\infty`, { x: W * 0.8, y: 730, size: S, color: C.yellow, at: at(q, 'أس') }),
-        b.math(`${LIM_M} x^{n} e^{x} = 0`, { x: W * 0.5, y: 730, size: S, color: C.yellow, at: at(q, 'ضرب') }),
+        b.math(`${LIM_M} x^{n} e^{x} = 0`, { x: W * 0.5, y: 730, size: S, color: C.yellow, at: at(q, 'في') }),
         b.math(`${LIM_0} \\frac{e^{x} - 1}{x} = 1`, { x: W * 0.2, y: 730, size: S, color: C.yellow, at: at(q, 'ناقص') }),
       ];
   frame(b, rows, at(q, 'واحد', 1) + 0.5, C.yellow, 30);
@@ -111,9 +111,9 @@ function ex5(P: boolean, W: number, H: number) {
   c.skip(16);
   c.text('حالة عدم تعيين : ∞ − ∞', at('حالة عدم تعيين: ما لا نهاية ناقص', 'حالة'), { color: C.pink });
   c.math('e^{x} - x^{3} = x^{3}\\left(\\frac{e^{x}}{x^{3}} - 1\\right)', at('حالة عدم تعيين: ما لا نهاية ناقص', 'نخرج'), { size: P ? 54 : 56 });
-  const r = c.math(`${LIM_P} \\left(e^{x} - x^{3}\\right) = +\\infty`, at('فنجد x مكعب ضرب', 'وهذا'), { color: C.yellow, size: P ? 56 : 58 });
-  frame(b, [r], at('فنجد x مكعب ضرب', 'نهاية') + 0.3, C.yellow, 20);
-  b.sound(at('فنجد x مكعب ضرب', 'نهاية') + 0.7, 'shimmer', 0.3);
+  const r = c.math(`${LIM_P} \\left(e^{x} - x^{3}\\right) = +\\infty`, at('فنجد x مكعب في', 'وهذا'), { color: C.yellow, size: P ? 56 : 58 });
+  frame(b, [r], at('فنجد x مكعب في', 'نهاية') + 0.3, C.yellow, 20);
+  b.sound(at('فنجد x مكعب في', 'نهاية') + 0.7, 'shimmer', 0.3);
   return b;
 }
 

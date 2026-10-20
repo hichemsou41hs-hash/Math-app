@@ -47,8 +47,8 @@ function deriv(P: boolean, W: number, H: number) {
   c.math("f'(x) = 2xe^{x} + \\left(x^{2} - 3\\right)e^{x}", at(q, 'يساوي'), { size: P ? 54 : 58 });
   c.math("f'(x) = \\left(x^{2} + 2x - 3\\right)e^{x}", at('نخرج e أس x عاملا', 'مربع'), { size: P ? 56 : 58 });
   const r = c.math("f'(x) = (x + 3)(x - 1)e^{x}", at('وبالتحليل', 'زائد'), { color: C.yellow, size: P ? 62 : 62 });
-  frame(b, [r], at('وبالتحليل', 'ضرب', 1) + 0.6, C.yellow, 22);
-  b.sound(at('وبالتحليل', 'ضرب', 1) + 0.9, 'shimmer', 0.3);
+  frame(b, [r], at('وبالتحليل', 'في', 1) + 0.6, C.yellow, 22);
+  b.sound(at('وبالتحليل', 'في', 1) + 0.9, 'shimmer', 0.3);
   return b;
 }
 
@@ -144,7 +144,7 @@ function ex3(P: boolean, W: number, H: number) {
   frame(b, [s1, s2], at(q, 'R') + 0.6);
   c.skip(34);
   c.math("\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^{2}}", at('نشتق حاصل القسمة', 'بريم'), { color: C.blue, size: P ? 54 : 54 });
-  c.math('e^{x}\\left(e^{x} + 1\\right) - e^{x}\\left(e^{x} - 1\\right) = 2e^{x}', at('في البسط', 'ضرب'), { size: P ? 46 : 52 });
+  c.math('e^{x}\\left(e^{x} + 1\\right) - e^{x}\\left(e^{x} - 1\\right) = 2e^{x}', at('في البسط', 'في', 1), { size: P ? 46 : 52 });
   c.skip(18);
   const r = c.math("k'(x) = \\frac{2e^{x}}{\\left(e^{x} + 1\\right)^{2}} > 0", at('إذن k بريم', 'يساوي'), { color: C.yellow, size: P ? 58 : 58 });
   frame(b, [r], at('إذن k بريم', 'موجب') + 0.3, C.yellow, 20);
