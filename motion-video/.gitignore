@@ -3,3 +3,4 @@ video/out/
 analysis/
 .DS_Store
 styles/*/reference.mp4
+__pycache__/
