@@ -5,12 +5,22 @@ spelled out) and records edge-tts WordBoundary events. Word n of a line in timin
 line in script.txt; when the counts differ, the line's time is shared out by word length.
 
     python3 tools/edge_to_words.py lesson_voice.zip      (or: ... voice.mp3 timings.json)
+    python3 tools/edge_to_words.py --episode ex1 ex1_voice.zip   (series/ex1/script.txt -> data/ex1.words.json)
 """
 import difflib, json, re, shutil, sys, zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 PUB = ROOT / "video/public"
+EPISODE = None
+if len(sys.argv) > 2 and sys.argv[1] == "--episode":
+    EPISODE = sys.argv[2]
+    del sys.argv[1:3]
+    PUB = PUB / EPISODE
+    PUB.mkdir(parents=True, exist_ok=True)
+SCRIPT = ROOT / (f"series/{EPISODE}/script.txt" if EPISODE else "script.txt")
+OUT = ROOT / (f"video/src/data/{EPISODE}.words.json" if EPISODE else "video/src/data/words.json")
+AUDIO = f"{EPISODE}/voice.mp3" if EPISODE else "voice.mp3"
 
 
 def load(args):
@@ -62,7 +72,7 @@ def align(toks, ws):
 
 def main():
     t = load(sys.argv[1:])
-    script = [l.split() for l in (ROOT / "script.txt").read_text(encoding="utf-8").splitlines() if l.strip()]
+    script = [l.split() for l in SCRIPT.read_text(encoding="utf-8").splitlines() if l.strip()]
     if len(script) != len(t["lines"]):
         raise SystemExit(f"script.txt has {len(script)} lines, timings.json {len(t['lines'])}")
     lines, shared = [], 0
@@ -87,8 +97,8 @@ def main():
                 acc += k
                 words.append({"w": tok, "start": round(s, 3), "end": round(a + (b - a) * acc / tot, 3)})
         lines.append({"text": " ".join(toks), "start": words[0]["start"], "end": words[-1]["end"], "words": words})
-    out = {"source": f"edge-tts {t.get('voice')} ({t.get('rate')})", "audio": "voice.mp3", "duration": round(t.get("duration") or t["totalDuration"], 3), "lines": lines}
-    (ROOT / "video/src/data/words.json").write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
+    out = {"source": f"edge-tts {t.get('voice')} ({t.get('rate')})", "audio": AUDIO, "duration": round(t.get("duration") or t["totalDuration"], 3), "lines": lines}
+    OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"{len(lines)} lines, {shared} aligned or shared out, duration {out['duration']:.1f}s")
 
 

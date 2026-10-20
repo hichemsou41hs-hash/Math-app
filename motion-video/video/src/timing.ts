@@ -15,8 +15,15 @@ export interface Word { w: string; start: number; end: number; conf?: number }
 export interface Line { text: string; start: number; end: number; words: Word[]; key?: string }
 export interface Timing { source?: string; audio: string | null; duration: number; lines: Line[] }
 
-export const TIMING = data as Timing;
-const KEYS = keys as string[];
+/** The timing in use: the lesson's by default; an episode switches to its own with setTiming(). */
+export let TIMING = data as Timing;
+let KEYS = keys as string[];
+export function setTiming(t: Timing, k: string[] = []) {
+  TIMING = t;
+  KEYS = k;
+}
+export const LESSON_TIMING = data as Timing;
+export const LESSON_KEYS = keys as string[];
 export const FPS = VIDEO.fps;
 
 /** Seconds -> frame. */
@@ -80,3 +87,4 @@ export function prog(t: number, a: number, b: number, easing: (x: number) => num
 
 /** The whole video's length in frames. */
 export const DURATION_FRAMES = Math.max(1, Math.ceil((TIMING.duration + VIDEO.tail) * FPS));
+export const durationFrames = (t: Timing) => Math.max(1, Math.ceil((t.duration + VIDEO.tail) * FPS));

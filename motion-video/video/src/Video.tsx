@@ -2,49 +2,56 @@
 // the teacher's nameplate, the voice and the sound effects. Boards come from src/boards/.
 import React, { useMemo } from 'react';
 import { AbsoluteFill, Html5Audio, Sequence, random, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
-import { TIMING, toFrame, toSec } from './timing';
+import { TIMING, norm, toFrame, toSec } from './timing';
 import { FontGate, RUQAA } from './lib/fonts';
 import { C, Timeline, boardAt, camera, chalkState, progress, timeline, toScreen, toWorld } from './lib/engine';
-import { buildBoards } from './boards';
+import { EPISODES, Episode, useEpisode } from './episodes';
 import { Pt } from './lib/geom';
-import { PART_LINES, partBoardFrom, partEnd, partStart } from './parts';
+import { partBoardFrom, partEnd, partStart } from './parts';
 
 export const TEACHER = 'الأستاذ سوايسية هشام';
-export const TITLE = 'الدالة الأسية النيبيرية';
 /** Seconds a reel holds its finished board at the end. */
 export const HOLD = 2.5;
 /** Chalk scratches and taps under every write. Off: the teacher found them distracting under the voice. */
 const CHALK_SOUND = false;
 
-export const Video: React.FC<{ part?: number }> = ({ part }) => (
+export const Video: React.FC<{ episode?: string; part?: number }> = ({ episode, part }) => (
   <AbsoluteFill style={{ backgroundColor: C.board }}>
     <FontGate>
-      <Stage part={part} />
+      <Stage ep={EPISODES[episode ?? 'lesson']} part={part} />
     </FontGate>
   </AbsoluteFill>
 );
 
-const Stage: React.FC<{ part?: number }> = ({ part }) => {
+const Stage: React.FC<{ ep: Episode; part?: number }> = ({ ep, part }) => {
   const { width: W, height: H } = useVideoConfig();
   const P = H > W;
+  useEpisode(ep);
   const tl = useMemo(() => {
-    const boards = buildBoards(P, W, H);
+    useEpisode(ep);
+    const boards = ep.build(P, W, H);
     boards.forEach((b, i) => {
       const next = boards[i + 1];
       const last = Math.max(...b.items.map((x) => x.t1));
       if (next && last > next.from - 0.75) console.warn(`LATE board ${b.id}: last write ends ${last.toFixed(2)}, next board at ${(next.from - 0.75).toFixed(2)}`);
     });
-    return timeline(boards, W, H, TIMING.duration);
-  }, [P, W, H]);
-  const off = part ? partStart(part) : 0;
+    return timeline(boards, W, H, ep.timing.duration);
+  }, [ep, P, W, H]);
+  // «try it yourself» pauses: from the end of a line that says so to the start of the next line
+  const pauses = useMemo(() => {
+    const L = ep.timing.lines;
+    return L.flatMap((l, i) => (norm(l.text).includes(norm('حاول بنفسك')) && L[i + 1] ? [{ t0: l.end + 0.15, t1: L[i + 1].start - 0.1 }] : []));
+  }, [ep]);
+  const off = part ? partStart(ep, part) : 0;
   // a reel holds its last picture for HOLD seconds, silently
-  const stop = part ? partEnd(part) - 0.05 : Infinity;
+  const stop = part ? partEnd(ep, part) - 0.05 : Infinity;
+  useEpisode(ep);
   const audioFrames = Number.isFinite(stop) ? toFrame(stop) : undefined;
   return (
     <Sequence from={-toFrame(off)} layout="none">
-      <World tl={tl} part={part} stop={stop} />
+      <World tl={tl} ep={ep} part={part} stop={stop} pauses={pauses} />
       <Sequence durationInFrames={audioFrames} layout="none">
-        {TIMING.audio ? <Html5Audio src={staticFile(TIMING.audio)} /> : null}
+        {ep.timing.audio ? <Html5Audio src={staticFile(ep.timing.audio)} /> : null}
         <Sounds tl={tl} />
       </Sequence>
     </Sequence>
@@ -52,7 +59,7 @@ const Stage: React.FC<{ part?: number }> = ({ part }) => {
 };
 
 
-const World: React.FC<{ tl: Timeline; part?: number; stop: number }> = ({ tl, part, stop }) => {
+const World: React.FC<{ tl: Timeline; ep: Episode; part?: number; stop: number; pauses: { t0: number; t1: number }[] }> = ({ tl, ep, part, stop, pauses }) => {
   const now = toSec(useCurrentFrame());
   const t = Math.min(now, stop);
   const { W, H } = tl;
@@ -60,7 +67,7 @@ const World: React.FC<{ tl: Timeline; part?: number; stop: number }> = ({ tl, pa
   const cam = camera(tl, t);
   const bi = boardAt(tl, t);
   // in a reel, the boards of earlier reels are never shown: the first board slides in onto a clean board
-  const first = part ? tl.boards.findIndex((b) => Math.abs(b.from - partBoardFrom(part)) < 0.01) : 0;
+  const first = part ? tl.boards.findIndex((b) => Math.abs(b.from - partBoardFrom(ep, part)) < 0.01) : 0;
   const visible = tl.boards.filter((_, i) => Math.abs(i - bi) <= 1 && i >= first);
   const tray: Pt = toWorld(tl, cam, [W * 0.2, H - 20 * u]);
   const ch = chalkState(tl, t, tray);
@@ -112,8 +119,9 @@ const World: React.FC<{ tl: Timeline; part?: number; stop: number }> = ({ tl, pa
       <svg width={W} height={H} style={{ position: 'absolute', inset: 0 }}>
         {dust}
       </svg>
-      <Frame W={W} H={H} u={u} chapter={chapter} part={part} />
-      {part && part < PART_LINES.length ? <NextPart t={now} end={partEnd(part) + HOLD} part={part} u={u} W={W} H={H} /> : null}
+      <Frame W={W} H={H} u={u} chapter={chapter} part={part} title={ep.title} badge={ep.badge} />
+      {pauses.map((p, i) => (t > p.t0 - 0.5 && t < p.t1 + 0.5 ? <Countdown key={i} t={t} p={p} u={u} W={W} H={H} /> : null))}
+      {part && part < ep.parts.length ? <NextPart t={now} end={partEnd(ep, part) + HOLD} part={part} u={u} W={W} H={H} /> : null}
       <Chalk p={chS} lift={ch.lift} color={ch.color} u={u} />
     </AbsoluteFill>
   );
@@ -191,7 +199,7 @@ const Chalk: React.FC<{ p: Pt; lift: number; color: string; u: number }> = ({ p,
   );
 };
 
-const Frame: React.FC<{ W: number; H: number; u: number; chapter: string; part?: number }> = ({ W, H, u, chapter, part }) => {
+const Frame: React.FC<{ W: number; H: number; u: number; chapter: string; part?: number; title: string; badge?: string }> = ({ W, H, u, chapter, part, title, badge }) => {
   const f = 24 * u;
   const wood = 'linear-gradient(180deg, #7a5433 0%, #604329 45%, #4d3420 100%)';
   const woodV = 'linear-gradient(90deg, #7a5433 0%, #604329 45%, #4d3420 100%)';
@@ -256,7 +264,13 @@ const Frame: React.FC<{ W: number; H: number; u: number; chapter: string; part?:
           boxShadow: '0 4px 8px rgba(0,0,0,0.5)',
         }}
       >
-        <span style={{ fontWeight: 700 }}>{TITLE}</span>
+        <span style={{ fontWeight: 700 }}>{title}</span>
+        {badge ? (
+          <>
+            <span style={{ opacity: 0.6 }}>|</span>
+            <span style={{ color: C.yellow }}>{badge}</span>
+          </>
+        ) : null}
         <span style={{ opacity: 0.6 }}>|</span>
         <span>{chapter}</span>
         {part ? (
@@ -305,4 +319,52 @@ const Sounds: React.FC<{ tl: Timeline }> = ({ tl }) => {
     );
   });
   return <>{out}</>;
+};
+
+/** «Pause the video and try it yourself»: a chalk ring that empties as the seconds count down. */
+const Countdown: React.FC<{ t: number; p: { t0: number; t1: number }; u: number; W: number; H: number }> = ({ t, p, u, W, H }) => {
+  const k = Math.min(1, Math.max(0, Math.min((t - p.t0) / 0.35, (p.t1 - t) / 0.35)));
+  if (k <= 0) return null;
+  const left = Math.max(0, p.t1 - t);
+  const n = Math.ceil(left - 1e-6);
+  const f = left / Math.max(0.01, p.t1 - p.t0);
+  const R = 62 * u;
+  const L = 2 * Math.PI * R;
+  return (
+    <AbsoluteFill style={{ opacity: k }}>
+      <AbsoluteFill style={{ backgroundColor: 'rgba(10,20,16,0.28)' }} />
+      <div
+        dir="rtl"
+        style={{
+          position: 'absolute',
+          left: W / 2 - 290 * u,
+          width: 580 * u,
+          bottom: (H > W ? 260 : 120) * u,
+          padding: `${18 * u}px ${20 * u}px`,
+          borderRadius: 18 * u,
+          background: 'linear-gradient(180deg, #5a3c22, #3f2915)',
+          border: `${2 * u}px solid #b08a52`,
+          boxShadow: '0 12px 30px rgba(0,0,0,0.55)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 22 * u,
+          transform: `translateY(${(1 - k) * 30 * u}px)`,
+        }}
+      >
+        <svg width={2 * R + 16 * u} height={2 * R + 16 * u} style={{ flex: 'none' }}>
+          <g transform={`translate(${R + 8 * u} ${R + 8 * u}) rotate(-90)`}>
+            <circle r={R} fill="none" stroke="rgba(241,217,166,0.25)" strokeWidth={8 * u} />
+            <circle r={R} fill="none" stroke="#F6E07A" strokeWidth={8 * u} strokeLinecap="round" strokeDasharray={L} strokeDashoffset={L * (1 - f)} />
+          </g>
+          <text x={R + 8 * u} y={R + 8 * u + 24 * u} textAnchor="middle" style={{ font: `700 ${68 * u}px ${RUQAA}` }} fill="#F6E07A">
+            {n}
+          </text>
+        </svg>
+        <div style={{ fontFamily: RUQAA, color: '#F1D9A6', lineHeight: 1.45 }}>
+          <div style={{ fontSize: 40 * u, fontWeight: 700 }}>أوقف الفيديو</div>
+          <div style={{ fontSize: 34 * u }}>وحاول بنفسك قبل رؤية الحل</div>
+        </div>
+      </div>
+    </AbsoluteFill>
+  );
 };

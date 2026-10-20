@@ -77,6 +77,8 @@ function outline(p: Poly, width: number, seed: number, done: boolean): string {
 export class Builder {
   items: Item[] = [];
   cams: Cam[] = [];
+  /** How far the default framing may zoom out to show a tall board (1 = never). */
+  minZoom = 1;
   sfx: Sfx[] = [];
   private n = 0;
   constructor(
@@ -239,7 +241,7 @@ export class Builder {
     const y1 = Math.max(...this.items.map((i) => i.bbox.y + i.bbox.h));
     const availW = this.W * 0.9;
     const availH = this.H - (this.P ? 330 : 230); // room for the chapter tag and the nameplate
-    const z = clamp(Math.min(availW / (x1 - x0), availH / (y1 - y0)), 1, 1.3);
+    const z = clamp(Math.min(availW / (x1 - x0), availH / (y1 - y0)), this.minZoom, 1.3);
     const cy = (y1 - y0) * z <= availH ? (y0 + y1) / 2 : y0 + availH / 2 / z;
     // centre a little above the middle so the nameplate never covers the last line
     return { x: (x0 + x1) / 2, y: cy + (this.P ? 20 : 12) / z, z };
