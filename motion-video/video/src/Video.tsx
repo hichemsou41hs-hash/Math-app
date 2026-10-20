@@ -326,7 +326,7 @@ const Countdown: React.FC<{ t: number; p: { t0: number; t1: number }; u: number;
   const k = Math.min(1, Math.max(0, Math.min((t - p.t0) / 0.35, (p.t1 - t) / 0.35)));
   if (k <= 0) return null;
   const left = Math.max(0, p.t1 - t);
-  const n = Math.ceil(left - 1e-6);
+  const n = Math.min(5, Math.ceil(left - 1e-6));
   const f = left / Math.max(0.01, p.t1 - p.t0);
   const R = 62 * u;
   const L = 2 * Math.PI * R;
