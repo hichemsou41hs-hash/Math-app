@@ -50,7 +50,7 @@ interface Place { x: number; y: number; size?: number; color?: string; at: numbe
 /** Wrap every Latin/maths run of an Arabic sentence in a left-to-right isolate, so «(x − 2)eˣ» keeps its order. */
 export function isolate(s: string) {
   if (!/[\u0600-\u06FF]/.test(s)) return s;
-  return s.replace(/[A-Za-z0-9(ℝ∞−+=<>²ˣ⁰⁻ΔIe][A-Za-z0-9()ℝ∞−+=<>²ˣ⁰⁻Δ;,.\s]*[A-Za-z0-9)ℝ∞²ˣ⁰]|[A-Za-z0-9ℝ∞]/g, (m) => '\u202A' + m + '\u202C');
+  return s.replace(/[A-Za-z0-9(ℝ∞−+=<>²ˣ⁰⁻ΔIe[\]][A-Za-z0-9()ℝ∞−+=<>²ˣ⁰⁻Δ;,.\s[\]]*[A-Za-z0-9)ℝ∞²ˣ⁰[\]]|[A-Za-z0-9ℝ∞]/g, (m) => '\u202A' + m + '\u202C');
 }
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
