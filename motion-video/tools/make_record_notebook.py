@@ -150,6 +150,7 @@ cell5 = """# 5) تنظيف الصوت + توقيت كل كلمة (Whisper) + ا�
 import json, zipfile, subprocess
 from pydub import AudioSegment
 from google.colab import files
+from IPython.display import Audio, display
 
 missing = [i for i in range(1, len(LINES) + 1) if not os.path.exists(clip(i))]
 assert not missing, f"جمل غير مسجَّلة: {missing} (أعد تشغيل الخلية 4)"
