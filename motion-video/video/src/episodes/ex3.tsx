@@ -73,7 +73,7 @@ function ex3(P: boolean, W: number, H: number) {
   const s1 = c.math('f(x) = \\frac{e^{2x} - e^{x} + 1}{e^{2x} + 3}', at(q, 'نهاية'), { size: P ? 58 : 58 });
   const s2 = c.text('احسب نهاية f عند +∞ ثم عند −∞', at(q, 'زائد'), { color: C.blue });
   frame(b, [s1, s2], at(q, 'ناقص') + 0.6);
-  c.skip(10);
+  c.skip(36);
   c.math('f(x) = \\frac{1 - e^{-x} + e^{-2x}}{1 + 3e^{-2x}}', at('عند زائد ما لا نهاية: حالة', 'فنقسم'), { size: P ? 50 : 50 });
   const r1 = c.math(`${LIM_P} f(x) = 1`, at('فتؤول e أس ناقص x', 'والنهاية'), { color: C.yellow, size: P ? 54 : 54 });
   c.math(`${LIM_M} e^{2x} = ${LIM_M} e^{x} = 0`, at('عند ناقص ما لا نهاية: e أس', 'يؤولان'), { color: C.blue, size: P ? 46 : 50 });
