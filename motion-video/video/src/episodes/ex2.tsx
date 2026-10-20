@@ -3,6 +3,7 @@ import { Board, Builder, C } from '../lib/engine';
 import { path, seg } from '../lib/geom';
 import { at, heading } from '../boards/util';
 import { board, column, frame } from './ex1';
+import { signTable } from '../boards/ch5';
 
 function intro(P: boolean, W: number, H: number) {
   const b = board('intro', 'مقدمة', 'السلام عليكم', P, W, H);
@@ -83,16 +84,33 @@ function ex3(P: boolean, W: number, H: number) {
 function ex4(P: boolean, W: number, H: number) {
   const q = 'التمرين الرابع';
   const b = board('ex4', 'التمرين 4', q, P, W, H);
-  const c = column(b, heading(b, 'التمرين 4', at(q)) - 20, P ? 64 : 44);
+  const c = column(b, heading(b, 'التمرين 4', at(q)) - 20, P ? 60 : 36);
   const s1 = c.text('حُلّ في ℝ المتراجحة :', at(q, 'حل'), { color: C.blue });
-  const s2 = c.math('e^{2x} - e^{x+1} - e^{x} + e \\le 0', at(q, 'المتراجحة'), { size: P ? 58 : 58 });
+  const s2 = c.math('e^{2x} - e^{x+1} - e^{x} + e \\le 0', at(q, 'المتراجحة'), { size: P ? 58 : 56 });
   frame(b, [s1, s2], at(q, 'التالية') + 0.5);
-  c.skip(16);
-  c.math('e^{x+1} = e \\times e^{x}', at('نلاحظ أن e أس x زائد', 'يساوي'), { color: C.blue });
-  c.math('\\left(e^{x} - e\\right)\\left(e^{x} - 1\\right) \\le 0', at('نجد: e أس x ناقص e', 'ناقص'));
-  c.math('1 \\le e^{x} \\le e', at('الجداء سالب عندما', 'بين'), { color: C.blue });
-  c.math('e^{0} \\le e^{x} \\le e^{1} \\iff 0 \\le x \\le 1', at('أي e أس صفر أصغر', 'أصغر'));
-  const r = c.math('S = [0 \\, ; \\, 1]', at('أي e أس صفر أصغر', 'محصور'), { color: C.yellow, size: P ? 60 : 58 });
+  c.skip(10);
+  c.math('e^{x+1} = e \\times e^{x}', at('نلاحظ أن e أس x زائد', 'يساوي'), { color: C.blue, size: P ? 50 : 48 });
+  c.math('\\left(e^{x} - e\\right)\\left(e^{x} - 1\\right) \\le 0', at('نجد: e أس x ناقص e', 'ناقص'), { size: P ? 52 : 50 });
+  // the sign table: e^x - 1 vanishes at 0, e^x - e at 1
+  const t0 = at('الجداء سالب عندما');
+  const t1 = at('أي e أس صفر أصغر');
+  const span = Math.max(2.4, t1 - t0 + 2.5);
+  const tb = signTable(b, {
+    y: c.y,
+    t0,
+    width: P ? 960 : 1050,
+    labelW: P ? 330 : 340,
+    rowH: P ? 88 : 66,
+    size: P ? 40 : 36,
+    xs: ['-\\infty', '0', '1', '+\\infty'],
+    rows: [
+      { label: 'e^{x} - 1', cells: ['', '-', '0', '+', '', '+', ''], t: t0 + span * 0.2 },
+      { label: 'e^{x} - e', cells: ['', '-', '', '-', '0', '+', ''], t: t0 + span * 0.4 },
+      { label: '\\left(e^{x} - e\\right)\\left(e^{x} - 1\\right)', cells: ['', '+', '0', '-', '0', '+', ''], t: t0 + span * 0.62, color: C.yellow },
+    ],
+  });
+  c.skip(tb.h + (P ? 40 : 24));
+  const r = c.math('S = [0 \\, ; \\, 1]', at('أي e أس صفر أصغر', 'محصور'), { color: C.yellow, size: P ? 60 : 56 });
   frame(b, [r], at('أي e أس صفر أصغر', 'وواحد') + 0.3, C.yellow, 20);
   b.sound(at('أي e أس صفر أصغر', 'وواحد') + 0.7, 'shimmer', 0.3);
   return b;
@@ -101,14 +119,33 @@ function ex4(P: boolean, W: number, H: number) {
 function ex5(P: boolean, W: number, H: number) {
   const q = 'التمرين الخامس';
   const b = board('ex5', 'التمرين 5', q, P, W, H);
-  const c = column(b, heading(b, 'التمرين 5', at(q)) - 20);
+  const c = column(b, heading(b, 'التمرين 5', at(q)) - 20, P ? 60 : 40);
   const s1 = c.text('حُلّ في ℝ المتراجحة :', at(q, 'حل'), { color: C.blue });
-  const s2 = c.math('e^{x^{2} - 3x} < e^{-2}', at(q, 'المتراجحة'), { size: P ? 64 : 62 });
+  const s2 = c.math('e^{x^{2} - 3x} < e^{-2}', at(q, 'المتراجحة'), { size: P ? 64 : 60 });
   frame(b, [s1, s2], at(q, 'التالية') + 0.5);
-  c.skip(16);
-  c.math('x^{2} - 3x < -2', at('الدالة الأسية متزايدة تماما', 'فنقارن'), { color: C.blue });
-  c.math('x^{2} - 3x + 2 < 0 \\iff (x - 1)(x - 2) < 0', at('أي x مربع ناقص ثلاثة', 'أصغر'));
-  const r = c.math('S = ]1 \\, ; \\, 2[', at('كثير الحدود سالب', 'مجموعة'), { color: C.yellow, size: P ? 62 : 60 });
+  c.skip(10);
+  c.math('x^{2} - 3x < -2', at('الدالة الأسية متزايدة تماما', 'فنقارن'), { color: C.blue, size: P ? 52 : 50 });
+  c.math('x^{2} - 3x + 2 < 0 \\iff (x - 1)(x - 2) < 0', at('أي x مربع ناقص ثلاثة', 'أصغر'), { size: P ? 50 : 50 });
+  // the sign table: roots 1 and 2
+  const t0 = at('أي x مربع ناقص ثلاثة', 'وجذراه');
+  const t1 = at('كثير الحدود سالب');
+  const span = Math.max(2.4, t1 - t0 + 2.0);
+  const tb = signTable(b, {
+    y: c.y,
+    t0,
+    width: P ? 960 : 1050,
+    labelW: P ? 300 : 320,
+    rowH: P ? 88 : 66,
+    size: P ? 40 : 36,
+    xs: ['-\\infty', '1', '2', '+\\infty'],
+    rows: [
+      { label: 'x - 1', cells: ['', '-', '0', '+', '', '+', ''], t: t0 + span * 0.2 },
+      { label: 'x - 2', cells: ['', '-', '', '-', '0', '+', ''], t: t0 + span * 0.4 },
+      { label: '(x - 1)(x - 2)', cells: ['', '+', '0', '-', '0', '+', ''], t: t0 + span * 0.62, color: C.yellow },
+    ],
+  });
+  c.skip(tb.h + (P ? 40 : 24));
+  const r = c.math('S = ]1 \\, ; \\, 2[', at('كثير الحدود سالب', 'مجموعة'), { color: C.yellow, size: P ? 62 : 58 });
   frame(b, [r], at('كثير الحدود سالب', 'اثنين') + 0.4, C.yellow, 20);
   b.sound(at('كثير الحدود سالب', 'اثنين') + 0.8, 'shimmer', 0.3);
   return b;

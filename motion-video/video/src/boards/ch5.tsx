@@ -62,13 +62,13 @@ export function equations2(P: boolean, W: number, H: number) {
 }
 
 /** A sign table (Algerian layout: labels on the left, values left to right). cells: 2k-1 entries for k points. */
-function signTable(b: Builder, o: { y: number; xs: string[]; rows: { label: string; cells: string[]; t: number; color?: string; times?: number[] }[]; t0: number; labelW?: number }) {
-  const tw = b.P ? 980 : 1150;
+export function signTable(b: Builder, o: { y: number; xs: string[]; rows: { label: string; cells: string[]; t: number; color?: string; times?: number[] }[]; t0: number; labelW?: number; rowH?: number; size?: number; width?: number }) {
+  const tw = o.width ?? (b.P ? 980 : 1150);
   const tx = (b.W - tw) / 2;
   const lw = o.labelW ?? (b.P ? 300 : 320);
-  const rh = b.P ? 100 : 92;
+  const rh = o.rowH ?? (b.P ? 100 : 92);
   const n = o.rows.length + 1;
-  const S = b.P ? 44 : 44;
+  const S = o.size ?? 44;
   const k = o.xs.length;
   const px = (i: number) => tx + lw + 60 + (i * (tw - lw - 120)) / (k - 1);
   const ix = (i: number) => (px(i) + px(i + 1)) / 2;
