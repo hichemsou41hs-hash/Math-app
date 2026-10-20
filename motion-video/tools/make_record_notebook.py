@@ -168,11 +168,17 @@ except Exception:
 model = WhisperModel("large-v3" if gpu else "medium", device="cuda" if gpu else "cpu", compute_type="float16" if gpu else "int8")
 print("Whisper:", "large-v3 على GPU" if gpu else "medium على CPU (أبطأ؛ فعّل T4 GPU لنتيجة أدق)")
 
+import numpy as np
+def load16k(path):
+    # نقرأ الصوت بأنفسنا (16 kHz) ونمرّره لـ Whisper مباشرة: لا نعتمد على مكتبة PyAV التي تتعطل مع بعض نسخ Colab
+    s = AudioSegment.from_wav(path).set_frame_rate(16000).set_channels(1).set_sample_width(2)
+    return np.array(s.get_array_of_samples(), dtype=np.float32) / 32768
+
 full = AudioSegment.silent(duration=int(LEAD * 1000), frame_rate=48000)
 out = []
 for i, text in enumerate(LINES, 1):
     seg = AudioSegment.from_wav(f"clean/{i:02d}.wav").fade_in(15).fade_out(40)
-    segs, _ = model.transcribe(f"clean/{i:02d}.wav", language="ar", word_timestamps=True, initial_prompt=text, vad_filter=False, beam_size=5)
+    segs, _ = model.transcribe(load16k(f"clean/{i:02d}.wav"), language="ar", word_timestamps=True, initial_prompt=text, vad_filter=False, beam_size=5)
     t0 = len(full) / 1000
     words = [{"text": w.word.strip(), "start": t0 + w.start, "end": t0 + w.end} for s in segs for w in (s.words or [])]
     out.append({"i": i, "spoken": text, "start": t0, "end": t0 + len(seg) / 1000, "words": words})
