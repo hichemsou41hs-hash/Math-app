@@ -68,7 +68,7 @@ export const EPISODES: Record<string, Episode> = {
     timing: ex4Data as Timing,
     keys: [],
     build: buildEx4,
-    parts: ['السلام عليكم', 'المشتقة: f برايم', 'التمرين الثاني'],
+    parts: ['السلام عليكم', 'المشتقة: f بريم', 'التمرين الثاني'],
   },
 };
 

@@ -41,7 +41,7 @@ function ex1(P: boolean, W: number, H: number) {
 }
 
 function deriv(P: boolean, W: number, H: number) {
-  const q = 'المشتقة: f برايم';
+  const q = 'المشتقة: f بريم';
   const b = board('deriv', 'التمرين 1: المشتقة', q, P, W, H);
   const c = column(b, heading(b, 'المشتقة', at(q)) - 10, P ? 80 : 60);
   c.math("f'(x) = 2xe^{x} + \\left(x^{2} - 3\\right)e^{x}", at(q, 'يساوي'), { size: P ? 54 : 58 });
@@ -127,7 +127,7 @@ function ex2(P: boolean, W: number, H: number) {
   frame(b, [s1, s2], at(q, 'تغيرها') + 0.4);
   c.skip(10);
   c.math("u(x) = -x^{2} + 2x \\quad ; \\quad u'(x) = -2x + 2", at('نستعمل قاعدة e أس u', 'هنا'), { color: C.blue, size: P ? 46 : 50 });
-  c.math("g'(x) = (-2x + 2)e^{-x^{2} + 2x}", at('إذن g برايم', 'يساوي'), { size: P ? 54 : 56 });
+  c.math("g'(x) = (-2x + 2)e^{-x^{2} + 2x}", at('إذن g بريم', 'يساوي'), { size: P ? 54 : 56 });
   c.math("x < 1 \\implies g'(x) > 0 \\quad ; \\quad x > 1 \\implies g'(x) < 0", at('إشارتها إشارة ناقص', 'موجبة'), { color: C.blue, size: P ? 42 : 46 });
   const r1 = c.text('g متزايدة على ]−∞ ; 1] ومتناقصة على [1 ; +∞[', at('إذن g متزايدة', 'متزايدة'), { color: C.green, size: P ? 40 : 40 });
   const r2 = c.math('g(1) = e^{-1 + 2} = e', at('إذن g متزايدة', 'العظمى'), { color: C.yellow, size: P ? 56 : 54 });
@@ -143,13 +143,13 @@ function ex3(P: boolean, W: number, H: number) {
   const s2 = c.text('بيّن أن k متزايدة تماما على ℝ', at(q, 'بين'), { color: C.blue });
   frame(b, [s1, s2], at(q, 'R') + 0.6);
   c.skip(34);
-  c.math("\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^{2}}", at('نشتق حاصل القسمة', 'برايم'), { color: C.blue, size: P ? 54 : 54 });
+  c.math("\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^{2}}", at('نشتق حاصل القسمة', 'بريم'), { color: C.blue, size: P ? 54 : 54 });
   c.math('e^{x}\\left(e^{x} + 1\\right) - e^{x}\\left(e^{x} - 1\\right) = 2e^{x}', at('في البسط', 'ضرب'), { size: P ? 46 : 52 });
   c.skip(18);
-  const r = c.math("k'(x) = \\frac{2e^{x}}{\\left(e^{x} + 1\\right)^{2}} > 0", at('إذن k برايم', 'يساوي'), { color: C.yellow, size: P ? 58 : 58 });
-  frame(b, [r], at('إذن k برايم', 'موجب') + 0.3, C.yellow, 20);
-  c.text('k متزايدة تماما على ℝ', at('إذن k برايم', 'فالدالة'), { color: C.green });
-  b.sound(at('إذن k برايم', 'فالدالة') + 0.8, 'shimmer', 0.3);
+  const r = c.math("k'(x) = \\frac{2e^{x}}{\\left(e^{x} + 1\\right)^{2}} > 0", at('إذن k بريم', 'يساوي'), { color: C.yellow, size: P ? 58 : 58 });
+  frame(b, [r], at('إذن k بريم', 'موجب') + 0.3, C.yellow, 20);
+  c.text('k متزايدة تماما على ℝ', at('إذن k بريم', 'فالدالة'), { color: C.green });
+  b.sound(at('إذن k بريم', 'فالدالة') + 0.8, 'shimmer', 0.3);
   return b;
 }
 
