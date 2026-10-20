@@ -5,7 +5,7 @@ import { check, rect, seg } from '../lib/geom';
 import { at, board as lessonBoard, heading } from '../boards/util';
 
 /** Exercise boards may zoom out a little when the solution is long. */
-function board(id: string, chapter: string, first: string, P: boolean, W: number, H: number) {
+export function board(id: string, chapter: string, first: string, P: boolean, W: number, H: number) {
   const b = lessonBoard(id, chapter, first, P, W, H);
   b.minZoom = 0.82;
   return b;

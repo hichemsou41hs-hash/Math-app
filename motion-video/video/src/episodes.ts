@@ -5,6 +5,8 @@ import { LESSON_KEYS, LESSON_TIMING, Timing, setTiming } from './timing';
 import { buildBoards as lessonBoards } from './boards';
 import ex1Data from './data/ex1.words.json';
 import { buildEx1 } from './episodes/ex1';
+import ex2Data from './data/ex2.words.json';
+import { buildEx2 } from './episodes/ex2';
 
 export interface Episode {
   id: string;
@@ -35,6 +37,15 @@ export const EPISODES: Record<string, Episode> = {
     timing: ex1Data as Timing,
     keys: [],
     build: buildEx1,
+    parts: ['السلام عليكم', 'التمرين الرابع'],
+  },
+  ex2: {
+    id: 'ex2',
+    title: 'تمارين محلولة: الدالة الأسية',
+    badge: 'الحلقة 2 من 5',
+    timing: ex2Data as Timing,
+    keys: [],
+    build: buildEx2,
     parts: ['السلام عليكم', 'التمرين الرابع'],
   },
 };
