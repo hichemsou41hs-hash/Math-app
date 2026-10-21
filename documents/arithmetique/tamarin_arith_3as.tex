@@ -1,0 +1,1047 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}تمارين تجريبية: الأعداد والحساب}{\small\color{cSec}السنة الثالثة ثانوي -- رياضيات وتقني رياضي}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries تمارين تجريبية في الأعداد والحساب}\\[8pt]
+{\color{white}\large تمارين متدرجة مع الحلول المفصلة خطوة بخطوة}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- رياضيات وتقني رياضي}
+\end{tcolorbox}
+\end{LTR}
+\section{القسمة في $\Z$ والقسمة الإقليدية}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{القسمة الإقليدية: تطبيق مباشر}
+\QQ{1} أجرِ القسمة الإقليدية في كل حالة:
+\begin{sq}
+\qa العدد $2026$ على $17$.
+\qb العدد $-2026$ على $17$.
+\end{sq}
+\QQ{2} عيّن الأعداد الطبيعية غير المعدومة $a$ التي يكون حاصل قسمتها الإقليدية على $13$ مساويا لباقيها.
+\QQ{3} $a$ و $b$ عددان طبيعيان، حاصل القسمة الإقليدية لـ $a$ على $b$ هو $7$ والباقي $15$، و $a+b=255$. عيّن $a$ و $b$.
+\end{tamrin}
+\begin{hal}
+\textbf{تذكير:} من أجل كل عدد صحيح $a$ وكل عدد طبيعي غير معدوم $b$، يوجد زوج وحيد $(q;r)$ من $\Z\times\N$ بحيث:
+\[a=bq+r\qquad\text{و}\qquad 0\le r<b\]
+$q$ هو حاصل القسمة و $r$ هو الباقي.
+
+\QQ{1}
+\pa نقسم $2026$ على $17$: $17\times 119=2023$ و $17\times 120=2040>2026$، إذن $q=119$ و $r=2026-2023=3$.
+\[\bx{2026=17\times 119+3}\qquad\text{مع}\quad 0\le 3<17\]
+\pb من (أ): $-2026=17\times(-119)-3$، لكن $-3<0$ فهو ليس باقيا. نضيف $17$ ونطرح $17$:
+\[-2026=17\times(-119)-17+17-3=17\times(-120)+14\]
+ولأن $0\le 14<17$ فإن:
+\[\bx{-2026=17\times(-120)+14}\]
+أي حاصل القسمة $-120$ والباقي $14$.
+
+\QQ{2} نكتب $a=13q+r$ مع $0\le r<13$. الشرط هو $q=r$، إذن $a=13r+r=14r$.
+ولأن $a\neq 0$ فإن $r\neq 0$، ومنه $r\in\{1;2;\ldots;12\}$. إذن:
+\[\bx{a\in\{14;28;42;56;70;84;98;112;126;140;154;168\}}\]
+\textbf{تحقق:} مثلا $98=13\times 7+7$ مع $7<13$ \ok.
+
+\QQ{3} لدينا $a=7b+15$ مع الشرط $15<b$ (لأن الباقي أصغر تماما من القاسم).
+نعوض في $a+b=255$:
+\[7b+15+b=255\ \Longrightarrow\ 8b=240\ \Longrightarrow\ b=30\]
+والشرط $15<30$ محقق، ثم $a=255-30=225$. إذن \bx{a=225\ ;\ b=30}.
+
+\textbf{تحقق:} $225=30\times 7+15$ و $0\le 15<30$ \ok.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{قابلية القسمة في $\Z$}
+\QQ{1} عيّن الأعداد الصحيحة $n$ (مع $n\neq -3$) بحيث يقسم $n+3$ العدد $2n+13$.
+\QQ{2} عيّن الأعداد الطبيعية $n$ (مع $n\neq 2$) بحيث يقسم $n-2$ العدد $n^2+5$.
+\QQ{3} عيّن الثنائيات $(x;y)$ من الأعداد الطبيعية التي تحقق: $x^2-y^2=15$.
+\end{tamrin}
+\begin{hal}
+\textbf{الفكرة:} إذا كان $d$ يقسم $A$ ويقسم $B$ فإنه يقسم كل تركيب خطي $\alpha A+\beta B$ (حيث $\alpha$ و $\beta$ صحيحان).
+
+\QQ{1} نلاحظ أن: $2n+13=2(n+3)+7$.
+\begin{itemize}
+\item $n+3$ يقسم $n+3$، إذن يقسم $2(n+3)$.
+\item إذا كان $n+3$ يقسم $2n+13$ فإنه يقسم الفرق $(2n+13)-2(n+3)=7$.
+\item وبالعكس، إذا كان $n+3$ يقسم $7$ فإنه يقسم $2(n+3)+7=2n+13$.
+\end{itemize}
+إذن: $n+3$ يقسم $2n+13$ معناه $n+3$ يقسم $7$، أي $n+3\in\{-7;-1;1;7\}$ (قواسم $7$ في $\Z$).
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|}\hline
+$n+3$ & $-7$ & $-1$ & $1$ & $7$\\\hline
+$n$ & $-10$ & $-4$ & $-2$ & $4$\\\hline
+\end{tabular}
+\end{center}
+إذن \bx{n\in\{-10;-4;-2;4\}}.
+\textbf{تحقق:} من أجل $n=4$: $n+3=7$ و $2n+13=21=7\times 3$ \ok.
+
+\QQ{2} نجري القسمة: $n^2+5=(n-2)(n+2)+9$، لأن $(n-2)(n+2)=n^2-4$.
+بنفس الاستدلال: $n-2$ يقسم $n^2+5$ معناه $n-2$ يقسم $9$، أي:
+\[n-2\in\{-9;-3;-1;1;3;9\}\]
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+$n-2$ & $-9$ & $-3$ & $-1$ & $1$ & $3$ & $9$\\\hline
+$n$ & $-7$ & $-1$ & $1$ & $3$ & $5$ & $11$\\\hline
+\end{tabular}
+\end{center}
+نحتفظ فقط بالقيم الطبيعية: \bx{n\in\{1;3;5;11\}}.
+\textbf{تحقق:} $n=11$: $n-2=9$ و $n^2+5=126=9\times 14$ \ok؛ $n=1$: $n-2=-1$ يقسم كل عدد \ok.
+
+\QQ{3} $x^2-y^2=(x-y)(x+y)=15$. بما أن $x$ و $y$ طبيعيان و $15>0$:
+\begin{itemize}
+\item $x+y>0$ إذن $x-y>0$ أيضا، و $x-y<x+y$ (لأن $y\geq 1$؛ إذ لو كان $y=0$ لكان $x^2=15$ وهذا مستحيل).
+\item $x-y$ و $x+y$ قاسمان موجبان لـ $15$ جداؤهما $15$.
+\end{itemize}
+قواسم $15$: $1;3;5;15$. الحالات الممكنة:
+\[\text{(I)}\ \begin{cases}x-y=1\\x+y=15\end{cases}\qquad\qquad \text{(II)}\ \begin{cases}x-y=3\\x+y=5\end{cases}\]
+بالجمع ثم القسمة على $2$: الجملة (I) تعطي $x=8,\ y=7$، والجملة (II) تعطي $x=4,\ y=1$.
+إذن \bx{(x;y)\in\{(4;1);(8;7)\}}.
+\textbf{تحقق:} $64-49=15$ و $16-1=15$ \ok.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{باقي قسمة عبارة بدلالة $n$}
+$n$ عدد طبيعي.
+\QQ{1} تحقق أن: $4n+15=4(n+2)+7$.
+\QQ{2} استنتج حاصل وباقي القسمة الإقليدية للعدد $4n+15$ على $n+2$ عندما $n\ge 6$.
+\QQ{3} عيّن الحاصل والباقي من أجل كل قيمة لـ $n$ من $\{0;1;2;3;4;5\}$.
+\QQ{4} استنتج قيم $n$ التي من أجلها يقسم $n+2$ العدد $4n+15$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $4(n+2)+7=4n+8+7=4n+15$ \ok.
+
+\QQ{2} المساواة $4n+15=(n+2)\times 4+7$ تكون قسمة إقليدية على $n+2$ إذا وفقط إذا كان العدد $7$ باقيا، أي:
+\[0\le 7<n+2\ \Longleftrightarrow\ n>5\ \Longleftrightarrow\ n\ge 6\]
+إذن من أجل كل عدد طبيعي $n\ge 6$: \bxt{حاصل القسمة هو $4$ والباقي هو $7$}.
+
+\QQ{3} عندما $n\le 5$ يكون $7\ge n+2$ فالعدد $7$ ليس باقيا؛ نحسب مباشرة:
+\begin{itemize}
+\item $n=0$: $15=2\times 7+1$.
+\item $n=1$: $19=3\times 6+1$.
+\item $n=2$: $23=4\times 5+3$.
+\item $n=3$: $27=5\times 5+2$.
+\item $n=4$: $31=6\times 5+1$.
+\item $n=5$: $35=7\times 5+0$.
+\end{itemize}
+نلخص في جدول:
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+$n$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$\\\hline
+$n+2$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$\\\hline
+حاصل القسمة & $7$ & $6$ & $5$ & $5$ & $5$ & $5$\\\hline
+الباقي & $1$ & $1$ & $3$ & $2$ & $1$ & $0$\\\hline
+\end{tabular}
+\end{center}
+
+\QQ{4} $n+2$ يقسم $4n+15$ معناه باقي القسمة معدوم.
+\begin{itemize}
+\item من أجل $n\ge 6$ الباقي $7\neq 0$: مرفوض.
+\item من الجدول، الباقي معدوم فقط من أجل $n=5$.
+\end{itemize}
+إذن \bx{n=5}. (طريقة أخرى: $n+2$ يقسم $4n+15$ معناه $n+2$ يقسم $7$، و $n+2\ge 2$ إذن $n+2=7$.)
+\end{hal}
+
+\section{الموافقات}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{خواص الموافقات}
+\QQ{1}
+\begin{sq}
+\qa عيّن باقي القسمة الإقليدية للعدد $2026$ على $7$.
+\qb استنتج باقي قسمة العدد $2026^2+2026$ على $7$.
+\end{sq}
+\QQ{2} عيّن باقي قسمة $2026^{2027}$ على $5$، ثم باقي قسمة $39^{100}$ على $8$.
+\QQ{3} بيّن أنه من أجل كل عدد طبيعي $n$: العدد $3^{2n+1}+2^{n+2}$ يقبل القسمة على $7$.
+\QQ{4} باستعمال بواقي القسمة على $3$، بيّن أنه من أجل كل عدد طبيعي $n$: $n^3-n\equiv 0\,[3]$.
+\end{tamrin}
+\begin{hal}
+\textbf{تذكير:} إذا كان $a\equiv b\,[n]$ و $c\equiv d\,[n]$ فإن: $a+c\equiv b+d\,[n]$ و $ac\equiv bd\,[n]$ و $a^k\equiv b^k\,[n]$ من أجل كل $k\in\N$.
+
+\QQ{1}
+\pa $7\times 289=2023$ و $2026=7\times 289+3$ مع $0\le 3<7$، إذن \bx{2026\equiv 3\,[7]} والباقي $3$.
+\pb من (أ): $2026^2\equiv 3^2=9\equiv 2\,[7]$، إذن:
+\[2026^2+2026\equiv 2+3=5\,[7]\]
+ولأن $0\le 5<7$ فإن الباقي هو \bx{5}.
+
+\QQ{2}
+\begin{itemize}
+\item $2026=5\times 405+1$ إذن $2026\equiv 1\,[5]$، ومنه $2026^{2027}\equiv 1^{2027}=1\,[5]$. الباقي \bx{1}.
+\item $39=8\times 5-1$ إذن $39\equiv -1\,[8]$، ومنه $39^{100}\equiv(-1)^{100}=1\,[8]$ (لأن $100$ زوجي). الباقي \bx{1}.
+\end{itemize}
+
+\QQ{3} نكتب $3^{2n+1}=3\times(3^2)^n=3\times 9^n$ و $2^{n+2}=4\times 2^n$.
+لدينا $9\equiv 2\,[7]$ إذن $9^n\equiv 2^n\,[7]$، ومنه:
+\[3^{2n+1}+2^{n+2}\equiv 3\times 2^n+4\times 2^n=7\times 2^n\equiv 0\,[7]\]
+إذن \bxt{من أجل كل عدد طبيعي $n$: $7$ يقسم $3^{2n+1}+2^{n+2}$}.
+\textbf{تحقق:} $n=1$: $27+8=35=7\times 5$ \ok.
+
+\QQ{4} كل عدد طبيعي $n$ يوافق $0$ أو $1$ أو $2$ بترديد $3$. نكتب $n^3-n=n(n-1)(n+1)$ وننشئ جدول البواقي:
+\begin{center}
+\begin{tabular}{|C|c|c|c|}\hline
+$n\equiv\ \ldots\ [3]$ & $0$ & $1$ & $2$\\\hline
+$n^3\equiv\ \ldots\ [3]$ & $0$ & $1$ & $8\equiv 2$\\\hline
+$n^3-n\equiv\ \ldots\ [3]$ & $0$ & $0$ & $0$\\\hline
+\end{tabular}
+\end{center}
+في كل الحالات \bx{n^3-n\equiv 0\,[3]}. (ملاحظة: $n-1$ و $n$ و $n+1$ ثلاثة أعداد متتابعة، فأحدها مضاعف لـ $3$.)
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{بواقي قسمة $2^n$ على $7$}
+\QQ{1} ادرس، حسب قيم العدد الطبيعي $n$، بواقي القسمة الإقليدية للعدد $2^n$ على $7$.
+\QQ{2} استنتج باقي قسمة كل من العددين $2^{2026}$ و $1437^{2026}$ على $7$.
+\QQ{3} عيّن الأعداد الطبيعية $n$ التي من أجلها يكون $2^n+3\equiv 0\,[7]$.
+\QQ{4} بيّن أنه من أجل كل عدد طبيعي $n$: $2^{3n}+2^{3n+1}+2^{3n+2}\equiv 0\,[7]$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} نحسب البواقي الأولى: $2^0=1$، $2^1=2$، $2^2=4$، $2^3=8\equiv 1\,[7]$.
+بما أن $2^3\equiv 1\,[7]$ فإن البواقي تتكرر بدور $3$. بالتفصيل، من أجل كل $k\in\N$:
+\[2^{3k}=(2^3)^k\equiv 1^k=1\,[7]\ ،\quad 2^{3k+1}=2^{3k}\times 2\equiv 2\,[7]\ ،\quad 2^{3k+2}=2^{3k}\times 4\equiv 4\,[7]\]
+\begin{center}
+\begin{tabular}{|C|c|c|c|}\hline
+$n=$ & $3k$ & $3k+1$ & $3k+2$\\\hline
+باقي قسمة $2^n$ على $7$ & $1$ & $2$ & $4$\\\hline
+\end{tabular}
+\end{center}
+مع $k\in\N$. البواقي دورية ودورها \bx{3}.
+
+\QQ{2}
+\begin{itemize}
+\item $2026=3\times 675+1$، إذن $2026$ من الشكل $3k+1$، ومنه \bx{2^{2026}\equiv 2\,[7]}.
+\item $1437=7\times 205+2$ إذن $1437\equiv 2\,[7]$، ومنه $1437^{2026}\equiv 2^{2026}\equiv 2\,[7]$: الباقي \bx{2}.
+\end{itemize}
+
+\QQ{3} $2^n+3\equiv 0\,[7]$ معناه $2^n\equiv -3\equiv 4\,[7]$. من الجدول: $2^n\equiv 4\,[7]$ إذا وفقط إذا كان $n$ من الشكل $3k+2$.
+إذن \bxt{$n=3k+2$ مع $k\in\N$}.
+\textbf{تحقق:} $n=2$: $4+3=7$ \ok؛ $n=5$: $32+3=35$ \ok.
+
+\QQ{4} من الجدول: $2^{3n}\equiv 1$ ، $2^{3n+1}\equiv 2$ ، $2^{3n+2}\equiv 4$ بترديد $7$، إذن:
+\[2^{3n}+2^{3n+1}+2^{3n+2}\equiv 1+2+4=7\equiv 0\,[7]\]
+(أو مباشرة: المجموع يساوي $2^{3n}(1+2+4)=7\times 2^{3n}$.) \ok
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{بواقي قسمة $3^n$ على $11$ ومجموع قوى}
+\QQ{1} ادرس، حسب قيم العدد الطبيعي $n$، بواقي القسمة الإقليدية للعدد $3^n$ على $11$.
+\QQ{2} عيّن باقي قسمة $3^{2027}$ على $11$، ثم باقي قسمة $245^{2026}$ على $11$.
+\QQ{3} عيّن الأعداد الطبيعية $n$ التي من أجلها يقبل $3^n+7$ القسمة على $11$.
+\QQ{4} نضع: $S=1+3+3^2+\cdots+3^{2026}$.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $k$: $3^{5k}+3^{5k+1}+3^{5k+2}+3^{5k+3}+3^{5k+4}\equiv 0\,[11]$.
+\qb استنتج باقي قسمة $S$ على $11$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} $3^0=1$، $3^1=3$، $3^2=9$، $3^3=27=2\times 11+5\equiv 5$، $3^4\equiv 5\times 3=15\equiv 4$، $3^5\equiv 4\times 3=12\equiv 1\,[11]$.
+بما أن $3^5\equiv 1\,[11]$ فإن $3^{5k}=(3^5)^k\equiv 1\,[11]$ ومنه $3^{5k+r}\equiv 3^r\,[11]$:
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|}\hline
+$n=$ & $5k$ & $5k+1$ & $5k+2$ & $5k+3$ & $5k+4$\\\hline
+باقي قسمة $3^n$ على $11$ & $1$ & $3$ & $9$ & $5$ & $4$\\\hline
+\end{tabular}
+\end{center}
+مع $k\in\N$؛ البواقي دورية ودورها \bx{5}.
+
+\QQ{2}
+\begin{itemize}
+\item $2027=5\times 405+2$ إذن \bx{3^{2027}\equiv 9\,[11]}.
+\item $245=11\times 22+3$ إذن $245\equiv 3\,[11]$، و $2026=5\times 405+1$، ومنه $245^{2026}\equiv 3^{2026}\equiv 3\,[11]$: الباقي \bx{3}.
+\end{itemize}
+
+\QQ{3} $3^n+7\equiv 0\,[11]$ معناه $3^n\equiv -7\equiv 4\,[11]$، ومن الجدول هذا يحدث إذا وفقط إذا كان $n=5k+4$.
+إذن \bxt{$n=5k+4$ مع $k\in\N$}. \textbf{تحقق:} $n=4$: $81+7=88=11\times 8$ \ok.
+
+\QQ{4}
+\pa بالجدول: المجموع يوافق $1+3+9+5+4=22=2\times 11\equiv 0\,[11]$ \ok.
+
+\pb $S$ يحتوي القوى من $3^0$ إلى $3^{2026}$، أي $2027$ حدا. ولدينا $2027=5\times 405+2$، إذن نقسم الحدود إلى $405$ مجموعة كل منها $5$ حدود متتابعة (من $3^{0}$ إلى $3^{2024}$) ثم يبقى حدان $3^{2025}$ و $3^{2026}$.
+\begin{itemize}
+\item كل مجموعة من الشكل الوارد في (أ) فهي توافق $0$ بترديد $11$.
+\item $2025=5\times 405$ إذن $3^{2025}\equiv 1$، و $3^{2026}\equiv 3\,[11]$.
+\end{itemize}
+ومنه $S\equiv 0+1+3=4\,[11]$: باقي قسمة $S$ على $11$ هو \bx{4}.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{بواقي قسمة $2^n$ على $9$ -- نحو البكالوريا}
+\QQ{1} ادرس، حسب قيم العدد الطبيعي $n$، بواقي القسمة الإقليدية للعدد $2^n$ على $9$.
+\QQ{2} عيّن باقي قسمة العدد $1442^{2026}$ على $9$.
+\QQ{3} بيّن أنه من أجل كل عدد طبيعي $n$: $2^{6n+3}+1\equiv 0\,[9]$.
+\QQ{4}
+\begin{sq}
+\qa عيّن بواقي قسمة $4^n$ على $9$ حسب قيم $n$ (لاحظ أن $4^n=2^{2n}$).
+\qb استنتج الأعداد الطبيعية $n$ التي من أجلها يكون: $4^n+2^n\equiv 0\,[9]$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} $2^0=1$، $2^1=2$، $2^2=4$، $2^3=8$، $2^4=16\equiv 7$، $2^5\equiv 7\times 2=14\equiv 5$، $2^6\equiv 5\times 2=10\equiv 1\,[9]$.
+إذن $2^{6k}=(2^6)^k\equiv 1\,[9]$ ومنه $2^{6k+r}\equiv 2^r\,[9]$:
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+$n=$ & $6k$ & $6k+1$ & $6k+2$ & $6k+3$ & $6k+4$ & $6k+5$\\\hline
+باقي قسمة $2^n$ على $9$ & $1$ & $2$ & $4$ & $8$ & $7$ & $5$\\\hline
+\end{tabular}
+\end{center}
+مع $k\in\N$؛ الدور \bx{6}.
+
+\QQ{2} العدد يوافق مجموع أرقامه بترديد $9$: $1+4+4+2=11\equiv 2\,[9]$، إذن $1442\equiv 2\,[9]$ (تحقق: $1442=9\times 160+2$).
+و $2026=6\times 337+4$ إذن $1442^{2026}\equiv 2^{2026}\equiv 2^4\equiv 7\,[9]$. الباقي \bx{7}.
+
+\QQ{3} $6n+3$ من الشكل $6k+3$، إذن $2^{6n+3}\equiv 8\,[9]$، ومنه $2^{6n+3}+1\equiv 8+1=9\equiv 0\,[9]$ \ok.
+
+\QQ{4}
+\pa لدينا $4^3=64=9\times 7+1\equiv 1\,[9]$، إذن $4^{3k}=(4^3)^k\equiv 1\,[9]$ وبواقي $4^n$ دورية ودورها $3$:
+\begin{itemize}
+\item $n=3k$: $4^{n}=(4^3)^k\equiv 1\,[9]$.
+\item $n=3k+1$: $4^{n}\equiv 4\,[9]$.
+\item $n=3k+2$: $4^{n}\equiv 16\equiv 7\,[9]$.
+\end{itemize}
+\begin{center}
+\begin{tabular}{|C|c|c|c|}\hline
+$n=$ & $3k$ & $3k+1$ & $3k+2$\\\hline
+باقي قسمة $4^n$ على $9$ & $1$ & $4$ & $7$\\\hline
+\end{tabular}
+\end{center}
+
+\pb دور $2^n$ هو $6$ ودور $4^n$ هو $3$، و $3$ يقسم $6$، إذن نعمل بترديد $6$ (مثلا $n=6k+4=3(2k+1)+1$ إذن $4^n\equiv 4$):
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+$n=$ & $6k$ & $6k+1$ & $6k+2$ & $6k+3$ & $6k+4$ & $6k+5$\\\hline
+$2^n\equiv\ \ldots\ [9]$ & $1$ & $2$ & $4$ & $8$ & $7$ & $5$\\\hline
+$4^n\equiv\ \ldots\ [9]$ & $1$ & $4$ & $7$ & $1$ & $4$ & $7$\\\hline
+$4^n+2^n\equiv\ \ldots\ [9]$ & $2$ & $6$ & $2$ & $0$ & $2$ & $3$\\\hline
+\end{tabular}
+\end{center}
+(مثلا: $4+7=11\equiv 2$ و $7+5=12\equiv 3$.) إذن $4^n+2^n\equiv 0\,[9]$ إذا وفقط إذا كان \bxt{$n=6k+3$ مع $k\in\N$}.
+\textbf{تحقق:} $n=3$: $64+8=72=9\times 8$ \ok.
+\end{hal}
+
+\section{أنظمة التعداد}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{التحويل بين الأنظمة}
+\QQ{1} اكتب العدد $2026$ في نظام التعداد ذي الأساس $2$، ثم في النظام ذي الأساس $5$، ثم في النظام ذي الأساس $7$.
+\QQ{2} اكتب في النظام العشري العددين: $\overline{3102}^{\,5}$ و $\overline{101101}^{\,2}$.
+\QQ{3} عيّن العدد الطبيعي $b$ (حيث $b\ge 6$) بحيث: $\overline{235}^{\,b}=124$.
+\end{tamrin}
+\begin{hal}
+\textbf{تذكير:} $\overline{a_p a_{p-1}\ldots a_1a_0}^{\,b}=a_pb^p+\cdots+a_1b+a_0$ حيث $0\le a_i<b$. للكتابة في الأساس $b$ نُجري قسمات متتالية على $b$ ونقرأ البواقي من الأخير إلى الأول.
+
+\QQ{1}
+\textbf{الأساس 2:}
+\[\begin{aligned}
+2026&=2\times 1013+0, & 1013&=2\times 506+1, & 506&=2\times 253+0, & 253&=2\times 126+1,\\
+126&=2\times 63+0, & 63&=2\times 31+1, & 31&=2\times 15+1, & 15&=2\times 7+1,\\
+7&=2\times 3+1, & 3&=2\times 1+1, & 1&=2\times 0+1.
+\end{aligned}\]
+نقرأ البواقي من الأسفل إلى الأعلى: \bx{2026=\overline{11111101010}^{\,2}}.
+
+\textbf{الأساس 5:} $2026=5\times 405+1$، $405=5\times 81+0$، $81=5\times 16+1$، $16=5\times 3+1$، $3=5\times 0+3$.
+إذن \bx{2026=\overline{31101}^{\,5}}. تحقق: $3\times 625+1\times 125+1\times 25+0+1=2026$ \ok.
+
+\textbf{الأساس 7:} $2026=7\times 289+3$، $289=7\times 41+2$، $41=7\times 5+6$، $5=7\times 0+5$.
+إذن \bx{2026=\overline{5623}^{\,7}}. تحقق: $5\times 343+6\times 49+2\times 7+3=1715+294+14+3=2026$ \ok.
+
+\QQ{2}
+\[\overline{3102}^{\,5}=3\times 5^3+1\times 5^2+0\times 5+2=375+25+0+2=\bx{402}\]
+\[\overline{101101}^{\,2}=2^5+2^3+2^2+1=32+8+4+1=\bx{45}\]
+
+\QQ{3} $\overline{235}^{\,b}=2b^2+3b+5$ (والرقم $5$ يفرض $b\ge 6$). المعادلة:
+\[2b^2+3b+5=124\ \Longleftrightarrow\ 2b^2+3b-119=0\]
+المميز: $\Delta=9+4\times 2\times 119=961=31^2$، إذن $b=\dfrac{-3+31}{4}=7$ أو $b=\dfrac{-3-31}{4}=-\dfrac{17}{2}$ (مرفوض).
+إذن \bx{b=7}. تحقق: $2\times 49+21+5=124$ \ok.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{عدد مكتوب في نظامين -- نحو البكالوريا}
+\QQ{1} $n$ عدد طبيعي حيث $n\ge 3$. بيّن أن $\overline{121}^{\,n}=(n+1)^2$، واستنتج أن العدد $\overline{121}^{\,n}$ مربع تام في كل أساس $n\ge 3$.
+\QQ{2} $N$ عدد طبيعي يُكتب $\overline{1\alpha\beta}^{\,6}$ في النظام ذي الأساس $6$، ويُكتب $\overline{1\beta\alpha}^{\,7}$ في النظام ذي الأساس $7$.
+\begin{sq}
+\qa بيّن أن $\alpha$ و $\beta$ يحققان: $5\alpha-6\beta=13$.
+\qb عيّن $\alpha$ و $\beta$، ثم اكتب $N$ في النظام العشري.
+\qc اكتب $N$ في النظام ذي الأساس $3$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} الأرقام $1$ و $2$ أصغر تماما من $n$ لأن $n\ge 3$، إذن الكتابة مقبولة و:
+\[\overline{121}^{\,n}=1\times n^2+2\times n+1=n^2+2n+1=\bx{(n+1)^2}\]
+وبما أن $n+1$ عدد طبيعي، فإن $\overline{121}^{\,n}$ مربع تام في كل أساس $n\ge 3$. (مثال: $\overline{121}^{\,10}=121=11^2$.)
+
+\QQ{2}
+\pa الأرقام في الأساس $6$ تحقق $0\le\alpha\le 5$ و $0\le\beta\le 5$.
+\[N=\overline{1\alpha\beta}^{\,6}=36+6\alpha+\beta\qquad ;\qquad N=\overline{1\beta\alpha}^{\,7}=49+7\beta+\alpha\]
+بالمساواة: $36+6\alpha+\beta=49+7\beta+\alpha$، أي \bx{5\alpha-6\beta=13}.
+
+\pb من المعادلة: $5\alpha=13+6\beta$، و $0\le\beta\le 5$. نجرب قيم $\beta$:
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+$\beta$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$\\\hline
+$13+6\beta$ & $13$ & $19$ & $25$ & $31$ & $37$ & $43$\\\hline
+\end{tabular}
+\end{center}
+المضاعف الوحيد لـ $5$ هو $25$ (من أجل $\beta=2$)، ومنه $\alpha=5$ وهو رقم مقبول ($\le 5$).
+إذن \bx{\alpha=5\ ;\ \beta=2}، و $N=36+30+2=\bx{68}$.
+تحقق: $\overline{125}^{\,7}=49+14+5=68$ \ok.
+
+\pc $68=3\times 22+2$، $22=3\times 7+1$، $7=3\times 2+1$، $2=3\times 0+2$. إذن \bx{N=\overline{2112}^{\,3}}.
+تحقق: $2\times 27+9+3+2=68$ \ok.
+\end{hal}
+
+\section{القاسم المشترك الأكبر والمضاعف المشترك الأصغر}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{خوارزمية إقليدس}
+\QQ{1} باستعمال خوارزمية إقليدس، احسب $\pgcd(3150;1386)$.
+\QQ{2} استنتج $\ppcm(3150;1386)$، ثم مجموعة القواسم المشتركة للعددين.
+\QQ{3} عيّن الثنائيات $(a;b)$ من الأعداد الطبيعية حيث $a<b$ و $a+b=96$ و $\pgcd(a;b)=12$.
+\end{tamrin}
+\begin{hal}
+\textbf{تذكير:} إذا كان $a=bq+r$ فإن $\pgcd(a;b)=\pgcd(b;r)$، والقاسم المشترك الأكبر هو آخر باقٍ غير معدوم.
+
+\QQ{1}
+\[\begin{aligned}
+3150&=1386\times 2+378\\
+1386&=378\times 3+252\\
+378&=252\times 1+126\\
+252&=126\times 2+0
+\end{aligned}\]
+آخر باق غير معدوم هو $126$، إذن \bx{\pgcd(3150;1386)=126}.
+
+\QQ{2} نستعمل العلاقة $\pgcd(a;b)\times\ppcm(a;b)=a\times b$:
+\[\ppcm(3150;1386)=\frac{3150\times 1386}{126}=3150\times 11=\bx{34650}\]
+(لأن $1386=126\times 11$.)
+القواسم المشتركة لعددين هي قواسم قاسمهما المشترك الأكبر. $126=2\times 3^2\times 7$، إذن:
+\[\bx{\{1;2;3;6;7;9;14;18;21;42;63;126\}}\]
+
+\QQ{3} $\pgcd(a;b)=12$ معناه $a=12a'$ و $b=12b'$ مع $\pgcd(a';b')=1$.
+الشرط $a+b=96$ يعطي $12(a'+b')=96$ أي $a'+b'=8$، والشرط $a<b$ يعطي $a'<b'$.
+الإمكانيات: $(a';b')\in\{(1;7);(2;6);(3;5)\}$ (الحالة $(4;4)$ مرفوضة لأن $a'<b'$).
+\begin{itemize}
+\item $(2;6)$ مرفوضة لأن $\pgcd(2;6)=2\neq 1$.
+\item $(1;7)$ و $(3;5)$ أوليان فيما بينهما.
+\end{itemize}
+إذن \bx{(a;b)\in\{(12;84);(36;60)\}}. تحقق: $\pgcd(36;60)=12$ و $36+60=96$ \ok.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{جداء و PPCM}
+عيّن الثنائيات $(a;b)$ من الأعداد الطبيعية حيث $a\le b$ و:
+\[\begin{cases} a\times b=1512\\ \ppcm(a;b)=252\end{cases}\]
+\end{tamrin}
+\begin{hal}
+\textbf{الخطوة 1: حساب} $d=\pgcd(a;b)$. من العلاقة $d\times\ppcm(a;b)=ab$:
+\[d=\frac{1512}{252}=6\]
+
+\textbf{الخطوة 2: التحويل.} نضع $a=6a'$ و $b=6b'$ مع $\pgcd(a';b')=1$ و $a'\le b'$.
+عندئذ $ab=36a'b'=1512$ أي \bx{a'b'=42}. (ونتحقق: $\ppcm(a;b)=6a'b'=252$ \ok.)
+
+\textbf{الخطوة 3: تفكيك} $42=2\times 3\times 7$ إلى جداء عاملين أوليين فيما بينهما $a'\le b'$:
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|}\hline
+$a'$ & $1$ & $2$ & $3$ & $6$\\\hline
+$b'$ & $42$ & $21$ & $14$ & $7$\\\hline
+$a=6a'$ & $6$ & $12$ & $18$ & $36$\\\hline
+$b=6b'$ & $252$ & $126$ & $84$ & $42$\\\hline
+\end{tabular}
+\end{center}
+كل الثنائيات $(a';b')$ أولية فيما بينها (لا يتقاسمان أي عامل أولي). إذن:
+\[\bx{(a;b)\in\{(6;252);(12;126);(18;84);(36;42)\}}\]
+تحقق: $36\times 42=1512$ و $\ppcm(36;42)=252$ \ok.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{القاسم المشترك الأكبر لعبارتين بدلالة $n$}
+$n$ عدد طبيعي. نضع: $a=2n+3$ و $b=5n+2$، و $d=\pgcd(a;b)$.
+\QQ{1} بيّن أن $d$ يقسم $11$، واستنتج القيم الممكنة لـ $d$.
+\QQ{2} عيّن الأعداد الطبيعية $n$ التي من أجلها يكون $d=11$.
+\QQ{3} في حالة $n=4$: احسب $a$ و $b$ ثم $\ppcm(a;b)$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $d$ يقسم $a$ و $b$، إذن يقسم كل تركيب خطي لهما، وخاصة:
+\[5a-2b=5(2n+3)-2(5n+2)=10n+15-10n-4=11\]
+إذن $d$ يقسم $11$، و $11$ أولي، ومنه \bx{d\in\{1;11\}}.
+
+\QQ{2} $d=11$ معناه $11$ يقسم $a$ و $b$ معا.
+\begin{itemize}
+\item $11\mid a$: $2n+3\equiv 0\,[11]$ أي $2n\equiv -3\equiv 8\,[11]$. بضرب الطرفين في $6$ (لأن $2\times 6=12\equiv 1\,[11]$): $n\equiv 48\equiv 4\,[11]$.
+\item وبالعكس، إذا كان $n\equiv 4\,[11]$ فإن $a\equiv 11\equiv 0$ و $b=5n+2\equiv 22\equiv 0\,[11]$.
+\end{itemize}
+إذن \bxt{$d=11$ إذا وفقط إذا كان $n=11k+4$ مع $k\in\N$}، و $d=1$ في باقي الحالات.
+
+\QQ{3} $n=4$: $a=11$، $b=22$. و $4=11\times 0+4$ إذن $d=11$ (تحقق: $\pgcd(11;22)=11$ \ok)، ومنه:
+\[\ppcm(a;b)=\frac{11\times 22}{11}=\bx{22}\]
+\end{hal}
+
+\section{مبرهنتا بيزو وغوص والمعادلات الديوفانتية}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{تطبيق مباشر لمبرهنتي بيزو وغوص}
+\QQ{1} بيّن أنه من أجل كل عدد طبيعي $n$، العددان $2n+1$ و $3n+2$ أوليان فيما بينهما.
+\QQ{2} باستعمال خوارزمية إقليدس، عيّن ثنائية $(u;v)$ من الأعداد الصحيحة تحقق: $23u+17v=1$.
+\QQ{3} $x$ عدد صحيح حيث $7$ يقسم $15x$. بيّن أن $7$ يقسم $x$.
+\end{tamrin}
+\begin{hal}
+\textbf{تذكير (بيزو):} $a$ و $b$ أوليان فيما بينهما إذا وفقط إذا وُجد عددان صحيحان $u$ و $v$ بحيث $au+bv=1$.
+\textbf{(غوص):} إذا كان $a$ يقسم $bc$ و $\pgcd(a;b)=1$ فإن $a$ يقسم $c$.
+
+\QQ{1} نبحث عن تركيب خطي يساوي $1$:
+\[3(2n+1)-2(3n+2)=6n+3-6n-4=-1\]
+إذن $(-3)(2n+1)+2(3n+2)=1$، أي توجد ثنائية $(u;v)=(-3;2)$ تحقق علاقة بيزو.
+إذن \bxt{$2n+1$ و $3n+2$ أوليان فيما بينهما من أجل كل عدد طبيعي $n$}.
+
+\QQ{2} خوارزمية إقليدس:
+\[23=17\times 1+6\ ،\qquad 17=6\times 2+5\ ،\qquad 6=5\times 1+1\]
+نصعد من الأسفل:
+\[\begin{aligned}
+1&=6-5=6-(17-2\times 6)=3\times 6-17\\
+&=3\times(23-17)-17=3\times 23-4\times 17
+\end{aligned}\]
+إذن \bx{(u;v)=(3;-4)}. تحقق: $69-68=1$ \ok.
+
+\QQ{3} $7$ يقسم $15x$، و $\pgcd(7;15)=1$ (لأن $7$ أولي ولا يقسم $15$). حسب مبرهنة غوص: \bxt{$7$ يقسم $x$}.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{حل معادلة ديوفانتية}
+نعتبر في $\Z^2$ المعادلة $(E)$: $11x-7y=5$.
+\QQ{1} تحقق أن $(3;4)$ حل للمعادلة $(E)$، ثم حل المعادلة $(E)$.
+\QQ{2} عيّن الحلول $(x;y)$ للمعادلة $(E)$ التي تحقق: $0<x+y<60$.
+\QQ{3} نضع $d=\pgcd(x;y)$ حيث $(x;y)$ حل للمعادلة $(E)$.
+\begin{sq}
+\qa ما هي القيم الممكنة لـ $d$؟
+\qb عيّن الحلول $(x;y)$ التي من أجلها $d=5$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} $11\times 3-7\times 4=33-28=5$، إذن $(3;4)$ حل خاص \ok.
+
+ليكن $(x;y)$ حلا. بطرح المساواتين:
+\[\begin{cases}11x-7y=5\\ 11\times 3-7\times 4=5\end{cases}\ \Longrightarrow\ 11(x-3)-7(y-4)=0\ \Longrightarrow\ 11(x-3)=7(y-4)\]
+\begin{itemize}
+\item $7$ يقسم $11(x-3)$ و $\pgcd(7;11)=1$، إذن حسب غوص $7$ يقسم $x-3$: $x-3=7k$ مع $k\in\Z$، أي $x=7k+3$.
+\item بالتعويض: $11\times 7k=7(y-4)$ ومنه $y-4=11k$ أي $y=11k+4$.
+\item العكس: $11(7k+3)-7(11k+4)=77k+33-77k-28=5$ \ok.
+\end{itemize}
+إذن مجموعة الحلول: \bx{S=\{(7k+3\,;\,11k+4)\ /\ k\in\Z\}}.
+
+\QQ{2} $x+y=18k+7$. الشرط:
+\[0<18k+7<60\ \Longleftrightarrow\ -\frac{7}{18}<k<\frac{53}{18}\]
+أي $-0{,}38<k<2{,}94$ تقريبا، و $k$ صحيح، إذن $k\in\{0;1;2\}$:
+\[\bx{(x;y)\in\{(3;4);(10;15);(17;26)\}}\]
+
+\QQ{3}
+\pa $d$ يقسم $x$ و $y$ إذن يقسم $11x-7y=5$، ومنه \bx{d\in\{1;5\}}.
+
+\pb $d=5$ معناه $5$ يقسم $x$ و $y$.
+\begin{itemize}
+\item $5\mid x$: $7k+3\equiv 0\,[5]$ أي $2k\equiv -3\equiv 2\,[5]$، وبما أن $\pgcd(2;5)=1$ فإن $k\equiv 1\,[5]$، أي $k=5m+1$ مع $m\in\Z$.
+\item عندئذ $y=11(5m+1)+4=55m+15=5(11m+3)$ مضاعف لـ $5$ \ok.
+\end{itemize}
+و $x=7(5m+1)+3=35m+10$. إذن:
+\[\bx{(x;y)=(35m+10\,;\,55m+15)\ ,\ m\in\Z}\]
+مثال: $m=0$ يعطي $(10;15)$ و $\pgcd(10;15)=5$ \ok.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مسألة: صندوق البيض}
+عند بائع عدد $N$ من البيض محصور بين $300$ و $400$. إذا رتّبه في علب بها $7$ بيضات بقيت $3$ بيضات، وإذا رتّبه في علب بها $11$ بيضة بقيت $5$ بيضات.
+\QQ{1} بيّن أنه توجد ثنائية $(x;y)$ من الأعداد الطبيعية تحقق: $7x-11y=2$.
+\QQ{2} حل في $\Z^2$ المعادلة $7x-11y=2$.
+\QQ{3} استنتج أن $N\equiv 38\,[77]$، ثم عيّن $N$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $N$ ترتيب بالـ $7$ يبقى $3$: $N=7x+3$ ($x$ عدد العلب). وترتيب بالـ $11$ يبقى $5$: $N=11y+5$.
+إذن $7x+3=11y+5$ أي \bx{7x-11y=2} مع $x$ و $y$ طبيعيين.
+
+\QQ{2} \textbf{حل خاص:} $7x\equiv 2\,[11]$. لدينا $7\times 8=56=5\times 11+1\equiv 1\,[11]$، نضرب في $8$: $x\equiv 16\equiv 5\,[11]$.
+نأخذ $x_0=5$: $35-11y_0=2$ أي $y_0=3$. إذن $(5;3)$ حل خاص.
+
+\textbf{الحل العام:} $7(x-5)=11(y-3)$؛ $11$ يقسم $7(x-5)$ و $\pgcd(11;7)=1$، إذن (غوص) $x-5=11k$، ثم $y-3=7k$. والعكس صحيح بالتعويض: $7(11k+5)-11(7k+3)=35-33=2$ \ok.
+\[\bx{S=\{(11k+5\,;\,7k+3)\ /\ k\in\Z\}}\]
+
+\QQ{3} $N=7x+3=7(11k+5)+3=77k+38$، إذن \bx{N\equiv 38\,[77]}.
+الشرط $300\le 77k+38\le 400$ يعطي $262\le 77k\le 362$ أي $3{,}4\le k\le 4{,}7$ تقريبا، إذن $k=4$:
+\[N=77\times 4+38=\bx{346}\]
+تحقق: $346=7\times 49+3$ و $346=11\times 31+5$ \ok.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{معادلة ديوفانتية و PGCD -- نحو البكالوريا}
+نعتبر في $\Z^2$ المعادلة $(E)$: $156x-102y=18$.
+\QQ{1}
+\begin{sq}
+\qa احسب $\pgcd(156;102)$ بخوارزمية إقليدس.
+\qb استنتج أن المعادلة $(E)$ تقبل حلولا، وأنها تكافئ المعادلة $26x-17y=3$.
+\end{sq}
+\QQ{2} بيّن أنه إذا كانت $(x;y)$ حلا للمعادلة $(E)$ فإن $x\equiv 6\,[17]$، ثم حل المعادلة $(E)$.
+\QQ{3} ليكن $(x;y)$ حلا للمعادلة $(E)$ و $d=\pgcd(x;y)$.
+\begin{sq}
+\qa بيّن أن $d\in\{1;3\}$.
+\qb عيّن الحلول $(x;y)$ من الأعداد الطبيعية التي تحقق $d=3$ و $x<100$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa
+\[156=102\times 1+54\ ،\quad 102=54\times 1+48\ ،\quad 54=48\times 1+6\ ،\quad 48=6\times 8+0\]
+إذن \bx{\pgcd(156;102)=6}.
+
+\pb $6$ يقسم $18$، إذن المعادلة $(E)$ تقبل حلولا (حسب بيزو: $ax+by=c$ تقبل حلولا إذا وفقط إذا كان $\pgcd(a;b)$ يقسم $c$).
+بقسمة الطرفين على $6$: $156=6\times 26$، $102=6\times 17$، $18=6\times 3$، ومنه $(E)\Longleftrightarrow\ 26x-17y=3$.
+
+\QQ{2} إذا كان $26x-17y=3$ فإن $26x\equiv 3\,[17]$، و $26\equiv 9\,[17]$، إذن $9x\equiv 3\,[17]$.
+نضرب في $2$ (لأن $9\times 2=18\equiv 1\,[17]$): $x\equiv 6\,[17]$ \ok.
+
+إذن $x=17k+6$ مع $k\in\Z$، نعوض: $26(17k+6)-17y=3$ أي $17y=442k+153$ ومنه $y=26k+9$.
+العكس: $26(17k+6)-17(26k+9)=156-153=3$ \ok. إذن:
+\[\bx{S=\{(17k+6\,;\,26k+9)\ /\ k\in\Z\}}\]
+
+\QQ{3}
+\pa $d$ يقسم $x$ و $y$ إذن يقسم $26x-17y=3$، ومنه \bx{d\in\{1;3\}}.
+
+\pb $d=3$ معناه $3\mid x$ و $3\mid y$.
+\begin{itemize}
+\item $x=17k+6\equiv 2k\,[3]$ (لأن $17\equiv 2$ و $6\equiv 0$). إذن $3\mid x$ معناه $2k\equiv 0\,[3]$، و $\pgcd(2;3)=1$، أي $k\equiv 0\,[3]$: $k=3m$.
+\item عندئذ $y=78m+9=3(26m+3)$ مضاعف لـ $3$ \ok.
+\end{itemize}
+إذن $x=51m+6$ و $y=78m+9$. الشرطان $x\ge 0$ و $y\ge 0$ و $x<100$:
+\[0\le 51m+6<100\ \Longrightarrow\ m\in\{0;1\}\]
+(من أجل $m=0$ و $m=1$ يكون $y\ge 0$.) إذن:
+\[\bx{(x;y)\in\{(6;9);(57;87)\}}\]
+تحقق: $\pgcd(6;9)=3$ و $\pgcd(57;87)=3$، و $156\times 57-102\times 87=8892-8874=18$ \ok.
+\end{hal}
+
+\section{الأعداد الأولية}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{التحليل إلى جداء عوامل أولية}
+\QQ{1} هل العدد $409$ أولي؟ علّل.
+\QQ{2} حلّل العدد $2520$ إلى جداء عوامل أولية، ثم عيّن عدد قواسمه الطبيعية.
+\QQ{3} عيّن أصغر عدد طبيعي غير معدوم $k$ بحيث يكون $2520k$ مربعا تاما.
+\QQ{4} حلّل $1764$ إلى جداء عوامل أولية، واستنتج $\sqrt{1764}$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} \textbf{القاعدة:} إذا لم يقبل $n\ge 2$ القسمة على أي عدد أولي $p$ يحقق $p^2\le n$ فإن $n$ أولي.
+$20^2=400\le 409<441=21^2$، إذن نختبر الأعداد الأولية $2;3;5;7;11;13;17;19$:
+\begin{itemize}
+\item $409$ فردي؛ مجموع أرقامه $13$ ليس مضاعفا لـ $3$؛ رقم آحاده $9$ إذن لا يقبل القسمة على $5$.
+\item $409=7\times 58+3$ ، $409=11\times 37+2$ ، $409=13\times 31+6$ ، $409=17\times 24+1$ ، $409=19\times 21+10$.
+\end{itemize}
+لا يوجد باق معدوم، إذن \bxt{$409$ عدد أولي}.
+
+\QQ{2} $2520=2\times 1260=2^2\times 630=2^3\times 315=2^3\times 3^2\times 35$، إذن:
+\[\bx{2520=2^3\times 3^2\times 5\times 7}\]
+عدد القواسم: إذا كان $n=p_1^{\alpha_1}\cdots p_r^{\alpha_r}$ فإن عدد قواسمه $(\alpha_1+1)\cdots(\alpha_r+1)$:
+\[(3+1)(2+1)(1+1)(1+1)=\bx{48}\]
+
+\QQ{3} يكون العدد مربعا تاما إذا وفقط إذا كانت كل أسس عوامله الأولية زوجية. في $2520=2^3\times 3^2\times 5\times 7$ الأسس الفردية هي أسس $2$ و $5$ و $7$، فيجب أن يحتوي $k$ على $2\times 5\times 7$ على الأقل:
+\[k=\bx{70}\ ،\qquad 2520\times 70=2^4\times 3^2\times 5^2\times 7^2=(2^2\times 3\times 5\times 7)^2=420^2\]
+
+\QQ{4} $1764=2^2\times 441=2^2\times 3^2\times 49=\bx{2^2\times 3^2\times 7^2}$، كل الأسس زوجية، ومنه $\sqrt{1764}=2\times 3\times 7=\bx{42}$.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مسائل حول الأعداد الأولية -- نحو البكالوريا}
+\QQ{1} علمًا أن $2026=2\times 1013$ حيث $1013$ أولي، بيّن أن المعادلة $x^2-y^2=2026$ لا تقبل حلولا في $\N^2$.
+\QQ{2} $p$ عدد أولي حيث $p\ge 5$.
+\begin{sq}
+\qa بيّن أن $p^2\equiv 1\,[3]$ و $p^2\equiv 1\,[8]$.
+\qb استنتج أن $p^2\equiv 1\,[24]$.
+\end{sq}
+\QQ{3} $n$ عدد طبيعي.
+\begin{sq}
+\qa تحقق أن: $n^4+4=(n^2+2n+2)(n^2-2n+2)$.
+\qb استنتج أن $n^4+4$ ليس أوليا من أجل كل $n\ge 2$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} نفرض وجود حل $(x;y)$. لدينا $(x-y)(x+y)=2026$.
+\begin{itemize}
+\item العددان $x-y$ و $x+y$ لهما نفس الزوجية لأن مجموعهما $2x$ زوجي.
+\item لو كانا فرديين لكان جداؤهما فرديا، لكن $2026$ زوجي: مستحيل.
+\item إذن هما زوجيان، فجداؤهما مضاعف لـ $4$. لكن $2026=4\times 506+2$ ليس مضاعفا لـ $4$: تناقض.
+\end{itemize}
+إذن \bxt{المعادلة $x^2-y^2=2026$ لا تقبل حلولا في $\N^2$}.
+
+\QQ{2}
+\pa $p$ أولي و $p\ge 5$ إذن $p$ لا يقبل القسمة على $2$ ولا على $3$.
+\begin{itemize}
+\item بترديد $3$: $p\equiv 1$ أو $p\equiv 2\,[3]$، ومنه $p^2\equiv 1$ أو $p^2\equiv 4\equiv 1\,[3]$. إذن $p^2\equiv 1\,[3]$.
+\item بترديد $8$: $p$ فردي إذن $p\equiv 1;3;5;7\,[8]$، ومنه $p^2\equiv 1;9;25;49$ أي $p^2\equiv 1\,[8]$ في كل الحالات (لأن $9=8+1$، $25=3\times 8+1$، $49=6\times 8+1$).
+\end{itemize}
+\pb $3$ و $8$ يقسمان $p^2-1$، و $\pgcd(3;8)=1$، إذن $3\times 8=24$ يقسم $p^2-1$: \bx{p^2\equiv 1\,[24]}.
+(مثال: $7^2=49=2\times 24+1$ \ok.)
+
+\QQ{3}
+\pa $(n^2+2+2n)(n^2+2-2n)=(n^2+2)^2-(2n)^2=n^4+4n^2+4-4n^2=n^4+4$ \ok.
+\pb من أجل $n\ge 2$:
+\begin{itemize}
+\item $n^2-2n+2=(n-1)^2+1\ge 1+1=2$.
+\item $n^2+2n+2>n^2-2n+2\ge 2$.
+\end{itemize}
+إذن $n^4+4$ جداء عددين طبيعيين كل منهما أكبر من أو يساوي $2$، فله قاسم غير $1$ وغير نفسه: \bxt{$n^4+4$ ليس أوليا من أجل $n\ge 2$}.
+(مثال: $2^4+4=20=10\times 2$. أما $n=1$ فيعطي $5$ وهو أولي.)
+\end{hal}
+
+\section{اختيار من متعدد وصحيح أم خطأ}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{اختيار من متعدد}
+اختر الإجابة الصحيحة الوحيدة في كل حالة مع التعليل:
+\QQ{1} باقي القسمة الإقليدية للعدد $2^{2026}$ على $5$ هو:
+\ABC{$1$}{$4$}{$3$}
+\QQ{2} من أجل كل عدد طبيعي غير معدوم $n$، $\pgcd(2n+1;n)$ يساوي:
+\ABC{$n$}{$1$}{$2$}
+\QQ{3} العدد $\overline{1011}^{\,2}$ يساوي في النظام العشري:
+\ABC{$13$}{$9$}{$11$}
+\QQ{4} حلول المعادلة $3x\equiv 2\,[7]$ ذات المجهول الصحيح $x$ هي:
+\ABC{$x\equiv 3\,[7]$}{$x\equiv 5\,[7]$}{$x\equiv 2\,[7]$}
+\QQ{5} عدد القواسم الطبيعية للعدد $72$ هو:
+\ABC{$8$}{$12$}{$6$}
+\QQ{6} المعادلة $6x+9y=10$ ذات المجهولين الصحيحين $x$ و $y$:
+\ABC{لها حل وحيد}{عدد غير منته من الحلول}{ليس لها حلول}
+\end{tamrin}
+\begin{hal}
+\QQ{1} بواقي $2^n$ على $5$: $1;2;4;3$ ثم تتكرر لأن $2^4=16\equiv 1\,[5]$ (الدور $4$). و $2026=4\times 506+2$ إذن $2^{2026}\equiv 2^2=4\,[5]$. الجواب \bxt{(ب)}.
+
+\QQ{2} $d=\pgcd(2n+1;n)$ يقسم $(2n+1)-2\times n=1$، إذن $d=1$. الجواب \bxt{(ب)}.
+
+\QQ{3} $\overline{1011}^{\,2}=8+0+2+1=11$. الجواب \bxt{(جـ)}.
+
+\QQ{4} $3\times 5=15\equiv 1\,[7]$، نضرب الطرفين في $5$: $x\equiv 10\equiv 3\,[7]$. (تحقق: $3\times 3=9\equiv 2$ \ok.) الجواب \bxt{(أ)}.
+
+\QQ{5} $72=2^3\times 3^2$، عدد القواسم $(3+1)(2+1)=12$. الجواب \bxt{(ب)}.
+
+\QQ{6} $\pgcd(6;9)=3$ و $3$ لا يقسم $10$ ($6x+9y$ مضاعف لـ $3$ دائما)، إذن لا توجد حلول. الجواب \bxt{(جـ)}.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{صحيح أم خطأ}
+أجب بصحيح أو خطأ مع التعليل ($a$، $b$، $c$ أعداد صحيحة و $n$ عدد طبيعي):
+\QQ{1} إذا كان $a\equiv b\,[n]$ فإن $a^2\equiv b^2\,[n]$ (مع $n\ge 2$).
+\QQ{2} إذا كان $6$ يقسم $ab$ فإن $6$ يقسم $a$ أو $6$ يقسم $b$.
+\QQ{3} من أجل كل عدد طبيعي $n$: العدد $3^{4n}-1$ يقبل القسمة على $5$.
+\QQ{4} إذا كان $\pgcd(a;b)=1$ و $a$ يقسم $bc$ فإن $a$ يقسم $c$.
+\QQ{5} العدد $2^{11}-1$ أولي.
+\QQ{6} من أجل كل عدد طبيعي $n$: العدد $n^2+n$ زوجي.
+\end{tamrin}
+\begin{hal}
+\QQ{1} \bxt{صحيح}: من خاصية الضرب في الموافقات، $a\equiv b$ و $a\equiv b$ يعطيان $a\times a\equiv b\times b\,[n]$.
+
+\QQ{2} \bxt{خطأ}: مثال مضاد $a=2$ و $b=3$: $6$ يقسم $ab=6$ لكنه لا يقسم $2$ ولا $3$. (الخاصية صحيحة فقط عندما يكون القاسم أوليا.)
+
+\QQ{3} \bxt{صحيح}: $3^4=81=5\times 16+1\equiv 1\,[5]$ إذن $3^{4n}=(3^4)^n\equiv 1\,[5]$ ومنه $3^{4n}-1\equiv 0\,[5]$.
+
+\QQ{4} \bxt{صحيح}: هذه مبرهنة غوص.
+
+\QQ{5} \bxt{خطأ}: $2^{11}-1=2047=23\times 89$.
+
+\QQ{6} \bxt{صحيح}: $n^2+n=n(n+1)$ جداء عددين متتابعين أحدهما زوجي.
+\end{hal}
+
+\section{تمارين شعبة رياضيات}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مبرهنة فيرما الصغرى -- شعبة رياضيات}
+\textbf{مبرهنة فيرما الصغرى:} إذا كان $p$ عددا أوليا و $a$ عددا صحيحا لا يقبل القسمة على $p$ فإن: $a^{p-1}\equiv 1\,[p]$.
+\QQ{1} استنتج أنه من أجل كل عدد صحيح $a$ وكل عدد أولي $p$: $a^p\equiv a\,[p]$.
+\QQ{2} عيّن باقي قسمة كل من $3^{2026}$ و $2^{2026}$ على $13$.
+\QQ{3} بيّن أنه من أجل كل عدد صحيح $n$: العدد $n^{13}-n$ يقبل القسمة على كل من $2$، $3$، $5$، $7$ و $13$، ثم استنتج أنه يقبل القسمة على $2730$.
+\QQ{4} عيّن الأعداد الأولية $p$ التي تقسم $2^p+1$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} حالتان:
+\begin{itemize}
+\item إذا كان $p$ لا يقسم $a$: حسب فيرما $a^{p-1}\equiv 1\,[p]$، نضرب في $a$: $a^p\equiv a\,[p]$.
+\item إذا كان $p$ يقسم $a$: $a\equiv 0\,[p]$ و $a^p\equiv 0\,[p]$، إذن $a^p\equiv a\,[p]$.
+\end{itemize}
+إذن \bx{a^p\equiv a\,[p]} في كل الحالات.
+
+\QQ{2} $13$ أولي، و $13$ لا يقسم $3$ ولا $2$، إذن حسب فيرما: $3^{12}\equiv 1$ و $2^{12}\equiv 1\,[13]$.
+لدينا $2026=12\times 168+10$:
+\begin{itemize}
+\item $3^{2026}=(3^{12})^{168}\times 3^{10}\equiv 3^{10}\,[13]$. و $3^3=27=2\times 13+1\equiv 1\,[13]$، إذن $3^{10}=(3^3)^3\times 3\equiv 3\,[13]$. الباقي \bx{3}.
+\item $2^{2026}\equiv 2^{10}=1024\,[13]$، و $1024=13\times 78+10$. الباقي \bx{10}.
+\end{itemize}
+
+\QQ{3} ليكن $p\in\{2;3;5;7;13\}$. نلاحظ أن $p-1\in\{1;2;4;6;12\}$ يقسم $12$؛ نكتب $12=(p-1)m$ مع $m\in\N^*$.
+\begin{itemize}
+\item إذا كان $p$ لا يقسم $n$: $n^{p-1}\equiv 1\,[p]$ ومنه $n^{12}=(n^{p-1})^m\equiv 1\,[p]$، إذن $n^{13}\equiv n\,[p]$.
+\item إذا كان $p$ يقسم $n$: $n^{13}\equiv 0\equiv n\,[p]$.
+\end{itemize}
+إذن \bxt{كل من $2$، $3$، $5$، $7$، $13$ يقسم $n^{13}-n$}.
+
+هذه الأعداد أولية ومتمايزة، فهي أولية فيما بينها مثنى مثنى. باستعمال نتيجة مبرهنة غوص بالتتابع (إذا قسم عددان أوليان فيما بينهما عددا فإن جداءهما يقسمه): جداؤها يقسم $n^{13}-n$، و:
+\[2\times 3\times 5\times 7\times 13=\bx{2730}\]
+(تحقق: $n=2$: $8190=2730\times 3$ \ok.)
+
+\QQ{4} ليكن $p$ أوليا يقسم $2^p+1$.
+\begin{itemize}
+\item $p\neq 2$ لأن $2^2+1=5$ فردي.
+\item حسب السؤال 1: $2^p\equiv 2\,[p]$، إذن $2^p+1\equiv 3\,[p]$. وبما أن $p$ يقسم $2^p+1$ فإن $3\equiv 0\,[p]$، أي $p$ يقسم $3$، ومنه $p=3$.
+\item العكس: $2^3+1=9=3\times 3$ \ok.
+\end{itemize}
+إذن \bx{p=3}.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{الموافقات والمتتاليات -- شعبة رياضيات}
+$(u_n)$ المتتالية المعرفة بـ: $u_0=1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=5u_n+4$.
+\QQ{1} نضع $v_n=u_n+1$. بيّن أن $(v_n)$ متتالية هندسية، ثم اكتب $u_n$ بدلالة $n$.
+\QQ{2} احسب بدلالة $n$ المجموع $S_n=u_0+u_1+\cdots+u_n$.
+\QQ{3} ادرس، حسب قيم $n$، بواقي القسمة الإقليدية للعدد $5^n$ على $7$.
+\QQ{4} عيّن الأعداد الطبيعية $n$ التي من أجلها يكون $u_n\equiv 0\,[7]$.
+\QQ{5}
+\begin{sq}
+\qa بيّن أنه من أجل كل $n\in\N$: $u_n$ عدد فردي.
+\qb استنتج $\pgcd(u_n;u_{n+1})$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}+1=5u_n+5=5(u_n+1)=5v_n\]
+إذن $(v_n)$ هندسية أساسها $q=5$ وحدها الأول $v_0=u_0+1=2$. ومنه $v_n=2\times 5^n$ و:
+\[\bx{u_n=2\times 5^n-1}\]
+تحقق: $u_1=5+4=9=2\times 5-1$ \ok.
+
+\QQ{2}
+\[S_n=\sum_{k=0}^{n}(v_k-1)=\sum_{k=0}^{n}v_k-(n+1)=2\times\frac{5^{n+1}-1}{5-1}-(n+1)\]
+إذن \bx{S_n=\dfrac{5^{n+1}-1}{2}-(n+1)}. تحقق: $S_1=1+9=10$ و $\frac{24}{2}-2=10$ \ok.
+
+\QQ{3} $5^0=1$، $5^1=5$، $5^2=25\equiv 4$، $5^3\equiv 20\equiv 6$، $5^4\equiv 30\equiv 2$، $5^5\equiv 10\equiv 3$، $5^6\equiv 15\equiv 1\,[7]$.
+بما أن $5^6\equiv 1\,[7]$ فإن $5^{6k+r}\equiv 5^r\,[7]$:
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+$n=$ & $6k$ & $6k+1$ & $6k+2$ & $6k+3$ & $6k+4$ & $6k+5$\\\hline
+باقي قسمة $5^n$ على $7$ & $1$ & $5$ & $4$ & $6$ & $2$ & $3$\\\hline
+\end{tabular}
+\end{center}
+مع $k\in\N$؛ الدور \bx{6}.
+
+\QQ{4} $u_n\equiv 0\,[7]$ معناه $2\times 5^n\equiv 1\,[7]$. نضرب في $4$ (لأن $2\times 4=8\equiv 1\,[7]$): $5^n\equiv 4\,[7]$.
+ومن الجدول: \bxt{$n=6k+2$ مع $k\in\N$}. تحقق: $u_2=49=7\times 7$ \ok.
+
+\QQ{5}
+\pa $5^n$ فردي (جداء أعداد فردية)، إذن $2\times 5^n$ زوجي، و $u_n=2\times 5^n-1$ فردي \ok.
+
+\pb ليكن $d=\pgcd(u_n;u_{n+1})$. $d$ يقسم $u_{n+1}-5u_n=4$، إذن $d\in\{1;2;4\}$.
+لكن $d$ يقسم $u_n$ وهو فردي، إذن $d$ فردي، ومنه \bx{\pgcd(u_n;u_{n+1})=1}.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{القاسم المشترك الأكبر لعبارتين من الدرجة الثانية -- شعبة رياضيات}
+$n$ عدد طبيعي. نضع: $A=n^2+5n+4$ و $B=n^2+3n+2$.
+\QQ{1} حلّل كلا من $A$ و $B$ إلى جداء عاملين من الدرجة الأولى.
+\QQ{2} بيّن أن $\pgcd(n+4;n+2)=\pgcd(n+2;2)$، واستنتج قيمته حسب زوجية $n$.
+\QQ{3} استنتج $\pgcd(A;B)$ حسب زوجية $n$.
+\QQ{4} عيّن الأعداد الطبيعية $n$ التي من أجلها يكون $\pgcd(A;B)=20$.
+\QQ{5} عبّر عن $\ppcm(A;B)$ بدلالة $n$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $A$: جذرا $n^2+5n+4$ هما $-1$ و $-4$ (لأن $1-5+4=0$ وجداء الجذرين $4$)، إذن \bx{A=(n+1)(n+4)}.
+$B$: جذراه $-1$ و $-2$، إذن \bx{B=(n+1)(n+2)}.
+
+\QQ{2} $n+4=(n+2)\times 1+2$، وحسب خاصية خوارزمية إقليدس ($\pgcd(a;b)=\pgcd(b;a-bq)$):
+\[\pgcd(n+4;n+2)=\pgcd(n+2;2)\]
+\begin{itemize}
+\item إذا كان $n$ زوجيا: $n+2$ زوجي، إذن $\pgcd(n+2;2)=2$.
+\item إذا كان $n$ فرديا: $n+2$ فردي، إذن $\pgcd(n+2;2)=1$.
+\end{itemize}
+\begin{center}
+\begin{tabular}{|C|c|c|}\hline
+$n$ & زوجي & فردي\\\hline
+$\pgcd(n+4;n+2)$ & $2$ & $1$\\\hline
+\end{tabular}
+\end{center}
+
+\QQ{3} نستعمل الخاصية $\pgcd(ka;kb)=k\,\pgcd(a;b)$ مع $k=n+1\ge 1$:
+\[\pgcd(A;B)=(n+1)\,\pgcd(n+4;n+2)\]
+إذن:
+\begin{itemize}
+\item إذا كان $n$ زوجيا: \bx{\pgcd(A;B)=2(n+1)}.
+\item إذا كان $n$ فرديا: \bx{\pgcd(A;B)=n+1}.
+\end{itemize}
+
+\QQ{4}
+\begin{itemize}
+\item $n$ زوجي: $2(n+1)=20$ يعطي $n=9$، وهو فردي: مرفوض.
+\item $n$ فردي: $n+1=20$ يعطي $n=19$، وهو فردي: مقبول.
+\end{itemize}
+إذن \bx{n=19}. تحقق: $A=20\times 23=460$ و $B=20\times 21=420$ و $\pgcd(460;420)=20$ \ok.
+
+\QQ{5} من العلاقة $\pgcd(A;B)\times\ppcm(A;B)=A\times B=(n+1)^2(n+2)(n+4)$:
+\begin{itemize}
+\item $n$ فردي: $\ppcm(A;B)=\dfrac{(n+1)^2(n+2)(n+4)}{n+1}=(n+1)(n+2)(n+4)$.
+\item $n$ زوجي: $\ppcm(A;B)=\dfrac{(n+1)^2(n+2)(n+4)}{2(n+1)}=\dfrac{(n+1)(n+2)(n+4)}{2}$.
+\end{itemize}
+الخلاصة:
+\begin{itemize}
+\item إذا كان $n$ زوجيا: \bx{\ppcm(A;B)=\dfrac{(n+1)(n+2)(n+4)}{2}}.
+\item إذا كان $n$ فرديا: \bx{\ppcm(A;B)=(n+1)(n+2)(n+4)}.
+\end{itemize}
+
+
+تحقق: $n=19$: $\ppcm(460;420)=9660=20\times 21\times 23$ \ok.
+\end{hal}
+
+\end{document}
