@@ -130,9 +130,7 @@
 \fancyhf{}
 \renewcommand{\headrulewidth}{0.6pt}
 \renewcommand{\footrulewidth}{0.4pt}
-% \newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
-\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
-\SetHeader{right head: document title}{left head: level -- stream}
+% \SetHeader{right head: document title}{left head: level -- stream}
 \newcommand{\SetHeader}[2]{%
  \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
  \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
@@ -161,6 +159,8 @@
 \newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
 \newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
 \newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
 \SetHeader{\small\bfseries\color{cSec}ملخص: الدالة اللوغاريتمية النيبيرية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
 \begin{document}
 \begin{LTR}
