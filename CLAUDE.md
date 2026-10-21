@@ -8,3 +8,4 @@ Teacher-confirmed fixes to that skill, for every document:
   `\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}`
   `\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}`
   Keep `\bx` for pure math.
+- Integrals and areas (teacher's rule): in every solution, draw the graph of each function (GR) with the area region shaded in color (`\fill[cDef!25] ... -- plot ... -- cycle;`, a different color per region), and give a relative-position table (sign of f−g, or of f, as a TAB row «الوضع النسبي») before computing the area.
