@@ -1,0 +1,1512 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}تمارين تجريبية: المتتاليات العددية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries تمارين تجريبية في المتتاليات العددية}\\[8pt]
+{\color{white}\large تمارين متدرجة مع الحلول المفصلة خطوة بخطوة}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- الشعب العلمية}
+\end{tcolorbox}
+\end{LTR}
+\section{توليد متتالية واتجاه تغيرها}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{متتاليات معرفة بحدها العام}
+\QQ{1} نعتبر المتتالية $(u_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $u_n=\dfrac{2n+1}{n+1}$.
+\begin{sq}
+\qa احسب $u_0$ ، $u_1$ ، $u_2$ و $u_3$.
+\qb بيّن أنه من أجل كل عدد طبيعي $n$: $u_n=2-\dfrac{1}{n+1}$.
+\qc ادرس اتجاه تغير المتتالية $(u_n)$.
+\qd بيّن أنه من أجل كل عدد طبيعي $n$: $1\leqslant u_n<2$. ماذا تستنتج؟
+\end{sq}
+\QQ{2} نعتبر المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=n^{2}-4n+1$.
+\begin{sq}
+\qa احسب الحدود الستة الأولى للمتتالية $(v_n)$.
+\qb احسب $v_{n+1}-v_n$ بدلالة $n$، ثم بيّن أن $(v_n)$ ليست رتيبة على $\N$.
+\qc بيّن أن $(v_n)$ متزايدة تماما ابتداء من الرتبة $2$.
+\end{sq}
+\QQ{3} نعتبر المتتالية $(w_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $w_n=\dfrac{2^{n}}{n+1}$.
+\begin{sq}
+\qa بيّن أن حدود المتتالية $(w_n)$ موجبة تماما.
+\qb احسب $\dfrac{w_{n+1}}{w_n}$ ثم قارنه بالعدد $1$. استنتج اتجاه تغير $(w_n)$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\textbf{تذكير:} لدراسة اتجاه تغير متتالية $(u_n)$ ندرس إشارة الفرق $u_{n+1}-u_n$:
+إذا كان $u_{n+1}-u_n>0$ من أجل كل $n$ فإن $(u_n)$ متزايدة تماما، وإذا كان $u_{n+1}-u_n<0$ فإنها متناقصة تماما.
+وإذا كانت الحدود موجبة تماما يمكن مقارنة النسبة $\dfrac{u_{n+1}}{u_n}$ بالعدد $1$.
+
+\QQ{1}
+\pa نعوض $n$ بقيمه في العبارة $u_n=\dfrac{2n+1}{n+1}$:
+\[
+u_0=\frac{0+1}{0+1}=1,\quad u_1=\frac{2+1}{1+1}=\frac32,\quad u_2=\frac{4+1}{2+1}=\frac53,\quad u_3=\frac{6+1}{3+1}=\frac74 .
+\]
+إذن \bx{u_0=1,\ u_1=\tfrac32,\ u_2=\tfrac53,\ u_3=\tfrac74}
+
+\pb ننطلق من الطرف الثاني ونوحّد المقامات:
+\[
+2-\frac{1}{n+1}=\frac{2(n+1)-1}{n+1}=\frac{2n+2-1}{n+1}=\frac{2n+1}{n+1}=u_n .
+\]
+إذن من أجل كل عدد طبيعي $n$: \bx{u_n=2-\dfrac{1}{n+1}}
+
+\pc نحسب الفرق $u_{n+1}-u_n$ باستعمال الكتابة السابقة:
+\begin{align*}
+u_{n+1}-u_n&=\left(2-\frac{1}{n+2}\right)-\left(2-\frac{1}{n+1}\right)=\frac{1}{n+1}-\frac{1}{n+2}\\
+&=\frac{(n+2)-(n+1)}{(n+1)(n+2)}=\frac{1}{(n+1)(n+2)} .
+\end{align*}
+لأن $n+1>0$ و $n+2>0$ فإن $u_{n+1}-u_n>0$ من أجل كل عدد طبيعي $n$.
+إذن \bxt{المتتالية $(u_n)$ متزايدة تماما على $\N$}
+
+\pd من أجل كل عدد طبيعي $n$ لدينا $n+1\geqslant 1$، ومنه $0<\dfrac{1}{n+1}\leqslant 1$.
+نضرب في $-1$ (فيتغير اتجاه المتباينة): $-1\leqslant -\dfrac{1}{n+1}<0$، ثم نضيف $2$:
+\[
+1\leqslant 2-\frac{1}{n+1}<2 .
+\]
+إذن من أجل كل عدد طبيعي $n$: \bx{1\leqslant u_n<2}
+
+\textbf{الاستنتاج:} المتتالية $(u_n)$ محدودة من الأسفل بالعدد $1$ ومن الأعلى بالعدد $2$، فهي \textbf{محدودة}. ونلاحظ أن $1=u_0$ هو أصغر حدودها (لأنها متزايدة).
+
+\QQ{2}
+\pa $v_0=0-0+1=1$ ، \ $v_1=1-4+1=-2$ ، \ $v_2=4-8+1=-3$ ، \ $v_3=9-12+1=-2$ ، \ $v_4=16-16+1=1$ ، \ $v_5=25-20+1=6$.
+
+إذن \bx{v_0=1,\ v_1=-2,\ v_2=-3,\ v_3=-2,\ v_4=1,\ v_5=6}
+
+\pb
+\[
+v_{n+1}-v_n=\big[(n+1)^{2}-4(n+1)+1\big]-\big[n^{2}-4n+1\big]=n^{2}+2n+1-4n-4+1-n^{2}+4n-1 .
+\]
+إذن \bx{v_{n+1}-v_n=2n-3}
+
+من أجل $n=0$: $v_1-v_0=-3<0$ أي $v_1<v_0$، ومن أجل $n=2$: $v_3-v_2=1>0$ أي $v_3>v_2$.
+المتتالية تنقص ثم تزيد، فهي ليست متزايدة وليست متناقصة على $\N$.
+إذن \bxt{المتتالية $(v_n)$ ليست رتيبة على $\N$}
+
+\pc من أجل كل عدد طبيعي $n\geqslant 2$ لدينا $2n\geqslant 4$، ومنه $2n-3\geqslant 1>0$، أي $v_{n+1}-v_n>0$.
+إذن \bxt{$(v_n)$ متزايدة تماما ابتداء من الرتبة $2$}
+
+\QQ{3}
+\pa من أجل كل عدد طبيعي $n$: $2^{n}>0$ و $n+1>0$، إذن \bx{w_n>0}
+
+\pb لأن الحدود موجبة تماما نحسب النسبة:
+\[
+\frac{w_{n+1}}{w_n}=\frac{2^{n+1}}{n+2}\times\frac{n+1}{2^{n}}=\frac{2(n+1)}{n+2} .
+\]
+نقارنها بالعدد $1$:
+\[
+\frac{w_{n+1}}{w_n}-1=\frac{2n+2-(n+2)}{n+2}=\frac{n}{n+2}\geqslant 0 .
+\]
+إذن من أجل كل عدد طبيعي $n$: $\dfrac{w_{n+1}}{w_n}\geqslant 1$، ولأن $w_n>0$ نضرب الطرفين في $w_n$ فنجد $w_{n+1}\geqslant w_n$.
+
+ملاحظة: المساواة تتحقق فقط من أجل $n=0$ ($w_0=w_1=1$)، ومن أجل $n\geqslant 1$ يكون $\dfrac{n}{n+2}>0$.
+إذن \bxt{$(w_n)$ متزايدة على $\N$، ومتزايدة تماما ابتداء من الرتبة $1$}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{متتالية تراجعية وتمثيلها البياني}
+لتكن الدالة $f$ المعرفة على المجال $\left[0;+\infty\right[$ بـ: $f(x)=\dfrac{3x+2}{x+2}$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس.
+
+نعتبر المتتالية $(u_n)$ المعرفة بـ: $u_0=0$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\QQ{1} ادرس اتجاه تغير الدالة $f$ على $\left[0;+\infty\right[$، واحسب $\lim\limits_{x\to+\infty}f(x)$، ثم شكّل جدول تغيراتها.
+\QQ{2} حل في $\left[0;+\infty\right[$ المعادلة $f(x)=x$.
+\QQ{3} احسب $u_1$ ، $u_2$ و $u_3$.
+\QQ{4}
+\begin{sq}
+\qa ارسم $(C_f)$ والمستقيم $(\Delta)$ ذا المعادلة $y=x$.
+\qb مثّل على محور الفواصل الحدود $u_0$ ، $u_1$ ، $u_2$ و $u_3$ دون حسابها (باستعمال $(C_f)$ و $(\Delta)$).
+\qc ضع تخمينا حول اتجاه تغير $(u_n)$ وحول تقاربها.
+\end{sq}
+\QQ{5} نقبل أنه من أجل كل عدد طبيعي $n$: $0\leqslant u_n<2$.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=\dfrac{(2-u_n)(u_n+1)}{u_n+2}$.
+\qb استنتج اتجاه تغير المتتالية $(u_n)$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} الدالة $f$ ناطقة معرفة وقابلة للاشتقاق على $\left[0;+\infty\right[$ (لأن $x+2\neq 0$ عليه)، ومن أجل كل $x\geqslant 0$:
+\[
+f'(x)=\frac{3(x+2)-1\times(3x+2)}{(x+2)^{2}}=\frac{3x+6-3x-2}{(x+2)^{2}}=\frac{4}{(x+2)^{2}} .
+\]
+لأن $4>0$ و $(x+2)^{2}>0$ فإن $f'(x)>0$، إذن \bxt{$f$ متزايدة تماما على $\left[0;+\infty\right[$}
+
+النهاية: نهاية دالة ناطقة عند $+\infty$ هي نهاية حاصل قسمة الحدين الأعلى درجة:
+$\lim\limits_{x\to+\infty}f(x)=\lim\limits_{x\to+\infty}\dfrac{3x}{x}=3$. \ و $f(0)=\dfrac22=1$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=4]{$x$/0.8,$f'(x)$/0.8,$f(x)$/1.4}{$0$,$+\infty$}
+\tkzTabLine{,+,}
+\tkzTabVar{-/$1$,+/$3$}
+\end{TAB}
+
+\QQ{2} من أجل $x\geqslant 0$:
+\[
+f(x)=x\iff \frac{3x+2}{x+2}=x\iff 3x+2=x^{2}+2x\iff x^{2}-x-2=0 .
+\]
+المميز $\Delta=1+8=9$، ومنه $x=\dfrac{1-3}{2}=-1$ (مرفوض لأن $-1\notin\left[0;+\infty\right[$) أو $x=\dfrac{1+3}{2}=2$.
+إذن \bx{S=\{2\}} \ أي $(C_f)$ يقطع $(\Delta)$ في النقطة $A(2;2)$.
+
+\QQ{3}
+\[
+u_1=f(0)=1,\qquad u_2=f(1)=\frac{3+2}{1+2}=\frac53,\qquad u_3=f\!\left(\frac53\right)=\frac{5+2}{\frac53+2}=\frac{7}{\frac{11}{3}}=\frac{21}{11} .
+\]
+إذن \bx{u_1=1,\ u_2=\tfrac53\approx 1{,}67,\ u_3=\tfrac{21}{11}\approx 1{,}91}
+
+\QQ{4}
+\par\smallskip\textbf{(أ) و(ب)} \textbf{طريقة التمثيل (السلم):} نضع $u_0$ على محور الفواصل، ونصعد عموديا إلى $(C_f)$ فنحصل على النقطة $\big(u_0;f(u_0)\big)=(u_0;u_1)$.
+ثم نتجه أفقيا إلى المستقيم $(\Delta)$ فنحصل على النقطة $(u_1;u_1)$، ثم ننزل عموديا إلى محور الفواصل فنجد $u_1$.
+نكرر العملية انطلاقا من $u_1$ للحصول على $u_2$ ثم $u_3$.
+\begin{GR}{-0.5}{3.2}{-0.5}{3.2}{2.4}
+ \draw[cDef,thick,domain=-0.5:3.2,samples=80,smooth] plot (\x,{(3*\x+2)/(\x+2)});
+ \draw[cThm,thick] (-0.5,-0.5)--(3.2,3.2);
+ \draw[cEx,thick,-{Stealth[length=1.6mm]}] (0,0)--(0,1);
+ \draw[cEx,thick,-{Stealth[length=1.6mm]}] (0,1)--(1,1);
+ \draw[cEx,thick,-{Stealth[length=1.6mm]}] (1,1)--(1,1.6667);
+ \draw[cEx,thick,-{Stealth[length=1.6mm]}] (1,1.6667)--(1.6667,1.6667);
+ \draw[cEx,thick,-{Stealth[length=1.6mm]}] (1.6667,1.6667)--(1.6667,1.9091);
+ \draw[cEx,thick,-{Stealth[length=1.6mm]}] (1.6667,1.9091)--(1.9091,1.9091);
+ \draw[cEx,thick] (1.9091,1.9091)--(1.9091,1.9767);
+ \draw[dashed,gray] (1,1)--(1,0) (1.6667,1.6667)--(1.6667,0) (1.9091,1.9091)--(1.9091,0);
+ \draw[dashed,gray] (2,2)--(2,0) (2,2)--(0,2);
+ \fill[cThm] (2,2) circle (1.2pt) node[above left]{$A$};
+ \foreach \p/\l in {0/u_0,1/u_1,1.6667/u_2,1.9091/u_3} \fill (\p,0) circle (1.1pt);
+ \node[below,font=\scriptsize] at (0.12,-0.02){$u_0$};
+ \node[below,font=\scriptsize] at (1,-0.02){$u_1$};
+ \node[below,font=\scriptsize] at (1.6667,-0.02){$u_2$};
+ \node[below,font=\scriptsize] at (1.95,-0.02){$u_3$};
+ \node[below,font=\scriptsize] at (2.3,-0.02){$2$};
+ \node[below,font=\scriptsize] at (3,-0.02){$3$};
+ \node[left,font=\scriptsize] at (0,1){$1$};
+ \node[left,font=\scriptsize] at (0,2){$2$};
+ \node[left,font=\scriptsize] at (0,3){$3$};
+ \node[cDef] at (2.8,2.45){$(C_f)$};
+ \node[cThm] at (2.6,2.95){$(\Delta)$};
+\end{GR}
+
+\pc \textbf{التخمين:} من التمثيل نلاحظ أن الحدود تتزايد $u_0<u_1<u_2<u_3$ وتقترب من فاصلة نقطة التقاطع $A$.
+\bxt{نخمن أن $(u_n)$ متزايدة ومتقاربة نحو العدد $2$}
+
+\QQ{5}
+\pa من أجل كل عدد طبيعي $n$ (مع $u_n+2>0$):
+\[
+u_{n+1}-u_n=\frac{3u_n+2}{u_n+2}-u_n=\frac{3u_n+2-u_n^{2}-2u_n}{u_n+2}=\frac{-u_n^{2}+u_n+2}{u_n+2} .
+\]
+ونلاحظ أن $(2-u_n)(u_n+1)=2u_n+2-u_n^{2}-u_n=-u_n^{2}+u_n+2$. إذن \bx{u_{n+1}-u_n=\dfrac{(2-u_n)(u_n+1)}{u_n+2}}
+
+\pb لدينا $0\leqslant u_n<2$، ومنه: $2-u_n>0$ ، \ $u_n+1>0$ ، \ $u_n+2>0$.
+إذن البسط والمقام موجبان تماما، أي $u_{n+1}-u_n>0$ من أجل كل عدد طبيعي $n$.
+إذن \bxt{المتتالية $(u_n)$ متزايدة تماما، وهذا يؤكد التخمين}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{اتجاه التغير بطرق مختلفة}
+\QQ{1} نعتبر المتتالية $(a_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $a_n=n\,e^{-n}$.
+\begin{sq}
+\qa ادرس اتجاه تغير الدالة $g$ المعرفة على $\left[0;+\infty\right[$ بـ: $g(x)=x\,e^{-x}$.
+\qb استنتج اتجاه تغير المتتالية $(a_n)$ ابتداء من الرتبة $1$.
+\end{sq}
+\QQ{2} نعتبر المتتالية $(b_n)$ المعرفة بـ: $b_0=2$ ومن أجل كل عدد طبيعي $n$: $b_{n+1}=b_n+2n-5$.
+\begin{sq}
+\qa احسب $b_1$ ، $b_2$ ، $b_3$ ، $b_4$ و $b_5$.
+\qb ادرس اتجاه تغير $(b_n)$.
+\end{sq}
+\QQ{3} نعتبر المتتالية $(c_n)$ المعرفة بـ: $c_0=1$ ومن أجل كل عدد طبيعي $n$: $c_{n+1}=c_n\,e^{-c_n}$.
+نقبل أنه من أجل كل عدد طبيعي $n$: $c_n>0$. بيّن أن المتتالية $(c_n)$ متناقصة تماما.
+\end{tamrin}
+\begin{hal}
+\textbf{تذكير:} إذا كانت $u_n=g(n)$ (متتالية معرفة بحدها العام) وكانت $g$ رتيبة على $\left[k;+\infty\right[$ فإن $(u_n)$ لها نفس اتجاه تغير $g$ ابتداء من الرتبة $k$.
+\textbf{تنبيه:} هذه الطريقة لا تصلح للمتتالية التراجعية $u_{n+1}=f(u_n)$.
+
+\QQ{1}
+\pa $g$ قابلة للاشتقاق على $\left[0;+\infty\right[$، ومن أجل كل $x\geqslant 0$:
+\[
+g'(x)=1\times e^{-x}+x\times\left(-e^{-x}\right)=(1-x)\,e^{-x} .
+\]
+لأن $e^{-x}>0$ فإن إشارة $g'(x)$ هي إشارة $1-x$:
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3]{$x$/0.8,$g'(x)$/0.8,$g(x)$/1.4}{$0$,$1$,$+\infty$}
+\tkzTabLine{,+,z,-,}
+\tkzTabVar{-/$0$,+/$e^{-1}$,-/$0$}
+\end{TAB}
+(النهاية عند $+\infty$: $\lim\limits_{x\to+\infty}x\,e^{-x}=\lim\limits_{x\to+\infty}\dfrac{x}{e^{x}}=0$ حسب التزايد المقارن.)
+
+إذن $g$ متزايدة تماما على $\left[0;1\right]$ ومتناقصة تماما على $\left[1;+\infty\right[$.
+
+\pb لدينا $a_n=g(n)$، و $g$ متناقصة تماما على $\left[1;+\infty\right[$، إذن من أجل كل $n\geqslant 1$: $n<n+1$ يستلزم $g(n+1)<g(n)$ أي $a_{n+1}<a_n$.
+إذن \bxt{$(a_n)$ متناقصة تماما ابتداء من الرتبة $1$}
+
+ملاحظة: $a_0=0<a_1=e^{-1}$، لذلك فهي ليست متناقصة على كل $\N$.
+
+\QQ{2}
+\pa نطبق العلاقة $b_{n+1}=b_n+2n-5$:
+\begin{align*}
+&b_1=2+0-5=-3, && b_2=-3+2-5=-6, && b_3=-6+4-5=-7,\\
+&b_4=-7+6-5=-6, && b_5=-6+8-5=-3 .
+\end{align*}
+إذن \bx{b_1=-3,\ b_2=-6,\ b_3=-7,\ b_4=-6,\ b_5=-3}
+
+\pb من العلاقة التراجعية مباشرة: $b_{n+1}-b_n=2n-5$.
+\begin{itemize}
+\item إذا كان $n\in\{0;1;2\}$: $2n-5\leqslant -1<0$ ومنه $b_{n+1}<b_n$ (أي $b_0>b_1>b_2>b_3$).
+\item إذا كان $n\geqslant 3$: $2n-5\geqslant 1>0$ ومنه $b_{n+1}>b_n$.
+\end{itemize}
+إذن \bxt{$(b_n)$ ليست رتيبة على $\N$، وهي متزايدة تماما ابتداء من الرتبة $3$}
+
+\QQ{3}
+\[
+c_{n+1}-c_n=c_n\,e^{-c_n}-c_n=c_n\left(e^{-c_n}-1\right) .
+\]
+لدينا $c_n>0$، ومنه $-c_n<0$، ولأن الدالة الأسية متزايدة تماما على $\R$ فإن $e^{-c_n}<e^{0}=1$، أي $e^{-c_n}-1<0$.
+إذن الجداء $c_n\left(e^{-c_n}-1\right)$ سالب تماما (جداء عدد موجب تماما في عدد سالب تماما)، أي $c_{n+1}<c_n$.
+إذن \bxt{المتتالية $(c_n)$ متناقصة تماما على $\N$}
+\end{hal}
+
+\section{البرهان بالتراجع}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{إثبات مساواة مجموع}
+\QQ{1} برهن بالتراجع أنه من أجل كل عدد طبيعي غير معدوم $n$:
+\[
+1\times 2+2\times 3+3\times 4+\dots+n(n+1)=\frac{n(n+1)(n+2)}{3} .
+\]
+\QQ{2} برهن بالتراجع أنه من أجل كل عدد طبيعي غير معدوم $n$:
+\[
+\frac{1}{1\times 2}+\frac{1}{2\times 3}+\dots+\frac{1}{n(n+1)}=\frac{n}{n+1} .
+\]
+\QQ{3} استنتج قيمة كل من المجموعين:
+\begin{sq}
+\qa $A=1\times 2+2\times 3+\dots+10\times 11$
+\qb $B=\dfrac{1}{1\times 2}+\dfrac{1}{2\times 3}+\dots+\dfrac{1}{99\times 100}$
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\textbf{مبدأ البرهان بالتراجع:} لإثبات أن خاصية $P(n)$ صحيحة من أجل كل عدد طبيعي $n\geqslant n_0$:
+\begin{enumerate}
+\item \textbf{التحقق:} نتحقق أن $P(n_0)$ صحيحة.
+\item \textbf{الوراثة:} نفرض أن $P(n)$ صحيحة من أجل عدد طبيعي كيفي $n\geqslant n_0$ (فرضية التراجع)، ونبرهن أن $P(n+1)$ صحيحة.
+\item \textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع $P(n)$ صحيحة من أجل كل $n\geqslant n_0$.
+\end{enumerate}
+
+\QQ{1} نضع $S_n=1\times 2+2\times 3+\dots+n(n+1)$، ولتكن الخاصية $P(n)$: «$S_n=\dfrac{n(n+1)(n+2)}{3}$».
+
+\textbf{التحقق من أجل $n=1$:} الطرف الأول $S_1=1\times 2=2$، والطرف الثاني $\dfrac{1\times 2\times 3}{3}=2$. إذن $P(1)$ صحيحة.
+
+\textbf{الوراثة:} نفرض أن $P(n)$ صحيحة، أي $S_n=\dfrac{n(n+1)(n+2)}{3}$، ونبرهن أن $P(n+1)$ صحيحة، أي:
+$S_{n+1}=\dfrac{(n+1)(n+2)(n+3)}{3}$.
+
+المجموع $S_{n+1}$ هو $S_n$ مضافا إليه الحد الأخير $(n+1)(n+2)$:
+\begin{align*}
+S_{n+1}&=S_n+(n+1)(n+2)=\frac{n(n+1)(n+2)}{3}+\frac{3(n+1)(n+2)}{3}\\
+&=\frac{(n+1)(n+2)\,(n+3)}{3}
+\end{align*}
+(أخرجنا العامل المشترك $(n+1)(n+2)$).
+
+إذن $P(n+1)$ صحيحة.
+
+\textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع، من أجل كل $n\in\N^{*}$: \bx{S_n=\dfrac{n(n+1)(n+2)}{3}}
+
+\QQ{2} نضع $T_n=\dfrac{1}{1\times 2}+\dots+\dfrac{1}{n(n+1)}$ ولتكن الخاصية $Q(n)$: «$T_n=\dfrac{n}{n+1}$».
+
+\textbf{التحقق من أجل $n=1$:} $T_1=\dfrac{1}{1\times 2}=\dfrac12$ و $\dfrac{1}{1+1}=\dfrac12$. إذن $Q(1)$ صحيحة.
+
+\textbf{الوراثة:} نفرض أن $T_n=\dfrac{n}{n+1}$ ونبرهن أن $T_{n+1}=\dfrac{n+1}{n+2}$.
+\begin{align*}
+T_{n+1}&=T_n+\frac{1}{(n+1)(n+2)}=\frac{n}{n+1}+\frac{1}{(n+1)(n+2)}=\frac{n(n+2)+1}{(n+1)(n+2)}\\
+&=\frac{n^{2}+2n+1}{(n+1)(n+2)}=\frac{(n+1)^{2}}{(n+1)(n+2)}=\frac{n+1}{n+2}
+\end{align*}
+إذن $Q(n+1)$ صحيحة.
+
+\textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع، من أجل كل $n\in\N^{*}$: \bx{T_n=\dfrac{n}{n+1}}
+
+\QQ{3}
+\pa $A=S_{10}=\dfrac{10\times 11\times 12}{3}$ إذن \bx{A=440}
+\pb $B=T_{99}$ إذن \bx{B=\dfrac{99}{100}=0{,}99}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{إثبات متباينات بالتراجع}
+\QQ{1} ليكن $a$ عددا حقيقيا موجبا تماما.
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $(1+a)^{n}\geqslant 1+na$ \ (متباينة برنولي).
+\qb استنتج أنه من أجل كل عدد طبيعي $n$: $3^{n}\geqslant 2n+1$.
+\qc استنتج أن $(1{,}01)^{100}\geqslant 2$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa قارن $2^{n}$ و $n^{2}$ من أجل $n\in\{1;2;3;4;5;6\}$.
+\qb بيّن أنه من أجل كل عدد طبيعي $n\geqslant 3$: $n^{2}-2n-1>0$.
+\qc برهن بالتراجع أنه من أجل كل عدد طبيعي $n\geqslant 4$: $2^{n}\geqslant n^{2}$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa لتكن الخاصية $P(n)$: «$(1+a)^{n}\geqslant 1+na$».
+
+\textbf{التحقق من أجل $n=0$:} $(1+a)^{0}=1$ و $1+0\times a=1$، و $1\geqslant 1$. إذن $P(0)$ صحيحة.
+
+\textbf{الوراثة:} نفرض أن $(1+a)^{n}\geqslant 1+na$ ونبرهن أن $(1+a)^{n+1}\geqslant 1+(n+1)a$.
+
+لدينا $1+a>0$، فنضرب طرفي فرضية التراجع في $1+a$ دون تغيير اتجاه المتباينة:
+\[
+(1+a)^{n+1}=(1+a)^{n}(1+a)\geqslant (1+na)(1+a)=1+a+na+na^{2}=1+(n+1)a+na^{2} .
+\]
+ولأن $na^{2}\geqslant 0$ فإن $1+(n+1)a+na^{2}\geqslant 1+(n+1)a$، وبالتعدي: $(1+a)^{n+1}\geqslant 1+(n+1)a$.
+إذن $P(n+1)$ صحيحة.
+
+\textbf{الخلاصة:} من أجل كل عدد طبيعي $n$: \bx{(1+a)^{n}\geqslant 1+na}
+
+\pb نطبق النتيجة من أجل $a=2>0$: $(1+2)^{n}\geqslant 1+2n$، إذن \bx{3^{n}\geqslant 2n+1}
+
+\pc نطبق النتيجة من أجل $a=0{,}01$ و $n=100$: $(1{,}01)^{100}\geqslant 1+100\times 0{,}01=1+1$، إذن \bx{(1{,}01)^{100}\geqslant 2}
+
+\QQ{2}
+\pa نحسب ونقارن:
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+$n$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\\hline
+$2^{n}$ & $2$ & $4$ & $8$ & $16$ & $32$ & $64$\\\hline
+$n^{2}$ & $1$ & $4$ & $9$ & $16$ & $25$ & $36$\\\hline
+المقارنة & $>$ & $=$ & $<$ & $=$ & $>$ & $>$\\\hline
+\end{tabular}
+\end{center}
+نلاحظ أن المتباينة $2^{n}\geqslant n^{2}$ خاطئة من أجل $n=3$، لذلك نبدأ البرهان من $n=4$.
+
+\pb $n^{2}-2n-1=(n-1)^{2}-2$. من أجل $n\geqslant 3$: $n-1\geqslant 2$ ومنه $(n-1)^{2}\geqslant 4$، أي $(n-1)^{2}-2\geqslant 2>0$.
+إذن من أجل كل $n\geqslant 3$: \bx{n^{2}-2n-1>0}
+
+\pc لتكن الخاصية $P(n)$: «$2^{n}\geqslant n^{2}$».
+
+\textbf{التحقق من أجل $n=4$:} $2^{4}=16$ و $4^{2}=16$، و $16\geqslant 16$. إذن $P(4)$ صحيحة.
+
+\textbf{الوراثة:} نفرض أن $2^{n}\geqslant n^{2}$ من أجل $n\geqslant 4$، ونبرهن أن $2^{n+1}\geqslant (n+1)^{2}$.
+
+نضرب طرفي فرضية التراجع في $2>0$: $2^{n+1}\geqslant 2n^{2}$.
+ثم نقارن $2n^{2}$ بـ $(n+1)^{2}$:
+\[
+2n^{2}-(n+1)^{2}=2n^{2}-n^{2}-2n-1=n^{2}-2n-1>0
+\]
+حسب السؤال (ب)، لأن $n\geqslant 4\geqslant 3$.
+ومنه $2n^{2}>(n+1)^{2}$، وبالتعدي: $2^{n+1}\geqslant 2n^{2}>(n+1)^{2}$. إذن $P(n+1)$ صحيحة.
+
+\textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع، من أجل كل عدد طبيعي $n\geqslant 4$: \bx{2^{n}\geqslant n^{2}}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{حصر متتالية تراجعية واتجاه تغيرها}
+نعتبر المتتالية $(u_n)$ المعرفة بـ: $u_0=1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\sqrt{2u_n+3}$.
+\QQ{1} احسب $u_1$ و $u_2$ (تعطى $u_2$ مدورة إلى $10^{-2}$).
+\QQ{2} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $1\leqslant u_n<3$.
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=\dfrac{(3-u_n)(1+u_n)}{\sqrt{2u_n+3}+u_n}$.
+\qb استنتج أن المتتالية $(u_n)$ متزايدة تماما.
+\end{sq}
+\QQ{4} استنتج أن المتتالية $(u_n)$ متقاربة، ثم عيّن نهايتها $\ell$.
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+$u_1=\sqrt{2\times 1+3}=\sqrt5$، \ و $u_2=\sqrt{2\sqrt5+3}$.
+إذن \bx{u_1=\sqrt5\approx 2{,}24,\quad u_2=\sqrt{3+2\sqrt5}\approx 2{,}73}
+
+\QQ{2} لتكن الخاصية $P(n)$: «$1\leqslant u_n<3$».
+
+\textbf{التحقق من أجل $n=0$:} $u_0=1$ و $1\leqslant 1<3$. إذن $P(0)$ صحيحة.
+
+\textbf{الوراثة:} نفرض أن $1\leqslant u_n<3$ ونبرهن أن $1\leqslant u_{n+1}<3$.
+\begin{itemize}
+\item نضرب في $2>0$: \ $2\leqslant 2u_n<6$.
+\item نضيف $3$: \ $5\leqslant 2u_n+3<9$.
+\item دالة الجذر التربيعي متزايدة تماما على $\left[0;+\infty\right[$: \ $\sqrt5\leqslant \sqrt{2u_n+3}<\sqrt9$.
+\end{itemize}
+أي $\sqrt5\leqslant u_{n+1}<3$، ولأن $\sqrt5>1$ فإن $1\leqslant u_{n+1}<3$. إذن $P(n+1)$ صحيحة.
+
+\textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع، من أجل كل عدد طبيعي $n$: \bx{1\leqslant u_n<3}
+
+\QQ{3}
+\pa نضرب ونقسم في المرافق $\sqrt{2u_n+3}+u_n$ (وهو موجب تماما لأن $u_n\geqslant 1$):
+\[
+u_{n+1}-u_n=\sqrt{2u_n+3}-u_n=\frac{\left(\sqrt{2u_n+3}-u_n\right)\left(\sqrt{2u_n+3}+u_n\right)}{\sqrt{2u_n+3}+u_n}=\frac{2u_n+3-u_n^{2}}{\sqrt{2u_n+3}+u_n} .
+\]
+ونلاحظ أن $(3-u_n)(1+u_n)=3+3u_n-u_n-u_n^{2}=-u_n^{2}+2u_n+3$.
+إذن \bx{u_{n+1}-u_n=\dfrac{(3-u_n)(1+u_n)}{\sqrt{2u_n+3}+u_n}}
+
+\pb من السؤال 2: $u_n<3$ ومنه $3-u_n>0$، و $u_n\geqslant 1$ ومنه $1+u_n>0$، والمقام موجب تماما.
+إذن $u_{n+1}-u_n>0$ من أجل كل عدد طبيعي $n$، أي \bxt{المتتالية $(u_n)$ متزايدة تماما}
+
+\QQ{4} المتتالية $(u_n)$ متزايدة ومحدودة من الأعلى بالعدد $3$، إذن \textbf{حسب مبرهنة المتتالية الرتيبة والمحدودة} فهي متقاربة.
+نسمي $\ell$ نهايتها؛ من الحصر $1\leqslant u_n<3$ نستنتج $1\leqslant \ell\leqslant 3$.
+
+الدالة $f:x\mapsto\sqrt{2x+3}$ مستمرة على $\left[1;3\right]$ و $u_{n+1}=f(u_n)$، إذن النهاية $\ell$ تحقق $\ell=f(\ell)$:
+\[
+\ell=\sqrt{2\ell+3}\implies \ell^{2}=2\ell+3\iff \ell^{2}-2\ell-3=0\iff (\ell-3)(\ell+1)=0 .
+\]
+ومنه $\ell=3$ أو $\ell=-1$، و $\ell=-1$ مرفوض لأن $\ell\geqslant 1$.
+إذن \bx{\limn u_n=3}
+\end{hal}
+
+\section{المتتاليات الحسابية والهندسية}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{تعيين الحد العام}
+\QQ{1} $(u_n)$ متتالية حسابية حدها الأول $u_0$ حيث: $u_3=7$ و $u_8=22$.
+\begin{sq}
+\qa عيّن أساسها $r$ وحدها الأول $u_0$.
+\qb اكتب $u_n$ بدلالة $n$.
+\qc هل العدد $2026$ حد من حدود هذه المتتالية؟ وماذا عن العدد $2027$؟
+\end{sq}
+\QQ{2} $(v_n)$ متتالية هندسية حدودها موجبة تماما، حيث: $v_1=6$ و $v_4=162$.
+\begin{sq}
+\qa عيّن أساسها $q$ وحدها الأول $v_0$.
+\qb اكتب $v_n$ بدلالة $n$، ثم احسب $v_5$.
+\end{sq}
+\QQ{3} ثلاثة أعداد هي حدود متتابعة لمتتالية حسابية، مجموعها $15$ وجداؤها $80$. عيّن هذه الأعداد.
+\end{tamrin}
+\begin{hal}
+\textbf{تذكير:} إذا كانت $(u_n)$ حسابية أساسها $r$: $u_n=u_p+(n-p)r$. \ وإذا كانت $(v_n)$ هندسية أساسها $q$: $v_n=v_p\times q^{\,n-p}$.
+
+\QQ{1}
+\pa $u_8=u_3+(8-3)r$ ومنه $22=7+5r$، أي $5r=15$، إذن $r=3$.
+ثم $u_3=u_0+3r$ ومنه $u_0=7-9=-2$.
+إذن \bx{r=3,\quad u_0=-2}
+
+\pb $u_n=u_0+nr$ إذن \bx{u_n=3n-2}
+
+\pc $2026$ حد من حدود $(u_n)$ إذا وجد عدد طبيعي $n$ حيث $u_n=2026$:
+$3n-2=2026\iff 3n=2028\iff n=676$ وهو عدد طبيعي. إذن \bxt{$2026$ حد من حدود المتتالية وهو $u_{676}$}
+
+$3n-2=2027\iff 3n=2029\iff n=\dfrac{2029}{3}$ وهو ليس عددا طبيعيا (لأن $2029=3\times 676+1$).
+إذن \bxt{$2027$ ليس حدا من حدود المتتالية}
+
+\QQ{2}
+\pa $v_4=v_1\times q^{3}$ ومنه $162=6q^{3}$، أي $q^{3}=27=3^{3}$، إذن $q=3$ (وهو موجب، متوافق مع كون الحدود موجبة).
+ثم $v_1=v_0\times q$ ومنه $v_0=\dfrac{6}{3}=2$. إذن \bx{q=3,\quad v_0=2}
+
+\pb $v_n=v_0\times q^{n}$ إذن \bx{v_n=2\times 3^{n}} \ و $v_5=2\times 3^{5}=2\times 243$ أي \bx{v_5=486}
+
+\QQ{3} نرمز للأعداد الثلاثة بـ $a-r$ ، $a$ ، $a+r$ حيث $a$ الحد الأوسط و $r$ الأساس.
+
+\textbf{المجموع:} $(a-r)+a+(a+r)=15$ أي $3a=15$ ومنه $a=5$.
+
+\textbf{الجداء:} $(5-r)\times 5\times(5+r)=80$ ومنه $25-r^{2}=16$ أي $r^{2}=9$، إذن $r=3$ أو $r=-3$.
+\begin{itemize}
+\item من أجل $r=3$: الأعداد هي $2$ ، $5$ ، $8$.
+\item من أجل $r=-3$: الأعداد هي $8$ ، $5$ ، $2$.
+\end{itemize}
+إذن \bxt{الأعداد هي $2$ و $5$ و $8$} \ (تحقق: $2+5+8=15$ و $2\times 5\times 8=80$ \ok).
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{حساب المجاميع}
+نعتبر المتتاليتين $(u_n)$ و $(v_n)$ المعرفتين من أجل كل عدد طبيعي $n$ بـ: $u_n=2n+1$ و $v_n=3\times 2^{n}$.
+\QQ{1} بيّن أن $(u_n)$ حسابية وأن $(v_n)$ هندسية، وعيّن الأساس والحد الأول لكل منهما.
+\QQ{2} احسب بدلالة $n$ المجموع $S_n=u_0+u_1+\dots+u_n$.
+\QQ{3} احسب بدلالة $n$ المجموع $T_n=v_0+v_1+\dots+v_n$.
+\QQ{4} احسب المجموع $S'=u_5+u_6+\dots+u_{20}$.
+\QQ{5} عيّن أصغر عدد طبيعي $n$ يحقق $T_n>10000$.
+\QQ{6} بيّن أن المتتالية $\left(\ln v_n\right)$ حسابية، ثم احسب بدلالة $n$ المجموع $L_n=\ln v_0+\ln v_1+\dots+\ln v_n$.
+\end{tamrin}
+\begin{hal}
+\textbf{تذكير:}
+\begin{itemize}
+\item مجموع $N$ حدا متتابعا من متتالية حسابية، أولها $a$ وآخرها $b$، يساوي $\dfrac{N(a+b)}{2}$.
+\item مجموع $N$ حدا متتابعا من متتالية هندسية أساسها $q\neq 1$، أولها $a$، يساوي $a\times\dfrac{1-q^{N}}{1-q}$.
+\end{itemize}
+
+\QQ{1} من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=2(n+1)+1-(2n+1)=2$ وهو عدد ثابت.
+إذن \bxt{$(u_n)$ حسابية أساسها $r=2$ وحدها الأول $u_0=1$}
+
+ومن أجل كل عدد طبيعي $n$: $v_{n+1}=3\times 2^{n+1}=2\times\left(3\times 2^{n}\right)=2v_n$.
+إذن \bxt{$(v_n)$ هندسية أساسها $q=2$ وحدها الأول $v_0=3$}
+
+\QQ{2} $S_n$ هو مجموع $n+1$ حدا (من $u_0$ إلى $u_n$)، الحد الأول $u_0=1$ والأخير $u_n=2n+1$:
+\[
+S_n=\frac{(n+1)\left(u_0+u_n\right)}{2}=\frac{(n+1)(1+2n+1)}{2}=\frac{(n+1)(2n+2)}{2}=(n+1)(n+1) .
+\]
+إذن \bx{S_n=(n+1)^{2}}
+
+\QQ{3} $T_n$ هو مجموع $n+1$ حدا لمتتالية هندسية أساسها $q=2\neq 1$:
+\[
+T_n=v_0\times\frac{1-q^{n+1}}{1-q}=3\times\frac{1-2^{n+1}}{1-2}=3\times\frac{1-2^{n+1}}{-1} .
+\]
+إذن \bx{T_n=3\left(2^{n+1}-1\right)}
+
+\QQ{4} عدد الحدود من $u_5$ إلى $u_{20}$ هو $20-5+1=16$، و $u_5=11$ ، $u_{20}=41$:
+\[
+S'=\frac{16\times(11+41)}{2}=8\times 52 .
+\]
+إذن \bx{S'=416}
+
+(طريقة أخرى: $S'=S_{20}-S_4=21^{2}-5^{2}=441-25=416$.)
+
+\QQ{5}
+\[
+T_n>10000\iff 3\left(2^{n+1}-1\right)>10000\iff 2^{n+1}>\frac{10003}{3}\approx 3334{,}3 .
+\]
+لدينا $2^{11}=2048<3334{,}3$ و $2^{12}=4096>3334{,}3$، ولأن المتتالية $(2^{k})$ متزايدة تماما فإن أصغر قيمة لـ $n+1$ هي $12$.
+إذن \bx{n=11} \ (تحقق: $T_{10}=6141$ و $T_{11}=12285$).
+
+\QQ{6} لأن $v_n>0$ فإن $\ln v_n$ معرف، و
+\[
+\ln v_n=\ln\left(3\times 2^{n}\right)=\ln 3+n\ln 2 .
+\]
+ومنه من أجل كل عدد طبيعي $n$:
+\[
+\ln v_{n+1}-\ln v_n=\ln 3+(n+1)\ln 2-\ln 3-n\ln 2=\ln 2 .
+\]
+وهو عدد ثابت لا يتعلق بـ $n$.
+إذن \bxt{$(\ln v_n)$ حسابية أساسها $\ln 2$ وحدها الأول $\ln 3$}
+
+$L_n$ مجموع $n+1$ حدا متتابعا منها، الأول $\ln 3$ والأخير $\ln 3+n\ln 2$:
+\[
+L_n=\frac{(n+1)\left(\ln 3+\ln 3+n\ln 2\right)}{2}=\frac{(n+1)\left(2\ln 3+n\ln 2\right)}{2} .
+\]
+إذن \bx{L_n=(n+1)\ln 3+\dfrac{n(n+1)}{2}\ln 2}
+\end{hal}
+
+% ------------------------------------------------------------------
+\Needspace{16\baselineskip}
+\begin{tamrin}{مسألة: اختيار طريقة الادخار}
+يريد أحمد إيداع مبلغ $100000$ دينار في بنك. يقترح عليه البنك صيغتين:
+\begin{itemize}
+\item \textbf{الصيغة الأولى:} فائدة بسيطة: يضاف إلى الرصيد كل سنة مبلغ ثابت يساوي $4\%$ من المبلغ الأصلي.
+\item \textbf{الصيغة الثانية:} فائدة مركبة: يزداد الرصيد كل سنة بنسبة $3{,}5\%$ من رصيد السنة السابقة.
+\end{itemize}
+نرمز بـ $A_n$ و $B_n$ إلى الرصيد (بالدينار) بعد $n$ سنة حسب الصيغة الأولى والثانية على الترتيب، مع $A_0=B_0=100000$.
+\QQ{1} احسب $A_1$ ، $A_2$ ، $B_1$ و $B_2$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أن $(A_n)$ متتالية حسابية، واكتب $A_n$ بدلالة $n$.
+\qb بيّن أن $(B_n)$ متتالية هندسية، واكتب $B_n$ بدلالة $n$.
+\end{sq}
+\QQ{3} احسب الرصيد بعد $10$ سنوات حسب كل صيغة (تدور النتائج إلى $10^{-2}$).
+\QQ{4} بعد كم سنة يتجاوز الرصيد (أو يساوي) $150000$ دينار حسب كل صيغة؟
+\QQ{5} تحقق أن $B_8<A_8$ و $B_9>A_9$، ونقبل أن $B_n>A_n$ من أجل كل $n\geqslant 9$. ما الصيغة التي تنصح بها أحمد؟
+\end{tamrin}
+\begin{hal}
+\QQ{1} \textbf{الصيغة الأولى:} الفائدة السنوية ثابتة: $\dfrac{4}{100}\times 100000=4000$ دينار.
+$A_1=100000+4000=104000$ ، \ $A_2=104000+4000=108000$.
+
+\textbf{الصيغة الثانية:} زيادة بنسبة $3{,}5\%$ تعني الضرب في $1+\dfrac{3{,}5}{100}=1{,}035$.
+$B_1=100000\times 1{,}035=103500$ ، \ $B_2=103500\times 1{,}035=107122{,}5$.
+
+إذن \bx{A_1=104000,\ A_2=108000,\ B_1=103500,\ B_2=107122{,}5}
+
+\QQ{2}
+\pa كل سنة يضاف المبلغ نفسه: $A_{n+1}=A_n+4000$، أي $A_{n+1}-A_n=4000$ (ثابت).
+إذن $(A_n)$ حسابية أساسها $r=4000$ وحدها الأول $A_0=100000$، ومنه: \bx{A_n=100000+4000n}
+
+\pb كل سنة يضرب الرصيد في $1{,}035$: $B_{n+1}=B_n+\dfrac{3{,}5}{100}B_n=1{,}035\,B_n$.
+إذن $(B_n)$ هندسية أساسها $q=1{,}035$ وحدها الأول $B_0=100000$، ومنه: \bx{B_n=100000\times(1{,}035)^{n}}
+
+\QQ{3}
+$A_{10}=100000+40000$ إذن \bx{A_{10}=140000} \ و $B_{10}=100000\times(1{,}035)^{10}$ إذن \bx{B_{10}\approx 141059{,}88}
+
+\QQ{4} \textbf{الصيغة الأولى:}
+$A_n\geqslant 150000\iff 4000n\geqslant 50000\iff n\geqslant 12{,}5$. أصغر عدد طبيعي هو $13$.
+إذن \bxt{بعد $13$ سنة حسب الصيغة الأولى}
+
+\textbf{الصيغة الثانية:}
+\[
+B_n\geqslant 150000\iff (1{,}035)^{n}\geqslant 1{,}5\iff n\ln(1{,}035)\geqslant \ln 1{,}5
+\]
+(لأن الدالة $\ln$ متزايدة تماما على $\left]0;+\infty\right[$).
+ولأن $\ln(1{,}035)>0$ (لأن $1{,}035>1$) نقسم دون تغيير الاتجاه:
+$n\geqslant\dfrac{\ln 1{,}5}{\ln 1{,}035}\approx 11{,}79$. أصغر عدد طبيعي هو $12$.
+إذن \bxt{بعد $12$ سنة حسب الصيغة الثانية} \ (تحقق: $B_{11}\approx 145996{,}97$ و $B_{12}\approx 151106{,}87$).
+
+\QQ{5}
+$A_8=132000$ و $B_8\approx 131680{,}90$ ومنه $B_8<A_8$.
+\quad $A_9=136000$ و $B_9\approx 136289{,}74$ ومنه $B_9>A_9$.
+
+\textbf{الخلاصة:} الصيغة الأولى أربح إذا كانت مدة الادخار $8$ سنوات أو أقل، والصيغة الثانية أربح ابتداء من $9$ سنوات.
+إذن \bxt{ننصحه بالصيغة الثانية إذا ادخر $9$ سنوات أو أكثر، وبالأولى لمدة أقصر}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{المتتالية $u_{n+1}=au_n+b$ ومتتالية مساعدة هندسية}
+نعتبر المتتالية $(u_n)$ المعرفة بـ: $u_0=2$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac12u_n+3$.
+\QQ{1} احسب $u_1$ ، $u_2$ و $u_3$، ثم بيّن أن $(u_n)$ ليست حسابية وليست هندسية.
+\QQ{2} نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-6$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb اكتب $v_n$ ثم $u_n$ بدلالة $n$.
+\end{sq}
+\QQ{3} ادرس اتجاه تغير المتتالية $(u_n)$.
+\QQ{4} احسب $\limn u_n$.
+\QQ{5} احسب بدلالة $n$ المجموع $S_n=u_0+u_1+\dots+u_n$.
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+$u_1=\dfrac12\times 2+3=4$ ، \ $u_2=\dfrac12\times 4+3=5$ ، \ $u_3=\dfrac12\times 5+3=\dfrac{11}{2}$.
+إذن \bx{u_1=4,\ u_2=5,\ u_3=\tfrac{11}{2}}
+
+\begin{itemize}
+\item $u_1-u_0=2$ و $u_2-u_1=1$، و $2\neq 1$، إذن \textbf{ليست حسابية}.
+\item $\dfrac{u_1}{u_0}=2$ و $\dfrac{u_2}{u_1}=\dfrac54$، و $2\neq\dfrac54$، إذن \textbf{ليست هندسية}.
+\end{itemize}
+
+\QQ{2}
+\pa من أجل كل عدد طبيعي $n$:
+\[
+v_{n+1}=u_{n+1}-6=\frac12u_n+3-6=\frac12u_n-3=\frac12\left(u_n-6\right)=\frac12v_n .
+\]
+و $v_0=u_0-6=2-6=-4$. إذن \bxt{$(v_n)$ هندسية أساسها $q=\dfrac12$ وحدها الأول $v_0=-4$}
+
+\textbf{ملاحظة:} العدد $6$ هو حل المعادلة $\alpha=\dfrac12\alpha+3$ (النقطة الصامدة)، ولهذا السبب نختار $v_n=u_n-6$.
+
+\pb $v_n=v_0\times q^{n}$ إذن \bx{v_n=-4\left(\dfrac12\right)^{n}}
+\ ولدينا $u_n=v_n+6$ إذن \bx{u_n=6-4\left(\dfrac12\right)^{n}}
+
+(تحقق: $u_0=6-4=2$ ، $u_1=6-2=4$ ، $u_2=6-1=5$ \ok)
+
+\QQ{3}
+\begin{align*}
+u_{n+1}-u_n&=\left[6-4\left(\frac12\right)^{n+1}\right]-\left[6-4\left(\frac12\right)^{n}\right]=4\left(\frac12\right)^{n}-4\left(\frac12\right)^{n}\times\frac12\\
+&=4\left(\frac12\right)^{n}\times\frac12=2\left(\frac12\right)^{n} .
+\end{align*}
+لأن $\left(\dfrac12\right)^{n}>0$ فإن $u_{n+1}-u_n>0$، إذن \bxt{المتتالية $(u_n)$ متزايدة تماما}
+
+\QQ{4} لدينا $-1<\dfrac12<1$، ومنه $\limn\left(\dfrac12\right)^{n}=0$، إذن $\limn 4\left(\dfrac12\right)^{n}=0$.
+ومنه \bx{\limn u_n=6}
+
+\QQ{5} من أجل كل $k$: $u_k=6+v_k$. المجموع $S_n$ يحتوي $n+1$ حدا، ومنه:
+\[
+S_n=(6+6+\dots+6)+\left(v_0+v_1+\dots+v_n\right)=6(n+1)+v_0\times\frac{1-q^{n+1}}{1-q} .
+\]
+\begin{align*}
+S_n&=6(n+1)-4\times\frac{1-\left(\frac12\right)^{n+1}}{1-\frac12}=6(n+1)-8\left(1-\left(\frac12\right)^{n+1}\right)\\
+&=6n+6-8+8\left(\frac12\right)^{n+1}=6n-2+4\left(\frac12\right)^{n}
+\end{align*}
+إذن \bx{S_n=6n-2+4\left(\dfrac12\right)^{n}} \quad (تحقق: $S_0=-2+4=2=u_0$ و $S_1=6-2+2=6=u_0+u_1$ \ok).
+\end{hal}
+
+\section{التقارب والنهايات}
+
+\begin{tamrin}{نهايات متتاليات معرّفة بحدها العام}
+احسب نهاية المتتالية $(u_n)$ المعرفة من أجل كل عدد طبيعي $n$ في كل حالة من الحالات التالية:
+\begin{sq}
+\qa $u_n=3\left(\dfrac12\right)^n-4$
+\qb $u_n=\dfrac{4^n-3^n}{4^n+3^n}$
+\qc $u_n=\dfrac{2n^2-n+3}{n^2+1}$
+\qd $u_n=\sqrt{n+1}-\sqrt{n}$
+\qe $u_n=1+\dfrac13+\left(\dfrac13\right)^2+\cdots+\left(\dfrac13\right)^n$
+\item[(و)] $u_n=\dfrac{2^{n+1}+5^n}{5^n}$
+\end{sq}
+\end{tamrin}
+\begin{hal}
+نذكّر بنهاية المتتالية $\left(q^n\right)$ حيث $q$ عدد حقيقي:
+\begin{itemize}
+\item إذا كان $-1<q<1$ فإن $\limn q^n=0$.
+\item إذا كان $q>1$ فإن $\limn q^n=+\infty$.
+\item إذا كان $q=1$ فإن $q^n=1$، وإذا كان $q\leqslant -1$ فإن المتتالية $\left(q^n\right)$ ليست لها نهاية.
+\end{itemize}
+
+\pa لدينا $-1<\dfrac12<1$ إذن $\limn\left(\dfrac12\right)^n=0$، ومنه $\limn 3\left(\dfrac12\right)^n=0$، إذن:
+\[\limn u_n=0-4=\bx{-4}\]
+
+\pb البسط والمقام يؤولان إلى $+\infty$ (حالة عدم تعيين من الشكل $\frac{\infty}{\infty}$). نُخرج الحد الغالب $4^n$ عاملًا مشتركًا في البسط وفي المقام:
+\[u_n=\frac{4^n\left(1-\frac{3^n}{4^n}\right)}{4^n\left(1+\frac{3^n}{4^n}\right)}=\frac{1-\left(\frac34\right)^n}{1+\left(\frac34\right)^n}\]
+بما أن $-1<\dfrac34<1$ فإن $\limn\left(\dfrac34\right)^n=0$، إذن:
+\[\limn u_n=\frac{1-0}{1+0}=\bx{1}\]
+
+\pc حالة عدم تعيين من الشكل $\frac{\infty}{\infty}$. نُخرج $n^2$ عاملًا مشتركًا (من أجل $n\geqslant1$):
+\[u_n=\frac{n^2\left(2-\frac1n+\frac3{n^2}\right)}{n^2\left(1+\frac1{n^2}\right)}=\frac{2-\frac1n+\frac3{n^2}}{1+\frac1{n^2}}\]
+وبما أن $\limn\dfrac1n=\limn\dfrac1{n^2}=0$ فإن:
+\[\limn u_n=\frac{2-0+0}{1+0}=\bx{2}\]
+
+\pd حالة عدم تعيين من الشكل $\infty-\infty$. نضرب في المرافق ونقسم عليه:
+\[u_n=\frac{\left(\sqrt{n+1}-\sqrt{n}\right)\left(\sqrt{n+1}+\sqrt{n}\right)}{\sqrt{n+1}+\sqrt{n}}=\frac{(n+1)-n}{\sqrt{n+1}+\sqrt{n}}=\frac{1}{\sqrt{n+1}+\sqrt{n}}\]
+لدينا $\limn\left(\sqrt{n+1}+\sqrt{n}\right)=+\infty$، إذن:
+\[\limn u_n=\bx{0}\]
+
+\pe $u_n$ هو مجموع $n+1$ حدًا متتابعًا من متتالية هندسية أساسها $q=\dfrac13$ وحدها الأول $1$، إذن:
+\[u_n=1\times\frac{1-\left(\frac13\right)^{n+1}}{1-\frac13}=\frac32\left(1-\left(\frac13\right)^{n+1}\right)\]
+بما أن $-1<\dfrac13<1$ فإن $\limn\left(\dfrac13\right)^{n+1}=0$، إذن:
+\[\limn u_n=\frac32\left(1-0\right)=\bx{\frac32}\]
+
+\textbf{(و)} نقسم كل حد من البسط على $5^n$:
+\[u_n=\frac{2^{n+1}}{5^n}+\frac{5^n}{5^n}=2\times\frac{2^n}{5^n}+1=2\left(\frac25\right)^n+1\]
+بما أن $-1<\dfrac25<1$ فإن $\limn\left(\dfrac25\right)^n=0$، إذن:
+\[\limn u_n=2\times0+1=\bx{1}\]
+\end{hal}
+
+\begin{tamrin}{المقارنة والحصر}
+\QQ{1} نعتبر المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=2n+(-1)^n$.
+
+بيّن أنه من أجل كل عدد طبيعي $n$: $v_n\geqslant 2n-1$، ثم استنتج $\limn v_n$.
+\QQ{2} نعتبر المتتالية $(u_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $u_n=\dfrac{3n+(-1)^n}{n+2}$.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $\dfrac{3n-1}{n+2}\leqslant u_n\leqslant\dfrac{3n+1}{n+2}$.
+\qb استنتج $\limn u_n$.
+\qc بيّن أنه من أجل كل عدد طبيعي $n$: $\left|u_n-3\right|\leqslant\dfrac{7}{n+2}$، ثم عيّن عددًا طبيعيًا $n_0$ بحيث من أجل كل $n\geqslant n_0$ يكون: $\left|u_n-3\right|\leqslant10^{-2}$.
+\end{sq}
+\QQ{3} نعتبر المتتالية $(w_n)$ المعرفة من أجل كل عدد طبيعي غير معدوم $n$ بـ:
+\[w_n=\frac{n}{n^2+1}+\frac{n}{n^2+2}+\cdots+\frac{n}{n^2+n}=\sum_{k=1}^{n}\frac{n}{n^2+k}\]
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي غير معدوم $n$: $\dfrac{n^2}{n^2+n}\leqslant w_n\leqslant\dfrac{n^2}{n^2+1}$.
+\qb استنتج $\limn w_n$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+نذكّر بالمبرهنتين:
+\begin{itemize}
+\item \textbf{المقارنة:} إذا كان $v_n\geqslant a_n$ ابتداءً من رتبة معينة و $\limn a_n=+\infty$ فإن $\limn v_n=+\infty$.
+\item \textbf{الحصر (الدركي):} إذا كان $a_n\leqslant u_n\leqslant b_n$ ابتداءً من رتبة معينة وكانت $(a_n)$ و $(b_n)$ متقاربتين نحو النهاية نفسها $\ell$ فإن $(u_n)$ متقاربة و $\limn u_n=\ell$.
+\end{itemize}
+
+\QQ{1} من أجل كل عدد طبيعي $n$ لدينا $(-1)^n=1$ أو $(-1)^n=-1$، إذن $(-1)^n\geqslant-1$، وبإضافة $2n$ إلى الطرفين:
+\[v_n=2n+(-1)^n\geqslant\bx{2n-1}\]
+وبما أن $\limn(2n-1)=+\infty$ فإنه حسب مبرهنة المقارنة:
+\[\limn v_n=\bx{+\infty}\]
+
+\QQ{2}
+\pa من أجل كل عدد طبيعي $n$: $-1\leqslant(-1)^n\leqslant1$، إذن بإضافة $3n$:
+\[3n-1\leqslant 3n+(-1)^n\leqslant 3n+1\]
+وبقسمة الأطراف الثلاثة على العدد الموجب تمامًا $n+2$ (اتجاه المتباينات لا يتغير):
+\[\bx{\frac{3n-1}{n+2}\leqslant u_n\leqslant\frac{3n+1}{n+2}}\]
+
+\pb من أجل $n\geqslant1$: $\dfrac{3n-1}{n+2}=\dfrac{3-\frac1n}{1+\frac2n}$ و $\dfrac{3n+1}{n+2}=\dfrac{3+\frac1n}{1+\frac2n}$، إذن:
+\[\limn\frac{3n-1}{n+2}=3\qquad\text{و}\qquad\limn\frac{3n+1}{n+2}=3\]
+المتتاليتان الحاصرتان تتقاربان نحو النهاية نفسها $3$، إذن حسب مبرهنة الحصر:
+\[\limn u_n=\bx{3}\]
+
+\pc من أجل كل عدد طبيعي $n$:
+\[u_n-3=\frac{3n+(-1)^n-3(n+2)}{n+2}=\frac{(-1)^n-6}{n+2}\]
+لدينا $\left|(-1)^n-6\right|\leqslant\left|(-1)^n\right|+6=7$ و $n+2>0$، إذن:
+\[\bx{\left|u_n-3\right|\leqslant\frac{7}{n+2}}\]
+يكفي إذن أن يكون $\dfrac{7}{n+2}\leqslant10^{-2}$ أي $n+2\geqslant700$ أي $n\geqslant698$. نأخذ:
+\[\bx{n_0=698}\]
+وعندئذٍ من أجل كل $n\geqslant698$: $\left|u_n-3\right|\leqslant\dfrac{7}{n+2}\leqslant\dfrac{7}{700}=10^{-2}$.
+
+\QQ{3}
+\pa ليكن $n$ عددًا طبيعيًا غير معدوم. من أجل كل عدد طبيعي $k$ حيث $1\leqslant k\leqslant n$:
+\[n^2+1\leqslant n^2+k\leqslant n^2+n\]
+وبما أن الدالة مقلوب متناقصة تمامًا على $]0;+\infty[$، ثم بالضرب في $n>0$:
+\[\frac{n}{n^2+n}\leqslant\frac{n}{n^2+k}\leqslant\frac{n}{n^2+1}\]
+نجمع طرفًا لطرف هذه المتباينات من أجل $k=1,2,\ldots,n$ (عددها $n$ متباينة):
+\[n\times\frac{n}{n^2+n}\leqslant w_n\leqslant n\times\frac{n}{n^2+1}\]
+أي:
+\[\bx{\frac{n^2}{n^2+n}\leqslant w_n\leqslant\frac{n^2}{n^2+1}}\]
+
+\pb لدينا $\dfrac{n^2}{n^2+n}=\dfrac{1}{1+\frac1n}$ و $\dfrac{n^2}{n^2+1}=\dfrac{1}{1+\frac1{n^2}}$، إذن النهايتان تساويان $1$. حسب مبرهنة الحصر:
+\[\limn w_n=\bx{1}\]
+\end{hal}
+
+\begin{tamrin}{متتالية رتيبة ومحدودة من الشكل $u_{n+1}=f(u_n)$}
+نعتبر الدالة $f$ المعرفة على المجال $[0;+\infty[$ بـ: $f(x)=\dfrac{4x+2}{x+3}$، والمتتالية $(u_n)$ المعرفة بـ: $u_0=1$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\QQ{1} ادرس اتجاه تغير الدالة $f$ على المجال $[0;+\infty[$.
+\QQ{2} احسب $u_1$ و $u_2$.
+\QQ{3} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $1\leqslant u_n<2$.
+\QQ{4}
+\begin{sq}
+\qa تحقق أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=\dfrac{-(u_n-2)(u_n+1)}{u_n+3}$.
+\qb استنتج اتجاه تغير المتتالية $(u_n)$.
+\end{sq}
+\QQ{5} استنتج أن المتتالية $(u_n)$ متقاربة، ثم عيّن نهايتها $\ell$.
+\QQ{6} نعتبر المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=\dfrac{u_n-2}{u_n+1}$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يُطلب تعيين أساسها وحدها الأول.
+\qb اكتب $v_n$ بدلالة $n$، ثم بيّن أن $u_n=\dfrac{2+v_n}{1-v_n}$ واستنتج عبارة $u_n$ بدلالة $n$.
+\qc أعد حساب $\limn u_n$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} الدالة $f$ قابلة للاشتقاق على $[0;+\infty[$ (دالة ناطقة مقامها لا ينعدم)، ومن أجل كل $x\geqslant0$:
+\[f'(x)=\frac{4(x+3)-(4x+2)\times1}{(x+3)^2}=\frac{10}{(x+3)^2}\]
+بما أن $f'(x)>0$ فإن الدالة $f$ \bxt{متزايدة تمامًا على $[0;+\infty[$}.
+
+\QQ{2}
+\[u_1=f(1)=\frac{4+2}{1+3}=\bx{\frac32}\qquad\qquad u_2=f\left(\frac32\right)=\frac{6+2}{\frac32+3}=\frac{8}{\frac92}=\bx{\frac{16}{9}}\]
+
+\QQ{3} نسمّي $P(n)$ الخاصية: «$1\leqslant u_n<2$».
+\begin{itemize}
+\item \textbf{التحقق:} $u_0=1$ و $1\leqslant1<2$، إذن $P(0)$ صحيحة.
+\item \textbf{الوراثة:} نفرض أن $P(n)$ صحيحة من أجل عدد طبيعي $n$، أي $1\leqslant u_n<2$، ونبرهن أن $P(n+1)$ صحيحة.
+
+بما أن $f$ متزايدة تمامًا على $[0;+\infty[$ فإنها تحافظ على الترتيب: $f(1)\leqslant f(u_n)<f(2)$.
+
+لدينا $f(1)=\dfrac32$ و $f(2)=\dfrac{10}{5}=2$، إذن $\dfrac32\leqslant u_{n+1}<2$، ومنه $1\leqslant u_{n+1}<2$، أي $P(n+1)$ صحيحة.
+\item \textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع، من أجل كل عدد طبيعي $n$: \bx{1\leqslant u_n<2}.
+\end{itemize}
+
+\QQ{4}
+\pa من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac{4u_n+2}{u_n+3}-u_n=\frac{4u_n+2-u_n^2-3u_n}{u_n+3}=\frac{-u_n^2+u_n+2}{u_n+3}\]
+ولدينا $-(u_n-2)(u_n+1)=-\left(u_n^2+u_n-2u_n-2\right)=-u_n^2+u_n+2$، إذن:
+\[u_{n+1}-u_n=\frac{-(u_n-2)(u_n+1)}{u_n+3}\]
+
+\pb من السؤال 3: $1\leqslant u_n<2$، إذن:
+\begin{itemize}
+\item $u_n-2<0$ ومنه $-(u_n-2)>0$،
+\item $u_n+1>0$ و $u_n+3>0$.
+\end{itemize}
+إذن $u_{n+1}-u_n>0$ من أجل كل عدد طبيعي $n$، ومنه المتتالية $(u_n)$ \bxt{متزايدة تمامًا}.
+
+\QQ{5} المتتالية $(u_n)$ متزايدة ومحدودة من الأعلى بالعدد $2$، إذن \textbf{فهي متقاربة} (كل متتالية متزايدة ومحدودة من الأعلى متقاربة). لتكن $\ell$ نهايتها.
+
+بما أن $1\leqslant u_n<2$ فإن $1\leqslant\ell\leqslant2$. الدالة $f$ مستمرة على $[1;2]$ و $u_{n+1}=f(u_n)$، إذن بالمرور إلى النهاية: $\ell=f(\ell)$، أي:
+\[\ell=\frac{4\ell+2}{\ell+3}\iff \ell^2+3\ell=4\ell+2\iff \ell^2-\ell-2=0\iff(\ell-2)(\ell+1)=0\]
+إذن $\ell=2$ أو $\ell=-1$، وبما أن $\ell\in[1;2]$ فإن:
+\[\limn u_n=\bx{2}\]
+
+\QQ{6}
+\pa من أجل كل عدد طبيعي $n$ (مع $u_n+1\neq0$ لأن $u_n\geqslant1$):
+\[u_{n+1}-2=\frac{4u_n+2-2u_n-6}{u_n+3}=\frac{2(u_n-2)}{u_n+3}\qquad u_{n+1}+1=\frac{4u_n+2+u_n+3}{u_n+3}=\frac{5(u_n+1)}{u_n+3}\]
+إذن:
+\[v_{n+1}=\frac{u_{n+1}-2}{u_{n+1}+1}=\frac{2(u_n-2)}{u_n+3}\times\frac{u_n+3}{5(u_n+1)}=\frac25\times\frac{u_n-2}{u_n+1}=\frac25\,v_n\]
+إذن $(v_n)$ متتالية هندسية \bxt{أساسها $q=\dfrac25$}، وحدها الأول $v_0=\dfrac{1-2}{1+1}=\bx{-\dfrac12}$.
+
+\pb الحد العام لمتتالية هندسية: $v_n=v_0\times q^n$، إذن:
+\[v_n=\bx{-\frac12\left(\frac25\right)^n}\]
+من $v_n=\dfrac{u_n-2}{u_n+1}$ نجد $v_n(u_n+1)=u_n-2$ أي $v_nu_n-u_n=-2-v_n$ أي $u_n(v_n-1)=-(2+v_n)$. وبما أن $v_n<0$ فإن $1-v_n\neq0$، إذن:
+\[u_n=\frac{2+v_n}{1-v_n}=\bx{\frac{2-\frac12\left(\frac25\right)^n}{1+\frac12\left(\frac25\right)^n}}\]
+تحقق: من أجل $n=0$ نجد $u_0=\dfrac{2-\frac12}{1+\frac12}=1$ \ok.
+
+\pc بما أن $-1<\dfrac25<1$ فإن $\limn\left(\dfrac25\right)^n=0$، إذن $\limn v_n=0$، ومنه:
+\[\limn u_n=\frac{2+0}{1-0}=\bx{2}\]
+وهي النتيجة نفسها المحصل عليها في السؤال 5.
+\end{hal}
+
+\begin{tamrin}{متتالية معرّفة باستعمال الدالتين الأسية واللوغاريتمية}
+نعتبر المتتالية $(u_n)$ المعرفة بـ: $u_0=1$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=e\sqrt{u_n}$.
+\QQ{1} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>0$.
+\QQ{2} نضع من أجل كل عدد طبيعي $n$: $v_n=\ln\left(u_n\right)-2$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac12$، يُطلب تعيين حدها الأول.
+\qb اكتب $v_n$ ثم $u_n$ بدلالة $n$.
+\qc احسب $\limn v_n$ ثم $\limn u_n$.
+\end{sq}
+\QQ{3} ادرس اتجاه تغير المتتالية $(u_n)$.
+\QQ{4} نضع من أجل كل عدد طبيعي $n$: $S_n=v_0+v_1+\cdots+v_n$ و $P_n=u_0\times u_1\times\cdots\times u_n$.
+\begin{sq}
+\qa احسب $S_n$ بدلالة $n$.
+\qb بيّن أن $\ln\left(P_n\right)=S_n+2(n+1)$، ثم اكتب $P_n$ بدلالة $n$ واحسب $\limn P_n$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} نسمّي $P(n)$ الخاصية: «$u_n>0$».
+\begin{itemize}
+\item \textbf{التحقق:} $u_0=1>0$، إذن $P(0)$ صحيحة.
+\item \textbf{الوراثة:} نفرض أن $u_n>0$ من أجل عدد طبيعي $n$. عندئذٍ $\sqrt{u_n}$ معرف و $\sqrt{u_n}>0$، و $e>0$، إذن $u_{n+1}=e\sqrt{u_n}>0$، أي $P(n+1)$ صحيحة.
+\item \textbf{الخلاصة:} من أجل كل عدد طبيعي $n$: \bx{u_n>0}. وبالتالي $\ln(u_n)$ معرف.
+\end{itemize}
+
+\QQ{2}
+\pa من أجل كل عدد طبيعي $n$، باستعمال خواص $\ln$: $\ln(ab)=\ln a+\ln b$ و $\ln\sqrt a=\dfrac12\ln a$:
+\[\ln\left(u_{n+1}\right)=\ln\left(e\sqrt{u_n}\right)=\ln e+\ln\sqrt{u_n}=1+\frac12\ln\left(u_n\right)\]
+إذن:
+\[v_{n+1}=\ln\left(u_{n+1}\right)-2=\frac12\ln\left(u_n\right)-1=\frac12\left(\ln\left(u_n\right)-2\right)=\frac12\,v_n\]
+إذن $(v_n)$ متتالية هندسية أساسها $\dfrac12$ وحدها الأول $v_0=\ln1-2=\bx{-2}$.
+
+\pb $v_n=v_0\times\left(\dfrac12\right)^n$، أي:
+\[v_n=\bx{-2\left(\frac12\right)^n}\]
+ومن $v_n=\ln(u_n)-2$ نجد $\ln(u_n)=v_n+2=2-2\left(\dfrac12\right)^n$، إذن:
+\[u_n=\bx{e^{\,2-2\left(\frac12\right)^n}}\]
+تحقق: $u_0=e^{2-2}=1$ \ok\ و $u_1=e^{2-1}=e=e\sqrt{u_0}$ \ok.
+
+\pc بما أن $-1<\dfrac12<1$ فإن $\limn\left(\dfrac12\right)^n=0$، إذن:
+\[\limn v_n=\bx{0}\]
+و $\limn\left(2-2\left(\frac12\right)^n\right)=2$، والدالة الأسية مستمرة عند $2$، إذن:
+\[\limn u_n=\bx{e^2}\]
+
+\QQ{3} من أجل كل عدد طبيعي $n$: $\left(\dfrac12\right)^{n+1}<\left(\dfrac12\right)^n$ (لأن $0<\dfrac12<1$)، إذن:
+\[2-2\left(\frac12\right)^{n+1}>2-2\left(\frac12\right)^n\]
+وبما أن الدالة الأسية متزايدة تمامًا على $\R$ فإن $u_{n+1}>u_n$، إذن المتتالية $(u_n)$ \bxt{متزايدة تمامًا}.
+
+\QQ{4}
+\pa $S_n$ مجموع $n+1$ حدًا متتابعًا من المتتالية الهندسية $(v_n)$:
+\[S_n=v_0\times\frac{1-\left(\frac12\right)^{n+1}}{1-\frac12}=-2\times2\left(1-\left(\frac12\right)^{n+1}\right)=-4+4\left(\frac12\right)^{n+1}=\bx{-4+\left(\frac12\right)^{n-1}}\]
+
+\pb بما أن كل الحدود $u_k$ موجبة تمامًا فإن $P_n>0$ و:
+\[\ln\left(P_n\right)=\ln u_0+\ln u_1+\cdots+\ln u_n=\left(v_0+2\right)+\left(v_1+2\right)+\cdots+\left(v_n+2\right)\]
+في هذا المجموع $n+1$ حدًا، إذن:
+\[\ln\left(P_n\right)=S_n+2(n+1)=-4+\left(\frac12\right)^{n-1}+2n+2=2n-2+\left(\frac12\right)^{n-1}\]
+ومنه:
+\[P_n=\bx{e^{\,2n-2+\left(\frac12\right)^{n-1}}}\]
+لدينا $\limn\left(2n-2+\left(\frac12\right)^{n-1}\right)=+\infty$ و $\displaystyle\lim_{x\to+\infty}e^x=+\infty$، إذن:
+\[\limn P_n=\bx{+\infty}\]
+\end{hal}
+
+\section{المتتاليتان المتجاورتان}
+
+\begin{tamrin}{متتاليتان متجاورتان معرّفتان بالتراجع}
+نعتبر المتتاليتين $(u_n)$ و $(v_n)$ المعرفتين بـ: $u_0=1$ و $v_0=12$، ومن أجل كل عدد طبيعي $n$:
+\[u_{n+1}=\frac{u_n+2v_n}{3}\qquad\text{و}\qquad v_{n+1}=\frac{u_n+3v_n}{4}\]
+\QQ{1} نضع من أجل كل عدد طبيعي $n$: $w_n=v_n-u_n$.
+\begin{sq}
+\qa بيّن أن $(w_n)$ متتالية هندسية أساسها $\dfrac1{12}$، ثم اكتب $w_n$ بدلالة $n$.
+\qb استنتج إشارة $w_n$ و $\limn w_n$.
+\end{sq}
+\QQ{2} بيّن أن المتتالية $(u_n)$ متزايدة وأن المتتالية $(v_n)$ متناقصة.
+\QQ{3} استنتج أن المتتاليتين $(u_n)$ و $(v_n)$ متجاورتان.
+\QQ{4} نضع من أجل كل عدد طبيعي $n$: $t_n=3u_n+8v_n$. بيّن أن المتتالية $(t_n)$ ثابتة، ثم استنتج النهاية المشتركة $\ell$ للمتتاليتين $(u_n)$ و $(v_n)$.
+\QQ{5} اكتب $u_n$ و $v_n$ بدلالة $n$.
+\end{tamrin}
+\begin{hal}
+نذكّر: تكون المتتاليتان $(u_n)$ و $(v_n)$ \textbf{متجاورتين} إذا كانت إحداهما متزايدة والأخرى متناقصة و $\limn\left(v_n-u_n\right)=0$. وعندئذٍ تتقاربان نحو النهاية نفسها $\ell$، ومن أجل كل $n$: $u_n\leqslant\ell\leqslant v_n$ (إذا كانت $(u_n)$ هي المتزايدة).
+
+\QQ{1}
+\pa من أجل كل عدد طبيعي $n$ (نوحّد المقامات على $12$):
+\[w_{n+1}=v_{n+1}-u_{n+1}=\frac{u_n+3v_n}{4}-\frac{u_n+2v_n}{3}=\frac{3u_n+9v_n-4u_n-8v_n}{12}=\frac{v_n-u_n}{12}=\frac1{12}\,w_n\]
+إذن $(w_n)$ متتالية هندسية أساسها $\dfrac1{12}$ وحدها الأول $w_0=v_0-u_0=12-1=11$، ومنه:
+\[w_n=\bx{11\left(\frac1{12}\right)^n}\]
+
+\pb بما أن $11>0$ و $\left(\dfrac1{12}\right)^n>0$ فإن \bx{w_n>0} أي $u_n<v_n$ من أجل كل $n$. وبما أن $-1<\dfrac1{12}<1$ فإن:
+\[\limn w_n=\bx{0}\]
+
+\QQ{2} من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac{u_n+2v_n-3u_n}{3}=\frac{2\left(v_n-u_n\right)}{3}=\frac23\,w_n>0\]
+إذن $(u_n)$ \bxt{متزايدة تمامًا}.
+\[v_{n+1}-v_n=\frac{u_n+3v_n-4v_n}{4}=\frac{u_n-v_n}{4}=-\frac14\,w_n<0\]
+إذن $(v_n)$ \bxt{متناقصة تمامًا}.
+
+\QQ{3} $(u_n)$ متزايدة، $(v_n)$ متناقصة، و $\limn\left(v_n-u_n\right)=\limn w_n=0$، إذن المتتاليتان $(u_n)$ و $(v_n)$ \bxt{متجاورتان}، فهما متقاربتان نحو النهاية نفسها $\ell$.
+
+\QQ{4} من أجل كل عدد طبيعي $n$:
+\[t_{n+1}=3\times\frac{u_n+2v_n}{3}+8\times\frac{u_n+3v_n}{4}=u_n+2v_n+2u_n+6v_n=3u_n+8v_n=t_n\]
+إذن $(t_n)$ ثابتة و $t_n=t_0=3\times1+8\times12=\bx{99}$.
+
+بالمرور إلى النهاية في $3u_n+8v_n=99$ نجد $3\ell+8\ell=99$ أي $11\ell=99$، إذن:
+\[\ell=\bx{9}\]
+
+\QQ{5} لدينا من أجل كل $n$ الجملة: $3u_n+8v_n=99$ و $v_n-u_n=11\left(\frac1{12}\right)^n$. نعوض $v_n=u_n+11\left(\frac1{12}\right)^n$ في المعادلة الأولى:
+\[3u_n+8u_n+88\left(\frac1{12}\right)^n=99\iff 11u_n=99-88\left(\frac1{12}\right)^n\]
+إذن:
+\[u_n=\bx{9-8\left(\frac1{12}\right)^n}\qquad\qquad v_n=u_n+11\left(\frac1{12}\right)^n=\bx{9+3\left(\frac1{12}\right)^n}\]
+تحقق: $u_0=9-8=1$ و $v_0=9+3=12$ \ok، و $u_1=9-\dfrac8{12}=\dfrac{25}3=\dfrac{1+24}{3}$ \ok.
+\end{hal}
+
+\begin{tamrin}{الوسط الحسابي والوسط التوافقي}
+نعتبر المتتاليتين $(u_n)$ و $(v_n)$ المعرفتين بـ: $u_0=1$ و $v_0=4$، ومن أجل كل عدد طبيعي $n$:
+\[u_{n+1}=\frac{2u_nv_n}{u_n+v_n}\qquad\text{و}\qquad v_{n+1}=\frac{u_n+v_n}{2}\]
+\QQ{1} احسب $u_1$ و $v_1$ و $u_2$ و $v_2$.
+\QQ{2} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>0$ و $v_n>0$.
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $v_{n+1}-u_{n+1}=\dfrac{\left(v_n-u_n\right)^2}{2\left(u_n+v_n\right)}$.
+\qb استنتج أنه من أجل كل عدد طبيعي $n$: $u_n\leqslant v_n$.
+\end{sq}
+\QQ{4} بيّن أن المتتالية $(u_n)$ متزايدة وأن المتتالية $(v_n)$ متناقصة.
+\QQ{5}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $v_{n+1}-u_{n+1}\leqslant\dfrac12\left(v_n-u_n\right)$.
+\qb استنتج أنه من أجل كل عدد طبيعي $n$: $0\leqslant v_n-u_n\leqslant3\left(\dfrac12\right)^n$، ثم بيّن أن $(u_n)$ و $(v_n)$ متجاورتان.
+\end{sq}
+\QQ{6} بيّن أنه من أجل كل عدد طبيعي $n$: $u_nv_n=4$، ثم استنتج النهاية المشتركة $\ell$ للمتتاليتين.
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\[u_1=\frac{2\times1\times4}{1+4}=\bx{\frac85}\qquad v_1=\frac{1+4}{2}=\bx{\frac52}\]
+\[u_2=\frac{2\times\frac85\times\frac52}{\frac85+\frac52}=\frac{8}{\frac{41}{10}}=\bx{\frac{80}{41}}\qquad v_2=\frac{\frac85+\frac52}{2}=\frac{41}{20}=\bx{\frac{41}{20}}\]
+
+\QQ{2} نسمّي $P(n)$ الخاصية: «$u_n>0$ و $v_n>0$».
+\begin{itemize}
+\item \textbf{التحقق:} $u_0=1>0$ و $v_0=4>0$، إذن $P(0)$ صحيحة.
+\item \textbf{الوراثة:} نفرض أن $u_n>0$ و $v_n>0$. إذن $u_n+v_n>0$ و $2u_nv_n>0$، ومنه $u_{n+1}=\dfrac{2u_nv_n}{u_n+v_n}>0$ و $v_{n+1}=\dfrac{u_n+v_n}{2}>0$، أي $P(n+1)$ صحيحة.
+\item \textbf{الخلاصة:} من أجل كل عدد طبيعي $n$: \bx{u_n>0} و \bx{v_n>0} (وبالتالي $u_n+v_n\neq0$ والمتتاليتان معرفتان).
+\end{itemize}
+
+\QQ{3}
+\pa من أجل كل عدد طبيعي $n$:
+\[v_{n+1}-u_{n+1}=\frac{u_n+v_n}{2}-\frac{2u_nv_n}{u_n+v_n}=\frac{\left(u_n+v_n\right)^2-4u_nv_n}{2\left(u_n+v_n\right)}=\frac{u_n^2-2u_nv_n+v_n^2}{2\left(u_n+v_n\right)}=\frac{\left(v_n-u_n\right)^2}{2\left(u_n+v_n\right)}\]
+
+\pb البسط $\left(v_n-u_n\right)^2\geqslant0$ والمقام $2(u_n+v_n)>0$، إذن $v_{n+1}-u_{n+1}\geqslant0$ من أجل كل $n$، أي $u_n\leqslant v_n$ من أجل كل $n\geqslant1$. ومن أجل $n=0$: $u_0=1\leqslant4=v_0$. إذن من أجل كل عدد طبيعي $n$: \bx{u_n\leqslant v_n}.
+
+\QQ{4} من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac{2u_nv_n-u_n\left(u_n+v_n\right)}{u_n+v_n}=\frac{u_n\left(v_n-u_n\right)}{u_n+v_n}\geqslant0\]
+لأن $u_n>0$ و $v_n-u_n\geqslant0$ و $u_n+v_n>0$. إذن $(u_n)$ \bxt{متزايدة}.
+\[v_{n+1}-v_n=\frac{u_n+v_n}{2}-v_n=\frac{u_n-v_n}{2}\leqslant0\]
+إذن $(v_n)$ \bxt{متناقصة}.
+
+\QQ{5}
+\pa لدينا $u_n>0$ إذن $v_n-u_n\leqslant v_n<v_n+u_n$، ومنه $0\leqslant\dfrac{v_n-u_n}{u_n+v_n}\leqslant1$. إذن:
+\[v_{n+1}-u_{n+1}=\frac{v_n-u_n}{2}\times\frac{v_n-u_n}{u_n+v_n}\leqslant\frac{v_n-u_n}{2}\times1\]
+أي \bx{v_{n+1}-u_{n+1}\leqslant\frac12\left(v_n-u_n\right)}.
+
+\pb نبرهن بالتراجع الخاصية $P(n)$: «$0\leqslant v_n-u_n\leqslant3\left(\frac12\right)^n$».
+\begin{itemize}
+\item \textbf{التحقق:} $v_0-u_0=3$ و $3\left(\frac12\right)^0=3$، إذن $0\leqslant3\leqslant3$ و $P(0)$ صحيحة.
+\item \textbf{الوراثة:} نفرض $0\leqslant v_n-u_n\leqslant3\left(\frac12\right)^n$. من السؤال 3: $v_{n+1}-u_{n+1}\geqslant0$، ومن (أ):
+\[v_{n+1}-u_{n+1}\leqslant\frac12\left(v_n-u_n\right)\leqslant\frac12\times3\left(\frac12\right)^n=3\left(\frac12\right)^{n+1}\]
+إذن $P(n+1)$ صحيحة.
+\item \textbf{الخلاصة:} من أجل كل عدد طبيعي $n$: \bx{0\leqslant v_n-u_n\leqslant3\left(\frac12\right)^n}.
+\end{itemize}
+بما أن $\limn3\left(\frac12\right)^n=0$ فإنه حسب مبرهنة الحصر $\limn\left(v_n-u_n\right)=0$. ومع كون $(u_n)$ متزايدة و $(v_n)$ متناقصة نستنتج أن $(u_n)$ و $(v_n)$ \bxt{متجاورتان}.
+
+\QQ{6} نبرهن بالتراجع: $u_0v_0=1\times4=4$. نفرض $u_nv_n=4$، عندئذٍ:
+\[u_{n+1}v_{n+1}=\frac{2u_nv_n}{u_n+v_n}\times\frac{u_n+v_n}{2}=u_nv_n=4\]
+إذن من أجل كل عدد طبيعي $n$: \bx{u_nv_n=4}.
+
+المتتاليتان متجاورتان إذن متقاربتان نحو النهاية نفسها $\ell$. بالمرور إلى النهاية: $\ell\times\ell=4$ أي $\ell^2=4$. وبما أن $u_n\geqslant u_0=1$ (لأن $(u_n)$ متزايدة) فإن $\ell\geqslant1>0$، إذن:
+\[\ell=\bx{2}\]
+\textbf{ملاحظة:} التقارب سريع جدًا: $u_2=\dfrac{80}{41}\approx1{,}951$ و $v_2=\dfrac{41}{20}=2{,}05$.
+\end{hal}
+
+\section{اختيار من متعدد وصحيح أم خطأ}
+
+\begin{tamrin}{اختيار من متعدد}
+في كل سؤال من الأسئلة التالية اختر الإجابة الصحيحة الوحيدة مع التعليل:
+\QQ{1} $\limn\left(-0{,}9\right)^n$ تساوي:
+\ABC{$0$}{$-\infty$}{غير موجودة}
+\QQ{2} المتتالية $(u_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $u_n=(-1)^n$:
+\ABC{متقاربة}{محدودة وليست متقاربة}{نهايتها $+\infty$}
+\QQ{3} إذا كانت $(u_n)$ متزايدة ومن أجل كل عدد طبيعي $n$: $u_n\leqslant5$، فإن $(u_n)$:
+\ABC{متباعدة}{متقاربة ونهايتها حتمًا $5$}{متقاربة نحو عدد $\ell\leqslant5$}
+\QQ{4} $(u_n)$ متتالية متقاربة معرفة بـ: $u_0=0$ و $u_{n+1}=\sqrt{u_n+6}$. نهايتها هي:
+\ABC{$2$}{$3$}{$-2$}
+\QQ{5} نهاية المجموع $S_n=1+\dfrac12+\dfrac14+\cdots+\dfrac1{2^n}$ هي:
+\ABC{$1$}{$+\infty$}{$2$}
+\QQ{6} المتتاليتان $(u_n)$ و $(v_n)$ المعرفتان من أجل كل عدد طبيعي غير معدوم $n$ بـ: $u_n=1-\dfrac1n$ و $v_n=1+\dfrac1{n^2}$:
+\ABC{متجاورتان}{نهايتاهما مختلفتان}{متباعدتان}
+\end{tamrin}
+\begin{hal}
+\QQ{1} الإجابة الصحيحة: \textbf{(أ)}. لأن $-1<-0{,}9<1$، إذن $\limn\left(-0{,}9\right)^n=\bx{0}$ (الحدود تتناوب في الإشارة لكن قيمتها المطلقة $0{,}9^n$ تؤول إلى $0$).
+
+\QQ{2} الإجابة الصحيحة: \textbf{(ب)}. من أجل كل $n$: $-1\leqslant u_n\leqslant1$ إذن $(u_n)$ محدودة. لكن $u_{2p}=1$ و $u_{2p+1}=-1$: الحدود ذات الرتب الزوجية تقترب من $1$ والفردية من $-1$، فلا يمكن أن تقترب كل الحدود من عدد واحد، إذن $(u_n)$ \bxt{محدودة وليست متقاربة}.
+
+\QQ{3} الإجابة الصحيحة: \textbf{(جـ)}. كل متتالية متزايدة ومحدودة من الأعلى متقاربة، ونهايتها $\ell$ تحقق $\ell\leqslant5$ (بالمرور إلى النهاية في $u_n\leqslant5$). لكن النهاية ليست بالضرورة $5$: مثلًا $u_n=1-\dfrac1{n+1}$ متزايدة و $u_n\leqslant5$ ونهايتها $1$.
+
+\QQ{4} الإجابة الصحيحة: \textbf{(ب)}. الدالة $f:x\mapsto\sqrt{x+6}$ مستمرة على $[0;+\infty[$ و $u_n\geqslant0$، إذن النهاية $\ell\geqslant0$ تحقق $\ell=f(\ell)$:
+\[\ell=\sqrt{\ell+6}\iff\ell^2=\ell+6\ \ (\ell\geqslant0)\iff(\ell-3)(\ell+2)=0\]
+وبما أن $\ell\geqslant0$ فإن $\ell=\bx{3}$ (القيمة $-2$ مرفوضة).
+
+\QQ{5} الإجابة الصحيحة: \textbf{(جـ)}. $S_n$ مجموع $n+1$ حدًا من متتالية هندسية أساسها $\dfrac12$ وحدها الأول $1$:
+\[S_n=\frac{1-\left(\frac12\right)^{n+1}}{1-\frac12}=2\left(1-\left(\frac12\right)^{n+1}\right)\xrightarrow[n\to+\infty]{}\bx{2}\]
+
+\QQ{6} الإجابة الصحيحة: \textbf{(أ)}. من أجل $n\geqslant1$:
+\begin{itemize}
+\item $u_{n+1}-u_n=\dfrac1n-\dfrac1{n+1}=\dfrac{1}{n(n+1)}>0$ إذن $(u_n)$ متزايدة؛
+\item $v_{n+1}-v_n=\dfrac1{(n+1)^2}-\dfrac1{n^2}<0$ إذن $(v_n)$ متناقصة؛
+\item $v_n-u_n=\dfrac1{n^2}+\dfrac1n\xrightarrow[n\to+\infty]{}0$.
+\end{itemize}
+إذن المتتاليتان \bxt{متجاورتان}، ونهايتهما المشتركة $1$.
+\end{hal}
+
+\begin{tamrin}{صحيح أم خطأ}
+أجب بـ «صحيح» أو «خطأ» مع التعليل في كل حالة من الحالات التالية:
+\QQ{1} كل متتالية محدودة هي متتالية متقاربة.
+\QQ{2} كل متتالية متقاربة هي متتالية محدودة.
+\QQ{3} إذا كان من أجل كل عدد طبيعي $n$: $u_n\leqslant v_n$ و $\limn u_n=+\infty$ فإن $\limn v_n=+\infty$.
+\QQ{4} إذا كانت المتتالية $(u_n)$ متزايدة تمامًا فإن $\limn u_n=+\infty$.
+\QQ{5} المتتالية $(u_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $u_n=n\,e^{-n}$ متقاربة نحو $0$.
+\QQ{6} إذا كان $\limn\left(u_{n+1}-u_n\right)=0$ فإن المتتالية $(u_n)$ متقاربة.
+\end{tamrin}
+\begin{hal}
+\QQ{1} \textbf{خطأ}. مثال مضاد: $u_n=(-1)^n$ محدودة ($-1\leqslant u_n\leqslant1$) لكنها ليست متقاربة لأن حدودها تتناوب بين $1$ و $-1$.
+
+\QQ{2} \textbf{صحيح}. إذا كانت $(u_n)$ متقاربة نحو $\ell$ فإن كل الحدود ابتداءً من رتبة $n_0$ تنتمي إلى المجال $]\ell-1;\ell+1[$، والحدود التي قبلها عددها منته؛ إذن أصغر هذه القيم وأكبرها يحصران كل الحدود، فالمتتالية محدودة.
+
+\QQ{3} \textbf{صحيح}. هذه مبرهنة المقارنة: من أجل كل عدد حقيقي $A$ يوجد $n_0$ بحيث من أجل كل $n\geqslant n_0$: $u_n>A$، ومنه $v_n\geqslant u_n>A$، إذن $\limn v_n=+\infty$.
+
+\QQ{4} \textbf{خطأ}. مثال مضاد: $u_n=1-\dfrac1{n+1}$ متزايدة تمامًا لأن $u_{n+1}-u_n=\dfrac1{n+1}-\dfrac1{n+2}>0$، لكن $\limn u_n=1$.
+
+\QQ{5} \textbf{صحيح}. لدينا $u_n=\dfrac{n}{e^n}$، ومن التزايد المقارن $\displaystyle\lim_{x\to+\infty}\frac{e^x}{x}=+\infty$، إذن $\displaystyle\lim_{x\to+\infty}\frac{x}{e^x}=0$، ومنه $\limn u_n=\bx{0}$.
+
+\QQ{6} \textbf{خطأ}. مثال مضاد: $u_n=\ln n$ من أجل $n\geqslant1$. لدينا:
+\[u_{n+1}-u_n=\ln(n+1)-\ln n=\ln\left(1+\frac1n\right)\xrightarrow[n\to+\infty]{}\ln1=0\]
+لكن $\limn\ln n=+\infty$، إذن $(u_n)$ ليست متقاربة.
+\end{hal}
+
+\section{تمارين شعبة رياضيات}
+
+\begin{tamrin}{التقارب نحو حل معادلة -- شعبة رياضيات}
+\textbf{الجزء الأول:} نعتبر الدالة $h$ المعرفة على $\R$ بـ: $h(x)=x-e^{-x}$.
+\QQ{1} احسب $\displaystyle\lim_{x\to-\infty}h(x)$ و $\displaystyle\lim_{x\to+\infty}h(x)$، ثم ادرس اتجاه تغير $h$ وشكّل جدول تغيراتها.
+\QQ{2} بيّن أن المعادلة $h(x)=0$ تقبل حلًا وحيدًا $\alpha$ حيث $0{,}5<\alpha<0{,}6$، ثم تحقق أن $e^{-\alpha}=\alpha$.
+
+\textbf{الجزء الثاني:} نعتبر الدالة $f$ المعرفة على $\R$ بـ: $f(x)=e^{-x}$، والمجال $I=\left[\frac12;\ln2\right]$.
+\QQ{1} علمًا أن $e>\dfrac94$ و $e^2<8$، بيّن أن: $e^{-\frac12}<\dfrac23<\ln2$.
+\QQ{2} بيّن أنه من أجل كل $x$ من $I$: $f(x)\in I$.
+\QQ{3} نعتبر الدالة $\varphi$ المعرفة على $I$ بـ: $\varphi(x)=e^{-x}+\dfrac23x$.
+\begin{sq}
+\qa بيّن أن $\varphi$ متزايدة على $I$.
+\qb استنتج أنه من أجل كل $x$ من $I$: $\left|f(x)-\alpha\right|\leqslant\dfrac23\left|x-\alpha\right|$.
+\end{sq}
+
+\textbf{الجزء الثالث:} نعتبر المتتالية $(u_n)$ المعرفة بـ: $u_0=\dfrac12$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=e^{-u_n}$.
+\QQ{1} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n\in I$.
+\QQ{2} بيّن أنه من أجل كل عدد طبيعي $n$: $\left|u_{n+1}-\alpha\right|\leqslant\dfrac23\left|u_n-\alpha\right|$، ثم استنتج أن: $\left|u_n-\alpha\right|\leqslant\dfrac1{10}\left(\dfrac23\right)^n$.
+\QQ{3} استنتج أن $(u_n)$ متقاربة وعيّن نهايتها.
+\QQ{4} عيّن أصغر عدد طبيعي $n_0$ بحيث $\dfrac1{10}\left(\dfrac23\right)^{n_0}\leqslant10^{-3}$، ثم أعط قيمة مقربة لـ $\alpha$ إلى $10^{-3}$ علمًا أن $u_{12}\approx0{,}5672$.
+\end{tamrin}
+\begin{hal}
+\textbf{الجزء الأول:}
+
+\QQ{1} \textbf{عند $-\infty$:} $\displaystyle\lim_{x\to-\infty}e^{-x}=+\infty$ (لأن $-x\to+\infty$) و $\displaystyle\lim_{x\to-\infty}x=-\infty$، إذن:
+\[\lim_{x\to-\infty}h(x)=-\infty-(+\infty)=\bx{-\infty}\]
+\textbf{عند $+\infty$:} $\displaystyle\lim_{x\to+\infty}e^{-x}=0$، إذن $\displaystyle\lim_{x\to+\infty}h(x)=\bx{+\infty}$.
+
+$h$ قابلة للاشتقاق على $\R$ و $h'(x)=1-\left(-e^{-x}\right)=1+e^{-x}>0$، إذن $h$ \bxt{متزايدة تمامًا على $\R$}.
+\begin{TAB}
+\tkzTabInit[lgt=2,espcl=4]{$x$/1,$h'(x)$/1,$h(x)$/2}{$-\infty$,$+\infty$}
+\tkzTabLine{,+,}
+\tkzTabVar{-/$-\infty$,+/$+\infty$}
+\end{TAB}
+
+\QQ{2} الدالة $h$ مستمرة ومتزايدة تمامًا على $[0{,}5;0{,}6]$، و:
+\[h(0{,}5)=0{,}5-e^{-0{,}5}\approx-0{,}107<0\qquad h(0{,}6)=0{,}6-e^{-0{,}6}\approx0{,}051>0\]
+إذن حسب مبرهنة القيم المتوسطة (حالة الدالة الرتيبة تمامًا) المعادلة $h(x)=0$ تقبل حلًا وحيدًا $\alpha$ في $]0{,}5;0{,}6[$. وبما أن $h$ متزايدة تمامًا على $\R$ فإن هذا الحل وحيد في $\R$: \bx{0{,}5<\alpha<0{,}6}.
+
+ومن $h(\alpha)=0$ نجد $\alpha-e^{-\alpha}=0$ أي \bx{e^{-\alpha}=\alpha}.
+
+\textbf{الجزء الثاني:}
+
+\QQ{1} من $e>\dfrac94$ والدالة الجذر التربيعي متزايدة تمامًا: $\sqrt e>\dfrac32$، وبالمقلوب: $e^{-\frac12}=\dfrac1{\sqrt e}<\dfrac23$.
+
+ومن $e^2<8$ والدالة $\ln$ متزايدة تمامًا: $2<\ln8=3\ln2$ أي $\dfrac23<\ln2$. إذن:
+\[\bx{e^{-\frac12}<\frac23<\ln2}\]
+
+\QQ{2} الدالة $f$ متناقصة تمامًا على $\R$ (لأن $f'(x)=-e^{-x}<0$). من أجل $\dfrac12\leqslant x\leqslant\ln2$:
+\[f(\ln2)\leqslant f(x)\leqslant f\left(\tfrac12\right)\quad\text{أي}\quad e^{-\ln2}=\frac12\leqslant f(x)\leqslant e^{-\frac12}\]
+وبما أن $e^{-\frac12}<\ln2$ (السؤال 1) فإن $\dfrac12\leqslant f(x)\leqslant\ln2$، أي \bx{f(x)\in I}.
+
+\QQ{3}
+\pa $\varphi$ قابلة للاشتقاق على $I$ و $\varphi'(x)=-e^{-x}+\dfrac23$. من أجل $x\geqslant\dfrac12$: $-x\leqslant-\dfrac12$ إذن $e^{-x}\leqslant e^{-\frac12}<\dfrac23$، ومنه $\varphi'(x)>0$. إذن $\varphi$ \bxt{متزايدة تمامًا على $I$}.
+
+\pb لدينا $\alpha\in]0{,}5;0{,}6[$ و $0{,}6<\dfrac23<\ln2$، إذن $\alpha\in I$. وتذكّر أن $f(\alpha)=e^{-\alpha}=\alpha$. ليكن $x\in I$:
+\begin{itemize}
+\item \textbf{إذا كان $x\geqslant\alpha$:} $f$ متناقصة إذن $f(x)\leqslant f(\alpha)$، أي $\left|f(x)-\alpha\right|=e^{-\alpha}-e^{-x}$. و $\varphi$ متزايدة إذن $\varphi(x)\geqslant\varphi(\alpha)$:
+\[e^{-x}+\tfrac23x\geqslant e^{-\alpha}+\tfrac23\alpha\iff e^{-\alpha}-e^{-x}\leqslant\tfrac23(x-\alpha)\]
+أي $\left|f(x)-\alpha\right|\leqslant\dfrac23\left|x-\alpha\right|$.
+\item \textbf{إذا كان $x\leqslant\alpha$:} $f(x)\geqslant f(\alpha)$ أي $\left|f(x)-\alpha\right|=e^{-x}-e^{-\alpha}$. و $\varphi(x)\leqslant\varphi(\alpha)$:
+\[e^{-x}+\tfrac23x\leqslant e^{-\alpha}+\tfrac23\alpha\iff e^{-x}-e^{-\alpha}\leqslant\tfrac23(\alpha-x)\]
+أي $\left|f(x)-\alpha\right|\leqslant\dfrac23\left|x-\alpha\right|$.
+\end{itemize}
+إذن من أجل كل $x$ من $I$: \bx{\left|f(x)-\alpha\right|\leqslant\frac23\left|x-\alpha\right|}.
+
+\textbf{الجزء الثالث:}
+
+\QQ{1} \textbf{التحقق:} $u_0=\dfrac12\in I$. \textbf{الوراثة:} إذا كان $u_n\in I$ فإن $u_{n+1}=f(u_n)\in I$ حسب السؤال 2 من الجزء الثاني. \textbf{الخلاصة:} من أجل كل عدد طبيعي $n$: \bx{u_n\in I}.
+
+\QQ{2} بما أن $u_n\in I$، نطبّق نتيجة الجزء الثاني (3-ب) مع $x=u_n$:
+\[\left|u_{n+1}-\alpha\right|=\left|f(u_n)-\alpha\right|\leqslant\bx{\frac23\left|u_n-\alpha\right|}\]
+نبرهن الآن بالتراجع أن $\left|u_n-\alpha\right|\leqslant\dfrac1{10}\left(\dfrac23\right)^n$:
+\begin{itemize}
+\item من أجل $n=0$: $\left|u_0-\alpha\right|=\alpha-0{,}5<0{,}6-0{,}5=\dfrac1{10}=\dfrac1{10}\left(\dfrac23\right)^0$. صحيحة.
+\item نفرض أنها صحيحة من أجل $n$. عندئذٍ:
+\[\left|u_{n+1}-\alpha\right|\leqslant\frac23\left|u_n-\alpha\right|\leqslant\frac23\times\frac1{10}\left(\frac23\right)^n=\frac1{10}\left(\frac23\right)^{n+1}\]
+\end{itemize}
+إذن من أجل كل عدد طبيعي $n$: \bx{\left|u_n-\alpha\right|\leqslant\frac1{10}\left(\frac23\right)^n}.
+
+\QQ{3} بما أن $-1<\dfrac23<1$ فإن $\limn\dfrac1{10}\left(\dfrac23\right)^n=0$، ومنه حسب مبرهنة الحصر ($0\leqslant\left|u_n-\alpha\right|\leqslant\frac1{10}\left(\frac23\right)^n$): $\limn\left|u_n-\alpha\right|=0$، إذن $(u_n)$ متقاربة و:
+\[\limn u_n=\bx{\alpha}\]
+
+\QQ{4} الدالة $\ln$ متزايدة تمامًا، و $\ln\dfrac23<0$:
+\[\frac1{10}\left(\frac23\right)^n\leqslant10^{-3}\iff\left(\frac23\right)^n\leqslant10^{-2}\iff n\ln\frac23\leqslant-\ln100\iff n\geqslant\frac{\ln100}{\ln\frac32}\approx11{,}36\]
+(قسمنا على العدد السالب $\ln\frac23=-\ln\frac32$ فتغير اتجاه المتباينة). إذن أصغر عدد طبيعي هو \bx{n_0=12}.
+
+ومنه $\left|u_{12}-\alpha\right|\leqslant10^{-3}$، أي $u_{12}$ قيمة مقربة لـ $\alpha$ إلى $10^{-3}$:
+\[\bx{\alpha\approx0{,}567}\]
+\end{hal}
+
+\begin{tamrin}{متتاليتان متجاورتان والعدد $e$ -- شعبة رياضيات}
+نذكّر أن $0!=1$ وأنه من أجل كل عدد طبيعي غير معدوم $k$: $k!=1\times2\times\cdots\times k$.
+
+نعتبر المتتاليتين $(u_n)$ و $(v_n)$ المعرفتين من أجل كل عدد طبيعي غير معدوم $n$ بـ:
+\[u_n=\sum_{k=0}^{n}\frac1{k!}=1+\frac1{1!}+\frac1{2!}+\cdots+\frac1{n!}\qquad\text{و}\qquad v_n=u_n+\frac1{n\times n!}\]
+\QQ{1} احسب $u_1$ و $v_1$ و $u_2$ و $v_2$ و $u_3$ و $v_3$.
+\QQ{2} بيّن أن المتتالية $(u_n)$ متزايدة تمامًا.
+\QQ{3} بيّن أنه من أجل كل عدد طبيعي غير معدوم $n$: $v_{n+1}-v_n=\dfrac{-1}{n(n+1)\times(n+1)!}$، ثم استنتج اتجاه تغير $(v_n)$.
+\QQ{4} بيّن أن المتتاليتين $(u_n)$ و $(v_n)$ متجاورتان. نرمز بـ $\ell$ إلى نهايتهما المشتركة (نقبل أن $\ell=e$).
+\QQ{5} بيّن أنه من أجل كل عدد طبيعي غير معدوم $n$: $u_n<\ell<v_n$، ثم أعط حصرًا لـ $\ell$ باستعمال $u_5$ و $v_5$، واستنتج قيمة مقربة لـ $\ell$ إلى $10^{-2}$.
+\QQ{6} نريد أن نبرهن أن $\ell$ عدد غير ناطق. نفرض أن $\ell=\dfrac pq$ حيث $p$ و $q$ عددان طبيعيان غير معدومين.
+\begin{sq}
+\qa بيّن أن العدد $N=q\times q!\times u_q$ عدد طبيعي.
+\qb باستعمال السؤال 5 من أجل $n=q$، بيّن أن $N<p\times q!<N+1$، ثم استنتج تناقضًا.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\[u_1=1+1=\bx{2}\qquad v_1=2+\frac1{1\times1}=\bx{3}\]
+\[u_2=2+\frac12=\bx{\frac52}\qquad v_2=\frac52+\frac1{2\times2}=\bx{\frac{11}4}\]
+\[u_3=\frac52+\frac16=\bx{\frac83}\qquad v_3=\frac83+\frac1{3\times6}=\bx{\frac{49}{18}}\]
+
+\QQ{2} من أجل كل عدد طبيعي غير معدوم $n$:
+\[u_{n+1}-u_n=\frac1{(n+1)!}>0\]
+إذن $(u_n)$ \bxt{متزايدة تمامًا}.
+
+\QQ{3} نستعمل $(n+1)!=(n+1)\times n!$ أي $\dfrac1{n!}=\dfrac{n+1}{(n+1)!}$:
+\[v_{n+1}-v_n=\left(u_{n+1}-u_n\right)+\frac1{(n+1)(n+1)!}-\frac1{n\times n!}=\frac1{(n+1)!}+\frac1{(n+1)(n+1)!}-\frac{n+1}{n(n+1)!}\]
+نوحّد المقامات على $n(n+1)(n+1)!$:
+\[v_{n+1}-v_n=\frac{n(n+1)+n-(n+1)^2}{n(n+1)(n+1)!}=\frac{n^2+2n-n^2-2n-1}{n(n+1)(n+1)!}=\bx{\frac{-1}{n(n+1)\times(n+1)!}}\]
+وهذا العدد سالب تمامًا، إذن $(v_n)$ \bxt{متناقصة تمامًا}.
+
+\QQ{4} $(u_n)$ متزايدة و $(v_n)$ متناقصة، و $v_n-u_n=\dfrac1{n\times n!}$. بما أن $n\times n!\geqslant n$ فإن $0<v_n-u_n\leqslant\dfrac1n$، ومنه حسب الحصر $\limn\left(v_n-u_n\right)=0$. إذن المتتاليتان \bxt{متجاورتان} وتتقاربان نحو النهاية نفسها $\ell$.
+
+\QQ{5} بما أن $(u_n)$ متزايدة تمامًا ومتقاربة نحو $\ell$ فإن $u_n<u_{n+1}\leqslant\ell$، وبما أن $(v_n)$ متناقصة تمامًا ومتقاربة نحو $\ell$ فإن $\ell\leqslant v_{n+1}<v_n$. إذن من أجل كل $n\geqslant1$: \bx{u_n<\ell<v_n}.
+
+من أجل $n=5$:
+\[u_5=\frac83+\frac1{24}+\frac1{120}=\frac{163}{60}\approx2{,}7167\qquad v_5=\frac{163}{60}+\frac1{5\times120}=\frac{1631}{600}\approx2{,}7183\]
+إذن \bx{2{,}716<\ell<2{,}719}، ومنه $\ell\approx\bx{2{,}72}$ إلى $10^{-2}$ (وهي فعلًا قيمة مقربة للعدد $e$).
+
+\QQ{6}
+\pa لدينا:
+\[N=q\times q!\times\sum_{k=0}^{q}\frac1{k!}=q\times\sum_{k=0}^{q}\frac{q!}{k!}\]
+ومن أجل $0\leqslant k\leqslant q$: $\dfrac{q!}{k!}=(k+1)(k+2)\cdots q$ عدد طبيعي (ويساوي $1$ إذا كان $k=q$). إذن $N$ \bxt{عدد طبيعي}.
+
+\pb من السؤال 5 مع $n=q$: $u_q<\dfrac pq<u_q+\dfrac1{q\times q!}$. نضرب الأطراف في العدد الموجب تمامًا $q\times q!$:
+\[q\times q!\times u_q<p\times q!<q\times q!\times u_q+1\quad\text{أي}\quad\bx{N<p\times q!<N+1}\]
+لكن $p\times q!$ عدد طبيعي محصور تمامًا بين عددين طبيعيين متتاليين $N$ و $N+1$، وهذا مستحيل. إذن الفرضية خاطئة و $\ell$ \bxt{عدد غير ناطق}.
+\end{hal}
+
+\Needspace{20\baselineskip}
+\begin{tamrin}{دراسة دالة ومتتالية تراجعية -- شعبة رياضيات}
+\textbf{الجزء الأول:} نعتبر الدالة $g$ المعرفة على $]0;+\infty[$ بـ: $g(x)=x-1-\ln x$.
+\QQ{1} احسب $\displaystyle\lim_{x\to0^+}g(x)$ و $\displaystyle\lim_{x\to+\infty}g(x)$.
+\QQ{2} ادرس اتجاه تغير $g$ وشكّل جدول تغيراتها.
+\QQ{3} استنتج أنه من أجل كل $x>0$: $\ln x\leqslant x-1$، مع المساواة إذا وفقط إذا كان $x=1$.
+
+\textbf{الجزء الثاني:} نعتبر الدالة $f$ المعرفة على $[1;+\infty[$ بـ: $f(x)=1+\ln x$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس، و $(\Delta)$ المستقيم ذو المعادلة $y=x$.
+\QQ{1} ادرس اتجاه تغير $f$، ثم بيّن أنه من أجل كل $x\geqslant1$: $f(x)\geqslant1$.
+\QQ{2} اكتب معادلة للمماس $(T)$ لـ $(C_f)$ في النقطة ذات الفاصلة $1$.
+\QQ{3} ادرس الوضع النسبي لـ $(C_f)$ و $(\Delta)$.
+
+\textbf{الجزء الثالث:} نعتبر المتتالية $(u_n)$ المعرفة بـ: $u_0=e$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\QQ{1} احسب $u_1$ و $u_2$.
+\QQ{2} ارسم $(C_f)$ و $(\Delta)$، ثم مثّل على حامل محور الفواصل الحدود $u_0$ و $u_1$ و $u_2$ و $u_3$ دون حسابها. ضع تخمينًا حول اتجاه تغير $(u_n)$ وتقاربها.
+\QQ{3} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n\geqslant1$.
+\QQ{4} بيّن أن المتتالية $(u_n)$ متناقصة.
+\QQ{5} استنتج أن $(u_n)$ متقاربة، ثم عيّن نهايتها.
+\end{tamrin}
+\begin{hal}
+\textbf{الجزء الأول:}
+
+\QQ{1} \textbf{عند $0^+$:} $\displaystyle\lim_{x\to0^+}\ln x=-\infty$ إذن $\displaystyle\lim_{x\to0^+}(-\ln x)=+\infty$، و $\displaystyle\lim_{x\to0^+}(x-1)=-1$، إذن:
+\[\lim_{x\to0^+}g(x)=\bx{+\infty}\]
+\textbf{عند $+\infty$:} حالة عدم تعيين $\infty-\infty$. نكتب $g(x)=x\left(1-\dfrac1x-\dfrac{\ln x}{x}\right)$. ولدينا $\displaystyle\lim_{x\to+\infty}\frac{\ln x}{x}=0$ و $\displaystyle\lim_{x\to+\infty}\frac1x=0$، إذن:
+\[\lim_{x\to+\infty}g(x)=+\infty\times1=\bx{+\infty}\]
+
+\QQ{2} $g$ قابلة للاشتقاق على $]0;+\infty[$ و:
+\[g'(x)=1-\frac1x=\frac{x-1}{x}\]
+بما أن $x>0$ فإن إشارة $g'(x)$ هي إشارة $x-1$: سالبة على $]0;1[$ وموجبة على $]1;+\infty[$. و $g(1)=1-1-\ln1=0$.
+\begin{TAB}
+\tkzTabInit[lgt=2,espcl=3]{$x$/1,$g'(x)$/1,$g(x)$/2}{$0$,$1$,$+\infty$}
+\tkzTabLine{d,-,z,+,}
+\tkzTabVar{D+/$+\infty$,-/$0$,+/$+\infty$}
+\end{TAB}
+
+\QQ{3} من جدول التغيرات، $0$ هي القيمة الحدية الصغرى للدالة $g$ على $]0;+\infty[$، تُبلَغ عند $x=1$ فقط ($g$ متناقصة تمامًا على $]0;1]$ ومتزايدة تمامًا على $[1;+\infty[$). إذن من أجل كل $x>0$: $g(x)\geqslant0$ أي:
+\[\bx{\ln x\leqslant x-1}\]
+والمساواة $g(x)=0$ تتحقق إذا وفقط إذا كان $x=1$.
+
+\textbf{الجزء الثاني:}
+
+\QQ{1} $f$ قابلة للاشتقاق على $[1;+\infty[$ و $f'(x)=\dfrac1x>0$، إذن $f$ \bxt{متزايدة تمامًا على $[1;+\infty[$}.
+
+ومن أجل $x\geqslant1$: $f(x)\geqslant f(1)=1+\ln1=1$، أي \bx{f(x)\geqslant1}.
+
+\QQ{2} $f(1)=1$ و $f'(1)=\dfrac11=1$، إذن $(T):\ y=f'(1)(x-1)+f(1)=1\times(x-1)+1$، أي:
+\[(T):\ \bx{y=x}\]
+إذن المماس $(T)$ هو المستقيم $(\Delta)$ نفسه.
+
+\QQ{3} من أجل $x\geqslant1$:
+\[f(x)-x=1+\ln x-x=-g(x)\leqslant0\]
+\begin{itemize}
+\item من أجل $x>1$: $g(x)>0$ إذن $f(x)-x<0$: $(C_f)$ \textbf{تحت} $(\Delta)$.
+\item من أجل $x=1$: $f(1)-1=0$: $(C_f)$ و $(\Delta)$ يتقاطعان في النقطة $A(1;1)$، وفيها يمس $(\Delta)$ المنحنى $(C_f)$.
+\end{itemize}
+
+\textbf{الجزء الثالث:}
+
+\QQ{1}
+\[u_1=f(e)=1+\ln e=\bx{2}\qquad u_2=f(2)=\bx{1+\ln2}\approx1{,}69\]
+
+\QQ{2} نرسم $(C_f)$ و $(\Delta)$، ثم ننطلق من $u_0=e$ على محور الفواصل: نصعد عموديًا إلى $(C_f)$ فنقرأ $u_1=f(u_0)$ على محور التراتيب، ثم ننقله إلى محور الفواصل بواسطة $(\Delta)$ (أفقيًا إلى $(\Delta)$ ثم عموديًا إلى محور الفواصل)، وهكذا.
+\begin{GR}{-0.5}{3.4}{-0.5}{2.6}{2.4}
+ \Ticks{1,2,3}{1,2}
+ \draw[cDef,thick] (-0.5,-0.5)--(3.4,3.4);
+ \draw[cThm,very thick,domain=1:3.4,samples=100] plot (\x,{1+ln(\x)});
+ \draw[cEx,thick] (2.718,0)--(2.718,2)--(2,2)--(2,1.693)--(1.693,1.693)--(1.693,1.527)--(1.527,1.527);
+ \draw[cEx,dashed] (2,2)--(2,0) (1.693,1.693)--(1.693,0) (1.527,1.527)--(1.527,0);
+ \foreach \p in {2.718,2,1.693,1.527} \fill[cEx] (\p,0) circle (1.4pt);
+ \node[above,font=\scriptsize] at (2.80,0){$u_0$};
+ \node[above,font=\scriptsize] at (2.08,0){$u_1$};
+ \node[above,font=\scriptsize] at (1.76,0){$u_2$};
+ \node[above,font=\scriptsize] at (1.42,0){$u_3$};
+ \fill (1,1) circle (1.6pt) node[above left]{$A$};
+ \node[cThm] at (3.1,2.35){$(C_f)$};
+ \node[cDef] at (1.75,2.3){$(\Delta)$};
+\end{GR}
+\textbf{التخمين:} المتتالية $(u_n)$ \textbf{متناقصة} ومتقاربة نحو $1$ (فاصلة نقطة تقاطع $(C_f)$ و $(\Delta)$).
+
+\QQ{3} نسمّي $P(n)$ الخاصية: «$u_n\geqslant1$».
+\begin{itemize}
+\item \textbf{التحقق:} $u_0=e\geqslant1$، إذن $P(0)$ صحيحة.
+\item \textbf{الوراثة:} نفرض أن $u_n\geqslant1$. حسب الجزء الثاني (السؤال 1): $f(u_n)\geqslant1$ أي $u_{n+1}\geqslant1$.
+\item \textbf{الخلاصة:} من أجل كل عدد طبيعي $n$: \bx{u_n\geqslant1}.
+\end{itemize}
+
+\QQ{4} من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=f(u_n)-u_n=-g(u_n)\leqslant0\]
+لأن $g(x)\geqslant0$ من أجل كل $x>0$ (الجزء الأول). إذن $(u_n)$ \bxt{متناقصة}.
+
+\QQ{5} $(u_n)$ متناقصة ومحدودة من الأسفل بالعدد $1$، إذن \textbf{فهي متقاربة}. لتكن $\ell$ نهايتها، ولدينا $\ell\geqslant1$.
+
+الدالة $f$ مستمرة على $[1;+\infty[$ و $u_{n+1}=f(u_n)$، إذن $\ell=f(\ell)$:
+\[\ell=1+\ln\ell\iff\ell-1-\ln\ell=0\iff g(\ell)=0\iff\ell=1\]
+(حسب الجزء الأول، $g$ تنعدم عند $1$ فقط). إذن:
+\[\limn u_n=\bx{1}\]
+وهذا يؤكد التخمين.
+\end{hal}
+
+\end{document}
