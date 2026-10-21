@@ -1,0 +1,2910 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}تمارين البكالوريا: الاحتمالات}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries تمارين البكالوريا في الاحتمالات}\\[8pt]
+{\color{white}\large مع الحلول المفصلة -- حتى دورة 2026}\\[5pt]
+{\color{white}\large علوم تجريبية -- تقني رياضي -- رياضيات}
+\end{tcolorbox}
+\end{LTR}
+\section{تمارين البكالوريا -- شعبة علوم تجريبية}
+% ===== تمارين البكالوريا في الاحتمالات -- علوم تجريبية =====
+\tikzset{
+ bsT/.style={grow'=right,level distance=3.5cm,
+   level 1/.style={sibling distance=2.8cm},level 2/.style={sibling distance=1.5cm},
+   edge from parent/.style={draw,thick,cDef!70!black}},
+ bsev/.style={circle,draw=cDef,fill=cDef!12,thick,minimum size=7mm,inner sep=1pt,font=\small},
+ bslf/.style={rectangle,rounded corners=3pt,draw=cDef,fill=cDef!12,thick,minimum width=11mm,minimum height=7mm,inner sep=1pt,font=\small},
+ bsp/.style={pos=0.68,fill=white,inner sep=0.8pt,font=\footnotesize},
+ bspr/.style={anchor=west,font=\small,xshift=3mm},
+ bshd/.style={anchor=west,font=\small\bfseries,xshift=3mm,yshift=8mm,text=cSec}}
+
+%======================== 1 ========================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الأول -- علوم تجريبية}
+\textbf{I)} يحتوي كيس على $9$ كريات متماثلة لا نفرق بينها باللمس، منها: كريتان تحملان الرقم $1$، وأربع كريات تحمل الرقم $2$، وثلاث كريات تحمل الرقم $3$.
+
+نسحب عشوائيًا من الكيس ثلاث كريات في آن واحد، ونعتبر الحوادث:
+
+$A$: «سحب ثلاث كريات تحمل نفس الرقم»، \quad $B$: «سحب ثلاث كريات أرقامها مختلفة مثنى مثنى»،
+
+$C$: «سحب ثلاث كريات مجموع أرقامها عدد زوجي».
+
+\QQ{1}
+\begin{sq}
+\qa أحسب $P(A)$، $P(B)$ و$P(C)$ احتمالات الحوادث $A$، $B$ و$C$ على الترتيب.
+\qb بيّن أن: $P(A\cap C)=\dfrac{1}{21}$ ثم استنتج $P_A(C)$.
+\end{sq}
+\QQ{2} $X$ المتغير العشوائي الذي يرفق بكل عملية سحب لثلاث كريات عدد الكريات التي تحمل الرقم $2$.
+
+عيّن قانون احتمال المتغير العشوائي $X$ ثم أحسب أمله الرياضياتي.
+
+\textbf{II)} نضيف إلى محتوى الكيس السابق $n$ كرية تحمل الرقم $1$ ثم نسحب منه كريتين على التوالي دون إرجاع.
+
+عيّن قيمة $n$ حتى يكون احتمال الحصول على كريتين لا تحمل أي منهما الرقم $1$ يساوي $\dfrac{1}{5}$.
+\end{tamrin}
+
+\begin{hal}
+\textbf{I)} السحب في آن واحد، فكل نتيجة هي توفيقة لـ $3$ كريات من بين $9$، والكريات متماثلة فالنتائج متساوية الاحتمال.
+
+عدد الحالات الممكنة: \quad $\operatorname{card}\Omega=C_9^3=\dfrac{9\times8\times7}{3\times2\times1}=84$.
+
+\begin{center}
+\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} الرقم & $1$ & $2$ & $3$ & المجموع\\\hline
+عدد الكريات & $2$ & $4$ & $3$ & $9$\\\hline
+\end{tabular}
+\end{center}
+
+\QQ{1}
+\pa \textbf{الحادثة $A$:} الكريات الثلاث تحمل نفس الرقم: إما ثلاث كريات تحمل $2$ ($C_4^3=4$ حالات)، أو ثلاث كريات تحمل $3$ ($C_3^3=1$)، ولا يمكن سحب ثلاث كريات تحمل $1$ لأنه توجد كريتان فقط.
+\[P(A)=\frac{C_4^3+C_3^3}{C_9^3}=\frac{4+1}{84}=\bx{\frac{5}{84}}\]
+\textbf{الحادثة $B$:} أرقام مختلفة مثنى مثنى، أي كرية من كل رقم: $C_2^1\times C_4^1\times C_3^1=2\times4\times3=24$.
+\[P(B)=\frac{24}{84}=\bx{\frac{2}{7}}\]
+\textbf{الحادثة $C$:} الكريات التي تحمل رقمًا فرديًا ($1$ أو $3$) عددها $2+3=5$، والتي تحمل رقمًا زوجيًا ($2$) عددها $4$.
+يكون مجموع ثلاثة أرقام زوجيًا إذا وفقط إذا كان عدد الأرقام الفردية بينها زوجيًا، أي $0$ أو $2$:
+\begin{itemize}
+\item ثلاث كريات زوجية: $C_4^3=4$؛
+\item كريتان فرديتان وكرية زوجية: $C_5^2\times C_4^1=10\times4=40$.
+\end{itemize}
+\[P(C)=\frac{4+40}{84}=\frac{44}{84}=\bx{\frac{11}{21}}\]
+
+\pb الحادثة $A\cap C$: ثلاث كريات تحمل نفس الرقم ومجموعها زوجي.
+\begin{itemize}
+\item ثلاث كريات تحمل $2$: المجموع $6$ زوجي، عدد الحالات $C_4^3=4$؛
+\item ثلاث كريات تحمل $3$: المجموع $9$ فردي، فهي مرفوضة.
+\end{itemize}
+\[P(A\cap C)=\frac{4}{84}=\bx{\frac{1}{21}}\]
+ومنه الاحتمال الشرطي:
+\[P_A(C)=\frac{P(A\cap C)}{P(A)}=\frac{\frac{4}{84}}{\frac{5}{84}}=\bx{\frac{4}{5}}\]
+
+\QQ{2} عدد الكريات التي تحمل الرقم $2$ بين الكريات الثلاث المسحوبة يمكن أن يكون $0$ أو $1$ أو $2$ أو $3$ (توجد $4$ كريات تحمل $2$ و$5$ كريات لا تحمله)، إذن $X(\Omega)=\{0;1;2;3\}$.
+\begin{align*}
+P(X=0)&=\frac{C_5^3}{84}=\frac{10}{84}=\frac{5}{42}, & P(X=1)&=\frac{C_4^1\times C_5^2}{84}=\frac{40}{84}=\frac{10}{21},\\
+P(X=2)&=\frac{C_4^2\times C_5^1}{84}=\frac{30}{84}=\frac{5}{14}, & P(X=3)&=\frac{C_4^3}{84}=\frac{4}{84}=\frac{1}{21}.
+\end{align*}
+قانون احتمال $X$:
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & $3$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{10}{84}$ & $\dfrac{40}{84}$ & $\dfrac{30}{84}$ & $\dfrac{4}{84}$ & $1$\\[8pt]\hline
+\end{tabular}
+\end{center}
+تحقق: $10+40+30+4=84$ \ok
+
+الأمل الرياضياتي:
+\[E(X)=\sum x_i\,P(X=x_i)=0\times\frac{10}{84}+1\times\frac{40}{84}+2\times\frac{30}{84}+3\times\frac{4}{84}=\frac{112}{84}=\bx{\frac{4}{3}}\]
+
+\textbf{II)} بعد الإضافة يصبح في الكيس $n+9$ كرية، منها $n+2$ تحمل الرقم $1$ و$7$ كريات لا تحمله. نرمز بـ $U$ للحادثة «الكرية تحمل الرقم $1$».
+السحب على التوالي دون إرجاع، فبعد السحب الأول يبقى $n+8$ كرية:
+\begin{center}\begin{LTR}\begin{tikzpicture}[bsT,level 1/.style={sibling distance=2.8cm},level 2/.style={sibling distance=1.5cm}]
+\node[bsev]{}
+ child{node[bsev]{$U$}
+   child{node[bsev](a1){$U$} edge from parent node[bsp]{$\dfrac{n+1}{n+8}$}}
+   child{node[bsev](a2){$\overline{U}$} edge from parent node[bsp]{$\dfrac{7}{n+8}$}}
+   edge from parent node[bsp]{$\dfrac{n+2}{n+9}$}}
+ child{node[bsev]{$\overline{U}$}
+   child{node[bsev](a3){$U$} edge from parent node[bsp]{$\dfrac{n+2}{n+8}$}}
+   child{node[bsev](a4){$\overline{U}$} edge from parent node[bsp]{$\dfrac{6}{n+8}$}}
+   edge from parent node[bsp]{$\dfrac{7}{n+9}$}};
+\node[bshd] at (a1.east){\ar{الاحتمال}};
+\node[bspr] at (a4.east){$\dfrac{7}{n+9}\times\dfrac{6}{n+8}$};
+\end{tikzpicture}\end{LTR}\end{center}
+الحادثة «لا تحمل أي من الكريتين الرقم $1$» هي المسار $\overline{U}\,\overline{U}$:
+\[P(\overline{U}\,\overline{U})=\frac{7}{n+9}\times\frac{6}{n+8}=\frac{42}{(n+9)(n+8)}\]
+نضع $\dfrac{42}{(n+9)(n+8)}=\dfrac15$ ومنه $(n+9)(n+8)=210$، أي $n^2+17n+72=210$:
+\[n^2+17n-138=0,\qquad \Delta=17^2+4\times138=289+552=841=29^2\]
+\[n_1=\frac{-17+29}{2}=6,\qquad n_2=\frac{-17-29}{2}=-23\]
+الحل $n_2=-23$ مرفوض لأن $n\in\N$.
+
+إذن \bx{n=6}. \quad تحقق: $\dfrac{7}{15}\times\dfrac{6}{14}=\dfrac{42}{210}=\dfrac15$ \ok
+\end{hal}
+
+%======================== 2 ========================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الثاني -- علوم تجريبية}
+\textbf{I)} يحتوي كيس على $10$ كريات متماثلة لا نفرق بينها باللمس، منها ذات الألوان: الأخضر، الأحمر والأبيض.
+نسحب من الكيس بطريقة عشوائية كرية واحدة، ونعرف قانون احتمال هذه التجربة بالجدول الآتي، حيث $\alpha\in\R$:
+\begin{center}
+\begin{tabular}{|C|C|C|C|}\hline
+\rowcolor{cSec!12} الكرية المسحوبة & خضراء & حمراء & بيضاء\\\hline
+الاحتمال & $\dfrac{1}{10}$ & $\alpha$ & $2\alpha$\\[8pt]\hline
+\end{tabular}
+\end{center}
+أحسب قيمة $\alpha$ ثم استنتج عدد كل من الكريات الخضراء، الحمراء، البيضاء.
+
+\textbf{II)} نفرض أن الكيس يحتوي على كرية واحدة خضراء، $3$ كريات حمراء و$6$ كريات بيضاء.
+نسحب عشوائيًا في آن واحد ثلاث كريات من هذا الكيس، ونعتبر الحوادث:
+
+$A$: «الحصول على كرية حمراء واحدة فقط»، \quad $B$: «الحصول على كريتين بالضبط من نفس اللون»،
+
+$C$: «الحصول على ثلاث كريات ليست كلها من نفس اللون».
+\QQ{1}
+\begin{sq}
+\qa أحسب $P(A)$، $P(B)$ و$P(C)$ احتمالات الحوادث $A$، $B$ و$C$ على الترتيب.
+\qb أحسب احتمال الحصول على كريتين بيضاوين علمًا أننا لا نحصل على الكرية الخضراء.
+\end{sq}
+\QQ{2} $X$ المتغير العشوائي الذي يرفق بكل عملية سحب لثلاث كريات عدد الألوان التي تحملها الكريات المسحوبة.
+
+بيّن أن: $P(X=2)=\dfrac{27}{40}$، وعيّن قانون احتمال المتغير العشوائي $X$ ثم أحسب أمله الرياضياتي $E(X)$.
+\end{tamrin}
+
+\begin{hal}
+\textbf{I)} مجموع احتمالات قانون احتمال يساوي $1$:
+\[\frac{1}{10}+\alpha+2\alpha=1\iff 3\alpha=\frac{9}{10}\iff \bx{\alpha=\frac{3}{10}}\]
+السحب عشوائي والكريات متماثلة، فاحتمال لون = (عدد كريات هذا اللون)$\div 10$، ومنه عدد كريات كل لون = الاحتمال $\times10$:
+\begin{center}
+\begin{tabular}{|C|C|C|C|C|}\hline
+\rowcolor{cSec!12} اللون & خضراء & حمراء & بيضاء & المجموع\\\hline
+الاحتمال & $\dfrac{1}{10}$ & $\dfrac{3}{10}$ & $\dfrac{6}{10}$ & $1$\\[8pt]\hline
+عدد الكريات & $1$ & $3$ & $6$ & $10$\\\hline
+\end{tabular}
+\end{center}
+إذن: \bxt{كرية خضراء واحدة، $3$ كريات حمراء و$6$ كريات بيضاء}.
+
+\textbf{II)} السحب في آن واحد: $\operatorname{card}\Omega=C_{10}^3=\dfrac{10\times9\times8}{6}=120$.
+\QQ{1}
+\pa \textbf{$A$:} كرية حمراء واحدة من $3$، والكريتان الأخريان من الكريات غير الحمراء ($7$):
+\[P(A)=\frac{C_3^1\times C_7^2}{120}=\frac{3\times21}{120}=\frac{63}{120}=\bx{\frac{21}{40}}\]
+\textbf{$B$:} كريتان بالضبط من نفس اللون والثالثة من لون آخر:
+\begin{itemize}
+\item كريتان حمراوان والثالثة غير حمراء: $C_3^2\times C_7^1=3\times7=21$؛
+\item كريتان بيضاوان والثالثة غير بيضاء: $C_6^2\times C_4^1=15\times4=60$؛
+\item كريتان خضراوان: مستحيل (توجد كرية خضراء واحدة).
+\end{itemize}
+\[P(B)=\frac{21+60}{120}=\frac{81}{120}=\bx{\frac{27}{40}}\]
+\textbf{$C$:} الحادثة العكسية $\overline{C}$: «الكريات الثلاث من نفس اللون»: ثلاث حمراء ($C_3^3=1$) أو ثلاث بيضاء ($C_6^3=20$):
+\[P(C)=1-P(\overline{C})=1-\frac{1+20}{120}=\frac{99}{120}=\bx{\frac{33}{40}}\]
+
+\pb نسمي $G$: «لا نحصل على الكرية الخضراء» و$W$: «الحصول على كريتين بيضاوين (بالضبط)».
+
+$G$: الكريات الثلاث من بين $9$ كريات غير خضراء: $P(G)=\dfrac{C_9^3}{120}=\dfrac{84}{120}$.
+
+$W\cap G$: كريتان بيضاوان والثالثة حمراء: $C_6^2\times C_3^1=15\times3=45$، أي $P(W\cap G)=\dfrac{45}{120}$.
+\[P_G(W)=\frac{P(W\cap G)}{P(G)}=\frac{45}{84}=\bx{\frac{15}{28}}\]
+
+\QQ{2} الكريات الثلاث قد تكون من لون واحد أو لونين أو ثلاثة ألوان، إذن $X(\Omega)=\{1;2;3\}$.
+\begin{itemize}
+\item $(X=1)$: الكريات من نفس اللون، وهي $\overline{C}$: $P(X=1)=\dfrac{21}{120}=\dfrac{7}{40}$.
+\item $(X=2)$: لونان بالضبط، أي كريتان من لون والثالثة من لون آخر، وهي الحادثة $B$:
+$P(X=2)=P(B)=\dfrac{81}{120}=\dfrac{27}{40}$ \ok
+\item $(X=3)$: كرية من كل لون: $C_1^1\times C_3^1\times C_6^1=18$، $P(X=3)=\dfrac{18}{120}=\dfrac{3}{20}$.
+\end{itemize}
+\begin{center}
+\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $1$ & $2$ & $3$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{21}{120}$ & $\dfrac{81}{120}$ & $\dfrac{18}{120}$ & $1$\\[8pt]\hline
+\end{tabular}
+\end{center}
+\[E(X)=1\times\frac{21}{120}+2\times\frac{81}{120}+3\times\frac{18}{120}=\frac{21+162+54}{120}=\frac{237}{120}=\bx{\frac{79}{40}}\]
+\end{hal}
+
+%======================== 3 ========================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الأول -- علوم تجريبية}
+يحتوي صندوق $U_1$ على $5$ كريات منها: كريتان حمراوان وثلاث كريات خضراء، ويحتوي صندوق $U_2$ على $5$ كريات منها: ثلاث كريات حمراء وكريتان خضراوان. (جميع الكريات متماثلة ولا نفرق بينها باللمس)
+
+نسحب عشوائيًا $3$ كريات بالكيفية التالية: نقوم بسحب كرية واحدة من $U_1$ ونسجل لونها.
+\begin{itemize}
+\item إذا كانت الكرية المسحوبة حمراء نعيدها إلى $U_1$ ونسحب منه عشوائيًا كريتين في آن واحد.
+\item إذا كانت الكرية المسحوبة خضراء نضعها في $U_2$ ونسحب منه عشوائيًا كريتين في آن واحد.
+\end{itemize}
+نعتبر الحوادث: $R$: «الحصول على كرية حمراء»، \ $V$: «الحصول على كرية خضراء»،
+
+$A$: «الحصول على $3$ كريات من نفس اللون»، \ $B$: «الحصول على كرية خضراء على الأقل».
+
+\begin{center}\begin{LTR}\begin{tikzpicture}[bsT,level 1/.style={sibling distance=4.8cm},level 2/.style={sibling distance=1.6cm}]
+\node[bsev]{}
+ child{node[bsev]{$R$}
+   child{node[bslf]{$RR$} edge from parent node[bsp]{$\dfrac{1}{10}$}}
+   child{node[bslf]{$RV$} edge from parent node[bsp]{$\ldots$}}
+   child{node[bslf]{$VV$} edge from parent node[bsp]{$\ldots$}}
+   edge from parent node[bsp]{$\ldots$}}
+ child{node[bsev]{$V$}
+   child{node[bslf]{$RR$} edge from parent node[bsp]{$\dfrac{1}{5}$}}
+   child{node[bslf]{$RV$} edge from parent node[bsp]{$\ldots$}}
+   child{node[bslf]{$VV$} edge from parent node[bsp]{$\ldots$}}
+   edge from parent node[bsp]{$\ldots$}};
+\end{tikzpicture}\end{LTR}\end{center}
+\QQ{1} أنقل وأكمل شجرة الاحتمالات المقابلة.
+\QQ{2} أحسب احتمالي الحادثتين $A$ و$B$.
+\QQ{3} $X$ المتغير العشوائي الذي يرفق بكل عملية سحب لثلاث كريات بالكيفية السابقة عدد الكريات الحمراء المسحوبة.
+
+عيّن قانون احتمال المتغير العشوائي $X$ ثم أحسب أمله الرياضياتي.
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} \textbf{السحب الأول} من $U_1$ (كريتان حمراوان و$3$ خضراء): $P(R)=\dfrac25$، $P(V)=\dfrac35$.
+
+\textbf{إذا كانت حمراء} نعيدها، فيبقى $U_1$ كما هو ($2R$، $3V$) ونسحب كريتين في آن واحد، $C_5^2=10$:
+\[P_R(RR)=\frac{C_2^2}{10}=\frac{1}{10},\quad P_R(RV)=\frac{C_2^1C_3^1}{10}=\frac{6}{10}=\frac35,\quad P_R(VV)=\frac{C_3^2}{10}=\frac{3}{10}\]
+\textbf{إذا كانت خضراء} نضعها في $U_2$ فيصبح فيه $6$ كريات: $3R$ و$3V$، $C_6^2=15$:
+\[P_V(RR)=\frac{C_3^2}{15}=\frac{3}{15}=\frac15,\quad P_V(RV)=\frac{C_3^1C_3^1}{15}=\frac{9}{15}=\frac35,\quad P_V(VV)=\frac{C_3^2}{15}=\frac15\]
+\begin{center}\begin{LTR}\begin{tikzpicture}[bsT,level 1/.style={sibling distance=4.8cm},level 2/.style={sibling distance=1.6cm}]
+\node[bsev]{}
+ child{node[bsev]{$R$}
+   child{node[bslf](a1){$RR$} edge from parent node[bsp]{$\dfrac{1}{10}$}}
+   child{node[bslf](a2){$RV$} edge from parent node[bsp]{$\dfrac{3}{5}$}}
+   child{node[bslf](a3){$VV$} edge from parent node[bsp]{$\dfrac{3}{10}$}}
+   edge from parent node[bsp]{$\dfrac25$}}
+ child{node[bsev]{$V$}
+   child{node[bslf](a4){$RR$} edge from parent node[bsp]{$\dfrac{1}{5}$}}
+   child{node[bslf](a5){$RV$} edge from parent node[bsp]{$\dfrac{3}{5}$}}
+   child{node[bslf](a6){$VV$} edge from parent node[bsp]{$\dfrac{1}{5}$}}
+   edge from parent node[bsp]{$\dfrac35$}};
+\node[bshd] at (a1.east){\ar{الاحتمال}};
+\node[bspr] at (a1.east){$\dfrac25\times\dfrac1{10}=\dfrac{1}{25}$};
+\node[bspr] at (a2.east){$\dfrac25\times\dfrac35=\dfrac{6}{25}$};
+\node[bspr] at (a3.east){$\dfrac25\times\dfrac3{10}=\dfrac{3}{25}$};
+\node[bspr] at (a4.east){$\dfrac35\times\dfrac15=\dfrac{3}{25}$};
+\node[bspr] at (a5.east){$\dfrac35\times\dfrac35=\dfrac{9}{25}$};
+\node[bspr] at (a6.east){$\dfrac35\times\dfrac15=\dfrac{3}{25}$};
+\end{tikzpicture}\end{LTR}\end{center}
+تحقق: $1+6+3+3+9+3=25$ \ok
+
+\QQ{2} \textbf{$A$:} الكريات الثلاث (الأولى والكريتان) من نفس اللون: المسار $R$ ثم $RR$، أو $V$ ثم $VV$:
+\[P(A)=\frac{1}{25}+\frac{3}{25}=\bx{\frac{4}{25}}\]
+\textbf{$B$:} عكسها $\overline{B}$: «لا توجد أي كرية خضراء»، وهو المسار $R$ ثم $RR$ فقط:
+\[P(B)=1-P(\overline{B})=1-\frac{1}{25}=\bx{\frac{24}{25}}\]
+
+\QQ{3} عدد الكريات الحمراء بين الكريات الثلاث: $X(\Omega)=\{0;1;2;3\}$. نقرأ قيمة $X$ على كل مسار:
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} المسار & $R\,RR$ & $R\,RV$ & $R\,VV$ & $V\,RR$ & $V\,RV$ & $V\,VV$\\\hline
+قيمة $X$ & $3$ & $2$ & $1$ & $2$ & $1$ & $0$\\\hline
+الاحتمال & $\dfrac{1}{25}$ & $\dfrac{6}{25}$ & $\dfrac{3}{25}$ & $\dfrac{3}{25}$ & $\dfrac{9}{25}$ & $\dfrac{3}{25}$\\[8pt]\hline
+\end{tabular}
+\end{center}
+\begin{align*}
+P(X=0)&=\frac{3}{25}, & P(X=1)&=\frac{3}{25}+\frac{9}{25}=\frac{12}{25},\\
+P(X=2)&=\frac{6}{25}+\frac{3}{25}=\frac{9}{25}, & P(X=3)&=\frac{1}{25}.
+\end{align*}
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & $3$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{3}{25}$ & $\dfrac{12}{25}$ & $\dfrac{9}{25}$ & $\dfrac{1}{25}$ & $1$\\[8pt]\hline
+\end{tabular}
+\end{center}
+\[E(X)=0\times\frac{3}{25}+1\times\frac{12}{25}+2\times\frac{9}{25}+3\times\frac{1}{25}=\frac{12+18+3}{25}=\bx{\frac{33}{25}}\]
+\end{hal}
+
+%======================== 4 ========================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الثاني -- علوم تجريبية}
+\textbf{I)} يحتوي صندوق $U_1$ على $6$ كريات متماثلة لا نفرق بينها باللمس، منها: $3$ كريات خضراء، وكريتان حمراوان، وكرية بيضاء واحدة.
+
+نسحب عشوائيًا من الصندوق $U_1$ كريتين في آن واحد، ونعتبر الحادثتين:
+
+$E$: «الحصول على كرية حمراء واحدة فقط»، \quad $F$: «الحصول على كريتين من نفس اللون».
+\QQ{1} أحسب $P(E)$ احتمال الحادثة $E$.
+\QQ{2} بيّن أن $P(F)$ احتمال الحادثة $F$ يساوي $\dfrac{4}{15}$، ثم استنتج احتمال الحصول على كريتين من لونين مختلفين.
+
+\textbf{II)} يحتوي صندوق آخر $U_2$ على $6$ كريات متماثلة لا نفرق بينها باللمس، منها: $4$ كريات خضراء وكريتان حمراوان.
+نرمز بـ $V$، $R$، $B$ إلى: خضراء، حمراء، بيضاء على الترتيب، ونسحب عشوائيًا من الصندوق $U_2$ كرية واحدة ونسجل لونها.
+\begin{itemize}
+\item إذا كانت الكرية المسحوبة خضراء، نسحب كرية أخرى من $U_2$ دون إرجاع الكرية الأولى.
+\item وإذا كانت الكرية المسحوبة حمراء، نسحب كرية واحدة من $U_1$.
+\end{itemize}
+\begin{center}\begin{LTR}\begin{tikzpicture}[bsT,level 1/.style={sibling distance=4.4cm},level 2/.style={sibling distance=1.6cm}]
+\node[bsev]{}
+ child{node[bsev]{$V$}
+   child{node[bsev]{$V$} edge from parent node[bsp]{$\ldots$}}
+   child{node[bsev]{$R$} edge from parent node[bsp]{$\ldots$}}
+   edge from parent node[bsp]{$\ldots$}}
+ child{node[bsev]{$R$}
+   child{node[bsev]{$V$} edge from parent node[bsp]{$\ldots$}}
+   child{node[bsev]{$R$} edge from parent node[bsp]{$\ldots$}}
+   child{node[bsev]{$B$} edge from parent node[bsp]{$\ldots$}}
+   edge from parent node[bsp]{$\ldots$}};
+\end{tikzpicture}\end{LTR}\end{center}
+\QQ{1} أنقل واملأ شجرة الاحتمالات المقابلة.
+\QQ{2}
+\begin{sq}
+\qa ما احتمال الحصول على كرية حمراء في السحب الثاني؟
+\qb بيّن أن احتمال الحصول على كرية خضراء في السحب الأول علمًا أن الكرية المسحوبة الثانية حمراء يساوي $\dfrac{12}{17}$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\textbf{I)} السحب في آن واحد لكريتين من $6$: $\operatorname{card}\Omega=C_6^2=15$.
+\QQ{1} $E$: كرية حمراء واحدة من $2$، والأخرى من $4$ كريات غير حمراء:
+\[P(E)=\frac{C_2^1\times C_4^1}{15}=\frac{8}{15},\qquad \bx{P(E)=\frac{8}{15}}\]
+\QQ{2} $F$: كريتان خضراوان ($C_3^2=3$) أو كريتان حمراوان ($C_2^2=1$)، والبيضاء واحدة فقط:
+\[P(F)=\frac{3+1}{15}=\bx{\frac{4}{15}}\]
+الحصول على كريتين من لونين مختلفين هو الحادثة العكسية $\overline{F}$:
+\[P(\overline{F})=1-\frac{4}{15}=\bx{\frac{11}{15}}\]
+
+\textbf{II)}
+\QQ{1} السحب الأول من $U_2$ ($4V$، $2R$): $P(V)=\dfrac46=\dfrac23$، $P(R)=\dfrac26=\dfrac13$.
+\begin{itemize}
+\item بعد خضراء (دون إرجاع) يبقى في $U_2$: $3V$ و$2R$، فالاحتمالان $\dfrac35$ و$\dfrac25$.
+\item بعد حمراء نسحب من $U_1$ ($3V$، $2R$، $1B$): الاحتمالات $\dfrac36=\dfrac12$، $\dfrac26=\dfrac13$، $\dfrac16$.
+\end{itemize}
+\begin{center}\begin{LTR}\begin{tikzpicture}[bsT,level 1/.style={sibling distance=4.4cm},level 2/.style={sibling distance=1.6cm}]
+\node[bsev]{}
+ child{node[bsev]{$V$}
+   child{node[bsev](a1){$V$} edge from parent node[bsp]{$\dfrac35$}}
+   child{node[bsev](a2){$R$} edge from parent node[bsp]{$\dfrac25$}}
+   edge from parent node[bsp]{$\dfrac23$}}
+ child{node[bsev]{$R$}
+   child{node[bsev](a3){$V$} edge from parent node[bsp]{$\dfrac12$}}
+   child{node[bsev](a4){$R$} edge from parent node[bsp]{$\dfrac13$}}
+   child{node[bsev](a5){$B$} edge from parent node[bsp]{$\dfrac16$}}
+   edge from parent node[bsp]{$\dfrac13$}};
+\node[bshd] at (a1.east){\ar{الاحتمال}};
+\node[bspr] at (a1.east){$\dfrac23\times\dfrac35=\dfrac{2}{5}$};
+\node[bspr] at (a2.east){$\dfrac23\times\dfrac25=\dfrac{4}{15}$};
+\node[bspr] at (a3.east){$\dfrac13\times\dfrac12=\dfrac{1}{6}$};
+\node[bspr] at (a4.east){$\dfrac13\times\dfrac13=\dfrac{1}{9}$};
+\node[bspr] at (a5.east){$\dfrac13\times\dfrac16=\dfrac{1}{18}$};
+\end{tikzpicture}\end{LTR}\end{center}
+\QQ{2}
+\pa نسمي $R_2$: «الكرية الثانية حمراء» و$V_1$: «الكرية الأولى خضراء». حسب دستور الاحتمالات الكلية (المساران $V\,R$ و$R\,R$):
+\[P(R_2)=\frac23\times\frac25+\frac13\times\frac13=\frac{4}{15}+\frac19=\frac{12}{45}+\frac{5}{45}=\bx{\frac{17}{45}}\]
+\pb
+\[P_{R_2}(V_1)=\frac{P(V_1\cap R_2)}{P(R_2)}=\frac{\frac{4}{15}}{\frac{17}{45}}=\frac{4}{15}\times\frac{45}{17}=\bx{\frac{12}{17}}\]
+\end{hal}
+
+%======================== 5 ========================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الأول -- علوم تجريبية}
+يحتوي كيس على $11$ كرية متماثلة لا نفرق بينها باللمس موزعة كما يلي: كريتان بيضاوان مرقمتان بـ: $1$، $3$، وأربع كريات حمراء مرقمة بـ: $0$، $1$، $1$، $3$، وخمس كريات خضراء مرقمة بـ: $0$، $1$، $1$، $3$، $4$.
+
+\textbf{I)} نسحب عشوائيًا وفي آن واحد $3$ كريات من الكيس، ونعتبر الأحداث الآتية:
+
+$A$: «الحصول على $3$ كريات من نفس اللون»، \quad $B$: «الحصول على $3$ كريات جداء أرقامها عدد فردي»،
+
+$C$: «الحصول على كريات جداء أرقامها عدد زوجي».
+\QQ{1}
+\begin{sq}
+\qa أحسب $P(A)$ احتمال الحادثة $A$ وبيّن أن: $P(B)=\dfrac{56}{165}$ ثم استنتج $P(C)$.
+\qb أحسب الاحتمال الشرطي $P_A(B)$.
+\end{sq}
+\QQ{2} $X$ المتغير العشوائي الذي يرفق بكل عملية سحب لثلاث كريات، عدد الكريات التي تحمل رقمًا زوجيًا.
+\begin{sq}
+\qa عيّن قانون الاحتمال للمتغير العشوائي $X$، ثم أحسب أمله الرياضياتي $E(X)$.
+\qb أحسب احتمال الحادثة $(X>1)$.
+\end{sq}
+\textbf{II)} نسحب الآن من الكيس عشوائيًا $3$ كريات على التوالي وبدون إرجاع.
+
+أحسب احتمال الحادثة $D$: «الحصول على $3$ كريات جداء أرقامها معدوم».
+\end{tamrin}
+
+\begin{hal}
+نلخص محتوى الكيس في جدول مزدوج المدخل:
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} اللون$\backslash$الرقم & $0$ & $1$ & $3$ & $4$ & المجموع\\\hline
+بيضاء & $0$ & $1$ & $1$ & $0$ & $2$\\\hline
+حمراء & $1$ & $2$ & $1$ & $0$ & $4$\\\hline
+خضراء & $1$ & $2$ & $1$ & $1$ & $5$\\\hline
+\rowcolor{cSec!6} المجموع & $2$ & $5$ & $3$ & $1$ & $11$\\\hline
+\end{tabular}
+\end{center}
+الأرقام الفردية ($1$ و$3$): $5+3=8$ كريات؛ الأرقام الزوجية ($0$ و$4$): $3$ كريات.
+
+\textbf{I)} السحب في آن واحد: $\operatorname{card}\Omega=C_{11}^3=\dfrac{11\times10\times9}{6}=165$.
+\QQ{1}
+\pa \textbf{$A$:} ثلاث حمراء ($C_4^3=4$) أو ثلاث خضراء ($C_5^3=10$)، ولا يمكن ثلاث بيضاء:
+\[P(A)=\frac{4+10}{165}=\bx{\frac{14}{165}}\]
+\textbf{$B$:} جداء ثلاثة أعداد طبيعية فردي إذا وفقط إذا كانت الثلاثة فردية، أي الكريات الثلاث من بين $8$ كريات فردية:
+\[P(B)=\frac{C_8^3}{165}=\frac{56}{165}\ \textcolor{cRem}{\checkmark}\]
+\textbf{$C$:} الجداء زوجي هو عكس الجداء فردي، فـ $C=\overline{B}$:
+\[P(C)=1-\frac{56}{165}=\bx{\frac{109}{165}}\]
+\pb $A\cap B$: ثلاث كريات من نفس اللون وكلها فردية: الحمراء الفردية $3$ ($1$، $1$، $3$): $C_3^3=1$؛ الخضراء الفردية $3$: $C_3^3=1$؛ البيضاء: مستحيل.
+\[P(A\cap B)=\frac{2}{165},\qquad P_A(B)=\frac{P(A\cap B)}{P(A)}=\frac{2}{14}=\bx{\frac{1}{7}}\]
+\QQ{2}
+\pa الكريات ذات الرقم الزوجي $3$ والفردي $8$، و$X(\Omega)=\{0;1;2;3\}$:
+\begin{align*}
+P(X=0)&=\frac{C_8^3}{165}=\frac{56}{165}, & P(X=1)&=\frac{C_3^1C_8^2}{165}=\frac{84}{165},\\
+P(X=2)&=\frac{C_3^2C_8^1}{165}=\frac{24}{165}, & P(X=3)&=\frac{C_3^3}{165}=\frac{1}{165}.
+\end{align*}
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & $3$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{56}{165}$ & $\dfrac{84}{165}$ & $\dfrac{24}{165}$ & $\dfrac{1}{165}$ & $1$\\[8pt]\hline
+\end{tabular}
+\end{center}
+\[E(X)=\frac{0\times56+1\times84+2\times24+3\times1}{165}=\frac{135}{165}=\bx{\frac{9}{11}}\]
+\pb $P(X>1)=P(X=2)+P(X=3)=\dfrac{24+1}{165}=\dfrac{25}{165}=\bx{\dfrac{5}{33}}$
+
+\textbf{II)} السحب على التوالي دون إرجاع: عدد الحالات الممكنة $A_{11}^3=11\times10\times9=990$.
+الجداء معدوم إذا وفقط إذا ظهر الرقم $0$ مرة على الأقل. الحادثة العكسية $\overline{D}$: الكريات الثلاث من بين $9$ كريات لا تحمل $0$: $A_9^3=9\times8\times7=504$.
+\[P(D)=1-\frac{504}{990}=1-\frac{28}{55}=\bx{\frac{27}{55}}\]
+\end{hal}
+
+%======================== 6 ========================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الثاني -- علوم تجريبية}
+يحتوي كيس على $5$ قطع كهربائية غير متمايزة ولا نفرق بينها باللمس، منها $3$ قطع سليمة وقطعتان غير سليمتين.
+نرمز إلى القطعة السليمة بالرمز $S$ وإلى القطعة غير السليمة بالرمز $\overline{S}$.
+
+نسحب عشوائيًا من الكيس $3$ قطع على التوالي مع الإرجاع، ونعتبر الحوادث:
+
+$A$: «القطعة الأولى المسحوبة سليمة»، \quad $B$: «سحب قطعة واحدة فقط سليمة»،
+
+$C$: «القطعة الثالثة المسحوبة سليمة».
+\QQ{1} شكّل شجرة الاحتمالات التي تنمذج هذه التجربة.
+\QQ{2} أحسب $P(A)$ و$P(B)$ احتمالي الحادثتين $A$ و$B$ ثم بيّن أن: $P(C)=\dfrac35$.
+\QQ{3} أحسب الاحتمال الشرطي $P_C(A)$. هل الحادثتان $A$ و$C$ مستقلتان؟
+\QQ{4} نرفق بكل قطعة سليمة العدد $10$ وبكل قطعة غير سليمة العدد $-10$، ونعتبر $X$ المتغير العشوائي الذي يرفق بكل عملية سحب لثلاث قطع مجموع الأعداد المرفقة بها.
+\begin{sq}
+\qa برّر أن قيم المتغير العشوائي $X$ هي: $-30$، $-10$، $10$، $30$.
+\qb عيّن قانون الاحتمال للمتغير العشوائي $X$ ثم أحسب أمله الرياضياتي $E(X)$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} السحب مع الإرجاع، فتركيب الكيس لا يتغير، وفي كل سحب: $P(S)=\dfrac35$ و$P(\overline{S})=\dfrac25$.
+\begin{center}\begin{LTR}\begin{tikzpicture}[bsT,level distance=3.2cm,level 1/.style={sibling distance=5.6cm},level 2/.style={sibling distance=2.8cm},level 3/.style={sibling distance=1.4cm},bsp/.append style={pos=0.72}]
+\node[bsev]{}
+ child{node[bsev]{$S$}
+   child{node[bsev]{$S$}
+     child{node[bsev](a1){$S$} edge from parent node[bsp]{$\dfrac35$}}
+     child{node[bsev](a2){$\overline{S}$} edge from parent node[bsp]{$\dfrac25$}}
+     edge from parent node[bsp]{$\dfrac35$}}
+   child{node[bsev]{$\overline{S}$}
+     child{node[bsev](a3){$S$} edge from parent node[bsp]{$\dfrac35$}}
+     child{node[bsev](a4){$\overline{S}$} edge from parent node[bsp]{$\dfrac25$}}
+     edge from parent node[bsp]{$\dfrac25$}}
+   edge from parent node[bsp]{$\dfrac35$}}
+ child{node[bsev]{$\overline{S}$}
+   child{node[bsev]{$S$}
+     child{node[bsev](a5){$S$} edge from parent node[bsp]{$\dfrac35$}}
+     child{node[bsev](a6){$\overline{S}$} edge from parent node[bsp]{$\dfrac25$}}
+     edge from parent node[bsp]{$\dfrac35$}}
+   child{node[bsev]{$\overline{S}$}
+     child{node[bsev](a7){$S$} edge from parent node[bsp]{$\dfrac35$}}
+     child{node[bsev](a8){$\overline{S}$} edge from parent node[bsp]{$\dfrac25$}}
+     edge from parent node[bsp]{$\dfrac25$}}
+   edge from parent node[bsp]{$\dfrac25$}};
+\node[bshd] at (a1.east){\ar{الاحتمال}};
+\node[bspr] at (a1.east){$\dfrac{27}{125}$};
+\node[bspr] at (a2.east){$\dfrac{18}{125}$};
+\node[bspr] at (a3.east){$\dfrac{18}{125}$};
+\node[bspr] at (a4.east){$\dfrac{12}{125}$};
+\node[bspr] at (a5.east){$\dfrac{18}{125}$};
+\node[bspr] at (a6.east){$\dfrac{12}{125}$};
+\node[bspr] at (a7.east){$\dfrac{12}{125}$};
+\node[bspr] at (a8.east){$\dfrac{8}{125}$};
+\end{tikzpicture}\end{LTR}\end{center}
+احتمال كل مسار هو جداء احتمالات فروعه، مثلًا: $P(SSS)=\left(\dfrac35\right)^3=\dfrac{27}{125}$.
+
+تحقق: $27+3\times18+3\times12+8=125$ \ok
+
+\QQ{2} \textbf{$A$:} القطعة الأولى سليمة، وهي مجموع المسارات الأربعة العليا:
+\[P(A)=\frac{27+18+18+12}{125}=\frac{75}{125}=\bx{\frac35}\]
+
+\textbf{$B$:} قطعة واحدة فقط سليمة: المسارات $S\overline{S}\,\overline{S}$، $\overline{S}S\overline{S}$، $\overline{S}\,\overline{S}S$:
+\[P(B)=3\times\frac35\times\left(\frac25\right)^2=3\times\frac{12}{125}=\bx{\frac{36}{125}}\]
+\textbf{$C$:} القطعة الثالثة سليمة: المسارات التي تنتهي بـ $S$:
+\[P(C)=\frac{27+18+18+12}{125}=\frac{75}{125}=\frac35\ \textcolor{cRem}{\checkmark}\]
+\QQ{3} $A\cap C$: الأولى والثالثة سليمتان: $SSS$ و$S\overline{S}S$:
+\[P(A\cap C)=\frac{27+18}{125}=\frac{45}{125}=\frac{9}{25},\qquad P_C(A)=\frac{P(A\cap C)}{P(C)}=\frac{\frac{9}{25}}{\frac35}=\bx{\frac35}\]
+لدينا $P_C(A)=\dfrac35=P(A)$ (أو $P(A)\times P(C)=\dfrac{9}{25}=P(A\cap C)$)، إذن \bxt{الحادثتان $A$ و$C$ مستقلتان}.
+
+\QQ{4}
+\pa ليكن $k$ عدد القطع السليمة المسحوبة، $k\in\{0;1;2;3\}$، فعدد غير السليمة $3-k$، ومنه:
+\[X=10k-10(3-k)=20k-30\]
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|}\hline
+\rowcolor{cSec!12} $k$ & $0$ & $1$ & $2$ & $3$\\\hline
+$X=20k-30$ & $-30$ & $-10$ & $10$ & $30$\\\hline
+\end{tabular}
+\end{center}
+إذن $X(\Omega)=\{-30;-10;10;30\}$.
+\pb
+\begin{itemize}
+\item $P(X=-30)=P(\overline{S}\,\overline{S}\,\overline{S})=\left(\frac25\right)^3=\frac{8}{125}$؛
+\item $P(X=-10)=P(B)=\frac{36}{125}$؛
+\item $P(X=10)$: قطعتان سليمتان (ثلاثة مسارات): $3\times\left(\frac35\right)^2\times\frac25=\frac{54}{125}$؛
+\item $P(X=30)=\left(\frac35\right)^3=\frac{27}{125}$.
+\end{itemize}
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $-30$ & $-10$ & $10$ & $30$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{8}{125}$ & $\dfrac{36}{125}$ & $\dfrac{54}{125}$ & $\dfrac{27}{125}$ & $1$\\[8pt]\hline
+\end{tabular}
+\end{center}
+\[E(X)=\frac{-30\times8-10\times36+10\times54+30\times27}{125}=\frac{-240-360+540+810}{125}=\frac{750}{125}=\bx{6}\]
+\end{hal}
+
+%======================== 7 ========================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الأول -- علوم تجريبية}
+يحتوي صندوق $U_1$ على $5$ كريات تحمل الأرقام $1$، $1$، $1$، $2$، $3$، ويحتوي صندوق $U_2$ على $4$ كريات تحمل الأرقام $1$، $1$، $2$، $2$. (كل الكريات متماثلة ولا نفرق بينها عند اللمس)
+
+نختار عشوائيًا أحد الصندوقين ونسحب منه عشوائيًا كريتين في آن واحد.
+\QQ{1} نعتبر الأحداث: $A$: «سحب كريتين تحملان رقمين فرديين»، \ $B$: «سحب كريتين تحملان رقمين زوجيين»،
+
+$C$: «سحب كريتين إحداهما تحمل رقمًا فرديًا والأخرى تحمل رقمًا زوجيًا».
+\begin{sq}
+\qa أنجز الشجرة التي تنمذج هذه التجربة.
+\qb بيّن أن: $P(A)=\dfrac{23}{60}$ و$P(B)=\dfrac{1}{12}$ ثم أحسب $P(C)$.
+\end{sq}
+\QQ{2} نفرغ محتوى الصندوقين $U_1$ و$U_2$ في صندوق جديد $U_3$ ثم نسحب منه عشوائيًا كريتين في آن واحد.
+
+$X$ المتغير العشوائي الذي يرفق بكل عملية سحب لكريتين جداء الرقمين المسجلين عليهما.
+\begin{sq}
+\qa برّر أن مجموعة قيم المتغير العشوائي $X$ هي: $\{1;2;3;4;6\}$.
+\qb عيّن قانون الاحتمال للمتغير العشوائي $X$ ثم أحسب أمله الرياضياتي $E(X)$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\QQ{1}
+\pa اختيار الصندوق عشوائي: $P(U_1)=P(U_2)=\dfrac12$.
+
+\textbf{من $U_1$:} $4$ كريات فردية ($1$، $1$، $1$، $3$) وكرية زوجية ($2$)، $C_5^2=10$:
+\[P_{U_1}(A)=\frac{C_4^2}{10}=\frac{6}{10}=\frac35,\quad P_{U_1}(B)=0,\quad P_{U_1}(C)=\frac{C_4^1C_1^1}{10}=\frac{4}{10}=\frac25\]
+\textbf{من $U_2$:} كريتان فرديتان وكريتان زوجيتان، $C_4^2=6$:
+\[P_{U_2}(A)=\frac{C_2^2}{6}=\frac16,\quad P_{U_2}(B)=\frac{C_2^2}{6}=\frac16,\quad P_{U_2}(C)=\frac{C_2^1C_2^1}{6}=\frac46=\frac23\]
+\begin{center}\begin{LTR}\begin{tikzpicture}[bsT,level 1/.style={sibling distance=4.8cm},level 2/.style={sibling distance=1.6cm}]
+\node[bsev]{}
+ child{node[bsev]{$U_1$}
+   child{node[bsev](a1){$A$} edge from parent node[bsp]{$\dfrac35$}}
+   child{node[bsev](a2){$B$} edge from parent node[bsp]{$0$}}
+   child{node[bsev](a3){$C$} edge from parent node[bsp]{$\dfrac25$}}
+   edge from parent node[bsp]{$\dfrac12$}}
+ child{node[bsev]{$U_2$}
+   child{node[bsev](a4){$A$} edge from parent node[bsp]{$\dfrac16$}}
+   child{node[bsev](a5){$B$} edge from parent node[bsp]{$\dfrac16$}}
+   child{node[bsev](a6){$C$} edge from parent node[bsp]{$\dfrac23$}}
+   edge from parent node[bsp]{$\dfrac12$}};
+\node[bshd] at (a1.east){\ar{الاحتمال}};
+\node[bspr] at (a1.east){$\dfrac12\times\dfrac35=\dfrac{3}{10}$};
+\node[bspr] at (a2.east){$0$};
+\node[bspr] at (a3.east){$\dfrac12\times\dfrac25=\dfrac{1}{5}$};
+\node[bspr] at (a4.east){$\dfrac12\times\dfrac16=\dfrac{1}{12}$};
+\node[bspr] at (a5.east){$\dfrac12\times\dfrac16=\dfrac{1}{12}$};
+\node[bspr] at (a6.east){$\dfrac12\times\dfrac23=\dfrac{1}{3}$};
+\end{tikzpicture}\end{LTR}\end{center}
+\pb حسب دستور الاحتمالات الكلية ($U_1$ و$U_2$ تشكلان تجزئة):
+\[P(A)=\frac{3}{10}+\frac{1}{12}=\frac{18}{60}+\frac{5}{60}=\frac{23}{60}\ \textcolor{cRem}{\checkmark}\qquad P(B)=0+\frac{1}{12}=\frac{1}{12}\ \textcolor{cRem}{\checkmark}\]
+الأحداث $A$، $B$، $C$ تشكل تجزئة لـ $\Omega$ (الكريتان: إما فرديتان أو زوجيتان أو مختلفتان)، إذن:
+\[P(C)=1-\frac{23}{60}-\frac{5}{60}=\frac{32}{60}=\bx{\frac{8}{15}}\]
+(تحقق بالشجرة: $\frac15+\frac13=\frac{8}{15}$ \ok)
+
+\QQ{2}
+\pa يحتوي $U_3$ على $9$ كريات: خمس كريات تحمل $1$، ثلاث تحمل $2$، وكرية تحمل $3$. الجداءات الممكنة لكريتين:
+\[1\times1=1,\quad 1\times2=2,\quad 1\times3=3,\quad 2\times2=4,\quad 2\times3=6\]
+($3\times3$ مستحيل لوجود كرية واحدة تحمل $3$)، إذن $X(\Omega)=\{1;2;3;4;6\}$.
+\pb $\operatorname{card}\Omega=C_9^2=36$:
+\begin{align*}
+P(X=1)&=\frac{C_5^2}{36}=\frac{10}{36}, & P(X=2)&=\frac{C_5^1C_3^1}{36}=\frac{15}{36}, & P(X=3)&=\frac{C_5^1C_1^1}{36}=\frac{5}{36},\\
+P(X=4)&=\frac{C_3^2}{36}=\frac{3}{36}, & P(X=6)&=\frac{C_3^1C_1^1}{36}=\frac{3}{36}.
+\end{align*}
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $1$ & $2$ & $3$ & $4$ & $6$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{10}{36}$ & $\dfrac{15}{36}$ & $\dfrac{5}{36}$ & $\dfrac{3}{36}$ & $\dfrac{3}{36}$ & $1$\\[8pt]\hline
+\end{tabular}
+\end{center}
+\[E(X)=\frac{1\times10+2\times15+3\times5+4\times3+6\times3}{36}=\frac{85}{36},\qquad \bx{E(X)=\frac{85}{36}\approx2{,}36}\]
+\end{hal}
+
+%======================== 8 ========================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الثاني -- علوم تجريبية}
+يحتوي كيس على $10$ كريات متماثلة ولا نفرق بينها باللمس، موزعة كما يلي: ثلاث كريات بيضاء مرقمة بـ: $1$، $1$، $2$، وثلاث كريات حمراء مرقمة بـ: $1$، $2$، $2$، وأربع كريات خضراء مرقمة بـ: $1$، $2$، $2$، $2$.
+
+نسحب عشوائيًا وفي آن واحد كريتين من الكيس ونعتبر الأحداث الآتية:
+
+$A$: «الحصول على كريتين من نفس اللون»، \quad $B$: «الحصول على كرية خضراء على الأقل»،
+
+$C$: «الحصول على كريتين تحملان رقمين زوجيين».
+\QQ{1}
+\begin{sq}
+\qa بيّن أن احتمال الحدث $A$ يساوي $\dfrac{4}{15}$ وأن احتمال الحدث $B$ يساوي $\dfrac23$.
+\qb أحسب الاحتمالين $P(C)$ و$P(A\cap C)$، هل الحدثان $A$ و$C$ مستقلان؟
+\qc استنتج احتمال الحصول على كريتين من نفس اللون علمًا أنهما تحملان رقمين زوجيين.
+\end{sq}
+\QQ{2} نعتبر المتغير العشوائي $X$ الذي يرفق بكل عملية سحب لكريتين مجموع الرقمين المسجلين عليهما.
+\begin{sq}
+\qa برّر أن مجموعة قيم المتغير العشوائي $X$ هي: $\{2;3;4\}$.
+\qb عيّن قانون احتمال المتغير العشوائي $X$ ثم أحسب أمله الرياضياتي $E(X)$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\begin{center}
+\begin{tabular}{|C|c|c|c|}\hline
+\rowcolor{cSec!12} اللون$\backslash$الرقم & $1$ & $2$ & المجموع\\\hline
+بيضاء & $2$ & $1$ & $3$\\\hline
+حمراء & $1$ & $2$ & $3$\\\hline
+خضراء & $1$ & $3$ & $4$\\\hline
+\rowcolor{cSec!6} المجموع & $4$ & $6$ & $10$\\\hline
+\end{tabular}
+\end{center}
+السحب في آن واحد: $\operatorname{card}\Omega=C_{10}^2=45$.
+\QQ{1}
+\pa $A$: كريتان بيضاوان أو حمراوان أو خضراوان:
+\[P(A)=\frac{C_3^2+C_3^2+C_4^2}{45}=\frac{3+3+6}{45}=\frac{12}{45}=\frac{4}{15}\ \textcolor{cRem}{\checkmark}\]
+$\overline{B}$: لا توجد كرية خضراء، أي الكريتان من بين $6$ كريات غير خضراء:
+\[P(B)=1-\frac{C_6^2}{45}=1-\frac{15}{45}=\frac{30}{45}=\frac23\ \textcolor{cRem}{\checkmark}\]
+\pb $C$: الكريتان من بين $6$ كريات تحمل الرقم $2$:
+\[P(C)=\frac{C_6^2}{45}=\frac{15}{45}=\bx{\frac13}\]
+$A\cap C$: من نفس اللون وتحملان $2$: حمراوان تحملان $2$ ($C_2^2=1$) أو خضراوان تحملان $2$ ($C_3^2=3$)، والبيضاء تحمل $2$ مرة واحدة فقط:
+\[P(A\cap C)=\frac{1+3}{45}=\bx{\frac{4}{45}}\]
+لدينا $P(A)\times P(C)=\dfrac{4}{15}\times\dfrac13=\dfrac{4}{45}=P(A\cap C)$، إذن \bxt{الحدثان $A$ و$C$ مستقلان}.
+\pc المطلوب $P_C(A)$، وبما أن $A$ و$C$ مستقلان:
+\[P_C(A)=P(A)=\bx{\frac{4}{15}}\]
+تحقق: $P_C(A)=\dfrac{P(A\cap C)}{P(C)}=\dfrac{4/45}{1/3}=\dfrac{12}{45}=\dfrac{4}{15}$ \ok
+\QQ{2}
+\pa كل كرية تحمل $1$ أو $2$، فمجموع رقمين: $1+1=2$ أو $1+2=3$ أو $2+2=4$، إذن $X(\Omega)=\{2;3;4\}$.
+\pb توجد $4$ كريات تحمل $1$ و$6$ تحمل $2$:
+\[P(X=2)=\frac{C_4^2}{45}=\frac{6}{45},\quad P(X=3)=\frac{C_4^1C_6^1}{45}=\frac{24}{45},\quad P(X=4)=\frac{C_6^2}{45}=\frac{15}{45}\]
+\begin{center}
+\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $2$ & $3$ & $4$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{6}{45}$ & $\dfrac{24}{45}$ & $\dfrac{15}{45}$ & $1$\\[8pt]\hline
+\end{tabular}
+\end{center}
+\[E(X)=\frac{2\times6+3\times24+4\times15}{45}=\frac{144}{45}=\bx{\frac{16}{5}}\]
+\end{hal}
+
+%======================== 9 ========================
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الأول -- علوم تجريبية}
+يُراد تشكيل بطريقة عشوائية لجنة تتكون من عضوين من بين ثلاثة رجال $H_1$، $H_2$ و$H_3$ وامرأتين $F_1$ و$F_2$.
+
+نعتبر الأحداث $A$، $B$ و$C$ حيث: \ $A$: «عضوا اللجنة من نفس الجنس»،
+
+$B$: «عضوا اللجنة من جنسين مختلفين»، \quad $C$: «$H_1$ عضو في اللجنة».
+\QQ{1}
+\begin{sq}
+\qa أحسب $P(A)$ و$P(B)$ احتمال $A$ و$B$ على الترتيب.
+\qb بيّن أن $P(C)$ احتمال الحدث $C$ يساوي $\dfrac25$.
+\end{sq}
+\QQ{2} المتغير العشوائي $X$ يرفق بكل إمكانية اختيار لعضوين عدد الرجال في اللجنة.
+\begin{sq}
+\qa برّر أن مجموعة قيم $X$ هي: $\{0;1;2\}$.
+\qb عيّن قانون احتمال المتغير العشوائي $X$ وأحسب أمله الرياضياتي $E(X)$.
+\end{sq}
+\end{tamrin}
+
+\begin{molahada}
+في نص الموضوع الأصلي كُتبت المرأتان «$F_1$ و$F_1$»، والصواب «$F_1$ و$F_2$».
+\end{molahada}
+
+\begin{hal}
+اللجنة مجموعة من عضوين دون ترتيب، فعدد اللجان الممكنة: $C_5^2=10$، وكلها متساوية الاحتمال:
+\[\{H_1H_2\},\{H_1H_3\},\{H_2H_3\},\{F_1F_2\},\{H_1F_1\},\{H_1F_2\},\{H_2F_1\},\{H_2F_2\},\{H_3F_1\},\{H_3F_2\}\]
+\QQ{1}
+\pa $A$: رجلان ($C_3^2=3$) أو امرأتان ($C_2^2=1$):
+\[P(A)=\frac{3+1}{10}=\bx{\frac25}\]
+$B$ هي الحادثة العكسية لـ $A$ (العضوان إما من نفس الجنس أو من جنسين مختلفين):
+\[P(B)=1-\frac25=\bx{\frac35}\]
+أو مباشرة: رجل وامرأة: $P(B)=\dfrac{C_3^1C_2^1}{10}=\dfrac{6}{10}=\dfrac35$.
+\pb $C$: $H_1$ عضو، والعضو الثاني أي واحد من الأربعة الباقين: $C_4^1=4$ لجان:
+\[P(C)=\frac{4}{10}=\frac25\ \textcolor{cRem}{\checkmark}\]
+\QQ{2}
+\pa اللجنة تضم امرأتين ($X=0$)، أو رجلًا وامرأة ($X=1$)، أو رجلين ($X=2$)؛ إذن $X(\Omega)=\{0;1;2\}$.
+\pb
+\[P(X=0)=\frac{C_2^2}{10}=\frac{1}{10},\quad P(X=1)=\frac{C_3^1C_2^1}{10}=\frac{6}{10},\quad P(X=2)=\frac{C_3^2}{10}=\frac{3}{10}\]
+\begin{center}
+\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{1}{10}$ & $\dfrac{6}{10}$ & $\dfrac{3}{10}$ & $1$\\[8pt]\hline
+\end{tabular}
+\end{center}
+\[E(X)=0\times\frac{1}{10}+1\times\frac{6}{10}+2\times\frac{3}{10}=\frac{12}{10}=\bx{\frac65}\]
+\end{hal}
+
+%======================== 10 ========================
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الثاني -- علوم تجريبية}
+صندوق به $9$ بطاقات متماثلة لا نفرق بينها باللمس، مكتوب على كل منها سؤال واحد، منها ثلاثة أسئلة في الهندسة مرقمة بـ: $1$، $2$ و$3$، أربعة أسئلة في الجبر مرقمة بـ: $1$، $2$، $3$ و$4$، وسؤالان في التحليل مرقمان بـ: $1$ و$2$.
+
+نسحب عشوائيًا بطاقة واحدة من الصندوق ونعتبر الأحداث التالية:
+
+$A$: «سحب سؤال في الهندسة»، \ $B$: «سحب سؤال في التحليل»، \ $C$: «سحب سؤال في الجبر يحمل رقمًا زوجيًا».
+\QQ{1} أحسب $P(A)$، $P(B)$ و$P(C)$ احتمالات الأحداث $A$، $B$ و$C$ على الترتيب.
+\QQ{2} أحسب احتمال سحب سؤال رقمه مختلف عن $1$.
+\QQ{3} المتغير العشوائي $X$ يرفق بكل بطاقة مسحوبة رقم السؤال المسجل عليها.
+\begin{sq}
+\qa برّر أن مجموعة قيم $X$ هي: $\{1;2;3;4\}$.
+\qb عيّن قانون احتمال المتغير العشوائي $X$ ثم أحسب $E(X)$ أمله الرياضياتي.
+\qc استنتج قيمة $E(2021X+1442)$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} المادة$\backslash$الرقم & $1$ & $2$ & $3$ & $4$ & المجموع\\\hline
+هندسة & $1$ & $1$ & $1$ & $0$ & $3$\\\hline
+جبر & $1$ & $1$ & $1$ & $1$ & $4$\\\hline
+تحليل & $1$ & $1$ & $0$ & $0$ & $2$\\\hline
+\rowcolor{cSec!6} المجموع & $3$ & $3$ & $2$ & $1$ & $9$\\\hline
+\end{tabular}
+\end{center}
+نسحب بطاقة واحدة من $9$ بطاقات متماثلة: الحالات متساوية الاحتمال و$\operatorname{card}\Omega=9$.
+\QQ{1}
+\[P(A)=\frac39=\bx{\frac13},\qquad P(B)=\bx{\frac29}\]
+$C$: سؤال جبر برقم زوجي: الرقمان $2$ و$4$، أي بطاقتان: \ $P(C)=\bx{\dfrac29}$.
+\QQ{2} البطاقات التي تحمل الرقم $1$ عددها $3$ (واحدة من كل مادة)، فاحتمال «الرقم مختلف عن $1$»:
+\[1-\frac39=\frac69=\bx{\frac23}\]
+\QQ{3}
+\pa أرقام الأسئلة المسجلة على البطاقات هي $1$، $2$، $3$، $4$ فقط، وكل منها يظهر على بطاقة واحدة على الأقل، إذن $X(\Omega)=\{1;2;3;4\}$.
+\pb من سطر «المجموع» في الجدول:
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $1$ & $2$ & $3$ & $4$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac39$ & $\dfrac39$ & $\dfrac29$ & $\dfrac19$ & $1$\\[8pt]\hline
+\end{tabular}
+\end{center}
+\[E(X)=\frac{1\times3+2\times3+3\times2+4\times1}{9}=\frac{19}{9},\qquad \bx{E(X)=\frac{19}{9}}\]
+\pc خاصية الأمل الرياضياتي: $E(aX+b)=a\,E(X)+b$، إذن:
+\[E(2021X+1442)=2021\times\frac{19}{9}+1442=\frac{38399}{9}+\frac{12978}{9}=\bx{\frac{51377}{9}}\approx5708{,}56\]
+\end{hal}
+
+%======================== 11 ========================
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الأول -- علوم تجريبية}
+يحتوي وعاء $U$ على $4$ كريات حمراء و$6$ سوداء، ويحتوي وعاء $V$ على $5$ كريات حمراء و$3$ سوداء، وكل الكريات متماثلة ولا نفرق بينها عند اللمس.
+
+نسحب عشوائيًا كريتين في آن واحد من أحد الوعاءين بالكيفية التالية: نقوم بسحب بطاقة واحدة عشوائيًا من كيس يحتوي على $6$ بطاقات متماثلة ومرقمة من $1$ إلى $6$؛ إذا تحصلنا على أحد الرقمين $3$ أو $5$ نسحب الكريتين من $U$، وفي باقي الحالات نسحب الكريتين من $V$.
+
+نسمي $A$ الحدث: «الحصول على أحد الرقمين $3$ أو $5$»، ونسمي $M$ الحدث: «الحصول على كريتين من نفس اللون».
+\begin{center}\begin{LTR}\begin{tikzpicture}[bsT,level 1/.style={sibling distance=2.8cm},level 2/.style={sibling distance=1.5cm}]
+\node[bsev]{}
+ child{node[bsev]{$A$}
+   child{node[bsev]{$M$} edge from parent node[bsp]{$\ldots$}}
+   child{node[bsev]{$\overline{M}$} edge from parent node[bsp]{$\ldots$}}
+   edge from parent node[bsp]{$\ldots$}}
+ child{node[bsev]{$\overline{A}$}
+   child{node[bsev]{$M$} edge from parent node[bsp]{$\dfrac{13}{28}$}}
+   child{node[bsev]{$\overline{M}$} edge from parent node[bsp]{$\ldots$}}
+   edge from parent node[bsp]{$\ldots$}};
+\end{tikzpicture}\end{LTR}\end{center}
+\QQ{1} تحقق أن احتمال السحب من الوعاء $V$ هو $P(\overline{A})=\dfrac23$.
+\QQ{2} علمًا أن الكريتين المسحوبتين من $U$، بيّن أن احتمال أن تكونا من نفس اللون هو $\dfrac{7}{15}$.
+\QQ{3} أنقل شجرة الاحتمالات المقابلة ثم أكملها واستنتج $P(M)$.
+\QQ{4} أحسب $P_{\overline{M}}(A)$ احتمال السحب من الوعاء $U$ علمًا أن الكريتين المسحوبتين مختلفتا اللون.
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} السحب من $V$ يوافق الحدث $\overline{A}$: الحصول على أحد الأرقام $1$، $2$، $4$، $6$، أي $4$ حالات من $6$:
+\[P(\overline{A})=\frac46=\frac23\ \textcolor{cRem}{\checkmark}\]
+ومنه: $P(A)=1-\dfrac23=\dfrac13$.
+\QQ{2} في $U$: $10$ كريات ($4$ حمراء، $6$ سوداء)، $C_{10}^2=45$. الكريتان من نفس اللون: حمراوان أو سوداوان:
+\[P_A(M)=\frac{C_4^2+C_6^2}{45}=\frac{6+15}{45}=\frac{21}{45}=\frac{7}{15}\ \textcolor{cRem}{\checkmark}\]
+\QQ{3} في $V$: $8$ كريات ($5$ حمراء، $3$ سوداء)، $C_8^2=28$:
+$P_{\overline{A}}(M)=\dfrac{C_5^2+C_3^2}{28}=\dfrac{10+3}{28}=\dfrac{13}{28}$ (القيمة المعطاة \ok)، ومنه $P_{\overline{A}}(\overline{M})=\dfrac{15}{28}$ و$P_A(\overline{M})=\dfrac{8}{15}$.
+\begin{center}\begin{LTR}\begin{tikzpicture}[bsT,level 1/.style={sibling distance=2.8cm},level 2/.style={sibling distance=1.5cm}]
+\node[bsev]{}
+ child{node[bsev]{$A$}
+   child{node[bsev](a1){$M$} edge from parent node[bsp]{$\dfrac{7}{15}$}}
+   child{node[bsev](a2){$\overline{M}$} edge from parent node[bsp]{$\dfrac{8}{15}$}}
+   edge from parent node[bsp]{$\dfrac13$}}
+ child{node[bsev]{$\overline{A}$}
+   child{node[bsev](a3){$M$} edge from parent node[bsp]{$\dfrac{13}{28}$}}
+   child{node[bsev](a4){$\overline{M}$} edge from parent node[bsp]{$\dfrac{15}{28}$}}
+   edge from parent node[bsp]{$\dfrac23$}};
+\node[bshd] at (a1.east){\ar{الاحتمال}};
+\node[bspr] at (a1.east){$\dfrac13\times\dfrac{7}{15}=\dfrac{7}{45}$};
+\node[bspr] at (a2.east){$\dfrac13\times\dfrac{8}{15}=\dfrac{8}{45}$};
+\node[bspr] at (a3.east){$\dfrac23\times\dfrac{13}{28}=\dfrac{13}{42}$};
+\node[bspr] at (a4.east){$\dfrac23\times\dfrac{15}{28}=\dfrac{5}{14}$};
+\end{tikzpicture}\end{LTR}\end{center}
+حسب دستور الاحتمالات الكلية:
+\[P(M)=P(A\cap M)+P(\overline{A}\cap M)=\frac{7}{45}+\frac{13}{42}=\frac{98}{630}+\frac{195}{630}=\bx{\frac{293}{630}}\]
+\QQ{4} $P(\overline{M})=1-\dfrac{293}{630}=\dfrac{337}{630}$ و$P(A\cap\overline{M})=\dfrac{8}{45}=\dfrac{112}{630}$:
+\[P_{\overline{M}}(A)=\frac{P(A\cap\overline{M})}{P(\overline{M})}=\frac{112/630}{337/630}=\bx{\frac{112}{337}}\approx0{,}33\]
+\end{hal}
+
+%======================== 12 ========================
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الثاني -- علوم تجريبية}
+كيس به ثلاث كريات بيضاء وكريتان حمراوان لا نميز بينها عند اللمس، نسحب عشوائيًا كريتين على التوالي من الكيس بالكيفية التالية: إذا كانت الكرية المسحوبة بيضاء نعيدها إلى الكيس، وإذا كانت حمراء لا نعيدها إلى الكيس.
+\begin{center}\begin{LTR}\begin{tikzpicture}[bsT,level 1/.style={sibling distance=2.8cm},level 2/.style={sibling distance=1.5cm}]
+\node[bsev]{}
+ child{node[bsev]{$B$}
+   child{node[bsev]{$B$} edge from parent node[bsp]{$\ldots$}}
+   child{node[bsev]{$R$} edge from parent node[bsp]{$\dfrac25$}}
+   edge from parent node[bsp]{$\ldots$}}
+ child{node[bsev]{$R$}
+   child{node[bsev]{$B$} edge from parent node[bsp]{$\dfrac34$}}
+   child{node[bsev]{$R$} edge from parent node[bsp]{$\ldots$}}
+   edge from parent node[bsp]{$\ldots$}};
+\end{tikzpicture}\end{LTR}\end{center}
+\QQ{1}
+\begin{sq}
+\qa أنقل شجرة الاحتمالات المقابلة ثم أكملها. ($B$ يرمز إلى الحصول على كرية بيضاء و$R$ إلى الحصول على كرية حمراء.)
+\qb أحسب احتمال أن تكون الكرية المسحوبة الثانية حمراء.
+\end{sq}
+\QQ{2} ليكن $X$ المتغير العشوائي الذي يرفق بكل سحب لكريتين عدد الكريات الحمراء المسحوبة.
+\begin{sq}
+\qa عيّن مجموعة قيم المتغير العشوائي $X$.
+\qb بيّن أن: $P(X=1)=\dfrac{27}{50}$، ثم عرّف قانون احتمال المتغير العشوائي $X$.
+\qc أحسب $E(X)$ الأمل الرياضياتي للمتغير العشوائي $X$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\QQ{1}
+\pa السحب الأول: $P(B)=\dfrac35$، $P(R)=\dfrac25$.
+\begin{itemize}
+\item بعد بيضاء نعيدها: الكيس كما هو ($3B$، $2R$): الاحتمالان $\dfrac35$ و$\dfrac25$.
+\item بعد حمراء لا نعيدها: يبقى $3B$ و$1R$: الاحتمالان $\dfrac34$ و$\dfrac14$.
+\end{itemize}
+\begin{center}\begin{LTR}\begin{tikzpicture}[bsT,level 1/.style={sibling distance=2.8cm},level 2/.style={sibling distance=1.5cm}]
+\node[bsev]{}
+ child{node[bsev]{$B$}
+   child{node[bsev](a1){$B$} edge from parent node[bsp]{$\dfrac35$}}
+   child{node[bsev](a2){$R$} edge from parent node[bsp]{$\dfrac25$}}
+   edge from parent node[bsp]{$\dfrac35$}}
+ child{node[bsev]{$R$}
+   child{node[bsev](a3){$B$} edge from parent node[bsp]{$\dfrac34$}}
+   child{node[bsev](a4){$R$} edge from parent node[bsp]{$\dfrac14$}}
+   edge from parent node[bsp]{$\dfrac25$}};
+\node[bshd] at (a1.east){\ar{الاحتمال}};
+\node[bspr] at (a1.east){$\dfrac35\times\dfrac35=\dfrac{9}{25}$};
+\node[bspr] at (a2.east){$\dfrac35\times\dfrac25=\dfrac{6}{25}$};
+\node[bspr] at (a3.east){$\dfrac25\times\dfrac34=\dfrac{3}{10}$};
+\node[bspr] at (a4.east){$\dfrac25\times\dfrac14=\dfrac{1}{10}$};
+\end{tikzpicture}\end{LTR}\end{center}
+\pb الكرية الثانية حمراء: المساران $BR$ و$RR$:
+\[P(R_2)=\frac{6}{25}+\frac{1}{10}=\frac{12}{50}+\frac{5}{50}=\bx{\frac{17}{50}}\]
+\QQ{2}
+\pa نسحب كريتين، فعدد الحمراء $0$ أو $1$ أو $2$: \ $X(\Omega)=\{0;1;2\}$.
+\pb $(X=1)$: المساران $BR$ و$RB$:
+\[P(X=1)=\frac{6}{25}+\frac{3}{10}=\frac{12}{50}+\frac{15}{50}=\frac{27}{50}\ \textcolor{cRem}{\checkmark}\]
+$P(X=0)=P(BB)=\dfrac{9}{25}=\dfrac{18}{50}$ \ و \ $P(X=2)=P(RR)=\dfrac{1}{10}=\dfrac{5}{50}$.
+\begin{center}
+\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{18}{50}$ & $\dfrac{27}{50}$ & $\dfrac{5}{50}$ & $1$\\[8pt]\hline
+\end{tabular}
+\end{center}
+\pc
+\[E(X)=0\times\frac{18}{50}+1\times\frac{27}{50}+2\times\frac{5}{50}=\bx{\frac{37}{50}}=0{,}74\]
+\end{hal}
+
+%======================== 13 ========================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الأول -- علوم تجريبية}
+يحتوي كيس على خمس كريات حمراء، منها أربع كريات تحمل الرقم $1$ وكرية واحدة تحمل الرقم $2$، وسبع كريات خضراء، منها أربع كريات تحمل الرقم $1$ وثلاث كريات تحمل الرقم $2$. (كل الكريات متماثلة لا نفرق بينها عند اللمس)
+
+نسحب عشوائيًا كريتين من الكيس في آن واحد ونعتبر الحادثتين $A$ و$B$ حيث:
+
+$A$: «سحب كريتين من نفس اللون»، \quad $B$: «سحب كريتين تحملان نفس الرقم».
+\QQ{1} بيّن أن احتمال الحادثة $A$ هو $P(A)=\dfrac{31}{66}$ وأحسب احتمال الحادثة $B$.
+\QQ{2} علمًا أن الكريتين المسحوبتين من نفس اللون، ما احتمال أن تحملا نفس الرقم؟
+\QQ{3} ليكن $X$ المتغير العشوائي الذي يرفق بكل عملية سحب عدد الكريات الحمراء المتبقية في الكيس.
+
+عرّف قانون الاحتمال للمتغير العشوائي وأحسب أمله الرياضياتي.
+\end{tamrin}
+
+\begin{hal}
+\begin{center}
+\begin{tabular}{|C|c|c|c|}\hline
+\rowcolor{cSec!12} اللون$\backslash$الرقم & $1$ & $2$ & المجموع\\\hline
+حمراء & $4$ & $1$ & $5$\\\hline
+خضراء & $4$ & $3$ & $7$\\\hline
+\rowcolor{cSec!6} المجموع & $8$ & $4$ & $12$\\\hline
+\end{tabular}
+\end{center}
+السحب في آن واحد: $\operatorname{card}\Omega=C_{12}^2=66$.
+\QQ{1} $A$: حمراوان أو خضراوان:
+\[P(A)=\frac{C_5^2+C_7^2}{66}=\frac{10+21}{66}=\frac{31}{66}\ \textcolor{cRem}{\checkmark}\]
+$B$: كريتان تحملان $1$ (من $8$) أو كريتان تحملان $2$ (من $4$):
+\[P(B)=\frac{C_8^2+C_4^2}{66}=\frac{28+6}{66}=\frac{34}{66}=\bx{\frac{17}{33}}\]
+\QQ{2} المطلوب $P_A(B)$. الحادثة $A\cap B$: نفس اللون ونفس الرقم:
+\begin{itemize}
+\item حمراوان تحملان $1$: $C_4^2=6$؛ حمراوان تحملان $2$: مستحيل (كرية واحدة)؛
+\item خضراوان تحملان $1$: $C_4^2=6$؛ خضراوان تحملان $2$: $C_3^2=3$.
+\end{itemize}
+\[P(A\cap B)=\frac{6+6+3}{66}=\frac{15}{66},\qquad P_A(B)=\frac{P(A\cap B)}{P(A)}=\frac{15/66}{31/66}=\bx{\frac{15}{31}}\]
+\QQ{3} في الكيس $5$ كريات حمراء، نسحب منها $0$ أو $1$ أو $2$، فيبقى $5$ أو $4$ أو $3$: \ $X(\Omega)=\{3;4;5\}$.
+\begin{itemize}
+\item $(X=5)$: لا نسحب أي حمراء (كريتان خضراوان): $P(X=5)=\dfrac{C_7^2}{66}=\dfrac{21}{66}$؛
+\item $(X=4)$: حمراء واحدة وخضراء واحدة: $P(X=4)=\dfrac{C_5^1C_7^1}{66}=\dfrac{35}{66}$؛
+\item $(X=3)$: حمراوان: $P(X=3)=\dfrac{C_5^2}{66}=\dfrac{10}{66}$.
+\end{itemize}
+\begin{center}
+\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $3$ & $4$ & $5$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{10}{66}$ & $\dfrac{35}{66}$ & $\dfrac{21}{66}$ & $1$\\[8pt]\hline
+\end{tabular}
+\end{center}
+\[E(X)=\frac{3\times10+4\times35+5\times21}{66}=\frac{30+140+105}{66}=\frac{275}{66}=\bx{\frac{25}{6}}\]
+\end{hal}
+
+%======================== 14 ========================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الثاني -- علوم تجريبية}
+يحتوي صندوق على $10$ كريات لا نفرق بينها عند اللمس، منها كريتان تحملان الرقم $0$، وثلاث تحمل الرقم $1$، والكريات الأخرى تحمل الرقم $2$. نسحب عشوائيًا وفي آن واحد ثلاث كريات من الصندوق.
+
+ليكن $X$ المتغير العشوائي الذي يرفق بكل سحب جداء الأرقام المسجلة على الكريات المسحوبة.
+\QQ{1} عرّف قانون الاحتمال للمتغير العشوائي $X$، ثم أحسب أمله الرياضياتي $E(X)$.
+\QQ{2} بيّن أن احتمال الحصول على ثلاث كريات كل منها تحمل رقمًا زوجيًا هو $\dfrac{7}{24}$.
+\QQ{3} نسحب الآن من الصندوق كريتين على التوالي دون إرجاع.
+
+ما احتمال الحصول على كريتين تحملان رقمين مجموعهما فردي علمًا أن جداءهما زوجي؟
+\end{tamrin}
+
+\begin{hal}
+\begin{center}
+\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} الرقم & $0$ & $1$ & $2$ & المجموع\\\hline
+عدد الكريات & $2$ & $3$ & $5$ & $10$\\\hline
+\end{tabular}
+\end{center}
+\QQ{1} السحب في آن واحد: $\operatorname{card}\Omega=C_{10}^3=120$.
+
+\textbf{القيم:} إذا ظهر $0$ فالجداء $0$؛ وإلا فالكريات الثلاث تحمل $1$ أو $2$ والجداء $2^k$ حيث $k$ عدد الكريات ذات الرقم $2$:
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|}\hline
+\rowcolor{cSec!12} $k$ & $0$ & $1$ & $2$ & $3$\\\hline
+$X=2^k$ & $1$ & $2$ & $4$ & $8$\\\hline
+\end{tabular}
+\end{center}
+إذن $X(\Omega)=\{0;1;2;4;8\}$.
+\begin{itemize}
+\item $P(X=0)=1-\dfrac{C_8^3}{120}=1-\dfrac{56}{120}=\dfrac{64}{120}$ (عكسها: لا يظهر $0$)؛
+\item $P(X=1)=\dfrac{C_3^3}{120}=\dfrac{1}{120}$؛ \quad $P(X=2)=\dfrac{C_3^2C_5^1}{120}=\dfrac{15}{120}$؛
+\item $P(X=4)=\dfrac{C_3^1C_5^2}{120}=\dfrac{30}{120}$؛ \quad $P(X=8)=\dfrac{C_5^3}{120}=\dfrac{10}{120}$.
+\end{itemize}
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & $4$ & $8$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{64}{120}$ & $\dfrac{1}{120}$ & $\dfrac{15}{120}$ & $\dfrac{30}{120}$ & $\dfrac{10}{120}$ & $1$\\[8pt]\hline
+\end{tabular}
+\end{center}
+\[E(X)=\frac{0\times64+1\times1+2\times15+4\times30+8\times10}{120}=\frac{231}{120}=\bx{\frac{77}{40}}\]
+\QQ{2} الأرقام الزوجية $0$ و$2$: عدد الكريات $2+5=7$:
+\[P=\frac{C_7^3}{120}=\frac{35}{120}=\frac{7}{24}\ \textcolor{cRem}{\checkmark}\]
+\QQ{3} نسمي $I$: «الكرية تحمل رقمًا فرديًا» ($3$ كريات)، و$Z$: «الكرية تحمل رقمًا زوجيًا» ($7$ كريات). السحب على التوالي دون إرجاع:
+\begin{center}\begin{LTR}\begin{tikzpicture}[bsT,level 1/.style={sibling distance=2.8cm},level 2/.style={sibling distance=1.5cm}]
+\node[bsev]{}
+ child{node[bsev]{$I$}
+   child{node[bsev](a1){$I$} edge from parent node[bsp]{$\dfrac29$}}
+   child{node[bsev](a2){$Z$} edge from parent node[bsp]{$\dfrac79$}}
+   edge from parent node[bsp]{$\dfrac{3}{10}$}}
+ child{node[bsev]{$Z$}
+   child{node[bsev](a3){$I$} edge from parent node[bsp]{$\dfrac39$}}
+   child{node[bsev](a4){$Z$} edge from parent node[bsp]{$\dfrac69$}}
+   edge from parent node[bsp]{$\dfrac{7}{10}$}};
+\node[bshd] at (a1.east){\ar{الاحتمال}};
+\node[bspr] at (a1.east){$\dfrac{6}{90}$};
+\node[bspr] at (a2.east){$\dfrac{21}{90}$};
+\node[bspr] at (a3.east){$\dfrac{21}{90}$};
+\node[bspr] at (a4.east){$\dfrac{42}{90}$};
+\end{tikzpicture}\end{LTR}\end{center}
+نسمي $S$: «مجموع الرقمين فردي» و$J$: «جداء الرقمين زوجي».
+\begin{itemize}
+\item الجداء زوجي إذا كان أحد الرقمين زوجيًا على الأقل، أي كل المسارات ما عدا $II$:
+$P(J)=1-\dfrac{6}{90}=\dfrac{84}{90}$.
+\item المجموع فردي إذا كان أحد الرقمين فرديًا والآخر زوجيًا: المساران $IZ$ و$ZI$. وفي هذه الحالة الجداء زوجي، إذن $S\subset J$، ومنه:
+\[P(S\cap J)=P(S)=\frac{21+21}{90}=\frac{42}{90}\]
+\end{itemize}
+\[P_J(S)=\frac{P(S\cap J)}{P(J)}=\frac{42/90}{84/90}=\bx{\frac12}\]
+\end{hal}
+
+%======================== 15 ========================
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الأول -- علوم تجريبية}
+يحتوي صندوق $10$ كريات متماثلة لا نفرق بينها باللمس، منها $4$ كريات بيضاء مرقمة بـ: $1$، $2$، $2$، $3$، وثلاث كريات حمراء مرقمة بـ: $2$، $2$، $3$، وثلاث كريات خضراء مرقمة بـ: $2$، $3$، $3$.
+نسحب عشوائيًا وفي آن واحد $3$ كريات من هذا الصندوق.
+
+نعتبر الحادثتين: $A$: «الكريات الثلاث المسحوبة تحمل ألوان العلم الوطني»، و$B$: «الكريات الثلاث المسحوبة لها نفس الرقم».
+\QQ{1}
+\begin{sq}
+\qa أحسب $P(A)$ و$P(B)$ احتمالي الحادثتين $A$ و$B$ على الترتيب.
+\qb بيّن أن: $P(A\cap B)=\dfrac{1}{20}$ ثم استنتج $P_A(B)$ و$P(A\cup B)$.
+\end{sq}
+\QQ{2} ليكن $X$ المتغير العشوائي الذي يرفق بكل نتيجة عملية سحب عدد الكريات التي تحمل رقمًا فرديًا.
+
+عرّف قانون الاحتمال للمتغير العشوائي $X$ وأحسب أمله الرياضياتي $E(X)$.
+\end{tamrin}
+
+\begin{hal}
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|}\hline
+\rowcolor{cSec!12} اللون$\backslash$الرقم & $1$ & $2$ & $3$ & المجموع\\\hline
+بيضاء & $1$ & $2$ & $1$ & $4$\\\hline
+حمراء & $0$ & $2$ & $1$ & $3$\\\hline
+خضراء & $0$ & $1$ & $2$ & $3$\\\hline
+\rowcolor{cSec!6} المجموع & $1$ & $5$ & $4$ & $10$\\\hline
+\end{tabular}
+\end{center}
+السحب في آن واحد: $\operatorname{card}\Omega=C_{10}^3=120$.
+\QQ{1}
+\pa ألوان العلم الوطني: الأبيض، الأخضر والأحمر، فالحادثة $A$ تعني كرية من كل لون:
+\[P(A)=\frac{C_4^1\times C_3^1\times C_3^1}{120}=\frac{36}{120}=\bx{\frac{3}{10}}\]
+$B$: ثلاث كريات تحمل $2$ (من $5$) أو ثلاث تحمل $3$ (من $4$)، والرقم $1$ على كرية واحدة:
+\[P(B)=\frac{C_5^3+C_4^3}{120}=\frac{10+4}{120}=\frac{14}{120}=\bx{\frac{7}{60}}\]
+\pb $A\cap B$: كرية من كل لون والأرقام الثلاثة متساوية:
+\begin{itemize}
+\item الرقم $2$: بيضاء من $2$، حمراء من $2$، خضراء من $1$: \ $C_2^1\times C_2^1\times C_1^1=4$؛
+\item الرقم $3$: بيضاء من $1$، حمراء من $1$، خضراء من $2$: \ $C_1^1\times C_1^1\times C_2^1=2$.
+\end{itemize}
+\[P(A\cap B)=\frac{4+2}{120}=\frac{6}{120}=\frac{1}{20}\ \textcolor{cRem}{\checkmark}\]
+\[P_A(B)=\frac{P(A\cap B)}{P(A)}=\frac{1/20}{3/10}=\bx{\frac16}\]
+\[P(A\cup B)=P(A)+P(B)-P(A\cap B)=\frac{18}{60}+\frac{7}{60}-\frac{3}{60}=\frac{22}{60}=\bx{\frac{11}{30}}\]
+\QQ{2} الكريات ذات الرقم الفردي ($1$ أو $3$): $1+4=5$، وذات الرقم الزوجي: $5$. إذن $X(\Omega)=\{0;1;2;3\}$:
+\begin{align*}
+P(X=0)&=\frac{C_5^3}{120}=\frac{10}{120}, & P(X=1)&=\frac{C_5^1C_5^2}{120}=\frac{50}{120},\\
+P(X=2)&=\frac{C_5^2C_5^1}{120}=\frac{50}{120}, & P(X=3)&=\frac{C_5^3}{120}=\frac{10}{120}.
+\end{align*}
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & $3$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{10}{120}$ & $\dfrac{50}{120}$ & $\dfrac{50}{120}$ & $\dfrac{10}{120}$ & $1$\\[8pt]\hline
+\end{tabular}
+\end{center}
+\[E(X)=\frac{0\times10+1\times50+2\times50+3\times10}{120}=\frac{180}{120}=\bx{\frac32}\]
+\end{hal}
+
+\section{تمارين البكالوريا -- شعبة تقني رياضي}
+% ===================== تمارين البكالوريا -- تقني رياضي =====================
+\tikzset{btree/.style={grow=right,level distance=3.2cm,
+  ev/.style={circle,draw=cDef,fill=cDef!12,thick,minimum size=7mm,inner sep=1pt,font=\small},
+  edge from parent/.style={draw,thick,cDef!70!black},
+  pu/.style={midway,above,sloped,inner sep=1pt,font=\small},
+  pd/.style={midway,below,sloped,inner sep=1pt,font=\small},
+  lf/.style={label={[label distance=5mm,font=\small]right:{##1}}}}}
+
+% ===================== التمرين 1 =====================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الأول -- تقني رياضي}
+يحتوي كيس على $10$ كريات متماثلة ولا نفرق بينها باللمس، منها: كريتان بيضاوان مرقمتان بـ: $0$، $2$ وأربع كريات حمراء مرقمة بـ: $0$، $1$، $2$، $3$ وأربع كريات خضراء مرقمة بـ: $1$، $2$، $3$، $4$.
+
+نسحب عشوائيا من الكيس ثلاث كريات في آن واحد ونعتبر الحوادث التالية:
+\begin{itemize}
+\item $A$: «سحب كرية حمراء على الأقل»، \quad $B$: «سحب ثلاث كريات جداء أرقامها معدوم»،
+\item $C$: «سحب ثلاث كريات من نفس اللون»، \quad $D$: «سحب ثلاث كريات مجموع أرقامها أكبر من أو يساوي $8$».
+\end{itemize}
+\QQ{1}
+\begin{sq}
+\qa أحسب $P(A)$، $P(B)$ و $P(C)$ احتمالات الحوادث $A$، $B$ و $C$ على الترتيب.
+\qb بيّن أن: $P(D)=\dfrac{17}{120}$ وأن: $P(C\cap D)=\dfrac{1}{60}$.
+\qc استنتج حساب احتمال الحادثة $E$: «سحب ثلاث كريات مجموع أرقامها أصغر من أو يساوي $7$».
+\end{sq}
+\QQ{2} $X$ المتغيّر العشوائي الذي يرفق بكل عملية سحب لثلاث كريات عدد الكريات التي تحمل رقما فرديا.
+
+عيّن قانون الاحتمال للمتغيّر العشوائي $X$، ثم أحسب أمله الرياضياتي $E(X)$.
+\end{tamrin}
+
+\begin{molahada}
+في نص المصدر كُتبت أرقام الكريات الخضراء الأربع خمسة أرقام: $1$، $2$، $3$، $4$، $3$. الصحيح أربعة أرقام: $1$، $2$، $3$، $4$، وهو الترقيم الوحيد الذي يعطي $P(D)=\dfrac{17}{120}$ و $P(C\cap D)=\dfrac{1}{60}$.
+\end{molahada}
+
+\begin{hal}
+\textbf{تنظيم المعطيات:}
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{اللون} & \ar{الأبيض $W$} & \ar{الأحمر $R$} & \ar{الأخضر $V$} & \ar{المجموع}\\\hline
+\ar{عدد الكريات} & $2$ & $4$ & $4$ & $10$\\\hline
+\ar{الأرقام} & $0;\,2$ & $0;\,1;\,2;\,3$ & $1;\,2;\,3;\,4$ &\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+السحب في آن واحد، إذن كل سحب هو توفيقة لـ $3$ كريات من بين $10$، وكل السحبات متساوية الاحتمال (الكريات متماثلة):
+\[\operatorname{card}\Omega=C_{10}^{3}=\frac{10\times 9\times 8}{3\times 2\times 1}=120.\]
+
+\QQ{1}
+\pa \textbf{حساب $P(A)$:} الحادثة العكسية $\overline{A}$: «لا نسحب أية كرية حمراء»، أي نسحب الكريات الثلاث من بين $6$ كريات غير حمراء:
+\[P(\overline{A})=\frac{C_{6}^{3}}{120}=\frac{20}{120},\qquad P(A)=1-\frac{20}{120}=\frac{100}{120},\qquad \bx{P(A)=\frac{5}{6}}\]
+\textbf{حساب $P(B)$:} يكون جداء الأرقام معدوما إذا وفقط إذا سحبنا كرية واحدة على الأقل تحمل الرقم $0$. توجد كريتان تحملان $0$ (بيضاء وحمراء)، و $8$ كريات لا تحمل $0$. الحادثة العكسية $\overline{B}$: «لا نسحب أي $0$»:
+\[P(B)=1-\frac{C_{8}^{3}}{120}=1-\frac{56}{120}=\frac{64}{120},\qquad \bx{P(B)=\frac{8}{15}}\]
+\textbf{حساب $P(C)$:} لا يمكن سحب ثلاث كريات بيضاء (يوجد كريتان فقط)، إذن:
+\[P(C)=\frac{C_{4}^{3}+C_{4}^{3}}{120}=\frac{4+4}{120},\qquad \bx{P(C)=\frac{1}{15}}\]
+
+\pb \textbf{حساب $P(D)$:} توزيع الأرقام على الكريات العشر:
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{الرقم} & $0$ & $1$ & $2$ & $3$ & $4$ & \ar{المجموع}\\\hline
+\ar{عدد الكريات} & $2$ & $2$ & $3$ & $2$ & $1$ & $10$\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+نبحث عن الأرقام الثلاثة التي مجموعها أكبر من أو يساوي $8$ (أكبر مجموع ممكن هو $4+3+3=10$):
+\begin{center}\small
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{الأرقام المسحوبة} & $\{1;3;4\}$ & $\{2;2;4\}$ & $\{2;3;3\}$ & $\{2;3;4\}$ & $\{3;3;4\}$ & \ar{المجموع}\\\hline
+\ar{مجموعها} & $8$ & $8$ & $8$ & $9$ & $10$ &\\\hline
+\ar{عدد الإمكانيات} & $2\times 2\times 1=4$ & $C_{3}^{2}\times 1=3$ & $3\times C_{2}^{2}=3$ & $3\times 2\times 1=6$ & $C_2^2\times 1=1$ & $17$\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+(الأرقام الأخرى مجموعها $\le 7$، مثلا $4+2+1=7$ و $3+3+1=7$.) إذن:
+\[\bx{P(D)=\frac{17}{120}}\]
+\textbf{حساب $P(C\cap D)$:} $C\cap D$: «ثلاث كريات من نفس اللون مجموع أرقامها $\ge 8$».
+\begin{itemize}
+\item ثلاث حمراء: أكبر مجموع $1+2+3=6<8$، مستحيل.
+\item ثلاث خضراء: المجموعات الممكنة $\{1;2;3\}\to 6$، $\{1;2;4\}\to 7$، $\{1;3;4\}\to 8$، $\{2;3;4\}\to 9$؛ إذن حالتان فقط.
+\end{itemize}
+\[P(C\cap D)=\frac{2}{120},\qquad \bx{P(C\cap D)=\frac{1}{60}}\]
+
+\pc الحادثة $E$: «مجموع الأرقام $\le 7$» هي الحادثة العكسية للحادثة $D$ (لأن المجموع عدد طبيعي: إما $\ge 8$ أو $\le 7$)، إذن:
+\[P(E)=P(\overline{D})=1-\frac{17}{120},\qquad \bx{P(E)=\frac{103}{120}}\]
+
+\QQ{2} الكريات التي تحمل رقما فرديا: $1$ (حمراء)، $3$ (حمراء)، $1$ (خضراء)، $3$ (خضراء)، أي $4$ كريات، والباقي $6$ كريات تحمل رقما زوجيا ($0;0;2;2;2;4$).
+
+قيم $X$: $\{0;1;2;3\}$.
+\[P(X=0)=\frac{C_6^3}{120}=\frac{20}{120}=\frac{1}{6},\qquad P(X=1)=\frac{C_4^1\times C_6^2}{120}=\frac{4\times 15}{120}=\frac{1}{2},\]
+\[P(X=2)=\frac{C_4^2\times C_6^1}{120}=\frac{6\times 6}{120}=\frac{3}{10},\qquad P(X=3)=\frac{C_4^3}{120}=\frac{4}{120}=\frac{1}{30}.\]
+\textbf{قانون الاحتمال:}
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & $3$ & \ar{المجموع}\\\hline
+$P(X=x_i)$ & $\dfrac{1}{6}$ & $\dfrac{1}{2}$ & $\dfrac{3}{10}$ & $\dfrac{1}{30}$ & $1$\\[4pt]\hline
+\end{tabular}\end{LTR}
+\end{center}
+تحقق: $\dfrac{20+60+36+4}{120}=1$ \ok.
+
+\textbf{الأمل الرياضياتي:}
+\[E(X)=0\times\frac{1}{6}+1\times\frac{1}{2}+2\times\frac{3}{10}+3\times\frac{1}{30}=\frac{60+72+12}{120}=\frac{144}{120},\qquad \bx{E(X)=\frac{6}{5}}\]
+\end{hal}
+
+% ===================== التمرين 2 =====================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الثاني -- تقني رياضي}
+يحتوي كيس على $11$ كرية متماثلة ولا نفرق بينها باللمس، منها: كريتان بيضاوان، خمس كريات حمراء، ثلاث كريات خضراء وكرية واحدة سوداء.
+\QQ{1} نسحب عشوائيا من الكيس ثلاث كريات على التوالي دون إرجاع ونعتبر الحوادث التالية:
+\begin{itemize}
+\item $A$: «سحب ثلاث كريات من نفس اللون»، \quad $B$: «سحب كرية واحدة بيضاء فقط»،
+\item $C$: «سحب كرية حمراء على الأكثر»، \quad $D$: «سحب كريتين حمراوين على الأقل».
+\end{itemize}
+\begin{sq}
+\qa أحسب $P(A)$، $P(B)$، $P(C)$ و $P(D)$ احتمالات الحوادث $A$، $B$، $C$ و $D$ على الترتيب.
+\qb بيّن أن: $P(A\cap D)=\dfrac{2}{33}$ ثم استنتج حساب $P(A\cup D)$.
+\end{sq}
+\QQ{2} نفرض أن عدد الكريات السوداء في الكيس هو $n$ حيث $n\ge 2$ ونسحب منه كريتين على التوالي مع الإرجاع.
+
+عيّن قيمة $n$ حتى يكون احتمال سحب كريتين سوداوين يساوي $\dfrac{1}{4}$.
+\end{tamrin}
+
+\begin{hal}
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{اللون} & \ar{الأبيض} & \ar{الأحمر} & \ar{الأخضر} & \ar{الأسود} & \ar{المجموع}\\\hline
+\ar{عدد الكريات} & $2$ & $5$ & $3$ & $1$ & $11$\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+\QQ{1} السحب على التوالي دون إرجاع: كل سحب هو ترتيبة لـ $3$ كريات من بين $11$ (الترتيب مهم)، والسحبات متساوية الاحتمال:
+\[\operatorname{card}\Omega=A_{11}^{3}=11\times 10\times 9=990.\]
+\pa \textbf{حساب $P(A)$:} لا يمكن سحب ثلاث بيضاء (اثنتان فقط) ولا ثلاث سوداء (واحدة فقط)، إذن ثلاث حمراء أو ثلاث خضراء:
+\[P(A)=\frac{A_5^3+A_3^3}{990}=\frac{60+6}{990}=\frac{66}{990},\qquad \bx{P(A)=\frac{1}{15}}\]
+\textbf{حساب $P(B)$:} كرية بيضاء واحدة فقط وكريتان من بين $9$ كريات غير بيضاء. نختار رتبة الكرية البيضاء ($3$ إمكانيات)، ثم الكرية البيضاء ($2$)، ثم ترتيبة للكريتين الأخريين ($A_9^2=72$):
+\[P(B)=\frac{3\times 2\times A_9^2}{990}=\frac{3\times 2\times 72}{990}=\frac{432}{990},\qquad \bx{P(B)=\frac{24}{55}}\]
+\textbf{حساب $P(C)$:} «حمراء على الأكثر» تعني: ولا حمراء، أو حمراء واحدة فقط (يوجد $6$ كريات غير حمراء).
+\begin{itemize}
+\item ولا حمراء: $A_6^3=6\times5\times4=120$.
+\item حمراء واحدة: $3\times 5\times A_6^2=3\times 5\times 30=450$ (رتبة الحمراء، اختيارها، ثم الكريتان غير الحمراوين).
+\end{itemize}
+\[P(C)=\frac{120+450}{990}=\frac{570}{990},\qquad \bx{P(C)=\frac{19}{33}}\]
+\textbf{حساب $P(D)$:} «حمراوان على الأقل» هي الحادثة العكسية لـ «حمراء على الأكثر»، أي $D=\overline{C}$:
+\[P(D)=1-\frac{19}{33},\qquad \bx{P(D)=\frac{14}{33}}\]
+(تحقق مباشر: حمراوان بالضبط $3\times A_5^2\times 6=360$، ثلاث حمراء $60$، والمجموع $\dfrac{420}{990}=\dfrac{14}{33}$ \ok.)
+
+\pb $A\cap D$: «ثلاث كريات من نفس اللون وحمراوان على الأقل»، أي «ثلاث كريات حمراء»:
+\[P(A\cap D)=\frac{A_5^3}{990}=\frac{60}{990},\qquad \bx{P(A\cap D)=\frac{2}{33}}\]
+\textbf{استنتاج $P(A\cup D)$:}
+\begin{align*}P(A\cup D)&=P(A)+P(D)-P(A\cap D)=\frac{1}{15}+\frac{14}{33}-\frac{2}{33}\\&=\frac{1}{15}+\frac{4}{11}=\frac{11+60}{165},\qquad \bx{P(A\cup D)=\frac{71}{165}}\end{align*}
+
+\QQ{2} صار الكيس يحتوي على $10+n$ كرية منها $n$ سوداء. السحب مع الإرجاع: تركيب الكيس لا يتغير، فاحتمال سحب كرية سوداء في كل سحبة هو $\dfrac{n}{n+10}$، والسحبتان مستقلتان. نرمز بـ $N$ للحادثة «الكرية المسحوبة سوداء»:
+\begin{center}\begin{LTR}\begin{tikzpicture}[btree,level 1/.style={sibling distance=2.8cm},level 2/.style={sibling distance=1.4cm}]
+\node[ev]{}
+  child{node[ev]{$\overline{N}$}
+    child{node[ev,lf={$\left(\dfrac{10}{n+10}\right)^2$}]{$\overline{N}$} edge from parent node[pd]{$\dfrac{10}{n+10}$}}
+    child{node[ev,lf={$\dfrac{10n}{(n+10)^2}$}]{$N$} edge from parent node[pu]{$\dfrac{n}{n+10}$}}
+    edge from parent node[pd]{$\dfrac{10}{n+10}$}}
+  child{node[ev]{$N$}
+    child{node[ev,lf={$\dfrac{10n}{(n+10)^2}$}]{$\overline{N}$} edge from parent node[pd]{$\dfrac{10}{n+10}$}}
+    child{node[ev,lf={$\left(\dfrac{n}{n+10}\right)^2$}]{$N$} edge from parent node[pu]{$\dfrac{n}{n+10}$}}
+    edge from parent node[pu]{$\dfrac{n}{n+10}$}};
+\node[font=\small\bfseries] at (8.1,2.9){\ar{الاحتمال}};
+\end{tikzpicture}\end{LTR}\end{center}
+من الشجرة: احتمال سحب كريتين سوداوين هو $\left(\dfrac{n}{n+10}\right)^2$. إذن:
+وبما أن $\dfrac{n}{n+10}>0$:\[\left(\frac{n}{n+10}\right)^2=\frac{1}{4}\iff \frac{n}{n+10}=\frac{1}{2}\iff 2n=n+10,\qquad \bx{n=10}\]
+وهي تحقق $n\ge 2$ \ok.
+\end{hal}
+
+% ===================== التمرين 3 =====================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الأول -- تقني رياضي}
+يحتوي صندوق على $10$ كريات متماثلة ولا نفرق بينها باللمس، منها: كريتان خضراوان مرقمتان بـ: $1$، $2$ وثلاث كريات بيضاء مرقمة بـ: $1$، $1$، $2$ وخمس كريات حمراء مرقمة بـ: $1$، $1$، $2$، $2$، $3$.
+
+\textbf{I)} نسحب عشوائيا من الصندوق $3$ كريات في آن واحد ونعتبر الحوادث التالية:
+\begin{itemize}
+\item $A$: «الحصول على ثلاث كريات مختلفة الألوان مثنى مثنى»، \quad $B$: «الحصول على ثلاث كريات تحمل نفس الرقم»،
+\item $C$: «الحصول على ثلاث كريات مجموع أرقامها $6$».
+\end{itemize}
+\QQ{1}
+\begin{sq}
+\qa أحسب $P(A)$، $P(B)$ و $P(C)$ احتمالات الحوادث $A$، $B$ و $C$ على الترتيب.
+\qb أحسب $P(A\cap B)$ ثم استنتج حساب $P(A\cup B)$.
+\end{sq}
+\QQ{2} $X$ المتغيّر العشوائي الذي يرفق بكل عملية سحب لـ $3$ كريات بالكيفية السابقة عدد ألوان الكريات المسحوبة.
+
+عيّن قانون الاحتمال للمتغيّر العشوائي $X$، ثم أحسب أمله الرياضياتي $E(X)$.
+
+\textbf{II)} نسحب عشوائيا من الصندوق $3$ كريات على التوالي دون إرجاع. ما احتمال ألا يبقى في الصندوق أية كرية خضراء؟
+\end{tamrin}
+
+\begin{hal}
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{اللون} & \ar{الأخضر $V$} & \ar{الأبيض $W$} & \ar{الأحمر $R$} & \ar{المجموع}\\\hline
+\ar{عدد الكريات} & $2$ & $3$ & $5$ & $10$\\\hline
+\ar{الأرقام} & $1;\,2$ & $1;\,1;\,2$ & $1;\,1;\,2;\,2;\,3$ &\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+\textbf{الجزء I:} السحب في آن واحد: $\operatorname{card}\Omega=C_{10}^3=120$.
+
+\QQ{1}
+\pa \textbf{حساب $P(A)$:} كرية من كل لون: خضراء ($2$) وبيضاء ($3$) وحمراء ($5$):
+\[P(A)=\frac{C_2^1\times C_3^1\times C_5^1}{120}=\frac{2\times3\times5}{120}=\frac{30}{120},\qquad \bx{P(A)=\frac{1}{4}}\]
+\textbf{حساب $P(B)$:} توزيع الأرقام:
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{الرقم} & $1$ & $2$ & $3$ & \ar{المجموع}\\\hline
+\ar{عدد الكريات} & $5$ & $4$ & $1$ & $10$\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+ثلاث كريات تحمل $1$ أو ثلاث كريات تحمل $2$ (الرقم $3$ على كرية واحدة):
+\[P(B)=\frac{C_5^3+C_4^3}{120}=\frac{10+4}{120}=\frac{14}{120},\qquad \bx{P(B)=\frac{7}{60}}\]
+\textbf{حساب $P(C)$:} الأرقام الثلاثة التي مجموعها $6$ هي: $\{1;2;3\}$ أو $\{2;2;2\}$:
+\[P(C)=\frac{C_5^1\times C_4^1\times C_1^1+C_4^3}{120}=\frac{20+4}{120}=\frac{24}{120},\qquad \bx{P(C)=\frac{1}{5}}\]
+
+\pb $A\cap B$: «كرية من كل لون، والثلاث تحمل نفس الرقم».
+\begin{itemize}
+\item الرقم $1$: خضراء $1$ ($1$ إمكانية)، بيضاء $1$ ($2$)، حمراء $1$ ($2$): $1\times2\times2=4$.
+\item الرقم $2$: خضراء $2$ ($1$)، بيضاء $2$ ($1$)، حمراء $2$ ($2$): $1\times1\times2=2$.
+\end{itemize}
+\[P(A\cap B)=\frac{4+2}{120},\qquad \bx{P(A\cap B)=\frac{1}{20}}\]
+\[P(A\cup B)=P(A)+P(B)-P(A\cap B)=\frac{15}{60}+\frac{7}{60}-\frac{3}{60},\qquad \bx{P(A\cup B)=\frac{19}{60}}\]
+
+\QQ{2} قيم $X$: $\{1;2;3\}$.
+\begin{itemize}
+\item $X=1$: ثلاث كريات من لون واحد: بيضاء $C_3^3=1$ أو حمراء $C_5^3=10$ (لا توجد ثلاث خضراء): $P(X=1)=\dfrac{11}{120}$.
+\item $X=3$: هي الحادثة $A$: $P(X=3)=\dfrac{30}{120}=\dfrac{1}{4}$.
+\item $X=2$: $P(X=2)=1-\dfrac{11}{120}-\dfrac{30}{120}=\dfrac{79}{120}$.
+\end{itemize}
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} $x_i$ & $1$ & $2$ & $3$ & \ar{المجموع}\\\hline
+$P(X=x_i)$ & $\dfrac{11}{120}$ & $\dfrac{79}{120}$ & $\dfrac{30}{120}$ & $1$\\[4pt]\hline
+\end{tabular}\end{LTR}
+\end{center}
+\[E(X)=1\times\frac{11}{120}+2\times\frac{79}{120}+3\times\frac{30}{120}=\frac{11+158+90}{120},\qquad \bx{E(X)=\frac{259}{120}}\]
+
+\textbf{الجزء II:} «لا يبقى في الصندوق أية كرية خضراء» تعني أن الكريتين الخضراوين سُحبتا معا ضمن الكريات الثلاث، أي نسحب كريتين خضراوين بالضبط. نرمز بـ $V$: «الكرية المسحوبة خضراء». في كل سحبة يتغير تركيب الصندوق (دون إرجاع):
+\begin{center}\begin{LTR}\begin{tikzpicture}[btree,level 1/.style={sibling distance=5.6cm},level 2/.style={sibling distance=2.8cm},level 3/.style={sibling distance=1.4cm}]
+\node[ev]{}
+  child{node[ev]{$\overline{V}$}
+    child{node[ev]{$\overline{V}$}
+      child{node[ev,lf={$\dfrac{8}{10}\times\dfrac{7}{9}\times\dfrac{6}{8}$}]{$\overline{V}$} edge from parent node[pd]{$\dfrac{6}{8}$}}
+      child{node[ev,lf={$\dfrac{8}{10}\times\dfrac{7}{9}\times\dfrac{2}{8}$}]{$V$} edge from parent node[pu]{$\dfrac{2}{8}$}}
+      edge from parent node[pd]{$\dfrac{7}{9}$}}
+    child{node[ev]{$V$}
+      child{node[ev,lf={$\dfrac{8}{10}\times\dfrac{2}{9}\times\dfrac{7}{8}$}]{$\overline{V}$} edge from parent node[pd]{$\dfrac{7}{8}$}}
+      child{node[ev,lf={$\textcolor{cThm}{\dfrac{8}{10}\times\dfrac{2}{9}\times\dfrac{1}{8}=\dfrac{2}{90}}$}]{$V$} edge from parent node[pu]{$\dfrac{1}{8}$}}
+      edge from parent node[pu]{$\dfrac{2}{9}$}}
+    edge from parent node[pd]{$\dfrac{8}{10}$}}
+  child{node[ev]{$V$}
+    child{node[ev]{$\overline{V}$}
+      child{node[ev,lf={$\dfrac{2}{10}\times\dfrac{8}{9}\times\dfrac{7}{8}$}]{$\overline{V}$} edge from parent node[pd]{$\dfrac{7}{8}$}}
+      child{node[ev,lf={$\textcolor{cThm}{\dfrac{2}{10}\times\dfrac{8}{9}\times\dfrac{1}{8}=\dfrac{2}{90}}$}]{$V$} edge from parent node[pu]{$\dfrac{1}{8}$}}
+      edge from parent node[pd]{$\dfrac{8}{9}$}}
+    child{node[ev]{$V$}
+      child{node[ev,lf={$\textcolor{cThm}{\dfrac{2}{10}\times\dfrac{1}{9}\times 1=\dfrac{2}{90}}$}]{$\overline{V}$} edge from parent node[pd]{$1$}}
+      child{node[ev,lf={$0$}]{$V$} edge from parent node[pu]{$0$}}
+      edge from parent node[pu]{$\dfrac{1}{9}$}}
+    edge from parent node[pu]{$\dfrac{2}{10}$}};
+\node[font=\small\bfseries] at (11.6,5.8){\ar{الاحتمال}};
+\end{tikzpicture}\end{LTR}\end{center}
+المسارات التي تحتوي على كريتين خضراوين بالضبط هي: $(V;V;\overline{V})$، $(V;\overline{V};V)$، $(\overline{V};V;V)$، وكل منها احتماله $\dfrac{2}{90}$ (باللون الأحمر):
+\[P=3\times\frac{2}{90}=\frac{6}{90},\qquad \bx{P=\frac{1}{15}}\]
+(تحقق بالعد: $\dfrac{3\times A_2^2\times 8}{A_{10}^3}=\dfrac{48}{720}=\dfrac{1}{15}$ \ok.)
+\end{hal}
+
+% ===================== التمرين 4 =====================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الثاني -- تقني رياضي}
+يحتوي صندوق على $12$ كرية منها: $3$ كريات خضراء و $4$ كريات بيضاء و $5$ كريات حمراء. كل الكريات متماثلة ولا نفرق بينها باللمس.
+
+\textbf{I)} نسحب عشوائيا من الصندوق $4$ كريات في آن واحد ونعتبر الحوادث التالية:
+\begin{itemize}
+\item $A$: «الحصول على $3$ كريات بالضبط من نفس اللون»، \quad $B$: «لا نحصل على أية كرية بيضاء»،
+\item $C$: «الحصول على كرية واحدة بيضاء على الأقل».
+\end{itemize}
+\QQ{1}
+\begin{sq}
+\qa أحسب $P(A)$، $P(B)$ و $P(C)$ احتمالات الحوادث $A$، $B$ و $C$ على الترتيب.
+\qb أحسب $P(A\cap B)$ ثم استنتج حساب $P(A\cup B)$.
+\end{sq}
+\QQ{2} $X$ المتغيّر العشوائي الذي يرفق بكل عملية سحب لـ $4$ كريات بالكيفية السابقة عدد الكريات الخضراء المسحوبة.
+
+عيّن قانون الاحتمال للمتغيّر العشوائي $X$، ثم أحسب أمله الرياضياتي $E(X)$.
+
+\textbf{II)} نسحب عشوائيا من الصندوق $4$ كريات على التوالي دون إرجاع. ما احتمال ألا يبقى في الصندوق أية كرية خضراء؟
+\end{tamrin}
+
+\begin{hal}
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{اللون} & \ar{الأخضر} & \ar{الأبيض} & \ar{الأحمر} & \ar{المجموع}\\\hline
+\ar{عدد الكريات} & $3$ & $4$ & $5$ & $12$\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+\textbf{الجزء I:} السحب في آن واحد: $\operatorname{card}\Omega=C_{12}^4=\dfrac{12\times11\times10\times9}{24}=495$.
+
+\QQ{1}
+\pa \textbf{حساب $P(A)$:} ثلاث كريات بالضبط من لون واحد، والرابعة من لون آخر:
+\begin{itemize}
+\item ثلاث خضراء + واحدة من $9$ غير خضراء: $C_3^3\times C_9^1=9$.
+\item ثلاث بيضاء + واحدة من $8$ غير بيضاء: $C_4^3\times C_8^1=32$.
+\item ثلاث حمراء + واحدة من $7$ غير حمراء: $C_5^3\times C_7^1=70$.
+\end{itemize}
+\[P(A)=\frac{9+32+70}{495}=\frac{111}{495},\qquad \bx{P(A)=\frac{37}{165}}\]
+\textbf{حساب $P(B)$:} الكريات الأربع من بين $8$ كريات غير بيضاء:
+\[P(B)=\frac{C_8^4}{495}=\frac{70}{495},\qquad \bx{P(B)=\frac{14}{99}}\]
+\textbf{حساب $P(C)$:} $C=\overline{B}$ (بيضاء واحدة على الأقل عكس ولا بيضاء):
+\[P(C)=1-\frac{14}{99},\qquad \bx{P(C)=\frac{85}{99}}\]
+
+\pb $A\cap B$: «ثلاث كريات بالضبط من نفس اللون ولا بيضاء»:
+\begin{itemize}
+\item ثلاث خضراء + حمراء: $C_3^3\times C_5^1=5$.
+\item ثلاث حمراء + خضراء: $C_5^3\times C_3^1=30$.
+\end{itemize}
+\[P(A\cap B)=\frac{35}{495},\qquad \bx{P(A\cap B)=\frac{7}{99}}\]
+\[P(A\cup B)=P(A)+P(B)-P(A\cap B)=\frac{111+70-35}{495},\qquad \bx{P(A\cup B)=\frac{146}{495}}\]
+
+\QQ{2} توجد $3$ كريات خضراء و $9$ غير خضراء، قيم $X$: $\{0;1;2;3\}$.
+\[P(X=0)=\frac{C_9^4}{495}=\frac{126}{495}=\frac{14}{55},\qquad P(X=1)=\frac{C_3^1\times C_9^3}{495}=\frac{3\times84}{495}=\frac{28}{55},\]
+\[P(X=2)=\frac{C_3^2\times C_9^2}{495}=\frac{3\times36}{495}=\frac{12}{55},\qquad P(X=3)=\frac{C_3^3\times C_9^1}{495}=\frac{9}{495}=\frac{1}{55}.\]
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & $3$ & \ar{المجموع}\\\hline
+$P(X=x_i)$ & $\dfrac{14}{55}$ & $\dfrac{28}{55}$ & $\dfrac{12}{55}$ & $\dfrac{1}{55}$ & $1$\\[4pt]\hline
+\end{tabular}\end{LTR}
+\end{center}
+\[E(X)=0\times\frac{14}{55}+1\times\frac{28}{55}+2\times\frac{12}{55}+3\times\frac{1}{55}=\frac{28+24+3}{55}=\frac{55}{55},\qquad \bx{E(X)=1}\]
+
+\textbf{الجزء II:} السحب على التوالي دون إرجاع: $\operatorname{card}\Omega=A_{12}^4=12\times11\times10\times9=11880$.
+
+«لا يبقى أية كرية خضراء» تعني أن الكريات الخضراء الثلاث كلها ضمن الكريات الأربع المسحوبة، أي نسحب $3$ خضراء وكرية واحدة غير خضراء:
+\begin{itemize}
+\item نختار رتبة الكرية غير الخضراء: $4$ إمكانيات، ونختارها من بين $9$: $9$ إمكانيات.
+\item نرتب الكريات الخضراء الثلاث في الأماكن الثلاثة الباقية: $3!=6$ إمكانيات.
+\end{itemize}
+\[P=\frac{4\times 9\times 6}{11880}=\frac{216}{11880},\qquad \bx{P=\frac{1}{55}}\]
+\end{hal}
+
+% ===================== التمرين 5 =====================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الأول -- تقني رياضي}
+يحتوي صندوق على $9$ كريات متماثلة ولا نفرق بينها باللمس، منها: $4$ بيضاء و $3$ حمراء و $2$ خضراوان.
+
+\textbf{I)} نسحب عشوائيا من الصندوق $3$ كريات في آن واحد.
+\QQ{1} أحسب احتمال كل من الحوادث الآتية:
+\begin{itemize}
+\item $A$: «الحصول على ثلاث كريات من نفس اللون»، \quad $B$: «الحصول على الألوان الثلاثة»،
+\item $C$: «الحصول على كرية بيضاء على الأقل».
+\end{itemize}
+\QQ{2} $X$ المتغيّر العشوائي الذي يرفق بكل عملية سحب لثلاث كريات عدد الألوان المتحصل عليها.
+\begin{sq}
+\qa عيّن قانون الاحتمال للمتغيّر العشوائي $X$، ثم أحسب أمله الرياضياتي $E(X)$.
+\qb أحسب $E(84X+1837)$.
+\end{sq}
+\textbf{II)} نضيف الآن إلى الصندوق كرية واحدة سوداء ثم نسحب منه عشوائيا $4$ كريات على التوالي دون إرجاع.
+
+بيّن أن احتمال الحادثة $D$: «الحصول على الألوان الأربعة» هو $\dfrac{4}{35}$.
+\end{tamrin}
+
+\begin{hal}
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{اللون} & \ar{الأبيض} & \ar{الأحمر} & \ar{الأخضر} & \ar{المجموع}\\\hline
+\ar{عدد الكريات} & $4$ & $3$ & $2$ & $9$\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+\textbf{الجزء I:} $\operatorname{card}\Omega=C_9^3=\dfrac{9\times8\times7}{6}=84$.
+
+\QQ{1} \textbf{حساب $P(A)$:} ثلاث بيضاء أو ثلاث حمراء (لا توجد ثلاث خضراء):
+\[P(A)=\frac{C_4^3+C_3^3}{84}=\frac{4+1}{84},\qquad \bx{P(A)=\frac{5}{84}}\]
+\textbf{حساب $P(B)$:} كرية من كل لون:
+\[P(B)=\frac{C_4^1\times C_3^1\times C_2^1}{84}=\frac{24}{84},\qquad \bx{P(B)=\frac{2}{7}}\]
+\textbf{حساب $P(C)$:} الحادثة العكسية «ولا بيضاء»: الكريات الثلاث من بين $5$ غير بيضاء:
+\[P(C)=1-\frac{C_5^3}{84}=1-\frac{10}{84}=\frac{74}{84},\qquad \bx{P(C)=\frac{37}{42}}\]
+
+\QQ{2}
+\pa قيم $X$: $\{1;2;3\}$، حيث $(X=1)=A$ و $(X=3)=B$، إذن:
+\[P(X=1)=\frac{5}{84},\qquad P(X=3)=\frac{24}{84},\qquad P(X=2)=1-\frac{5}{84}-\frac{24}{84}=\frac{55}{84}.\]
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} $x_i$ & $1$ & $2$ & $3$ & \ar{المجموع}\\\hline
+$P(X=x_i)$ & $\dfrac{5}{84}$ & $\dfrac{55}{84}$ & $\dfrac{24}{84}$ & $1$\\[4pt]\hline
+\end{tabular}\end{LTR}
+\end{center}
+\[E(X)=1\times\frac{5}{84}+2\times\frac{55}{84}+3\times\frac{24}{84}=\frac{5+110+72}{84},\qquad \bx{E(X)=\frac{187}{84}}\]
+\pb حسب خاصية خطية الأمل الرياضياتي $E(aX+b)=aE(X)+b$:
+\[E(84X+1837)=84\times\frac{187}{84}+1837=187+1837,\qquad \bx{E(84X+1837)=2024}\]
+
+\textbf{الجزء II:} صار الصندوق يحتوي على $10$ كريات: $4$ بيضاء، $3$ حمراء، $2$ خضراوان، $1$ سوداء. السحب على التوالي دون إرجاع:
+\[\operatorname{card}\Omega=A_{10}^4=10\times9\times8\times7=5040.\]
+الحصول على الألوان الأربعة بـ $4$ كريات يعني كرية واحدة من كل لون:
+\begin{itemize}
+\item نختار الكريات: $C_4^1\times C_3^1\times C_2^1\times C_1^1=24$ إمكانية.
+\item نرتب الكريات الأربع المختارة: $4!=24$ ترتيبا.
+\end{itemize}
+\[P(D)=\frac{24\times24}{5040}=\frac{576}{5040},\qquad \bx{P(D)=\frac{4}{35}}\]
+\end{hal}
+
+% ===================== التمرين 6 =====================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الثاني -- تقني رياضي}
+يحتوي كيس على $10$ كريات متماثلة ولا نفرق بينها باللمس منها: كريتان تحملان الرقم $0$، ثلاث كريات تحمل الرقم $2$، كرية تحمل الرقم $3$ وأربع كريات تحمل الرقم $4$. نسحب عشوائيا من الكيس ثلاث كريات في آن واحد.
+\QQ{1} أحسب احتمال كل من الحوادث الآتية:
+\begin{itemize}
+\item $A$: «مجموع الأعداد التي تحملها الكريات المسحوبة يساوي $12$»،
+\item $B$: «الحصول على ثلاثة أعداد أولية»،
+\item $C$: «جداء الأعداد التي تحملها الكريات المسحوبة معدوم».
+\end{itemize}
+\QQ{2} $X$ المتغيّر العشوائي الذي يرفق بكل عملية سحب لثلاث كريات عدد الأعداد الأولية المتحصل عليها.
+\begin{sq}
+\qa عيّن قانون الاحتمال للمتغيّر العشوائي $X$ ثم أحسب أمله الرياضياتي $E(X)$.
+\qb أحسب احتمال الحادثة $(X^2>e)$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{الرقم} & $0$ & $2$ & $3$ & $4$ & \ar{المجموع}\\\hline
+\ar{عدد الكريات} & $2$ & $3$ & $1$ & $4$ & $10$\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+$\operatorname{card}\Omega=C_{10}^3=120$.
+
+\QQ{1} \textbf{حساب $P(A)$:} أكبر مجموع بثلاثة أرقام لا تكون كلها $4$ هو $4+4+3=11<12$، إذن المجموع $12$ يتحقق فقط بـ $4+4+4$:
+\[P(A)=\frac{C_4^3}{120}=\frac{4}{120},\qquad \bx{P(A)=\frac{1}{30}}\]
+\textbf{حساب $P(B)$:} من بين الأرقام $0;2;3;4$ العددان الأوليان هما $2$ و $3$، وتحملهما $3+1=4$ كريات:
+\[P(B)=\frac{C_4^3}{120},\qquad \bx{P(B)=\frac{1}{30}}\]
+\textbf{حساب $P(C)$:} الجداء معدوم إذا وفقط إذا سحبنا كرية على الأقل تحمل $0$. الحادثة العكسية: الكريات الثلاث من بين $8$ لا تحمل $0$:
+\[P(C)=1-\frac{C_8^3}{120}=1-\frac{56}{120}=\frac{64}{120},\qquad \bx{P(C)=\frac{8}{15}}\]
+
+\QQ{2}
+\pa توجد $4$ كريات تحمل عددا أوليا و $6$ كريات تحمل عددا غير أولي ($0;0;4;4;4;4$). قيم $X$: $\{0;1;2;3\}$.
+\[P(X=0)=\frac{C_6^3}{120}=\frac{20}{120}=\frac16,\qquad P(X=1)=\frac{C_4^1\times C_6^2}{120}=\frac{60}{120}=\frac12,\]
+\[P(X=2)=\frac{C_4^2\times C_6^1}{120}=\frac{36}{120}=\frac{3}{10},\qquad P(X=3)=\frac{C_4^3}{120}=\frac{4}{120}=\frac{1}{30}.\]
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & $3$ & \ar{المجموع}\\\hline
+$P(X=x_i)$ & $\dfrac{1}{6}$ & $\dfrac{1}{2}$ & $\dfrac{3}{10}$ & $\dfrac{1}{30}$ & $1$\\[4pt]\hline
+\end{tabular}\end{LTR}
+\end{center}
+\[E(X)=0\times\frac16+1\times\frac12+2\times\frac{3}{10}+3\times\frac{1}{30}=\frac{60+72+12}{120},\qquad \bx{E(X)=\frac{6}{5}}\]
+\pb قيم $X^2$ هي $0;1;4;9$ و $e\approx 2{,}72$، إذن $X^2>e\iff X^2\in\{4;9\}\iff X\in\{2;3\}$:
+\[P(X^2>e)=P(X=2)+P(X=3)=\frac{3}{10}+\frac{1}{30}=\frac{10}{30},\qquad \bx{P(X^2>e)=\frac{1}{3}}\]
+\end{hal}
+
+% ===================== التمرين 7 =====================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الأول -- تقني رياضي}
+يحتوي كيس على $8$ كريات متماثلة ولا نفرق بينها باللمس، موزعة كما يلي: ثلاث كريات بيضاء مرقمة بـ: $0$، $1$، $1$ وثلاث كريات حمراء مرقمة بـ: $1$، $1$، $2$ وكريتين خضراوين مرقمتين بـ: $1$، $2$.
+
+نسحب عشوائيا وفي آن واحد كريتين من الكيس ونعتبر الأحداث $A$، $B$ و $C$ الآتية:
+\begin{itemize}
+\item $A$: «الحصول على كريتين من نفس اللون»، \quad $B$: «الحصول على كرية حمراء على الأقل»،
+\item $C$: «الحصول على كريتين تحملان رقمين مجموعهما يساوي $3$».
+\end{itemize}
+\QQ{1}
+\begin{sq}
+\qa بيّن أن احتمال الحدث $A$ يساوي $\dfrac{1}{4}$، وأن احتمال الحدث $B$ يساوي $\dfrac{9}{14}$.
+\qb أحسب الاحتمال $P(C)$.
+\end{sq}
+\QQ{2} نعتبر المتغيّر العشوائي $X$ الذي يرفق بكل عملية سحب لكريتين مجموع الرقمين المسجلين عليهما.
+\begin{sq}
+\qa برّر أن مجموعة قيم المتغيّر العشوائي $X$ هي: $\{1;2;3;4\}$.
+\qb عيّن قانون احتمال المتغيّر العشوائي $X$ ثم أحسب أمله الرياضياتي $E(X)$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{اللون} & \ar{الأبيض} & \ar{الأحمر} & \ar{الأخضر} & \ar{المجموع}\\\hline
+\ar{عدد الكريات} & $3$ & $3$ & $2$ & $8$\\\hline
+\ar{الأرقام} & $0;\,1;\,1$ & $1;\,1;\,2$ & $1;\,2$ &\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+$\operatorname{card}\Omega=C_8^2=\dfrac{8\times7}{2}=28$.
+
+\QQ{1}
+\pa \textbf{حساب $P(A)$:} كريتان بيضاوان أو حمراوان أو خضراوان:
+\[P(A)=\frac{C_3^2+C_3^2+C_2^2}{28}=\frac{3+3+1}{28}=\frac{7}{28},\qquad \bx{P(A)=\frac14}\]
+\textbf{حساب $P(B)$:} الحادثة العكسية «ولا حمراء»: الكريتان من بين $5$ كريات غير حمراء:
+\[P(B)=1-\frac{C_5^2}{28}=1-\frac{10}{28}=\frac{18}{28},\qquad \bx{P(B)=\frac{9}{14}}\]
+\pb توزيع الأرقام:
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{الرقم} & $0$ & $1$ & $2$ & \ar{المجموع}\\\hline
+\ar{عدد الكريات} & $1$ & $5$ & $2$ & $8$\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+المجموع $3$ يتحقق فقط بـ $1+2$ (لأنه لا يوجد الرقم $3$):
+\[P(C)=\frac{C_5^1\times C_2^1}{28}=\frac{10}{28},\qquad \bx{P(C)=\frac{5}{14}}\]
+
+\QQ{2}
+\pa الأرقام الممكنة $0;1;2$ والرقم $0$ على كرية واحدة فقط، إذن المجاميع الممكنة لكريتين:
+\[0+1=1,\quad 0+2=2,\quad 1+1=2,\quad 1+2=3,\quad 2+2=4\]
+(المجموع $0+0$ مستحيل). إذن مجموعة قيم $X$ هي \bx{\{1;2;3;4\}}.
+
+\pb
+\begin{itemize}
+\item $(X=1)$: $\{0;1\}$: $1\times5=5$، \quad $P(X=1)=\dfrac{5}{28}$.
+\item $(X=2)$: $\{0;2\}$ أو $\{1;1\}$: $1\times2+C_5^2=2+10=12$، \quad $P(X=2)=\dfrac{12}{28}=\dfrac37$.
+\item $(X=3)$: هي الحادثة $C$: \quad $P(X=3)=\dfrac{10}{28}=\dfrac{5}{14}$.
+\item $(X=4)$: $\{2;2\}$: $C_2^2=1$، \quad $P(X=4)=\dfrac{1}{28}$.
+\end{itemize}
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} $x_i$ & $1$ & $2$ & $3$ & $4$ & \ar{المجموع}\\\hline
+$P(X=x_i)$ & $\dfrac{5}{28}$ & $\dfrac{12}{28}$ & $\dfrac{10}{28}$ & $\dfrac{1}{28}$ & $1$\\[4pt]\hline
+\end{tabular}\end{LTR}
+\end{center}
+\[E(X)=\frac{1\times5+2\times12+3\times10+4\times1}{28}=\frac{63}{28},\qquad \bx{E(X)=\frac{9}{4}}\]
+\end{hal}
+
+% ===================== التمرين 8 =====================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الثاني -- تقني رياضي}
+يحتوي كيس على $11$ كرية متماثلة ولا نفرق بينها باللمس، موزعة كما يلي: ثلاث كريات تحمل الرقم $0$، ثلاث كريات تحمل الرقم $1$ وخمس كريات تحمل الرقم $2$.
+
+نسحب عشوائيا وفي آن واحد كريتين من الكيس ونعتبر الأحداث $A$، $B$ و $C$ الآتية:
+\begin{itemize}
+\item $A$: «الحصول على كريتين رقم كل منهما عدد أولي»، \quad $B$: «الحصول على كرية واحدة تحمل رقما فرديا»،
+\item $C$: «الحصول على كريتين جداء رقميهما معدوم».
+\end{itemize}
+\QQ{1}
+\begin{sq}
+\qa بيّن أن احتمال الحدث $A$ يساوي $\dfrac{2}{11}$ وأن احتمال الحدث $B$ يساوي $\dfrac{24}{55}$.
+\qb أحسب الاحتمال $P(C)$.
+\end{sq}
+\QQ{2} نعتبر المتغيّر العشوائي $X$ الذي يرفق بكل عملية سحب لكريتين جداء الرقمين المسجلين عليهما.
+\begin{sq}
+\qa برّر أن مجموعة قيم المتغيّر العشوائي $X$ هي: $\{0;1;2;4\}$.
+\qb عيّن قانون احتمال المتغيّر العشوائي $X$ ثم أحسب أمله الرياضياتي $E(X)$.
+\qc أحسب احتمال الحدث: «$e^{X+6}<2023$».
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{الرقم} & $0$ & $1$ & $2$ & \ar{المجموع}\\\hline
+\ar{عدد الكريات} & $3$ & $3$ & $5$ & $11$\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+$\operatorname{card}\Omega=C_{11}^2=\dfrac{11\times10}{2}=55$.
+
+\QQ{1}
+\pa \textbf{حساب $P(A)$:} من بين $0;1;2$ العدد الأولي الوحيد هو $2$ ($0$ و $1$ ليسا أوليين)، إذن نسحب كريتين من بين الخمس التي تحمل $2$:
+\[P(A)=\frac{C_5^2}{55}=\frac{10}{55},\qquad \bx{P(A)=\frac{2}{11}}\]
+\textbf{حساب $P(B)$:} الرقم الفردي الوحيد هو $1$ ($3$ كريات)، والكرية الأخرى تحمل رقما زوجيا ($0$ أو $2$: $8$ كريات):
+\[P(B)=\frac{C_3^1\times C_8^1}{55}=\frac{24}{55},\qquad \bx{P(B)=\frac{24}{55}}\]
+\pb الجداء معدوم إذا وفقط إذا سحبنا $0$ على الأقل. الحادثة العكسية: الكريتان من بين $8$ لا تحمل $0$:
+\[P(C)=1-\frac{C_8^2}{55}=1-\frac{28}{55},\qquad \bx{P(C)=\frac{27}{55}}\]
+
+\QQ{2}
+\pa الجداءات الممكنة لرقمين من $\{0;1;2\}$: $0\times a=0$، $1\times1=1$، $1\times2=2$، $2\times2=4$، وكلها ممكنة لأن كل رقم يظهر على كريتين على الأقل. إذن مجموعة قيم $X$ هي \bx{\{0;1;2;4\}}.
+\pb
+\begin{itemize}
+\item $(X=0)=C$: \quad $P(X=0)=\dfrac{27}{55}$.
+\item $(X=1)$: $\{1;1\}$: $C_3^2=3$، \quad $P(X=1)=\dfrac{3}{55}$.
+\item $(X=2)$: $\{1;2\}$: $3\times5=15$، \quad $P(X=2)=\dfrac{15}{55}=\dfrac{3}{11}$.
+\item $(X=4)$: $\{2;2\}$: $C_5^2=10$، \quad $P(X=4)=\dfrac{10}{55}=\dfrac{2}{11}$.
+\end{itemize}
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & $4$ & \ar{المجموع}\\\hline
+$P(X=x_i)$ & $\dfrac{27}{55}$ & $\dfrac{3}{55}$ & $\dfrac{15}{55}$ & $\dfrac{10}{55}$ & $1$\\[4pt]\hline
+\end{tabular}\end{LTR}
+\end{center}
+\[E(X)=\frac{0\times27+1\times3+2\times15+4\times10}{55},\qquad \bx{E(X)=\frac{73}{55}}\]
+\pc الدالة $\ln$ متزايدة تماما على $]0;+\infty[$، إذن:
+\[e^{X+6}<2023\iff X+6<\ln 2023\iff X<\ln2023-6\approx 1{,}61.\]
+ومن بين القيم $0;1;2;4$ تحقق هذا الشرط القيمتان $0$ و $1$ فقط:
+\[P\left(e^{X+6}<2023\right)=P(X=0)+P(X=1)=\frac{27+3}{55}=\frac{30}{55},\qquad \bx{P\left(e^{X+6}<2023\right)=\frac{6}{11}}\]
+\end{hal}
+
+% ===================== التمرين 9 =====================
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الأول -- تقني رياضي}
+يحتوي كيس على أربع كريات حمراء مرقمة بـ: $2$، $2$، $2$، $2$ وثلاث كريات خضراء مرقمة بـ: $2$، $3$، $3$. الكريات لا نفرق بينها باللمس، نسحب عشوائيا وفي آن واحد كريتين من هذا الكيس.
+\QQ{1} نعتبر الحدثين: $A$: «الحصول على كريتين تحملان نفس الرقم» و $B$: «الحصول على كريتين مختلفتين في اللون».
+\begin{sq}
+\qa أحسب احتمال كل من الحدثين $A$ و $B$.
+\qb بيّن أن احتمال الحصول على كريتين تحملان نفس الرقم ومختلفتين في اللون يساوي $\dfrac{4}{21}$.
+\qc استنتج احتمال الحصول على كريتين تحملان نفس الرقم أو مختلفتين في اللون.
+\end{sq}
+\QQ{2} ليكن $X$ المتغيّر العشوائي الذي يرفق بكل سحب جداء الرقمين الظاهرين على الكريتين المسحوبتين. عرّف قانون احتمال المتغيّر العشوائي $X$.
+\QQ{3} في لعبة، يقوم لاعب بسحب كريتين: إذا كان جداء رقميهما $4$ يربح $x^2$ دينار، إذا كان جداء رقميهما $6$ يخسر $y^2$ دينار، وإذا كان جداء رقميهما $9$ يخسر $130$ دينار ($x$ و $y$ عددان طبيعيان غير معدومين).
+
+عيّن قيمة كل من $x$ و $y$ حتى تكون هذه اللعبة عادلة.
+\end{tamrin}
+
+\begin{hal}
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{اللون} & \ar{الأحمر} & \ar{الأخضر} & \ar{المجموع}\\\hline
+\ar{عدد الكريات} & $4$ & $3$ & $7$\\\hline
+\ar{الأرقام} & $2;\,2;\,2;\,2$ & $2;\,3;\,3$ &\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+$\operatorname{card}\Omega=C_7^2=21$. يوجد $5$ كريات تحمل $2$ (أربع حمراء وخضراء) وكريتان تحملان $3$.
+
+\QQ{1}
+\pa \textbf{حساب $P(A)$:} كريتان تحملان $2$ أو كريتان تحملان $3$:
+\[P(A)=\frac{C_5^2+C_2^2}{21}=\frac{10+1}{21},\qquad \bx{P(A)=\frac{11}{21}}\]
+\textbf{حساب $P(B)$:} حمراء وخضراء:
+\[P(B)=\frac{C_4^1\times C_3^1}{21}=\frac{12}{21},\qquad \bx{P(B)=\frac{4}{7}}\]
+\pb $A\cap B$: حمراء وخضراء تحملان نفس الرقم؛ الحمراء تحمل $2$، إذن الخضراء تحمل $2$:
+\[P(A\cap B)=\frac{C_4^1\times C_1^1}{21},\qquad \bx{P(A\cap B)=\frac{4}{21}}\]
+\pc المطلوب $P(A\cup B)$:
+\[P(A\cup B)=P(A)+P(B)-P(A\cap B)=\frac{11+12-4}{21},\qquad \bx{P(A\cup B)=\frac{19}{21}}\]
+
+\QQ{2} الجداءات الممكنة: $2\times2=4$، $2\times3=6$، $3\times3=9$، إذن قيم $X$: $\{4;6;9\}$.
+\[P(X=4)=\frac{C_5^2}{21}=\frac{10}{21},\qquad P(X=6)=\frac{C_5^1\times C_2^1}{21}=\frac{10}{21},\qquad P(X=9)=\frac{C_2^2}{21}=\frac{1}{21}.\]
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} $x_i$ & $4$ & $6$ & $9$ & \ar{المجموع}\\\hline
+$P(X=x_i)$ & $\dfrac{10}{21}$ & $\dfrac{10}{21}$ & $\dfrac{1}{21}$ & $1$\\[4pt]\hline
+\end{tabular}\end{LTR}
+\end{center}
+
+\QQ{3} ليكن $G$ ربح اللاعب (بالدينار). قانون احتماله:
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{جداء الرقمين} & $4$ & $6$ & $9$\\\hline
+\ar{الربح $g_i$} & $x^2$ & $-y^2$ & $-130$\\\hline
+$P(G=g_i)$ & $\dfrac{10}{21}$ & $\dfrac{10}{21}$ & $\dfrac{1}{21}$\\[4pt]\hline
+\end{tabular}\end{LTR}
+\end{center}
+\[E(G)=\frac{10x^2-10y^2-130}{21}.\]
+تكون اللعبة عادلة إذا وفقط إذا كان $E(G)=0$:
+\[10x^2-10y^2-130=0\iff x^2-y^2=13\iff (x-y)(x+y)=13.\]
+$13$ عدد أولي، و $x,y$ طبيعيان غير معدومين، و $x+y>0$ إذن $x-y>0$ و $x+y>x-y$، ومنه:
+\[\begin{cases}x-y=1\\ x+y=13\end{cases}\iff \begin{cases}2x=14\\ y=x-1\end{cases},\qquad \bx{x=7,\quad y=6}\]
+تحقق: $49-36=13$ \ok.
+\end{hal}
+
+% ===================== التمرين 10 =====================
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الثاني -- تقني رياضي}
+يحتوي كيس على كريتين خضراوين تحملان الرقمين $1$، $2$ وثلاث كريات حمراء تحمل الأرقام $1$، $2$، $2$ وأربع كريات بيضاء تحمل الأرقام $2$، $3$، $3$، $4$ (الكريات متماثلة لا نفرق بينها باللمس).
+
+\textbf{I)} نسحب من هذا الكيس ثلاث كريات في آن واحد.
+\QQ{1} أحسب احتمال كل من الحدثين $A$ و $B$ التاليين: $A$: «الحصول على ثلاث كريات من نفس اللون» و $B$: «الحصول على كرية بيضاء على الأقل».
+\QQ{2} ليكن $X$ المتغيّر العشوائي الذي يرفق بكل سحب أكبر الأرقام المحصل عليها.
+\begin{sq}
+\qa بيّن أن $P(X=3)=\dfrac{3}{7}$، ثم عرّف قانون الاحتمال للمتغيّر العشوائي $X$.
+\qb أحسب الأمل الرياضياتي للمتغيّر العشوائي $X$.
+\end{sq}
+\textbf{II)} نسحب الآن ثلاث كريات على التوالي دون إرجاع. ليكن $C$ الحدث «الحصول على ثلاثة أرقام جداؤها زوجي». أحسب احتمال $C$.
+\end{tamrin}
+
+\begin{hal}
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{اللون} & \ar{الأخضر} & \ar{الأحمر} & \ar{الأبيض} & \ar{المجموع}\\\hline
+\ar{عدد الكريات} & $2$ & $3$ & $4$ & $9$\\\hline
+\ar{الأرقام} & $1;\,2$ & $1;\,2;\,2$ & $2;\,3;\,3;\,4$ &\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+\textbf{الجزء I:} $\operatorname{card}\Omega=C_9^3=84$.
+
+\QQ{1} \textbf{حساب $P(A)$:} ثلاث حمراء أو ثلاث بيضاء (لا توجد ثلاث خضراء):
+\[P(A)=\frac{C_3^3+C_4^3}{84}=\frac{1+4}{84},\qquad \bx{P(A)=\frac{5}{84}}\]
+\textbf{حساب $P(B)$:} الحادثة العكسية «ولا بيضاء»: الكريات من بين $5$ غير بيضاء:
+\[P(B)=1-\frac{C_5^3}{84}=1-\frac{10}{84}=\frac{74}{84},\qquad \bx{P(B)=\frac{37}{42}}\]
+
+\QQ{2}
+\pa توزيع الأرقام:
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{الرقم} & $1$ & $2$ & $3$ & $4$ & \ar{المجموع}\\\hline
+\ar{عدد الكريات} & $2$ & $4$ & $2$ & $1$ & $9$\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+يوجد كريتان فقط تحملان $1$، إذن بين ثلاث كريات يوجد رقم $\ge2$ على الأقل، ومنه قيم $X$: $\{2;3;4\}$.
+
+\textbf{حساب $P(X=3)$:} $(X\le3)$ تعني أن الكريات الثلاث من بين $8$ كريات أرقامها $\le3$، و $(X\le 2)$ أنها من بين $6$ كريات أرقامها $\le2$:
+\[P(X=3)=P(X\le3)-P(X\le2)=\frac{C_8^3-C_6^3}{84}=\frac{56-20}{84}=\frac{36}{84},\qquad \bx{P(X=3)=\frac37}\]
+\[P(X=2)=\frac{C_6^3}{84}=\frac{20}{84}=\frac{5}{21},\qquad P(X=4)=\frac{C_1^1\times C_8^2}{84}=\frac{28}{84}=\frac13.\]
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} $x_i$ & $2$ & $3$ & $4$ & \ar{المجموع}\\\hline
+$P(X=x_i)$ & $\dfrac{20}{84}$ & $\dfrac{36}{84}$ & $\dfrac{28}{84}$ & $1$\\[4pt]\hline
+\end{tabular}\end{LTR}
+\end{center}
+\pb
+\[E(X)=\frac{2\times20+3\times36+4\times28}{84}=\frac{260}{84},\qquad \bx{E(X)=\frac{65}{21}}\]
+
+\textbf{الجزء II:} الأرقام الفردية: $1;1;3;3$ ($4$ كريات)، والزوجية: $2;2;2;2;4$ ($5$ كريات). جداء ثلاثة أرقام يكون زوجيا إذا وفقط إذا كان أحدها زوجيا على الأقل، إذن $\overline{C}$: «الأرقام الثلاثة فردية». نرمز بـ $I$: «رقم فردي» و $P$: «رقم زوجي»:
+\begin{center}\begin{LTR}\begin{tikzpicture}[btree,level 1/.style={sibling distance=5.6cm},level 2/.style={sibling distance=2.8cm},level 3/.style={sibling distance=1.4cm}]
+\node[ev]{}
+  child{node[ev]{$P$}
+    child{node[ev]{$P$}
+      child{node[ev,lf={$\dfrac{5}{9}\times\dfrac{4}{8}\times\dfrac{3}{7}=\dfrac{60}{504}$}]{$P$} edge from parent node[pd]{$\dfrac{3}{7}$}}
+      child{node[ev,lf={$\dfrac{5}{9}\times\dfrac{4}{8}\times\dfrac{4}{7}=\dfrac{80}{504}$}]{$I$} edge from parent node[pu]{$\dfrac{4}{7}$}}
+      edge from parent node[pd]{$\dfrac{4}{8}$}}
+    child{node[ev]{$I$}
+      child{node[ev,lf={$\dfrac{5}{9}\times\dfrac{4}{8}\times\dfrac{4}{7}=\dfrac{80}{504}$}]{$P$} edge from parent node[pd]{$\dfrac{4}{7}$}}
+      child{node[ev,lf={$\dfrac{5}{9}\times\dfrac{4}{8}\times\dfrac{3}{7}=\dfrac{60}{504}$}]{$I$} edge from parent node[pu]{$\dfrac{3}{7}$}}
+      edge from parent node[pu]{$\dfrac{4}{8}$}}
+    edge from parent node[pd]{$\dfrac{5}{9}$}}
+  child{node[ev]{$I$}
+    child{node[ev]{$P$}
+      child{node[ev,lf={$\dfrac{4}{9}\times\dfrac{5}{8}\times\dfrac{4}{7}=\dfrac{80}{504}$}]{$P$} edge from parent node[pd]{$\dfrac{4}{7}$}}
+      child{node[ev,lf={$\dfrac{4}{9}\times\dfrac{5}{8}\times\dfrac{3}{7}=\dfrac{60}{504}$}]{$I$} edge from parent node[pu]{$\dfrac{3}{7}$}}
+      edge from parent node[pd]{$\dfrac{5}{8}$}}
+    child{node[ev]{$I$}
+      child{node[ev,lf={$\dfrac{4}{9}\times\dfrac{3}{8}\times\dfrac{5}{7}=\dfrac{60}{504}$}]{$P$} edge from parent node[pd]{$\dfrac{5}{7}$}}
+      child{node[ev,lf={$\textcolor{cThm}{\dfrac{4}{9}\times\dfrac{3}{8}\times\dfrac{2}{7}=\dfrac{24}{504}}$}]{$I$} edge from parent node[pu]{$\dfrac{2}{7}$}}
+      edge from parent node[pu]{$\dfrac{3}{8}$}}
+    edge from parent node[pu]{$\dfrac{4}{9}$}};
+\node[font=\small\bfseries] at (11.6,5.8){\ar{الاحتمال}};
+\end{tikzpicture}\end{LTR}\end{center}
+المسار $(I;I;I)$ (باللون الأحمر) هو الوحيد الذي يحقق $\overline{C}$:
+\[P(\overline{C})=\frac49\times\frac38\times\frac27=\frac{24}{504}=\frac{1}{21},\qquad P(C)=1-\frac{1}{21},\qquad \bx{P(C)=\frac{20}{21}}\]
+(تحقق: مجموع المسارات السبعة الأخرى $\dfrac{60\times4+80\times3}{504}=\dfrac{480}{504}=\dfrac{20}{21}$ \ok.)
+\end{hal}
+
+% ===================== التمرين 11 =====================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الأول -- تقني رياضي}
+توجد إجابة صحيحة واحدة من بين الأجوبة المقترحة في كل حالة من الحالات التالية. اختر الإجابة الصحيحة مبررا اختيارك.
+
+يحتوي كيس على ثلاث كريات بيضاء تحمل الأرقام $1$، $2$، $3$ وكريتين سوداوين تحملان الرقمين $1$، $2$ (الكريات لا نفرق بينها عند اللمس). نسحب من الكيس $3$ كريات عشوائيا وفي آن واحد.
+
+$X$ المتغيّر العشوائي الذي يرفق بكل سحب عدد الكريات السوداء المسحوبة.
+\QQ{1} قيم المتغيّر العشوائي $X$ هي:
+\ABC{$\{1;2;3\}$}{$\{0;2;3\}$}{$\{0;1;2\}$}
+\QQ{2} الأمل الرياضياتي $E(X)$ لـ $X$ هو:
+\ABC{$E(X)=\dfrac45$}{$E(X)=\dfrac65$}{$E(X)=\dfrac{11}{10}$}
+\QQ{3} احتمال «الحصول على كرية واحدة سوداء تحمل الرقم $1$ من الكريات المسحوبة» يساوي:
+\ABC{$\dfrac{7}{10}$}{$\dfrac{9}{10}$}{$\dfrac35$}
+\QQ{4} احتمال «باقي قسمة مجموع مربعات الأرقام التي تحملها الكريات المسحوبة على $13$ هو $1$» يساوي:
+\ABC{$\dfrac25$}{$\dfrac{3}{10}$}{$\dfrac15$}
+\end{tamrin}
+
+\begin{hal}
+$\operatorname{card}\Omega=C_5^3=10$ (توجد $3$ بيضاء و $2$ سوداوان).
+
+\QQ{1} يمكن ألا نسحب أية سوداء (نسحب البيضاء الثلاث)، ولا يمكن سحب أكثر من سوداوين، إذن قيم $X$ هي $\{0;1;2\}$: الجواب \bxt{(جـ)}.
+
+\QQ{2} قانون احتمال $X$:
+\[P(X=0)=\frac{C_3^3}{10}=\frac{1}{10},\qquad P(X=1)=\frac{C_2^1\times C_3^2}{10}=\frac{6}{10},\qquad P(X=2)=\frac{C_2^2\times C_3^1}{10}=\frac{3}{10}.\]
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & \ar{المجموع}\\\hline
+$P(X=x_i)$ & $\dfrac{1}{10}$ & $\dfrac{6}{10}$ & $\dfrac{3}{10}$ & $1$\\[4pt]\hline
+\end{tabular}\end{LTR}
+\end{center}
+\[E(X)=0\times\frac{1}{10}+1\times\frac{6}{10}+2\times\frac{3}{10}=\frac{12}{10}=\frac65\]
+الجواب \bxt{(ب)}.
+
+\QQ{3} توجد كرية سوداء واحدة فقط تحمل الرقم $1$، إذن الحادثة تعني أن هذه الكرية من بين المسحوبات، والكريتان الأخريان من بين $4$ كريات الباقية:
+\[P=\frac{C_1^1\times C_4^2}{10}=\frac{6}{10}=\frac35\]
+الجواب \bxt{(جـ)}.
+
+\QQ{4} الأرقام على الكريات: $1;2;3;1;2$. نحسب مجموع مربعات الأرقام لكل سحب ممكن:
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{الأرقام المسحوبة} & $\{1;1;2\}$ & $\{1;1;3\}$ & $\{1;2;2\}$ & $\{1;2;3\}$ & $\{2;2;3\}$ & \ar{المجموع}\\\hline
+\ar{مجموع المربعات} & $6$ & $11$ & $9$ & $14$ & $17$ &\\\hline
+\ar{الباقي على $13$} & $6$ & $11$ & $9$ & $1$ & $4$ &\\\hline
+\ar{عدد الإمكانيات} & $2$ & $1$ & $2$ & $4$ & $1$ & $10$\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+(مثلا $\{1;2;3\}$: نختار أحد الرقمين $1$ ($2$) وأحد الرقمين $2$ ($2$) والرقم $3$ ($1$): $2\times2\times1=4$.)
+
+الباقي يساوي $1$ فقط عند $\{1;2;3\}$ لأن $14=13\times1+1$:
+\[P=\frac{4}{10}=\frac25\]
+الجواب \bxt{(أ)}.
+\end{hal}
+
+% ===================== التمرين 12 =====================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الثاني -- تقني رياضي}
+يحتوي كيس على أربع كريات بيضاء تحمل الأرقام $1$، $2$، $3$، $4$ وثلاث كريات حمراء تحمل الأرقام $1$، $2$، $3$ وكريتين سوداوين تحملان الرقمين $1$، $2$ (كل الكريات متشابهة لا نفرق بينها عند اللمس). نسحب عشوائيا وفي آن واحد $3$ كريات من هذا الكيس.
+\QQ{1} أحسب احتمال الأحداث التالية:
+\begin{itemize}
+\item $A$: «الحصول على كرية بيضاء واحدة».
+\item $B$: «الحصول على كريتين بيضاوين على الأكثر».
+\item $C$: «الحصول على ثلاث كريات تحمل أرقاما غير أولية».
+\end{itemize}
+\QQ{2} نعتبر المتغيّر العشوائي $X$ الذي يرفق بكل عملية سحب عدد الكريات التي تحمل أرقاما أولية.
+\begin{sq}
+\qa عيّن قيم المتغيّر العشوائي $X$، ثم عرّف قانون احتماله.
+\qb أحسب $P(X^2-X\le0)$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} \ar{اللون} & \ar{الأبيض} & \ar{الأحمر} & \ar{الأسود} & \ar{المجموع}\\\hline
+\ar{عدد الكريات} & $4$ & $3$ & $2$ & $9$\\\hline
+\ar{الأرقام} & $1;\,2;\,3;\,4$ & $1;\,2;\,3$ & $1;\,2$ &\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+$\operatorname{card}\Omega=C_9^3=84$.
+
+\QQ{1} \textbf{حساب $P(A)$:} بيضاء واحدة بالضبط وكريتان من بين $5$ غير بيضاء:
+\[P(A)=\frac{C_4^1\times C_5^2}{84}=\frac{4\times10}{84}=\frac{40}{84},\qquad \bx{P(A)=\frac{10}{21}}\]
+\textbf{حساب $P(B)$:} «بيضاوان على الأكثر» هي الحادثة العكسية لـ «ثلاث بيضاء»:
+\[P(B)=1-\frac{C_4^3}{84}=1-\frac{4}{84}=\frac{80}{84},\qquad \bx{P(B)=\frac{20}{21}}\]
+\textbf{حساب $P(C)$:} من بين الأرقام $1;2;3;4$ الأوليان هما $2$ و $3$. الكريات التي تحمل رقما غير أولي ($1$ أو $4$): بيضاء $1$، بيضاء $4$، حمراء $1$، سوداء $1$، أي $4$ كريات:
+\[P(C)=\frac{C_4^3}{84}=\frac{4}{84},\qquad \bx{P(C)=\frac{1}{21}}\]
+
+\Needspace{10\baselineskip}\QQ{2}
+\pa الكريات التي تحمل رقما أوليا: بيضاء $2$، بيضاء $3$، حمراء $2$، حمراء $3$، سوداء $2$، أي $5$ كريات، و $4$ كريات غير أولية. قيم $X$: $\{0;1;2;3\}$.
+\[P(X=0)=\frac{C_4^3}{84}=\frac{4}{84},\qquad P(X=1)=\frac{C_5^1\times C_4^2}{84}=\frac{30}{84},\]
+\[P(X=2)=\frac{C_5^2\times C_4^1}{84}=\frac{40}{84},\qquad P(X=3)=\frac{C_5^3}{84}=\frac{10}{84}.\]
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & $3$ & \ar{المجموع}\\\hline
+$P(X=x_i)$ & $\dfrac{1}{21}$ & $\dfrac{5}{14}$ & $\dfrac{10}{21}$ & $\dfrac{5}{42}$ & $1$\\[4pt]\hline
+\end{tabular}\end{LTR}
+\end{center}
+\pb $X^2-X\le0\iff X(X-1)\le0\iff 0\le X\le1$، إذن $X\in\{0;1\}$:
+\[P(X^2-X\le0)=P(X=0)+P(X=1)=\frac{4+30}{84}=\frac{34}{84},\qquad \bx{P(X^2-X\le0)=\frac{17}{42}}\]
+\end{hal}
+
+% ===================== التمرين 13 =====================
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الثاني -- تقني رياضي}
+كيس به $7$ كريات متماثلة لا نفرق بينها باللمس، منها $3$ بيضاء و $4$ خضراء. نسحب عشوائيا وفي آن واحد كريتين من الكيس.
+
+\textbf{I)}
+\QQ{1} أحسب احتمال الحادثة $A$: «سحب كريتين مختلفتين في اللون».
+\QQ{2} أحسب احتمال الحادثة $B$: «سحب كريتين من نفس اللون».
+
+\textbf{II)} نقترح اللعبة التالية: للمشاركة يدفع اللاعب $\alpha$ (DA)، (حيث $\alpha$ عدد طبيعي معطى و DA تعني دينار جزائري).
+فإذا سحب كريتين بيضاوين يتحصل على $100\,\text{DA}$، وإذا سحب كريتين مختلفتين في اللون يتحصل على $50\,\text{DA}$، وإذا سحب كريتين خضراوين يخسر ما دفعه. وليكن $X$ المتغيّر العشوائي الذي يمثل ربح أو خسارة اللاعب بدلالة $\alpha$.
+\QQ{1} برّر أن قيم المتغيّر العشوائي هي $\{100-\alpha;\,50-\alpha;\,-\alpha\}$ ثم عرّف قانون احتماله.
+\QQ{2} بيّن أن الأمل الرياضياتي للمتغيّر العشوائي $X$ بدلالة $\alpha$ هو: $E(X)=-\alpha+\dfrac{300}{7}$، ثم جد أكبر قيمة ممكنة لـ $\alpha$ حتى تكون اللعبة في صالح اللاعب.
+\end{tamrin}
+
+\begin{hal}
+$\operatorname{card}\Omega=C_7^2=21$.
+
+\textbf{الجزء I:}
+\QQ{1} بيضاء وخضراء:
+\[P(A)=\frac{C_3^1\times C_4^1}{21}=\frac{12}{21},\qquad \bx{P(A)=\frac47}\]
+\QQ{2} $B=\overline{A}$ (كريتان إما من نفس اللون أو مختلفتان):
+\[P(B)=1-\frac47,\qquad \bx{P(B)=\frac37}\]
+(تحقق: $\dfrac{C_3^2+C_4^2}{21}=\dfrac{3+6}{21}=\dfrac37$ \ok.)
+
+\textbf{الجزء II:}
+\QQ{1} الربح $X$ = ما يتحصل عليه اللاعب $-$ ما دفعه $\alpha$:
+\begin{itemize}
+\item كريتان بيضاوان: $X=100-\alpha$، احتمالها $\dfrac{C_3^2}{21}=\dfrac{3}{21}=\dfrac17$.
+\item كريتان مختلفتان في اللون: $X=50-\alpha$، احتمالها $P(A)=\dfrac47$.
+\item كريتان خضراوان: يخسر ما دفعه، $X=-\alpha$، احتمالها $\dfrac{C_4^2}{21}=\dfrac{6}{21}=\dfrac27$.
+\end{itemize}
+إذن قيم $X$ هي $\{100-\alpha;\,50-\alpha;\,-\alpha\}$، وقانون احتماله (القيم مرتبة تصاعديا):
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.35}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} $x_i$ & $-\alpha$ & $50-\alpha$ & $100-\alpha$ & \ar{المجموع}\\\hline
+$P(X=x_i)$ & $\dfrac{2}{7}$ & $\dfrac{4}{7}$ & $\dfrac{1}{7}$ & $1$\\[4pt]\hline
+\end{tabular}\end{LTR}
+\end{center}
+\QQ{2}
+\begin{align*}E(X)&=-\alpha\times\frac27+(50-\alpha)\times\frac47+(100-\alpha)\times\frac17\\&=-\alpha\left(\frac{2+4+1}{7}\right)+\frac{200+100}{7},\qquad \bx{E(X)=-\alpha+\frac{300}{7}}\end{align*}
+تكون اللعبة في صالح اللاعب إذا وفقط إذا كان $E(X)>0$:
+\[-\alpha+\frac{300}{7}>0\iff \alpha<\frac{300}{7}\approx 42{,}86.\]
+و $\alpha$ عدد طبيعي، إذن أكبر قيمة ممكنة هي \bx{\alpha=42}.
+\end{hal}
+
+\section{تمارين البكالوريا -- شعبة رياضيات}
+% ===== تمارين البكالوريا في الاحتمالات -- شعبة رياضيات =====
+\tikzset{
+  bmT/.style={grow'=right,level distance=3.4cm,edge from parent/.style={draw,thick,cDef!70!black}},
+  bmS/.style={grow'=right,level distance=2.4cm,edge from parent/.style={draw,thick,gray!70!black}},
+  ev/.style={circle,draw=cDef,fill=cDef!12,thick,minimum size=7mm,inner sep=1pt,font=\small},
+  p/.style={midway,fill=white,inner sep=1.5pt,font=\footnotesize},pb/.style={pos=0.62,fill=white,inner sep=1pt,font=\footnotesize},
+  pl/.style={font=\small,text=cSec,label distance=3mm},
+  hd/.style={font=\small\bfseries,text=cSec}}
+
+%======================================================================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الأول -- شعبة رياضيات}
+يحتوي كيس $U$ على $4$ كريات حمراء و$3$ كريات خضراء، ويحتوي كيس $V$ على كريتين حمراوين وكريتين خضراوين.
+كل الكريات متماثلة ولا نفرق بينها باللمس.
+
+نسحب عشوائيا كريتين في آن واحد من $U$؛ إذا كانتا حمراوين نضعهما في $V$ ثم نسحب منه عشوائيا كريتين في آن واحد، وإذا لم تكونا حمراوين معا نعيدهما إلى $U$ ثم نسحب من $V$ كريتين في آن واحد. نعتبر الحوادث:
+\begin{itemize}
+\item $R$: «سحب كريتين حمراوين من $U$»،\quad $A$: «سحب كريتين حمراوين من $V$»،
+\item $B$: «سحب كريتين خضراوين من $V$»،\quad $C$: «سحب كريتين من لونين مختلفين من $V$».
+\end{itemize}
+\begin{center}\begin{LTR}\begin{tikzpicture}[bmS,level 1/.style={sibling distance=3.2cm},level 2/.style={sibling distance=1cm},scale=0.9]
+\node[ev]{}
+ child{node[ev]{$R$} child{node[ev]{$A$} edge from parent node[p]{$\ldots$}} child{node[ev]{$B$} edge from parent node[p]{$\ldots$}} child{node[ev]{$C$} edge from parent node[p]{$\ldots$}} edge from parent node[p]{$\ldots$}}
+ child{node[ev]{$\overline{R}$} child{node[ev]{$A$} edge from parent node[p]{$\ldots$}} child{node[ev]{$B$} edge from parent node[p]{$\ldots$}} child{node[ev]{$C$} edge from parent node[p]{$\ldots$}} edge from parent node[p]{$\ldots$}};
+\end{tikzpicture}\end{LTR}\end{center}
+\QQ{1} أنقل واملأ شجرة الاحتمالات المقابلة.
+\QQ{2} تحقق أن $P(A)=\dfrac{7}{30}$ واحسب $P(B)$ و$P(C)$.
+\QQ{3} احسب احتمال سحب كريتين حمراوين من $U$ علما أن الكريتين المسحوبتين من $V$ خضراوان.
+\QQ{4} $X$ المتغير العشوائي الذي يرفق بكل عملية سحب بالكيفية السابقة عدد الكريات الخضراء المسحوبة من الكيس $V$.
+عيّن قانون احتمال المتغير العشوائي $X$ ثم احسب الأمل الرياضياتي $E(21X+1428)$.
+\end{tamrin}
+\begin{molahada}
+في نص الموضوع: «عدد الكريات الخضراء المسحوبة من الكيس»؛ المقصود الكيس $V$ (السحب الأخير)، وهو ما يعطي أملا رياضياتيا صحيحا $E(21X+1428)=1447$.
+\end{molahada}
+\begin{hal}
+\QQ{1} \textbf{شجرة الاحتمالات.}
+
+\textbf{السحب الأول من $U$} ($7$ كريات، نسحب $2$ في آن واحد): عدد الحالات الممكنة $C_7^2=21$.
+\[P(R)=\frac{C_4^2}{C_7^2}=\frac{6}{21}=\frac{2}{7},\qquad P(\overline{R})=1-\frac{2}{7}=\frac{5}{7}.\]
+\textbf{إذا تحققت $R$}: نضع الكريتين الحمراوين في $V$ فيصبح فيه $4$ حمراء و$2$ خضراوان ($6$ كريات)، و$C_6^2=15$:
+\[P_R(A)=\frac{C_4^2}{15}=\frac{6}{15}=\frac{2}{5},\quad P_R(B)=\frac{C_2^2}{15}=\frac{1}{15},\quad P_R(C)=\frac{C_4^1\times C_2^1}{15}=\frac{8}{15}.\]
+\textbf{إذا تحققت $\overline{R}$}: نعيد الكريتين إلى $U$ فيبقى $V$ كما هو: $2$ حمراوان و$2$ خضراوان، و$C_4^2=6$:
+\[P_{\overline{R}}(A)=\frac{1}{6},\quad P_{\overline{R}}(B)=\frac{1}{6},\quad P_{\overline{R}}(C)=\frac{2\times2}{6}=\frac{2}{3}.\]
+\begin{center}\begin{LTR}\begin{tikzpicture}[bmT,level 1/.style={sibling distance=4.4cm},level 2/.style={sibling distance=1.45cm}]
+\node[ev]{}
+ child{node[ev]{$R$}
+   child{node[ev,label={[pl]right:{$\dfrac{2}{7}\times\dfrac{2}{5}=\dfrac{4}{35}$}}](t){$A$} edge from parent node[pb]{$\dfrac{2}{5}$}}
+   child{node[ev,label={[pl]right:{$\dfrac{2}{7}\times\dfrac{1}{15}=\dfrac{2}{105}$}}]{$B$} edge from parent node[pb]{$\dfrac{1}{15}$}}
+   child{node[ev,label={[pl]right:{$\dfrac{2}{7}\times\dfrac{8}{15}=\dfrac{16}{105}$}}]{$C$} edge from parent node[pb]{$\dfrac{8}{15}$}}
+   edge from parent node[pb]{$\dfrac{2}{7}$}}
+ child{node[ev]{$\overline{R}$}
+   child{node[ev,label={[pl]right:{$\dfrac{5}{7}\times\dfrac{1}{6}=\dfrac{5}{42}$}}]{$A$} edge from parent node[pb]{$\dfrac{1}{6}$}}
+   child{node[ev,label={[pl]right:{$\dfrac{5}{7}\times\dfrac{1}{6}=\dfrac{5}{42}$}}]{$B$} edge from parent node[pb]{$\dfrac{1}{6}$}}
+   child{node[ev,label={[pl]right:{$\dfrac{5}{7}\times\dfrac{2}{3}=\dfrac{10}{21}$}}]{$C$} edge from parent node[pb]{$\dfrac{2}{3}$}}
+   edge from parent node[pb]{$\dfrac{5}{7}$}};
+\node[hd] at ($(t)+(2.4,1.0)$) {\ar{الاحتمال}};
+\end{tikzpicture}\end{LTR}\end{center}
+
+\QQ{2} الحادثة $A$ تتحقق عبر المسارين $R\cap A$ و$\overline{R}\cap A$ (غير متلائمين)، فحسب دستور الاحتمالات الكلية:
+\[P(A)=P(R)\,P_R(A)+P(\overline{R})\,P_{\overline{R}}(A)=\frac{4}{35}+\frac{5}{42}=\frac{24}{210}+\frac{25}{210}=\frac{49}{210}=\frac{7}{30}.\]
+إذن \bx{P(A)=\frac{7}{30}} \ok. وبنفس الطريقة:
+\[P(B)=\frac{2}{105}+\frac{5}{42}=\frac{4}{210}+\frac{25}{210}=\frac{29}{210},\qquad
+P(C)=\frac{16}{105}+\frac{10}{21}=\frac{32}{210}+\frac{100}{210}=\frac{132}{210}=\frac{22}{35}.\]
+\bx{P(B)=\frac{29}{210}}\quad و\quad \bx{P(C)=\frac{22}{35}}. تحقق: $\frac{49+29+132}{210}=1$ \ok.
+
+\QQ{3} المطلوب $P_B(R)$ (احتمال $R$ علما أن $B$ تحققت):
+\[P_B(R)=\frac{P(R\cap B)}{P(B)}=\frac{\frac{2}{105}}{\frac{29}{210}}=\frac{2}{105}\times\frac{210}{29}=\frac{4}{29}.\]
+إذن \bx{P_B(R)=\frac{4}{29}}.
+
+\QQ{4} نسحب من $V$ كريتين، فعدد الخضراء المسحوبة منه: $X\in\{0;1;2\}$.
+\begin{itemize}
+\item $(X=0)=A$ (الكريتان حمراوان): $P(X=0)=\frac{49}{210}$.
+\item $(X=1)=C$ (لونان مختلفان): $P(X=1)=\frac{132}{210}$.
+\item $(X=2)=B$ (الكريتان خضراوان): $P(X=2)=\frac{29}{210}$.
+\end{itemize}
+\begin{center}{\renewcommand{\arraystretch}{1.8}\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{49}{210}$ & $\dfrac{132}{210}$ & $\dfrac{29}{210}$ & $1$\\\hline
+\end{tabular}}\end{center}
+\[E(X)=\sum x_i\,P(X=x_i)=0\times\frac{49}{210}+1\times\frac{132}{210}+2\times\frac{29}{210}=\frac{190}{210}=\frac{19}{21}.\]
+وبخاصية خطية الأمل الرياضياتي $E(aX+b)=a\,E(X)+b$:
+\[E(21X+1428)=21\times\frac{19}{21}+1428=19+1428.\]
+إذن \bx{E(X)=\frac{19}{21}} و\bx{E(21X+1428)=1447}.
+\end{hal}
+
+%======================================================================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الثاني -- شعبة رياضيات}
+يضم قسم لشعبة الرياضيات $8$ ذكور من بينهم أحمد و$6$ إناث من بينهن فاطمة.
+
+\QQ{1} نختار بطريقة عشوائية $3$ تلاميذ من القسم للمشاركة في أولمبياد الرياضيات ونعتبر الحوادث التالية:
+\begin{itemize}
+\item $A$: «التلاميذ المختارون من نفس الجنس»،\quad $B$: «من بين التلاميذ المختارين أنثى على الأقل»،
+\item $C$: «فاطمة من بين التلاميذ المختارين»،\quad $D$: «أحمد وفاطمة لا يتم اختيارهما معا»،
+\item $E$: «فاطمة من بين التلاميذ المختارين علما أن كل التلاميذ المختارين من الإناث».
+\end{itemize}
+احسب احتمالات الحوادث $A$، $B$، $C$، $D$ و$A\cup B$ وبيّن أن احتمال الحادثة $E$ يساوي $\dfrac12$.
+
+\QQ{2} نفرض أن عدد الإناث هو $n$ حيث $n\geqslant 2$ ونختار عشوائيا ممثلين اثنين للقسم.
+$X$ المتغير العشوائي الذي يرفق بكل عملية اختيار لممثلي القسم عدد الإناث المختارات و$E(X)$ أمله الرياضياتي.
+\begin{sq}
+\qa عيّن قانون احتمال المتغير العشوائي $X$ ثم بيّن أن: $E(X)=\dfrac{2n}{n+8}$.
+\qb جد قيمة $n$ التي من أجلها يكون $E(X)$ عددا طبيعيا.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} في القسم $8+6=14$ تلميذا. الاختيار عشوائي ودون ترتيب، فهو توفيقة لـ $3$ من $14$، والحالات متساوية الاحتمال:
+\[\operatorname{card}\Omega=C_{14}^3=\frac{14\times13\times12}{3\times2\times1}=364.\]
+\textbf{الحادثة $A$}: الثلاثة ذكور أو الثلاث إناث:
+\[P(A)=\frac{C_8^3+C_6^3}{364}=\frac{56+20}{364}=\frac{76}{364}=\frac{19}{91}.\]
+\textbf{الحادثة $B$}: عكسها $\overline{B}$: «الثلاثة ذكور»، إذن
+\[P(B)=1-\frac{C_8^3}{364}=1-\frac{56}{364}=\frac{308}{364}=\frac{11}{13}.\]
+\textbf{الحادثة $C$}: فاطمة مختارة، ونكمل بتلميذين من الـ $13$ الباقين:
+\[P(C)=\frac{C_1^1\times C_{13}^2}{364}=\frac{78}{364}=\frac{3}{14}.\]
+\textbf{الحادثة $D$}: عكسها $\overline{D}$: «أحمد وفاطمة مختاران معا»، والتلميذ الثالث من الـ $12$ الباقين:
+\[P(D)=1-\frac{C_{12}^1}{364}=1-\frac{12}{364}=\frac{352}{364}=\frac{88}{91}.\]
+\textbf{الحادثة $A\cup B$}: $\overline{B}$ «الثلاثة ذكور» محتواة في $A$، فكل نتيجة إما في $B$ أو في $\overline{B}\subset A$، إذن $A\cup B=\Omega$:
+\[P(A\cup B)=1.\]
+(تحقق: $P(A\cup B)=P(A)+P(B)-P(A\cap B)=\frac{76}{364}+\frac{308}{364}-\frac{20}{364}=1$ لأن $A\cap B$ «الثلاث إناث».)
+
+\bx{P(A)=\frac{19}{91}},\quad \bx{P(B)=\frac{11}{13}},\quad \bx{P(C)=\frac{3}{14}},\quad \bx{P(D)=\frac{88}{91}},\quad \bx{P(A\cup B)=1}.
+
+\textbf{الحادثة $E$}: لتكن $F$: «كل التلاميذ المختارين إناث». المطلوب $P_F(C)$:
+\[P(F)=\frac{C_6^3}{364}=\frac{20}{364},\qquad P(C\cap F)=\frac{C_5^2}{364}=\frac{10}{364}.\]
+($C\cap F$: فاطمة وأنثيان من الإناث الـ $5$ الباقيات.)
+\[P(E)=P_F(C)=\frac{P(C\cap F)}{P(F)}=\frac{10}{20}=\frac12.\]
+إذن \bx{P(E)=\frac12} \ok.
+
+\QQ{2}
+\pa عدد التلاميذ $n+8$، نختار $2$: $\operatorname{card}\Omega=C_{n+8}^2=\frac{(n+8)(n+7)}{2}$. قيم $X$: $\{0;1;2\}$.
+\[P(X=0)=\frac{C_8^2}{C_{n+8}^2}=\frac{56}{\frac{(n+8)(n+7)}{2}}=\frac{112}{(n+8)(n+7)},\qquad
+P(X=1)=\frac{C_n^1\,C_8^1}{C_{n+8}^2}=\frac{16n}{(n+8)(n+7)},\]
+\[P(X=2)=\frac{C_n^2}{C_{n+8}^2}=\frac{\frac{n(n-1)}{2}}{\frac{(n+8)(n+7)}{2}}=\frac{n(n-1)}{(n+8)(n+7)}.\]
+\begin{center}{\renewcommand{\arraystretch}{2.1}\begin{tabular}{|C|c|c|c|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$\\\hline
+$P(X=x_i)$ & $\dfrac{112}{(n+8)(n+7)}$ & $\dfrac{16n}{(n+8)(n+7)}$ & $\dfrac{n(n-1)}{(n+8)(n+7)}$\\\hline
+\end{tabular}}\end{center}
+(تحقق: $112+16n+n^2-n=n^2+15n+112=(n+8)(n+7)$ فالمجموع $1$ \ok.)
+\[E(X)=\frac{0+16n+2n(n-1)}{(n+8)(n+7)}=\frac{2n^2+14n}{(n+8)(n+7)}=\frac{2n(n+7)}{(n+8)(n+7)}=\frac{2n}{n+8}.\]
+إذن \bx{E(X)=\frac{2n}{n+8}} \ok.
+
+\pb من أجل $n\geqslant2$: $2n>0$ و$2n<2n+16=2(n+8)$، إذن $0<E(X)<2$.
+العدد الطبيعي الوحيد في $]0;2[$ هو $1$، فـ:
+\[E(X)=1\iff \frac{2n}{n+8}=1\iff 2n=n+8\iff n=8.\]
+إذن \bx{n=8} (وهو يحقق $n\geqslant2$).
+\end{hal}
+
+%======================================================================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الأول -- شعبة رياضيات}
+يحتوي صندوق $U_1$ على $12$ كرية منها: $3$ كريات حمراء، $4$ كريات بيضاء و$5$ كريات خضراء.
+ويحتوي صندوق $U_2$ على $7$ كريات منها: $4$ كريات حمراء و$3$ كريات بيضاء.
+(جميع الكريات متماثلة ولا نفرق بينها باللمس)
+
+نرمي نردا غير مزيف ذا $6$ أوجه مرقمة بـ: $1$، $1$، $1$، $1$، $2$، $2$.
+\begin{itemize}
+\item إذا ظهر الرقم $1$، نسحب عشوائيا $3$ كريات في آن واحد من $U_1$.
+\item وإذا ظهر الرقم $2$، نسحب عشوائيا $3$ كريات على التوالي من $U_2$ دون إرجاع.
+\end{itemize}
+نعتبر الحوادث: $A$: «ظهور الرقم $1$»، $B$: «الحصول على $3$ كريات من نفس اللون»،
+$C$: «الحصول على $3$ كريات مختلفة الألوان مثنى مثنى»، $D$: «الحصول على كريتين بالضبط من نفس اللون».
+\begin{center}\begin{LTR}\begin{tikzpicture}[bmS,level 1/.style={sibling distance=2.8cm},level 2/.style={sibling distance=1cm},scale=0.9]
+\node[ev]{}
+ child{node[ev]{$A$} child{node[ev]{$B$} edge from parent node[p]{$\ldots$}} child{node[ev]{$C$} edge from parent node[p]{$\ldots$}} child{node[ev]{$D$} edge from parent node[p]{$\ldots$}} edge from parent node[p]{$\ldots$}}
+ child{node[ev]{$\overline{A}$} child{node[ev]{$B$} edge from parent node[p]{$\ldots$}} child{node[ev]{$D$} edge from parent node[p]{$\ldots$}} edge from parent node[p]{$\ldots$}};
+\end{tikzpicture}\end{LTR}\end{center}
+\QQ{1} أنقل واملأ شجرة الاحتمالات المقابلة.
+\QQ{2}
+\begin{sq}
+\qa احسب $P(B)$، $P(C)$، $P(D)$، $P(B\cup C)$ احتمالات الحوادث $B$، $C$، $D$، $B\cup C$ على الترتيب.
+\qb بيّن أن: $P(A\cap\overline{B})=\dfrac{41}{66}$.
+\qc احسب $P_{\overline{B}}(A)$ احتمال سحب $3$ كريات من $U_1$ علما أنها ليست من نفس اللون.
+\end{sq}
+\QQ{3} $X$ المتغير العشوائي الذي يرفق بكل عملية سحب لـ $3$ كريات كما سبق، عدد الألوان التي تحملها الكريات المسحوبة.
+عيّن قانون الاحتمال للمتغير العشوائي $X$ ثم احسب أمله الرياضياتي.
+\end{tamrin}
+\begin{hal}
+\QQ{1} النرد غير مزيف: $4$ أوجه من $6$ تحمل $1$، إذن $P(A)=\frac46=\frac23$ و$P(\overline{A})=\frac13$.
+
+\textbf{من $U_1$} (سحب في آن واحد، $12$ كرية): $\operatorname{card}\Omega_1=C_{12}^3=220$.
+\begin{itemize}
+\item $P_A(B)=\dfrac{C_3^3+C_4^3+C_5^3}{220}=\dfrac{1+4+10}{220}=\dfrac{15}{220}=\dfrac{3}{44}$.
+\item $P_A(C)=\dfrac{C_3^1\,C_4^1\,C_5^1}{220}=\dfrac{60}{220}=\dfrac{3}{11}$.
+\item $P_A(D)=1-\dfrac{3}{44}-\dfrac{12}{44}=\dfrac{29}{44}$ \ (مباشرة: $\frac{C_3^2\times9+C_4^2\times8+C_5^2\times7}{220}=\frac{27+48+70}{220}=\frac{145}{220}=\frac{29}{44}$ \ok).
+\end{itemize}
+\textbf{من $U_2$} (سحب على التوالي دون إرجاع، $7$ كريات): $\operatorname{card}\Omega_2=A_7^3=7\times6\times5=210$.
+\begin{itemize}
+\item $P_{\overline{A}}(B)=\dfrac{A_4^3+A_3^3}{210}=\dfrac{24+6}{210}=\dfrac{1}{7}$.
+\item $U_2$ فيه لونان فقط، إذن $C$ مستحيلة: $P_{\overline{A}}(C)=0$ (لهذا لا يظهر فرع $C$ بعد $\overline{A}$).
+\item $P_{\overline{A}}(D)=1-\dfrac17=\dfrac67$.
+\end{itemize}
+\begin{center}\begin{LTR}\begin{tikzpicture}[bmT,level 1/.style={sibling distance=4cm},level 2/.style={sibling distance=1.45cm}]
+\node[ev]{}
+ child{node[ev]{$A$}
+   child{node[ev,label={[pl]right:{$\dfrac23\times\dfrac{3}{44}=\dfrac{1}{22}$}}](t){$B$} edge from parent node[pb]{$\dfrac{3}{44}$}}
+   child{node[ev,label={[pl]right:{$\dfrac23\times\dfrac{3}{11}=\dfrac{2}{11}$}}]{$C$} edge from parent node[pb]{$\dfrac{3}{11}$}}
+   child{node[ev,label={[pl]right:{$\dfrac23\times\dfrac{29}{44}=\dfrac{29}{66}$}}]{$D$} edge from parent node[pb]{$\dfrac{29}{44}$}}
+   edge from parent node[pb]{$\dfrac23$}}
+ child{node[ev]{$\overline{A}$}
+   child{node[ev,label={[pl]right:{$\dfrac13\times\dfrac17=\dfrac{1}{21}$}}]{$B$} edge from parent node[pb]{$\dfrac17$}}
+   child{node[ev,label={[pl]right:{$\dfrac13\times\dfrac67=\dfrac{2}{7}$}}]{$D$} edge from parent node[pb]{$\dfrac67$}}
+   edge from parent node[pb]{$\dfrac13$}};
+\node[hd] at ($(t)+(2.4,1.0)$) {\ar{الاحتمال}};
+\end{tikzpicture}\end{LTR}\end{center}
+
+\QQ{2}
+\pa بدستور الاحتمالات الكلية (جمع المسارات المؤدية إلى كل حادثة):
+\[P(B)=\frac{1}{22}+\frac{1}{21}=\frac{21+22}{462}=\frac{43}{462},\qquad P(C)=\frac{2}{11}+0=\frac{2}{11}=\frac{84}{462},\]
+\[P(D)=\frac{29}{66}+\frac{2}{7}=\frac{203}{462}+\frac{132}{462}=\frac{335}{462}.\]
+الحادثتان $B$ و$C$ غير متلائمتين ($B\cap C=\varnothing$)، إذن
+\[P(B\cup C)=P(B)+P(C)=\frac{43}{462}+\frac{84}{462}=\frac{127}{462}.\]
+\bx{P(B)=\frac{43}{462}},\quad \bx{P(C)=\frac{2}{11}},\quad \bx{P(D)=\frac{335}{462}},\quad \bx{P(B\cup C)=\frac{127}{462}}.
+
+\pb $P(A\cap\overline{B})=P(A)\times P_A(\overline{B})=\dfrac23\times\left(1-\dfrac{3}{44}\right)=\dfrac23\times\dfrac{41}{44}=\dfrac{82}{132}=\dfrac{41}{66}$ \ok.
+
+\pc $P(\overline{B})=1-\frac{43}{462}=\frac{419}{462}$، إذن
+\[P_{\overline{B}}(A)=\frac{P(A\cap\overline{B})}{P(\overline{B})}=\frac{41}{66}\times\frac{462}{419}=\frac{41\times7}{419}=\frac{287}{419}.\]
+إذن \bx{P_{\overline{B}}(A)=\frac{287}{419}}.
+
+\QQ{3} عدد الألوان: $X\in\{1;2;3\}$ مع $(X=1)=B$، $(X=2)=D$، $(X=3)=C$.
+\begin{center}{\renewcommand{\arraystretch}{1.8}\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $1$ & $2$ & $3$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{43}{462}$ & $\dfrac{335}{462}$ & $\dfrac{84}{462}$ & $1$\\\hline
+\end{tabular}}\end{center}
+\[E(X)=1\times\frac{43}{462}+2\times\frac{335}{462}+3\times\frac{84}{462}=\frac{43+670+252}{462}=\frac{965}{462}.\]
+إذن \bx{E(X)=\frac{965}{462}\approx2{,}09}.
+\end{hal}
+
+%======================================================================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الأول -- شعبة رياضيات}
+يحتوي صندوق $U_1$ على $5$ بطاقات متماثلة مرقمة بـ: $1$، $1$، $2$، $3$، $3$ ويحتوي صندوق $U_2$ على $6$ كريات موزعة كما يلي: $4$ كريات حمراء و$2$ خضراوان. (لا نفرق بين البطاقات ولا بين الكريات باللمس)
+
+نسحب عشوائيا بطاقة واحدة من الصندوق $U_1$.
+\begin{itemize}
+\item إذا تحصلنا على الرقم $1$ نسحب عشوائيا من $U_2$ كرية واحدة.
+\item إذا تحصلنا على الرقم $2$ نسحب عشوائيا من $U_2$ كريتين في آن واحد.
+\item إذا تحصلنا على الرقم $3$ نسحب عشوائيا من $U_2$ ثلاث كريات في آن واحد.
+\end{itemize}
+نعتبر الحوادث الآتية: $C_i$: «البطاقة المتحصل عليها تحمل الرقم $i$» حيث $i\in\{1;2;3\}$،
+$A$: «الحصول على كريات حمراء فقط»، $B$: «الحصول على كريات خضراء فقط»، $D$: «الحصول على كريات ليست كلها من نفس اللون».
+\begin{center}\begin{LTR}\begin{tikzpicture}[bmS,level 1/.style={sibling distance=2.8cm},level 2/.style={sibling distance=1cm},scale=0.9]
+\node[ev]{}
+ child{node[ev]{$C_1$} child{node[ev]{$A$} edge from parent node[p]{$\ldots$}} child{node[ev]{$B$} edge from parent node[p]{$\ldots$}} edge from parent node[p]{$\ldots$}}
+ child{node[ev]{$C_2$} child{node[ev]{$A$} edge from parent node[p]{$\ldots$}} child{node[ev]{$B$} edge from parent node[p]{$\ldots$}} child{node[ev]{$D$} edge from parent node[p]{$\ldots$}} edge from parent node[p]{$\ldots$}}
+ child{node[ev]{$C_3$} child{node[ev]{$A$} edge from parent node[p]{$\ldots$}} child{node[ev]{$D$} edge from parent node[p]{$\ldots$}} edge from parent node[p]{$\ldots$}};
+\end{tikzpicture}\end{LTR}\end{center}
+\QQ{1}
+\begin{sq}
+\qa بيّن أن: $P_{C_2}(B)=\dfrac{1}{15}$ و$P_{C_3}(D)=\dfrac45$.
+\qb أنقل واملأ شجرة الاحتمالات المقابلة.
+\qc احسب $P(A)$، $P(B)$ و$P(D)$.
+\end{sq}
+\QQ{2} احسب احتمال أن تكون البطاقة المتحصل عليها تحمل الرقم $3$ علما أن الكريات المسحوبة حمراء.
+\QQ{3} $X$ المتغير العشوائي الذي يرفق بكل عملية سحب عدد الألوان المتحصل عليها.
+عيّن قانون الاحتمال للمتغير العشوائي $X$ ثم احسب الأمل الرياضياتي $E(75X+1917)$.
+\QQ{4} إذا كان عدد الكريات الحمراء في الصندوق $U_2$ هو $n+4$ حيث $n$ عدد طبيعي، جد قيمة $n$ التي من أجلها يكون $P_{C_3}(A)=\dfrac{7}{15}$.
+\end{tamrin}
+\begin{molahada}
+في النص الأصلي سقط اسم الصندوق في عبارات السحب («نسحب عشوائيا من كرية واحدة»)؛ أضفنا $U_2$.
+\end{molahada}
+\begin{hal}
+\QQ{1}
+\pa \textbf{علما أن $C_2$}: نسحب كريتين من $6$ في آن واحد، $C_6^2=15$. الحادثة $B$: الكريتان خضراوان:
+\[P_{C_2}(B)=\frac{C_2^2}{C_6^2}=\frac{1}{15}\ \text{\ok}.\]
+\textbf{علما أن $C_3$}: نسحب $3$ كريات، $C_6^3=20$. لا يمكن سحب $3$ خضراء (يوجد $2$ فقط)، فـ «نفس اللون» تعني $3$ حمراء: $P_{C_3}(A)=\frac{C_4^3}{20}=\frac{4}{20}=\frac15$، و$D$ عكسها:
+\[P_{C_3}(D)=1-\frac15=\frac45\ \text{\ok}.\]
+\pb $P(C_1)=\frac25$، $P(C_2)=\frac15$، $P(C_3)=\frac25$ (بطاقتان تحملان $1$، واحدة تحمل $2$، اثنتان تحملان $3$).
+
+علما أن $C_1$ (كرية واحدة): $P_{C_1}(A)=\frac46=\frac23$، $P_{C_1}(B)=\frac26=\frac13$.
+
+علما أن $C_2$: $P_{C_2}(A)=\frac{C_4^2}{15}=\frac{6}{15}=\frac25$، $P_{C_2}(B)=\frac1{15}$، $P_{C_2}(D)=\frac{C_4^1C_2^1}{15}=\frac{8}{15}$.
+\begin{center}\begin{LTR}\begin{tikzpicture}[bmT,level 1/.style={sibling distance=3.7cm},level 2/.style={sibling distance=1.4cm}]
+\node[ev]{}
+ child{node[ev]{$C_1$}
+   child{node[ev,label={[pl]right:{$\dfrac25\times\dfrac23=\dfrac{4}{15}$}}](t){$A$} edge from parent node[pb]{$\dfrac23$}}
+   child{node[ev,label={[pl]right:{$\dfrac25\times\dfrac13=\dfrac{2}{15}$}}]{$B$} edge from parent node[pb]{$\dfrac13$}}
+   edge from parent node[pb]{$\dfrac25$}}
+ child{node[ev]{$C_2$}
+   child{node[ev,label={[pl]right:{$\dfrac15\times\dfrac25=\dfrac{2}{25}$}}]{$A$} edge from parent node[pb]{$\dfrac25$}}
+   child{node[ev,label={[pl]right:{$\dfrac15\times\dfrac1{15}=\dfrac{1}{75}$}}]{$B$} edge from parent node[pb]{$\dfrac1{15}$}}
+   child{node[ev,label={[pl]right:{$\dfrac15\times\dfrac8{15}=\dfrac{8}{75}$}}]{$D$} edge from parent node[pb]{$\dfrac8{15}$}}
+   edge from parent node[pb]{$\dfrac15$}}
+ child{node[ev]{$C_3$}
+   child{node[ev,label={[pl]right:{$\dfrac25\times\dfrac15=\dfrac{2}{25}$}}]{$A$} edge from parent node[pb]{$\dfrac15$}}
+   child{node[ev,label={[pl]right:{$\dfrac25\times\dfrac45=\dfrac{8}{25}$}}]{$D$} edge from parent node[pb]{$\dfrac45$}}
+   edge from parent node[pb]{$\dfrac25$}};
+\node[hd] at ($(t)+(2.4,1.0)$) {\ar{الاحتمال}};
+\end{tikzpicture}\end{LTR}\end{center}
+\pc بدستور الاحتمالات الكلية:
+\[P(A)=\frac{4}{15}+\frac{2}{25}+\frac{2}{25}=\frac{20+6+6}{75}=\frac{32}{75},\qquad P(B)=\frac{2}{15}+\frac{1}{75}+0=\frac{10+1}{75}=\frac{11}{75},\]
+\[P(D)=0+\frac{8}{75}+\frac{8}{25}=\frac{8+24}{75}=\frac{32}{75}.\]
+\bx{P(A)=\frac{32}{75}},\quad \bx{P(B)=\frac{11}{75}},\quad \bx{P(D)=\frac{32}{75}} \quad (المجموع $\frac{75}{75}=1$ \ok).
+
+\QQ{2} المطلوب $P_A(C_3)$:
+\[P_A(C_3)=\frac{P(C_3\cap A)}{P(A)}=\frac{\frac{2}{25}}{\frac{32}{75}}=\frac{2}{25}\times\frac{75}{32}=\frac{6}{32}=\frac{3}{16}.\]
+إذن \bx{P_A(C_3)=\frac{3}{16}}.
+
+\QQ{3} الكريات المسحوبة إما من لون واحد ($A$ أو $B$) أو من لونين ($D$): $X\in\{1;2\}$.
+\[P(X=1)=P(A)+P(B)=\frac{32+11}{75}=\frac{43}{75},\qquad P(X=2)=P(D)=\frac{32}{75}.\]
+\begin{center}{\renewcommand{\arraystretch}{1.8}\begin{tabular}{|C|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $1$ & $2$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{43}{75}$ & $\dfrac{32}{75}$ & $1$\\\hline
+\end{tabular}}\end{center}
+\[E(X)=\frac{43}{75}+\frac{64}{75}=\frac{107}{75},\qquad E(75X+1917)=75\times\frac{107}{75}+1917=107+1917.\]
+إذن \bx{E(X)=\frac{107}{75}} و\bx{E(75X+1917)=2024}.
+
+\QQ{4} يصبح في $U_2$: $n+4$ حمراء و$2$ خضراوان، أي $n+6$ كرية. علما أن $C_3$:
+\[P_{C_3}(A)=\frac{C_{n+4}^3}{C_{n+6}^3}=\frac{\frac{(n+4)(n+3)(n+2)}{6}}{\frac{(n+6)(n+5)(n+4)}{6}}=\frac{(n+3)(n+2)}{(n+6)(n+5)}.\]
+\begin{align*}
+P_{C_3}(A)=\frac{7}{15}&\iff 15(n^2+5n+6)=7(n^2+11n+30)\\
+&\iff 8n^2-2n-120=0\iff 4n^2-n-60=0.
+\end{align*}
+$\Delta=1+960=961=31^2$، إذن $n=\frac{1+31}{8}=4$ أو $n=\frac{1-31}{8}=-\frac{15}{4}$ (مرفوض لأن $n\in\N$).
+إذن \bx{n=4} (أي $8$ كريات حمراء).
+\end{hal}
+
+%======================================================================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الثاني -- شعبة رياضيات}
+يحتوي صندوق $U_1$ على $7$ كريات منها: $3$ كريات بيضاء و$4$ كريات حمراء، ويحتوي صندوق $U_2$ على $7$ كريات منها: كريتان بيضاوان و$5$ كريات حمراء. (جميع الكريات متماثلة ولا نفرق بينها باللمس)
+
+نلقي نردا متوازنا أوجهه مرقمة من $1$ إلى $6$ ونسجل الرقم الظاهر على الوجه العلوي.
+\begin{itemize}
+\item إذا ظهر رقم مضاعف للعدد $3$، نسحب عشوائيا من الصندوق $U_1$ كريتين على التوالي دون إرجاع.
+\item في الحالات الأخرى، نسحب عشوائيا من الصندوق $U_2$ كريتين على التوالي دون إرجاع.
+\end{itemize}
+نعتبر الحوادث الآتية: $M$: «ظهور رقم مضاعف للعدد $3$»، $A$: «الحصول على كريتين بيضاوين»،
+$B$: «الحصول على كريتين حمراوين»، $C$: «الحصول على كريتين من لونين مختلفين».
+\begin{center}\begin{LTR}\begin{tikzpicture}[bmS,level 1/.style={sibling distance=3.2cm},level 2/.style={sibling distance=1cm},scale=0.9]
+\node[ev]{}
+ child{node[ev]{$M$} child{node[ev]{$A$} edge from parent node[p]{$\ldots$}} child{node[ev]{$B$} edge from parent node[p]{$\ldots$}} child{node[ev]{$C$} edge from parent node[p]{$\ldots$}} edge from parent node[p]{$\ldots$}}
+ child{node[ev]{$\overline{M}$} child{node[ev]{$A$} edge from parent node[p]{$\ldots$}} child{node[ev]{$B$} edge from parent node[p]{$\ldots$}} child{node[ev]{$C$} edge from parent node[p]{$\ldots$}} edge from parent node[p]{$\ldots$}};
+\end{tikzpicture}\end{LTR}\end{center}
+\QQ{1} أنقل واملأ شجرة الاحتمالات المقابلة.
+\QQ{2} نعتبر الحادثتين: $G$: «الحصول على كريتين من نفس اللون» و$H$: «الحصول على كرية حمراء على الأقل».
+بيّن أن $P(G)=\dfrac{31}{63}$ ثم احسب $P(H)$.
+\QQ{3} احسب $P_G(M)$ احتمال ظهور رقم مضاعف للعدد $3$ علما أن الكريتين المسحوبتين من نفس اللون.
+\QQ{4} $X$ المتغير العشوائي الذي يرفق بكل عملية سحب لكريتين عدد الألوان المتحصل عليها.
+عيّن قانون الاحتمال للمتغير العشوائي $X$ ثم احسب الأمل الرياضياتي $E(63X+1350)$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} مضاعفات $3$ بين $1$ و$6$: $3$ و$6$، إذن $P(M)=\frac26=\frac13$ و$P(\overline{M})=\frac23$.
+
+السحب على التوالي دون إرجاع لكريتين من $7$: $\operatorname{card}\Omega=A_7^2=7\times6=42$ (في كل صندوق).
+
+\textbf{من $U_1$} ($3$ب، $4$ح):
+$P_M(A)=\frac{A_3^2}{42}=\frac{6}{42}=\frac17$،\
+$P_M(B)=\frac{A_4^2}{42}=\frac{12}{42}=\frac27$،\
+$P_M(C)=\frac{2\times3\times4}{42}=\frac{24}{42}=\frac47$ (الضرب في $2$ لترتيب اللونين: ب ثم ح أو ح ثم ب).
+
+\textbf{من $U_2$} ($2$ب، $5$ح):
+$P_{\overline{M}}(A)=\frac{A_2^2}{42}=\frac{2}{42}=\frac1{21}$،\
+$P_{\overline{M}}(B)=\frac{A_5^2}{42}=\frac{20}{42}=\frac{10}{21}$،\
+$P_{\overline{M}}(C)=\frac{2\times2\times5}{42}=\frac{10}{21}$.
+\begin{center}\begin{LTR}\begin{tikzpicture}[bmT,level 1/.style={sibling distance=4.4cm},level 2/.style={sibling distance=1.45cm}]
+\node[ev]{}
+ child{node[ev]{$M$}
+   child{node[ev,label={[pl]right:{$\dfrac13\times\dfrac17=\dfrac{1}{21}$}}](t){$A$} edge from parent node[pb]{$\dfrac17$}}
+   child{node[ev,label={[pl]right:{$\dfrac13\times\dfrac27=\dfrac{2}{21}$}}]{$B$} edge from parent node[pb]{$\dfrac27$}}
+   child{node[ev,label={[pl]right:{$\dfrac13\times\dfrac47=\dfrac{4}{21}$}}]{$C$} edge from parent node[pb]{$\dfrac47$}}
+   edge from parent node[pb]{$\dfrac13$}}
+ child{node[ev]{$\overline{M}$}
+   child{node[ev,label={[pl]right:{$\dfrac23\times\dfrac1{21}=\dfrac{2}{63}$}}]{$A$} edge from parent node[pb]{$\dfrac1{21}$}}
+   child{node[ev,label={[pl]right:{$\dfrac23\times\dfrac{10}{21}=\dfrac{20}{63}$}}]{$B$} edge from parent node[pb]{$\dfrac{10}{21}$}}
+   child{node[ev,label={[pl]right:{$\dfrac23\times\dfrac{10}{21}=\dfrac{20}{63}$}}]{$C$} edge from parent node[pb]{$\dfrac{10}{21}$}}
+   edge from parent node[pb]{$\dfrac23$}};
+\node[hd] at ($(t)+(2.4,1.0)$) {\ar{الاحتمال}};
+\end{tikzpicture}\end{LTR}\end{center}
+
+\QQ{2} $G=A\cup B$ و$A$، $B$ غير متلائمتين:
+\[P(A)=\frac{1}{21}+\frac{2}{63}=\frac{5}{63},\qquad P(B)=\frac{2}{21}+\frac{20}{63}=\frac{26}{63},\qquad P(G)=\frac{5}{63}+\frac{26}{63}=\frac{31}{63}\ \text{\ok}.\]
+$H$: «كرية حمراء على الأقل» عكسها $\overline{H}=A$ (الكريتان بيضاوان):
+\[P(H)=1-P(A)=1-\frac{5}{63}=\frac{58}{63}.\]
+إذن \bx{P(G)=\frac{31}{63}} و\bx{P(H)=\frac{58}{63}}.
+
+\QQ{3} $P(M\cap G)=P(M\cap A)+P(M\cap B)=\frac1{21}+\frac2{21}=\frac17$، إذن
+\[P_G(M)=\frac{P(M\cap G)}{P(G)}=\frac{1}{7}\times\frac{63}{31}=\frac{9}{31}.\]
+إذن \bx{P_G(M)=\frac{9}{31}}.
+
+\QQ{4} الكريتان من لون واحد ($G$) أو من لونين ($C=\overline{G}$): $X\in\{1;2\}$، $P(X=1)=\frac{31}{63}$، $P(X=2)=1-\frac{31}{63}=\frac{32}{63}$.
+\begin{center}{\renewcommand{\arraystretch}{1.8}\begin{tabular}{|C|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $1$ & $2$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{31}{63}$ & $\dfrac{32}{63}$ & $1$\\\hline
+\end{tabular}}\end{center}
+\[E(X)=\frac{31}{63}+\frac{64}{63}=\frac{95}{63},\qquad E(63X+1350)=63\times\frac{95}{63}+1350=95+1350.\]
+إذن \bx{E(X)=\frac{95}{63}} و\bx{E(63X+1350)=1445}.
+\end{hal}
+
+%======================================================================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الأول -- شعبة رياضيات}
+يحتوي كيس على $10$ كريات متماثلة ولا نفرق بينها باللمس، منها كريتان حمراوان مرقمتان بـ: $-3$، $2$ وخمس كريات بيضاء مرقمة بـ: $-2$، $0$، $1$، $1$، $2$ وثلاث كريات خضراء مرقمة بـ: $0$، $1$، $2$.
+نسحب عشوائيا وفي آن واحد ثلاث كريات من الكيس ونعتبر الأحداث $A$، $B$ و$C$ الآتية:
+$A$: «الحصول على $3$ كريات من نفس اللون»، $B$: «الحصول على الألوان الثلاثة»، $C$: «الحصول على $3$ كريات مجموع أرقامها معدوم».
+
+\QQ{1}
+\begin{sq}
+\qa احسب $P(A)$ و$P(B)$ ثم بيّن أن: $P(C)=\dfrac{3}{20}$.
+\qb احسب $P(A\cap C)$ ثم استنتج $P_C(A)$.
+\end{sq}
+\QQ{2} نعتبر المتغير العشوائي $X$ الذي يرفق بكل عملية سحب لثلاث كريات عدد الألوان المتحصل عليها.
+عيّن قانون الاحتمال للمتغير العشوائي $X$ ثم احسب أمله الرياضياتي $E(X)$.
+\QQ{3} نسحب الآن عشوائيا من الكيس ثلاث كريات على التوالي وبإرجاع.
+احسب احتمال الحصول على ثلاث كريات جداء أرقامها معدوم.
+\end{tamrin}
+\begin{molahada}
+في النص: «احسب $P(A)$ و$P(C)$ ثم بيّن أن $P(C)=\frac{3}{20}$»؛ الصواب: احسب $P(A)$ و$P(B)$.
+\end{molahada}
+\begin{hal}
+\QQ{1}
+\pa سحب $3$ كريات في آن واحد من $10$: $\operatorname{card}\Omega=C_{10}^3=120$، والحالات متساوية الاحتمال.
+
+\textbf{$A$}: $3$ بيضاء أو $3$ خضراء (لا يوجد إلا كريتان حمراوان):
+\[P(A)=\frac{C_5^3+C_3^3}{120}=\frac{10+1}{120}=\frac{11}{120}.\]
+\textbf{$B$}: كرية من كل لون: $P(B)=\dfrac{C_2^1\,C_5^1\,C_3^1}{120}=\dfrac{30}{120}=\dfrac14$.
+
+\textbf{$C$}: أرقام الكيس حسب القيمة:
+\begin{center}{\renewcommand{\arraystretch}{1.4}\begin{tabular}{|C|c|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} الرقم & $-3$ & $-2$ & $0$ & $1$ & $2$ & المجموع\\\hline
+عدد الكريات & $1$ & $1$ & $2$ & $3$ & $3$ & $10$\\\hline
+\end{tabular}}\end{center}
+لكي يكون المجموع معدوما لا بد من رقم سالب ($-3$ و$-2$ معا مستحيل لأن الباقي يجب أن يساوي $5$):
+\begin{itemize}
+\item مع $-3$: الكريتان الأخريان مجموعهما $3$: $\{1;2\}$، عدد الحالات $3\times3=9$.
+\item مع $-2$: الكريتان الأخريان مجموعهما $2$: $\{0;2\}$: $2\times3=6$، أو $\{1;1\}$: $C_3^2=3$.
+\end{itemize}
+\[P(C)=\frac{9+6+3}{120}=\frac{18}{120}=\frac{3}{20}\ \text{\ok}.\]
+\bx{P(A)=\frac{11}{120}},\quad \bx{P(B)=\frac14},\quad \bx{P(C)=\frac{3}{20}}.
+
+\pb $A\cap C$: ثلاث كريات من نفس اللون مجموع أرقامها معدوم:
+الخضراء $\{0;1;2\}$ مجموعها $3\neq0$؛ البيضاء $\{-2;0;1;1;2\}$: الثلاثيات ذات المجموع المعدوم $\{-2;0;2\}$ و$\{-2;1;1\}$ فقط، أي حالتان:
+\[P(A\cap C)=\frac{2}{120}=\frac{1}{60},\qquad P_C(A)=\frac{P(A\cap C)}{P(C)}=\frac{1}{60}\times\frac{20}{3}=\frac19.\]
+\bx{P(A\cap C)=\frac1{60}} و\bx{P_C(A)=\frac19}.
+
+\QQ{2} $X\in\{1;2;3\}$: $(X=1)=A$، $(X=3)=B$، و$(X=2)$ هي الحالات الباقية:
+\[P(X=2)=1-\frac{11}{120}-\frac{30}{120}=\frac{79}{120}.\]
+\begin{center}{\renewcommand{\arraystretch}{1.8}\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $1$ & $2$ & $3$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{11}{120}$ & $\dfrac{79}{120}$ & $\dfrac{30}{120}$ & $1$\\\hline
+\end{tabular}}\end{center}
+\[E(X)=\frac{11+158+90}{120}=\frac{259}{120}.\]
+إذن \bx{E(X)=\frac{259}{120}\approx2{,}16}.
+
+\QQ{3} السحب على التوالي بإرجاع: $\operatorname{card}\Omega=10^3=1000$، والسحبات مستقلة. الجداء معدوم إذا ظهرت كرية تحمل $0$ مرة على الأقل. عدد الكريات التي لا تحمل $0$ هو $8$، فالحادثة العكسية «لا صفر في السحبات الثلاث»:
+\[P=1-\left(\frac{8}{10}\right)^3=1-\frac{512}{1000}=\frac{488}{1000}=\frac{61}{125}.\]
+إذن الاحتمال المطلوب \bx{\frac{61}{125}=0{,}488}.
+\end{hal}
+
+%======================================================================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الثاني -- شعبة رياضيات}
+يحتوي صندوق $U$ على كريتين حمراوين وكريتين خضراوين ويحتوي صندوق $V$ على كريتين حمراوين وثلاث كريات خضراء. (كل الكريات متماثلة لا نفرق بينها عند اللمس)
+
+نسحب عشوائيا كريتين في آن واحد من أحد الصندوقين بالكيفية الآتية:
+نقوم بسحب بطاقة واحدة عشوائيا من كيس به $10$ بطاقات متماثلة ومرقمة من $1$ إلى $10$.
+إذا تحصلنا على عدد أولي نسحب الكريتين من $U$ وفي باقي الحالات نسحب الكريتين من $V$.
+
+\QQ{1} نعتبر الأحداث $A$، $B$ و$C$ الآتية: $A$: «سحب كريتين حمراوين»، $B$: «سحب كريتين خضراوين» و$C$: «سحب كريتين من لونين مختلفين».
+\begin{sq}
+\qa أنجز شجرة الاحتمالات التي تنمذج هذه التجربة.
+\qb بيّن أن $P(A)=\dfrac{19}{150}$ و$P(B)=\dfrac{37}{150}$ ثم استنتج $P(C)$.
+\end{sq}
+\QQ{2} $X$ المتغير العشوائي الذي يرفق بكل عملية سحب لكريتين عدد الكريات الحمراء المتحصل عليها.
+\begin{sq}
+\qa عيّن قانون الاحتمال للمتغير العشوائي $X$ ثم احسب أمله الرياضياتي $E(X)$.
+\qb احسب احتمال الحدث: «$\ln X\leqslant 1$».
+\end{sq}
+\end{tamrin}
+\begin{molahada}
+في النص: «بيّن أن $P(B)=\frac{19}{150}$ و$P(B)=\frac{37}{150}$»؛ الصواب: $P(A)=\frac{19}{150}$ و$P(B)=\frac{37}{150}$.
+\end{molahada}
+\begin{hal}
+\QQ{1}
+\pa الأعداد الأولية من $1$ إلى $10$: $2$، $3$، $5$، $7$، فـ $P(U)=\frac{4}{10}=\frac25$ و$P(V)=\frac35$.
+
+\textbf{من $U$} ($2$ح، $2$خ)، $C_4^2=6$: $P_U(A)=\frac{C_2^2}{6}=\frac16$، $P_U(B)=\frac16$، $P_U(C)=\frac{2\times2}{6}=\frac23$.
+
+\textbf{من $V$} ($2$ح، $3$خ)، $C_5^2=10$: $P_V(A)=\frac{1}{10}$، $P_V(B)=\frac{C_3^2}{10}=\frac{3}{10}$، $P_V(C)=\frac{2\times3}{10}=\frac35$.
+\begin{center}\begin{LTR}\begin{tikzpicture}[bmT,level 1/.style={sibling distance=4.4cm},level 2/.style={sibling distance=1.45cm}]
+\node[ev]{}
+ child{node[ev]{$U$}
+   child{node[ev,label={[pl]right:{$\dfrac25\times\dfrac16=\dfrac{1}{15}$}}](t){$A$} edge from parent node[pb]{$\dfrac16$}}
+   child{node[ev,label={[pl]right:{$\dfrac25\times\dfrac16=\dfrac{1}{15}$}}]{$B$} edge from parent node[pb]{$\dfrac16$}}
+   child{node[ev,label={[pl]right:{$\dfrac25\times\dfrac23=\dfrac{4}{15}$}}]{$C$} edge from parent node[pb]{$\dfrac23$}}
+   edge from parent node[pb]{$\dfrac25$}}
+ child{node[ev]{$V$}
+   child{node[ev,label={[pl]right:{$\dfrac35\times\dfrac1{10}=\dfrac{3}{50}$}}]{$A$} edge from parent node[pb]{$\dfrac1{10}$}}
+   child{node[ev,label={[pl]right:{$\dfrac35\times\dfrac3{10}=\dfrac{9}{50}$}}]{$B$} edge from parent node[pb]{$\dfrac3{10}$}}
+   child{node[ev,label={[pl]right:{$\dfrac35\times\dfrac35=\dfrac{9}{25}$}}]{$C$} edge from parent node[pb]{$\dfrac35$}}
+   edge from parent node[pb]{$\dfrac35$}};
+\node[hd] at ($(t)+(2.4,1.0)$) {\ar{الاحتمال}};
+\end{tikzpicture}\end{LTR}\end{center}
+\pb بدستور الاحتمالات الكلية:
+\[P(A)=\frac{1}{15}+\frac{3}{50}=\frac{10+9}{150}=\frac{19}{150},\qquad P(B)=\frac{1}{15}+\frac{9}{50}=\frac{10+27}{150}=\frac{37}{150}\ \text{\ok}.\]
+$A$، $B$، $C$ تشكل تجزئة لـ $\Omega$، إذن
+\[P(C)=1-\frac{19}{150}-\frac{37}{150}=\frac{94}{150}=\frac{47}{75}.\]
+إذن \bx{P(C)=\frac{47}{75}}.
+
+\QQ{2}
+\pa $X\in\{0;1;2\}$ مع $(X=0)=B$، $(X=1)=C$، $(X=2)=A$.
+\begin{center}{\renewcommand{\arraystretch}{1.8}\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{37}{150}$ & $\dfrac{94}{150}$ & $\dfrac{19}{150}$ & $1$\\\hline
+\end{tabular}}\end{center}
+\[E(X)=0+\frac{94}{150}+\frac{38}{150}=\frac{132}{150}=\frac{22}{25}.\]
+إذن \bx{E(X)=\frac{22}{25}=0{,}88}.
+
+\pb $\ln X$ معرّف من أجل $X>0$ فقط، أي $X\in\{1;2\}$:
+$\ln1=0\leqslant1$ و$\ln2\approx0{,}69\leqslant1$، إذن $(\ln X\leqslant1)=(X=1)\cup(X=2)$:
+\[P(\ln X\leqslant1)=\frac{94}{150}+\frac{19}{150}=\frac{113}{150}.\]
+إذن \bx{P(\ln X\leqslant1)=\frac{113}{150}}.
+\end{hal}
+
+%======================================================================
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الأول -- شعبة رياضيات}
+كيس به $12$ كرية متماثلة لا نفرق بينها باللمس.
+كل من الكريات الاثنتي عشرة تحمل رقما من بين الأعداد التالية: $1$، $2$، $3$ و$4$.
+نسحب عشوائيا كرية واحدة من الكيس.
+نرمز بـ $P_i$ إلى احتمال سحب كرية رقمها $i$، حيث: $P_1=\dfrac13$، $P_2=\dfrac16$، $P_3=\dfrac14$ و$P_4=\dfrac14$.
+
+\QQ{1} وزّع الكريات الاثنتي عشرة حسب الأرقام $1$، $2$، $3$ و$4$.
+\QQ{2} احسب احتمال كل من الأحداث $A$، $B$ و$C$ الآتية:
+$A$: «سحب كرية تحمل رقما فرديا»، $B$: «سحب كرية تحمل رقما من أرقام نظام التعداد ذي الأساس $4$»، $C$: «سحب كرية رقمها حل للمعادلة $x^2=2^x$».
+\QQ{3} المتغير العشوائي $X$ يرفق بكل سحب لكرية الرقم الذي تحمله.
+عيّن مجموعة قيم المتغير العشوائي $X$ ثم احسب $E(X)$ أمله الرياضياتي.
+\end{tamrin}
+\begin{hal}
+\QQ{1} الكريات متماثلة، فاحتمال سحب رقم $i$ هو $P_i=\frac{n_i}{12}$ حيث $n_i$ عدد الكريات التي تحمل $i$، أي $n_i=12\,P_i$:
+\begin{center}{\renewcommand{\arraystretch}{1.6}\begin{tabular}{|C|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} الرقم $i$ & $1$ & $2$ & $3$ & $4$ & المجموع\\\hline
+$P_i$ & $\dfrac13$ & $\dfrac16$ & $\dfrac14$ & $\dfrac14$ & $1$\\\hline
+عدد الكريات $n_i$ & $4$ & $2$ & $3$ & $3$ & $12$\\\hline
+\end{tabular}}\end{center}
+
+\QQ{2} \textbf{$A$}: الأرقام الفردية $1$ و$3$: $P(A)=P_1+P_3=\frac13+\frac14=\frac{7}{12}$.
+
+\textbf{$B$}: أرقام نظام التعداد ذي الأساس $4$ هي $0$، $1$، $2$، $3$؛ من بين أرقام الكيس: $1$، $2$، $3$:
+\[P(B)=P_1+P_2+P_3=\frac{4+2+3}{12}=\frac{9}{12}=\frac34.\]
+\textbf{$C$}: نختبر أرقام الكيس في $x^2=2^x$:
+$1^2=1\neq2^1=2$،\ $2^2=4=2^2$ \ok،\ $3^2=9\neq2^3=8$،\ $4^2=16=2^4$ \ok. إذن الحلول من بين الأرقام: $2$ و$4$:
+\[P(C)=P_2+P_4=\frac16+\frac14=\frac{5}{12}.\]
+\bx{P(A)=\frac7{12}},\quad \bx{P(B)=\frac34},\quad \bx{P(C)=\frac5{12}}.
+
+\QQ{3} $X(\Omega)=\{1;2;3;4\}$ وقانونه هو جدول $P_i$ أعلاه:
+\begin{center}{\renewcommand{\arraystretch}{1.8}\begin{tabular}{|C|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $1$ & $2$ & $3$ & $4$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{4}{12}$ & $\dfrac{2}{12}$ & $\dfrac{3}{12}$ & $\dfrac{3}{12}$ & $1$\\\hline
+\end{tabular}}\end{center}
+\[E(X)=\frac{1\times4+2\times2+3\times3+4\times3}{12}=\frac{4+4+9+12}{12}=\frac{29}{12}.\]
+إذن \bx{X(\Omega)=\{1;2;3;4\}} و\bx{E(X)=\frac{29}{12}}.
+\end{hal}
+
+%======================================================================
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الثاني -- شعبة رياضيات}
+يراد عشوائيا تشكيل لجنة تضم رئيسا ونائبا له من بين ثلاثة رجال $H_1$، $H_2$ و$H_3$ وأربع نساء $F_1$، $F_2$، $F_3$ و$F_4$.
+
+\QQ{1} بيّن أن عدد اللجان التي يمكن تشكيلها هو: $42$.
+\QQ{2} نعتبر الأحداث الآتية:
+$A$: «اللجنة من نفس الجنس»، $B$: «اللجنة من جنسين مختلفين»، $C$: «$H_1$ هو الرئيس»، $E$: «اللجنة لا تضم كلا من $H_1$ و$F_1$».
+\begin{sq}
+\qa احسب $P(A)$ احتمال الحدث $A$ ثم استنتج $P(B)$.
+\qb احسب $P(C)$ و$P(E)$.
+\end{sq}
+\QQ{3} المتغير العشوائي $X$ يرفق بكل لجنة عدد الرجال فيها.
+عيّن قانون احتمال $X$ ثم احسب $E(X)$ أمله الرياضياتي.
+\end{tamrin}
+\begin{hal}
+\QQ{1} اللجنة (رئيس، نائب) هي اختيار مرتب لشخصين مختلفين من $7$ أشخاص (الرئيس غير النائب والترتيب مهم)، فهي ترتيبة دون تكرار:
+\[\operatorname{card}\Omega=A_7^2=7\times6=42\ \text{\ok}.\]
+
+\QQ{2}
+\pa \textbf{$A$}: رجلان أو امرأتان: $A_3^2+A_4^2=3\times2+4\times3=6+12=18$:
+\[P(A)=\frac{18}{42}=\frac37,\qquad B=\overline{A}\ \Rightarrow\ P(B)=1-\frac37=\frac47.\]
+\bx{P(A)=\frac37} و\bx{P(B)=\frac47}.
+
+\pb \textbf{$C$}: الرئيس $H_1$ (اختيار واحد) والنائب أحد الـ $6$ الباقين: $P(C)=\dfrac{1\times6}{42}=\dfrac17$.
+
+\textbf{$E$}: اللجنة لا تضم $H_1$ ولا $F_1$، أي الرئيس والنائب من الأشخاص الـ $5$ الباقين: $A_5^2=20$:
+\[P(E)=\frac{20}{42}=\frac{10}{21}.\]
+\bx{P(C)=\frac17} و\bx{P(E)=\frac{10}{21}}.
+
+\QQ{3} $X\in\{0;1;2\}$:
+\begin{itemize}
+\item $X=0$: امرأتان: $A_4^2=12$، $P(X=0)=\frac{12}{42}=\frac27$.
+\item $X=1$: رجل وامرأة، والرجل رئيس أو نائب: $2\times3\times4=24$، $P(X=1)=\frac{24}{42}=\frac47$.
+\item $X=2$: رجلان: $A_3^2=6$، $P(X=2)=\frac{6}{42}=\frac17$.
+\end{itemize}
+\begin{center}{\renewcommand{\arraystretch}{1.8}\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{2}{7}$ & $\dfrac{4}{7}$ & $\dfrac{1}{7}$ & $1$\\\hline
+\end{tabular}}\end{center}
+\[E(X)=0\times\frac27+1\times\frac47+2\times\frac17=\frac67.\]
+إذن \bx{E(X)=\frac67}.
+\end{hal}
+
+%======================================================================
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الأول -- شعبة رياضيات}
+صندوق به $5$ كريات بيضاء و$3$ كريات حمراء. (كل الكريات متماثلة لا نفرق بينها باللمس)
+نسحب من الصندوق كرية واحدة بحيث: إذا ظهرت كرية حمراء نعيدها إلى الصندوق ونضيف له كرية بيضاء، وإذا ظهرت كرية بيضاء نعيدها إلى الصندوق ونضيف له كرية حمراء، ونكرر العملية مرة ثانية.
+\begin{center}\begin{LTR}\begin{tikzpicture}[bmS,level 1/.style={sibling distance=2.8cm},level 2/.style={sibling distance=1cm},scale=0.9]
+\node[ev]{}
+ child{node[ev]{$R$} child{node[ev]{$R$} edge from parent node[p]{$\ldots$}} child{node[ev]{$B$} edge from parent node[p]{$\ldots$}} edge from parent node[p]{$\ldots$}}
+ child{node[ev]{$B$} child{node[ev]{$R$} edge from parent node[p]{$\frac49$}} child{node[ev]{$B$} edge from parent node[p]{$\ldots$}} edge from parent node[p]{$\ldots$}};
+\end{tikzpicture}\end{LTR}\end{center}
+\QQ{1} أنقل شجرة الاحتمالات المقابلة التي تنمذج هذه التجربة ثم أكملها.
+\QQ{2} بيّن أن احتمال أن يوجد في الصندوق $7$ كريات بيضاء هو $\dfrac18$.
+\QQ{3} احسب احتمال أن يوجد بالصندوق $4$ كريات حمراء على الأقل.
+\QQ{4} ليكن $X$ المتغير العشوائي الذي يأخذ كقيمة عدد الكريات البيضاء الموجودة في الصندوق بعد العملية الثانية.
+\begin{sq}
+\qa برّر أن قيم المتغير العشوائي هي: $5$، $6$ و$7$.
+\qb عرّف قانون الاحتمال للمتغير العشوائي $X$، ثم احسب $E(X)$ أمله الرياضياتي.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} نرمز: $R$ «كرية حمراء»، $B$ «كرية بيضاء». في البداية $5$ب و$3$ح ($8$ كريات): $P(R)=\frac38$، $P(B)=\frac58$.
+\begin{itemize}
+\item بعد $R$: نعيدها ونضيف بيضاء: $6$ب، $3$ح ($9$ كريات): $P_R(R)=\frac39=\frac13$، $P_R(B)=\frac69=\frac23$.
+\item بعد $B$: نعيدها ونضيف حمراء: $5$ب، $4$ح ($9$ كريات): $P_B(R)=\frac49$، $P_B(B)=\frac59$.
+\end{itemize}
+محتوى الصندوق بعد العملية الثانية مكتوب أمام كل مسار:
+\begin{center}\begin{LTR}\begin{tikzpicture}[bmT,level 1/.style={sibling distance=3.4cm},level 2/.style={sibling distance=1.6cm}]
+\node[ev]{}
+ child{node[ev]{$R$}
+   child{node[ev,label={[pl]right:{$\dfrac38\times\dfrac13=\dfrac18$\quad\ar{7 بيضاء، 3 حمراء}}}](t){$R$} edge from parent node[pb]{$\dfrac13$}}
+   child{node[ev,label={[pl]right:{$\dfrac38\times\dfrac23=\dfrac14$\quad\ar{6 بيضاء، 4 حمراء}}}]{$B$} edge from parent node[pb]{$\dfrac23$}}
+   edge from parent node[pb]{$\dfrac38$}}
+ child{node[ev]{$B$}
+   child{node[ev,label={[pl]right:{$\dfrac58\times\dfrac49=\dfrac{5}{18}$\quad\ar{6 بيضاء، 4 حمراء}}}]{$R$} edge from parent node[pb]{$\dfrac49$}}
+   child{node[ev,label={[pl]right:{$\dfrac58\times\dfrac59=\dfrac{25}{72}$\quad\ar{5 بيضاء، 5 حمراء}}}]{$B$} edge from parent node[pb]{$\dfrac59$}}
+   edge from parent node[pb]{$\dfrac58$}};
+\node[hd] at ($(t)+(3,1.0)$) {\ar{الاحتمال ومحتوى الصندوق}};
+\end{tikzpicture}\end{LTR}\end{center}
+
+\QQ{2} يكون في الصندوق $7$ كريات بيضاء إذا أضفنا بيضاء مرتين، أي ظهرت حمراء في العمليتين (المسار $R$ ثم $R$):
+\[P=\frac38\times\frac13=\frac18\ \text{\ok}.\]
+
+\QQ{3} عدد الحمراء في النهاية: $3$ (مسار $RR$)، $4$ ($RB$ أو $BR$) أو $5$ ($BB$). «$4$ حمراء على الأقل» هي عكس المسار $RR$:
+\[P=1-\frac18=\frac78.\]
+إذن الاحتمال \bx{\frac78}.
+
+\QQ{4}
+\pa في كل عملية تُضاف كرية واحدة (بيضاء أو حمراء)، فعدد البيضاء يزيد بـ $0$ أو $1$ أو $2$ انطلاقا من $5$: $X\in\{5;6;7\}$ \ok.
+
+\pb
+$P(X=7)=\frac18$ (مسار $RR$)،\
+$P(X=6)=\frac14+\frac5{18}=\frac{9+10}{36}=\frac{19}{36}$ (المساران $RB$ و$BR$)،\
+$P(X=5)=\frac{25}{72}$ (مسار $BB$).
+\begin{center}{\renewcommand{\arraystretch}{1.8}\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $5$ & $6$ & $7$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{25}{72}$ & $\dfrac{38}{72}$ & $\dfrac{9}{72}$ & $1$\\\hline
+\end{tabular}}\end{center}
+\[E(X)=\frac{5\times25+6\times38+7\times9}{72}=\frac{125+228+63}{72}=\frac{416}{72}=\frac{52}{9}.\]
+إذن \bx{E(X)=\frac{52}{9}\approx5{,}78}.
+\end{hal}
+
+%======================================================================
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الثاني -- شعبة رياضيات}
+يحتوي صندوق على كريات متماثلة منها: $n$ كرية بيضاء تحمل العدد $\pi$ ($n$ عدد طبيعي و$n\geqslant2$) و$4$ كريات حمراء تحمل الأعداد $\frac{\pi}{2}$، $\frac{\pi}{2}$، $\frac{\pi}{3}$ و$\pi$ وكريتان خضراوان تحملان العددين $\frac{\pi}{2}$ و$\frac{\pi}{3}$.
+نسحب عشوائيا كريتين في آن واحد من هذا الصندوق.
+
+\QQ{1}
+\begin{sq}
+\qa احسب احتمال كل من الحدثين $A$ و$B$ حيث: $A$: «سحب كريتين من نفس اللون» و$B$: «سحب كريتين تحملان نفس العدد علما أنهما من نفس اللون».
+\qb عيّن العدد الطبيعي $n$ حتى يكون: $P(A)=\dfrac{17}{55}$.
+\end{sq}
+\QQ{2} نفرض فيما يلي: $n=5$ ونسمي $\alpha$ و$\beta$ العددين الظاهرين على الكريتين المسحوبتين.
+نعتبر $X$ المتغير العشوائي الذي يرفق بكل نتيجة سحب العدد: $\cos(\alpha)\cos(\beta)$.
+\begin{sq}
+\qa برّر أن قيم المتغير العشوائي $X$ هي: $-\frac12$، $0$، $\frac14$ و$1$.
+\qb بيّن أن: $P(X=0)=\dfrac{27}{55}$.
+\qc عرّف قانون الاحتمال للمتغير العشوائي $X$، ثم احسب أمله الرياضياتي $E(X)$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa في الصندوق $n+6$ كرية، $\operatorname{card}\Omega=C_{n+6}^2=\frac{(n+6)(n+5)}{2}$.
+
+\textbf{$A$}: بيضاوان أو حمراوان أو خضراوان: $C_n^2+C_4^2+C_2^2=\frac{n(n-1)}{2}+6+1=\frac{n^2-n+14}{2}$:
+\[P(A)=\frac{n^2-n+14}{(n+6)(n+5)}.\]
+\textbf{$B$}: هو الاحتمال الشرطي لـ «نفس العدد» علما أن $A$ تحققت. الحالات من نفس اللون ونفس العدد:
+كل زوج أبيض ($C_n^2$ حالة، الكل يحمل $\pi$)، والزوج الأحمر $\left(\frac{\pi}{2},\frac{\pi}{2}\right)$ (حالة واحدة)، والخضراوان تحملان عددين مختلفين. إذن
+\[P(B)=\frac{C_n^2+1}{C_n^2+7}=\frac{\frac{n(n-1)}{2}+1}{\frac{n(n-1)}{2}+7}=\frac{n^2-n+2}{n^2-n+14}.\]
+\bx{P(A)=\frac{n^2-n+14}{(n+6)(n+5)}} و\bx{P(B)=\frac{n^2-n+2}{n^2-n+14}}.
+
+\pb
+\begin{align*}
+P(A)=\frac{17}{55}&\iff 55(n^2-n+14)=17(n^2+11n+30)\\
+&\iff 38n^2-242n+260=0\iff 19n^2-121n+130=0.
+\end{align*}
+$\Delta=121^2-4\times19\times130=14641-9880=4761=69^2$، إذن $n=\frac{121+69}{38}=5$ أو $n=\frac{121-69}{38}=\frac{26}{19}\notin\N$ (مرفوض). إذن \bx{n=5}.
+
+\QQ{2} $n=5$: في الصندوق $11$ كرية، $\operatorname{card}\Omega=C_{11}^2=55$. نصنّف الكريات حسب $\cos$ العدد الذي تحمله:
+\begin{center}{\renewcommand{\arraystretch}{1.6}\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} العدد & $\pi$ & $\dfrac{\pi}{2}$ & $\dfrac{\pi}{3}$ & المجموع\\\hline
+$\cos$ & $-1$ & $0$ & $\dfrac12$ & \\\hline
+عدد الكريات & $6$ & $3$ & $2$ & $11$\\\hline
+\end{tabular}}\end{center}
+($\pi$: $5$ بيضاء وحمراء واحدة؛ $\frac{\pi}{2}$: حمراوان وخضراء؛ $\frac{\pi}{3}$: حمراء وخضراء.)
+
+\pa الجداءات الممكنة لعددين من $\{-1;0;\frac12\}$:
+$(-1)(-1)=1$،\ $(-1)\times\frac12=-\frac12$،\ $\frac12\times\frac12=\frac14$،\ وكل جداء فيه $0$ يساوي $0$. إذن $X\in\left\{-\frac12;0;\frac14;1\right\}$ \ok.
+
+\pb $(X=0)$: كرية تحمل $\frac{\pi}{2}$ على الأقل؛ عكسها: الكريتان من بين الـ $8$ الأخرى:
+\[P(X=0)=1-\frac{C_8^2}{55}=1-\frac{28}{55}=\frac{27}{55}\ \text{\ok}.\]
+
+\pc $P(X=1)=\frac{C_6^2}{55}=\frac{15}{55}$،\ $P\!\left(X=-\frac12\right)=\frac{6\times2}{55}=\frac{12}{55}$،\ $P\!\left(X=\frac14\right)=\frac{C_2^2}{55}=\frac{1}{55}$.
+\begin{center}{\renewcommand{\arraystretch}{1.8}\begin{tabular}{|C|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $-\dfrac12$ & $0$ & $\dfrac14$ & $1$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{12}{55}$ & $\dfrac{27}{55}$ & $\dfrac{1}{55}$ & $\dfrac{15}{55}$ & $1$\\\hline
+\end{tabular}}\end{center}
+\[E(X)=\frac{-\frac12\times12+0+\frac14\times1+1\times15}{55}=\frac{-6+\frac14+15}{55}=\frac{\frac{37}{4}}{55}=\frac{37}{220}.\]
+إذن \bx{E(X)=\frac{37}{220}}.
+\end{hal}
+
+%======================================================================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الثاني -- شعبة رياضيات}
+صندوقان غير شفافين $U_1$ و$U_2$، يحتوي الصندوق $U_1$ على $4$ كريات حمراء وثلاث كريات سوداء ويحتوي الصندوق $U_2$ على $3$ كريات حمراء وكريتين سوداوين. (كل الكريات متشابهة لا نفرق بينها عند اللمس)
+
+نرمي نردا غير مزيف ذا ستة أوجه مرقمة من $1$ إلى $6$.
+إذا ظهر الرقمان $2$ أو $4$ نسحب عشوائيا كريتين في آن واحد من الصندوق $U_1$، وفي باقي الحالات نسحب عشوائيا كريتين في آن واحد من الصندوق $U_2$.
+نعتبر الأحداث $A$، $B$ و$C$ المعرفة بـ: $A$: «سحب كريتين حمراوين»، $B$: «سحب كريتين سوداوين»، $C$: «سحب كريتين من لونين مختلفين».
+\begin{center}\begin{LTR}\begin{tikzpicture}[bmS,level 1/.style={sibling distance=3.2cm},level 2/.style={sibling distance=1cm},scale=0.9]
+\node[ev]{}
+ child{node[ev]{$U_1$} child{node[ev]{$A$} edge from parent node[p]{$\frac27$}} child{node[ev]{$B$} edge from parent node[p]{$\frac17$}} child{node[ev]{$C$} edge from parent node[p]{$\ldots$}} edge from parent node[p]{$\frac13$}}
+ child{node[ev]{$U_2$} child{node[ev]{$A$} edge from parent node[p]{$\frac3{10}$}} child{node[ev]{$B$} edge from parent node[p]{$\ldots$}} child{node[ev]{$C$} edge from parent node[p]{$\ldots$}} edge from parent node[p]{$\ldots$}};
+\end{tikzpicture}\end{LTR}\end{center}
+\QQ{1} أنقل وأكمل شجرة الاحتمالات.
+\QQ{2} احسب احتمالات الأحداث $A$، $B$ و$C$.
+
+نعتبر المتغير العشوائي $X$ الذي يرفق بكل عملية سحب عدد الكريات الحمراء المسحوبة.
+\QQ{3}
+\begin{sq}
+\qa عيّن قيم المتغير العشوائي $X$.
+\qb عرّف قانون الاحتمال للمتغير العشوائي $X$.
+\end{sq}
+\QQ{4} احسب الأمل الرياضياتي $E(X)$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $P(U_1)=\frac26=\frac13$ (الوجهان $2$ و$4$)، $P(U_2)=\frac23$.
+
+\textbf{من $U_1$} ($4$ح، $3$س)، $C_7^2=21$: $P_{U_1}(A)=\frac{C_4^2}{21}=\frac{6}{21}=\frac27$، $P_{U_1}(B)=\frac{C_3^2}{21}=\frac17$، $P_{U_1}(C)=\frac{4\times3}{21}=\frac47$.
+
+\textbf{من $U_2$} ($3$ح، $2$س)، $C_5^2=10$: $P_{U_2}(A)=\frac{3}{10}$، $P_{U_2}(B)=\frac{1}{10}$، $P_{U_2}(C)=\frac{3\times2}{10}=\frac35$.
+\begin{center}\begin{LTR}\begin{tikzpicture}[bmT,level 1/.style={sibling distance=4.4cm},level 2/.style={sibling distance=1.45cm}]
+\node[ev]{}
+ child{node[ev]{$U_1$}
+   child{node[ev,label={[pl]right:{$\dfrac13\times\dfrac27=\dfrac{2}{21}$}}](t){$A$} edge from parent node[pb]{$\dfrac27$}}
+   child{node[ev,label={[pl]right:{$\dfrac13\times\dfrac17=\dfrac{1}{21}$}}]{$B$} edge from parent node[pb]{$\dfrac17$}}
+   child{node[ev,label={[pl]right:{$\dfrac13\times\dfrac47=\dfrac{4}{21}$}}]{$C$} edge from parent node[pb]{$\dfrac47$}}
+   edge from parent node[pb]{$\dfrac13$}}
+ child{node[ev]{$U_2$}
+   child{node[ev,label={[pl]right:{$\dfrac23\times\dfrac3{10}=\dfrac{1}{5}$}}]{$A$} edge from parent node[pb]{$\dfrac3{10}$}}
+   child{node[ev,label={[pl]right:{$\dfrac23\times\dfrac1{10}=\dfrac{1}{15}$}}]{$B$} edge from parent node[pb]{$\dfrac1{10}$}}
+   child{node[ev,label={[pl]right:{$\dfrac23\times\dfrac35=\dfrac{2}{5}$}}]{$C$} edge from parent node[pb]{$\dfrac35$}}
+   edge from parent node[pb]{$\dfrac23$}};
+\node[hd] at ($(t)+(2.4,1.0)$) {\ar{الاحتمال}};
+\end{tikzpicture}\end{LTR}\end{center}
+
+\QQ{2} بدستور الاحتمالات الكلية:
+\[P(A)=\frac{2}{21}+\frac15=\frac{10+21}{105}=\frac{31}{105},\qquad P(B)=\frac1{21}+\frac1{15}=\frac{5+7}{105}=\frac{12}{105}=\frac{4}{35},\]
+\[P(C)=\frac4{21}+\frac25=\frac{20+42}{105}=\frac{62}{105}.\]
+\bx{P(A)=\frac{31}{105}},\quad \bx{P(B)=\frac{4}{35}},\quad \bx{P(C)=\frac{62}{105}}\quad (المجموع $1$ \ok).
+
+\QQ{3}
+\pa نسحب كريتين، فعدد الحمراء: \bx{X(\Omega)=\{0;1;2\}}.
+
+\pb $(X=0)=B$، $(X=1)=C$، $(X=2)=A$:
+\begin{center}{\renewcommand{\arraystretch}{1.8}\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{12}{105}$ & $\dfrac{62}{105}$ & $\dfrac{31}{105}$ & $1$\\\hline
+\end{tabular}}\end{center}
+
+\QQ{4} $E(X)=0\times\frac{12}{105}+1\times\frac{62}{105}+2\times\frac{31}{105}=\frac{124}{105}$. إذن \bx{E(X)=\frac{124}{105}\approx1{,}18}.
+\end{hal}
+
+%======================================================================
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الثاني -- شعبة رياضيات}
+كيس يحوي $9$ كريات لا نفرق بينها باللمس موزعة كما يلي:
+خمس كريات حمراء مرقمة بـ: $1$، $1$، $2$، $2$، $2$ وثلاث كريات خضراء مرقمة بـ: $-3$، $2$، $3$ وكرية بيضاء مرقمة بـ: $-1$.
+نسحب عشوائيا $4$ كريات في آن واحد.
+
+\QQ{1} احسب احتمال الحوادث التالية:
+$A$: «الحصول على أربع كريات من نفس اللون»، $B$: «الحصول على كرية بيضاء على الأكثر»، $C$: «الحصول على أربع كريات مجموع أرقامها معدوم».
+\QQ{2} ليكن $X$ المتغير العشوائي الذي يرفق بكل نتيجة سحب عدد الكريات الخضراء المتبقية في الكيس.
+\begin{sq}
+\qa عيّن قيم المتغير العشوائي $X$ ثم عرّف قانون احتماله.
+\qb احسب الأمل الرياضياتي $E(X)$ للمتغير العشوائي $X$.
+\qc احسب احتمال الحادثة: «$X^2-X>0$».
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\operatorname{card}\Omega=C_9^4=126$.
+
+\textbf{$A$}: لا يمكن سحب $4$ خضراء ($3$ فقط) ولا $4$ بيضاء، إذن $4$ حمراء: $P(A)=\dfrac{C_5^4}{126}=\dfrac{5}{126}$.
+
+\textbf{$B$}: في الكيس كرية بيضاء واحدة، فكل سحب يحوي $0$ أو $1$ بيضاء: $B=\Omega$ (حادثة أكيدة)، $P(B)=1$.
+
+\textbf{$C$}: أرقام الكيس: الموجبة $1,1,2,2,2,2,3$ والسالبة $-3$ و$-1$ فقط.
+\begin{itemize}
+\item دون $-3$: المجموع $\geqslant -1+1+1+2>0$، مستحيل.
+\item مع $-3$ دون $-1$: ثلاث كريات موجبة مجموعها $3$، وأصغر مجموع ممكن $1+1+2=4$، مستحيل.
+\item مع $-3$ و$-1$: الكريتان الأخريان مجموعهما $4$: $\{2;2\}$ من أربع كريات تحمل $2$: $C_4^2=6$، أو $\{1;3\}$: $2\times1=2$.
+\end{itemize}
+\[P(C)=\frac{6+2}{126}=\frac{8}{126}=\frac{4}{63}.\]
+\bx{P(A)=\frac{5}{126}},\quad \bx{P(B)=1},\quad \bx{P(C)=\frac{4}{63}}.
+
+\QQ{2}
+\pa إذا سحبنا $k$ كرية خضراء ($k\in\{0;1;2;3\}$) يبقى في الكيس $X=3-k$ كرية خضراء، إذن $X\in\{0;1;2;3\}$، مع:
+\[P(X=3-k)=\frac{C_3^k\,C_6^{4-k}}{126}.\]
+\begin{itemize}
+\item $X=0$ ($k=3$): $\frac{C_3^3C_6^1}{126}=\frac{6}{126}$،\quad $X=1$ ($k=2$): $\frac{C_3^2C_6^2}{126}=\frac{45}{126}$،
+\item $X=2$ ($k=1$): $\frac{C_3^1C_6^3}{126}=\frac{60}{126}$،\quad $X=3$ ($k=0$): $\frac{C_6^4}{126}=\frac{15}{126}$.
+\end{itemize}
+\begin{center}{\renewcommand{\arraystretch}{1.8}\begin{tabular}{|C|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & $3$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{6}{126}$ & $\dfrac{45}{126}$ & $\dfrac{60}{126}$ & $\dfrac{15}{126}$ & $1$\\\hline
+\end{tabular}}\end{center}
+
+\pb $E(X)=\dfrac{0+45+120+45}{126}=\dfrac{210}{126}=\dfrac53$. إذن \bx{E(X)=\frac53}.
+
+\pc $X^2-X>0\iff X(X-1)>0\iff X<0$ أو $X>1$؛ ومن قيم $X$: $X\in\{2;3\}$:
+\[P(X^2-X>0)=\frac{60+15}{126}=\frac{75}{126}=\frac{25}{42}.\]
+إذن \bx{P(X^2-X>0)=\frac{25}{42}}.
+\end{hal}
+
+%======================================================================
+\begin{tamrin}{بكالوريا 2009 -- الموضوع الأول -- شعبة رياضيات}
+كيس به $10$ كريات متماثلة لا نميز بينها عند اللمس منها $4$ بيضاء و$6$ حمراء.
+
+\QQ{1} نسحب عشوائيا من الكيس $3$ كريات في آن واحد.
+\begin{sq}
+\qa احسب احتمال الحصول على $3$ كريات بيضاء.
+\qb احسب احتمال الحصول على الأقل على كرية حمراء.
+\end{sq}
+\QQ{2} ليكن $X$ المتغير العشوائي الذي يرفق بكل نتيجة سحب عدد الكريات البيضاء المسحوبة.
+عرّف قانون الاحتمال للمتغير العشوائي $X$ واحسب أمله الرياضياتي.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\operatorname{card}\Omega=C_{10}^3=120$.
+\pa احتمال الحصول على $3$ كريات بيضاء: $\dfrac{C_4^3}{120}=\dfrac{4}{120}=\dfrac{1}{30}$. إذن الاحتمال \bx{\frac{1}{30}}.
+
+\pb «حمراء على الأقل» عكسها «$3$ بيضاء»، إذن الاحتمال $1-\frac{1}{30}=$ \bx{\frac{29}{30}}.
+
+\QQ{2} $X\in\{0;1;2;3\}$ و$P(X=k)=\dfrac{C_4^k\,C_6^{3-k}}{120}$:
+\[P(X=0)=\frac{C_6^3}{120}=\frac{20}{120},\qquad P(X=1)=\frac{C_4^1\,C_6^2}{120}=\frac{4\times15}{120}=\frac{60}{120},\]
+\[P(X=2)=\frac{C_4^2\,C_6^1}{120}=\frac{6\times6}{120}=\frac{36}{120},\qquad P(X=3)=\frac{C_4^3}{120}=\frac{4}{120}.\]
+\begin{center}{\renewcommand{\arraystretch}{1.8}\begin{tabular}{|C|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & $3$ & المجموع\\\hline
+$P(X=x_i)$ & $\dfrac{1}{6}$ & $\dfrac{1}{2}$ & $\dfrac{3}{10}$ & $\dfrac{1}{30}$ & $1$\\\hline
+\end{tabular}}\end{center}
+\[E(X)=\frac{0+60+72+12}{120}=\frac{144}{120}=\frac65.\]
+إذن \bx{E(X)=\frac65=1{,}2}.
+\end{hal}
+
+\end{document}
