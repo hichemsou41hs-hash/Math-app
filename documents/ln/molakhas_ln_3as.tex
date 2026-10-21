@@ -130,7 +130,9 @@
 \fancyhf{}
 \renewcommand{\headrulewidth}{0.6pt}
 \renewcommand{\footrulewidth}{0.4pt}
-% \SetHeader{right head: document title}{left head: level -- stream}
+% \newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{right head: document title}{left head: level -- stream}
 \newcommand{\SetHeader}[2]{%
  \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
  \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
@@ -380,7 +382,7 @@ $\log x=a\iff x=10^{a}$.
 
 \begin{hal}
 \textbf{I.}
-\pa $g'(x)=2x+\frac{1}{x}$، وهو موجب تمامًا على $]0;+\infty[$، إذن \bx{g \text{ متزايدة تمامًا على } ]0;+\infty[}.
+\pa $g'(x)=2x+\frac{1}{x}$، وهو موجب تمامًا على $]0;+\infty[$، إذن \bxt{$g$ متزايدة تمامًا على $]0;+\infty[$}.
 \pb $g(1)=1-1+\ln1=0$. وبما أن $g$ متزايدة تمامًا:
 \begin{TAB}
 \tkzTabInit[lgt=2.2,espcl=2.6]{$x$/1,$g(x)$/1}{$0$,$1$,$+\infty$}
