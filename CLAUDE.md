@@ -1,3 +1,10 @@
 Follow the `caveman` skill (`.claude/skills/caveman/`) in every reply, in Arabic: answer first, no filler, every fact kept. The teacher asked to cut token use.
 
 Documents (summaries, exercises): use the `arabic-math-latex` skill. Videos: see `motion-video/CLAUDE.md`. Pedagogy: `motion-video/series/PEDAGOGY.md`.
+
+Teacher-confirmed fixes to that skill, for every document:
+- Prose tables (خلاصة الطرائق, rules): «المطلوب» must appear on the RIGHT. Write it LAST in the source, e.g. `\begin{tabular}{|p{0.62\textwidth}|p{0.3\textwidth}|}` with rows `الطريقة & المطلوب`. Check the compiled page before delivering.
+- Never put Arabic words in `\bx{... \text{...} ...}`: the word order comes out reversed. Use `\bxt{$g$ متزايدة تمامًا على $]0;+\infty[$}`, defined after the helpers:
+  `\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}`
+  `\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}`
+  Keep `\bx` for pure math.
