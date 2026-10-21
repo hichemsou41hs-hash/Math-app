@@ -1,0 +1,795 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+% probability trees
+\tikzset{ptree/.style={grow=right,level distance=3.2cm,level 1/.style={sibling distance=3.6cm},level 2/.style={sibling distance=1.8cm},edge from parent/.style={draw,thick,cDef!70!black}},
+ ev/.style={circle,draw=cDef,fill=cDef!12,thick,minimum size=7mm,inner sep=1pt,font=\small},
+ p/.style={pos=0.6,fill=white,inner sep=1.5pt,font=\footnotesize},
+ pr/.style={label={[font=\footnotesize,label distance=6mm]right:#1}},
+ hd/.style={font=\small\bfseries,text=cSec,anchor=south}}
+\SetHeader{\small\bfseries\color{cSec}ملخص: الاحتمالات}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{28}{34}\selectfont\bfseries الاحتمالات}\\[8pt]
+{\color{white}\large ملخص شامل مع أمثلة وتمارين محلولة خطوة بخطوة}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- الشعب العلمية}
+\end{tcolorbox}
+\end{LTR}
+
+\begin{BOX}{cSec}{محتوى الملخص}
+\begin{enumerate}[label=\textbf{\arabic*.}]
+\item العدّ: المبدأ الأساسي، القوائم، الترتيبات، التبديلات، التوفيقات، مثلث باسكال ودستور ثنائي الحد.
+\item أنواع السحب: في آن واحد، على التوالي بإرجاع، على التوالي دون إرجاع (جدول مقارنة).
+\item التجربة العشوائية، قانون الاحتمال، المتغير العشوائي: الأمل الرياضياتي، التباين، الانحراف المعياري.
+\item الاحتمال الشرطي، شجرة الاحتمالات، دستور الاحتمالات الكلية.
+\item الاستقلالية.
+\item التجارب المتكررة وقانون برنولي والقانون الثنائي (شعبة رياضيات أساسًا).
+\item تمرينان محلولان، ثم خلاصة الطرائق.
+\end{enumerate}
+\end{BOX}
+
+%================================================================
+\section{العدّ}
+\subsection{المبدأ الأساسي للعدّ والعاملي}
+\begin{khassia}[المبدأ الأساسي للعدّ]
+ليكن حدثان: الأول يتحقق بـ $n$ طريقة مختلفة والثاني بـ $m$ طريقة مختلفة.
+\begin{itemize}
+\item \textbf{مبدأ الجمع} («أو»): عدد طرق تحقق الأول \textbf{أو} الثاني (دون تداخل) هو $n+m$.
+\item \textbf{مبدأ الضرب} («و»): عدد طرق تحقق الأول \textbf{ثم} الثاني هو $n\times m$.
+\end{itemize}
+\end{khassia}
+
+\begin{tarif}[العاملي]
+من أجل كل عدد طبيعي $n\geqslant 1$ نسمي عاملي $n$ العدد: \quad
+$\bx{n!=n\times(n-1)\times(n-2)\times\cdots\times 2\times 1}$ \quad ونضع اصطلاحًا $0!=1$.
+\end{tarif}
+
+\begin{mithal}
+$3!=6$ ، \quad $5!=120$ ، \quad $6!=720$ ، \quad $\dfrac{10!}{8!}=10\times 9=90$.
+\par لاختيار قميص من بين $4$ قمصان \textbf{ثم} سروال من بين $3$ سراويل: $4\times 3=12$ طريقة.
+\end{mithal}
+
+\subsection{القوائم (الترتيب مهم والتكرار ممكن)}
+\begin{tarif}[القائمة]
+لتكن $E$ مجموعة منتهية بها $n$ عنصرًا و$p$ عددًا طبيعيًا غير معدوم.
+نسمي \textbf{قائمة} ذات $p$ عنصرًا من $E$ كل متتالية مرتبة من $p$ عنصرًا من $E$ (يمكن أن تتكرر العناصر).
+\par عدد القوائم ذات $p$ عنصرًا من $E$ هو: \quad $\bx{n^p}$
+\end{tarif}
+\begin{mithal}
+\begin{itemize}
+\item عدد الرموز السرية المكونة من $3$ خانات تُختار من الأرقام $\{2;3;5;9\}$: \quad $4^3=64$.
+\item عدد طرق سحب $4$ كريات على التوالي \textbf{مع الإرجاع} من كيس به $8$ كريات: \quad $8^4=4096$.
+\item عدد طرق الإجابة عشوائيًا على $5$ أسئلة من نوع «صحيح/خطأ»: \quad $2^5=32$.
+\end{itemize}
+\end{mithal}
+
+\subsection{الترتيبات (الترتيب مهم ودون تكرار)}
+\begin{tarif}[الترتيبة]
+نسمي \textbf{ترتيبة} ذات $p$ عنصرًا من $E$ (حيث $p\leqslant n$) كل قائمة عناصرها متمايزة مثنى مثنى. عددها:
+\[\bx{A_n^p=n(n-1)(n-2)\cdots(n-p+1)=\frac{n!}{(n-p)!}}\]
+($p$ عاملًا متناقصًا ابتداءً من $n$).
+\end{tarif}
+\begin{mithal}
+\begin{itemize}
+\item عدد الأعداد ذات $5$ أرقام \textbf{مختلفة} المكونة من الأرقام $1;2;\ldots;8$: \quad $A_8^5=8\times7\times6\times5\times4=6720$.
+\item عدد طرق اختيار رئيس ونائبه من قسم به $20$ تلميذًا: \quad $A_{20}^2=20\times 19=380$.
+\item عدد طرق جلوس $3$ أشخاص على $30$ مقعدًا: \quad $A_{30}^3=30\times29\times28=24360$.
+\end{itemize}
+\end{mithal}
+
+\subsection{التبديلات}
+\begin{tarif}[التبديلة]
+في حالة $p=n$، تسمى الترتيبة \textbf{تبديلة} لعناصر $E$. عدد التبديلات هو: \quad $\bx{A_n^n=n!}$
+\end{tarif}
+\begin{khassia}[تبديلات مع عناصر متكررة (معامل الترتيب)]
+عدد طرق ترتيب $n$ عنصرًا، منها $n_1$ عنصرًا متماثلًا من نوع أول، و$n_2$ من نوع ثانٍ، $\ldots$ ، و$n_k$ من نوع أخير ($n_1+n_2+\cdots+n_k=n$) هو:
+\[\bx{\frac{n!}{n_1!\times n_2!\times\cdots\times n_k!}}\]
+\end{khassia}
+\begin{mithal}
+\begin{itemize}
+\item عدد طرق جلوس $5$ تلاميذ على $5$ كراسٍ في صف واحد: \quad $5!=120$.
+\item عدد طرق ترتيب $4$ كريات في صف: زرقاوان (متماثلتان) وحمراء وصفراء:
+$\dfrac{4!}{2!\times1!\times1!}=\dfrac{24}{2}=12$.
+\item عدد الكلمات (لها معنى أو لا) المكونة من حروف الكلمة «BAC»: \quad $3!=6$.
+\end{itemize}
+\end{mithal}
+
+\subsection{التوفيقات (الترتيب غير مهم ودون تكرار)}
+\begin{tarif}[التوفيقة]
+نسمي \textbf{توفيقة} ذات $p$ عنصرًا من $E$ ($0\leqslant p\leqslant n$) كل \textbf{جزء} من $E$ يحوي $p$ عنصرًا. عددها:
+\[\bx{C_n^p=\frac{A_n^p}{p!}=\frac{n!}{p!\,(n-p)!}}\]
+\end{tarif}
+\begin{khassia}[خواص التوفيقات]
+من أجل كل عددين طبيعيين $n$ و$p$:
+\begin{itemize}
+\item $C_n^0=C_n^n=1$ \quad و\quad $C_n^1=C_n^{n-1}=n$.
+\item التناظر: $C_n^p=C_n^{n-p}$ \quad ($0\leqslant p\leqslant n$).
+\item علاقة باسكال: $C_n^p=C_{n-1}^{p}+C_{n-1}^{p-1}$ \quad ($1\leqslant p\leqslant n-1$).
+\end{itemize}
+\end{khassia}
+\begin{mithal}
+\begin{itemize}
+\item $C_7^3=\dfrac{7\times6\times5}{3\times2\times1}=35$ \quad ، \quad $C_5^2=\dfrac{5\times 4}{2}=10$ \quad ، \quad $C_{10}^{8}=C_{10}^{2}=45$.
+\item عدد اللجان ذات $7$ تلاميذ من قسم به $20$ تلميذًا: \quad $C_{20}^7=\dfrac{20!}{7!\times13!}=77520$.
+\item عدد طرق سحب $3$ كريات في آن واحد من كيس به $4$ كريات بيضاء و$5$ حمراء: \quad $C_9^3=84$.
+\end{itemize}
+\end{mithal}
+\begin{molahada}
+على الحاسبة: $n!$ بالزر \texttt{x!}، و$A_n^p$ بالزر \texttt{nPr}، و$C_n^p$ بالزر \texttt{nCr}.
+مثلًا: \texttt{5 nCr 2 = 10} و\texttt{5 nPr 2 = 20}.
+\end{molahada}
+
+\subsection{مثلث باسكال ودستور ثنائي الحد}
+\begin{khassia}[مثلث باسكال]
+كل عدد في الجدول يساوي مجموع العدد الذي فوقه والعدد الذي على يسار هذا الأخير (علاقة باسكال).
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} $n\backslash p$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\\hline
+$0$ & $1$ &&&&&&\\\hline
+$1$ & $1$ & $1$ &&&&&\\\hline
+$2$ & $1$ & $2$ & $1$ &&&&\\\hline
+$3$ & $1$ & $3$ & $3$ & $1$ &&&\\\hline
+$4$ & $1$ & $4$ & $6$ & $4$ & $1$ &&\\\hline
+$5$ & $1$ & $5$ & $10$ & $10$ & $5$ & $1$ &\\\hline
+$6$ & $1$ & $6$ & $15$ & $20$ & $15$ & $6$ & $1$\\\hline
+\end{tabular}
+\end{center}
+\end{khassia}
+\begin{khassia}[دستور ثنائي الحد (نيوتن)]
+من أجل كل عددين حقيقيين $a$ و$b$ ومن أجل كل عدد طبيعي غير معدوم $n$:
+\[\bx{(a+b)^n=\sum_{k=0}^{n}C_n^k\,a^{n-k}\,b^{k}=C_n^0a^n+C_n^1a^{n-1}b+\cdots+C_n^nb^n}\]
+\end{khassia}
+\begin{mithal}
+\begin{align*}
+(x-1)^4&=C_4^0x^4+C_4^1x^3(-1)+C_4^2x^2(-1)^2+C_4^3x(-1)^3+C_4^4(-1)^4\\
+&=x^4-4x^3+6x^2-4x+1.
+\end{align*}
+وبأخذ $a=b=1$: \quad $\sum_{k=0}^{n}C_n^k=2^n$ \quad (عدد أجزاء مجموعة بها $n$ عنصرًا)؛ مثلًا $1+5+10+10+5+1=32=2^5$.
+\end{mithal}
+
+\begin{tariqa}[كيف أختار طريقة العدّ؟]
+\begin{center}
+\begin{tabular}{|p{0.36\textwidth}|p{0.08\textwidth}|p{0.12\textwidth}|p{0.14\textwidth}|p{0.12\textwidth}|}\hline
+\rowcolor{cSec!12} \textbf{أمثلة} & \textbf{العدد} & \textbf{التكرار} & \textbf{الترتيب} & \textbf{النموذج}\\\hline
+أرقام قد تتكرر، رموز سرية، سحب على التوالي بإرجاع & $n^p$ & ممكن & مهم & قائمة\\\hline
+أرقام مختلفة، مهام محددة (رئيس، نائب)، سحب على التوالي دون إرجاع & $A_n^p$ & غير ممكن & مهم & ترتيبة\\\hline
+ترتيب كل العناصر (جلوس، صفوف) & $n!$ & غير ممكن & مهم (الكل) & تبديلة\\\hline
+لجان دون مهام، أجزاء مجموعة، سحب في آن واحد & $C_n^p$ & غير ممكن & غير مهم & توفيقة\\\hline
+\end{tabular}
+\end{center}
+\end{tariqa}
+
+%================================================================
+\section{أنواع السحب}
+\begin{tarif}[ثلاثة أنواع للسحب]
+يحوي كيس $n$ كرية لا نفرق بينها باللمس، ونسحب منه $p$ كرية:
+\begin{itemize}
+\item \textbf{في آن واحد} (دفعة واحدة): النتيجة جزء من $p$ كرية، الترتيب غير مهم: عدد الحالات $C_n^p$.
+\item \textbf{على التوالي مع الإرجاع}: نعيد الكرية قبل السحب الموالي، النتيجة قائمة: عدد الحالات $n^p$.
+\item \textbf{على التوالي دون إرجاع}: لا نعيد الكرية، النتيجة ترتيبة: عدد الحالات $A_n^p$.
+\end{itemize}
+\end{tarif}
+
+\begin{khassia}[{جدول مقارنة: كيس به $9$ كريات ($4$ بيضاء و$5$ حمراء)، نسحب $3$ كريات}]
+\begin{center}
+\begin{tabular}{|p{0.22\textwidth}|p{0.22\textwidth}|p{0.12\textwidth}|p{0.08\textwidth}|p{0.21\textwidth}|}\hline
+\rowcolor{cSec!12} \textbf{«بيضاوان بالضبط»} & \textbf{«نفس اللون»} & \textbf{$\mathrm{card}\,\Omega$} & \textbf{الترتيب} & \textbf{نوع السحب}\\\hline
+$C_4^2\times C_5^1=30$ \newline $P=\frac{30}{84}=\frac{5}{14}$ & $C_4^3+C_5^3=14$ \newline $P=\frac{14}{84}=\frac16$ & $C_9^3=84$ & غير مهم & في آن واحد\\\hline
+$3\times 4^2\times 5=240$ \newline $P=\frac{240}{729}=\frac{80}{243}$ & $4^3+5^3=189$ \newline $P=\frac{189}{729}=\frac{7}{27}$ & $9^3=729$ & مهم & على التوالي مع الإرجاع\\\hline
+$3\times A_4^2\times A_5^1=180$ \newline $P=\frac{180}{504}=\frac{5}{14}$ & $A_4^3+A_5^3=84$ \newline $P=\frac{84}{504}=\frac16$ & $A_9^3=504$ & مهم & على التوالي دون إرجاع\\\hline
+\end{tabular}
+\end{center}
+\end{khassia}
+
+\begin{molahada}
+\begin{itemize}
+\item في السحب على التوالي نضرب في عدد \textbf{مواضع} الألوان: «بيضاوان وحمراء» لها $\dfrac{3!}{2!\,1!}=3$ ترتيبات ممكنة: $BBH$ ، $BHB$ ، $HBB$ ($B$: بيضاء، $H$: حمراء).
+\item السحب في آن واحد والسحب على التوالي دون إرجاع يعطيان \textbf{نفس الاحتمالات} (مثل $\frac16$ و$\frac{5}{14}$ أعلاه).
+\item «على الأقل واحدة» نحسبها بالحادثة العكسية. في السحب في آن واحد، لتكن $W$: «سحب كرية بيضاء على الأقل»، عكسها $\overline{W}$: «الكريات الثلاث حمراء»، إذن:
+$P(W)=1-\dfrac{C_5^3}{C_9^3}=1-\dfrac{10}{84}=\dfrac{37}{42}$.
+\end{itemize}
+\end{molahada}
+
+\begin{mithal}[سحب على التوالي مع الإرجاع]
+نفس الكيس، نسحب $3$ كريات على التوالي مع الإرجاع. احتمال «سحب كرية بيضاء على الأقل»:
+\[P=1-\frac{5^3}{9^3}=1-\frac{125}{729}=\frac{604}{729}.\]
+\end{mithal}
+
+%================================================================
+\section{قانون الاحتمال والمتغير العشوائي}
+\subsection{المفردات الأساسية}
+\begin{tarif}[التجربة العشوائية والحوادث]
+\begin{itemize}
+\item \textbf{التجربة العشوائية}: تجربة نعرف كل نتائجها الممكنة لكن لا يمكن توقع نتيجتها مسبقًا.
+\item \textbf{مجموعة الإمكانيات} $\Omega$ (مجموعة المخارج): مجموعة كل النتائج الممكنة.
+\item \textbf{الحادثة}: كل جزء من $\Omega$. \textbf{الحادثة الأولية}: تحوي عنصرًا واحدًا.
+\item \textbf{الحادثة الأكيدة}: $\Omega$ نفسها. \textbf{الحادثة المستحيلة}: المجموعة الخالية $\varnothing$.
+\item \textbf{الحادثة العكسية} $\overline{A}$: تحوي كل عناصر $\Omega$ التي لا تنتمي إلى $A$.
+\item $A\cap B$ («$A$ و$B$»): العناصر المشتركة. \quad $A\cup B$ («$A$ أو $B$»): عناصر $A$ أو $B$ أو كليهما.
+\item $A$ و$B$ \textbf{غير متلائمتين} (متنافيتان) معناه $A\cap B=\varnothing$.
+\end{itemize}
+\end{tarif}
+
+\subsection{الاحتمال وخواصه}
+\begin{khassia}[فرضية تساوي الاحتمال]
+إذا كانت كل النتائج لها نفس الاحتمال (عبارات مثل: «نرد غير مزيف»، «كريات لا نفرق بينها باللمس»، «عشوائيًا») فإن:
+\[\bx{P(A)=\frac{\mathrm{card}\,A}{\mathrm{card}\,\Omega}}\]
+حيث $\mathrm{card}\,A$ عدد عناصر $A$ (الحالات الملائمة) و$\mathrm{card}\,\Omega$ عدد الحالات الممكنة.
+\end{khassia}
+\begin{khassia}[خواص الاحتمال]
+من أجل كل حادثتين $A$ و$B$:
+\begin{itemize}
+\item $0\leqslant P(A)\leqslant 1$ \quad ، \quad $P(\Omega)=1$ \quad ، \quad $P(\varnothing)=0$.
+\item $P(\overline{A})=1-P(A)$.
+\item $P(A\cup B)=P(A)+P(B)-P(A\cap B)$؛ وإذا كانتا غير متلائمتين: $P(A\cup B)=P(A)+P(B)$.
+\item إذا كان $A\subset B$ فإن $P(A)\leqslant P(B)$.
+\end{itemize}
+\end{khassia}
+\begin{mithal}
+نرمي نردًا غير مزيف وجوهه مرقمة من $1$ إلى $6$: $\Omega=\{1;2;3;4;5;6\}$.
+لتكن الحادثة $A=\{2;4;6\}$ («الرقم زوجي») والحادثة $B=\{4;5;6\}$ («الرقم أكبر من أو يساوي $4$»).
+\[P(A)=\frac36=\frac12,\quad P(A\cap B)=P(\{4;6\})=\frac26=\frac13,\quad P(A\cup B)=\frac12+\frac12-\frac13=\frac23 .\]
+تحقق: $A\cup B=\{2;4;5;6\}$ و $\frac46=\frac23$ \ok.
+\end{mithal}
+\begin{molahada}
+في نص التمرين: حرف «و» يعني التقاطع $\cap$، وحرف «أو» يعني الاتحاد $\cup$، و«على الأقل» تُحسب غالبًا بالحادثة العكسية.
+\end{molahada}
+
+\subsection{المتغير العشوائي وقانون احتماله}
+\begin{tarif}[المتغير العشوائي]
+\textbf{المتغير العشوائي} $X$ دالة تُرفق بكل نتيجة من $\Omega$ عددًا حقيقيًا. إذا كانت قيمه $x_1<x_2<\cdots<x_n$ فإن
+\textbf{قانون احتماله} هو إعطاء كل احتمال $p_i=P(X=x_i)$، ونلخصه في جدول:
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $x_1$ & $x_2$ & $\cdots$ & $x_n$ & المجموع\\\hline
+$P(X=x_i)$ & $p_1$ & $p_2$ & $\cdots$ & $p_n$ & $1$\\\hline
+\end{tabular}
+\end{center}
+مع $p_1+p_2+\cdots+p_n=1$ (للتحقق دائمًا).
+\end{tarif}
+\begin{khassia}[الأمل الرياضياتي، التباين، الانحراف المعياري]
+\begin{itemize}
+\item الأمل الرياضياتي: \quad $\bx{E(X)=\sum_{i=1}^{n}x_i\,p_i=x_1p_1+x_2p_2+\cdots+x_np_n}$
+\item التباين: \quad $\bx{V(X)=\sum_{i=1}^{n}p_i\,\big(x_i-E(X)\big)^2=\sum_{i=1}^{n}p_i\,x_i^2-\big(E(X)\big)^2}$
+\item الانحراف المعياري: \quad $\bx{\sigma(X)=\sqrt{V(X)}}$
+\end{itemize}
+ومن أجل كل عددين حقيقيين $a$ و$b$:
+\[\bx{E(aX+b)=a\,E(X)+b}\qquad \bx{V(aX+b)=a^2\,V(X)}\qquad \bx{\sigma(aX+b)=|a|\,\sigma(X)}\]
+\end{khassia}
+\begin{molahada}[تفسير الأمل في لعبة]
+$E(X)$ هو متوسط الربح الذي يأمله اللاعب بعد تكرار اللعبة مرات كثيرة:
+\begin{itemize}
+\item $E(X)=0$: اللعبة \textbf{عادلة}.
+\item $E(X)>0$: اللعبة \textbf{مربحة} (في صالح اللاعب).
+\item $E(X)<0$: اللعبة \textbf{ليست في صالح اللاعب}.
+\end{itemize}
+\end{molahada}
+
+\begin{mithal}[قانون احتمال من سحب في آن واحد]
+كيس به $4$ كريات بيضاء و$5$ حمراء، نسحب كريتين في آن واحد: $\mathrm{card}\,\Omega=C_9^2=36$.
+$X$ عدد الكريات البيضاء المسحوبة، قيمه $0;1;2$:
+\[P(X=0)=\frac{C_5^2}{36}=\frac{10}{36},\quad P(X=1)=\frac{C_4^1C_5^1}{36}=\frac{20}{36},\quad P(X=2)=\frac{C_4^2}{36}=\frac{6}{36}.\]
+\begin{center}
+\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & المجموع\\\hline
+$P(X=x_i)$ & $\frac{5}{18}$ & $\frac{5}{9}$ & $\frac{1}{6}$ & $1$\\\hline
+\end{tabular}
+\end{center}
+\[E(X)=0\times\frac{10}{36}+1\times\frac{20}{36}+2\times\frac{6}{36}=\frac{32}{36}=\bx{\frac89}\]
+\[V(X)=\Big(0^2\times\frac{10}{36}+1^2\times\frac{20}{36}+2^2\times\frac{6}{36}\Big)-\Big(\frac89\Big)^2=\frac{11}{9}-\frac{64}{81}=\bx{\frac{35}{81}}\ ,\qquad \sigma(X)=\bx{\frac{\sqrt{35}}{9}}\approx 0{,}66\]
+\end{mithal}
+
+\begin{mithal}[تعيين وسيط مجهول]
+قانون احتمال متغير عشوائي $X$ حيث $a>0$ و$E(X)=1$:
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|}\hline
+\rowcolor{cSec!12} $x_i$ & $-1$ & $0$ & $a$ & $4$\\\hline
+$P(X=x_i)$ & $0{,}2$ & $0{,}3$ & $0{,}4$ & $b$\\\hline
+\end{tabular}
+\end{center}
+\begin{itemize}
+\item مجموع الاحتمالات $1$: $0{,}2+0{,}3+0{,}4+b=1$ إذن $\bx{b=0{,}1}$.
+\item $E(X)=-0{,}2+0+0{,}4a+0{,}4=1$ إذن $0{,}4a=0{,}8$ ومنه $\bx{a=2}$ (وفعلًا $0<2<4$).
+\item $V(X)=(1\times0{,}2+0+4\times0{,}4+16\times0{,}1)-1^2=3{,}4-1=\bx{2{,}4}$ \quad و\quad $\sigma(X)=\sqrt{2{,}4}\approx1{,}55$.
+\end{itemize}
+\end{mithal}
+
+\begin{mithal}[لعبة]
+يحوي صندوق $10$ كريات: $5$ سوداء و$3$ خضراء و$2$ حمراء. يسحب لاعب كرية واحدة: يخسر $3$ دنانير إذا كانت سوداء، ويربح $2$ دينار إذا كانت خضراء، و$5$ دنانير إذا كانت حمراء. $X$ الربح الجبري:
+\begin{center}
+\begin{tabular}{|C|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $-3$ & $2$ & $5$ & المجموع\\\hline
+$P(X=x_i)$ & $0{,}5$ & $0{,}3$ & $0{,}2$ & $1$\\\hline
+\end{tabular}
+\end{center}
+\begin{itemize}
+\item $E(X)=-1{,}5+0{,}6+1=\bx{0{,}1}$ \quad وبما أن $E(X)>0$ فاللعبة في صالح اللاعب.
+\item $V(X)=(9\times0{,}5+4\times0{,}3+25\times0{,}2)-0{,}1^2=10{,}7-0{,}01=\bx{10{,}69}$ \quad و\quad $\sigma(X)\approx 3{,}27$.
+\item إذا ضاعف المنظم الأرباح وأضاف دينارًا، نضع $Y=2X+1$:
+\[E(Y)=2\times0{,}1+1=1{,}2\qquad V(Y)=2^2\times10{,}69=42{,}76\]
+\end{itemize}
+\end{mithal}
+
+%================================================================
+\section{الاحتمال الشرطي وشجرة الاحتمالات}
+\subsection{الاحتمال الشرطي}
+\begin{tarif}[الاحتمال الشرطي]
+لتكن $A$ حادثة حيث $P(A)\neq0$. احتمال $B$ \textbf{علمًا أن} $A$ محققة هو العدد:
+\[\bx{P_A(B)=\frac{P(A\cap B)}{P(A)}}\qquad\text{ومنه}\qquad \bx{P(A\cap B)=P(A)\times P_A(B)}\]
+\end{tarif}
+\begin{molahada}
+\begin{itemize}
+\item العبارات «علمًا أن»، «إذا كان»، «من بين $\ldots$» تدل على احتمال شرطي.
+\item لا نخلط بين $P(A\cap B)$ (الحادثتان معًا) و$P_A(B)$ (نحسب داخل $A$ فقط).
+\item $P_A(B)+P_A(\overline{B})=1$.
+\end{itemize}
+\end{molahada}
+\begin{mithal}
+نرمي نردًا غير مزيف. $A$: «الرقم زوجي» و$B$: «الرقم أكبر من أو يساوي $4$». لدينا $A\cap B=\{4;6\}$:
+\[P_B(A)=\frac{P(A\cap B)}{P(B)}=\frac{\frac26}{\frac36}=\frac23 .\]
+(من بين الأرقام $4;5;6$ يوجد رقمان زوجيان.)
+\end{mithal}
+
+\subsection{شجرة الاحتمالات}
+\begin{khassia}[قواعد الشجرة]
+\begin{center}\begin{LTR}\begin{tikzpicture}[ptree]
+\node[ev]{}
+  child{node[ev]{$\overline{A}$}
+    child{node[ev,pr={$P(\overline{A}\cap\overline{B})=P(\overline{A})\times P_{\overline{A}}(\overline{B})$}]{$\overline{B}$} edge from parent node[p]{$P_{\overline{A}}(\overline{B})$}}
+    child{node[ev,pr={$P(\overline{A}\cap B)=P(\overline{A})\times P_{\overline{A}}(B)$}]{$B$} edge from parent node[p]{$P_{\overline{A}}(B)$}}
+    edge from parent node[p]{$P(\overline{A})$}}
+  child{node[ev]{$A$}
+    child{node[ev,pr={$P(A\cap\overline{B})=P(A)\times P_{A}(\overline{B})$}]{$\overline{B}$} edge from parent node[p]{$P_{A}(\overline{B})$}}
+    child{node[ev,pr={$P(A\cap B)=P(A)\times P_{A}(B)$}]{$B$} edge from parent node[p]{$P_{A}(B)$}}
+    edge from parent node[p]{$P(A)$}};
+\node[hd,anchor=south west] at (7.35,3.2){\ar{الاحتمال}};
+\end{tikzpicture}\end{LTR}\end{center}
+\begin{itemize}
+\item مجموع الاحتمالات على الفروع الخارجة من نفس العقدة يساوي $1$.
+\item احتمال مسار = \textbf{جداء} الاحتمالات على فروعه (يعطي احتمال التقاطع).
+\item احتمال حادثة = \textbf{مجموع} احتمالات المسارات المؤدية إليها.
+\end{itemize}
+\end{khassia}
+
+\begin{mithal}[سحب على التوالي دون إرجاع]
+كيس به $5$ كريات حمراء ($R$) و$3$ خضراء ($G$). نسحب كريتين على التوالي دون إرجاع.
+\begin{center}\begin{LTR}\begin{tikzpicture}[ptree]
+\node[ev]{}
+  child{node[ev]{$G_1$}
+    child{node[ev,pr={$\dfrac38\times\dfrac27=\dfrac{6}{56}$}]{$G_2$} edge from parent node[p]{$\dfrac27$}}
+    child{node[ev,pr={$\dfrac38\times\dfrac57=\dfrac{15}{56}$}]{$R_2$} edge from parent node[p]{$\dfrac57$}}
+    edge from parent node[p]{$\dfrac38$}}
+  child{node[ev]{$R_1$}
+    child{node[ev,pr={$\dfrac58\times\dfrac37=\dfrac{15}{56}$}]{$G_2$} edge from parent node[p]{$\dfrac37$}}
+    child{node[ev,pr={$\dfrac58\times\dfrac47=\dfrac{20}{56}$}]{$R_2$} edge from parent node[p]{$\dfrac47$}}
+    edge from parent node[p]{$\dfrac58$}}
+;
+\node[hd] at (3.2,3.2){\ar{السحب الأول}};
+\node[hd] at (6.4,3.2){\ar{السحب الثاني}};
+\node[hd,anchor=south west] at (7.35,3.2){\ar{الاحتمال}};
+\end{tikzpicture}\end{LTR}\end{center}
+\begin{itemize}
+\item $P(R_1\cap G_2)=\dfrac58\times\dfrac37=\bx{\dfrac{15}{56}}$.
+\item $P(G_2)=P(R_1\cap G_2)+P(G_1\cap G_2)=\dfrac{15}{56}+\dfrac{6}{56}=\dfrac{21}{56}=\bx{\dfrac38}$.
+\item $P_{G_2}(R_1)=\dfrac{P(R_1\cap G_2)}{P(G_2)}=\dfrac{15/56}{21/56}=\bx{\dfrac57}$.
+\end{itemize}
+تحقق: مجموع احتمالات المسارات $\frac{20+15+15+6}{56}=1$ \ok.
+\end{mithal}
+
+\subsection{دستور الاحتمالات الكلية}
+\begin{tarif}[تجزئة $\Omega$]
+نقول إن الحوادث $A_1;A_2;\ldots;A_n$ تشكل \textbf{تجزئة} لـ $\Omega$ إذا كانت غير خالية، وغير متلائمة مثنى مثنى، واتحادها $\Omega$.
+(مثال بسيط: $A$ و$\overline{A}$.)
+\end{tarif}
+\begin{khassia}[دستور الاحتمالات الكلية]
+إذا كانت $A_1;A_2;\ldots;A_n$ تجزئة لـ $\Omega$ فإن من أجل كل حادثة $B$:
+\[\bx{P(B)=P(A_1\cap B)+P(A_2\cap B)+\cdots+P(A_n\cap B)}\]
+\[\bx{P(B)=P(A_1)\,P_{A_1}(B)+P(A_2)\,P_{A_2}(B)+\cdots+P(A_n)\,P_{A_n}(B)}\]
+وفي حالة $A$ و$\overline{A}$: \quad $P(B)=P(A)\,P_A(B)+P(\overline{A})\,P_{\overline{A}}(B)$.
+\end{khassia}
+
+\begin{mithal}[مصنع بآلتين]
+ينتج مصنع قطعًا بآلتين: الآلة $M_1$ تنتج $60\%$ من القطع و$3\%$ من إنتاجها معيب، والآلة $M_2$ تنتج الباقي و$5\%$ من إنتاجها معيب. نختار قطعة عشوائيًا. $D$: «القطعة معيبة».
+\begin{center}\begin{LTR}\begin{tikzpicture}[ptree]
+\node[ev]{}
+  child{node[ev]{$M_2$}
+    child{node[ev,pr={$P(M_2\cap \overline{D})=0{,}38$}]{$\overline{D}$} edge from parent node[p]{$0{,}95$}}
+    child{node[ev,pr={$P(M_2\cap D)=0{,}02$}]{$D$} edge from parent node[p]{$0{,}05$}}
+    edge from parent node[p]{$0{,}4$}}
+  child{node[ev]{$M_1$}
+    child{node[ev,pr={$P(M_1\cap \overline{D})=0{,}582$}]{$\overline{D}$} edge from parent node[p]{$0{,}97$}}
+    child{node[ev,pr={$P(M_1\cap D)=0{,}018$}]{$D$} edge from parent node[p]{$0{,}03$}}
+    edge from parent node[p]{$0{,}6$}}
+;
+\node[hd] at (3.2,3.2){\ar{الآلة}};
+\node[hd] at (6.4,3.2){\ar{الحالة}};
+\node[hd,anchor=south west] at (7.35,3.2){\ar{الاحتمال}};
+\end{tikzpicture}\end{LTR}\end{center}
+\begin{itemize}
+\item حسب دستور الاحتمالات الكلية: $P(D)=0{,}6\times0{,}03+0{,}4\times0{,}05=0{,}018+0{,}02=\bx{0{,}038}$.
+\item القطعة معيبة، احتمال أن تكون من $M_1$: \quad $P_D(M_1)=\dfrac{P(M_1\cap D)}{P(D)}=\dfrac{0{,}018}{0{,}038}=\bx{\dfrac{9}{19}}\approx0{,}47$.
+\item $P(\overline{D})=1-0{,}038=0{,}962$.
+\end{itemize}
+\end{mithal}
+
+%================================================================
+\section{الاستقلالية}
+\begin{tarif}[حادثتان مستقلتان]
+نقول إن الحادثتين $A$ و$B$ \textbf{مستقلتان} إذا كان:
+\[\bx{P(A\cap B)=P(A)\times P(B)}\]
+وإذا كان $P(A)\neq0$ فهذا يكافئ $P_A(B)=P(B)$: تحقق $A$ لا يغيّر احتمال $B$.
+\end{tarif}
+\begin{khassia}
+إذا كانت $A$ و$B$ مستقلتين فإن: $A$ و$\overline{B}$ مستقلتان، و$\overline{A}$ و$B$ مستقلتان، و$\overline{A}$ و$\overline{B}$ مستقلتان.
+\end{khassia}
+\begin{molahada}
+لا نخلط بين \textbf{مستقلتين} ($P(A\cap B)=P(A)P(B)$) و\textbf{غير متلائمتين} ($A\cap B=\varnothing$).
+حادثتان غير متلائمتين واحتمال كل منهما غير معدوم ليستا مستقلتين أبدًا لأن $P(A\cap B)=0\neq P(A)P(B)$.
+\end{molahada}
+\begin{mithal}
+نرمي نردًا غير مزيف، ونعتبر الحوادث: $A=\{2;4;6\}$ («رقم زوجي»)، و$B=\{1;2\}$، و$C=\{4;5;6\}$ («رقم أكبر من أو يساوي $4$»).
+\begin{itemize}
+\item $P(A\cap B)=P(\{2\})=\dfrac16$ و$P(A)\times P(B)=\dfrac12\times\dfrac13=\dfrac16$: إذن \bxt{$A$ و$B$ مستقلتان}.
+\item $P(A\cap C)=P(\{4;6\})=\dfrac13$ و$P(A)\times P(C)=\dfrac12\times\dfrac12=\dfrac14\neq\dfrac13$: إذن \bxt{$A$ و$C$ غير مستقلتين}.
+\end{itemize}
+\end{mithal}
+\begin{mithal}[تجارب مستقلة]
+$30\%$ من تلاميذ ثانوية يملكون هاتفًا نقالًا. نختار $3$ تلاميذ عشوائيًا (الاختيارات مستقلة).
+\begin{itemize}
+\item احتمال أن يملك الثلاثة هاتفًا: $0{,}3^3=\bx{0{,}027}$.
+\item احتمال أن يملك واحد على الأقل هاتفًا: $1-0{,}7^3=1-0{,}343=\bx{0{,}657}$.
+\end{itemize}
+\end{mithal}
+
+%================================================================
+\section{التجارب المتكررة والقانون الثنائي}
+\begin{molahada}[للتنبيه]
+هذا الجزء مقرر أساسًا في شعبة الرياضيات؛ تحتاجه الشعب الأخرى عند تكرار تجربة بشكل مستقل (سحب مع الإرجاع مثلًا).
+\end{molahada}
+\begin{tarif}[تجربة برنولي وقانون برنولي]
+\textbf{تجربة برنولي} تجربة عشوائية لها مخرجان فقط: \textbf{نجاح} $S$ باحتمال $p$، و\textbf{فشل} $\overline{S}$ باحتمال $1-p$.
+المتغير $X$ الذي يأخذ $1$ عند النجاح و$0$ عند الفشل يتبع \textbf{قانون برنولي} ذا الوسيط $p$:
+\begin{center}
+\begin{tabular}{|C|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & المجموع\\\hline
+$P(X=x_i)$ & $1-p$ & $p$ & $1$\\\hline
+\end{tabular}
+\qquad $E(X)=p$ \quad و\quad $V(X)=p(1-p)$.
+\end{center}
+\end{tarif}
+\begin{khassia}[القانون الثنائي]
+نكرر تجربة برنولي $n$ مرة بشكل \textbf{مستقل وفي نفس الظروف} (مخطط برنولي). $X$ عدد النجاحات، قيمه $0;1;\ldots;n$.
+نقول إن $X$ يتبع \textbf{القانون الثنائي} ذا الوسيطين $n$ و$p$ ونكتب $X\sim\mathcal{B}(n;p)$:
+\[\bx{P(X=k)=C_n^k\,p^k\,(1-p)^{n-k}}\qquad (0\leqslant k\leqslant n)\]
+\[\bx{E(X)=np}\qquad \bx{V(X)=np(1-p)}\qquad \bx{\sigma(X)=\sqrt{np(1-p)}}\]
+($C_n^k$ هو عدد المسارات في الشجرة التي تحوي $k$ نجاحًا بالضبط.)
+\end{khassia}
+
+\begin{mithal}[شجرة مخطط برنولي: $n=3$ و$p=0{,}3$]
+\begin{center}\begin{LTR}\begin{tikzpicture}[grow=right,level distance=2.7cm,
+  level 1/.style={sibling distance=5.6cm}, level 2/.style={sibling distance=2.8cm}, level 3/.style={sibling distance=1.4cm},
+  edge from parent/.style={draw,thick,cDef!70!black}]
+\node[ev]{}
+  child{node[ev]{$\overline{S}$}
+    child{node[ev]{$\overline{S}$}
+      child{node[ev,pr={$0{,}7^3=0{,}343$\quad($X=0$)}]{$\overline{S}$} edge from parent node[p]{$0{,}7$}}
+      child{node[ev,pr={$0{,}3\times0{,}7^2=0{,}147$\quad($X=1$)}]{$S$} edge from parent node[p]{$0{,}3$}}
+      edge from parent node[p]{$0{,}7$}}
+    child{node[ev]{$S$}
+      child{node[ev,pr={$0{,}3\times0{,}7^2=0{,}147$\quad($X=1$)}]{$\overline{S}$} edge from parent node[p]{$0{,}7$}}
+      child{node[ev,pr={$0{,}3^2\times0{,}7=0{,}063$\quad($X=2$)}]{$S$} edge from parent node[p]{$0{,}3$}}
+      edge from parent node[p]{$0{,}3$}}
+    edge from parent node[p]{$0{,}7$}}
+  child{node[ev]{$S$}
+    child{node[ev]{$\overline{S}$}
+      child{node[ev,pr={$0{,}3\times0{,}7^2=0{,}147$\quad($X=1$)}]{$\overline{S}$} edge from parent node[p]{$0{,}7$}}
+      child{node[ev,pr={$0{,}3^2\times0{,}7=0{,}063$\quad($X=2$)}]{$S$} edge from parent node[p]{$0{,}3$}}
+      edge from parent node[p]{$0{,}7$}}
+    child{node[ev]{$S$}
+      child{node[ev,pr={$0{,}3^2\times0{,}7=0{,}063$\quad($X=2$)}]{$\overline{S}$} edge from parent node[p]{$0{,}7$}}
+      child{node[ev,pr={$0{,}3^3=0{,}027$\quad($X=3$)}]{$S$} edge from parent node[p]{$0{,}3$}}
+      edge from parent node[p]{$0{,}3$}}
+    edge from parent node[p]{$0{,}3$}};
+\node[hd] at (2.7,5.7){\ar{الرمية الأولى}};
+\node[hd] at (5.4,5.7){\ar{الثانية}};
+\node[hd] at (8.1,5.7){\ar{الثالثة}};
+\node[hd,anchor=south west] at (9.05,5.7){\ar{الاحتمال}};
+\end{tikzpicture}\end{LTR}\end{center}
+بجمع المسارات حسب عدد النجاحات (عدد المسارات $C_3^k$):
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} $k$ & $0$ & $1$ & $2$ & $3$ & المجموع\\\hline
+$P(X=k)$ & $0{,}343$ & $0{,}441$ & $0{,}189$ & $0{,}027$ & $1$\\\hline
+\end{tabular}
+\end{center}
+\begin{itemize}
+\item مثلًا: $P(X=1)=C_3^1\times0{,}3\times0{,}7^2=3\times0{,}147=0{,}441$.
+\item $E(X)=np=3\times0{,}3=\bx{0{,}9}$ \quad و\quad $V(X)=np(1-p)=3\times0{,}3\times0{,}7=\bx{0{,}63}$.
+\end{itemize}
+\end{mithal}
+
+\begin{mithal}[نرد يُرمى $4$ مرات]
+نرمي نردًا غير مزيف $4$ مرات، النجاح: «ظهور الرقم $6$»، $p=\frac16$. $X\sim\mathcal{B}\big(4;\frac16\big)$:
+\begin{itemize}
+\item $P(X=2)=C_4^2\Big(\dfrac16\Big)^2\Big(\dfrac56\Big)^2=6\times\dfrac{1}{36}\times\dfrac{25}{36}=\bx{\dfrac{25}{216}}$.
+\item $P(X\geqslant1)=1-P(X=0)=1-\Big(\dfrac56\Big)^4=1-\dfrac{625}{1296}=\bx{\dfrac{671}{1296}}$.
+\item $E(X)=4\times\dfrac16=\dfrac23$ \quad و\quad $V(X)=4\times\dfrac16\times\dfrac56=\dfrac59$.
+\end{itemize}
+\end{mithal}
+\begin{mithal}[أصغر عدد من الرميات]
+نرمي النرد $n$ مرة، و$F$: «ظهور الرقم $6$ مرة على الأقل». نريد $P(F)\geqslant0{,}9$، أي $1-\big(\frac56\big)^n\geqslant0{,}9$:
+\[\Big(\frac56\Big)^n\leqslant0{,}1\iff n\ln\frac56\leqslant\ln0{,}1\iff n\geqslant\frac{\ln0{,}1}{\ln\frac56}\approx12{,}63\]
+(انقلب اتجاه المتراجحة لأن $\ln\frac56<0$). إذن أصغر عدد هو \bx{n=13}.
+\end{mithal}
+
+%================================================================
+\section{تمارين محلولة}
+\begin{tmr}
+يحتوي كيس على $7$ كريات لا نفرق بينها باللمس: $3$ كريات حمراء تحمل الأرقام $1;1;2$ و$4$ كريات خضراء تحمل الأرقام $1;2;2;2$.
+نسحب عشوائيًا $3$ كريات \textbf{في آن واحد}.
+\QQ{1} ما عدد السحبات الممكنة؟
+\QQ{2} احسب احتمال كل من الحوادث:
+\begin{sq}
+\qa $A$: «الكريات الثلاث من نفس اللون».
+\qb $B$: «الكريات الثلاث تحمل نفس الرقم».
+\qc $C$: «مجموع الأرقام المسجلة يساوي $5$».
+\end{sq}
+\QQ{3} احسب $P_A(B)$. هل الحادثتان $A$ و$B$ مستقلتان؟
+\QQ{4} $X$ المتغير العشوائي الذي يرفق بكل سحبة عدد الكريات الحمراء المسحوبة. عيّن قانون احتمال $X$ ثم احسب $E(X)$ و$V(X)$ و$\sigma(X)$.
+\end{tmr}
+\begin{hal}
+\QQ{1} السحب في آن واحد (الترتيب غير مهم ودون تكرار) إذن عدد السحبات هو عدد التوفيقات:
+$\mathrm{card}\,\Omega=C_7^3=\dfrac{7\times6\times5}{3!}=\bx{35}$.
+\QQ{2}
+\pa نفس اللون: إما $3$ حمراء من $3$ أو $3$ خضراء من $4$ (مبدأ الجمع):
+$P(A)=\dfrac{C_3^3+C_4^3}{35}=\dfrac{1+4}{35}=\bx{\dfrac17}$.
+\pb الكريات التي تحمل الرقم $1$ عددها $3$ (حمراوان وخضراء)، والتي تحمل الرقم $2$ عددها $4$ (حمراء و$3$ خضراء):
+$P(B)=\dfrac{C_3^3+C_4^3}{35}=\dfrac{5}{35}=\bx{\dfrac17}$.
+\pc المجموع $5$ مع أرقام من $\{1;2\}$: الإمكانية الوحيدة $1+2+2$، أي كرية من الثلاث التي تحمل $1$ وكريتان من الأربع التي تحمل $2$ (مبدأ الضرب):
+$P(C)=\dfrac{C_3^1\times C_4^2}{35}=\dfrac{3\times6}{35}=\bx{\dfrac{18}{35}}$.
+\QQ{3} $A\cap B$: نفس اللون ونفس الرقم. الحمراء $1;1;2$ لا تحمل نفس الرقم، والخضراء: فقط $\{2;2;2\}$، إذن $P(A\cap B)=\dfrac{1}{35}$.
+\[P_A(B)=\frac{P(A\cap B)}{P(A)}=\frac{1/35}{5/35}=\bx{\frac15}\]
+و$P(A)\times P(B)=\dfrac17\times\dfrac17=\dfrac{1}{49}\neq\dfrac{1}{35}=P(A\cap B)$، إذن \bxt{$A$ و$B$ غير مستقلتين}.
+\QQ{4} قيم $X$: $0;1;2;3$ (عدد الحمراء من بين $3$ مسحوبة):
+\begin{align*}
+P(X=0)&=\frac{C_4^3}{35}=\frac{4}{35}, & P(X=1)&=\frac{C_3^1C_4^2}{35}=\frac{18}{35},\\
+P(X=2)&=\frac{C_3^2C_4^1}{35}=\frac{12}{35}, & P(X=3)&=\frac{C_3^3}{35}=\frac{1}{35}.
+\end{align*}
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & $2$ & $3$ & المجموع\\\hline
+$P(X=x_i)$ & $\frac{4}{35}$ & $\frac{18}{35}$ & $\frac{12}{35}$ & $\frac{1}{35}$ & $1$\\\hline
+\end{tabular}
+\end{center}
+\[E(X)=\frac{0\times4+1\times18+2\times12+3\times1}{35}=\frac{45}{35}=\bx{\frac97}\]
+\[V(X)=\frac{0+18+48+9}{35}-\Big(\frac97\Big)^2=\frac{15}{7}-\frac{81}{49}=\bx{\frac{24}{49}}\ ,\qquad \sigma(X)=\sqrt{\frac{24}{49}}=\bx{\frac{2\sqrt6}{7}}\approx0{,}70\]
+\end{hal}
+
+\begin{tmr}
+لدينا صندوقان: $U_1$ يحوي $3$ كريات بيضاء و$2$ سوداوين، و$U_2$ يحوي كرية بيضاء و$4$ سوداء.
+نرمي نردًا غير مزيف: إذا ظهر $1$ أو $2$ نسحب كرية من $U_1$، وإلا نسحب كرية من $U_2$.
+نسمي $U_1$: «السحب من $U_1$»، $U_2$: «السحب من $U_2$»، $W$: «الكرية المسحوبة بيضاء».
+\QQ{1} أنشئ شجرة الاحتمالات.
+\QQ{2} احسب $P(W)$.
+\QQ{3} الكرية المسحوبة بيضاء، ما احتمال أن تكون من $U_1$؟
+\QQ{4} (شعبة رياضيات) نكرر التجربة $4$ مرات مع إرجاع الكرية في كل مرة. $Y$ عدد الكريات البيضاء المحصل عليها.
+\begin{sq}
+\qa ما قانون $Y$؟ احسب $P(Y=2)$ و$P(Y\geqslant1)$.
+\qb احسب $E(Y)$ و$V(Y)$.
+\end{sq}
+\end{tmr}
+\begin{hal}
+\QQ{1} $P(U_1)=\dfrac26=\dfrac13$ و$P(U_2)=\dfrac23$؛ $P_{U_1}(W)=\dfrac35$ و$P_{U_2}(W)=\dfrac15$:
+\begin{center}\begin{LTR}\begin{tikzpicture}[ptree]
+\node[ev]{}
+  child{node[ev]{$U_2$}
+    child{node[ev,pr={$\dfrac23\times\dfrac45=\dfrac{8}{15}$}]{$\overline{W}$} edge from parent node[p]{$\dfrac45$}}
+    child{node[ev,pr={$\dfrac23\times\dfrac15=\dfrac{2}{15}$}]{$W$} edge from parent node[p]{$\dfrac15$}}
+    edge from parent node[p]{$\dfrac23$}}
+  child{node[ev]{$U_1$}
+    child{node[ev,pr={$\dfrac13\times\dfrac25=\dfrac{2}{15}$}]{$\overline{W}$} edge from parent node[p]{$\dfrac25$}}
+    child{node[ev,pr={$\dfrac13\times\dfrac35=\dfrac{3}{15}$}]{$W$} edge from parent node[p]{$\dfrac35$}}
+    edge from parent node[p]{$\dfrac13$}}
+;
+\node[hd] at (3.2,3.2){\ar{الصندوق}};
+\node[hd] at (6.4,3.2){\ar{اللون}};
+\node[hd,anchor=south west] at (7.35,3.2){\ar{الاحتمال}};
+\end{tikzpicture}\end{LTR}\end{center}
+\QQ{2} $U_1$ و$U_2$ تجزئة لـ $\Omega$، حسب دستور الاحتمالات الكلية:
+$P(W)=P(U_1)P_{U_1}(W)+P(U_2)P_{U_2}(W)=\dfrac{3}{15}+\dfrac{2}{15}=\bx{\dfrac13}$.
+\QQ{3} المطلوب احتمال شرطي:
+$P_W(U_1)=\dfrac{P(U_1\cap W)}{P(W)}=\dfrac{3/15}{1/3}=\bx{\dfrac35}$.
+\QQ{4}
+\pa التجارب الأربع مستقلة ومتماثلة (مع الإرجاع)، ولكل منها مخرجان: نجاح $W$ باحتمال $\frac13$ أو فشل. إذن $Y$ يتبع القانون الثنائي \bx{\mathcal{B}\big(4;\tfrac13\big)}:
+\[P(Y=2)=C_4^2\Big(\frac13\Big)^2\Big(\frac23\Big)^2=6\times\frac19\times\frac49=\bx{\frac{8}{27}}\ ,\qquad P(Y\geqslant1)=1-\Big(\frac23\Big)^4=1-\frac{16}{81}=\bx{\frac{65}{81}}\]
+\pb $E(Y)=np=4\times\dfrac13=\bx{\dfrac43}$ \quad و\quad $V(Y)=np(1-p)=4\times\dfrac13\times\dfrac23=\bx{\dfrac89}$.
+\end{hal}
+
+%================================================================
+\section{خلاصة الطرائق}
+\begin{BOX}{cMeth}{الطريقة حسب المطلوب}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|p{0.62\textwidth}|p{0.3\textwidth}|}\hline
+\rowcolor{cSec!12} \textbf{الطريقة} & \textbf{المطلوب}\\\hline
+الترتيب مهم والتكرار ممكن: $n^p$ \newline الترتيب مهم دون تكرار: $A_n^p$ \newline ترتيب كل العناصر: $n!$ \newline الترتيب غير مهم: $C_n^p$ & اختيار طريقة العدّ\\\hline
+في آن واحد: $C_n^p$ \newline على التوالي مع الإرجاع: $n^p$ \newline على التوالي دون إرجاع: $A_n^p$ \newline (على التوالي: نضرب في عدد المواضع) & عدد السحبات\\\hline
+عند تساوي الاحتمال: $P(A)=\frac{\mathrm{card}\,A}{\mathrm{card}\,\Omega}$. & احتمال حادثة\\\hline
+نحسب احتمال العكس: $P(A)=1-P(\overline{A})$. & حادثة «على الأقل»\\\hline
+نعيّن القيم $x_i$، ونحسب كل $P(X=x_i)$، ونرتبها في جدول، ونتحقق أن المجموع $1$. & قانون متغير عشوائي\\\hline
+$E(X)=\sum x_ip_i$ \newline $V(X)=\sum p_ix_i^2-\big(E(X)\big)^2$ \newline $\sigma(X)=\sqrt{V(X)}$ & الأمل، التباين، الانحراف\\\hline
+نقارن $E(X)$ بالصفر: $=0$ عادلة، $>0$ مربحة، $<0$ ليست في صالح اللاعب. & هل اللعبة عادلة؟\\\hline
+$P_A(B)=\frac{P(A\cap B)}{P(A)}$، أو نقرأ فرع الشجرة مباشرة. & احتمال شرطي\\\hline
+جداء الاحتمالات على المسار: $P(A\cap B)=P(A)\times P_A(B)$. & احتمال تقاطع (مسار)\\\hline
+مجموع المسارات المؤدية إلى $B$: $P(B)=P(A)P_A(B)+P(\overline{A})P_{\overline{A}}(B)$. & احتمال حادثة في المستوى الثاني\\\hline
+نحسب $P(B)$ أولًا ثم $P_B(A)=\frac{P(A\cap B)}{P(B)}$. & «علمًا أن» النتيجة معروفة\\\hline
+نتحقق من $P(A\cap B)=P(A)\times P(B)$. & إثبات الاستقلالية\\\hline
+$n$ تجربة مستقلة متماثلة بمخرجين: \newline $P(X=k)=C_n^kp^k(1-p)^{n-k}$ \newline $E(X)=np$ \quad و\quad $V(X)=np(1-p)$ & القانون الثنائي\\\hline
+نحل $1-(1-p)^n\geqslant\alpha$ باستعمال $\ln$ (مع قلب اتجاه المتراجحة). & أصغر عدد من التكرارات\\\hline
+\end{tabular}
+\end{center}
+\end{BOX}
+
+\end{document}
