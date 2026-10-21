@@ -1,0 +1,826 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}ملخص: الأعداد والحساب}{\small\color{cSec}السنة الثالثة ثانوي -- رياضيات وتقني رياضي}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{28}{34}\selectfont\bfseries الأعداد والحساب}\\[8pt]
+{\color{white}\large ملخص شامل مع أمثلة وتمارين محلولة خطوة بخطوة}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- رياضيات وتقني رياضي}
+\end{tcolorbox}
+\end{LTR}
+
+\begin{BOX}{cSec}{محتوى الملخص}
+\begin{multicols}{2}
+\begin{enumerate}[label=\arabic*.]
+\item قابلية القسمة في $\Z$
+\item القسمة الإقليدية
+\item القاسم المشترك الأكبر وخوارزمية إقليدس
+\item الموافقات في $\Z$
+\item أنظمة التعداد
+\item الأعداد الأولية
+\item المضاعف المشترك الأصغر
+\item مبرهنة بيزو ومبرهنة غوص
+\item المعادلات من الشكل $ax+by=c$
+\item تمارين محلولة
+\item خلاصة الطرائق
+\end{enumerate}
+\end{multicols}
+\end{BOX}
+
+%=====================================================
+\section{قابلية القسمة في $\Z$}
+\begin{tarif}
+$a$ و $b$ عددان صحيحان مع $a\neq 0$. نقول إن $a$ \textbf{يقسم} $b$ إذا وُجد عدد صحيح $k$ بحيث:
+\[ b=k\,a \]
+ونكتب $a\mid b$، ونقول أيضًا: $a$ قاسم لـ $b$، أو $b$ مضاعف لـ $a$.
+\end{tarif}
+
+\begin{mithal}
+\begin{itemize}
+\item $7\mid 35$ لأن $35=5\times 7$.
+\item $-3\mid 1962$ لأن $1962=(-654)\times(-3)$.
+\item مجموعة قواسم $24$ في $\N$: $D_{24}=\{1;2;3;4;6;8;12;24\}$، وفي $\Z$ نضيف معاكساتها، فيكون لـ $24$ في $\Z$ ستة عشر قاسمًا.
+\end{itemize}
+\end{mithal}
+
+\begin{molahada}
+\begin{itemize}
+\item $0$ مضاعف لكل عدد صحيح، و $1$ و $-1$ يقسمان كل عدد صحيح.
+\item كل عدد صحيح $n$ حيث $|n|\geqslant 2$ يقبل على الأقل أربعة قواسم في $\Z$ هي: $1$، $-1$، $n$، $-n$.
+\item إذا كان $a\mid b$ و $b\neq 0$ فإن $|a|\leqslant |b|$.
+\end{itemize}
+\end{molahada}
+
+\begin{khassia}[خواص قابلية القسمة]
+$a$، $b$، $c$ أعداد صحيحة ($a\neq0$):
+\begin{enumerate}
+\item إذا كان $a\mid b$ و $b\mid c$ فإن $a\mid c$ (التعدي).
+\item إذا كان $a\mid b$ فإن $a\mid mb$ من أجل كل عدد صحيح $m$.
+\item إذا كان $a\mid b$ فإن $ma\mid mb$ من أجل كل عدد صحيح غير معدوم $m$.
+\item إذا كان $a\mid b$ و $a\mid c$ فإن $a\mid mb+nc$ من أجل كل عددين صحيحين $m$ و $n$.
+\item إذا كان $a\mid b$ و $b\mid a$ فإن $|a|=|b|$.
+\end{enumerate}
+\end{khassia}
+
+\begin{mithal}[عين في كل حالة الأعداد الصحيحة $n$]
+\QQ{1} $13\mid n+2$: يوجد $k\in\Z$ حيث $n+2=13k$، إذن \bx{n=13k-2,\ k\in\Z}.
+\QQ{2} $n+1\mid 4$: إذن $n+1\in\{-4;-2;-1;1;2;4\}$، ومنه \bx{n\in\{-5;-3;-2;0;1;3\}}.
+\QQ{3} $3n+8\mid n+6$: لدينا $3n+8\mid 3(n+6)$، و $3n+8\mid 3n+8$، إذن $3n+8$ يقسم الفرق:
+\[ (3n+18)-(3n+8)=10 \]
+ومنه $3n+8\in\{-10;-5;-2;-1;1;2;5;10\}$. نحتفظ بالقيم التي تعطي $n$ صحيحًا: $3n+8\in\{-10;-1;2;5\}$، أي $n\in\{-6;-3;-2;-1\}$. نتحقق أن كل قيمة تحقق الشرط، فنجد \bx{n\in\{-6;-3;-2;-1\}}.
+\end{mithal}
+
+\begin{tariqa}[$n+a$ يقسم عبارة $P(n)$]
+نكتب $P(n)=(n+a)Q(n)+r$ حيث $r$ عدد ثابت. بما أن $n+a\mid (n+a)Q(n)$ فإن:
+\[ n+a\mid P(n)\iff n+a\mid r \]
+ثم نعين قواسم $r$ ونستنتج قيم $n$.
+\end{tariqa}
+
+\begin{mithal}[عين الأعداد الطبيعية $n$ حيث $n+1\mid 3n^2+15n+20$]
+نجري القسمة: $3n^2+15n+20=(n+1)(3n+12)+8$.\par
+إذن $n+1\mid 3n^2+15n+20$ يكافئ $n+1\mid 8$، أي $n+1\in\{1;2;4;8\}$، ومنه \bx{n\in\{0;1;3;7\}}.
+\end{mithal}
+
+%=====================================================
+\section{القسمة الإقليدية}
+\begin{khassia}[مبرهنة]
+$a$ عدد صحيح و $b$ عدد طبيعي غير معدوم. توجد ثنائية وحيدة $(q;r)$ من الأعداد الصحيحة بحيث:
+\[ a=bq+r\qquad\text{و}\qquad 0\leqslant r<b \]
+\begin{itemize}
+\item تسمى هذه العملية \textbf{القسمة الإقليدية} لـ $a$ على $b$.
+\item $q$ هو \textbf{حاصل} القسمة و $r$ هو \textbf{باقي} القسمة.
+\end{itemize}
+\end{khassia}
+
+\begin{mithal}
+\begin{itemize}
+\item $138=10\times 13+8$ و $0\leqslant 8<10$: حاصل قسمة $138$ على $10$ هو $13$ والباقي $8$.
+\item $a=118$ و $b=5$: $118=5\times 23+3$، إذن الباقي \bx{3}.
+\item $a=-152$ و $b=7$: $-152=7\times(-21)-5$، لكن $-5<0$، فنكتب:
+\[ -152=7\times(-22)+2\qquad 0\leqslant 2<7 \]
+إذن الحاصل $-22$ والباقي \bx{2}.
+\end{itemize}
+\end{mithal}
+
+\begin{molahada}
+\begin{itemize}
+\item $b\mid a$ إذا وفقط إذا كان باقي القسمة الإقليدية لـ $a$ على $b$ معدومًا.
+\item البواقي الممكنة في القسمة على $b$ هي: $0$، $1$، $\ldots$، $b-1$. فمثلًا كل عدد صحيح يكتب على أحد الأشكال: $3k$ أو $3k+1$ أو $3k+2$ ($k\in\Z$).
+\item إذا كان $a=bq+r$ مع $r\geqslant b$ أو $r<0$ فإن $r$ ليس هو الباقي.
+\end{itemize}
+\end{molahada}
+
+\begin{mithal}[برهن أن العدد $n(n+1)$ زوجي من أجل كل عدد طبيعي $n$]
+نميز حالتين حسب باقي قسمة $n$ على $2$:
+\begin{itemize}
+\item إذا كان $n=2k$ فإن $n(n+1)=2k(2k+1)$ وهو زوجي.
+\item إذا كان $n=2k+1$ فإن $n(n+1)=(2k+1)(2k+2)=2(2k+1)(k+1)$ وهو زوجي.
+\end{itemize}
+إذن من أجل كل عدد طبيعي $n$: \bx{2\mid n(n+1)}.
+\end{mithal}
+
+%=====================================================
+\section{القاسم المشترك الأكبر وخوارزمية إقليدس}
+\begin{tarif}
+$a$ و $b$ عددان طبيعيان غير معدومين. أكبر عنصر في مجموعة القواسم المشتركة $D_a\cap D_b$ يسمى \textbf{القاسم المشترك الأكبر} لـ $a$ و $b$، ونرمز له بـ $\pgcd(a;b)$.\par
+من أجل عددين صحيحين غير معدومين: $\pgcd(a;b)=\pgcd(|a|;|b|)$.
+\end{tarif}
+
+\begin{mithal}
+$\pgcd(24;18)=6$،\quad $\pgcd(27;140)=1$،\quad $\pgcd(150;240)=30$،\quad $\pgcd(-85;-25)=\pgcd(85;25)=5$.
+\end{mithal}
+
+\begin{khassia}
+$a$ و $b$ عددان طبيعيان غير معدومين:
+\begin{enumerate}
+\item إذا كان $b\mid a$ فإن $\pgcd(a;b)=b$.
+\item إذا كان $r$ باقي القسمة الإقليدية لـ $a$ على $b$ فإن: \bx{\pgcd(a;b)=\pgcd(b;r)}.
+\item القواسم المشتركة لـ $a$ و $b$ هي قواسم $\pgcd(a;b)$.
+\item من أجل كل عدد طبيعي غير معدوم $k$: $\pgcd(ka;kb)=k\,\pgcd(a;b)$.
+\item $d=\pgcd(a;b)$ إذا وفقط إذا كان $a=da'$ و $b=db'$ مع $\pgcd(a';b')=1$.
+\end{enumerate}
+\end{khassia}
+
+\begin{tariqa}[خوارزمية إقليدس]
+نقسم $a$ على $b$، ثم نقسم $b$ على الباقي، ثم نقسم كل باقٍ على الباقي الذي يليه، إلى أن نحصل على باقٍ معدوم.\par
+\textbf{القاسم المشترك الأكبر هو آخر باقٍ غير معدوم.}
+\end{tariqa}
+
+\begin{mithal}[عين $\pgcd(150;108)$ ثم مجموعة القواسم المشتركة لـ $150$ و $108$]
+\begin{align*}
+150&=108\times1+42\\
+108&=42\times2+24\\
+42&=24\times1+18\\
+24&=18\times1+6\\
+18&=6\times3+0
+\end{align*}
+آخر باقٍ غير معدوم هو $6$، إذن \bx{\pgcd(150;108)=6}.\par
+القواسم المشتركة لـ $150$ و $108$ في $\N$ هي قواسم $6$: $\{1;2;3;6\}$.
+\end{mithal}
+
+\begin{mithal}[عين $\pgcd(2024;1445)$]
+\begin{align*}
+2024&=1445\times1+579 & 1445&=579\times2+287 & 579&=287\times2+5\\
+287&=5\times57+2 & 5&=2\times2+1 & 2&=1\times2+0
+\end{align*}
+آخر باقٍ غير معدوم هو $1$، إذن \bx{\pgcd(2024;1445)=1}.
+\end{mithal}
+
+\begin{mithal}[عين الأعداد الطبيعية $a$ و $b$ حيث $a+b=54$ و $\pgcd(a;b)=9$]
+نضع $a=9a'$ و $b=9b'$ مع $\pgcd(a';b')=1$.\par
+$a+b=54$ تكافئ $9(a'+b')=54$، أي $a'+b'=6$.\par
+الثنائيات $(a';b')$ من الأعداد الطبيعية غير المعدومة حيث $a'+b'=6$: $(1;5)$، $(2;4)$، $(3;3)$، $(4;2)$، $(5;1)$. الأوليان فيما بينهما فقط: $(1;5)$ و $(5;1)$.\par
+إذن: \bx{(a;b)\in\{(9;45);(45;9)\}}.
+\end{mithal}
+
+\begin{tariqa}[قاسم مشترك لعبارتين بدلالة $n$]
+إذا كان $d=\pgcd(\alpha n+\beta;\gamma n+\delta)$ فإن $d$ يقسم كل تركيب خطي لهما. نختار تركيبًا يحذف $n$، فنحصل على $d\mid c$ حيث $c$ عدد ثابت، ثم نبحث متى يأخذ $d$ كل قيمة ممكنة.
+\end{tariqa}
+
+\begin{mithal}[$n$ عدد طبيعي و $d=\pgcd(2n+1;n+3)$]
+$d\mid 2n+1$ و $d\mid n+3$، إذن $d\mid 2(n+3)-(2n+1)=5$، ومنه $d\in\{1;5\}$.\par
+$d=5$ يتطلب $n+3\equiv0\,[5]$، أي $n=5k+2$؛ وعندئذ $2n+1=10k+5$ مضاعف لـ $5$ أيضًا.\par
+إذن: \bx{d=5} إذا كان $n=5k+2$ ($k\in\N$)، و \bx{d=1} في الحالات الأخرى.
+\end{mithal}
+
+%=====================================================
+\section{الموافقات في $\Z$}
+\begin{tarif}
+$n$ عدد طبيعي غير معدوم. نقول إن العددين الصحيحين $a$ و $b$ \textbf{متوافقان بترديد} $n$ إذا كان لهما نفس الباقي في القسمة الإقليدية على $n$. نكتب:
+\[ a\equiv b\,[n] \]
+ونقرأ: «$a$ يوافق $b$ بترديد $n$».
+\end{tarif}
+
+\begin{khassia}[نتائج مباشرة]
+\begin{itemize}
+\item \bx{a\equiv b\,[n]\iff n\mid a-b}.
+\item إذا كان $r$ باقي قسمة $a$ على $n$ فإن $a\equiv r\,[n]$. وعكسيًا: إذا كان $a\equiv r\,[n]$ و $0\leqslant r<n$ فإن $r$ هو باقي قسمة $a$ على $n$.
+\item $a\equiv 0\,[n]$ يعني $n\mid a$.
+\end{itemize}
+\end{khassia}
+
+\begin{khassia}[خواص الموافقات]
+$n$ عدد طبيعي غير معدوم، $a$، $b$، $c$، $d$ أعداد صحيحة:
+\begin{enumerate}
+\item $a\equiv a\,[n]$.
+\item إذا كان $a\equiv b\,[n]$ فإن $b\equiv a\,[n]$.
+\item إذا كان $a\equiv b\,[n]$ و $b\equiv c\,[n]$ فإن $a\equiv c\,[n]$.
+\item إذا كان $a\equiv b\,[n]$ و $c\equiv d\,[n]$ فإن:
+\[ a+c\equiv b+d\,[n]\qquad a-c\equiv b-d\,[n]\qquad ac\equiv bd\,[n] \]
+\item إذا كان $a\equiv b\,[n]$ فإن $ka\equiv kb\,[n]$ من أجل كل $k\in\Z$.
+\item إذا كان $a\equiv b\,[n]$ فإن \bx{a^p\equiv b^p\,[n]} من أجل كل $p\in\N$.
+\item إذا كان $a\equiv b\,[n]$ فإن $ma\equiv mb\,[mn]$ من أجل كل $m\in\N^*$.
+\item إذا كان $a\equiv b\,[n]$ و $m\mid n$ ($m\in\N^*$) فإن $a\equiv b\,[m]$.
+\end{enumerate}
+\end{khassia}
+
+\begin{molahada}[تنبيهات]
+\begin{itemize}
+\item $ab\equiv 0\,[n]$ لا يستلزم $a\equiv0\,[n]$ أو $b\equiv0\,[n]$: مثلًا $2\times3\equiv0\,[6]$.
+\item $ca\equiv cb\,[n]$ لا يستلزم $a\equiv b\,[n]$ في الحالة العامة، لكن إذا كان $\pgcd(c;n)=1$ فإن $a\equiv b\,[n]$.
+\item المعادلة $ax\equiv b\,[n]$ ($a\neq0$) تقبل حلولًا في $\Z$ إذا وفقط إذا كان $\pgcd(a;n)$ يقسم $b$.
+\end{itemize}
+\end{molahada}
+
+\begin{mithal}[عين باقي قسمة $5817$ على $251$، ثم باقي قسمة $-5817$ على $251$]
+$5817=251\times23+44$ و $0\leqslant44<251$، إذن $5817\equiv44\,[251]$ والباقي \bx{44}.\par
+بالضرب في $-1$: $-5817\equiv-44\,[251]$، و $-44\equiv-44+251=207\,[251]$.\par
+بما أن $0\leqslant 207<251$ فإن باقي قسمة $-5817$ على $251$ هو \bx{207}.
+\end{mithal}
+
+\begin{mithal}[{عين الأعداد الطبيعية $n$ الأصغر من $30$ حيث $n\equiv4\,[7]$}]
+$n\equiv4\,[7]$ يعني $n=7k+4$ ($k\in\N$). الشرط $7k+4<30$ يعطي $k<\frac{26}{7}$، أي $k\in\{0;1;2;3\}$.\par
+إذن: \bx{n\in\{4;11;18;25\}}.
+\end{mithal}
+
+\subsection{دراسة بواقي $a^n$ (البواقي الدورية)}
+\begin{tariqa}[بواقي قسمة $a^n$ على $m$]
+\begin{enumerate}
+\item نحسب بواقي $a^0$، $a^1$، $a^2$، $\ldots$ على $m$ حتى نجد أصغر عدد طبيعي غير معدوم $p$ حيث $a^p\equiv1\,[m]$.
+\item نكتب $n=pk+i$ مع $0\leqslant i<p$، فيكون $a^{pk+i}=(a^p)^k\times a^i\equiv1^k\times a^i\equiv a^i\,[m]$.
+\item نلخص النتائج في جدول: البواقي دورية ودورها $p$.
+\end{enumerate}
+\end{tariqa}
+
+\begin{mithal}[بواقي قسمة $3^n$ على $5$]
+$3^0\equiv1\,[5]$،\ $3^1\equiv3\,[5]$،\ $3^2\equiv4\,[5]$،\ $3^3\equiv2\,[5]$،\ $3^4=81\equiv1\,[5]$.\par
+إذن البواقي دورية دورها $4$. من أجل كل $k\in\N$:
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cEx!12}$n=$ & $4k$ & $4k+1$ & $4k+2$ & $4k+3$\\\hline
+$3^n\equiv\ldots\,[5]$ & $1$ & $3$ & $4$ & $2$\\\hline
+\end{tabular}
+\end{center}
+\textbf{تطبيق:} $4039=4\times1009+3$، إذن $3^{4039}\equiv2\,[5]$، وباقي قسمة $3^{4039}$ على $5$ هو \bx{2}.
+\end{mithal}
+
+\begin{mithal}[بواقي قسمة $2^n$ على $7$]
+$2^0\equiv1$،\ $2^1\equiv2$،\ $2^2\equiv4$،\ $2^3=8\equiv1\,[7]$. البواقي دورية دورها $3$:
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|c|c|c|}\hline
+\rowcolor{cEx!12}$n=$ & $3k$ & $3k+1$ & $3k+2$\\\hline
+$2^n\equiv\ldots\,[7]$ & $1$ & $2$ & $4$\\\hline
+\end{tabular}
+\end{center}
+\textbf{نتيجة:} $2^{3n}-1=8^n-1\equiv1^n-1=0\,[7]$، إذن $7\mid 2^{3n}-1$ من أجل كل $n\in\N$.
+\end{mithal}
+
+\begin{mithal}[بواقي قسمة $5^n$ على $11$]
+$5^0\equiv1$،\ $5^1\equiv5$،\ $5^2=25\equiv3$،\ $5^3\equiv15\equiv4$،\ $5^4\equiv20\equiv9$،\ $5^5\equiv45\equiv1\,[11]$. الدور $5$:
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cEx!12}$n=$ & $5k$ & $5k+1$ & $5k+2$ & $5k+3$ & $5k+4$\\\hline
+$5^n\equiv\ldots\,[11]$ & $1$ & $5$ & $3$ & $4$ & $9$\\\hline
+\end{tabular}
+\end{center}
+\end{mithal}
+
+\begin{mithal}[باقي قسمة $2025^{2026}+2024^{2025}$ على $9$]
+$2025=9\times225$، إذن $2025\equiv0\,[9]$ ومنه $2025^{2026}\equiv0\,[9]$.\par
+$2024=9\times224+8$، إذن $2024\equiv8\equiv-1\,[9]$ ومنه $2024^{2025}\equiv(-1)^{2025}=-1\,[9]$.\par
+بالجمع: $2025^{2026}+2024^{2025}\equiv-1\equiv8\,[9]$. الباقي \bx{8}.
+\end{mithal}
+
+\subsection{حل معادلات بالموافقات}
+\begin{tariqa}[{حل $ax\equiv b\,[n]$ مع $\pgcd(a;n)=1$}]
+نبحث عن عدد $c$ حيث $ac\equiv1\,[n]$ (مقلوب $a$ بترديد $n$)، ثم نضرب الطرفين في $c$: $x\equiv cb\,[n]$.
+\end{tariqa}
+
+\begin{mithal}
+\QQ{1} $5x\equiv7\,[8]$: لدينا $5\times5=25\equiv1\,[8]$، نضرب في $5$: $x\equiv35\equiv3\,[8]$، إذن \bx{x=8k+3,\ k\in\Z}.
+\QQ{2} $7x\equiv2\,[11]$: لدينا $7\times8=56\equiv1\,[11]$، نضرب في $8$: $x\equiv16\equiv5\,[11]$، إذن \bx{x=11k+5,\ k\in\Z}.
+\QQ{3} $4x+1\equiv4\,[11]$: $4x\equiv3\,[11]$، و $4\times3=12\equiv1\,[11]$، نضرب في $3$: $x\equiv9\,[11]$، إذن \bx{x=11k+9,\ k\in\Z}.
+\QQ{4} $10x\equiv2\,[15]$: $\pgcd(10;15)=5$ و $5$ لا يقسم $2$، إذن المعادلة \textbf{لا تقبل حلولًا} في $\Z$.
+\end{mithal}
+
+\begin{tariqa}[طريقة الجدول]
+نعوض $x$ بكل البواقي الممكنة $0$، $1$، $\ldots$، $n-1$ ونحسب العبارة بترديد $n$، ثم نحتفظ بالبواقي التي تحقق المعادلة.
+\end{tariqa}
+
+\begin{mithal}[{حل في $\Z$ المعادلة $2x^2\equiv5\,[9]$}]
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cEx!12}$x\equiv\ldots\,[9]$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$\\\hline
+$x^2\equiv\ldots\,[9]$ & $0$ & $1$ & $4$ & $0$ & $7$ & $7$ & $0$ & $4$ & $1$\\\hline
+$2x^2\equiv\ldots\,[9]$ & $0$ & $2$ & $8$ & $0$ & $5$ & $5$ & $0$ & $8$ & $2$\\\hline
+\end{tabular}
+\end{center}
+إذن $2x^2\equiv5\,[9]$ يكافئ $x\equiv4\,[9]$ أو $x\equiv5\,[9]$:\par
+\bx{S=\{9k+4\ ;\ 9k+5\ /\ k\in\Z\}}
+\end{mithal}
+
+%=====================================================
+\section{أنظمة التعداد}
+\begin{tarif}
+$x$ عدد طبيعي حيث $x\geqslant2$. كل عدد طبيعي غير معدوم $a$ يكتب بطريقة وحيدة على الشكل:
+\[ a=q_nx^n+q_{n-1}x^{n-1}+\cdots+q_1x+q_0 \]
+حيث $q_0$، $q_1$، $\ldots$، $q_n$ أعداد طبيعية أصغر تمامًا من $x$ و $q_n\neq0$. نكتب $a=\overline{q_nq_{n-1}\ldots q_1q_0}^{(x)}$ ونقول إن $a$ مكتوب في \textbf{نظام التعداد ذي الأساس} $x$.
+\end{tarif}
+
+\begin{molahada}
+\begin{itemize}
+\item الأرقام المستعملة في الأساس $x$ هي $0$، $1$، $\ldots$، $x-1$. فمثلًا في الأساس $2$ نستعمل $0$ و $1$ فقط.
+\item إذا كان $x>10$ نضيف رموزًا للأرقام الأكبر من $9$، مثلًا في الأساس $12$: $\alpha=10$ و $\beta=11$.
+\item الكتابة $\overline{1723}^{(4)}$ غير ممكنة لأن الرقم $7$ ليس أصغر من $4$.
+\end{itemize}
+\end{molahada}
+
+\begin{tariqa}[من الأساس $x$ إلى النظام العشري]
+ننشر الكتابة بقوى الأساس $x$ ونحسب.
+\end{tariqa}
+
+\begin{mithal}
+\begin{itemize}
+\item $\overline{643}^{(8)}=6\times8^2+4\times8+3=384+32+3=\bx{419}$.
+\item $\overline{1302}^{(4)}=1\times4^3+3\times4^2+0\times4+2=64+48+2=\bx{114}$.
+\item $\overline{11101}^{(2)}=2^4+2^3+2^2+1=\bx{29}$.
+\item $\overline{2\alpha5}^{(12)}=2\times12^2+10\times12+5=288+120+5=\bx{413}$.
+\end{itemize}
+\end{mithal}
+
+\begin{tariqa}[من النظام العشري إلى الأساس $x$]
+نقسم العدد على $x$، ثم نقسم الحاصل على $x$، وهكذا حتى نحصل على حاصل معدوم. نكتب البواقي \textbf{من آخر باقٍ إلى أول باقٍ}.
+\end{tariqa}
+
+\begin{mithal}[اكتب $419$ في النظام ذي الأساس $2$]
+\begin{align*}
+419&=2\times209+\mathbf{1} & 209&=2\times104+\mathbf{1} & 104&=2\times52+\mathbf{0}\\
+52&=2\times26+\mathbf{0} & 26&=2\times13+\mathbf{0} & 13&=2\times6+\mathbf{1}\\
+6&=2\times3+\mathbf{0} & 3&=2\times1+\mathbf{1} & 1&=2\times0+\mathbf{1}
+\end{align*}
+نقرأ البواقي من الأخير إلى الأول: \bx{419=\overline{110100011}^{(2)}}.
+\end{mithal}
+
+\begin{mithal}[اكتب $a=\overline{643}^{(8)}$ في الأساس $4$ مباشرة]
+نكتب $8=2\times4$ ونجمع حسب قوى $4$:
+\begin{align*}
+a&=6\times8^2+4\times8+3=6\times4^2\times4+2\times4^2+3\\
+&=(24+2)\times4^2+3=26\times4^2+3=(4^2+2\times4+2)\times4^2+3\\
+&=1\times4^4+2\times4^3+2\times4^2+0\times4+3
+\end{align*}
+إذن \bx{a=\overline{12203}^{(4)}}. (تحقق: $256+128+32+3=419$.)
+\end{mithal}
+
+\begin{khassia}[معايير قابلية القسمة في النظام العشري]
+$a=\overline{q_n\ldots q_1q_0}$ في النظام العشري. باستعمال $10\equiv0\,[2]$، $10\equiv0\,[5]$، $10\equiv1\,[3]$، $10\equiv1\,[9]$، $10\equiv-1\,[11]$:
+\begin{itemize}
+\item $a$ يقبل القسمة على $2$ (على $5$) إذا وفقط إذا كان رقم آحاده $q_0$ يقبل القسمة على $2$ (على $5$).
+\item $a$ يقبل القسمة على $4$ إذا وفقط إذا كان العدد $\overline{q_1q_0}$ يقبل القسمة على $4$.
+\item $a\equiv q_n+\cdots+q_1+q_0\,[3]$ و $a\equiv q_n+\cdots+q_1+q_0\,[9]$.
+\item $a\equiv q_0-q_1+q_2-\cdots\,[11]$.
+\end{itemize}
+\end{khassia}
+
+\begin{mithal}[عين الرقم $\alpha$ حيث $N=\overline{1\alpha4}^{(6)}$ يقبل القسمة على $7$]
+$N=36+6\alpha+4=40+6\alpha$ مع $0\leqslant\alpha\leqslant5$.\par
+$40\equiv5\,[7]$ و $6\equiv-1\,[7]$، إذن $N\equiv5-\alpha\,[7]$.\par
+$N\equiv0\,[7]$ يكافئ $\alpha\equiv5\,[7]$، ومع $0\leqslant\alpha\leqslant5$ نجد \bx{\alpha=5}، و $N=70=7\times10$.
+\end{mithal}
+
+%=====================================================
+\section{الأعداد الأولية}
+\begin{tarif}
+نقول إن عددًا طبيعيًا $p$ \textbf{أولي} إذا كان يقبل قاسمين بالضبط في $\N$ هما $1$ و $p$.
+\end{tarif}
+
+\begin{molahada}
+\begin{itemize}
+\item $0$ و $1$ ليسا أوليين، و $2$ هو العدد الأولي الزوجي الوحيد.
+\item الأعداد الأولية الأصغر من $100$ (عددها $25$):\par
+$2;3;5;7;11;13;17;19;23;29;31;37;41;43;47;53;59;61;67;71;73;79;83;89;97$.
+\item مجموعة الأعداد الأولية غير منتهية.
+\end{itemize}
+\end{molahada}
+
+\begin{khassia}[اختبار أولية عدد]
+$n$ عدد طبيعي حيث $n\geqslant2$. إذا لم يقبل $n$ القسمة على أي عدد أولي $p$ يحقق $p^2\leqslant n$ فإن $n$ أولي.
+\end{khassia}
+
+\begin{mithal}[هل العدد $1999$ أولي؟]
+$\sqrt{1999}\approx44{,}7$. الأعداد الأولية الأصغر من $44{,}7$ هي:
+$2;3;5;7;11;13;17;19;23;29;31;37;41;43$، ولا أحد منها يقسم $1999$.\par
+إذن \bxt{$1999$ عدد أولي}.
+\end{mithal}
+
+\begin{khassia}[التحليل إلى جداء عوامل أولية]
+كل عدد طبيعي $n\geqslant2$ يكتب بطريقة وحيدة (دون اعتبار الترتيب) على الشكل:
+\[ n=p_1^{\alpha_1}\times p_2^{\alpha_2}\times\cdots\times p_k^{\alpha_k} \]
+حيث $p_1$، $\ldots$، $p_k$ أعداد أولية مختلفة و $\alpha_1$، $\ldots$، $\alpha_k$ أعداد طبيعية غير معدومة.\par
+\textbf{عدد قواسم} $n$ في $\N$ هو: \bx{(\alpha_1+1)(\alpha_2+1)\cdots(\alpha_k+1)}.
+\end{khassia}
+
+\begin{mithal}[حلل $7832$ ثم عين عدد قواسمه ومجموعتها]
+$7832=2\times3916=2^2\times1958=2^3\times979=2^3\times11\times89$، إذن \bx{7832=2^3\times11\times89}.\par
+عدد القواسم: $(3+1)(1+1)(1+1)=\bx{16}$. كل قاسم من الشكل $2^{\alpha}\times11^{\beta}\times89^{\gamma}$ مع $0\leqslant\alpha\leqslant3$، $0\leqslant\beta\leqslant1$، $0\leqslant\gamma\leqslant1$:
+\[ D_{7832}=\{1;2;4;8;11;22;44;88;89;178;356;712;979;1958;3916;7832\} \]
+\end{mithal}
+
+\begin{khassia}
+\begin{itemize}
+\item إذا كان $p$ أوليًا و $p\mid ab$ فإن $p\mid a$ أو $p\mid b$.
+\item إذا كان $p$ أوليًا و $p$ لا يقسم $a$ فإن $\pgcd(a;p)=1$.
+\item $\pgcd(a;b)$ هو جداء العوامل الأولية \textbf{المشتركة} بأصغر أس.
+\end{itemize}
+\end{khassia}
+
+\begin{khassia}[مبرهنة فيرما الصغرى (شعبة رياضيات)]
+إذا كان $p$ عددًا أوليًا و $a$ عددًا صحيحًا لا يقبل القسمة على $p$ فإن:
+\[ a^{p-1}\equiv1\,[p] \]
+ومن أجل كل عدد صحيح $a$: $a^p\equiv a\,[p]$.
+\end{khassia}
+
+\begin{mithal}[باقي قسمة $3^{100}$ على $7$]
+$7$ أولي و $7$ لا يقسم $3$، إذن حسب مبرهنة فيرما $3^6\equiv1\,[7]$.\par
+$100=6\times16+4$، إذن $3^{100}=(3^6)^{16}\times3^4\equiv3^4=81\equiv4\,[7]$. الباقي \bx{4}.
+\end{mithal}
+
+%=====================================================
+\section{المضاعف المشترك الأصغر}
+\begin{tarif}
+$a$ و $b$ عددان طبيعيان غير معدومين. أصغر عنصر غير معدوم في مجموعة المضاعفات المشتركة $M_a\cap M_b$ يسمى \textbf{المضاعف المشترك الأصغر} لـ $a$ و $b$، ونرمز له بـ $\ppcm(a;b)$.
+\end{tarif}
+
+\begin{tariqa}[حساب $\pgcd$ و $\ppcm$ بالتحليل]
+نحلل $a$ و $b$ إلى جداء عوامل أولية:
+\begin{itemize}
+\item $\pgcd(a;b)$: جداء العوامل المشتركة، كل عامل بأصغر أس.
+\item $\ppcm(a;b)$: جداء العوامل المشتركة وغير المشتركة، كل عامل بأكبر أس.
+\end{itemize}
+\end{tariqa}
+
+\begin{khassia}
+$a$ و $b$ عددان طبيعيان غير معدومين:
+\begin{enumerate}
+\item \bx{\pgcd(a;b)\times\ppcm(a;b)=ab}.
+\item إذا كان $a\mid b$ فإن $\ppcm(a;b)=b$.
+\item إذا كان $\pgcd(a;b)=1$ فإن $\ppcm(a;b)=ab$.
+\item $\ppcm(ka;kb)=k\,\ppcm(a;b)$ من أجل كل $k\in\N^*$.
+\item $a\mid m$ و $b\mid m$ إذا وفقط إذا كان $\ppcm(a;b)\mid m$.
+\end{enumerate}
+\end{khassia}
+
+\begin{mithal}[$a=256$ و $b=5040$]
+$a=2^8$ و $b=2^4\times3^2\times5\times7$.\par
+$\pgcd(a;b)=2^4=\bx{16}$ و $\ppcm(a;b)=2^8\times3^2\times5\times7=\bx{80640}$.\par
+تحقق: $\dfrac{ab}{\pgcd(a;b)}=\dfrac{256\times5040}{16}=80640$.
+\end{mithal}
+
+\begin{mithal}[{عين الأعداد الصحيحة $n$ حيث $n\equiv3\,[7]$ و $n\equiv12\,[18]$}]
+نلاحظ أن $3+63=66$ و $12+54=66$، إذن $66\equiv3\,[7]$ و $66\equiv12\,[18]$.\par
+الجملة تكافئ $n\equiv66\,[7]$ و $n\equiv66\,[18]$، أي $7\mid n-66$ و $18\mid n-66$.\par
+إذن $\ppcm(7;18)=126$ يقسم $n-66$، ومنه \bx{n=126k+66,\ k\in\Z}.
+\end{mithal}
+
+%=====================================================
+\section{مبرهنة بيزو ومبرهنة غوص}
+\begin{tarif}
+نقول إن العددين الصحيحين $a$ و $b$ \textbf{أوليان فيما بينهما} إذا كان $\pgcd(a;b)=1$.
+\end{tarif}
+
+\begin{khassia}[مبرهنة بيزو]
+$a$ و $b$ عددان صحيحان غير معدومين:
+$a$ و $b$ أوليان فيما بينهما إذا وفقط إذا وُجد عددان صحيحان $u$ و $v$ بحيث:
+\[ au+bv=1 \]
+وبصفة عامة: إذا كان $d=\pgcd(a;b)$ فإنه توجد ثنائية $(u;v)$ من $\Z^2$ حيث $au+bv=d$.
+\end{khassia}
+
+\begin{mithal}[$n$ عدد طبيعي. بين أن $a$ و $b$ أوليان فيما بينهما]
+\QQ{1} $a=n$ و $b=2n+1$: $(-2)\times n+1\times(2n+1)=1$، إذن حسب بيزو \bxt{$a$ و $b$ أوليان فيما بينهما}.
+\QQ{2} $a=2n+3$ و $b=3n+5$: $(-3)(2n+3)+2(3n+5)=-6n-9+6n+10=1$، إذن $\pgcd(a;b)=1$.
+\end{mithal}
+
+\begin{tariqa}[إيجاد ثنائية بيزو $(u;v)$]
+نطبق خوارزمية إقليدس، ثم نكتب كل باقٍ على الشكل $r=a-bq$ ونعوض البواقي \textbf{من الأخير إلى الأول}، مع التبسيط بعد كل تعويض.
+\end{tariqa}
+
+\begin{mithal}[أوجد ثنائية $(x;y)$ من $\Z^2$ حيث $150x+108y=6$]
+من خوارزمية إقليدس (الفقرة 3): $6=24-18$، $18=42-24$، $24=108-2\times42$، $42=150-108$.
+\begin{align*}
+6&=24-18=24-(42-24)=2\times24-42\\
+&=2(108-2\times42)-42=2\times108-5\times42\\
+&=2\times108-5(150-108)=7\times108-5\times150
+\end{align*}
+إذن $150\times(-5)+108\times7=6$، والثنائية \bx{(x;y)=(-5;7)} حل خاص.
+\end{mithal}
+
+\begin{khassia}[مبرهنة غوص]
+$a$، $b$، $c$ أعداد صحيحة غير معدومة. إذا كان $a$ يقسم $bc$ وكان $a$ أوليًا مع $b$ فإن $a$ يقسم $c$.
+\end{khassia}
+
+\begin{khassia}[نتائج]
+\begin{enumerate}
+\item إذا كان $a\mid n$ و $b\mid n$ و $\pgcd(a;b)=1$ فإن $ab\mid n$.
+\item إذا كان $a$ أوليًا مع $b$ ومع $c$ فإن $a$ أولي مع $bc$.
+\item إذا كان $\pgcd(a;b)=1$ فإن $\pgcd(a^m;b^n)=1$ من أجل كل $m,n\in\N^*$.
+\end{enumerate}
+\end{khassia}
+
+\begin{mithal}[عين الثنائيات $(x;y)$ من $\Z^2$ حيث $5x-7y=0$]
+$5x=7y$، إذن $7\mid5x$، و $\pgcd(7;5)=1$، فحسب غوص $7\mid x$، أي $x=7k$ ($k\in\Z$).\par
+بالتعويض: $35k=7y$، أي $y=5k$. إذن \bx{(x;y)=(7k;5k),\ k\in\Z}.
+\end{mithal}
+
+%=====================================================
+\section{المعادلات من الشكل $ax+by=c$}
+\begin{khassia}[مبرهنة]
+$a$، $b$ عددان صحيحان غير معدومين و $c$ عدد صحيح. المعادلة $ax+by=c$ ذات المجهول $(x;y)\in\Z^2$ تقبل حلولًا إذا وفقط إذا كان $\pgcd(a;b)$ يقسم $c$.
+\end{khassia}
+
+\begin{tariqa}[حل $ax+by=c$ في $\Z^2$]
+\begin{enumerate}
+\item نحسب $d=\pgcd(a;b)$: إذا كان $d$ لا يقسم $c$ فلا حلول. وإلا نقسم الطرفين على $d$ فنحصل على $a'x+b'y=c'$ مع $\pgcd(a';b')=1$.
+\item نبحث عن حل خاص $(x_0;y_0)$: بالملاحظة، أو بخوارزمية إقليدس (بيزو)، أو بالموافقات: $a'x\equiv c'\,[b']$.
+\item نطرح: $a'(x-x_0)=-b'(y-y_0)$، ثم نطبق غوص: $b'\mid x-x_0$.
+\item الحلول: $x=x_0+b'k$ و $y=y_0-a'k$ حيث $k\in\Z$.
+\end{enumerate}
+\end{tariqa}
+
+\begin{mithal}[حل في $\Z^2$ المعادلة $2045x-64y=1$]
+$\pgcd(2045;64)=1$ يقسم $1$، إذن المعادلة تقبل حلولًا.\par
+حل خاص: $2045\times21-64\times671=42945-42944=1$، إذن $(21;671)$ حل.\par
+بالطرح: $2045(x-21)=64(y-671)$. $64$ يقسم $2045(x-21)$ و $\pgcd(64;2045)=1$، فحسب غوص $64\mid x-21$، أي $x=64k+21$.\par
+بالتعويض: $2045\times64k=64(y-671)$، أي $y=2045k+671$.\par
+\bx{(x;y)=(64k+21\ ;\ 2045k+671),\ k\in\Z}
+\end{mithal}
+
+\begin{mithal}[حل في $\Z^2$ المعادلة $104x-16y=280$ بالموافقات]
+$\pgcd(104;16)=8$ و $8\mid280$، نقسم على $8$: $13x-2y=35$.\par
+$13x\equiv35\,[2]$ يعطي $x\equiv1\,[2]$. نختار $x_0=3$: $39-2y=35$ ومنه $y_0=2$، إذن $(3;2)$ حل خاص.\par
+بالطرح: $13(x-3)=2(y-2)$، و $\pgcd(2;13)=1$، إذن $2\mid x-3$، أي $x=2k+3$ ثم $y=13k+2$.\par
+\bx{(x;y)=(2k+3\ ;\ 13k+2),\ k\in\Z}
+\end{mithal}
+
+\begin{mithal}[معادلة بدون حلول]
+$6x+9y=4$: $\pgcd(6;9)=3$ و $3$ لا يقسم $4$، إذن المعادلة \textbf{لا تقبل حلولًا} في $\Z^2$.
+\end{mithal}
+
+%=====================================================
+\section{تمارين محلولة}
+\begin{tmr}
+\QQ{1} ادرس حسب قيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $2^n$ على $7$.
+\QQ{2} استنتج باقي القسمة الإقليدية للعدد $1437^{2026}$ على $7$.
+\QQ{3} برهن أنه من أجل كل عدد طبيعي $n$: العدد $A_n=4^{3n}+2^{3n+1}+4$ يقبل القسمة على $7$.
+\QQ{4} نضع من أجل كل عدد طبيعي $n$: $S_n=1+2+2^2+\cdots+2^n$.
+\begin{sq}
+\qa اكتب $S_n$ بدلالة $n$.
+\qb عين قيم العدد الطبيعي $n$ التي يكون من أجلها $S_n$ قابلًا للقسمة على $7$.
+\end{sq}
+\end{tmr}
+\begin{hal}
+\QQ{1} $2^0=1\equiv1\,[7]$، $2^1\equiv2\,[7]$، $2^2\equiv4\,[7]$، $2^3=8\equiv1\,[7]$.\par
+بما أن $2^3\equiv1\,[7]$ فإن من أجل كل $k\in\N$: $2^{3k}=(2^3)^k\equiv1\,[7]$، ثم $2^{3k+1}=2^{3k}\times2\equiv2\,[7]$ و $2^{3k+2}\equiv4\,[7]$:
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|c|c|c|}\hline
+\rowcolor{cEx!12}$n=$ & $3k$ & $3k+1$ & $3k+2$\\\hline
+$2^n\equiv\ldots\,[7]$ & $1$ & $2$ & $4$\\\hline
+\end{tabular}
+\end{center}
+\QQ{2} $1437=7\times205+2$، إذن $1437\equiv2\,[7]$، ومنه $1437^{2026}\equiv2^{2026}\,[7]$.\par
+$2026=3\times675+1$، أي $2026$ من الشكل $3k+1$، فحسب الجدول $2^{2026}\equiv2\,[7]$.\par
+إذن باقي قسمة $1437^{2026}$ على $7$ هو \bx{2}.
+\QQ{3} $4^{3n}=(2^2)^{3n}=2^{6n}=2^{3(2n)}\equiv1\,[7]$ لأن $6n$ من الشكل $3k$.\par
+$3n+1$ من الشكل $3k+1$، إذن $2^{3n+1}\equiv2\,[7]$.\par
+بالجمع: $A_n\equiv1+2+4=7\equiv0\,[7]$. إذن من أجل كل عدد طبيعي $n$: \bx{7\mid A_n}.
+\QQ{4}
+\pa $S_n$ مجموع $n+1$ حدًا متتابعًا من متتالية هندسية أساسها $2$ وحدها الأول $1$:
+\[ S_n=1\times\frac{2^{n+1}-1}{2-1}=\bx{2^{n+1}-1} \]
+\pb $S_n\equiv0\,[7]$ يكافئ $2^{n+1}\equiv1\,[7]$، وحسب الجدول هذا يكافئ $n+1=3k$ ($k\in\N^*$)، أي $n=3k-1$.\par
+إذن \bx{n=3k+2,\ k\in\N}.
+\end{hal}
+
+\begin{tmr}
+نعتبر في $\Z^2$ المعادلة $(E)$: $17x-5y=3$.
+\QQ{1} بين أن المعادلة $(E)$ تقبل حلولًا في $\Z^2$.
+\QQ{2}
+\begin{sq}
+\qa بين أنه إذا كانت $(x;y)$ حلًا للمعادلة $(E)$ فإن $x\equiv4\,[5]$.
+\qb استنتج حلول المعادلة $(E)$.
+\end{sq}
+\QQ{3} $(x;y)$ حل للمعادلة $(E)$ و $d=\pgcd(x;y)$. ما هي القيم الممكنة لـ $d$؟ عين الحلول التي يكون من أجلها $d=3$.
+\QQ{4} $N$ عدد طبيعي حيث $N\equiv1\,[17]$ و $N\equiv4\,[5]$.
+\begin{sq}
+\qa بين أن $N\equiv69\,[85]$.
+\qb عين أصغر عدد $N$ أكبر من $1000$، ثم اكتبه في النظام ذي الأساس $5$.
+\end{sq}
+\end{tmr}
+\begin{hal}
+\QQ{1} $17$ أولي و $17$ لا يقسم $5$، إذن $\pgcd(17;5)=1$، و $1$ يقسم $3$. إذن \bxt{المعادلة $(E)$ تقبل حلولًا في $\Z^2$}.
+\QQ{2}
+\pa إذا كان $17x-5y=3$ فإن $17x=5y+3\equiv3\,[5]$. و $17\equiv2\,[5]$، إذن $2x\equiv3\,[5]$.\par
+نضرب في $3$ (لأن $2\times3=6\equiv1\,[5]$): $6x\equiv9\,[5]$، أي \bx{x\equiv4\,[5]}.
+\pb $x=5k+4$ ($k\in\Z$). نعوض في $(E)$: $17(5k+4)-5y=3$، أي $85k+68-3=5y$، ومنه $y=17k+13$.\par
+عكسيًا: $17(5k+4)-5(17k+13)=68-65=3$ \ok. إذن:
+\[ \bx{(x;y)=(5k+4\ ;\ 17k+13),\ k\in\Z} \]
+\QQ{3} $d\mid x$ و $d\mid y$، إذن $d\mid 17x-5y=3$، ومنه $d\in\{1;3\}$.\par
+$d=3$ يعني $3\mid 5k+4$ و $3\mid17k+13$. لدينا $5k+4\equiv2k+1\,[3]$ و $17k+13\equiv2k+1\,[3]$.\par
+$2k+1\equiv0\,[3]$ يكافئ $2k\equiv2\,[3]$، أي $k\equiv1\,[3]$ (نضرب في $2$ لأن $2\times2\equiv1\,[3]$).\par
+إذن $d=3$ من أجل $k=3m+1$ ($m\in\Z$)، أي \bx{(x;y)=(15m+9\ ;\ 51m+30)}، و $d=1$ في الحالات الأخرى.
+\QQ{4}
+\pa يوجد عددان صحيحان $x$ و $y$ حيث $N=17x+1$ و $N=5y+4$. بالمساواة: $17x-5y=3$، إذن $(x;y)$ حل لـ $(E)$، ومنه $x=5k+4$.\par
+$N=17(5k+4)+1=85k+69$، إذن \bx{N\equiv69\,[85]}.
+\pb $85k+69>1000$ يكافئ $k>\frac{931}{85}\approx10{,}95$، أصغر قيمة $k=11$، ومنه $N=85\times11+69=\bx{1004}$.\par
+تحقق: $1004=17\times59+1$ و $1004=5\times200+4$ \ok.\par
+الكتابة في الأساس $5$:
+\begin{align*}
+1004&=5\times200+\mathbf{4} & 200&=5\times40+\mathbf{0} & 40&=5\times8+\mathbf{0}\\
+8&=5\times1+\mathbf{3} & 1&=5\times0+\mathbf{1}
+\end{align*}
+إذن \bx{1004=\overline{13004}^{(5)}}. (تحقق: $625+3\times125+4=1004$.)
+\end{hal}
+
+%=====================================================
+\section{خلاصة الطرائق}
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{0.62\textwidth}|p{0.3\textwidth}|}\hline
+\rowcolor{cSec!12}\textbf{الطريقة} & \textbf{المطلوب}\\\hline
+نكتب $P(n)=(n+a)Q(n)+r$، فيكون $n+a\mid P(n)\iff n+a\mid r$. & $n+a$ يقسم $P(n)$\\\hline
+نكتب $a=bq+r$ مع $0\leqslant r<b$ (نعدل $q$ إذا كان $a<0$). & باقي القسمة الإقليدية\\\hline
+خوارزمية إقليدس: آخر باقٍ غير معدوم؛ أو التحليل: العوامل المشتركة بأصغر أس. & حساب $\pgcd(a;b)$\\\hline
+نضع $a=da'$، $b=db'$ مع $\pgcd(a';b')=1$. & $\pgcd(a;b)=d$ مع شرط آخر\\\hline
+$d$ يقسم تركيبًا خطيًا يحذف $n$، فنجد $d\mid c$. & $\pgcd$ لعبارتين بدلالة $n$\\\hline
+نبحث عن أصغر $p$ حيث $a^p\equiv1\,[m]$، ثم $n=pk+i$ وجدول البواقي. & بواقي $a^n$ على $m$\\\hline
+نعوض كل عدد بباقيه ونستعمل الدورية أو $a\equiv-1\,[m]$. & باقي قسمة عبارة كبيرة\\\hline
+نبين أن العبارة $\equiv0\,[m]$ باستعمال الجدول. & إثبات قابلية القسمة لكل $n$\\\hline
+نضرب في مقلوب $a$ بترديد $n$، أو نستعمل جدول البواقي. & حل $ax\equiv b\,[n]$ أو معادلة من الدرجة 2\\\hline
+ننشر بقوى الأساس. & من الأساس $x$ إلى العشري\\\hline
+قسمات متتالية على $x$ ونقرأ البواقي من الأخير إلى الأول. & من العشري إلى الأساس $x$\\\hline
+نجرب القسمة على الأعداد الأولية $p$ حيث $p^2\leqslant n$. & أولية عدد\\\hline
+$n=\prod p_i^{\alpha_i}$ وعدد القواسم $\prod(\alpha_i+1)$. & عدد قواسم $n$\\\hline
+$a^{p-1}\equiv1\,[p]$ إذا كان $p$ أوليًا لا يقسم $a$. & مبرهنة فيرما\\\hline
+العوامل المشتركة وغير المشتركة بأكبر أس، أو $\ppcm=\frac{ab}{\pgcd}$. & حساب $\ppcm(a;b)$\\\hline
+نجد $u$، $v$ حيث $au+bv=1$ (بيزو). & $a$ و $b$ أوليان فيما بينهما\\\hline
+$a\mid bc$ و $\pgcd(a;b)=1$ يعطي $a\mid c$. & استعمال غوص\\\hline
+$\pgcd(a;b)\mid c$، حل خاص، الطرح، غوص. & حل $ax+by=c$ في $\Z^2$\\\hline
+نحول الجملة إلى $n\equiv n_0\,[a]$ و $n\equiv n_0\,[b]$ ثم $\ppcm(a;b)\mid n-n_0$. & جملة موافقتين\\\hline
+\end{tabular}
+\end{center}
+
+\end{document}
