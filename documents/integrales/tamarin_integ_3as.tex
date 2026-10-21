@@ -1,0 +1,1020 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}تمارين تجريبية: الدوال الأصلية والحساب التكاملي}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{24}{30}\selectfont\bfseries تمارين تجريبية في الدوال الأصلية والحساب التكاملي}\\[8pt]
+{\color{white}\large تمارين متدرجة مع الحلول المفصلة خطوة بخطوة}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- الشعب العلمية}
+\end{tcolorbox}
+\end{LTR}
+\section{الدوال الأصلية}
+
+% ===================== 1 =====================
+\begin{tamrin}{دوال أصلية مباشرة}
+في كل حالة من الحالات التالية، عيّن دالة أصلية $F$ للدالة $f$ على المجال $I$:
+\begin{sq}
+\qa $f(x)=3x^{2}-4x+5$ \quad ، \quad $I=\R$.
+\qb $f(x)=\dfrac{1}{x^{2}}+\dfrac{2}{\sqrt{x}}$ \quad ، \quad $I=]0;+\infty[$.
+\qc $f(x)=(2x+1)\left(x^{2}+x+3\right)^{3}$ \quad ، \quad $I=\R$.
+\qd $f(x)=\dfrac{x}{x^{2}+1}$ \quad ، \quad $I=\R$.
+\qe $f(x)=e^{2x-1}$ \quad ، \quad $I=\R$.
+\item[(و)] $f(x)=\dfrac{3}{(2x+1)^{2}}$ \quad ، \quad $I=\left]-\dfrac12;+\infty\right[$.
+\item[(ز)] $f(x)=\dfrac{\ln x}{x}$ \quad ، \quad $I=]0;+\infty[$.
+\item[(ح)] $f(x)=\dfrac{x}{\sqrt{x^{2}+4}}$ \quad ، \quad $I=\R$.
+\item[(ط)] $f(x)=\cos(2x)-\sin x$ \quad ، \quad $I=\R$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\textbf{تذكير:} نتعرّف في كل مرة على شكل من أشكال الجدول: $u'u^{n}$ أصليتها $\dfrac{u^{n+1}}{n+1}$، و $\dfrac{u'}{u}$ أصليتها $\ln|u|$، و $\dfrac{u'}{u^{2}}$ أصليتها $-\dfrac{1}{u}$، و $\dfrac{u'}{\sqrt{u}}$ أصليتها $2\sqrt{u}$، و $u'e^{u}$ أصليتها $e^{u}$. وكل الدوال المعطاة مستمرة على $I$ فهي تقبل دوالا أصلية عليه.
+
+\pa دالة كثير حدود؛ نأخذ أصلية كل حد ($x^{n}$ أصليتها $\dfrac{x^{n+1}}{n+1}$):
+\[F(x)=3\cdot\frac{x^{3}}{3}-4\cdot\frac{x^{2}}{2}+5x=\bx{x^{3}-2x^{2}+5x}\]
+
+\pb $\dfrac{1}{x^{2}}$ أصليتها $-\dfrac1x$، و $\dfrac{1}{\sqrt{x}}$ أصليتها $2\sqrt{x}$ على $]0;+\infty[$. إذن:
+\[F(x)=-\frac1x+2\cdot2\sqrt{x}=\bx{-\frac{1}{x}+4\sqrt{x}}\]
+
+\pc نضع $u(x)=x^{2}+x+3$، إذن $u'(x)=2x+1$ و $f=u'u^{3}$ (الشكل $u'u^{n}$ مع $n=3$):
+\[F(x)=\frac{u^{4}(x)}{4}=\bx{\frac{\left(x^{2}+x+3\right)^{4}}{4}}\]
+
+\pd نضع $u(x)=x^{2}+1$، إذن $u'(x)=2x$ و $u(x)>0$ على $\R$. نكتب $f(x)=\dfrac12\cdot\dfrac{2x}{x^{2}+1}=\dfrac12\cdot\dfrac{u'(x)}{u(x)}$، ومنه:
+\[F(x)=\frac12\ln\left(x^{2}+1\right)\ \Rightarrow\ \bx{F(x)=\frac{1}{2}\ln\left(x^{2}+1\right)}\]
+
+\pe نضع $u(x)=2x-1$، $u'(x)=2$. نكتب $f(x)=\dfrac12\cdot 2e^{2x-1}=\dfrac12 u'(x)e^{u(x)}$، ومنه:
+\[\bx{F(x)=\frac{1}{2}e^{2x-1}}\]
+
+\par\smallskip\textbf{(و)} نضع $u(x)=2x+1$، $u'(x)=2$، و $u(x)\neq0$ على $I$. نكتب $f(x)=\dfrac32\cdot\dfrac{2}{(2x+1)^{2}}=\dfrac32\cdot\dfrac{u'(x)}{u^{2}(x)}$، ومنه:
+\[F(x)=\frac32\cdot\left(-\frac{1}{2x+1}\right)=\bx{-\frac{3}{2(2x+1)}}\]
+
+\par\smallskip\textbf{(ز)} نضع $u(x)=\ln x$، $u'(x)=\dfrac1x$، إذن $f(x)=u'(x)\,u(x)$ (الشكل $u'u^{n}$ مع $n=1$):
+\[\bx{F(x)=\frac{(\ln x)^{2}}{2}}\]
+
+\par\smallskip\textbf{(ح)} نضع $u(x)=x^{2}+4>0$، $u'(x)=2x$. نكتب $f(x)=\dfrac12\cdot\dfrac{2x}{\sqrt{x^{2}+4}}=\dfrac12\cdot\dfrac{u'(x)}{\sqrt{u(x)}}$، ومنه:
+\[F(x)=\frac12\cdot2\sqrt{x^{2}+4}=\bx{\sqrt{x^{2}+4}}\]
+
+\par\smallskip\textbf{(ط)} $\cos(ax)$ أصليتها $\dfrac1a\sin(ax)$، و $-\sin x$ أصليتها $\cos x$. إذن:
+\[\bx{F(x)=\frac{1}{2}\sin(2x)+\cos x}\]
+\textbf{تحقق:} في كل حالة نشتق $F$ فنجد $F'(x)=f(x)$.
+\end{hal}
+
+% ===================== 2 =====================
+\begin{tamrin}{الدالة الأصلية التي تأخذ قيمة معلومة}
+\QQ{1} $f$ الدالة المعرفة على المجال $]-1;+\infty[$ بـ: $f(x)=\dfrac{2x+3}{x+1}$.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ من $]-1;+\infty[$: $f(x)=2+\dfrac{1}{x+1}$.
+\qb عيّن الدالة الأصلية $F$ للدالة $f$ على $]-1;+\infty[$ التي تحقق $F(0)=1$.
+\end{sq}
+\QQ{2} $g$ الدالة المعرفة على $\R$ بـ: $g(x)=\dfrac{e^{x}}{\left(e^{x}+1\right)^{2}}$.
+\begin{sq}
+\qa عيّن الدوال الأصلية للدالة $g$ على $\R$.
+\qb عيّن الدالة الأصلية $G$ للدالة $g$ على $\R$ التي تنعدم عند $0$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\QQ{1}
+\pa من أجل كل عدد حقيقي $x$ من $]-1;+\infty[$ لدينا $x+1\neq0$، و:
+\[2+\frac{1}{x+1}=\frac{2(x+1)+1}{x+1}=\frac{2x+3}{x+1}=f(x)\qquad\text{\ok}\]
+\pb أصلية $2$ هي $2x$، و $\dfrac{1}{x+1}$ من الشكل $\dfrac{u'}{u}$ مع $u(x)=x+1>0$ على المجال، فأصليتها $\ln(x+1)$.
+إذن الدوال الأصلية لـ $f$ على $]-1;+\infty[$ هي: $F(x)=2x+\ln(x+1)+c$ حيث $c$ ثابت حقيقي.
+
+الشرط $F(0)=1$ يعطي: $0+\ln1+c=1$، أي $c=1$. ومنه:
+\[\bx{F(x)=2x+\ln(x+1)+1}\]
+
+\QQ{2}
+\pa نضع $u(x)=e^{x}+1$، إذن $u'(x)=e^{x}$ و $u(x)\neq0$، فـ $g=\dfrac{u'}{u^{2}}$ وأصليتها $-\dfrac1u$.
+الدوال الأصلية لـ $g$ على $\R$ هي:
+\[\bx{G_c(x)=-\frac{1}{e^{x}+1}+c}\quad ;\ c\in\R\]
+\pb $G(0)=0$ يعني $-\dfrac{1}{e^{0}+1}+c=0$، أي $-\dfrac12+c=0$، ومنه $c=\dfrac12$:
+\[\bx{G(x)=\frac{1}{2}-\frac{1}{e^{x}+1}}\]
+\end{hal}
+
+% ===================== 3 =====================
+\begin{tamrin}{تعيين دالة أصلية بالمطابقة}
+\QQ{1} $f$ الدالة المعرفة على $\R$ بـ: $f(x)=\left(-x^{2}+3x-1\right)e^{-x}$.
+\begin{sq}
+\qa عيّن الأعداد الحقيقية $a$ و $b$ و $c$ بحيث تكون الدالة $F:x\mapsto\left(ax^{2}+bx+c\right)e^{-x}$ دالة أصلية للدالة $f$ على $\R$.
+\qb استنتج الدالة الأصلية للدالة $f$ على $\R$ التي تأخذ القيمة $2$ عند $0$.
+\end{sq}
+\QQ{2} $g$ الدالة المعرفة على $]-1;+\infty[$ بـ: $g(x)=\dfrac{x^{2}+2x+3}{(x+1)^{2}}$.
+\begin{sq}
+\qa عيّن العددين الحقيقيين $\alpha$ و $\beta$ بحيث من أجل كل $x$ من $]-1;+\infty[$: $g(x)=\alpha+\dfrac{\beta}{(x+1)^{2}}$.
+\qb استنتج دالة أصلية للدالة $g$ على $]-1;+\infty[$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\QQ{1}
+\pa $F$ قابلة للاشتقاق على $\R$ (جداء دالتين قابلتين للاشتقاق). باستعمال $(uv)'=u'v+uv'$ مع $\left(e^{-x}\right)'=-e^{-x}$:
+\begin{align*}
+F'(x)&=(2ax+b)e^{-x}-\left(ax^{2}+bx+c\right)e^{-x}\\
+&=\left(-ax^{2}+(2a-b)x+(b-c)\right)e^{-x}
+\end{align*}
+تكون $F$ أصلية لـ $f$ إذا وفقط إذا كان $F'(x)=f(x)$ من أجل كل $x$، وبما أن $e^{-x}\neq0$ نطابق المعاملات:
+\[\begin{cases}-a=-1\\ 2a-b=3\\ b-c=-1\end{cases}\iff\begin{cases}a=1\\ b=2-3=-1\\ c=b+1=0\end{cases}\]
+إذن: $a=1$ ، $b=-1$ ، $c=0$ و \bx{F(x)=\left(x^{2}-x\right)e^{-x}}.
+
+\pb كل الدوال الأصلية لـ $f$ على $\R$ هي $x\mapsto\left(x^{2}-x\right)e^{-x}+k$ مع $k\in\R$.
+القيمة $2$ عند $0$: $(0-0)e^{0}+k=2$ أي $k=2$. إذن الدالة المطلوبة:
+\[\bx{x\mapsto\left(x^{2}-x\right)e^{-x}+2}\]
+
+\QQ{2}
+\pa نلاحظ أن $x^{2}+2x+3=(x+1)^{2}+2$. إذن من أجل كل $x$ من $]-1;+\infty[$:
+\[g(x)=\frac{(x+1)^{2}+2}{(x+1)^{2}}=1+\frac{2}{(x+1)^{2}}\]
+ومنه \bx{\alpha=1} و \bx{\beta=2}.
+
+\pb أصلية $1$ هي $x$. و $\dfrac{2}{(x+1)^{2}}=2\cdot\dfrac{u'}{u^{2}}$ مع $u(x)=x+1$، فأصليتها $-\dfrac{2}{x+1}$. إذن دالة أصلية لـ $g$ على $]-1;+\infty[$:
+\[\bx{G(x)=x-\frac{2}{x+1}}\]
+\end{hal}
+
+% ===================== 4 =====================
+\begin{tamrin}{دوال أصلية بعد تحويل العبارة}
+\QQ{1} $f$ الدالة المعرفة على $\R$ بـ: $f(x)=\dfrac{e^{2x}}{e^{x}+1}$.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$: $f(x)=e^{x}-\dfrac{e^{x}}{e^{x}+1}$.
+\qb استنتج الدالة الأصلية $F$ للدالة $f$ على $\R$ التي تنعدم عند $0$.
+\end{sq}
+\QQ{2} $h$ الدالة المعرفة على $]0;+\infty[$ بـ: $h(x)=\dfrac{1}{x(x+1)}$.
+\begin{sq}
+\qa تحقق أنه من أجل كل $x$ من $]0;+\infty[$: $h(x)=\dfrac1x-\dfrac{1}{x+1}$.
+\qb استنتج الدالة الأصلية $H$ للدالة $h$ على $]0;+\infty[$ التي تنعدم عند $1$، ثم اكتبها على شكل $\ln$ عبارة واحدة.
+\qc أحسب $\lim\limits_{x\to+\infty}H(x)$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\QQ{1}
+\pa نوحّد المقامات:
+\[e^{x}-\frac{e^{x}}{e^{x}+1}=\frac{e^{x}\left(e^{x}+1\right)-e^{x}}{e^{x}+1}=\frac{e^{2x}+e^{x}-e^{x}}{e^{x}+1}=\frac{e^{2x}}{e^{x}+1}=f(x)\qquad\text{\ok}\]
+\pb أصلية $e^{x}$ هي $e^{x}$. و $\dfrac{e^{x}}{e^{x}+1}$ من الشكل $\dfrac{u'}{u}$ مع $u(x)=e^{x}+1>0$، فأصليتها $\ln\left(e^{x}+1\right)$.
+إذن: $F(x)=e^{x}-\ln\left(e^{x}+1\right)+c$ مع $c\in\R$.
+
+$F(0)=0$ يعني $1-\ln2+c=0$، أي $c=\ln2-1$. ومنه:
+\[\bx{F(x)=e^{x}-\ln\left(e^{x}+1\right)+\ln2-1}\]
+
+\QQ{2}
+\pa من أجل كل $x>0$:
+$\dfrac1x-\dfrac{1}{x+1}=\dfrac{(x+1)-x}{x(x+1)}=\dfrac{1}{x(x+1)}=h(x)$ \ok.
+
+\pb على $]0;+\infty[$: أصلية $\dfrac1x$ هي $\ln x$، وأصلية $\dfrac1{x+1}$ هي $\ln(x+1)$ (لأن $x+1>0$). إذن:
+\[H(x)=\ln x-\ln(x+1)+c=\ln\left(\frac{x}{x+1}\right)+c\]
+$H(1)=0$ يعني $\ln\dfrac12+c=0$، أي $c=\ln2$. ومنه:
+\[H(x)=\ln\left(\frac{x}{x+1}\right)+\ln 2=\bx{\ln\left(\frac{2x}{x+1}\right)}\]
+
+\pc $\dfrac{2x}{x+1}=\dfrac{2}{1+\frac1x}$ و $\lim\limits_{x\to+\infty}\dfrac1x=0$، إذن $\lim\limits_{x\to+\infty}\dfrac{2x}{x+1}=2$، وبما أن $\ln$ مستمرة عند $2$:
+\[\lim_{x\to+\infty}H(x)=\bx{\ln 2}\]
+\end{hal}
+
+\section{حساب التكاملات وخواصها}
+
+% ===================== 5 =====================
+\begin{tamrin}{حساب تكاملات مباشرة}
+أحسب كل تكامل من التكاملات التالية:
+\begin{sq}
+\qa $I_1=\displaystyle\int_{0}^{1}\left(x^{3}-2x+1\right)dx$
+\qb $I_2=\displaystyle\int_{1}^{e}\left(\frac1x+x\right)dx$
+\qc $I_3=\displaystyle\int_{0}^{\ln2}e^{2x}\,dx$
+\qd $I_4=\displaystyle\int_{0}^{1}\frac{x}{x^{2}+1}\,dx$
+\qe $I_5=\displaystyle\int_{0}^{\frac{\pi}{2}}\cos x\,\sin^{2}x\,dx$
+\item[(و)] $I_6=\displaystyle\int_{1}^{4}\frac{1}{\sqrt{x}}\,dx$
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\textbf{القاعدة:} إذا كانت $F$ دالة أصلية للدالة المستمرة $f$ على $[a;b]$ فإن $\displaystyle\int_a^b f(x)\,dx=\big[F(x)\big]_a^b=F(b)-F(a)$.
+
+\pa أصلية $x^{3}-2x+1$ هي $\dfrac{x^{4}}{4}-x^{2}+x$:
+\[I_1=\left[\frac{x^{4}}{4}-x^{2}+x\right]_0^1=\left(\frac14-1+1\right)-0=\bx{\frac{1}{4}}\]
+\pb على $[1;e]$ أصلية $\dfrac1x+x$ هي $\ln x+\dfrac{x^{2}}{2}$:
+\[I_2=\left[\ln x+\frac{x^{2}}{2}\right]_1^e=\left(1+\frac{e^{2}}{2}\right)-\left(0+\frac12\right)=\bx{\frac{1+e^{2}}{2}}\]
+\pc أصلية $e^{2x}$ هي $\dfrac12e^{2x}$، و $e^{2\ln2}=e^{\ln4}=4$:
+\[I_3=\left[\frac12e^{2x}\right]_0^{\ln2}=\frac12(4-1)=\bx{\frac{3}{2}}\]
+\pd $\dfrac{x}{x^{2}+1}=\dfrac12\cdot\dfrac{2x}{x^{2}+1}$ من الشكل $\dfrac12\cdot\dfrac{u'}{u}$:
+\[I_4=\left[\frac12\ln\left(x^{2}+1\right)\right]_0^1=\frac12\ln2-\frac12\ln1=\bx{\frac{\ln 2}{2}}\]
+\pe نضع $u(x)=\sin x$ فـ $u'(x)=\cos x$ و $\cos x\sin^{2}x=u'u^{2}$ أصليتها $\dfrac{u^{3}}{3}$:
+\[I_5=\left[\frac{\sin^{3}x}{3}\right]_0^{\frac{\pi}{2}}=\frac{1^{3}}{3}-0=\bx{\frac{1}{3}}\]
+\par\smallskip\textbf{(و)} أصلية $\dfrac{1}{\sqrt x}$ على $]0;+\infty[$ هي $2\sqrt{x}$:
+\[I_6=\big[2\sqrt{x}\big]_1^4=2\times2-2\times1=\bx{2}\]
+\end{hal}
+
+% ===================== 6 =====================
+\begin{tamrin}{الخطية وعلاقة شال}
+\QQ{1} باستعمال علاقة شال، أحسب $K=\displaystyle\int_{0}^{3}|x-1|\,dx$، ثم فسّر النتيجة بيانيا.
+\QQ{2} نعتبر التكاملين: $I=\displaystyle\int_{0}^{1}\frac{e^{x}}{e^{x}+1}\,dx$ \ و \ $J=\displaystyle\int_{0}^{1}\frac{1}{e^{x}+1}\,dx$.
+\begin{sq}
+\qa أحسب $I$.
+\qb أحسب $I+J$.
+\qc استنتج قيمة $J$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} ندرس إشارة $x-1$ لنزيل القيمة المطلقة:
+\begin{TAB}
+\tkzTabInit[lgt=3.4,espcl=3.2]{$x$/1,$x-1$/1,$|x-1|$/1}{$0$,$1$,$3$}
+\tkzTabLine{,-,z,+,}
+\tkzTabLine{,1-x,z,x-1,}
+\end{TAB}
+\begin{itemize}
+\item على $[0;1]$: $x-1\leqslant0$ إذن $|x-1|=1-x$.
+\item على $[1;3]$: $x-1\geqslant0$ إذن $|x-1|=x-1$.
+\end{itemize}
+حسب علاقة شال:
+\begin{align*}
+K&=\int_0^1(1-x)\,dx+\int_1^3(x-1)\,dx=\left[x-\frac{x^{2}}{2}\right]_0^1+\left[\frac{x^{2}}{2}-x\right]_1^3\\
+&=\left(1-\frac12\right)+\left[\left(\frac92-3\right)-\left(\frac12-1\right)\right]=\frac12+2=\bx{\frac{5}{2}}
+\end{align*}
+\textbf{التفسير البياني:} بما أن $|x-1|\geqslant0$ فإن $K$ هو مساحة الحيز المحدد بمنحنى الدالة $x\mapsto|x-1|$ ومحور الفواصل والمستقيمين $x=0$ و $x=3$؛ وهو مكوّن من مثلثين قائمين: مساحة الأول $\dfrac{1\times1}{2}=\dfrac12$ ومساحة الثاني $\dfrac{2\times2}{2}=2$.
+\begin{GR}{-0.6}{3.6}{-0.6}{2.6}{1.1}
+\Ticks{1,2,3}{1,2}
+\fill[cDef!25] (0,0)--(0,1)--(1,0)--cycle;
+\fill[cThm!20] (1,0)--(3,2)--(3,0)--cycle;
+\draw[cDef,very thick,domain=-0.6:3.6] plot(\x,{abs(\x-1)});
+\draw[dashed] (3,0)--(3,2);
+\node at (0.3,0.3){$\frac12$};
+\node at (2.4,0.55){$2$};
+\node[cDef,above] at (2.2,2){$y=|x-1|$};
+\end{GR}
+
+\QQ{2}
+\pa $\dfrac{e^{x}}{e^{x}+1}$ من الشكل $\dfrac{u'}{u}$ مع $u(x)=e^{x}+1>0$:
+\[I=\Big[\ln\left(e^{x}+1\right)\Big]_0^1=\ln(e+1)-\ln2=\bx{\ln\left(\frac{e+1}{2}\right)}\]
+\pb حسب الخطية:
+\[I+J=\int_0^1\frac{e^{x}+1}{e^{x}+1}\,dx=\int_0^1 1\,dx=\bx{1}\]
+\pc من (ب): $J=1-I$، ومنه:
+\[\bx{J=1-\ln\left(\frac{e+1}{2}\right)}\approx0{,}38\]
+\begin{molahada}
+لا نعرف أصلية مباشرة للدالة $x\mapsto\dfrac{1}{e^{x}+1}$ من الجدول، لذلك نحسب $J$ بواسطة تكامل مرافق $I$ نعرف حسابه، ثم نستعمل الخطية.
+\end{molahada}
+\end{hal}
+
+% ===================== 7 =====================
+\begin{tamrin}{القيمة المتوسطة وحصر تكامل}
+\QQ{1} أحسب القيمة المتوسطة $\mu$ للدالة $f:x\mapsto3x^{2}-2x$ على المجال $[0;2]$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $[0;1]$: $\dfrac12\leqslant\dfrac{1}{1+x^{2}}\leqslant1$.
+\qb استنتج حصرا للتكامل $A=\displaystyle\int_0^1\frac{1}{1+x^{2}}\,dx$.
+\end{sq}
+\QQ{3} نقبل أنه من أجل كل عدد حقيقي $t$: $e^{t}\geqslant1+t$.
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $[0;1]$: $1-x^{2}\leqslant e^{-x^{2}}\leqslant1$.
+\qb استنتج أن: $\dfrac23\leqslant\displaystyle\int_0^1e^{-x^{2}}\,dx\leqslant1$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} القيمة المتوسطة لدالة مستمرة $f$ على $[a;b]$ هي $\mu=\dfrac{1}{b-a}\displaystyle\int_a^bf(x)\,dx$:
+\[\mu=\frac{1}{2-0}\int_0^2\left(3x^{2}-2x\right)dx=\frac12\Big[x^{3}-x^{2}\Big]_0^2=\frac12(8-4)=\bx{2}\]
+
+\QQ{2}
+\pa من أجل $x\in[0;1]$: $0\leqslant x^{2}\leqslant1$، إذن $1\leqslant1+x^{2}\leqslant2$.
+الدالة مقلوب متناقصة تماما على $]0;+\infty[$، فبأخذ المقلوب يُعكس الترتيب:
+\[\bx{\frac{1}{2}\leqslant\frac{1}{1+x^{2}}\leqslant1}\]
+\pb الدوال الثلاث مستمرة على $[0;1]$ و $0<1$، إذن حسب خاصية الترتيب (التكامل يحفظ الترتيب):
+\[\int_0^1\frac12\,dx\leqslant A\leqslant\int_0^11\,dx\quad\Longrightarrow\quad\bx{\frac{1}{2}\leqslant A\leqslant1}\]
+
+\QQ{3}
+\pa \textbf{الحد الأعلى:} من أجل $x\in[0;1]$: $-x^{2}\leqslant0$، والدالة $\exp$ متزايدة تماما، إذن $e^{-x^{2}}\leqslant e^{0}=1$.
+
+\textbf{الحد الأدنى:} نطبق $e^{t}\geqslant1+t$ من أجل $t=-x^{2}$: $e^{-x^{2}}\geqslant1-x^{2}$. إذن:
+\[\bx{1-x^{2}\leqslant e^{-x^{2}}\leqslant1}\]
+\pb بالمكاملة على $[0;1]$ (الترتيب محفوظ لأن $0<1$):
+\[\int_0^1\left(1-x^{2}\right)dx\leqslant\int_0^1e^{-x^{2}}dx\leqslant\int_0^11\,dx\]
+مع $\displaystyle\int_0^1\left(1-x^{2}\right)dx=\left[x-\frac{x^{3}}{3}\right]_0^1=\frac23$ و $\displaystyle\int_0^11\,dx=1$، ومنه:
+\[\bx{\frac{2}{3}\leqslant\int_0^1e^{-x^{2}}\,dx\leqslant1}\]
+\end{hal}
+
+% ===================== 8 =====================
+\begin{tamrin}{استعمال الزوجية والفردية}
+نقبل الخاصيتين التاليتين (لدالة $f$ مستمرة على $[-a;a]$):
+إذا كانت $f$ فردية فإن $\displaystyle\int_{-a}^{a}f(x)\,dx=0$، وإذا كانت $f$ زوجية فإن $\displaystyle\int_{-a}^{a}f(x)\,dx=2\int_{0}^{a}f(x)\,dx$.
+\QQ{1} أحسب $I=\displaystyle\int_{-1}^{1}x^{3}e^{x^{2}}\,dx$ دون حساب دالة أصلية.
+\QQ{2} أحسب $J=\displaystyle\int_{-1}^{1}\left(x^{4}+x^{5}+\sin x\right)dx$.
+\QQ{3} أحسب $K=\displaystyle\int_{-2}^{2}\left(|x|+x^{3}\right)dx$.
+\QQ{4} $g$ الدالة المعرفة على $]-1;1[$ بـ: $g(x)=\ln\left(\dfrac{1+x}{1-x}\right)$. بيّن أن $g$ فردية، ثم استنتج $\displaystyle\int_{-\frac12}^{\frac12}g(x)\,dx$.
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} الدالة $f:x\mapsto x^{3}e^{x^{2}}$ مستمرة على $[-1;1]$ (مجال متناظر بالنسبة إلى $0$)، ومن أجل كل $x$:
+$f(-x)=(-x)^{3}e^{(-x)^{2}}=-x^{3}e^{x^{2}}=-f(x)$، إذن $f$ فردية، ومنه \bx{I=0}.
+
+\QQ{2} حسب الخطية: $J=\displaystyle\int_{-1}^{1}x^{4}dx+\int_{-1}^{1}x^{5}dx+\int_{-1}^{1}\sin x\,dx$.
+\begin{itemize}
+\item $x\mapsto x^{5}$ و $x\mapsto\sin x$ فرديتان، فتكاملاهما على $[-1;1]$ معدومان.
+\item $x\mapsto x^{4}$ زوجية: $\displaystyle\int_{-1}^{1}x^{4}dx=2\int_0^1x^{4}dx=2\left[\frac{x^{5}}{5}\right]_0^1=\frac25$.
+\end{itemize}
+إذن \bx{J=\frac{2}{5}}.
+
+\QQ{3} $x\mapsto|x|$ زوجية، و $x\mapsto x^{3}$ فردية. وعلى $[0;2]$ لدينا $|x|=x$، إذن:
+\[K=2\int_0^2x\,dx+0=2\left[\frac{x^{2}}{2}\right]_0^2=2\times2=\bx{4}\]
+
+\QQ{4} المجال $]-1;1[$ متناظر بالنسبة إلى $0$، ومن أجل كل $x$ منه:
+\[g(-x)=\ln\left(\frac{1-x}{1+x}\right)=\ln\left(\left(\frac{1+x}{1-x}\right)^{-1}\right)=-\ln\left(\frac{1+x}{1-x}\right)=-g(x)\]
+إذن $g$ فردية. وهي مستمرة على $\left[-\frac12;\frac12\right]\subset]-1;1[$، ومنه:
+\[\bx{\int_{-\frac12}^{\frac12}g(x)\,dx=0}\]
+\textbf{تفسير بياني:} المنحنى متناظر بالنسبة إلى المبدأ $O$، فالمساحة فوق محور الفواصل تساوي المساحة تحته، والتكامل (مساحة جبرية) معدوم.
+\end{hal}
+
+\section{التكامل بالتجزئة}
+
+% ===================== 9 =====================
+\begin{tamrin}{تكامل بالتجزئة مرة واحدة}
+باستعمال التكامل بالتجزئة، أحسب:
+\begin{sq}
+\qa $I=\displaystyle\int_0^1xe^{x}\,dx$
+\qb $J=\displaystyle\int_1^e\ln x\,dx$
+\qc $K=\displaystyle\int_0^{\frac{\pi}{2}}x\cos x\,dx$
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\textbf{القاعدة:} إذا كانت $u$ و $v$ قابلتين للاشتقاق على $[a;b]$ ومشتقتاهما مستمرتين فإن:
+\[\int_a^bu(x)v'(x)\,dx=\Big[u(x)v(x)\Big]_a^b-\int_a^bu'(x)v(x)\,dx\]
+نختار $u$ الدالة التي «تبسط بالاشتقاق» (كثير حدود، $\ln$)، و $v'$ دالة نعرف أصليتها.
+
+\pa نضع:
+$\begin{cases}u(x)=x\\ v'(x)=e^{x}\end{cases}$ \ إذن \ $\begin{cases}u'(x)=1\\ v(x)=e^{x}\end{cases}$
+\[I=\Big[xe^{x}\Big]_0^1-\int_0^1e^{x}\,dx=(e-0)-\Big[e^{x}\Big]_0^1=e-(e-1)=\bx{1}\]
+
+\pb نكتب $\ln x=1\times\ln x$ ونضع:
+$\begin{cases}u(x)=\ln x\\ v'(x)=1\end{cases}$ \ إذن \ $\begin{cases}u'(x)=\frac1x\\ v(x)=x\end{cases}$
+\[J=\Big[x\ln x\Big]_1^e-\int_1^ex\cdot\frac1x\,dx=(e\ln e-1\cdot\ln1)-\int_1^e1\,dx=e-(e-1)=\bx{1}\]
+\begin{molahada}
+بنفس الطريقة نجد من أجل $x>0$: $\displaystyle\int_1^x\ln t\,dt=x\ln x-x+1$؛ إذن $x\mapsto x\ln x-x$ دالة أصلية للدالة $\ln$ على $]0;+\infty[$.
+\end{molahada}
+
+\pc نضع:
+$\begin{cases}u(x)=x\\ v'(x)=\cos x\end{cases}$ \ إذن \ $\begin{cases}u'(x)=1\\ v(x)=\sin x\end{cases}$
+\[K=\Big[x\sin x\Big]_0^{\frac{\pi}{2}}-\int_0^{\frac{\pi}{2}}\sin x\,dx=\frac{\pi}{2}-\Big[-\cos x\Big]_0^{\frac{\pi}{2}}=\frac{\pi}{2}-(0+1)=\bx{\frac{\pi}{2}-1}\]
+\end{hal}
+
+% ===================== 10 =====================
+\begin{tamrin}{التكامل بالتجزئة ودالة أصلية}
+\QQ{1} أحسب $I=\displaystyle\int_1^ex\ln x\,dx$.
+\QQ{2} أحسب $J=\displaystyle\int_0^1(2x+1)e^{-x}\,dx$.
+\QQ{3} باستعمال التكامل بالتجزئة، عيّن الدالة الأصلية للدالة $x\mapsto(x+2)e^{x}$ على $\R$ التي تنعدم عند $0$.
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} نضع:
+$\begin{cases}u(x)=\ln x\\ v'(x)=x\end{cases}$ \ إذن \ $\begin{cases}u'(x)=\frac1x\\ v(x)=\frac{x^{2}}{2}\end{cases}$
+\begin{align*}
+I&=\left[\frac{x^{2}}{2}\ln x\right]_1^e-\int_1^e\frac{x^{2}}{2}\cdot\frac1x\,dx=\frac{e^{2}}{2}-\int_1^e\frac{x}{2}\,dx\\
+&=\frac{e^{2}}{2}-\left[\frac{x^{2}}{4}\right]_1^e=\frac{e^{2}}{2}-\frac{e^{2}-1}{4}=\bx{\frac{e^{2}+1}{4}}
+\end{align*}
+
+\QQ{2} نضع:
+$\begin{cases}u(x)=2x+1\\ v'(x)=e^{-x}\end{cases}$ \ إذن \ $\begin{cases}u'(x)=2\\ v(x)=-e^{-x}\end{cases}$
+\begin{align*}
+J&=\Big[-(2x+1)e^{-x}\Big]_0^1+\int_0^12e^{-x}\,dx=\left(-3e^{-1}+1\right)+\Big[-2e^{-x}\Big]_0^1\\
+&=1-\frac3e+\left(-\frac2e+2\right)=\bx{3-\frac{5}{e}}
+\end{align*}
+
+\QQ{3} الدالة الأصلية التي تنعدم عند $0$ هي $F(x)=\displaystyle\int_0^x(t+2)e^{t}\,dt$. نضع:
+$\begin{cases}u(t)=t+2\\ v'(t)=e^{t}\end{cases}$ \ إذن \ $\begin{cases}u'(t)=1\\ v(t)=e^{t}\end{cases}$
+\begin{align*}
+F(x)&=\Big[(t+2)e^{t}\Big]_0^x-\int_0^xe^{t}\,dt=(x+2)e^{x}-2-\left(e^{x}-1\right)
+\end{align*}
+\[\bx{F(x)=(x+1)e^{x}-1}\]
+\textbf{تحقق:} $F'(x)=e^{x}+(x+1)e^{x}=(x+2)e^{x}$ و $F(0)=1-1=0$ \ok.
+\end{hal}
+
+% ===================== 11 =====================
+\begin{tamrin}{التكامل بالتجزئة مرتين}
+\QQ{1} أحسب $I=\displaystyle\int_0^1x^{2}e^{x}\,dx$ (يمكن استعمال $\displaystyle\int_0^1xe^{x}\,dx=1$).
+\QQ{2} أحسب $J=\displaystyle\int_1^e(\ln x)^{2}\,dx$، ثم قارن $I$ و $J$.
+\QQ{3} أحسب $K=\displaystyle\int_1^ex^{2}\ln x\,dx$.
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} نضع:
+$\begin{cases}u(x)=x^{2}\\ v'(x)=e^{x}\end{cases}$ \ إذن \ $\begin{cases}u'(x)=2x\\ v(x)=e^{x}\end{cases}$
+\[I=\Big[x^{2}e^{x}\Big]_0^1-2\int_0^1xe^{x}\,dx=e-2\times1=\bx{e-2}\]
+(التكامل $\int_0^1xe^{x}dx=1$ حُسب هو أيضا بالتجزئة في التمرين 9).
+
+\QQ{2} نضع:
+$\begin{cases}u(x)=(\ln x)^{2}\\ v'(x)=1\end{cases}$ \ إذن \ $\begin{cases}u'(x)=\frac{2\ln x}{x}\\ v(x)=x\end{cases}$
+\[J=\Big[x(\ln x)^{2}\Big]_1^e-\int_1^ex\cdot\frac{2\ln x}{x}\,dx=e-2\int_1^e\ln x\,dx\]
+وقد وجدنا بالتجزئة (التمرين 9) أن $\displaystyle\int_1^e\ln x\,dx=1$، إذن \bx{J=e-2}.
+
+\textbf{المقارنة:} \bx{I=J=e-2\approx0{,}72}.
+
+\QQ{3} نضع:
+$\begin{cases}u(x)=\ln x\\ v'(x)=x^{2}\end{cases}$ \ إذن \ $\begin{cases}u'(x)=\frac1x\\ v(x)=\frac{x^{3}}{3}\end{cases}$
+\begin{align*}
+K&=\left[\frac{x^{3}}{3}\ln x\right]_1^e-\int_1^e\frac{x^{2}}{3}\,dx=\frac{e^{3}}{3}-\left[\frac{x^{3}}{9}\right]_1^e=\frac{e^{3}}{3}-\frac{e^{3}-1}{9}=\bx{\frac{2e^{3}+1}{9}}
+\end{align*}
+\end{hal}
+
+\section{حساب المساحات}
+
+% ===================== 12 =====================
+\begin{tamrin}{مساحة حيز بين منحن ومحور الفواصل}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=x^{2}-2x$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس $\left(O;\vec i,\vec j\right)$ حيث $\|\vec i\|=2\,\text{cm}$.
+\QQ{1} أدرس إشارة $f(x)$ على المجال $[0;3]$.
+\QQ{2} أحسب بـ $\text{cm}^{2}$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ ومحور الفواصل والمستقيمين اللذين معادلتاهما $x=0$ و $x=3$.
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} $f(x)=x(x-2)$ ينعدم عند $0$ و $2$، وهو كثير حدود من الدرجة الثانية معامله الرئيسي موجب، فهو سالب بين الجذرين وموجب خارجهما:
+\begin{TAB}
+\tkzTabInit[lgt=3.4,espcl=3.2]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$0$,$2$,$3$}
+\tkzTabLine{z,-,z,+,}
+\tkzTabLine{,\text{\ar{$(C_f)$ تحت $(xx')$}},,\text{\ar{$(C_f)$ فوق $(xx')$}},}
+\end{TAB}
+
+\QQ{2} \textbf{التمثيل البياني:} الحيز مكوّن من جزأين: $\mathcal{A}_1$ (تحت محور الفواصل على $[0;2]$) و $\mathcal{A}_2$ (فوقه على $[2;3]$).
+\begin{GR}{-0.8}{3.5}{-1.5}{3.5}{1.1}
+\Ticks{1,2,3}{-1,1,2,3}
+\fill[cDef!25,domain=0:2,samples=100] (0,0) -- plot(\x,{\x*\x-2*\x}) -- (2,0) -- cycle;
+\fill[cThm!20,domain=2:3,samples=100] (2,0) -- plot(\x,{\x*\x-2*\x}) -- (3,0) -- cycle;
+\draw[cDef,very thick,domain=-0.8:3.35,samples=100] plot(\x,{\x*\x-2*\x});
+\draw[dashed] (3,0)--(3,3);
+\fill (1,-1) circle (1.5pt);
+\node at (1,-0.45){$\mathcal{A}_1$};
+\node at (2.72,0.9){$\mathcal{A}_2$};
+\node[cDef,right] at (3.05,3.2){$(C_f)$};
+\node[right] at (3,1.8){$x=3$};
+\end{GR}
+
+\textbf{المساحة بوحدة المساحة:} حسب جدول الإشارة، $|f(x)|=-f(x)$ على $[0;2]$ و $|f(x)|=f(x)$ على $[2;3]$:
+\[\mathcal{A}=\int_0^3|f(x)|\,dx=-\int_0^2\left(x^{2}-2x\right)dx+\int_2^3\left(x^{2}-2x\right)dx\]
+مع أصلية $F(x)=\dfrac{x^{3}}{3}-x^{2}$:
+\begin{itemize}
+\item $\mathcal{A}_1=-\big[F(2)-F(0)\big]=-\left(\dfrac83-4\right)=\dfrac43$.
+\item $\mathcal{A}_2=F(3)-F(2)=(9-9)-\left(\dfrac83-4\right)=\dfrac43$.
+\end{itemize}
+إذن $\mathcal{A}=\dfrac43+\dfrac43=\bx{\frac{8}{3}\,\mathrm{u.a}}$.
+
+\textbf{بـ $\text{cm}^{2}$:} $1\,\mathrm{u.a}=\|\vec i\|\times\|\vec j\|=2\times2=4\,\text{cm}^{2}$، ومنه:
+\[\mathcal{A}=\frac83\times4=\bx{\frac{32}{3}\,\mathrm{cm}^{2}\approx10{,}67\,\mathrm{cm}^{2}}\]
+\begin{molahada}
+لو حسبنا مباشرة $\displaystyle\int_0^3f(x)\,dx=F(3)-F(0)=0$ لوجدنا مساحة جبرية معدومة: الجزءان يلغي أحدهما الآخر. لهذا ندرس الإشارة أولا.
+\end{molahada}
+\end{hal}
+
+% ===================== 13 =====================
+\begin{tamrin}{مساحة حيز بين منحنيين}
+$f$ و $g$ الدالتان المعرفتان على $\R$ بـ: $f(x)=x^{2}$ و $g(x)=x+2$، و $(C_f)$ و $(C_g)$ تمثيلاهما البيانيان في معلم متعامد ومتجانس (وحدة الطول $1\,\text{cm}$).
+\QQ{1} عيّن فاصلتي نقطتي تقاطع $(C_f)$ و $(C_g)$، ثم أدرس الوضع النسبي للمنحنيين.
+\QQ{2} أحسب مساحة الحيز المستوي المحدد بالمنحنيين $(C_f)$ و $(C_g)$.
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} $f(x)=g(x)\iff x^{2}-x-2=0\iff(x+1)(x-2)=0\iff x=-1$ أو $x=2$.
+إذن فاصلتا نقطتي التقاطع: \bx{x=-1} و \bx{x=2}.
+
+ندرس إشارة الفرق $g(x)-f(x)=-x^{2}+x+2=-(x+1)(x-2)$ (معامله الرئيسي سالب: موجب بين الجذرين):
+\begin{TAB}
+\tkzTabInit[lgt=3,espcl=3.3]{$x$/1,$g(x)-f(x)$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$-1$,$2$,$+\infty$}
+\tkzTabLine{,-,z,+,z,-,}
+\tkzTabLine{,\text{\ar{$(C_g)$ تحت $(C_f)$}},,\text{\ar{$(C_g)$ فوق $(C_f)$}},,\text{\ar{$(C_g)$ تحت $(C_f)$}},}
+\end{TAB}
+
+\QQ{2} الحيز المحصور بين المنحنيين هو المحدد بالمستقيمين $x=-1$ و $x=2$، وفيه $(C_g)$ فوق $(C_f)$:
+\begin{GR}{-2}{3}{-0.6}{5}{0.9}
+\Ticks{-1,1,2}{1,2,3,4}
+\fill[cRem!25,samples=100] plot[domain=-1:2](\x,{\x+2}) -- plot[domain=2:-1](\x,{\x*\x}) -- cycle;
+\draw[cDef,very thick,domain=-2:2.3,samples=100] plot(\x,{\x*\x});
+\draw[cThm,very thick,domain=-2:3] plot(\x,{\x+2});
+\fill (-1,1) circle (1.6pt) (2,4) circle (1.6pt);
+\node at (0.5,1.4){$\mathcal{A}$};
+\node[cDef,left] at (-1.6,2.6){$(C_f)$};
+\node[cThm,right] at (2.3,4.6){$(C_g)$};
+\end{GR}
+\[\mathcal{A}=\int_{-1}^{2}\big|g(x)-f(x)\big|\,dx=\int_{-1}^{2}\left(-x^{2}+x+2\right)dx=\left[-\frac{x^{3}}{3}+\frac{x^{2}}{2}+2x\right]_{-1}^{2}\]
+\[=\left(-\frac83+2+4\right)-\left(\frac13+\frac12-2\right)=\frac{10}{3}+\frac76=\bx{\frac{9}{2}\,\mathrm{u.a}}\]
+وبما أن $1\,\mathrm{u.a}=1\times1=1\,\text{cm}^{2}$: \bx{\mathcal{A}=4{,}5\,\mathrm{cm}^{2}}.
+\end{hal}
+
+% ===================== 14 =====================
+\begin{tamrin}{مساحة بين منحن ومستقيم مقارب}
+$f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=x-1+\dfrac{\ln x}{x}$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس حيث $\|\vec i\|=2\,\text{cm}$.
+\QQ{1} بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x-1$ مقارب مائل للمنحنى $(C_f)$ عند $+\infty$، وأدرس الوضع النسبي لـ $(C_f)$ و $(\Delta)$.
+\QQ{2} أحسب بـ $\text{cm}^{2}$ مساحة الحيز المستوي المحدد بـ $(C_f)$ و $(\Delta)$ والمستقيمين اللذين معادلتاهما $x=1$ و $x=e$.
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} $f(x)-(x-1)=\dfrac{\ln x}{x}$، و $\lim\limits_{x\to+\infty}\dfrac{\ln x}{x}=0$ (نهاية مرجعية)، إذن $\lim\limits_{x\to+\infty}\big[f(x)-(x-1)\big]=0$: المستقيم $(\Delta):y=x-1$ \bxt{مقارب مائل لـ $(C_f)$ عند $+\infty$}.
+
+إشارة $f(x)-(x-1)=\dfrac{\ln x}{x}$ هي إشارة $\ln x$ (لأن $x>0$):
+\begin{TAB}
+\tkzTabInit[lgt=3.8,espcl=3.4]{$x$/1,$f(x)-(x-1)$/1,\ar{الوضع النسبي}/1.2}{$0$,$1$,$+\infty$}
+\tkzTabLine{d,-,z,+,}
+\tkzTabLine{,\text{\ar{$(C_f)$ تحت $(\Delta)$}},,\text{\ar{$(C_f)$ فوق $(\Delta)$}},}
+\end{TAB}
+و $(C_f)$ يقطع $(\Delta)$ في النقطة $A(1;0)$.
+
+\QQ{2} على $[1;e]$ المنحنى $(C_f)$ فوق $(\Delta)$:
+\begin{GR}{-0.5}{3.6}{-2}{3}{1.2}
+\Ticks{1,2,3}{-1,1,2}
+\fill[cEx!25,samples=100] plot[domain=1:2.71828](\x,{\x-1+ln(\x)/\x}) -- plot[domain=2.71828:1](\x,{\x-1}) -- cycle;
+\draw[cDef,very thick,domain=0.38:3.6,samples=150] plot(\x,{\x-1+ln(\x)/\x});
+\draw[cThm,thick,domain=-0.5:3.6] plot(\x,{\x-1});
+\draw[dashed] (2.71828,0)--(2.71828,2.2);
+\node[below,font=\scriptsize] at (2.71828,0){$e$};
+\fill (1,0) circle (1.6pt);
+\node at (2.35,1.55){$\mathcal{A}$};
+\node[cDef,left] at (1.2,1.1){$(C_f)$};
+\node[cThm,right] at (2.9,1.5){$(\Delta)$};
+\end{GR}
+\[\mathcal{A}=\int_1^e\big|f(x)-(x-1)\big|\,dx=\int_1^e\frac{\ln x}{x}\,dx\]
+$\dfrac{\ln x}{x}=\dfrac1x\cdot\ln x$ من الشكل $u'u$ مع $u(x)=\ln x$، أصليته $\dfrac{(\ln x)^{2}}{2}$:
+\[\mathcal{A}=\left[\frac{(\ln x)^{2}}{2}\right]_1^e=\frac{1}{2}-0=\bx{\frac{1}{2}\,\mathrm{u.a}}\]
+$1\,\mathrm{u.a}=2\times2=4\,\text{cm}^{2}$، ومنه \bx{\mathcal{A}=2\,\mathrm{cm}^{2}}.
+\end{hal}
+
+% ===================== 15 =====================
+\begin{tamrin}{مساحة باستعمال التكامل بالتجزئة}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=(x-1)e^{x}$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس حيث $\|\vec i\|=2\,\text{cm}$.
+\QQ{1} أدرس إشارة $f(x)$ على $\R$.
+\QQ{2} باستعمال التكامل بالتجزئة، عيّن دالة أصلية للدالة $f$ على $\R$.
+\QQ{3} أحسب بوحدة المساحة ثم بـ $\text{cm}^{2}$ مساحة الحيز المستوي المحدد بـ $(C_f)$ ومحور الفواصل والمستقيمين اللذين معادلتاهما $x=0$ و $x=2$.
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} $e^{x}>0$ من أجل كل $x$، فإشارة $f(x)$ هي إشارة $x-1$:
+\begin{TAB}
+\tkzTabInit[lgt=3.4,espcl=3.4]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$1$,$+\infty$}
+\tkzTabLine{,-,z,+,}
+\tkzTabLine{,\text{\ar{$(C_f)$ تحت $(xx')$}},,\text{\ar{$(C_f)$ فوق $(xx')$}},}
+\end{TAB}
+
+\QQ{2} $F(x)=\displaystyle\int_0^x(t-1)e^{t}\,dt$. نضع
+$\begin{cases}u(t)=t-1\\ v'(t)=e^{t}\end{cases}$ \ إذن \ $\begin{cases}u'(t)=1\\ v(t)=e^{t}\end{cases}$:
+\[F(x)=\Big[(t-1)e^{t}\Big]_0^x-\int_0^xe^{t}\,dt=(x-1)e^{x}+1-e^{x}+1=(x-2)e^{x}+2\]
+إذن \bx{x\mapsto(x-2)e^{x}} دالة أصلية لـ $f$ على $\R$ (تحقق: $\left((x-2)e^{x}\right)'=e^{x}+(x-2)e^{x}=(x-1)e^{x}$ \ok).
+
+\QQ{3} على $[0;2]$ الحيز مكوّن من جزأين: $\mathcal{A}_1$ على $[0;1]$ (تحت محور الفواصل) و $\mathcal{A}_2$ على $[1;2]$ (فوقه):
+\begin{GR}{-2.5}{2.6}{-1.5}{8}{0.75}
+\Ticks{-2,-1,1,2}{-1,2,4,6}
+\fill[cDef!25,domain=0:1,samples=100] (0,0) -- plot(\x,{(\x-1)*exp(\x)}) -- (1,0) -- cycle;
+\fill[cThm!20,domain=1:2,samples=100] (1,0) -- plot(\x,{(\x-1)*exp(\x)}) -- (2,0) -- cycle;
+\draw[cDef,very thick,domain=-2.5:2.25,samples=150] plot(\x,{(\x-1)*exp(\x)});
+\draw[dashed] (2,0)--(2,7.389);
+\fill (0,-1) circle (1.6pt) (1,0) circle (1.6pt);
+\node at (0.45,-0.45){$\mathcal{A}_1$};
+\node at (1.7,1.7){$\mathcal{A}_2$};
+\node[cDef,left] at (2.0,7.6){$(C_f)$};
+\end{GR}
+باستعمال جدول الإشارة والأصلية $G(x)=(x-2)e^{x}$:
+\begin{itemize}
+\item $\mathcal{A}_1=\displaystyle\int_0^1-f(x)\,dx=-\big[G(1)-G(0)\big]=-\big[-e-(-2)\big]=e-2$.
+\item $\mathcal{A}_2=\displaystyle\int_1^2f(x)\,dx=G(2)-G(1)=0-(-e)=e$.
+\end{itemize}
+\[\mathcal{A}=\int_0^2|f(x)|\,dx=\mathcal{A}_1+\mathcal{A}_2=(e-2)+e=\bx{(2e-2)\,\mathrm{u.a}}\approx3{,}44\,\mathrm{u.a}\]
+$1\,\mathrm{u.a}=4\,\text{cm}^{2}$، إذن:
+\[\mathcal{A}=4(2e-2)=\bx{(8e-8)\,\mathrm{cm}^{2}\approx13{,}75\,\mathrm{cm}^{2}}\]
+\end{hal}
+
+\section{اختيار من متعدد وصحيح أم خطأ}
+
+% ===================== 16 =====================
+\begin{tamrin}{اختيار من متعدد}
+في كل حالة من الحالات التالية، اختر الجواب الصحيح الوحيد من بين الأجوبة الثلاثة المقترحة مع التعليل.
+
+\QQ{1} دالة أصلية للدالة $x\mapsto2xe^{x^{2}}$ على $\R$ هي:
+\ABC{$x\mapsto e^{x^{2}}$}{$x\mapsto x^{2}e^{x^{2}}$}{$x\mapsto2e^{x^{2}}$}
+
+\QQ{2} $\displaystyle\int_0^1(2x+1)\,dx$ يساوي:
+\ABC{$1$}{$2$}{$3$}
+
+\QQ{3} $\displaystyle\int_1^e\frac{1}{x}\,dx$ يساوي:
+\ABC{$e$}{$0$}{$1$}
+
+\QQ{4} القيمة المتوسطة للدالة $x\mapsto x^{2}$ على المجال $[0;3]$ هي:
+\ABC{$3$}{$9$}{$1$}
+
+\QQ{5} $\displaystyle\int_{-1}^{1}\left(x^{3}+1\right)dx$ يساوي:
+\ABC{$0$}{$2$}{$1$}
+
+\QQ{6} $\displaystyle\int_0^{\ln3}e^{x}\,dx$ يساوي:
+\ABC{$3$}{$\ln 3$}{$2$}
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} \textbf{الجواب الصحيح: (أ).}
+نضع $u(x)=x^{2}$، $u'(x)=2x$: الدالة من الشكل $u'e^{u}$، أصليتها $e^{u}$، أي \bx{x\mapsto e^{x^{2}}}.
+(تحقق: $\left(e^{x^{2}}\right)'=2xe^{x^{2}}$، بينما مشتقة $2e^{x^{2}}$ هي $4xe^{x^{2}}$.)
+
+\QQ{2} \textbf{الجواب الصحيح: (ب).}
+$\displaystyle\int_0^1(2x+1)\,dx=\Big[x^{2}+x\Big]_0^1=1+1=\bx{2}$.
+
+\QQ{3} \textbf{الجواب الصحيح: (جـ).}
+على $[1;e]$: $\displaystyle\int_1^e\frac1x\,dx=\Big[\ln x\Big]_1^e=\ln e-\ln1=\bx{1}$.
+
+\QQ{4} \textbf{الجواب الصحيح: (أ).}
+$\mu=\dfrac{1}{3-0}\displaystyle\int_0^3x^{2}\,dx=\frac13\left[\frac{x^{3}}{3}\right]_0^3=\frac13\times9=\bx{3}$.
+
+\QQ{5} \textbf{الجواب الصحيح: (ب).}
+$x\mapsto x^{3}$ فردية فتكاملها على $[-1;1]$ معدوم، و $\displaystyle\int_{-1}^{1}1\,dx=2$، ومنه النتيجة \bx{2}.
+
+\QQ{6} \textbf{الجواب الصحيح: (جـ).}
+$\displaystyle\int_0^{\ln3}e^{x}\,dx=\Big[e^{x}\Big]_0^{\ln3}=e^{\ln3}-e^{0}=3-1=\bx{2}$.
+\end{hal}
+
+% ===================== 17 =====================
+\begin{tamrin}{صحيح أم خطأ}
+أجب بـ «صحيح» أو «خطأ» مع التعليل: برّر كل عبارة صحيحة، وانقض كل عبارة خاطئة بمثال مضاد.
+\QQ{1} كل دالة مستمرة على مجال $I$ تقبل دوالا أصلية على $I$.
+\QQ{2} إذا كانت $F$ و $G$ دالتين أصليتين لنفس الدالة $f$ على مجال $I$ فإن $F-G$ دالة ثابتة على $I$.
+\QQ{3} $\displaystyle\int_0^1xe^{x}\,dx=\left(\int_0^1x\,dx\right)\times\left(\int_0^1e^{x}\,dx\right)$.
+\QQ{4} إذا كانت $f$ و $g$ مستمرتين على $[a;b]$ مع $a<b$، و $f(x)\leqslant g(x)$ من أجل كل $x$ من $[a;b]$، فإن $\displaystyle\int_a^bf(x)\,dx\leqslant\int_a^bg(x)\,dx$.
+\QQ{5} الدالة $x\mapsto\ln\left(x^{2}+1\right)$ دالة أصلية للدالة $x\mapsto\dfrac{1}{x^{2}+1}$ على $\R$.
+\QQ{6} إذا كانت $f$ مستمرة على $[a;b]$ و $\displaystyle\int_a^bf(x)\,dx\geqslant0$ فإن $f(x)\geqslant0$ من أجل كل $x$ من $[a;b]$.
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} \textbf{صحيح.} هذه مبرهنة الدرس: كل دالة مستمرة على مجال تقبل دوالا أصلية عليه (منها $x\mapsto\int_a^xf(t)\,dt$ حيث $a\in I$).
+
+\QQ{2} \textbf{صحيح.} $(F-G)'=F'-G'=f-f=0$ على المجال $I$، والدالة التي مشتقتها معدومة على \textbf{مجال} ثابتة.
+
+\QQ{3} \textbf{خطأ.} التكامل لا يحوّل الجداء إلى جداء. بالتجزئة (التمرين 9): $\displaystyle\int_0^1xe^{x}dx=1$، بينما
+$\left(\displaystyle\int_0^1x\,dx\right)\left(\int_0^1e^{x}dx\right)=\dfrac12(e-1)\approx0{,}86\neq1$.
+
+\QQ{4} \textbf{صحيح.} $g-f\geqslant0$ ومستمرة على $[a;b]$ مع $a<b$، فحسب الإيجابية $\displaystyle\int_a^b\big(g(x)-f(x)\big)dx\geqslant0$، وبالخطية نحصل على المطلوب.
+
+\QQ{5} \textbf{خطأ.} $\left(\ln\left(x^{2}+1\right)\right)'=\dfrac{2x}{x^{2}+1}$، وهي تختلف عن $\dfrac{1}{x^{2}+1}$ (مثلا عند $x=0$: $0\neq1$).
+
+\QQ{6} \textbf{خطأ.} مثال مضاد: $f(x)=x$ على $[-1;2]$: $\displaystyle\int_{-1}^{2}x\,dx=\left[\frac{x^{2}}{2}\right]_{-1}^{2}=2-\frac12=\frac32\geqslant0$، لكن $f(-1)=-1<0$.
+(العكس صحيح: إذا كانت $f\geqslant0$ على $[a;b]$ مع $a<b$ فإن التكامل موجب.)
+\end{hal}
+
+\section{تمارين شعبة رياضيات}
+
+% ===================== 18 =====================
+\begin{tamrin}{متتالية معرفة بتكامل -- شعبة رياضيات}
+من أجل كل عدد طبيعي $n$ نضع: $u_n=\displaystyle\int_0^1\frac{x^{n}}{1+x}\,dx$.
+\QQ{1} أحسب $u_0$ و $u_1$.
+\QQ{2} بيّن أن المتتالية $(u_n)$ متناقصة.
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $0\leqslant u_n\leqslant\dfrac{1}{n+1}$.
+\qb استنتج أن $(u_n)$ متقاربة، وعيّن نهايتها.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $u_n+u_{n+1}=\dfrac{1}{n+1}$، ثم استنتج $u_2$.
+\qb استنتج أنه من أجل كل عدد طبيعي $n\geqslant1$: $\dfrac{1}{2(n+1)}\leqslant u_n\leqslant\dfrac{1}{2n}$.
+\qc أحسب $\limn n\,u_n$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} $u_0=\displaystyle\int_0^1\frac{1}{1+x}\,dx=\Big[\ln(1+x)\Big]_0^1=\bx{\ln2}$.
+
+$\dfrac{x}{1+x}=\dfrac{(1+x)-1}{1+x}=1-\dfrac{1}{1+x}$، إذن:
+$u_1=\displaystyle\int_0^1\left(1-\frac{1}{1+x}\right)dx=\Big[x-\ln(1+x)\Big]_0^1=\bx{1-\ln2}$.
+
+\QQ{2} من أجل كل $n\in\N$، حسب الخطية:
+\[u_{n+1}-u_n=\int_0^1\frac{x^{n+1}-x^{n}}{1+x}\,dx=\int_0^1\frac{x^{n}(x-1)}{1+x}\,dx\]
+من أجل $x\in[0;1]$: $x^{n}\geqslant0$ و $x-1\leqslant0$ و $1+x>0$، إذن $\dfrac{x^{n}(x-1)}{1+x}\leqslant0$، وبما أن $0<1$ فالتكامل سالب: $u_{n+1}-u_n\leqslant0$.
+إذن \bxt{المتتالية $(u_n)$ متناقصة}.
+
+\QQ{3}
+\pa من أجل $x\in[0;1]$: $1\leqslant1+x$ ، إذن $0\leqslant\dfrac{1}{1+x}\leqslant1$، وبالضرب في $x^{n}\geqslant0$:
+\[0\leqslant\frac{x^{n}}{1+x}\leqslant x^{n}\]
+بالمكاملة على $[0;1]$ (الترتيب محفوظ): $0\leqslant u_n\leqslant\displaystyle\int_0^1x^{n}dx=\left[\frac{x^{n+1}}{n+1}\right]_0^1$، ومنه:
+\[\bx{0\leqslant u_n\leqslant\frac{1}{n+1}}\]
+\pb $\limn\dfrac{1}{n+1}=0$، وحسب مبرهنة الحصر (الدركي): \bx{\limn u_n=0}، إذن $(u_n)$ متقاربة.
+(ويمكن أيضا: متناقصة ومحدودة من الأسفل بـ $0$ فهي متقاربة.)
+
+\QQ{4}
+\pa حسب الخطية:
+\[u_n+u_{n+1}=\int_0^1\frac{x^{n}+x^{n+1}}{1+x}\,dx=\int_0^1\frac{x^{n}(1+x)}{1+x}\,dx=\int_0^1x^{n}dx=\bx{\frac{1}{n+1}}\]
+من أجل $n=1$: $u_1+u_2=\dfrac12$، إذن $u_2=\dfrac12-(1-\ln2)=\bx{\ln2-\frac{1}{2}}$.
+
+\pb $(u_n)$ متناقصة إذن $u_{n+1}\leqslant u_n$ من أجل كل $n$.
+\begin{itemize}
+\item من جهة: $\dfrac{1}{n+1}=u_n+u_{n+1}\leqslant u_n+u_n=2u_n$، ومنه $u_n\geqslant\dfrac{1}{2(n+1)}$.
+\item من جهة أخرى، من أجل $n\geqslant1$ نطبق المساواة على الرتبة $n-1$: $u_{n-1}+u_n=\dfrac1n$، و $u_n\leqslant u_{n-1}$، إذن $2u_n\leqslant u_{n-1}+u_n=\dfrac1n$، ومنه $u_n\leqslant\dfrac{1}{2n}$.
+\end{itemize}
+\[\bx{\frac{1}{2(n+1)}\leqslant u_n\leqslant\frac{1}{2n}}\quad;\ n\geqslant1\]
+\pc بالضرب في $n>0$: $\dfrac{n}{2(n+1)}\leqslant n\,u_n\leqslant\dfrac12$.
+و $\limn\dfrac{n}{2(n+1)}=\limn\dfrac{1}{2\left(1+\frac1n\right)}=\dfrac12$، إذن حسب الحصر:
+\[\bx{\limn n\,u_n=\frac{1}{2}}\]
+\textbf{تحقق عددي:} $u_1\approx0{,}307$ و $u_2\approx0{,}193$، وكلاهما في الحصر $\left[\frac14;\frac12\right]$ ثم $\left[\frac16;\frac14\right]$.
+\end{hal}
+
+% ===================== 19 =====================
+\begin{tamrin}{دالة معرفة بتكامل -- شعبة رياضيات}
+نعتبر الدالة $F$ المعرفة على $\R$ بـ: $F(x)=\displaystyle\int_0^xe^{-t^{2}}\,dt$، و $(C_F)$ تمثيلها البياني في معلم متعامد ومتجانس.
+\QQ{1} برّر أن $F$ قابلة للاشتقاق على $\R$، أحسب $F'(x)$، ثم استنتج اتجاه تغير $F$. أحسب $F(0)$.
+\QQ{2} نضع من أجل كل $x$ من $\R$: $G(x)=F(x)+F(-x)$. أحسب $G'(x)$ ثم استنتج أن $F$ دالة فردية.
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه من أجل كل $t\geqslant1$: $e^{-t^{2}}\leqslant e^{-t}$.
+\qb استنتج أنه من أجل كل $x\geqslant1$: $F(x)\leqslant F(1)+\dfrac1e-e^{-x}$.
+\qc بيّن أن $F(1)\leqslant1$، ثم استنتج أنه من أجل كل $x\geqslant0$: $F(x)<1+\dfrac1e$.
+\qd نقبل أن الدالة المتزايدة والمحدودة من الأعلى على $[0;+\infty[$ تقبل نهاية منتهية $\ell$ عند $+\infty$. ماذا تستنتج؟ وما هي النهاية عند $-\infty$؟
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa أكتب معادلة المماس $(T)$ لـ $(C_F)$ عند المبدأ $O$.
+\qb بيّن أنه من أجل كل $x\geqslant0$: $F(x)\leqslant x$، ثم استنتج الوضع النسبي لـ $(C_F)$ و $(T)$ على $\R$.
+\end{sq}
+\QQ{5} شكّل جدول تغيرات $F$، ثم أنشئ $(T)$ و $(C_F)$ (نأخذ $\ell\approx0{,}89$).
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} الدالة $f:t\mapsto e^{-t^{2}}$ مستمرة على $\R$، إذن $F:x\mapsto\displaystyle\int_0^xf(t)\,dt$ هي الدالة الأصلية لـ $f$ على $\R$ التي تنعدم عند $0$. ومنه $F$ قابلة للاشتقاق على $\R$ و:
+\[\bx{F'(x)=e^{-x^{2}}}\qquad;\qquad \bx{F(0)=\int_0^0e^{-t^{2}}dt=0}\]
+بما أن $F'(x)=e^{-x^{2}}>0$ من أجل كل $x$، فإن \bxt{$F$ متزايدة تماما على $\R$}.
+
+\QQ{2} $G$ قابلة للاشتقاق على $\R$، وباستعمال مشتقة الدالة المركبة $\big(F(-x)\big)'=-F'(-x)$:
+\[G'(x)=F'(x)-F'(-x)=e^{-x^{2}}-e^{-(-x)^{2}}=0\]
+إذن $G$ ثابتة على $\R$ (مجال)، و $G(0)=2F(0)=0$، ومنه $G(x)=0$ أي $F(-x)=-F(x)$ من أجل كل $x$.
+و $\R$ متناظر بالنسبة إلى $0$، إذن \bxt{$F$ دالة فردية} و $(C_F)$ متناظر بالنسبة إلى المبدأ $O$.
+
+\QQ{3}
+\pa من أجل $t\geqslant1$: $t^{2}-t=t(t-1)\geqslant0$، أي $-t^{2}\leqslant-t$، والدالة $\exp$ متزايدة تماما، إذن \bx{e^{-t^{2}}\leqslant e^{-t}}.
+
+\pb حسب علاقة شال، من أجل $x\geqslant1$: $F(x)=F(1)+\displaystyle\int_1^xe^{-t^{2}}dt$. وبمكاملة المتباينة (أ) على $[1;x]$ (مع $1\leqslant x$):
+\[\int_1^xe^{-t^{2}}dt\leqslant\int_1^xe^{-t}dt=\Big[-e^{-t}\Big]_1^x=\frac1e-e^{-x}\]
+ومنه: \bx{F(x)\leqslant F(1)+\frac{1}{e}-e^{-x}}.
+
+\pc من أجل $t\in[0;1]$: $e^{-t^{2}}\leqslant1$، فبالمكاملة: $F(1)\leqslant\displaystyle\int_0^11\,dt=1$.
+\begin{itemize}
+\item إذا كان $x\geqslant1$: من (ب) و $e^{-x}>0$: $F(x)<F(1)+\dfrac1e\leqslant1+\dfrac1e$.
+\item إذا كان $0\leqslant x\leqslant1$: $F$ متزايدة إذن $F(x)\leqslant F(1)\leqslant1<1+\dfrac1e$.
+\end{itemize}
+إذن من أجل كل $x\geqslant0$: \bx{F(x)<1+\frac{1}{e}}.
+
+\pd $F$ متزايدة على $[0;+\infty[$ ومحدودة من الأعلى بـ $1+\frac1e$، إذن تقبل نهاية منتهية: $\lim\limits_{x\to+\infty}F(x)=\ell$ مع $0<\ell\leqslant1+\frac1e$.
+هندسيا: المستقيم ذو المعادلة $y=\ell$ مقارب أفقي لـ $(C_F)$ عند $+\infty$.
+وبما أن $F$ فردية: $\lim\limits_{x\to-\infty}F(x)=\lim\limits_{x\to+\infty}\big(-F(x)\big)=\bx{-\ell}$، والمستقيم $y=-\ell$ مقارب أفقي عند $-\infty$.
+
+\QQ{4}
+\pa $F(0)=0$ و $F'(0)=e^{0}=1$، إذن $(T):y=F'(0)(x-0)+F(0)$، أي \bx{(T):\ y=x}.
+
+\pb نضع $h(x)=x-F(x)$ على $[0;+\infty[$: $h'(x)=1-e^{-x^{2}}\geqslant0$ لأن $-x^{2}\leqslant0$ يعطي $e^{-x^{2}}\leqslant1$. إذن $h$ متزايدة على $[0;+\infty[$ و $h(0)=0$، ومنه $h(x)\geqslant0$ أي \bx{F(x)\leqslant x} من أجل $x\geqslant0$.
+
+بالفردية: من أجل $x\leqslant0$ لدينا $-x\geqslant0$ و $F(-x)\leqslant-x$، أي $-F(x)\leqslant-x$، ومنه $F(x)\geqslant x$.
+\begin{TAB}
+\tkzTabInit[lgt=3.4,espcl=3.4]{$x$/1,$F(x)-x$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$0$,$+\infty$}
+\tkzTabLine{,+,z,-,}
+\tkzTabLine{,\text{\ar{$(C_F)$ فوق $(T)$}},,\text{\ar{$(C_F)$ تحت $(T)$}},}
+\end{TAB}
+($(C_F)$ يخترق مماسه عند $O$: النقطة $O$ نقطة انعطاف.)
+
+\QQ{5} جدول التغيرات:
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3.4]{$x$/1,$F'(x)$/1,$F(x)$/2}{$-\infty$,$0$,$+\infty$}
+\tkzTabLine{,+,t,+,}
+\tkzTabVar{-/$-\ell$,R/,+/$\ell$}
+\tkzTabIma{1}{3}{2}{$0$}
+\end{TAB}
+\begin{GR}{-3.2}{3.2}{-1.6}{1.6}{1.3}
+\Ticks{-3,-2,-1,1,2,3}{-1,1}
+\draw[cRem,dashed] (-3.2,0.886)--(3.2,0.886) (-3.2,-0.886)--(3.2,-0.886);
+\draw[cThm,thick,domain=-1.6:1.6] plot(\x,{\x});
+\draw[cDef,very thick,smooth] plot coordinates {(-3.2,-0.8862)(-3,-0.8862)(-2.5,-0.8859)(-2,-0.8821)(-1.5,-0.8562)(-1.25,-0.8179)(-1,-0.7468)(-0.75,-0.6302)(-0.5,-0.4613)(-0.25,-0.2449)(0,0)(0.25,0.2449)(0.5,0.4613)(0.75,0.6302)(1,0.7468)(1.25,0.8179)(1.5,0.8562)(2,0.8821)(2.5,0.8859)(3,0.8862)(3.2,0.8862)};
+\node[cRem,above] at (2.5,0.886){$y=\ell$};
+\node[cRem,below] at (-2.5,-0.886){$y=-\ell$};
+\node[cThm,right] at (1.2,1.4){$(T)$};
+\node[cDef,below] at (1.6,0.82){$(C_F)$};
+\end{GR}
+\begin{molahada}
+لا توجد عبارة لـ $F$ بالدوال المألوفة؛ دراستها تتم كليا عبر خواص التكامل. والقيمة الدقيقة (خارج البرنامج) هي $\ell=\dfrac{\sqrt{\pi}}{2}\approx0{,}886$، كما أن التمرين 7 يعطي $\dfrac23\leqslant F(1)\leqslant1$ وفعلا $F(1)\approx0{,}747$.
+\end{molahada}
+\end{hal}
+
+% ===================== 20 =====================
+\begin{tamrin}{مساحة بدلالة وسيط ونهايتها -- شعبة رياضيات}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=x-1+\dfrac{2}{e^{x}+1}$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس حيث $\|\vec i\|=2\,\text{cm}$.
+\QQ{1} بيّن أن $f$ فردية، وأن $f$ متزايدة تماما على $\R$.
+\QQ{2} بيّن أن المستقيم $(\Delta):y=x-1$ مقارب مائل لـ $(C_f)$ عند $+\infty$، وأن $(\Delta'):y=x+1$ مقارب مائل عند $-\infty$، ثم أدرس الوضع النسبي لـ $(C_f)$ و $(\Delta)$.
+\QQ{3} تحقق أنه من أجل كل عدد حقيقي $x$: $\dfrac{2}{e^{x}+1}=\dfrac{2e^{-x}}{1+e^{-x}}$.
+\QQ{4} $\lambda$ عدد حقيقي موجب تماما. نسمي $\mathcal{A}(\lambda)$ مساحة الحيز المستوي المحدد بـ $(C_f)$ و $(\Delta)$ والمستقيمين اللذين معادلتاهما $x=0$ و $x=\lambda$.
+\begin{sq}
+\qa أحسب $\mathcal{A}(\lambda)$ بوحدة المساحة ثم بـ $\text{cm}^{2}$.
+\qb أحسب $\lim\limits_{\lambda\to+\infty}\mathcal{A}(\lambda)$ وفسّر النتيجة.
+\qc عيّن قيمة $\lambda$ التي يكون من أجلها $\mathcal{A}(\lambda)=\ln2\ \mathrm{u.a}$.
+\end{sq}
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} $\R$ متناظر بالنسبة إلى $0$. من أجل كل $x$، بضرب البسط والمقام في $e^{x}$:
+\begin{align*}
+f(-x)&=-x-1+\frac{2}{e^{-x}+1}=-x-1+\frac{2e^{x}}{1+e^{x}}=-x-1+\frac{2\left(e^{x}+1\right)-2}{e^{x}+1}\\
+&=-x-1+2-\frac{2}{e^{x}+1}=-\left(x-1+\frac{2}{e^{x}+1}\right)=-f(x)
+\end{align*}
+إذن \bxt{$f$ دالة فردية}.
+
+$f$ قابلة للاشتقاق على $\R$، و $\left(\dfrac{2}{e^{x}+1}\right)'=-\dfrac{2e^{x}}{\left(e^{x}+1\right)^{2}}$، إذن:
+\[f'(x)=1-\frac{2e^{x}}{\left(e^{x}+1\right)^{2}}=\frac{e^{2x}+2e^{x}+1-2e^{x}}{\left(e^{x}+1\right)^{2}}=\frac{e^{2x}+1}{\left(e^{x}+1\right)^{2}}>0\]
+إذن \bxt{$f$ متزايدة تماما على $\R$}.
+
+\QQ{2} $f(x)-(x-1)=\dfrac{2}{e^{x}+1}$ و $\lim\limits_{x\to+\infty}e^{x}=+\infty$، إذن $\lim\limits_{x\to+\infty}\big[f(x)-(x-1)\big]=0$: $(\Delta)$ مقارب مائل عند $+\infty$.
+
+$f(x)-(x+1)=\dfrac{2}{e^{x}+1}-2$ و $\lim\limits_{x\to-\infty}e^{x}=0$، إذن $\lim\limits_{x\to-\infty}\big[f(x)-(x+1)\big]=2-2=0$: $(\Delta')$ مقارب مائل عند $-\infty$.
+
+الوضع النسبي: $f(x)-(x-1)=\dfrac{2}{e^{x}+1}>0$ من أجل كل $x$:
+\begin{TAB}
+\tkzTabInit[lgt=3.6,espcl=5]{$x$/1,$f(x)-(x-1)$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$+\infty$}
+\tkzTabLine{,+,}
+\tkzTabLine{,\text{\ar{$(C_f)$ فوق $(\Delta)$}},}
+\end{TAB}
+
+\QQ{3} بضرب البسط والمقام في $e^{-x}\neq0$: $\dfrac{2}{e^{x}+1}=\dfrac{2e^{-x}}{e^{-x}\left(e^{x}+1\right)}=\dfrac{2e^{-x}}{1+e^{-x}}$ \ok.
+
+\QQ{4}
+\pa \textbf{الحيز} (مثلا من أجل $\lambda=2{,}5$): على $[0;\lambda]$ المنحنى $(C_f)$ فوق $(\Delta)$.
+\begin{GR}{-3}{3.4}{-3.2}{3}{1.25}
+\Ticks{-2,-1,1,2,3}{-2,-1,1,2}
+\fill[cDef!25,samples=100] plot[domain=0:2.5](\x,{\x-1+2/(exp(\x)+1)}) -- plot[domain=2.5:0](\x,{\x-1}) -- cycle;
+\draw[cThm,thick,domain=-2.2:3.4] plot(\x,{\x-1});
+\draw[cRem,thick,domain=-3:2.2] plot(\x,{\x+1});
+\draw[cDef,very thick,domain=-3:3.4,samples=150] plot(\x,{\x-1+2/(exp(\x)+1)});
+\draw[dashed] (2.5,0)--(2.5,1.6);
+\node[below,font=\scriptsize] at (2.5,0){$\lambda$};
+\draw[->] (2.3,-0.9)--(1.2,0.35); \node[below] at (2.3,-0.9){$\mathcal{A}(\lambda)$};
+\node[cThm,right] at (2.8,1.6){$(\Delta)$};
+\node[cRem,left] at (-1.1,0.4){$(\Delta')$};
+\node[cDef,right] at (-2.2,-2.6){$(C_f)$};
+\end{GR}
+حسب جدول الوضع النسبي، $\big|f(x)-(x-1)\big|=\dfrac{2}{e^{x}+1}$، وباستعمال السؤال 3 مع $u(x)=1+e^{-x}>0$ و $u'(x)=-e^{-x}$: $\dfrac{2e^{-x}}{1+e^{-x}}=-2\dfrac{u'(x)}{u(x)}$، أصليته $-2\ln\left(1+e^{-x}\right)$:
+\begin{align*}
+\mathcal{A}(\lambda)&=\int_0^{\lambda}\frac{2e^{-x}}{1+e^{-x}}\,dx=\Big[-2\ln\left(1+e^{-x}\right)\Big]_0^{\lambda}=-2\ln\left(1+e^{-\lambda}\right)+2\ln2
+\end{align*}
+\[\bx{\mathcal{A}(\lambda)=2\ln2-2\ln\left(1+e^{-\lambda}\right)\ \mathrm{u.a}}\]
+$1\,\mathrm{u.a}=2\times2=4\,\text{cm}^{2}$، ومنه:
+\[\bx{\mathcal{A}(\lambda)=8\ln2-8\ln\left(1+e^{-\lambda}\right)\ \mathrm{cm}^{2}}\]
+
+\pb $\lim\limits_{\lambda\to+\infty}e^{-\lambda}=0$ و $\ln$ مستمرة عند $1$، إذن $\lim\limits_{\lambda\to+\infty}\ln\left(1+e^{-\lambda}\right)=\ln1=0$، ومنه:
+\[\bx{\lim_{\lambda\to+\infty}\mathcal{A}(\lambda)=2\ln2\ \mathrm{u.a}=8\ln2\ \mathrm{cm}^{2}\approx5{,}55\,\mathrm{cm}^{2}}\]
+\textbf{التفسير:} رغم أن الحيز المحصور بين $(C_f)$ ومقاربه $(\Delta)$ على $[0;+\infty[$ غير محدود، فإن مساحته منتهية وتساوي $2\ln2$ وحدة مساحة.
+
+\pc $\mathcal{A}(\lambda)=\ln2\iff2\ln2-2\ln\left(1+e^{-\lambda}\right)=\ln2\iff\ln\left(1+e^{-\lambda}\right)=\dfrac{\ln2}{2}=\ln\sqrt2$.
+بما أن $\ln$ متباينة: $1+e^{-\lambda}=\sqrt2$، أي $e^{-\lambda}=\sqrt2-1>0$، ومنه $\lambda=-\ln\left(\sqrt2-1\right)$.
+و $\left(\sqrt2-1\right)\left(\sqrt2+1\right)=1$، إذن $-\ln\left(\sqrt2-1\right)=\ln\left(\sqrt2+1\right)$:
+\[\bx{\lambda=\ln\left(\sqrt{2}+1\right)\approx0{,}88}\]
+(وهو موجب تماما فهو مقبول؛ عنده تساوي المساحة نصف المساحة الكلية $2\ln2$.)
+\end{hal}
+
+\end{document}
