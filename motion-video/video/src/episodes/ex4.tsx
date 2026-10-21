@@ -124,7 +124,7 @@ function ex2(P: boolean, W: number, H: number) {
   const c = column(b, heading(b, 'التمرين 2', at(q)) - 20, P ? 60 : 38);
   const s1 = c.math('g(x) = e^{-x^{2} + 2x}', at(q, 'الدالة'), { size: P ? 64 : 62 });
   const s2 = c.text('احسب g′(x) وادرس اتجاه تغير g', at(q, 'احسب'), { color: C.blue });
-  frame(b, [s1, s2], at(q, 'تغيرها') + 0.4);
+  frame(b, [s1, s2], at(q, 'g', 1) + 0.4);
   c.skip(10);
   c.math("u(x) = -x^{2} + 2x \\quad ; \\quad u'(x) = -2x + 2", at('نستعمل قاعدة e أس u', 'هنا'), { color: C.blue, size: P ? 46 : 50 });
   c.math("g'(x) = (-2x + 2)e^{-x^{2} + 2x}", at('إذن g بريم', 'يساوي'), { size: P ? 54 : 56 });
