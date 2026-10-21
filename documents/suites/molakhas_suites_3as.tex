@@ -1,0 +1,669 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}ملخص: المتتاليات العددية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{28}{34}\selectfont\bfseries المتتاليات العددية}\\[8pt]
+{\color{white}\large ملخص شامل مع أمثلة وتمارين محلولة خطوة بخطوة}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- علوم تجريبية، رياضيات، تقني رياضي}
+\end{tcolorbox}
+\end{LTR}
+
+\begin{BOX}{cSec}{محتوى الملخص}
+\begin{multicols}{2}
+\begin{enumerate}[label=\arabic*.]
+\item توليد متتالية وتمثيلها البياني
+\item اتجاه تغير متتالية
+\item المتتاليات المحدودة
+\item الاستدلال بالتراجع
+\item المتتاليات الحسابية
+\item المتتاليات الهندسية
+\item تقارب متتالية والنهايات
+\item المتتاليتان المتجاورتان
+\item المتتاليات من الشكل $u_{n+1}=au_n+b$
+\item تمارين محلولة
+\item خلاصة الطرائق
+\end{enumerate}
+\end{multicols}
+\end{BOX}
+
+% =====================================================
+\section{توليد متتالية وتمثيلها البياني}
+\begin{tarif}
+\textbf{المتتالية العددية} $(u_n)$ هي دالة ترفق بكل عدد طبيعي $n$ (ابتداءً من رتبة $n_0$) عددًا حقيقيًا $u_n$ يسمى \textbf{الحد العام} أو الحد ذا الدليل $n$.
+\begin{itemize}
+\item \textbf{التوليد الصريح:} $u_n=f(n)$؛ نحسب أي حد مباشرة بدلالة $n$.
+\item \textbf{التوليد بعلاقة تراجعية:} نعطي الحد الأول $u_0$ وعلاقة $u_{n+1}=f(u_n)$؛ نحسب الحدود واحدًا بعد الآخر.
+\end{itemize}
+\end{tarif}
+
+\begin{mithal}
+\begin{itemize}
+\item $u_n=\dfrac{2n+1}{n+1}$ (توليد صريح): $u_0=1$ ، $u_1=\dfrac{3}{2}$ ، $u_2=\dfrac{5}{3}$.
+\item $u_0=1$ و $u_{n+1}=2u_n+3$ (توليد تراجعي): $u_1=5$ ، $u_2=13$ ، $u_3=29$.
+\end{itemize}
+\end{mithal}
+
+\begin{molahada}
+لا نخلط بين $u_{n+1}$ (الحد الذي يلي $u_n$) و $u_n+1$ (الحد $u_n$ مضافًا إليه $1$). مثلًا إذا كان $u_n=n^{2}$ فإن $u_{n+1}=(n+1)^{2}=n^{2}+2n+1$ بينما $u_n+1=n^{2}+1$.
+\end{molahada}
+
+\begin{tariqa}[تمثيل الحدود الأولى لمتتالية $u_{n+1}=f(u_n)$]
+\begin{enumerate}
+\item نرسم المنحنى $(C_f)$ والمستقيم $(\Delta): y=x$.
+\item نعلّم $u_0$ على محور الفواصل، ونصعد شاقوليًا إلى $(C_f)$: ترتيب النقطة هو $u_1=f(u_0)$.
+\item ننتقل أفقيًا إلى $(\Delta)$، ثم ننزل شاقوليًا إلى محور الفواصل فنحصل على $u_1$ عليه.
+\item نكرر العملية للحصول على $u_2$ ، $u_3$ ، $\ldots$
+\end{enumerate}
+\end{tariqa}
+
+\begin{mithal}[سلّم وحلزون]
+على اليمين: $u_0=0$ و $u_{n+1}=\frac{1}{2}u_n+2$ ؛ نجد $u_1=2$ ، $u_2=3$ ، $u_3=\frac{7}{2}$ : الحدود تتزايد وتقترب من $4$ (شكل \textbf{سلّم}).\par
+على اليسار: $u_0=0$ و $u_{n+1}=-\frac{1}{2}u_n+3$ ؛ نجد $u_1=3$ ، $u_2=\frac{3}{2}$ ، $u_3=\frac{9}{4}$ : الحدود تتناوب حول $2$ وتقترب منه (شكل \textbf{حلزون}).
+\RL{0.48}{%
+\begin{GR}{-0.5}{4.6}{-0.5}{4.6}{0.95}
+\draw[cDef,thick,domain=-0.5:4.6] plot(\x,{\x/2+2});
+\draw[gray,dashed,domain=-0.5:4.6] plot(\x,\x);
+\draw[cThm,thick,-{Stealth[length=1.6mm]}] (0,0)--(0,2)--(2,2)--(2,3)--(3,3)--(3,3.5)--(3.5,3.5)--(3.5,3.75);
+\draw[cThm,densely dotted] (2,2)--(2,0) (3,3)--(3,0) (3.5,3.5)--(3.5,0);
+\foreach \a/\l in {0/0,2/1,3/2,3.5/3} \node[below,font=\scriptsize,cThm] at (\a,0){$u_{\l}$};
+\node[cDef,font=\scriptsize] at (1,3.2){$(C_f)$};
+\node[gray,font=\scriptsize] at (4.2,3.8){$y=x$};
+\end{GR}}{0.48}{%
+\begin{GR}{-0.5}{4.2}{-0.5}{4.2}{1}
+\draw[cDef,thick,domain=-0.5:4.2] plot(\x,{-\x/2+3});
+\draw[gray,dashed,domain=-0.5:4.2] plot(\x,\x);
+\draw[cThm,thick,-{Stealth[length=1.6mm]}] (0,0)--(0,3)--(3,3)--(3,1.5)--(1.5,1.5)--(1.5,2.25)--(2.25,2.25)--(2.25,1.875)--(1.875,1.875);
+\draw[cThm,densely dotted] (3,1.5)--(3,0) (1.5,1.5)--(1.5,0) (2.25,1.875)--(2.25,0);
+\foreach \a/\l in {0/0,3/1,1.5/2,2.25/3} \node[below,font=\scriptsize,cThm] at (\a,0){$u_{\l}$};
+\node[cDef,font=\scriptsize] at (0.6,3.6){$(C_f)$};
+\node[gray,font=\scriptsize] at (3.6,4){$y=x$};
+\end{GR}}
+\end{mithal}
+
+% =====================================================
+\section{اتجاه تغير متتالية}
+\begin{tarif}
+نقول إن المتتالية $(u_n)$:
+\begin{itemize}
+\item \textbf{متزايدة تمامًا} إذا كان من أجل كل عدد طبيعي $n$: $u_{n+1}>u_n$.
+\item \textbf{متناقصة تمامًا} إذا كان من أجل كل عدد طبيعي $n$: $u_{n+1}<u_n$.
+\item \textbf{ثابتة} إذا كان من أجل كل عدد طبيعي $n$: $u_{n+1}=u_n$.
+\end{itemize}
+المتتالية \textbf{رتيبة} إذا كانت متزايدة أو متناقصة.
+\end{tarif}
+
+\begin{tariqa}[دراسة اتجاه التغير]
+\begin{enumerate}
+\item \textbf{إشارة الفرق:} ندرس إشارة $u_{n+1}-u_n$.
+\item \textbf{النسبة} (إذا كانت جميع الحدود موجبة تمامًا): نقارن $\dfrac{u_{n+1}}{u_n}$ بالعدد $1$.
+\item \textbf{الدالة المرفقة} (توليد صريح $u_n=f(n)$): إذا كانت $f$ متزايدة (متناقصة) على $[0;+\infty[$ فإن $(u_n)$ متزايدة (متناقصة).
+\item \textbf{التراجع} (توليد تراجعي): نبرهن مثلًا أن $u_n\leqslant u_{n+1}$ من أجل كل $n$ (انظر الفقرة 4).
+\end{enumerate}
+\end{tariqa}
+
+\begin{mithal}[الفرق]
+$u_n=n^{2}-4n$: \quad $u_{n+1}-u_n=(n+1)^{2}-4(n+1)-n^{2}+4n=2n-3$.\par
+من أجل $n\geqslant2$: $2n-3>0$، إذن \bxt{المتتالية $(u_n)$ متزايدة تمامًا ابتداءً من الرتبة $2$} (لاحظ: $u_1=-3$ ، $u_2=-4$ ، $u_3=-3$).
+\end{mithal}
+
+\begin{mithal}[النسبة]
+$v_n=\dfrac{3^{n}}{n+1}>0$: \quad $\dfrac{v_{n+1}}{v_n}=\dfrac{3^{n+1}}{n+2}\times\dfrac{n+1}{3^{n}}=\dfrac{3n+3}{n+2}$.\par
+بما أن $3n+3>n+2$ (لأن $2n+1>0$) فإن $\dfrac{v_{n+1}}{v_n}>1$، إذن \bxt{$(v_n)$ متزايدة تمامًا}.
+\end{mithal}
+
+\begin{mithal}[الدالة المرفقة]
+$w_n=\dfrac{2n+1}{n+1}=f(n)$ حيث $f(x)=\dfrac{2x+1}{x+1}$ ؛ $f'(x)=\dfrac{1}{(x+1)^{2}}>0$ على $[0;+\infty[$، إذن \bxt{$(w_n)$ متزايدة تمامًا}.
+\end{mithal}
+
+\begin{mithal}[توليد تراجعي]
+$u_0=2$ و $u_{n+1}=u_n-u_n^{2}$: \quad $u_{n+1}-u_n=-u_n^{2}\leqslant0$، إذن $(u_n)$ متناقصة.
+\end{mithal}
+
+\begin{molahada}
+إذا كانت $u_{n+1}=f(u_n)$ فإن اتجاه تغير $f$ \textbf{لا يعطي} مباشرة اتجاه تغير $(u_n)$: مثال الحلزون السابق ($f$ متناقصة) يعطي متتالية غير رتيبة، ومثال السلّم ($f$ متزايدة) يعطي متتالية متزايدة لأن $u_1>u_0$.
+\end{molahada}
+
+% =====================================================
+\section{المتتاليات المحدودة}
+\begin{tarif}
+\begin{itemize}
+\item $(u_n)$ \textbf{محدودة من الأعلى} إذا وجد عدد حقيقي $M$ بحيث من أجل كل عدد طبيعي $n$: $u_n\leqslant M$.
+\item $(u_n)$ \textbf{محدودة من الأسفل} إذا وجد عدد حقيقي $m$ بحيث من أجل كل عدد طبيعي $n$: $u_n\geqslant m$.
+\item $(u_n)$ \textbf{محدودة} إذا كانت محدودة من الأعلى ومن الأسفل: $m\leqslant u_n\leqslant M$.
+\end{itemize}
+\end{tarif}
+
+\begin{molahada}
+\begin{itemize}
+\item كل متتالية متزايدة محدودة من الأسفل بحدها الأول، وكل متتالية متناقصة محدودة من الأعلى بحدها الأول.
+\item $(u_n)$ محدودة إذا وفقط إذا وجد $A>0$ بحيث $|u_n|\leqslant A$ من أجل كل $n$.
+\end{itemize}
+\end{molahada}
+
+\begin{mithal}
+\begin{itemize}
+\item $w_n=\dfrac{2n+1}{n+1}=2-\dfrac{1}{n+1}$: بما أن $0<\dfrac{1}{n+1}\leqslant1$ فإن \bx{1\leqslant w_n<2}.
+\item $u_n=\dfrac{(-1)^{n}}{n+1}$: لدينا $|u_n|=\dfrac{1}{n+1}\leqslant1$ إذن \bx{-1\leqslant u_n\leqslant1}.
+\item $v_n=n^{2}+1$ محدودة من الأسفل بـ $1$ وغير محدودة من الأعلى.
+\end{itemize}
+\end{mithal}
+
+% =====================================================
+\section{الاستدلال بالتراجع}
+\begin{khassia}[مبدأ الاستدلال بالتراجع]
+لتكن $P(n)$ خاصية متعلقة بعدد طبيعي $n$، و $n_0$ عددًا طبيعيًا. إذا كان:
+\begin{enumerate}
+\item \textbf{التحقق:} $P(n_0)$ صحيحة؛
+\item \textbf{الوراثة:} من أجل كل عدد طبيعي $n\geqslant n_0$، إذا كانت $P(n)$ صحيحة فإن $P(n+1)$ صحيحة؛
+\end{enumerate}
+فإن $P(n)$ صحيحة من أجل كل عدد طبيعي $n\geqslant n_0$.
+\end{khassia}
+
+\begin{tariqa}[تحرير برهان بالتراجع]
+نكتب الخاصية $P(n)$ بوضوح، نتحقق من $P(n_0)$، ثم \textbf{نفرض} أن $P(n)$ صحيحة (فرضية التراجع) و\textbf{نبرهن} صحة $P(n+1)$ باستعمالها، ثم نستنتج.
+\end{tariqa}
+
+\begin{mithal}[مساواة]
+نبرهن أن من أجل كل عدد طبيعي $n\geqslant1$: $1+2+\cdots+n=\dfrac{n(n+1)}{2}$.
+\begin{itemize}
+\item \textbf{التحقق:} من أجل $n=1$: الطرف الأيسر $1$، والأيمن $\frac{1\times2}{2}=1$. \ok
+\item \textbf{الوراثة:} نفرض $1+\cdots+n=\frac{n(n+1)}{2}$، إذن
+\[1+\cdots+n+(n+1)=\frac{n(n+1)}{2}+(n+1)=\frac{(n+1)(n+2)}{2}\]
+وهي $P(n+1)$. إذن الخاصية صحيحة من أجل كل $n\geqslant1$.
+\end{itemize}
+\end{mithal}
+
+\begin{mithal}[حصر حدود متتالية تراجعية]
+$u_0=1$ و $u_{n+1}=\frac{1}{2}u_n+2$. نبرهن أن من أجل كل عدد طبيعي $n$: $u_n<4$.
+\begin{itemize}
+\item \textbf{التحقق:} $u_0=1<4$. \ok
+\item \textbf{الوراثة:} نفرض $u_n<4$؛ إذن $\frac{1}{2}u_n<2$ ومنه $\frac{1}{2}u_n+2<4$ أي $u_{n+1}<4$.
+\end{itemize}
+إذن \bx{u_n<4} من أجل كل $n\in\N$. ثم $u_{n+1}-u_n=-\frac{1}{2}u_n+2=\frac{1}{2}(4-u_n)>0$: المتتالية متزايدة تمامًا.
+\end{mithal}
+
+\begin{mithal}[متباينة]
+نبرهن أن من أجل كل عدد طبيعي $n$: $3^{n}\geqslant1+2n$.
+\begin{itemize}
+\item \textbf{التحقق:} $3^{0}=1\geqslant1$. \ok
+\item \textbf{الوراثة:} نفرض $3^{n}\geqslant1+2n$؛ إذن $3^{n+1}=3\times3^{n}\geqslant3+6n=(1+2(n+1))+4n\geqslant1+2(n+1)$.
+\end{itemize}
+\end{mithal}
+
+\begin{molahada}
+عندما تكون $u_{n+1}=f(u_n)$ و $f$ \textbf{متزايدة} على مجال $I$ يشمل الحدود، فإن الوراثة تكون سريعة: من $a\leqslant u_n\leqslant b$ نستنتج $f(a)\leqslant u_{n+1}\leqslant f(b)$.
+\end{molahada}
+
+% =====================================================
+\section{المتتاليات الحسابية}
+\begin{tarif}
+$(u_n)$ \textbf{حسابية} إذا وجد عدد حقيقي $r$ (يسمى \textbf{الأساس}) بحيث من أجل كل عدد طبيعي $n$: $u_{n+1}=u_n+r$.\par
+لإثبات ذلك نبين أن الفرق $u_{n+1}-u_n$ ثابت (لا يتعلق بـ $n$).
+\end{tarif}
+
+\begin{khassia}
+إذا كانت $(u_n)$ حسابية أساسها $r$:
+\begin{itemize}
+\item \textbf{الحد العام:} $u_n=u_0+nr$، وعمومًا $u_n=u_p+(n-p)r$.
+\item \textbf{الوسط الحسابي:} $a$ ، $b$ ، $c$ حدود متتابعة من متتالية حسابية $\iff 2b=a+c$.
+\item \textbf{المجموع:} \bx{S=N\times\dfrac{P+L}{2}} حيث $N$ عدد الحدود، $P$ الحد الأول، $L$ الحد الأخير.\par
+مثلًا: $u_0+u_1+\cdots+u_n=(n+1)\dfrac{u_0+u_n}{2}$.
+\item \textbf{اتجاه التغير:} متزايدة تمامًا إذا كان $r>0$، متناقصة تمامًا إذا كان $r<0$، ثابتة إذا كان $r=0$.
+\end{itemize}
+\end{khassia}
+
+\begin{molahada}
+عدد الحدود من $u_p$ إلى $u_n$ هو $n-p+1$. وبالخصوص $1+2+\cdots+n=\dfrac{n(n+1)}{2}$.
+\end{molahada}
+
+\begin{mithal}
+\begin{itemize}
+\item $u_0=5$ و $r=3$: $u_n=5+3n$، $u_{20}=65$، و $u_0+\cdots+u_{20}=21\times\frac{5+65}{2}=\bx{735}$.
+\item $(u_n)$ حسابية حيث $u_3=10$ و $u_8=25$: $u_8-u_3=5r=15$ إذن $r=3$، و $u_0=u_3-3r=1$، ومنه \bx{u_n=3n+1}.
+\item $u_n=\dfrac{n}{2}-1$: $u_{n+1}-u_n=\dfrac{1}{2}$ ثابت، إذن حسابية أساسها $\frac{1}{2}$ وحدها الأول $u_0=-1$.
+\end{itemize}
+\end{mithal}
+
+% =====================================================
+\section{المتتاليات الهندسية}
+\begin{tarif}
+$(u_n)$ \textbf{هندسية} إذا وجد عدد حقيقي $q$ (يسمى \textbf{الأساس}) بحيث من أجل كل عدد طبيعي $n$: $u_{n+1}=q\,u_n$.\par
+لإثبات ذلك نكتب $u_{n+1}$ على الشكل $q\times u_n$ (أو نبين أن $\frac{u_{n+1}}{u_n}$ ثابت إذا كانت الحدود غير معدومة).
+\end{tarif}
+
+\begin{khassia}
+إذا كانت $(u_n)$ هندسية أساسها $q$:
+\begin{itemize}
+\item \textbf{الحد العام:} $u_n=u_0\,q^{n}$، وعمومًا $u_n=u_p\,q^{\,n-p}$.
+\item \textbf{الوسط الهندسي:} $a$ ، $b$ ، $c$ حدود متتابعة من متتالية هندسية $\iff b^{2}=ac$.
+\item \textbf{المجموع} ($q\neq1$): \bx{S=P\times\dfrac{1-q^{N}}{1-q}} حيث $P$ الحد الأول و $N$ عدد الحدود.\par
+مثلًا: $u_0+u_1+\cdots+u_n=u_0\dfrac{1-q^{n+1}}{1-q}$.
+\item إذا كان $q=1$ فإن المتتالية ثابتة والمجموع يساوي $N\times u_0$.
+\end{itemize}
+\end{khassia}
+
+\begin{khassia}[اتجاه التغير لـ $u_n=u_0q^{n}$ حيث $u_0>0$]
+إذا كان $q>1$: متزايدة تمامًا. \quad إذا كان $0<q<1$: متناقصة تمامًا. \quad إذا كان $q<0$: غير رتيبة (إشارات متناوبة).
+\end{khassia}
+
+\begin{mithal}
+\begin{itemize}
+\item $v_0=3$ و $q=2$: $v_n=3\times2^{n}$، و $v_0+\cdots+v_9=3\times\frac{1-2^{10}}{1-2}=\bx{3069}$.
+\item $(v_n)$ هندسية حيث $v_1=6$ و $v_4=48$: $q^{3}=\frac{48}{6}=8$ إذن $q=2$ و $v_0=3$.
+\item \textbf{تطبيق:} سعر سلعة $2000$ دج يرتفع بـ $5\%$ كل سنة: $P_{n+1}=1{,}05\,P_n$، إذن $P_n=2000\times1{,}05^{n}$ و $P_{10}\approx\bx{3257{,}79}$ دج.
+\item $1+\frac{1}{2}+\frac{1}{4}+\cdots+\frac{1}{2^{n}}=\dfrac{1-\left(\frac{1}{2}\right)^{n+1}}{1-\frac{1}{2}}=2-\dfrac{1}{2^{n}}$.
+\end{itemize}
+\end{mithal}
+
+\Needspace{22\baselineskip}
+\begin{mithal}[تمثيل بياني: نمو حسابي ونمو هندسي]
+النقط $(n;u_n)$ لمتتالية حسابية تقع على \textbf{مستقيم}، أما متتالية هندسية فنموها (أو تناقصها) \textbf{أسي}.\par
+البرتقالي: $a_n=\frac{1}{2}+\frac{1}{2}n$ (حسابية)؛ الأحمر: $b_n=0{,}4\times1{,}5^{n}$ (هندسية، $q>1$)؛ الأزرق: $c_n=5\times0{,}6^{n}$ (هندسية، $0<q<1$).
+\begin{GR}{-0.5}{7}{-0.5}{5.5}{0.85}
+\Ticks{1,2,3,4,5,6}{1,2,3,4,5}
+\draw[cEx,dashed,domain=-0.5:7] plot(\x,{0.5+0.5*\x});
+\foreach \k in {0,...,6} {
+ \fill[cEx] (\k,{0.5+0.5*\k}) circle (2.2pt);
+ \fill[cThm] (\k,{0.4*1.5^\k}) circle (2.2pt);
+ \fill[cDef] (\k,{5*0.6^\k}) circle (2.2pt);}
+\draw[cThm,densely dotted,domain=0:6.3,samples=40] plot(\x,{0.4*1.5^\x});
+\draw[cDef,densely dotted,domain=0:6.5,samples=40] plot(\x,{5*0.6^\x});
+\node[cThm,right] at (5.5,5.1){$b_n$};
+\node[cEx,right] at (6.2,3.2){$a_n$};
+\node[cDef,above] at (6,0.4){$c_n$};
+\end{GR}
+\end{mithal}
+
+% =====================================================
+\section{تقارب متتالية والنهايات}
+\begin{tarif}
+\begin{itemize}
+\item نقول إن $(u_n)$ \textbf{متقاربة} نحو العدد الحقيقي $\ell$ إذا كان كل مجال مفتوح يشمل $\ell$ يشمل جميع الحدود ابتداءً من رتبة معينة، ونكتب $\limn u_n=\ell$.
+\item إذا لم تكن متقاربة (نهايتها $\pm\infty$ أو ليس لها نهاية) نقول إنها \textbf{متباعدة}.
+\item إذا كان $u_n=f(n)$ و $\displaystyle\lim_{x\to+\infty}f(x)=\ell$ فإن $\limn u_n=\ell$ (نفس قواعد نهايات الدوال).
+\end{itemize}
+\end{tarif}
+
+\begin{khassia}[نهاية $q^{n}$]
+\begin{itemize}
+\item إذا كان $q>1$: $\limn q^{n}=+\infty$.\qquad إذا كان $q=1$: $\limn q^{n}=1$.
+\item إذا كان $-1<q<1$: $\limn q^{n}=0$.\qquad إذا كان $q\leqslant-1$: ليس لـ $(q^{n})$ نهاية.
+\end{itemize}
+\end{khassia}
+
+\begin{mithal}
+\begin{itemize}
+\item $\limn\dfrac{2^{n}-3^{n}}{3^{n}+1}=\limn\dfrac{\left(\frac{2}{3}\right)^{n}-1}{1+\left(\frac{1}{3}\right)^{n}}=\bx{-1}$ (لأن $\left(\frac{2}{3}\right)^{n}\to0$ و $\left(\frac{1}{3}\right)^{n}\to0$).
+\item $\limn\left(5-3\times0{,}8^{n}\right)=\bx{5}$ \quad و \quad $\limn\left(2^{n}-n\right)=+\infty$.
+\end{itemize}
+\end{mithal}
+
+\begin{khassia}[مبرهنات المقارنة]
+\begin{enumerate}
+\item إذا كان $u_n\geqslant v_n$ ابتداءً من رتبة معينة و $\limn v_n=+\infty$ فإن $\limn u_n=+\infty$.
+\item إذا كان $u_n\leqslant v_n$ ابتداءً من رتبة معينة و $\limn v_n=-\infty$ فإن $\limn u_n=-\infty$.
+\item \textbf{(الحصر)} إذا كان $v_n\leqslant u_n\leqslant w_n$ ابتداءً من رتبة معينة و $\limn v_n=\limn w_n=\ell$ فإن $\limn u_n=\ell$.
+\item إذا كان $|u_n-\ell|\leqslant v_n$ و $\limn v_n=0$ فإن $\limn u_n=\ell$.
+\end{enumerate}
+\end{khassia}
+
+\begin{mithal}
+\begin{itemize}
+\item $u_n=n+(-1)^{n}$: لدينا $u_n\geqslant n-1$ و $\limn(n-1)=+\infty$، إذن \bx{\limn u_n=+\infty}.
+\item $u_n=\dfrac{\cos n}{n}$ ($n\geqslant1$): $-\dfrac{1}{n}\leqslant u_n\leqslant\dfrac{1}{n}$ والطرفان يؤولان إلى $0$، إذن \bx{\limn u_n=0}.
+\item $u_n=\dfrac{2n+(-1)^{n}}{n+1}$: $\dfrac{2n-1}{n+1}\leqslant u_n\leqslant\dfrac{2n+1}{n+1}$ والطرفان يؤولان إلى $2$، إذن \bx{\limn u_n=2}.
+\end{itemize}
+\end{mithal}
+
+\begin{khassia}[المتتاليات الرتيبة]
+\begin{itemize}
+\item كل متتالية \textbf{متزايدة ومحدودة من الأعلى} متقاربة، وكل متتالية \textbf{متناقصة ومحدودة من الأسفل} متقاربة.
+\item كل متتالية متزايدة وغير محدودة من الأعلى نهايتها $+\infty$.
+\end{itemize}
+\end{khassia}
+
+\begin{khassia}[نهاية متتالية $u_{n+1}=f(u_n)$]
+إذا كانت $(u_n)$ متقاربة نحو $\ell$، وكانت $f$ مستمرة عند $\ell$ (و $\ell$ من مجال يحوي الحدود)، فإن $\ell$ حل للمعادلة \bx{f(\ell)=\ell}؛ أي فاصلة نقطة تقاطع $(C_f)$ مع المستقيم $y=x$.
+\end{khassia}
+
+\begin{molahada}
+هذه المبرهنة تعطي القيم الممكنة للنهاية فقط؛ يجب أولًا إثبات التقارب (مثلًا: رتيبة ومحدودة)، ثم نختار الحل المناسب بالحصر.
+\end{molahada}
+
+\begin{mithal}[$u_0=0$ و $u_{n+1}=\sqrt{2u_n+3}$]
+\begin{itemize}
+\item \textbf{بالتراجع:} $0\leqslant u_n<3$: صحيح من أجل $n=0$؛ وإذا كان $0\leqslant u_n<3$ فإن $3\leqslant2u_n+3<9$ ومنه $\sqrt3\leqslant u_{n+1}<3$.
+\item \textbf{اتجاه التغير:} $u_{n+1}-u_n=\dfrac{2u_n+3-u_n^{2}}{\sqrt{2u_n+3}+u_n}=\dfrac{(3-u_n)(u_n+1)}{\sqrt{2u_n+3}+u_n}>0$: متزايدة تمامًا.
+\item \textbf{التقارب:} متزايدة ومحدودة من الأعلى بـ $3$ فهي متقاربة نحو $\ell\in[0;3]$، و $f:x\mapsto\sqrt{2x+3}$ مستمرة، إذن $\ell=\sqrt{2\ell+3}$ أي $\ell^{2}-2\ell-3=0$ ومنه $\ell=3$ أو $\ell=-1$ (مرفوض). إذن \bx{\limn u_n=3}.
+\end{itemize}
+\begin{GR}{-0.5}{4.6}{-0.5}{4.2}{1.05}
+\Ticks{1,2,3,4}{1,2,3,4}
+\draw[cDef,thick,domain=-0.5:4.6,samples=60] plot(\x,{sqrt(2*\x+3)});
+\draw[gray,dashed,domain=-0.5:4.6] plot(\x,\x);
+\draw[cThm,thick,-{Stealth[length=1.6mm]}] (0,0)--(0,1.732)--(1.732,1.732)--(1.732,2.542)--(2.542,2.542)--(2.542,2.843)--(2.843,2.843)--(2.843,2.947);
+\draw[cThm,densely dotted] (1.732,1.732)--(1.732,0) (2.542,2.542)--(2.542,0);
+\node[below,font=\scriptsize,cThm] at (1.732,-0.25){$u_1$};
+\node[below,font=\scriptsize,cThm] at (2.542,-0.25){$u_2$};
+\fill[cThm] (3,3) circle (1.8pt) node[above left,font=\scriptsize]{$(3;3)$};
+\node[cDef,font=\scriptsize] at (1,2.7){$(C_f)$};
+\node[gray,font=\scriptsize] at (4.2,3.9){$y=x$};
+\end{GR}
+\end{mithal}
+
+% =====================================================
+\section{المتتاليتان المتجاورتان}
+\begin{tarif}
+نقول إن المتتاليتين $(u_n)$ و $(v_n)$ \textbf{متجاورتان} إذا كانت:
+\begin{itemize}
+\item إحداهما متزايدة والأخرى متناقصة؛
+\item و $\limn\left(v_n-u_n\right)=0$.
+\end{itemize}
+\end{tarif}
+
+\begin{khassia}
+إذا كانت $(u_n)$ متزايدة و $(v_n)$ متناقصة ومتجاورتين، فإنهما \textbf{متقاربتان نحو نفس النهاية} $\ell$، ومن أجل كل عدد طبيعي $n$: \bx{u_n\leqslant\ell\leqslant v_n}.
+\end{khassia}
+
+\begin{mithal}
+من أجل $n\geqslant1$: $u_n=2-\dfrac{1}{n}$ و $v_n=2+\dfrac{1}{n^{2}}$.
+\begin{itemize}
+\item $u_{n+1}-u_n=\dfrac{1}{n}-\dfrac{1}{n+1}=\dfrac{1}{n(n+1)}>0$: $(u_n)$ متزايدة.
+\item $v_{n+1}-v_n=\dfrac{1}{(n+1)^{2}}-\dfrac{1}{n^{2}}<0$: $(v_n)$ متناقصة.
+\item $v_n-u_n=\dfrac{1}{n^{2}}+\dfrac{1}{n}\to0$.
+\end{itemize}
+إذن \bxt{$(u_n)$ و $(v_n)$ متجاورتان} ونهايتهما المشتركة $2$.
+\end{mithal}
+
+\begin{molahada}
+إذا كانت $w_n=v_n-u_n$ متتالية هندسية أساسها $q\in]0;1[$ وحدها الأول موجب، فإن $w_n>0$ و $\limn w_n=0$؛ وهذا شائع في تمارين البكالوريا (انظر التمرين المحلول 2).
+\end{molahada}
+
+% =====================================================
+\section{المتتاليات من الشكل $u_{n+1}=au_n+b$}
+\begin{tariqa}[المتتالية المساعدة]
+لتكن $u_{n+1}=au_n+b$ حيث $a\neq1$ و $a\neq0$.
+\begin{enumerate}
+\item نحل $\alpha=a\alpha+b$ فنجد $\alpha=\dfrac{b}{1-a}$ (النقطة الصامدة).
+\item نضع $v_n=u_n-\alpha$؛ عندئذ $v_{n+1}=au_n+b-\alpha=a(u_n-\alpha)=a\,v_n$: إذن $(v_n)$ \textbf{هندسية أساسها $a$}.
+\item $v_n=v_0\,a^{n}$ ومنه $u_n=\alpha+(u_0-\alpha)a^{n}$، ثم النهاية والمجاميع.
+\end{enumerate}
+\end{tariqa}
+
+\begin{mithal}
+$u_0=1$ و $u_{n+1}=\frac{1}{2}u_n+2$.
+\begin{itemize}
+\item $\alpha=\frac{1}{2}\alpha+2$ ومنه $\alpha=4$. نضع $v_n=u_n-4$: $v_{n+1}=\frac{1}{2}u_n+2-4=\frac{1}{2}(u_n-4)=\frac{1}{2}v_n$.
+\item $(v_n)$ هندسية أساسها $\frac{1}{2}$ وحدها الأول $v_0=-3$، إذن $v_n=-3\left(\frac{1}{2}\right)^{n}$ و \bx{u_n=4-3\left(\tfrac{1}{2}\right)^{n}}.
+\item $\limn\left(\frac{1}{2}\right)^{n}=0$ إذن \bx{\limn u_n=4}.
+\item $S_n=u_0+\cdots+u_n=4(n+1)+\left(v_0+\cdots+v_n\right)=4(n+1)-3\times\dfrac{1-\left(\frac{1}{2}\right)^{n+1}}{1-\frac{1}{2}}=\bx{4n-2+3\left(\tfrac{1}{2}\right)^{n}}$.
+\end{itemize}
+\end{mithal}
+
+\begin{molahada}
+حالة متتالية من الشكل $u_{n+1}=\dfrac{au_n+b}{cu_n+d}$: يُعطى غالبًا في التمرين متتالية مساعدة مثل $v_n=\dfrac{u_n-\beta}{u_n-\gamma}$ (حيث $\beta,\gamma$ حلّا $f(x)=x$) ونبرهن أنها هندسية (انظر التمرين المحلول 1).
+\end{molahada}
+
+% =====================================================
+\section{تمارين محلولة}
+\begin{tmr}
+لتكن $f$ الدالة المعرفة على $[0;+\infty[$ بـ $f(x)=\dfrac{3x+2}{x+2}$، و $(u_n)$ المتتالية المعرفة بـ $u_0=0$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\QQ{1} ادرس اتجاه تغير $f$ على $[0;+\infty[$.
+\QQ{2} مثّل على محور الفواصل الحدود $u_0$ ، $u_1$ ، $u_2$ ، $u_3$ باستعمال $(C_f)$ والمستقيم $y=x$. ضع تخمينًا حول اتجاه تغير $(u_n)$ وتقاربها.
+\QQ{3} برهن بالتراجع أن من أجل كل عدد طبيعي $n$: $0\leqslant u_n<2$.
+\QQ{4} بيّن أن $(u_n)$ متزايدة تمامًا، واستنتج أنها متقاربة.
+\QQ{5} نضع $v_n=\dfrac{u_n-2}{u_n+1}$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb اكتب $v_n$ ثم $u_n$ بدلالة $n$، واحسب $\limn u_n$.
+\end{sq}
+\end{tmr}
+
+\begin{hal}
+\QQ{1} $f'(x)=\dfrac{3(x+2)-(3x+2)}{(x+2)^{2}}=\dfrac{4}{(x+2)^{2}}>0$، إذن \bxt{$f$ متزايدة تمامًا على $[0;+\infty[$}.
+
+\QQ{2} $u_1=f(0)=1$ ، $u_2=f(1)=\dfrac{5}{3}\approx1{,}67$ ، $u_3=f\!\left(\dfrac{5}{3}\right)=\dfrac{21}{11}\approx1{,}91$.
+\begin{GR}{-0.5}{3.6}{-0.5}{3.1}{1.5}
+\Ticks{1,2,3}{1,2,3}
+\draw[cDef,thick,domain=0:3.6,samples=60] plot(\x,{(3*\x+2)/(\x+2)});
+\draw[gray,dashed,domain=-0.5:3.6] plot(\x,\x);
+\draw[cThm,thick,-{Stealth[length=1.6mm]}] (0,0)--(0,1)--(1,1)--(1,1.6667)--(1.6667,1.6667)--(1.6667,1.9091)--(1.9091,1.9091);
+\draw[cThm,densely dotted] (1,1)--(1,0) (1.6667,1.6667)--(1.6667,0) (1.9091,1.9091)--(1.9091,0);
+\node[below,font=\scriptsize,cThm] at (0.15,-0.2){$u_0$};
+\node[below,font=\scriptsize,cThm] at (1,-0.25){$u_1$};
+\node[below,font=\scriptsize,cThm] at (1.6,-0.25){$u_2$};
+\node[below,font=\scriptsize,cThm] at (2.05,-0.25){$u_3$};
+\fill[cThm] (2,2) circle (1.6pt) node[above left,font=\scriptsize]{$(2;2)$};
+\node[cDef,font=\scriptsize] at (3.2,2.45){$(C_f)$};
+\node[gray,font=\scriptsize] at (3.3,3){$y=x$};
+\end{GR}
+\textbf{التخمين:} $(u_n)$ متزايدة ومتقاربة نحو $2$ (فاصلة نقطة تقاطع $(C_f)$ مع $y=x$).
+
+\QQ{3} نسمي $P(n)$: «$0\leqslant u_n<2$».
+\begin{itemize}
+\item \textbf{التحقق:} $u_0=0$ إذن $0\leqslant u_0<2$: $P(0)$ صحيحة.
+\item \textbf{الوراثة:} نفرض $0\leqslant u_n<2$. بما أن $f$ متزايدة تمامًا على $[0;+\infty[$ فإن $f(0)\leqslant f(u_n)<f(2)$، أي $1\leqslant u_{n+1}<2$، ومنه $0\leqslant u_{n+1}<2$: $P(n+1)$ صحيحة.
+\end{itemize}
+إذن من أجل كل عدد طبيعي $n$: \bx{0\leqslant u_n<2}.
+
+\QQ{4} $u_{n+1}-u_n=\dfrac{3u_n+2-u_n(u_n+2)}{u_n+2}=\dfrac{-u_n^{2}+u_n+2}{u_n+2}=\dfrac{(2-u_n)(u_n+1)}{u_n+2}$.\par
+لأن $0\leqslant u_n<2$: $2-u_n>0$ ، $u_n+1>0$ ، $u_n+2>0$؛ إذن $u_{n+1}-u_n>0$ و \bxt{$(u_n)$ متزايدة تمامًا}.\par
+$(u_n)$ متزايدة ومحدودة من الأعلى بالعدد $2$، إذن \bxt{$(u_n)$ متقاربة}.
+
+\QQ{5}
+\pa $u_{n+1}-2=\dfrac{3u_n+2-2u_n-4}{u_n+2}=\dfrac{u_n-2}{u_n+2}$ \quad و \quad $u_{n+1}+1=\dfrac{3u_n+2+u_n+2}{u_n+2}=\dfrac{4(u_n+1)}{u_n+2}$.\par
+إذن $v_{n+1}=\dfrac{u_{n+1}-2}{u_{n+1}+1}=\dfrac{u_n-2}{4(u_n+1)}=\dfrac{1}{4}v_n$.\par
+$(v_n)$ \bxt{هندسية أساسها $q=\frac{1}{4}$ وحدها الأول $v_0=\frac{0-2}{0+1}=-2$}.
+\pb $v_n=-2\left(\dfrac{1}{4}\right)^{n}$. من $v_n(u_n+1)=u_n-2$ نجد $u_n(1-v_n)=2+v_n$ ($v_n\neq1$)، إذن
+\[ \bx{u_n=\dfrac{2+v_n}{1-v_n}=\dfrac{2-2\left(\frac{1}{4}\right)^{n}}{1+2\left(\frac{1}{4}\right)^{n}}} \]
+(تحقق: $u_1=\frac{2-\frac{1}{2}}{1+\frac{1}{2}}=1$ \ok). بما أن $0<\frac{1}{4}<1$ فإن $\limn\left(\frac{1}{4}\right)^{n}=0$ ومنه \bx{\limn u_n=2}، وهذا يؤكد التخمين.
+\end{hal}
+
+\begin{tmr}
+لتكن $(u_n)$ و $(v_n)$ المتتاليتان المعرفتان بـ $u_0=1$ ، $v_0=8$، ومن أجل كل عدد طبيعي $n$:
+\[ u_{n+1}=\frac{2u_n+v_n}{3}\qquad\text{و}\qquad v_{n+1}=\frac{u_n+3v_n}{4} \]
+\QQ{1} نضع $w_n=v_n-u_n$. بيّن أن $(w_n)$ هندسية، ثم اكتب $w_n$ بدلالة $n$ وعيّن نهايتها.
+\QQ{2} بيّن أن $(u_n)$ متزايدة و $(v_n)$ متناقصة، واستنتج أنهما متجاورتان.
+\QQ{3} نضع $t_n=3u_n+4v_n$. بيّن أن $(t_n)$ ثابتة، ثم عيّن النهاية المشتركة لـ $(u_n)$ و $(v_n)$.
+\end{tmr}
+
+\begin{hal}
+\QQ{1}
+\begin{align*}
+w_{n+1}=v_{n+1}-u_{n+1}&=\dfrac{u_n+3v_n}{4}-\dfrac{2u_n+v_n}{3}=\dfrac{3u_n+9v_n-8u_n-4v_n}{12}\\
+&=\dfrac{5v_n-5u_n}{12}=\dfrac{5}{12}\left(v_n-u_n\right)=\dfrac{5}{12}w_n
+\end{align*}
+إذن $(w_n)$ هندسية أساسها $\frac{5}{12}$ وحدها الأول $w_0=8-1=7$، ومنه \bx{w_n=7\left(\tfrac{5}{12}\right)^{n}}.\par
+بما أن $0<\frac{5}{12}<1$: \bx{\limn w_n=0}. ولاحظ أن $w_n>0$ أي $u_n<v_n$ من أجل كل $n$.
+
+\QQ{2} $u_{n+1}-u_n=\dfrac{2u_n+v_n-3u_n}{3}=\dfrac{v_n-u_n}{3}=\dfrac{w_n}{3}>0$: $(u_n)$ متزايدة تمامًا.\par
+$v_{n+1}-v_n=\dfrac{u_n+3v_n-4v_n}{4}=\dfrac{u_n-v_n}{4}=-\dfrac{w_n}{4}<0$: $(v_n)$ متناقصة تمامًا.\par
+وبما أن $\limn(v_n-u_n)=\limn w_n=0$ فإن \bxt{$(u_n)$ و $(v_n)$ متجاورتان}، إذن متقاربتان نحو نفس النهاية $\ell$.
+
+\QQ{3} $t_{n+1}=3\times\dfrac{2u_n+v_n}{3}+4\times\dfrac{u_n+3v_n}{4}=2u_n+v_n+u_n+3v_n=3u_n+4v_n=t_n$.\par
+إذن $(t_n)$ ثابتة: $t_n=t_0=3\times1+4\times8=35$.\par
+بالمرور إلى النهاية: $3\ell+4\ell=35$، أي $7\ell=35$ ومنه \bx{\ell=5}.
+\end{hal}
+
+% =====================================================
+\section{خلاصة الطرائق}
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{0.62\textwidth}|p{0.3\textwidth}|}\hline
+\rowcolor{cSec!12}\textbf{الطريقة} & \textbf{المطلوب}\\\hline
+نعوض مباشرة في $u_n=f(n)$، أو نحسب الحدود تتابعيًا من $u_0$ في $u_{n+1}=f(u_n)$. & حساب الحدود الأولى\\\hline
+نرسم $(C_f)$ و $y=x$، ثم ننتقل شاقوليًا إلى $(C_f)$ وأفقيًا إلى $y=x$ (سلّم أو حلزون). & تمثيل الحدود على محور الفواصل\\\hline
+إشارة $u_{n+1}-u_n$، أو مقارنة $\frac{u_{n+1}}{u_n}$ بـ $1$ (حدود موجبة)، أو رتابة $f$ في $u_n=f(n)$، أو التراجع. & اتجاه تغير متتالية\\\hline
+نبحث عن $m$ و $M$ بحيث $m\leqslant u_n\leqslant M$ (حصر مباشر أو بالتراجع). & متتالية محدودة\\\hline
+التحقق من $P(n_0)$، ثم نفرض $P(n)$ ونبرهن $P(n+1)$؛ مع $f$ متزايدة نطبق $f$ على الحصر. & برهان خاصية بالتراجع\\\hline
+نبين أن $u_{n+1}-u_n$ ثابت ($r$)، أو أن $u_{n+1}=q\,u_n$ ($q$ ثابت). & متتالية حسابية أو هندسية\\\hline
+حسابية: $S=N\times\frac{P+L}{2}$؛ هندسية: $S=P\times\frac{1-q^{N}}{1-q}$ ($N$ عدد الحدود، $P$ الأول، $L$ الأخير). & حساب مجموع\\\hline
+نهاية $q^{n}$، قواعد نهايات الدوال، المقارنة أو الحصر. & حساب نهاية متتالية\\\hline
+رتيبة ومحدودة $\Rightarrow$ متقاربة؛ ثم نحل $f(\ell)=\ell$ ونختار الحل الذي يحقق الحصر. & تقارب $u_{n+1}=f(u_n)$ ونهايتها\\\hline
+إحداهما متزايدة والأخرى متناقصة و $v_n-u_n\to0$؛ نهاية مشتركة عبر مقدار ثابت مثل $t_n$. & متتاليتان متجاورتان\\\hline
+$\alpha=\frac{b}{1-a}$ ، $v_n=u_n-\alpha$ هندسية أساسها $a$ ، ثم $u_n=\alpha+(u_0-\alpha)a^{n}$. & المتتالية $u_{n+1}=au_n+b$\\\hline
+\end{tabular}
+\end{center}
+\end{document}
