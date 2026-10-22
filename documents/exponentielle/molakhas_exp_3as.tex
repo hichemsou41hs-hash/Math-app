@@ -1,0 +1,774 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}ملخص: الدالة الأسية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\let\origNeedspace\Needspace
+\renewcommand{\Needspace}[1]{\origNeedspace{14\baselineskip}}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{28}{34}\selectfont\bfseries الدالة الأسية}\\[8pt]
+{\color{white}\large ملخص شامل مع أمثلة وأشكال وتمارين محلولة خطوة بخطوة}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- علوم تجريبية، رياضيات، تقني رياضي}
+\end{tcolorbox}
+\end{LTR}
+
+\begin{BOX}{cSec}{محتوى الملخص}
+\begin{enumerate}[label=\textbf{\arabic*.}]
+\item التعريف، العدد $e$ والترميز $e^{x}$.
+\item الخواص الجبرية، التبسيط والمطابقة.
+\item دراسة الدالة الأسية: الإشارة، الاتجاه، النهايات، الجدول، المماس عند $0$ والتمثيل البياني.
+\item العلاقة بين الدالتين $\ln$ و $\exp$.
+\item المعادلات والمتراجحات والجمل.
+\item إشارة عبارات أسية: $u(x)e^{v(x)}$ ، $ae^{\alpha x+\beta}+b$ ، $ae^{2x}+be^{x}+c$.
+\item النهايات الشهيرة (التزايد المقارن) وإزالة حالات عدم التعيين.
+\item مقارنات: $e^{x}\geqslant x+1$ ، $e^{x}>x$ ، $\ln x<x<e^{x}$.
+\item الدالة $e^{u}$: الاشتقاق والنهايات.
+\item دوال مرجعية: $e^{-x}$ ، $xe^{x}$ ، $e^{ax+b}$.
+\item المعادلات التفاضلية $y'=ay$ و $y'=ay+b$.
+\item تمارين محلولة (دراسة دالة كاملة، عائلة دوال $f_m$، معادلة تفاضلية)، ثم خلاصة الطرائق.
+\end{enumerate}
+\end{BOX}
+
+%================================================================
+\section{التعريف والعدد $e$}
+\begin{tarif}[الدالة الأسية]
+توجد دالة \textbf{وحيدة} $f$ قابلة للاشتقاق على $\R$ تحقق:
+\[ \bx{f'=f}\qquad\qquad \bx{f(0)=1} \]
+تسمى \textbf{الدالة الأسية النيبيرية} ويرمز لها بالرمز $\exp$. إذن: $\exp(0)=1$ ومن أجل كل $x\in\R$: $\exp'(x)=\exp(x)$.
+\end{tarif}
+
+\begin{khassia}[الدالة الأسية لا تنعدم]
+من أجل كل عدد حقيقي $x$: \quad $\exp(x)\times\exp(-x)=1$ ، \ إذن \bx{\exp(x)\neq0}.
+\par\smallskip
+\textbf{البرهان:} نضع $\varphi(x)=\exp(x)\exp(-x)$، فيكون $\varphi'(x)=\exp(x)\exp(-x)-\exp(x)\exp(-x)=0$، إذن $\varphi$ ثابتة و $\varphi(x)=\varphi(0)=1$.
+\end{khassia}
+
+\begin{tarif}[العدد $e$ والترميز $e^{x}$]
+\begin{itemize}
+\item العدد $e$ هو صورة العدد $1$ بالدالة الأسية: \ \bx{e=\exp(1)\approx2{,}718}.
+\item من أجل كل عدد صحيح نسبي $n$: $\exp(n)=\left[\exp(1)\right]^{n}=e^{n}$.
+\item اصطلاحًا نرمز، من أجل كل عدد حقيقي $x$، إلى $\exp(x)$ بالرمز \bx{e^{x}} ونقرأ «$e$ أس $x$».
+\end{itemize}
+\end{tarif}
+
+%================================================================
+\section{الخواص الجبرية}
+\begin{khassia}
+من أجل كل عددين حقيقيين $x$ و $y$ ومن أجل كل عدد صحيح نسبي $n$:
+\begin{align*}
+e^{0}&=1 & e^{1}&=e & e^{x}&>0\\
+e^{x+y}&=e^{x}\times e^{y} & e^{-x}&=\frac{1}{e^{x}} & e^{x-y}&=\frac{e^{x}}{e^{y}}\\
+e^{nx}&=\left(e^{x}\right)^{n} & e^{\frac{x}{2}}&=\sqrt{e^{x}} & e^{x}\times e^{x}&=e^{2x}=\left(e^{x}\right)^{2}
+\end{align*}
+\end{khassia}
+
+\begin{mithal}[تبسيط عبارات]
+من أجل كل عدد حقيقي $x$:
+\begin{itemize}
+\item $\dfrac{e^{4x}}{e^{x}\left(e^{-x}\right)^{5}}=\dfrac{e^{4x}}{e^{x}\,e^{-5x}}=\dfrac{e^{4x}}{e^{-4x}}=e^{4x+4x}=\bx{e^{8x}}$.
+\item $\dfrac{\left(e^{x-1}\right)^{2}\times e^{4x-1}}{\left(e^{2x}\right)^{3}\times e^{-x+3}}=\dfrac{e^{2x-2+4x-1}}{e^{6x-x+3}}=\dfrac{e^{6x-3}}{e^{5x+3}}=\bx{e^{x-6}}$.
+\item $\left(e^{2x}-3\right)^{2}-e^{2x}\left(e^{2x}+9e^{-2x}\right)=e^{4x}-6e^{2x}+9-e^{4x}-9=\bx{-6e^{2x}}$.
+\item $\dfrac{1-e^{-2x}}{1+e^{-2x}}=\dfrac{e^{2x}\left(1-e^{-2x}\right)}{e^{2x}\left(1+e^{-2x}\right)}=\bx{\dfrac{e^{2x}-1}{e^{2x}+1}}$ \quad (ضربنا البسط والمقام في $e^{2x}$).
+\item $\left(e^{x}+e^{-x}\right)^{2}=e^{2x}+2e^{x}e^{-x}+e^{-2x}=\bx{\dfrac{e^{4x}+1}{e^{2x}}+2}$.
+\end{itemize}
+\end{mithal}
+
+\begin{tariqa}[إثبات مساواة أو تحويل كتابة]
+\begin{itemize}
+\item نضرب البسط والمقام في $e^{x}$ (أو $e^{-x}$) للتخلص من الأسس السالبة أو لإظهارها.
+\item نخرج $e^{x}$ عاملًا مشتركًا، ونستعمل $e^{x}\times e^{-x}=1$.
+\item \textbf{المطابقة:} نوحّد المقامات في الطرف المقترح ثم نطابق معاملات $e^{2x}$ ، $e^{x}$ والحد الثابت.
+\end{itemize}
+\end{tariqa}
+
+\begin{mithal}[مطابقة]
+عيّن الأعداد الحقيقية $a$ ، $b$ ، $c$ بحيث من أجل كل $x\in\R$: \ $\dfrac{e^{2x}}{e^{x}+2}=ae^{x}+b+\dfrac{c}{e^{x}+2}$.
+\par\smallskip
+\[ ae^{x}+b+\frac{c}{e^{x}+2}=\frac{(ae^{x}+b)(e^{x}+2)+c}{e^{x}+2}=\frac{ae^{2x}+(2a+b)e^{x}+2b+c}{e^{x}+2} \]
+بالمطابقة: $a=1$ ، $2a+b=0$ ، $2b+c=0$؛ إذن $a=1$ ، $b=-2$ ، $c=4$ \ و\ \bx{\dfrac{e^{2x}}{e^{x}+2}=e^{x}-2+\dfrac{4}{e^{x}+2}}.
+\end{mithal}
+
+\begin{mithal}[مركز تناظر]
+$f(x)=\dfrac{e^{x}}{1+e^{x}}$ على $\R$. \ $f(-x)=\dfrac{e^{-x}}{1+e^{-x}}=\dfrac{e^{-x}\times e^{x}}{(1+e^{-x})\times e^{x}}=\dfrac{1}{e^{x}+1}$، ومنه:
+\[ f(x)+f(-x)=\frac{e^{x}}{1+e^{x}}+\frac{1}{1+e^{x}}=\frac{e^{x}+1}{e^{x}+1}=1=2\times\frac{1}{2} \]
+إذن \bxt{النقطة $\Omega\left(0;\frac{1}{2}\right)$ مركز تناظر للمنحنى $(C_f)$}.
+\end{mithal}
+
+%================================================================
+\section{دراسة الدالة الأسية}
+\begin{khassia}[الإشارة واتجاه التغير]
+\begin{itemize}
+\item من أجل كل $x\in\R$: \bx{e^{x}>0} \quad (لأن $e^{x}=\left(e^{\frac{x}{2}}\right)^{2}\geqslant0$ و $e^{x}\neq0$).
+\item $\left(e^{x}\right)'=e^{x}>0$، إذن \bxt{الدالة $x\mapsto e^{x}$ متزايدة تمامًا على $\R$}.
+\end{itemize}
+\end{khassia}
+
+\begin{khassia}[نتائج]
+من أجل كل عددين حقيقيين $a$ و $b$، ومن أجل كل $x\in\R$:
+\begin{center}
+$e^{a}=e^{b}\iff a=b$ \qquad $e^{a}<e^{b}\iff a<b$ \qquad $e^{a}>e^{b}\iff a>b$\\[4pt]
+$e^{x}=1\iff x=0$ \qquad $e^{x}>1\iff x>0$ \qquad $0<e^{x}<1\iff x<0$
+\end{center}
+\end{khassia}
+
+\begin{khassia}[النهايات عند حدود $\R$]
+\[ \lim_{x\to-\infty}e^{x}=0 \qquad\qquad \lim_{x\to+\infty}e^{x}=+\infty \]
+التفسير البياني: المستقيم ذو المعادلة $y=0$ (محور الفواصل) \textbf{مقارب أفقي} للمنحنى بجوار $-\infty$.
+\end{khassia}
+
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3.2]{$x$/1,$\left(e^{x}\right)'$/1,$e^{x}$/2}{$-\infty$,$0$,$+\infty$}
+\tkzTabLine{,+,t,+,}
+\tkzTabVar{-/$0$,R/,+/$+\infty$}
+\tkzTabVal{1}{3}{0.5}{$0$}{$1$}
+\end{TAB}
+
+\begin{khassia}[المماس عند $0$ ووضعية المنحنى]
+معادلة المماس $(T)$ عند النقطة ذات الفاصلة $0$: \ $y=e^{0}(x-0)+e^{0}$ أي \bx{y=x+1}.\par
+نضع $\varphi(x)=e^{x}-x-1$، فيكون $\varphi'(x)=e^{x}-1$: سالبة على $]-\infty;0]$ وموجبة على $[0;+\infty[$؛ إذن $\varphi$ تقبل قيمة حدية صغرى $\varphi(0)=0$، ومنه:
+\[ \text{من أجل كل } x\in\R:\qquad \bx{e^{x}\geqslant x+1} \]
+أي أن المنحنى يقع \textbf{فوق} مماسه $(T)$ ويمسه في النقطة $A(0;1)$.
+\end{khassia}
+
+\begin{GR}{-4}{4}{-2}{5}{0.85}
+\Ticks{-3,-2,-1,1,2,3}{-1,1,2,4}
+\draw[gray,dashed] (-2,-2)--(5,5);
+\draw[cThm,very thick,domain=-4:1.62,samples=100] plot(\x,{exp(\x)});
+\draw[cDef,very thick,domain=0.1:4,samples=120] plot(\x,{ln(\x)});
+\draw[cRem,thick,domain=-3:4] plot(\x,{\x+1});
+\fill (0,1) circle (1.6pt) node[above left]{$A$};
+\fill (1,2.718) circle (1.6pt);
+\draw[dotted] (1,0)--(1,2.718)--(0,2.718);
+\node[left] at (0,2.718){$e$};
+\node[cThm] at (2.3,4.6){$y=e^{x}$};
+\node[cDef] at (3.3,0.8){$y=\ln x$};
+\node[cRem] at (-0.9,-1.1){$(T)$};
+\node[gray] at (3.6,3.2){$y=x$};
+\end{GR}
+
+%================================================================
+\section{العلاقة بين الدالتين $\ln$ و $\exp$}
+\begin{khassia}
+\begin{itemize}
+\item من أجل كل $x\in\R$ ومن أجل كل $y>0$: \quad \bx{e^{x}=y\iff x=\ln y}.
+\item من أجل كل $x\in\R$: \bx{\ln\left(e^{x}\right)=x} \ ، ومن أجل كل $x>0$: \bx{e^{\ln x}=x}.
+\item الدالتان $\exp$ و $\ln$ \textbf{متعاكستان}: منحنياهما متناظران بالنسبة إلى المستقيم $y=x$ (الشكل السابق).
+\end{itemize}
+\end{khassia}
+
+\begin{molahada}[القوة ذات الأس الحقيقي]
+من أجل $a>0$ و $x\in\R$ نعرف: $a^{x}=e^{x\ln a}$. أمثلة:
+\[ 2^{x}=e^{x\ln2}\qquad \left(\frac{1}{2}\right)^{x}=e^{-x\ln2}\qquad e^{\ln3}=3\qquad e^{2\ln5}=e^{\ln25}=25\qquad e^{-\ln2}=\frac{1}{2} \]
+\end{molahada}
+
+%================================================================
+\section{المعادلات والمتراجحات}
+\begin{tariqa}
+\begin{itemize}
+\item $e^{u(x)}=e^{v(x)}\iff u(x)=v(x)$ \quad و\quad $e^{u(x)}<e^{v(x)}\iff u(x)<v(x)$.
+\item $e^{u(x)}=k$: \ إذا كان $k\leqslant0$ فلا حلول (لأن $e^{u(x)}>0$)؛ وإذا كان $k>0$ فإن $u(x)=\ln k$.
+\item $ae^{2x}+be^{x}+c=0$: نضع $X=e^{x}$ \textbf{مع} $X>0$، نحل $aX^{2}+bX+c=0$، ونرفض الحلول $X\leqslant0$.
+\item إذا ظهر $e^{-x}$ نضرب طرفي المعادلة في $e^{x}>0$.
+\end{itemize}
+\end{tariqa}
+
+\begin{mithal}[معادلات]
+حل في $\R$:
+\begin{itemize}
+\item $e^{4x}+3=0$ تكافئ $e^{4x}=-3$، وهذا مستحيل لأن $e^{4x}>0$؛ إذن \bx{S=\varnothing}.
+\item $e^{-2x+10}=1$ تكافئ $e^{-2x+10}=e^{0}$ أي $-2x+10=0$، إذن \bx{S=\{5\}}.
+\item $e^{5x-3}=\dfrac{1}{e^{11-3x}}=e^{3x-11}$ تكافئ $5x-3=3x-11$ أي $x=-4$، إذن \bx{S=\{-4\}}.
+\item $e^{x^{2}}=\dfrac{\left(e^{x}\right)^{5}}{\left(e^{2}\right)^{3}}=e^{5x-6}$ تكافئ $x^{2}-5x+6=0$: \ $\Delta=1$، الحلان $2$ و $3$؛ إذن \bx{S=\{2;3\}}.
+\item $e^{2x-1}=3$ تكافئ $2x-1=\ln3$، إذن \bx{S=\left\{\dfrac{1+\ln3}{2}\right\}}.
+\item $e^{2x}+6e^{x}-7=0$: نضع $X=e^{x}>0$: $X^{2}+6X-7=0$، $\Delta=64$، $X=1$ أو $X=-7$ (مرفوض)؛ $e^{x}=1$ أي $x=0$؛ إذن \bx{S=\{0\}}.
+\item $7e^{x}-5-2e^{-x}=0$: نضرب في $e^{x}>0$: $7e^{2x}-5e^{x}-2=0$؛ $X=e^{x}$: $7X^{2}-5X-2=0$، $\Delta=81$، $X=1$ أو $X=-\frac{2}{7}$ (مرفوض)؛ إذن \bx{S=\{0\}}.
+\end{itemize}
+\end{mithal}
+
+\begin{mithal}[متراجحات]
+حل في $\R$:
+\begin{itemize}
+\item $3e^{x}+5>0$: محققة دومًا لأن $e^{x}>0$، إذن \bx{S=\R}.
+\item $e^{x+2}+4\leqslant0$: مستحيلة لأن $e^{x+2}+4>0$، إذن \bx{S=\varnothing}.
+\item $-3e^{-4x+8}+3\geqslant0$ تكافئ $e^{-4x+8}\leqslant1=e^{0}$ أي $-4x+8\leqslant0$ أي $x\geqslant2$، إذن \bx{S=[2;+\infty[}.
+\item $e^{x}<5$ تكافئ $x<\ln5$، إذن \bx{S=]-\infty;\ln5[}.
+\item $e^{x^{2}}\geqslant\dfrac{\left(e^{x}\right)^{2}}{e^{-3}}=e^{2x+3}$ تكافئ $x^{2}-2x-3\geqslant0$؛ جذرا ثلاثي الحدود $-1$ و $3$:
+\begin{TAB}
+\tkzTabInit[lgt=2.6,espcl=2]{$x$/1,$x^{2}-2x-3$/1}{$-\infty$,$-1$,$3$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\end{TAB}
+إذن \bx{S=]-\infty;-1]\cup[3;+\infty[}.
+\end{itemize}
+\end{mithal}
+
+\begin{mithal}[جملة معادلتين]
+حل في $\R^{2}$ الجملة: \ $\begin{cases}\left(e^{x}\right)^{2}e^{y-1}=e^{9}\\[2pt] \dfrac{e^{x-2}}{e^{y}}=1\end{cases}$
+\par\smallskip
+تكافئ $\begin{cases}e^{2x+y-1}=e^{9}\\ e^{x-2-y}=e^{0}\end{cases}$ أي $\begin{cases}2x+y=10\\ x-y=2\end{cases}$؛ بالجمع: $3x=12$ أي $x=4$، ثم $y=2$. إذن \bx{S=\{(4;2)\}}.
+\end{mithal}
+
+%================================================================
+\section{إشارة عبارات أسية}
+\begin{khassia}[إشارة $u(x)\,e^{v(x)}$]
+بما أن $e^{v(x)}>0$ فإن \bxt{إشارة $u(x)\,e^{v(x)}$ هي إشارة $u(x)$}. \quad مثال: إشارة $(3x+2)e^{x}$ هي إشارة $3x+2$.
+\end{khassia}
+
+\begin{khassia}[إشارة $ae^{\alpha x+\beta}+b$ \ ($a\alpha\neq0$)]
+\begin{itemize}
+\item إذا كان $a$ و $b$ موجبين: العبارة \textbf{موجبة تمامًا}؛ وإذا كانا سالبين: العبارة \textbf{سالبة تمامًا}.
+\item إذا كان $a$ و $b$ مختلفين في الإشارة: المعادلة $ae^{\alpha x+\beta}+b=0$ تقبل حلًا وحيدًا $x_0=\dfrac{1}{\alpha}\left(\ln\left(-\dfrac{b}{a}\right)-\beta\right)$، والإشارة:
+\end{itemize}
+\begin{TAB}
+\tkzTabInit[lgt=3,espcl=3.6]{$x$/1,$ae^{\alpha x+\beta}+b$/1}{$-\infty$,$x_0$,$+\infty$}
+\tkzTabLine{,\mbox{\ar{عكس إشارة $a\alpha$}},z,\mbox{\ar{إشارة $a\alpha$}},}
+\end{TAB}
+\end{khassia}
+
+\begin{mithal}
+\begin{itemize}
+\item $2e^{x}-2$: ينعدم عند $x=0$، و $a\alpha=2>0$: سالب على $]-\infty;0[$ وموجب على $]0;+\infty[$.
+\item $-e^{-2x+1}+e$: ينعدم عندما $-2x+1=1$ أي $x=0$، و $a\alpha=(-1)(-2)=2>0$: سالب على $]-\infty;0[$ وموجب على $]0;+\infty[$.
+\item $e^{2x}-3e^{x}+2=\left(e^{x}-1\right)\left(e^{x}-2\right)$ (بوضع $X=e^{x}$: $X^{2}-3X+2=(X-1)(X-2)$):
+\end{itemize}
+\begin{TAB}
+\tkzTabInit[lgt=3.4,espcl=2.2]{$x$/1,$e^{x}-1$/1,$e^{x}-2$/1,$e^{2x}-3e^{x}+2$/1}{$-\infty$,$0$,$\ln2$,$+\infty$}
+\tkzTabLine{,-,z,+,t,+,}
+\tkzTabLine{,-,t,-,z,+,}
+\tkzTabLine{,+,z,-,z,+,}
+\end{TAB}
+\end{mithal}
+
+\begin{mithal}[متراجحة بالتحليل]
+حل في $\R$: $e^{2x}-e^{x}+4-4e^{-x}\leqslant0$.\par
+نضرب في $e^{x}>0$: $e^{3x}-e^{2x}+4e^{x}-4\leqslant0$. بوضع $X=e^{x}$: $X^{3}-X^{2}+4X-4=(X-1)\left(X^{2}+4\right)$، ومنه المتراجحة تكافئ $\left(e^{x}-1\right)\left(e^{2x}+4\right)\leqslant0$. وبما أن $e^{2x}+4>0$ فهي تكافئ $e^{x}\leqslant1$ أي $x\leqslant0$. إذن \bx{S=]-\infty;0]}.
+\end{mithal}
+
+\begin{mithal}[متراجحة جداء]
+حل في $\R$: $(-x+3)\left(2e^{x}-2\right)\geqslant0$. \ $-x+3=0\iff x=3$ ، \ $2e^{x}-2=0\iff x=0$:
+\begin{TAB}
+\tkzTabInit[lgt=3.6,espcl=2.2]{$x$/1,$-x+3$/1,$2e^{x}-2$/1,$(-x+3)(2e^{x}-2)$/1}{$-\infty$,$0$,$3$,$+\infty$}
+\tkzTabLine{,+,t,+,z,-,}
+\tkzTabLine{,-,z,+,t,+,}
+\tkzTabLine{,-,z,+,z,-,}
+\end{TAB}
+إذن \bx{S=[0;3]}.
+\end{mithal}
+
+%================================================================
+\section{النهايات الشهيرة وحالات عدم التعيين}
+\begin{khassia}[التزايد المقارن والنهايات الشهيرة]
+من أجل كل عدد طبيعي غير معدوم $n$:
+\begin{align*}
+\lim_{x\to+\infty}\frac{e^{x}}{x}&=+\infty & \lim_{x\to+\infty}\frac{e^{x}}{x^{n}}&=+\infty & \lim_{x\to+\infty}\frac{x}{e^{x}}&=\lim_{x\to+\infty}xe^{-x}=0 & \lim_{x\to+\infty}x^{n}e^{-x}&=0\\
+\lim_{x\to-\infty}xe^{x}&=0 & \lim_{x\to-\infty}x^{n}e^{x}&=0 & \lim_{x\to0}\frac{e^{x}-1}{x}&=1 & \lim_{x\to0}\frac{e^{ax}-1}{x}&=a
+\end{align*}
+وعمومًا: إذا كان $\lim u=0$ فإن $\lim\dfrac{e^{u}-1}{u}=1$. \quad نقول: عند $+\infty$ «$e^{x}$ يتغلب على $x^{n}$».
+\end{khassia}
+
+\begin{molahada}[برهان $\lim\limits_{x\to+\infty}\frac{e^{x}}{x}=+\infty$ و $\lim\limits_{x\to0}\frac{e^{x}-1}{x}=1$]
+\begin{itemize}
+\item نضع $\psi(x)=e^{x}-\frac{x^{2}}{2}$ على $[0;+\infty[$: $\psi'(x)=e^{x}-x\geqslant x+1-x=1>0$، إذن $\psi$ متزايدة و $\psi(x)\geqslant\psi(0)=1>0$، ومنه $e^{x}>\frac{x^{2}}{2}$، أي $\frac{e^{x}}{x}>\frac{x}{2}$ من أجل $x>0$. وبما أن $\frac{x}{2}\to+\infty$ فإن $\frac{e^{x}}{x}\to+\infty$ (بالمقارنة).
+\item $\dfrac{e^{x}-1}{x}=\dfrac{e^{x}-e^{0}}{x-0}$ هو معدل التغير، ونهايته العدد المشتق للدالة الأسية عند $0$: $e^{0}=1$.
+\end{itemize}
+\end{molahada}
+
+\begin{tariqa}[إزالة حالات عدم التعيين]
+\begin{itemize}
+\item \textbf{الحالة $0\times\infty$:} ننشر (نفك الأقواس) ونستعمل $\lim\limits_{x\to-\infty}x^{n}e^{x}=0$ أو $\lim\limits_{x\to+\infty}x^{n}e^{-x}=0$.
+\item \textbf{الحالة $\frac{\infty}{\infty}$:} نخرج الحد الغالب ($x$ أو $e^{x}$) عاملًا مشتركًا في البسط والمقام، ونستعمل $\frac{e^{x}}{x}\to+\infty$ و $\frac{x}{e^{x}}\to0$.
+\item \textbf{الحالة $\frac{0}{0}$ عند $0$:} نغير الشكل لإظهار $\frac{e^{x}-1}{x}$ أو $\frac{e^{u}-1}{u}$.
+\item \textbf{الحالة $\infty-\infty$:} نخرج $e^{x}$ أو $x$ (أو $e^{-x}$) عاملًا مشتركًا.
+\end{itemize}
+\end{tariqa}
+
+\begin{mithal}[الحالة $\infty-\infty$]
+\begin{itemize}
+\item $\lim\limits_{x\to+\infty}\left(e^{x}-x+1\right)=\lim\limits_{x\to+\infty}x\left(\dfrac{e^{x}}{x}-1+\dfrac{1}{x}\right)=\bx{+\infty}$ \ لأن $\dfrac{e^{x}}{x}\to+\infty$.
+\item $\lim\limits_{x\to-\infty}\left(e^{-x}+x\right)=\lim\limits_{x\to-\infty}e^{-x}\left(1+xe^{x}\right)=\bx{+\infty}$ \ لأن $xe^{x}\to0$ و $e^{-x}\to+\infty$.
+\item $\lim\limits_{x\to+\infty}\left(x-e^{x}\right)=\lim\limits_{x\to+\infty}x\left(1-\dfrac{e^{x}}{x}\right)=\bx{-\infty}$.
+\end{itemize}
+\end{mithal}
+
+\begin{mithal}[الحالة $\frac{\infty}{\infty}$]
+\begin{itemize}
+\item $\lim\limits_{x\to+\infty}\dfrac{e^{x}-2}{x+3}=\lim\limits_{x\to+\infty}\dfrac{\frac{e^{x}}{x}-\frac{2}{x}}{1+\frac{3}{x}}=\bx{+\infty}$.
+\item $\lim\limits_{x\to+\infty}\dfrac{e^{x}-2x}{2-2x}=\lim\limits_{x\to+\infty}\dfrac{\frac{e^{x}}{x}-2}{\frac{2}{x}-2}=\bx{-\infty}$ \quad (البسط $\to+\infty$ والمقام $\to-2$).
+\item $\lim\limits_{x\to-\infty}\dfrac{e^{x}-2x}{2-2x}=\lim\limits_{x\to-\infty}\dfrac{\frac{e^{x}}{x}-2}{\frac{2}{x}-2}=\dfrac{0-2}{0-2}=\bx{1}$ \quad (هنا $e^{x}\to0$: ليست حالة التزايد المقارن).
+\item $\lim\limits_{x\to+\infty}\dfrac{e^{x}-x}{2e^{x}+x}=\lim\limits_{x\to+\infty}\dfrac{e^{x}\left(1-\frac{x}{e^{x}}\right)}{e^{x}\left(2+\frac{x}{e^{x}}\right)}=\bx{\dfrac{1}{2}}$.
+\item $\lim\limits_{x\to+\infty}\dfrac{x^{2}}{e^{x}-1}=\lim\limits_{x\to+\infty}\dfrac{1}{\frac{e^{x}}{x^{2}}-\frac{1}{x^{2}}}=\bx{0}$.
+\end{itemize}
+\end{mithal}
+
+\begin{mithal}[الحالتان $0\times\infty$ و $\frac{0}{0}$]
+\begin{itemize}
+\item $\lim\limits_{x\to-\infty}(x-3)e^{x}=\lim\limits_{x\to-\infty}\left(xe^{x}-3e^{x}\right)=0-0=\bx{0}$.
+\item $\lim\limits_{x\to-\infty}(1+2x)e^{3x}=\lim\limits_{x\to-\infty}\left(e^{3x}+\frac{2}{3}\times3xe^{3x}\right)=\bx{0}$ \quad (نضع $t=3x\to-\infty$ و $te^{t}\to0$).
+\item $\lim\limits_{x\to0}\dfrac{e^{2x}-1}{3x}=\lim\limits_{x\to0}\dfrac{2}{3}\times\dfrac{e^{2x}-1}{2x}=\dfrac{2}{3}\times1=\bx{\dfrac{2}{3}}$.
+\item $\lim\limits_{x\to0}\dfrac{e^{2x}-e^{x}}{x}=\lim\limits_{x\to0}e^{x}\times\dfrac{e^{x}-1}{x}=1\times1=\bx{1}$.
+\item $\lim\limits_{x\to0}\dfrac{e^{x}-1}{\sin x}=\lim\limits_{x\to0}\dfrac{\frac{e^{x}-1}{x}}{\frac{\sin x}{x}}=\dfrac{1}{1}=\bx{1}$.
+\end{itemize}
+\end{mithal}
+
+%================================================================
+\section{مقارنات مهمة}
+\begin{khassia}
+\begin{itemize}
+\item من أجل كل $x\in\R$: \bx{e^{x}\geqslant x+1} \ (المساواة من أجل $x=0$ فقط)، وبالتالي \bx{e^{x}>x}.
+\item من أجل كل $x\in\R$: $e^{-x}\geqslant1-x$ (بتعويض $x$ بـ $-x$).
+\item من أجل كل $x\geqslant0$: $e^{x}>\dfrac{x^{2}}{2}$.
+\item من أجل كل $x>0$: $\ln x\leqslant x-1<x<x+1\leqslant e^{x}$، إذن \bx{\ln x<x<e^{x}}.
+\end{itemize}
+\end{khassia}
+
+\begin{tariqa}[مقارنة عبارتين]
+لمقارنة $A(x)$ و $B(x)$ ندرس إشارة الفرق $A(x)-B(x)$، وغالبًا ندرس دالة مساعدة $\varphi=A-B$: نحسب $\varphi'$، نشكل جدول تغيراتها، ونستعمل قيمتها الحدية (الصغرى أو العظمى).
+\end{tariqa}
+
+%================================================================
+\section{الدالة $x\mapsto e^{u(x)}$}
+\begin{khassia}[الاشتقاق]
+إذا كانت $u$ قابلة للاشتقاق على مجال $I$ فإن الدالة $e^{u}$ قابلة للاشتقاق على $I$ و:
+\[ \bx{\left(e^{u}\right)'=u'\,e^{u}} \]
+وبما أن $e^{u}>0$ فإن \bxt{للدالتين $e^{u}$ و $u$ نفس اتجاه التغير على $I$}.
+\end{khassia}
+
+\begin{khassia}[النهايات (نهاية دالة مركبة)]
+إذا كان $\lim\limits_{x\to x_0}u(x)=\ell$ فإن $\lim\limits_{x\to x_0}e^{u(x)}=e^{\ell}$؛ \ وإذا كان $\lim u=+\infty$ فإن $\lim e^{u}=+\infty$؛ \ وإذا كان $\lim u=-\infty$ فإن $\lim e^{u}=0$.
+\end{khassia}
+
+\begin{mithal}[نهايات]
+\begin{itemize}
+\item $\lim\limits_{x\to0^{+}}e^{\frac{1}{x}}=\bx{+\infty}$ (لأن $\frac{1}{x}\to+\infty$) \quad و\quad $\lim\limits_{x\to0^{-}}e^{\frac{1}{x}}=\bx{0}$ (لأن $\frac{1}{x}\to-\infty$).
+\item $\lim\limits_{x\to+\infty}e^{-x^{2}}=\bx{0}$ \quad و\quad $\lim\limits_{x\to+\infty}e^{\frac{x+1}{x-2}}=e^{1}=\bx{e}$ (لأن $\frac{x+1}{x-2}\to1$).
+\end{itemize}
+\end{mithal}
+
+\begin{mithal}[مشتقات]
+\begin{itemize}
+\item $f(x)=e^{x^{2}+3x-1}$ على $\R$: \ $f'(x)=\bx{(2x+3)e^{x^{2}+3x-1}}$.
+\item $g(x)=e^{\frac{1}{x}}$ على $]-\infty;0[$ و $]0;+\infty[$: \ $g'(x)=\bx{-\dfrac{1}{x^{2}}e^{\frac{1}{x}}}$.
+\item $f(x)=(3x-1)e^{x}$ على $\R$: \ $f'(x)=3e^{x}+(3x-1)e^{x}=\bx{(3x+2)e^{x}}$.
+\item $f(x)=(-2x+1)e^{-5x}$ على $\R$: \ $f'(x)=-2e^{-5x}+(-2x+1)(-5)e^{-5x}=\bx{(10x-7)e^{-5x}}$.
+\item $f(x)=\left(\dfrac{1}{x}+2\right)e^{\frac{1}{x}}$ على $]0;+\infty[$: \ $f'(x)=-\dfrac{1}{x^{2}}e^{\frac{1}{x}}-\dfrac{1}{x^{2}}\left(\dfrac{1}{x}+2\right)e^{\frac{1}{x}}=\bx{-\dfrac{3x+1}{x^{3}}e^{\frac{1}{x}}}$.
+\item $f(x)=-2+\dfrac{x-3}{x-1}e^{x}$ على $]1;+\infty[$: \ $f'(x)=\left[\dfrac{2}{(x-1)^{2}}+\dfrac{x-3}{x-1}\right]e^{x}=\bx{\dfrac{x^{2}-4x+5}{(x-1)^{2}}e^{x}}$.
+\item $f(x)=\dfrac{-2xe^{x}}{e^{x}+1}$ على $\R$: \ $f'(x)=\dfrac{(-2-2x)e^{x}\left(e^{x}+1\right)+2xe^{2x}}{\left(e^{x}+1\right)^{2}}=\bx{\dfrac{-2e^{x}\left(e^{x}+x+1\right)}{\left(e^{x}+1\right)^{2}}}$.
+\end{itemize}
+\end{mithal}
+
+%================================================================
+\section{دوال مرجعية}
+\subsection{الدالة $x\mapsto e^{-x}$}
+\begin{khassia}
+$\left(e^{-x}\right)'=-e^{-x}<0$: \bxt{متناقصة تمامًا على $\R$}؛ \ $\lim\limits_{x\to-\infty}e^{-x}=+\infty$ ، $\lim\limits_{x\to+\infty}e^{-x}=0$ (مقارب أفقي $y=0$ بجوار $+\infty$).\par
+منحناها نظير منحنى $x\mapsto e^{x}$ بالنسبة إلى محور التراتيب، ومماسه عند $0$: $y=-x+1$.
+\end{khassia}
+\begin{GR}{-3}{3}{-0.5}{4.5}{0.85}
+\Ticks{-2,-1,1,2}{1,2,3,4}
+\draw[cThm,very thick,domain=-3:1.55,samples=80] plot(\x,{exp(\x)});
+\draw[cDef,very thick,domain=-1.55:3,samples=80] plot(\x,{exp(-\x)});
+\draw[cRem,thick,domain=-2:1.4] plot(\x,{1-\x});
+\fill (0,1) circle (1.6pt);
+\node[cThm] at (2.05,3.5){$y=e^{x}$};
+\node[cDef] at (-2.15,3.5){$y=e^{-x}$};
+\node[cRem,font=\scriptsize] at (-1.75,1.45){$y=-x+1$};
+\end{GR}
+
+\subsection{الدالة $x\mapsto xe^{x}$}
+\begin{khassia}
+\begin{itemize}
+\item $\lim\limits_{x\to-\infty}xe^{x}=0$ (مقارب أفقي $y=0$ بجوار $-\infty$) و $\lim\limits_{x\to+\infty}xe^{x}=+\infty$.
+\item $\left(xe^{x}\right)'=e^{x}+xe^{x}=(x+1)e^{x}$، إشارتها إشارة $x+1$؛ القيمة الحدية الصغرى: $-e^{-1}=-\frac{1}{e}\approx-0{,}37$.
+\item المماس عند $O$: $y=x$.
+\end{itemize}
+\end{khassia}
+\begin{TAB}
+\tkzTabInit[lgt=2.4,espcl=3.2]{$x$/1,$(x+1)e^{x}$/1,$xe^{x}$/2}{$-\infty$,$-1$,$+\infty$}
+\tkzTabLine{,-,z,+,}
+\tkzTabVar{+/$0$,-/$-\frac{1}{e}$,+/$+\infty$}
+\end{TAB}
+\begin{GR}{-5}{2}{-1}{3}{0.9}
+\Ticks{-4,-3,-2,1}{1,2}
+\draw[cDef,very thick,domain=-5:1.2,samples=120] plot(\x,{\x*exp(\x)});
+\draw[cRem,thick,domain=-1:2] plot(\x,{\x});
+\fill (-1,-0.368) circle (1.6pt) node[below]{$\left(-1;-\frac{1}{e}\right)$};
+\node[cDef] at (-1.3,1.2){$y=xe^{x}$};
+\node[cRem] at (1.6,0.9){$y=x$};
+\end{GR}
+
+\subsection{الدالة $x\mapsto e^{ax+b}$ \ ($a\neq0$)}
+\begin{khassia}
+$\left(e^{ax+b}\right)'=ae^{ax+b}$ من إشارة $a$:
+\begin{itemize}
+\item إذا كان $a>0$: متزايدة تمامًا، $\lim\limits_{x\to-\infty}e^{ax+b}=0$ و $\lim\limits_{x\to+\infty}e^{ax+b}=+\infty$.
+\item إذا كان $a<0$: متناقصة تمامًا، $\lim\limits_{x\to-\infty}e^{ax+b}=+\infty$ و $\lim\limits_{x\to+\infty}e^{ax+b}=0$.
+\end{itemize}
+\end{khassia}
+\begin{mithal}
+$f(x)=e^{-2x+1}$: $f'(x)=-2e^{-2x+1}<0$، إذن \bxt{$f$ متناقصة تمامًا على $\R$}، و $\lim\limits_{x\to-\infty}f(x)=+\infty$ ، $\lim\limits_{x\to+\infty}f(x)=0$.
+\end{mithal}
+
+%================================================================
+\section{المعادلات التفاضلية}
+\begin{tarif}
+$a$ و $b$ عددان حقيقيان مع $a\neq0$. حل المعادلة التفاضلية \bx{y'=ay+b} على $\R$ هو تعيين كل الدوال $f$ القابلة للاشتقاق على $\R$ والتي تحقق من أجل كل $x\in\R$: $f'(x)=af(x)+b$.
+\end{tarif}
+
+\begin{khassia}[المعادلة $y'=ay$]
+حلول المعادلة التفاضلية $y'=ay$ هي الدوال: \quad \bx{x\mapsto Ce^{ax}} \quad حيث $C$ ثابت حقيقي.
+\par\smallskip
+\textbf{البرهان:} الدالة $f(x)=Ce^{ax}$ حل لأن $f'(x)=aCe^{ax}=af(x)$. \ عكسيًا إذا كانت $g$ حلًا نضع $h(x)=e^{-ax}g(x)$، فيكون $h'(x)=-ae^{-ax}g(x)+e^{-ax}ag(x)=0$، إذن $h$ ثابتة $C$ و $g(x)=Ce^{ax}$.
+\end{khassia}
+
+\begin{khassia}[المعادلة $y'=ay+b$]
+حلول المعادلة التفاضلية $y'=ay+b$ هي الدوال: \quad \bx{x\mapsto Ce^{ax}-\dfrac{b}{a}} \quad حيث $C$ ثابت حقيقي.
+\par\smallskip
+\textbf{الحل الخاص:} من أجل كل $x_0$ و $y_0$ حقيقيين يوجد حل \textbf{وحيد} $f$ يحقق الشرط الابتدائي $f(x_0)=y_0$.
+\end{khassia}
+
+\begin{molahada}
+\begin{itemize}
+\item الدالة $x\mapsto -\frac{b}{a}$ هي الحل الثابت للمعادلة $y'=ay+b$.
+\item الدالة الأسية هي الحل الخاص للمعادلة $y'=y$ الذي يحقق $y(0)=1$.
+\item قبل تطبيق القاعدة نكتب المعادلة على الشكل $y'=ay+b$ (نقسم على معامل $y'$).
+\end{itemize}
+\end{molahada}
+
+\begin{mithal}
+\begin{itemize}
+\item $2y'+5y=0$ تكافئ $y'=-\frac{5}{2}y$؛ الحلول: $x\mapsto Ce^{-\frac{5}{2}x}$ ، $C\in\R$.
+\item $y'+3y=0$ مع $f(7)=-2$: الحلول $f(x)=Ce^{-3x}$؛ $Ce^{-21}=-2$ أي $C=-2e^{21}$، إذن \bx{f(x)=-2e^{21-3x}}.
+\item $2y'-16y=11$ تكافئ $y'=8y+\frac{11}{2}$؛ الحلول: $x\mapsto Ce^{8x}-\dfrac{11/2}{8}=Ce^{8x}-\dfrac{11}{16}$ ، $C\in\R$.
+\end{itemize}
+\end{mithal}
+
+\begin{mithal}[حل خاص بشرط على المماس]
+عيّن الحل الخاص $f$ للمعادلة $3y'+2y-15=0$ بحيث يقبل منحناه مماسًا موازيًا للمستقيم $y=4x-1$ عند النقطة ذات الفاصلة $3$.
+\par\smallskip
+المعادلة تكافئ $y'=-\frac{2}{3}y+5$، حلولها: $f(x)=Ce^{-\frac{2}{3}x}-\dfrac{5}{-\frac{2}{3}}=Ce^{-\frac{2}{3}x}+\dfrac{15}{2}$.\par
+المماس موازٍ للمستقيم يعني $f'(3)=4$: $-\frac{2}{3}Ce^{-2}=4$ أي $C=-6e^{2}$. \ إذن \bx{f(x)=-6e^{2-\frac{2}{3}x}+\dfrac{15}{2}}.
+\end{mithal}
+
+%================================================================
+\section{تمارين محلولة}
+\begin{tmr}
+\textbf{I.} $g$ الدالة المعرفة على $\R$ بـ: $g(x)=(2-x)e^{x}-1$.
+\begin{sq}
+\qa احسب $\lim\limits_{x\to-\infty}g(x)$ و $\lim\limits_{x\to+\infty}g(x)$، ثم ادرس اتجاه تغير $g$.
+\qb بيّن أن المعادلة $g(x)=0$ تقبل حلين $\alpha$ و $\beta$ حيث $-1{,}15<\alpha<-1{,}14$ و $1{,}84<\beta<1{,}85$، ثم استنتج إشارة $g(x)$.
+\end{sq}
+\textbf{II.} $f$ الدالة المعرفة على $\R$ بـ: $f(x)=(3-x)e^{x}-x$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس.
+\begin{sq}
+\qa احسب نهايتي $f$ عند $-\infty$ وعند $+\infty$.
+\qb بيّن أن $f'(x)=g(x)$، ثم شكّل جدول تغيرات $f$.
+\qc بيّن أن المستقيم $(\Delta):y=-x$ مقارب مائل لـ $(C_f)$ بجوار $-\infty$، وادرس الوضع النسبي.
+\qd اكتب معادلة المماس $(T)$ عند النقطة ذات الفاصلة $0$، ثم أنشئ $(T)$ ، $(\Delta)$ و $(C_f)$ (نأخذ $f(\alpha)\approx2{,}46$ ، $f(\beta)\approx5{,}46$، و $(C_f)$ يقطع محور الفواصل في نقطة فاصلتها $x_0\approx2{,}83$).
+\qe ناقش بيانيًا، حسب قيم الوسيط الحقيقي $m$، عدد حلول المعادلة $f(x)=m$.
+\end{sq}
+\end{tmr}
+
+\begin{hal}
+\textbf{I.}
+\pa $\lim\limits_{x\to-\infty}g(x)=\lim\limits_{x\to-\infty}\left(2e^{x}-xe^{x}-1\right)=0-0-1=\bx{-1}$ (لأن $xe^{x}\to0$)؛ \ $\lim\limits_{x\to+\infty}g(x)=\bx{-\infty}$ (لأن $2-x\to-\infty$ و $e^{x}\to+\infty$).\par
+$g'(x)=-e^{x}+(2-x)e^{x}=(1-x)e^{x}$، إشارتها إشارة $1-x$؛ و $g(1)=e-1\approx1{,}72$:
+\begin{TAB}
+\tkzTabInit[lgt=2.4,espcl=3.2]{$x$/1,$g'(x)$/1,$g(x)$/2}{$-\infty$,$1$,$+\infty$}
+\tkzTabLine{,+,z,-,}
+\tkzTabVar{-/$-1$,+/$e-1$,-/$-\infty$}
+\end{TAB}
+\pb على $]-\infty;1]$: $g$ مستمرة ومتزايدة تمامًا وتأخذ قيمها في $]-1;e-1]$ الذي يحوي $0$، إذن المعادلة $g(x)=0$ تقبل حلًا وحيدًا $\alpha$. \ $g(-1{,}15)\approx-0{,}003<0$ و $g(-1{,}14)\approx0{,}004>0$، إذن \bx{-1{,}15<\alpha<-1{,}14}.\par
+على $[1;+\infty[$: $g$ مستمرة ومتناقصة تمامًا من $e-1>0$ إلى $-\infty$، إذن تقبل حلًا وحيدًا $\beta$. \ $g(1{,}84)\approx0{,}007>0$ و $g(1{,}85)\approx-0{,}046<0$، إذن \bx{1{,}84<\beta<1{,}85}.
+\begin{TAB}
+\tkzTabInit[lgt=2.4,espcl=2.4]{$x$/1,$g(x)$/1}{$-\infty$,$\alpha$,$\beta$,$+\infty$}
+\tkzTabLine{,-,z,+,z,-,}
+\end{TAB}
+
+\textbf{II.}
+\pa $\lim\limits_{x\to-\infty}f(x)=\lim\limits_{x\to-\infty}\left(3e^{x}-xe^{x}-x\right)=0-0+\infty=\bx{+\infty}$.\par
+$\lim\limits_{x\to+\infty}f(x)=\bx{-\infty}$ لأن $(3-x)e^{x}\to-\infty$ و $-x\to-\infty$.
+\pb $f'(x)=-e^{x}+(3-x)e^{x}-1=(2-x)e^{x}-1=g(x)$، إذن إشارة $f'$ هي إشارة $g$:
+\begin{TAB}
+\tkzTabInit[lgt=2.4,espcl=2.6]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$\alpha$,$\beta$,$+\infty$}
+\tkzTabLine{,-,z,+,z,-,}
+\tkzTabVar{+/$+\infty$,-/$f(\alpha)$,+/$f(\beta)$,-/$-\infty$}
+\end{TAB}
+\pc $f(x)-(-x)=(3-x)e^{x}=3e^{x}-xe^{x}$ و $\lim\limits_{x\to-\infty}\left(3e^{x}-xe^{x}\right)=0$، إذن \bx{y=-x} معادلة مقارب مائل لـ $(C_f)$ بجوار $-\infty$.\par
+إشارة $f(x)+x=(3-x)e^{x}$ هي إشارة $3-x$:
+\begin{itemize}
+\item على $]-\infty;3[$: $(C_f)$ فوق $(\Delta)$؛ \ على $]3;+\infty[$: $(C_f)$ تحت $(\Delta)$؛ \ ويتقاطعان في النقطة $(3;-3)$.
+\end{itemize}
+\pd $f(0)=3$ و $f'(0)=g(0)=1$، إذن $(T):y=1\times(x-0)+3$ أي \bx{y=x+3}.
+\begin{GR}{-5}{3.5}{-3.5}{6.5}{0.75}
+\Ticks{-4,-3,-2,1}{-3,-2,-1,1,2,3,4,5,6}
+\draw[cRem,thick,dashed,domain=-5:3.5] plot(\x,{-\x});
+\draw[cEx,thick,domain=-5:3.5] plot(\x,{\x+3});
+\draw[cDef,very thick,domain=-5:3.05,samples=200] plot(\x,{(3-\x)*exp(\x)-\x});
+\draw[dotted] (-1.146,0)--(-1.146,2.464);
+\draw[dotted] (1.841,0)--(1.841,5.464);
+\fill (-1.146,2.464) circle (1.6pt);
+\fill (1.841,5.464) circle (1.6pt);
+\fill (0,3) circle (1.6pt);
+\fill (3,-3) circle (1.6pt);
+\fill (2.833,0) circle (1.6pt);
+\node[below,font=\scriptsize] at (-1.146,-0.05){$\alpha$};
+\node[below left,font=\scriptsize] at (1.841,0){$\beta$};
+\node[above right,font=\scriptsize] at (2.833,0){$x_0$};
+\node[cDef] at (2.9,4.6){$(C_f)$};
+\node[cRem] at (-4.3,5.6){$(\Delta)$};
+\node[cEx] at (0.9,5.8){$(T)$};
+\end{GR}
+\pe حلول المعادلة $f(x)=m$ هي فواصل نقط تقاطع $(C_f)$ مع المستقيم الأفقي ذي المعادلة $y=m$:
+\begin{itemize}
+\item إذا كان $m<f(\alpha)$: حل وحيد (في $]\beta;+\infty[$).
+\item إذا كان $m=f(\alpha)$: حلان ($\alpha$ وحل في $]\beta;+\infty[$).
+\item إذا كان $f(\alpha)<m<f(\beta)$: ثلاثة حلول.
+\item إذا كان $m=f(\beta)$: حلان ($\beta$ وحل في $]-\infty;\alpha[$).
+\item إذا كان $m>f(\beta)$: حل وحيد (في $]-\infty;\alpha[$).
+\end{itemize}
+\end{hal}
+
+\begin{tmr}
+\textbf{(شعبة رياضيات)} \ من أجل كل عدد حقيقي $m$ نعتبر الدالة $f_m$ المعرفة على $\R$ بـ: $f_m(x)=(x+m)e^{-x}$، و $(C_m)$ تمثيلها البياني.
+\begin{sq}
+\qa احسب نهايتي $f_m$ عند $-\infty$ وعند $+\infty$، ثم شكّل جدول تغيراتها.
+\qb بيّن أن النقطة $S_m$ ذروة المنحنى $(C_m)$ تنتمي إلى منحنى ثابت يطلب تعيين معادلته.
+\qc بيّن أن المنحنيات $(C_m)$ لا تشترك في أي نقطة، ثم أنشئ $(C_{-1})$ ، $(C_0)$ و $(C_1)$.
+\end{sq}
+\end{tmr}
+
+\begin{hal}
+\pa $\lim\limits_{x\to-\infty}f_m(x)=\bx{-\infty}$ (لأن $x+m\to-\infty$ و $e^{-x}\to+\infty$).\par
+$\lim\limits_{x\to+\infty}f_m(x)=\lim\limits_{x\to+\infty}\left(xe^{-x}+me^{-x}\right)=\bx{0}$: المستقيم $y=0$ مقارب أفقي بجوار $+\infty$.\par
+$f_m'(x)=e^{-x}-(x+m)e^{-x}=(1-m-x)e^{-x}$، إشارتها إشارة $1-m-x$، و $f_m(1-m)=1\times e^{-(1-m)}=e^{m-1}$:
+\begin{TAB}
+\tkzTabInit[lgt=2.4,espcl=3.2]{$x$/1,$f_m'(x)$/1,$f_m(x)$/2}{$-\infty$,$1-m$,$+\infty$}
+\tkzTabLine{,+,z,-,}
+\tkzTabVar{-/$-\infty$,+/$e^{m-1}$,-/$0$}
+\end{TAB}
+\pb الذروة هي $S_m\left(1-m;e^{m-1}\right)$. نضع $x=1-m$، فيكون $m-1=-x$، ومنه $y=e^{m-1}=e^{-x}$. إذن \bxt{النقط $S_m$ تنتمي إلى المنحنى ذي المعادلة $y=e^{-x}$}.
+\pc من أجل $m\neq m'$ ولكل $x\in\R$:\[ f_m(x)-f_{m'}(x)=(m-m')e^{-x}\neq0 \]إذن \bxt{المنحنيات $(C_m)$ لا تشترك في أي نقطة}.
+\begin{GR}{-2}{5}{-2.5}{1.6}{1.1}
+\Ticks{-1,1,2,3,4}{-2,-1,1}
+\draw[gray,dashed,domain=-0.5:5,samples=80] plot(\x,{exp(-\x)});
+\draw[cThm,very thick,domain=-2:5,samples=120] plot(\x,{(\x-1)*exp(-\x)});
+\draw[cDef,very thick,domain=-2:5,samples=120] plot(\x,{\x*exp(-\x)});
+\draw[cRem,very thick,domain=-2:5,samples=120] plot(\x,{(\x+1)*exp(-\x)});
+\fill (0,1) circle (1.5pt);
+\fill (1,0.368) circle (1.5pt);
+\fill (2,0.135) circle (1.5pt);
+\node[cRem] at (-0.9,1.2){$(C_1)$};
+\node[cDef] at (-1.15,-1.9){$(C_0)$};
+\node[cThm] at (0.45,-1.9){$(C_{-1})$};
+\node[gray] at (3.8,0.45){$y=e^{-x}$};
+\end{GR}
+\end{hal}
+
+\begin{tmr}
+نعتبر المعادلة التفاضلية $(E):\ 2y'+3y=x^{2}+1$.
+\begin{sq}
+\qa عيّن الدالة كثيرة الحدود $p$ من الدرجة الثانية حلًا للمعادلة $(E)$.
+\qb حل المعادلة التفاضلية $(E_0):\ 2y'+3y=0$.
+\qc بيّن أن $g$ حل لـ $(E)$ إذا وفقط إذا كانت $g-p$ حلًا لـ $(E_0)$، ثم استنتج حلول $(E)$.
+\qd عيّن الحل الخاص $g$ لـ $(E)$ الذي ينعدم من أجل $0$.
+\end{sq}
+\end{tmr}
+
+\begin{hal}
+\pa نضع $p(x)=ax^{2}+bx+c$، $p'(x)=2ax+b$:
+\[ 2(2ax+b)+3\left(ax^{2}+bx+c\right)=3ax^{2}+(4a+3b)x+2b+3c=x^{2}+1 \]
+بالمطابقة:
+\[ 3a=1\ ;\quad 4a+3b=0\ ;\quad 2b+3c=1 \]
+إذن $a=\frac{1}{3}$ ، $b=-\frac{4}{9}$ ، $c=\frac{17}{27}$، ومنه \bx{p(x)=\frac{1}{3}x^{2}-\frac{4}{9}x+\frac{17}{27}}.
+\pb $(E_0)$ تكافئ $y'=-\frac{3}{2}y$، حلولها: $x\mapsto Ce^{-\frac{3}{2}x}$ ، $C\in\R$.
+\pc بما أن $2p'+3p=x^{2}+1$:
+\[ 2g'+3g=x^{2}+1\iff 2g'+3g=2p'+3p\iff 2(g-p)'+3(g-p)=0 \]
+أي $g-p$ حل لـ $(E_0)$. إذن حلول $(E)$: \ \bx{g(x)=Ce^{-\frac{3}{2}x}+\frac{1}{3}x^{2}-\frac{4}{9}x+\frac{17}{27}} ، $C\in\R$.
+\pd $g(0)=C+\frac{17}{27}=0$ أي $C=-\frac{17}{27}$، إذن \bx{g(x)=-\frac{17}{27}e^{-\frac{3}{2}x}+\frac{1}{3}x^{2}-\frac{4}{9}x+\frac{17}{27}}.
+\end{hal}
+
+%================================================================
+\clearpage
+\section{خلاصة الطرائق}
+\begin{BOX}{cMeth}{الطريقة حسب المطلوب}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|p{0.62\textwidth}|p{0.3\textwidth}|}\hline
+\rowcolor{cSec!12} \textbf{الطريقة} & \textbf{المطلوب}\\\hline
+$e^{x+y}=e^{x}e^{y}$ ، $e^{-x}=\frac{1}{e^{x}}$ ، $\left(e^{x}\right)^{n}=e^{nx}$؛ نضرب البسط والمقام في $e^{x}$ أو $e^{-x}$. & تبسيط عبارة أو إثبات مساواة\\\hline
+نوحّد المقامات ثم نطابق معاملات $e^{2x}$ ، $e^{x}$ والثابت. & تعيين معاملات (مطابقة)\\\hline
+$e^{u}=e^{v}\iff u=v$ ؛ \ $e^{u}=k>0\iff u=\ln k$ ؛ \ $e^{u}=k\leqslant0$: لا حلول. & معادلة أسية\\\hline
+نضع $X=e^{x}>0$، نحل المعادلة من الدرجة الثانية ونرفض $X\leqslant0$ (ونضرب في $e^{x}$ إذا ظهر $e^{-x}$). & $ae^{2x}+be^{x}+c=0$\\\hline
+$e^{u}<e^{v}\iff u<v$، أو نحلل ثم جدول إشارة. & متراجحة أسية\\\hline
+إشارة $u(x)e^{v(x)}$ هي إشارة $u(x)$؛ \ $ae^{\alpha x+\beta}+b$: نحل المعادلة ثم إشارة $a\alpha$ على يمين الجذر وعكسها على يساره. & إشارة عبارة أسية\\\hline
+نخرج الحد الغالب ونستعمل $\frac{e^{x}}{x^{n}}\to+\infty$ ، $x^{n}e^{x}\to0$ عند $-\infty$ ، $\frac{e^{u}-1}{u}\to1$. & حالة عدم تعيين\\\hline
+$\left(e^{u}\right)'=u'e^{u}$؛ \ $e^{u}$ و $u$ لهما نفس اتجاه التغير؛ \ $\lim e^{u}$ بنهاية دالة مركبة. & مشتقة ونهاية $e^{u}$\\\hline
+ندرس دالة مساعدة $\varphi=A-B$ وقيمتها الحدية (مثل $e^{x}-x-1\geqslant0$). & مقارنة أو متباينة\\\hline
+$\lim\big(f(x)-(ax+b)\big)=0$ ثم ندرس إشارة الفرق $f(x)-(ax+b)$. & المقارب المائل والوضع النسبي\\\hline
+مبرهنة القيم المتوسطة (استمرار + رتابة تامة + تغير الإشارة) ثم حصر بالحاسبة. & حل وحيد $\alpha$ وحصره\\\hline
+نقاط تقاطع $(C_f)$ مع المستقيم $y=m$ (أو $y=x+m$) مستعينين بجدول التغيرات. & مناقشة بيانية\\\hline
+$y'=ay$: $Ce^{ax}$ ؛ \ $y'=ay+b$: $Ce^{ax}-\frac{b}{a}$؛ ثم نعيّن $C$ بالشرط الابتدائي. & معادلة تفاضلية\\\hline
+\end{tabular}
+\end{center}
+\end{BOX}
+\end{document}
