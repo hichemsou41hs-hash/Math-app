@@ -1,0 +1,1002 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+% complex plane (O;u,v): \begin{CP}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{CP}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!20,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0);
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3);
+ \draw[-{Stealth[length=2.2mm]},very thick,cSec] (0,0)--(1,0) node[below,pos=0.55]{$\vec u$};
+ \draw[-{Stealth[length=2.2mm]},very thick,cSec] (0,0)--(0,1) node[left,pos=0.55]{$\vec v$};
+ \node[below left] at (0,0){$O$};}
+{\end{tikzpicture}\end{LTR}\end{center}}
+% \Pt{name}{(x,y)}{label}{anchor}: named filled point
+\newcommand{\Pt}[4]{\coordinate (#1) at #2; \fill (#1) circle (1.8pt) node[#4]{$#3$};}
+% right-angle mark at vertex #1 between #2 and #3
+\newcommand{\RA}[3]{\draw[thin] ($(#1)!2.5mm!(#2)$) -- ($(#1)!2.5mm!(#2)+(#1)!2.5mm!(#3)-(#1)$) -- ($(#1)!2.5mm!(#3)$);}
+% equal-length tick on segment
+\newcommand{\TK}[2]{\path (#1) -- (#2) node[midway,sloped,inner sep=0pt,font=\scriptsize]{$|$};}
+\newcommand{\TKK}[2]{\path (#1) -- (#2) node[midway,sloped,inner sep=0pt,font=\scriptsize]{$||$};}
+\thickmuskip=5mu plus 2mu\relax
+\medmuskip=4mu plus 1mu minus 3mu\relax
+\pretocmd{\tamrin}{\Needspace{14\baselineskip}}{}{}
+\SetHeader{\small\bfseries\color{cSec}تمارين تجريبية: الأعداد المركبة والتحويلات النقطية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{24}{30}\selectfont\bfseries تمارين تجريبية في الأعداد المركبة والتحويلات النقطية}\\[8pt]
+{\color{white}\large تمارين متدرجة مع الحلول المفصلة خطوة بخطوة}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- الشعب العلمية}
+\end{tcolorbox}
+\end{LTR}
+% ================= تمارين تدريبية: الأعداد المركبة =================
+\begin{molahada}[اصطلاحات]
+في كل التمارين، المستوي المركب منسوب إلى المعلم المتعامد والمتجانس $(O;\vec u,\vec v)$، و$i$ هو العدد المركب الذي يحقق $i^2=-1$. نقول عن النقطة $M$ إن لاحقتها $z$ ونكتب $M(z)$.
+\end{molahada}
+
+\section{الشكل الجبري والمعادلات}
+
+\begin{tamrin}{العمليات على الشكل الجبري}
+نعتبر العددين المركبين $z_1=2-3i$ و$z_2=1+2i$.
+\QQ{1} اكتب على الشكل الجبري كلًّا من: $z_1+z_2$، $z_1z_2$، $z_1^2$ و$\dfrac{z_1}{z_2}$.
+\QQ{2} احسب $|z_1|$ و$|z_2|$، ثم تحقق أن $|z_1z_2|=|z_1|\times|z_2|$.
+\QQ{3} حل في $\mathbb{C}$ المعادلة: $(1+i)z=3-i$.
+\QQ{4} عيّن العدد المركب $z$ الذي يحقق: $2z+i\,\overline{z}=3+3i$.
+\QQ{5} $x$ عدد حقيقي، و$Z=(x+i)(2-i)$.
+\begin{sq}
+\qa اكتب $Z$ على الشكل الجبري.
+\qb عيّن $x$ حتى يكون $Z$ حقيقيًا، ثم حتى يكون $Z$ تخيليًا صرفًا.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} نحسب كما في $\R$ مع مراعاة $i^2=-1$:
+\[z_1+z_2=(2+1)+(-3+2)i=\bx{3-i}.\]
+\[z_1z_2=(2-3i)(1+2i)=2+4i-3i-6i^2=2+i+6=\bx{8+i}.\]
+\[z_1^2=(2-3i)^2=4-12i+9i^2=4-12i-9=\bx{-5-12i}.\]
+للقسمة نضرب البسط والمقام في مرافق المقام $\overline{z_2}=1-2i$، مع العلم أن $(1+2i)(1-2i)=1^2+2^2=5$:
+\[\frac{z_1}{z_2}=\frac{(2-3i)(1-2i)}{(1+2i)(1-2i)}=\frac{2-4i-3i+6i^2}{5}=\frac{-4-7i}{5}=\bx{-\frac45-\frac75\,i}.\]
+\QQ{2} طويلة $a+ib$ هي $\sqrt{a^2+b^2}$:
+\[|z_1|=\sqrt{2^2+(-3)^2}=\bx{\sqrt{13}},\qquad |z_2|=\sqrt{1^2+2^2}=\bx{\sqrt5}.\]
+من جهة: $|z_1z_2|=|8+i|=\sqrt{64+1}=\sqrt{65}$، ومن جهة أخرى: $|z_1|\times|z_2|=\sqrt{13}\times\sqrt5=\sqrt{65}$. إذن $|z_1z_2|=|z_1|\times|z_2|$ \ok.
+\QQ{3} بما أن $1+i\neq0$:
+\[z=\frac{3-i}{1+i}=\frac{(3-i)(1-i)}{(1+i)(1-i)}=\frac{3-3i-i+i^2}{2}=\frac{2-4i}{2}=\bx{1-2i}.\]
+تحقق: $(1+i)(1-2i)=1-2i+i-2i^2=3-i$ \ok.
+\QQ{4} نضع $z=x+iy$ مع $x,y$ حقيقيين، فيكون $\overline{z}=x-iy$ و:
+\[2z+i\,\overline{z}=2x+2iy+ix-i^2y=(2x+y)+i(x+2y).\]
+عددان مركبان متساويان معناه تساوي الجزأين الحقيقيين وتساوي الجزأين التخيليين:
+\[\begin{cases}2x+y=3\\ x+2y=3\end{cases}\]
+بطرح المعادلتين: $x-y=0$ أي $x=y$، ثم $3x=3$ أي $x=1$. إذن \bx{z=1+i}.
+تحقق: $2(1+i)+i(1-i)=2+2i+i+1=3+3i$ \ok.
+\QQ{5}
+\pa $Z=(x+i)(2-i)=2x-ix+2i-i^2=\bx{(2x+1)+i(2-x)}$.
+\pb $Z$ حقيقي معناه جزؤه التخيلي معدوم: $2-x=0$ أي \bx{x=2} (ونجد $Z=5$).
+
+$Z$ تخيلي صرف معناه جزؤه الحقيقي معدوم: $2x+1=0$ أي \bx{x=-\tfrac12} (ونجد $Z=\tfrac52\,i$).
+\end{hal}
+
+\begin{tamrin}{معادلات من الدرجة الثانية والثالثة}
+\QQ{1} حل في $\mathbb{C}$ المعادلات التالية:
+\begin{sq}
+\qa $z^2-4z+13=0$.
+\qb $z^2+z+1=0$.
+\qc $(z^2+4)(z^2-2z+2)=0$.
+\end{sq}
+\QQ{2} نعتبر كثير الحدود $P(z)=z^3-3z^2+7z-5$.
+\begin{sq}
+\qa احسب $P(1)$.
+\qb عيّن العددين الحقيقيين $a$ و$b$ بحيث من أجل كل عدد مركب $z$: $P(z)=(z-1)(z^2+az+b)$.
+\qc حل في $\mathbb{C}$ المعادلة $P(z)=0$.
+\end{sq}
+\QQ{3} حل في $\mathbb{C}$ المعادلة: $\dfrac{z-2i}{z+1}=i$ (مع $z\neq-1$).
+\end{tamrin}
+\begin{hal}
+\begin{molahada}[تذكير]
+المعادلة $az^2+bz+c=0$ (حيث $a,b,c$ أعداد حقيقية و$a\neq0$) مميزها $\Delta=b^2-4ac$. إذا كان $\Delta<0$ فلها حلان مركبان مترافقان: $z_1=\dfrac{-b-i\sqrt{-\Delta}}{2a}$ و$z_2=\overline{z_1}=\dfrac{-b+i\sqrt{-\Delta}}{2a}$.
+\end{molahada}
+\QQ{1}
+\pa $\Delta=(-4)^2-4\times1\times13=16-52=-36=(6i)^2<0$، إذن:
+\[z_1=\frac{4-6i}{2}=2-3i,\qquad z_2=\frac{4+6i}{2}=2+3i.\]
+مجموعة الحلول: \bx{S=\{2-3i\,;\,2+3i\}}.
+\pb $\Delta=1-4=-3<0$ و$\sqrt{-\Delta}=\sqrt3$، إذن:
+\[\bx{S=\left\{-\frac12-\frac{\sqrt3}{2}i\,;\,-\frac12+\frac{\sqrt3}{2}i\right\}}.\]
+\pc جداء معدوم معناه أحد عامليه معدوم:
+\begin{itemize}
+\item $z^2+4=0$ معناه $z^2=-4=(2i)^2$، أي $z=2i$ أو $z=-2i$.
+\item $z^2-2z+2=0$: $\Delta=4-8=-4=(2i)^2$، إذن $z=\dfrac{2-2i}{2}=1-i$ أو $z=1+i$.
+\end{itemize}
+\[\bx{S=\{-2i\,;\,2i\,;\,1-i\,;\,1+i\}}.\]
+\QQ{2}
+\pa $P(1)=1-3+7-5=\bx{0}$، إذن $1$ جذر لـ $P$ و$P(z)$ يقبل القسمة على $(z-1)$.
+\pb ننشر الطرف الثاني:
+\[(z-1)(z^2+az+b)=z^3+az^2+bz-z^2-az-b=z^3+(a-1)z^2+(b-a)z-b.\]
+بالمطابقة مع $P(z)=z^3-3z^2+7z-5$:
+\[\begin{cases}a-1=-3\\ b-a=7\\ -b=-5\end{cases}\iff\begin{cases}a=-2\\ b=5\end{cases}\]
+(المعادلة الثانية محققة: $b-a=5+2=7$).
+إذن \bx{P(z)=(z-1)(z^2-2z+5)}.
+\pc $P(z)=0$ معناه $z-1=0$ أو $z^2-2z+5=0$.
+
+للمعادلة الثانية: $\Delta=4-20=-16=(4i)^2$، إذن $z=\dfrac{2-4i}{2}=1-2i$ أو $z=1+2i$.
+\[\bx{S=\{1\,;\,1-2i\,;\,1+2i\}}.\]
+\QQ{3} من أجل $z\neq-1$:
+\[\frac{z-2i}{z+1}=i\iff z-2i=i(z+1)\iff z-iz=3i\iff z(1-i)=3i.\]
+\[z=\frac{3i}{1-i}=\frac{3i(1+i)}{(1-i)(1+i)}=\frac{3i+3i^2}{2}=\bx{-\frac32+\frac32\,i}.\]
+وهو يختلف عن $-1$، فهو مقبول.
+\end{hal}
+
+\section{الشكل المثلثي والأسي -- دستور موافر}
+
+\begin{tamrin}{الشكل الأسي واستنتاج قيم مضبوطة}
+نعتبر العددين المركبين $z_1=1+i\sqrt3$ و$z_2=1-i$.
+\QQ{1} عيّن الطويلة وعمدة لكل من $z_1$ و$z_2$، ثم اكتبهما على الشكل الأسي.
+\QQ{2} اكتب على الشكل الأسي كلًّا من $z_1z_2$ و$\dfrac{z_1}{z_2}$.
+\QQ{3} اكتب $\dfrac{z_1}{z_2}$ على الشكل الجبري.
+\QQ{4} استنتج القيمتين المضبوطتين لـ $\cos\dfrac{7\pi}{12}$ و$\sin\dfrac{7\pi}{12}$.
+\QQ{5} احسب $\left(\dfrac{z_1}{z_2}\right)^{12}$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $|z_1|=\sqrt{1+3}=2$، ونبحث عن $\theta_1$ بحيث:
+\[\cos\theta_1=\frac12,\qquad \sin\theta_1=\frac{\sqrt3}{2}\quad\Longrightarrow\quad\theta_1=\frac\pi3\ [2\pi].\]
+$|z_2|=\sqrt{1+1}=\sqrt2$، ونبحث عن $\theta_2$ بحيث:
+\[\cos\theta_2=\frac{1}{\sqrt2}=\frac{\sqrt2}{2},\qquad \sin\theta_2=-\frac{\sqrt2}{2}\quad\Longrightarrow\quad\theta_2=-\frac\pi4\ [2\pi].\]
+\[\bx{z_1=2e^{i\frac\pi3}},\qquad \bx{z_2=\sqrt2\,e^{-i\frac\pi4}}.\]
+\QQ{2} الطويلات تُضرب (تُقسم) والعمد تُجمع (تُطرح):
+\[z_1z_2=2\sqrt2\,e^{i\left(\frac\pi3-\frac\pi4\right)}=\bx{2\sqrt2\,e^{i\frac{\pi}{12}}},\qquad
+\frac{z_1}{z_2}=\frac{2}{\sqrt2}e^{i\left(\frac\pi3+\frac\pi4\right)}=\bx{\sqrt2\,e^{i\frac{7\pi}{12}}}.\]
+\QQ{3} نضرب في مرافق المقام $1+i$:
+\[\frac{z_1}{z_2}=\frac{(1+i\sqrt3)(1+i)}{(1-i)(1+i)}=\frac{1+i+i\sqrt3+i^2\sqrt3}{2}=\bx{\frac{1-\sqrt3}{2}+i\,\frac{1+\sqrt3}{2}}.\]
+\QQ{4} من الشكل الأسي: $\dfrac{z_1}{z_2}=\sqrt2\cos\dfrac{7\pi}{12}+i\sqrt2\sin\dfrac{7\pi}{12}$. بمطابقة الجزأين الحقيقيين ثم التخيليين مع الشكل الجبري:
+\[\sqrt2\cos\frac{7\pi}{12}=\frac{1-\sqrt3}{2}\ \Longrightarrow\ \cos\frac{7\pi}{12}=\frac{1-\sqrt3}{2\sqrt2}=\bx{\frac{\sqrt2-\sqrt6}{4}},\]
+\[\sqrt2\sin\frac{7\pi}{12}=\frac{1+\sqrt3}{2}\ \Longrightarrow\ \sin\frac{7\pi}{12}=\frac{1+\sqrt3}{2\sqrt2}=\bx{\frac{\sqrt2+\sqrt6}{4}}.\]
+تحقق: $\cos\frac{7\pi}{12}\approx-0{,}259<0$ لأن $\frac{7\pi}{12}\in\left]\frac\pi2;\pi\right[$ \ok.
+\QQ{5} حسب دستور موافر:
+\[\left(\frac{z_1}{z_2}\right)^{12}=\left(\sqrt2\right)^{12}e^{i\frac{12\times7\pi}{12}}=2^6e^{7i\pi}=64\,e^{i\pi}=\bx{-64}\]
+لأن $7\pi=\pi+3\times2\pi$ و$e^{i\pi}=-1$.
+\end{hal}
+
+\begin{tamrin}{قوى عدد مركب}
+نعتبر العددين المركبين $z=\sqrt3+i$ و$w=1+i$.
+\QQ{1} اكتب $z$ و$w$ على الشكل الأسي.
+\QQ{2} عيّن قيم العدد الطبيعي $n$ التي يكون من أجلها $z^n$:
+\begin{sq}
+\qa عددًا حقيقيًا.
+\qb عددًا تخيليًا صرفًا.
+\end{sq}
+\QQ{3} احسب $z^6$، ثم اكتب $z^{2026}$ على الشكل الجبري.
+\QQ{4} عيّن أصغر عدد طبيعي غير معدوم $n$ يكون من أجله $(zw)^n$ عددًا حقيقيًا، ثم احسب $(zw)^n$ من أجل هذه القيمة.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $|z|=\sqrt{3+1}=2$ و$\cos\theta=\frac{\sqrt3}{2}$، $\sin\theta=\frac12$ إذن $\theta=\frac\pi6$. و$|w|=\sqrt2$ و$\arg w=\frac\pi4$:
+\[\bx{z=2e^{i\frac\pi6}},\qquad \bx{w=\sqrt2\,e^{i\frac\pi4}}.\]
+\QQ{2} حسب دستور موافر، من أجل كل عدد طبيعي $n$: $z^n=2^ne^{i\frac{n\pi}{6}}$، فعمدته $\dfrac{n\pi}{6}$ و$2^n\neq0$.
+\pa $z^n$ حقيقي معناه عمدته من الشكل $k\pi$ ($k\in\Z$):
+\[\frac{n\pi}{6}=k\pi\iff n=6k.\]
+\bxt{$z^n$ حقيقي إذا وفقط إذا كان $n$ مضاعفًا لـ $6$}.
+\pb $z^n$ تخيلي صرف معناه عمدته من الشكل $\frac\pi2+k\pi$:
+\[\frac{n\pi}{6}=\frac\pi2+k\pi\iff n=3+6k.\]
+\bxt{$z^n$ تخيلي صرف إذا وفقط إذا كان $n=6k+3$ مع $k\in\N$}.
+\QQ{3} $z^6=2^6e^{i\pi}=\bx{-64}$.
+
+نقسم $2026$ على $6$: $2026=6\times337+4$، إذن:
+\[z^{2026}=\left(z^6\right)^{337}\times z^4=(-64)^{337}\times2^4e^{i\frac{4\pi}{6}}=-2^{2022}\times2^4e^{i\frac{2\pi}{3}}=-2^{2026}\left(-\frac12+\frac{\sqrt3}{2}i\right).\]
+\[\bx{z^{2026}=2^{2025}\left(1-i\sqrt3\right)}.\]
+\QQ{4} $zw=2\sqrt2\,e^{i\left(\frac\pi6+\frac\pi4\right)}=2\sqrt2\,e^{i\frac{5\pi}{12}}$، إذن $(zw)^n=\left(2\sqrt2\right)^ne^{i\frac{5n\pi}{12}}$.
+
+$(zw)^n$ حقيقي معناه:
+\[\frac{5n\pi}{12}=k\pi\iff5n=12k\quad(k\in\Z).\]
+إذن $5n$ مضاعف لـ $12$، وبما أن $5$ و$12$ ليس لهما قاسم مشترك غير $1$ فإن $n$ مضاعف لـ $12$، وأصغر قيمة غير معدومة هي \bx{n=12}.
+\[(zw)^{12}=\left(2\sqrt2\right)^{12}e^{5i\pi}=\left(2^{\frac32}\right)^{12}\times(-1)=\bx{-2^{18}=-262144}.\]
+\end{hal}
+
+\begin{tamrin}{الشكل الأسي لـ $1+e^{i\theta}$ و$1-e^{i\theta}$}
+$\theta$ عدد حقيقي من المجال $]-\pi;\pi[$.
+\QQ{1} بيّن أن: $1+e^{i\theta}=2\cos\dfrac\theta2\,e^{i\frac\theta2}$.
+\QQ{2} استنتج طويلة وعمدة للعدد $1+e^{i\theta}$.
+\QQ{3} تحقق من النتيجة من أجل $\theta=\dfrac{2\pi}{3}$.
+\QQ{4} بيّن أن $1-e^{i\theta}=-2i\sin\dfrac\theta2\,e^{i\frac\theta2}$، ثم استنتج، من أجل $\theta\in]0;\pi[$، طويلة وعمدة للعدد $1-e^{i\theta}$.
+\QQ{5} استنتج أن العدد $\dfrac{1+e^{i\theta}}{1-e^{i\theta}}$ تخيلي صرف من أجل $\theta\in]0;\pi[$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} نخرج $e^{i\frac\theta2}$ عاملًا مشتركًا (طريقة «نصف الزاوية»):
+\[1+e^{i\theta}=e^{i\frac\theta2}\left(e^{-i\frac\theta2}+e^{i\frac\theta2}\right).\]
+وحسب دستور أولر: $e^{i\alpha}+e^{-i\alpha}=2\cos\alpha$، إذن \bx{1+e^{i\theta}=2\cos\frac\theta2\,e^{i\frac\theta2}}.
+\QQ{2} لدينا $\theta\in]-\pi;\pi[$، إذن $\dfrac\theta2\in\left]-\dfrac\pi2;\dfrac\pi2\right[$ ومنه $\cos\dfrac\theta2>0$.
+فالكتابة السابقة هي شكل أسي (معامل موجب):
+\[\bx{\left|1+e^{i\theta}\right|=2\cos\frac\theta2},\qquad \bx{\arg\left(1+e^{i\theta}\right)=\frac\theta2\ [2\pi]}.\]
+\QQ{3} من أجل $\theta=\frac{2\pi}3$: مباشرة $1+e^{i\frac{2\pi}{3}}=1-\frac12+\frac{\sqrt3}{2}i=\frac12+\frac{\sqrt3}2i=e^{i\frac\pi3}$، طويلته $1$ وعمدته $\frac\pi3$.
+وبالدستور: $2\cos\frac\pi3=2\times\frac12=1$ والعمدة $\frac\theta2=\frac\pi3$ \ok.
+\QQ{4} بنفس الطريقة، ودستور أولر $e^{i\alpha}-e^{-i\alpha}=2i\sin\alpha$:
+\[1-e^{i\theta}=e^{i\frac\theta2}\left(e^{-i\frac\theta2}-e^{i\frac\theta2}\right)=e^{i\frac\theta2}\left(-2i\sin\frac\theta2\right)=-2i\sin\frac\theta2\,e^{i\frac\theta2}.\]
+وبما أن $-i=e^{-i\frac\pi2}$: $1-e^{i\theta}=2\sin\dfrac\theta2\,e^{i\left(\frac\theta2-\frac\pi2\right)}$.
+من أجل $\theta\in]0;\pi[$: $\frac\theta2\in\left]0;\frac\pi2\right[$ ومنه $\sin\frac\theta2>0$، إذن:
+\[\bx{\left|1-e^{i\theta}\right|=2\sin\frac\theta2},\qquad \bx{\arg\left(1-e^{i\theta}\right)=\frac{\theta-\pi}{2}\ [2\pi]}.\]
+\QQ{5} من أجل $\theta\in]0;\pi[$ (فالمقام غير معدوم):
+\[\frac{1+e^{i\theta}}{1-e^{i\theta}}=\frac{2\cos\frac\theta2\,e^{i\frac\theta2}}{-2i\sin\frac\theta2\,e^{i\frac\theta2}}=\frac{\cos\frac\theta2}{-i\sin\frac\theta2}=\bx{i\,\frac{\cos\frac\theta2}{\sin\frac\theta2}}\]
+لأن $\frac1{-i}=i$. جزؤه الحقيقي معدوم، فهو عدد تخيلي صرف.
+\end{hal}
+
+\begin{tamrin}{معادلة وحلولها على الشكل الأسي}
+\QQ{1} حل في $\mathbb{C}$ المعادلة: $z^2-2\sqrt3\,z+4=0$. نرمز $z_1$ للحل الذي جزؤه التخيلي موجب و$z_2$ للحل الآخر.
+\QQ{2} اكتب $z_1$ و$z_2$ على الشكل الأسي، ثم $\dfrac{z_1}{z_2}$.
+\QQ{3} عيّن الأعداد الطبيعية $n$ التي تحقق $\left(\dfrac{z_1}{z_2}\right)^n=1$.
+\QQ{4} بيّن أنه من أجل كل عدد طبيعي $n$: $z_1^n+z_2^n=2^{n+1}\cos\dfrac{n\pi}{6}$، ثم احسب $z_1^6+z_2^6$.
+\QQ{5} $A$ و$B$ النقطتان اللتان لاحقتاهما $z_1$ و$z_2$. بيّن أن المثلث $OAB$ متقايس الأضلاع، وارسمه.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\Delta=\left(-2\sqrt3\right)^2-4\times4=12-16=-4=(2i)^2$، إذن:
+\[z_1=\frac{2\sqrt3+2i}{2}=\bx{\sqrt3+i},\qquad z_2=\overline{z_1}=\bx{\sqrt3-i}.\]
+\QQ{2} $|z_1|=\sqrt{3+1}=2$، $\cos\theta=\frac{\sqrt3}{2}$ و$\sin\theta=\frac12$ إذن $\theta=\frac\pi6$. ومرافقه له نفس الطويلة وعمدة معاكسة:
+\[\bx{z_1=2e^{i\frac\pi6}},\qquad\bx{z_2=2e^{-i\frac\pi6}},\qquad \frac{z_1}{z_2}=\frac22e^{i\left(\frac\pi6+\frac\pi6\right)}=\bx{e^{i\frac\pi3}}.\]
+\QQ{3} لدينا $\left(e^{i\frac\pi3}\right)^n=e^{i\frac{n\pi}{3}}$، و$e^{i\alpha}=1$ معناه $\alpha=2k\pi$ ($k\in\Z$):
+\[e^{i\frac{n\pi}{3}}=1\iff\frac{n\pi}3=2k\pi\iff n=6k.\]
+\bxt{$\left(\dfrac{z_1}{z_2}\right)^n=1$ إذا وفقط إذا كان $n$ مضاعفًا لـ $6$}.
+\QQ{4} حسب موافر: $z_1^n=2^ne^{i\frac{n\pi}6}$ و$z_2^n=2^ne^{-i\frac{n\pi}6}$، وحسب أولر:
+\[z_1^n+z_2^n=2^n\left(e^{i\frac{n\pi}6}+e^{-i\frac{n\pi}6}\right)=2^n\times2\cos\frac{n\pi}{6}=\bx{2^{n+1}\cos\frac{n\pi}{6}}.\]
+من أجل $n=6$: $z_1^6+z_2^6=2^7\cos\pi=\bx{-128}$.
+\QQ{5} نحسب أطوال الأضلاع:
+\[OA=|z_1|=2,\qquad OB=|z_2|=2,\qquad AB=|z_2-z_1|=|-2i|=2.\]
+إذن $OA=OB=AB=2$، ومنه \bxt{المثلث $OAB$ متقايس الأضلاع}.
+
+طريقة أخرى: $\dfrac{z_A-z_O}{z_B-z_O}=\dfrac{z_1}{z_2}=e^{i\frac\pi3}$، فطويلته $1$ أي $OA=OB$، وعمدته $\left(\overrightarrow{OB},\overrightarrow{OA}\right)=\frac\pi3$؛ ومثلث متساوي الساقين زاوية رأسه $\frac\pi3$ متقايس الأضلاع.
+\begin{CP}{-1}{3}{-2}{2}{1.1}
+\Pt{A}{(1.732,1)}{A}{above right}
+\Pt{B}{(1.732,-1)}{B}{below right}
+\coordinate (O) at (0,0);
+\draw[cDef,thick,fill=cDef!10,fill opacity=0.6] (O)--(A)--(B)--cycle;
+\TK{O}{A}\TK{O}{B}\TK{A}{B}
+\draw[cThm] (0.45,0) arc (0:30:0.45);\node[cThm] at (0.8,0.2){$\frac\pi6$};
+\end{CP}
+\end{hal}
+\section{التفسير الهندسي ومجموعات النقط}
+
+\begin{tamrin}{طبيعة مثلث ومربع ودائرة}
+نعتبر النقط $A$، $B$ و$C$ التي لواحقها على الترتيب: $z_A=1+i$، $z_B=4+2i$ و$z_C=4i$.
+\QQ{1} اكتب العدد $\dfrac{z_C-z_A}{z_B-z_A}$ على الشكل الجبري، ثم استنتج طبيعة المثلث $ABC$.
+\QQ{2} عيّن لاحقة النقطة $D$ بحيث يكون الرباعي $ABDC$ مربعًا.
+\QQ{3} عيّن لاحقة المركز $\Omega$ ونصف قطر الدائرة $(\Gamma)$ المحيطة بالمثلث $ABC$.
+\QQ{4} تحقق أن $D$ تنتمي إلى $(\Gamma)$، ثم أنشئ الشكل.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $z_C-z_A=-1+3i$ و$z_B-z_A=3+i$. نضرب في مرافق المقام، و$(3+i)(3-i)=10$:
+\[\frac{z_C-z_A}{z_B-z_A}=\frac{(-1+3i)(3-i)}{10}=\frac{-3+i+9i-3i^2}{10}=\frac{10i}{10}=\bx{i}.\]
+طويلة $i$ هي $1$ وعمدته $\frac\pi2$، إذن:
+\[\frac{AC}{AB}=\left|\frac{z_C-z_A}{z_B-z_A}\right|=1\ \ (AC=AB),\qquad \left(\overrightarrow{AB},\overrightarrow{AC}\right)=\arg i=\frac\pi2\ [2\pi].\]
+\bxt{المثلث $ABC$ قائم في $A$ ومتساوي الساقين}.
+\QQ{2} $ABDC$ مربع معناه (لأن $ABC$ قائم ومتساوي الساقين في $A$) أن $ABDC$ متوازي أضلاع، أي $\overrightarrow{AB}=\overrightarrow{CD}$:
+\[z_B-z_A=z_D-z_C\iff z_D=z_B+z_C-z_A=4+2i+4i-1-i=\bx{3+5i}.\]
+\QQ{3} المثلث قائم في $A$، فمركز دائرته المحيطة هو منتصف الوتر $[BC]$:
+\[z_\Omega=\frac{z_B+z_C}{2}=\frac{4+6i}{2}=\bx{2+3i},\qquad r=\frac{BC}{2}=\frac{|z_C-z_B|}{2}=\frac{|-4+2i|}{2}=\frac{\sqrt{20}}{2}=\bx{\sqrt5}.\]
+\QQ{4} نحسب:
+\[\Omega D=|z_D-z_\Omega|=|3+5i-2-3i|=|1+2i|=\sqrt5=r.\]
+إذن \bxt{$D$ تنتمي إلى $(\Gamma)$} (وهذا منتظر: رؤوس المربع الأربعة على دائرة مركزها مركزه).
+\begin{CP}{-1}{5}{-1}{6}{0.85}
+\coordinate (W) at (2,3);
+\draw[cRem,thick] (W) circle ({sqrt(5)});
+\Pt{A}{(1,1)}{A}{below left}\Pt{B}{(4,2)}{B}{right}\Pt{C}{(0,4)}{C}{left}\Pt{D}{(3,5)}{D}{above right}
+\draw[cDef,thick,fill=cDef!8] (A)--(B)--(D)--(C)--cycle;
+\draw[cDef,dashed] (B)--(C);
+\fill[cThm] (W) circle (1.8pt) node[below]{$\Omega$};
+\RA{A}{B}{C}\TK{A}{B}\TK{A}{C}
+\node[cRem] at (4.6,4.6){$(\Gamma)$};
+\end{CP}
+\end{hal}
+
+\begin{tamrin}{نقط من نفس الدائرة ومثلث متقايس الأضلاع}
+نعتبر النقط $A$، $B$، $C$ و$D$ ذات اللواحق: $z_A=2$، $z_B=1+i\sqrt3$، $z_C=1-i\sqrt3$ و$z_D=-2$.
+\QQ{1} اكتب $z_B$ و$z_C$ على الشكل الأسي، ثم استنتج أن النقط $A$، $B$، $C$ و$D$ تنتمي إلى دائرة يطلب تعيين مركزها ونصف قطرها.
+\QQ{2} احسب $\dfrac{z_B-z_D}{z_C-z_D}$ على الشكل الأسي، واستنتج طبيعة المثلث $BCD$.
+\QQ{3} بيّن أن العدد $\dfrac{z_A-z_B}{z_D-z_B}$ تخيلي صرف. ماذا تستنتج؟
+\QQ{4} $E$ النقطة ذات اللاحقة $z_E=-1-i\sqrt3$. بيّن أن النقط $O$، $B$ و$E$ في استقامية. أنشئ الشكل.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $|z_B|=\sqrt{1+3}=2$ و$\cos\theta=\frac12$، $\sin\theta=\frac{\sqrt3}2$ إذن $\theta=\frac\pi3$؛ و$z_C=\overline{z_B}$:
+\[\bx{z_B=2e^{i\frac\pi3}},\qquad\bx{z_C=2e^{-i\frac\pi3}}.\]
+إذن:
+\[OA=|2|=2,\qquad OB=|z_B|=2,\qquad OC=|z_C|=2,\qquad OD=|-2|=2.\]
+\bxt{النقط الأربع تنتمي إلى الدائرة $(\mathcal C)$ ذات المركز $O$ ونصف القطر $2$}.
+\QQ{2} $z_B-z_D=3+i\sqrt3$ و$z_C-z_D=3-i\sqrt3$، و$(3-i\sqrt3)(3+i\sqrt3)=9+3=12$:
+\[\frac{z_B-z_D}{z_C-z_D}=\frac{(3+i\sqrt3)^2}{12}=\frac{9+6i\sqrt3-3}{12}=\frac12+\frac{\sqrt3}{2}i=\bx{e^{i\frac\pi3}}.\]
+إذن:
+\[\frac{DB}{DC}=1\ \ (DB=DC),\qquad \left(\overrightarrow{DC},\overrightarrow{DB}\right)=\frac\pi3\ [2\pi].\]
+المثلث متساوي الساقين وزاوية رأسه $\frac\pi3$، ومنه \bxt{المثلث $BCD$ متقايس الأضلاع}.
+\QQ{3} $z_A-z_B=1-i\sqrt3$ و$z_D-z_B=-3-i\sqrt3$، و$(-3-i\sqrt3)(-3+i\sqrt3)=12$:
+\[\frac{z_A-z_B}{z_D-z_B}=\frac{(1-i\sqrt3)(-3+i\sqrt3)}{12}=\frac{-3+i\sqrt3+3i\sqrt3-3i^2}{12}=\frac{4\sqrt3\,i}{12}=\bx{\frac{\sqrt3}{3}\,i}.\]
+جزؤه الحقيقي معدوم: تخيلي صرف، وعمدته $\frac\pi2$. إذن $\left(\overrightarrow{BD},\overrightarrow{BA}\right)=\frac\pi2$: \bxt{المثلث $ABD$ قائم في $B$}.
+وهذا منتظر: $[AD]$ قطر للدائرة $(\mathcal C)$ (لأن $z_D=-z_A$) و$B$ نقطة منها.
+\QQ{4} نلاحظ أن $z_E=-z_B$، إذن:
+\[\frac{z_E-z_O}{z_B-z_O}=\frac{-1-i\sqrt3}{1+i\sqrt3}=-1\in\R.\]
+فالشعاعان $\overrightarrow{OE}$ و$\overrightarrow{OB}$ مرتبطان خطيًا، ومنه \bxt{$O$، $B$ و$E$ في استقامية} ($O$ منتصف $[BE]$).
+\begin{CP}{-3}{3}{-2.6}{2.6}{0.95}
+\draw[cRem,thick] (0,0) circle (2);
+\Pt{A}{(2,0)}{A}{below right}\Pt{B}{(1,1.732)}{B}{above right}\Pt{C}{(1,-1.732)}{C}{below right}\Pt{D}{(-2,0)}{D}{below left}\Pt{E}{(-1,-1.732)}{E}{below left}
+\draw[cDef,thick,fill=cDef!10] (B)--(C)--(D)--cycle;
+\draw[cEx,thick] (A)--(B);\draw[cThm,dashed] (B)--(E);
+\TK{B}{C}\TK{C}{D}\TK{D}{B}\RA{B}{A}{D}
+\node[cRem] at (-1.9,1.7){$(\mathcal C)$};
+\end{CP}
+\end{hal}
+
+\begin{tamrin}{مجموعات نقط بسيطة}
+عيّن في كل حالة مجموعة النقط $M$ ذات اللاحقة $z$ التي تحقق:
+\begin{sq}
+\qa $(E_1)$: $|z-1+2i|=2$.
+\qb $(E_2)$: $|z-3|=|z+i|$.
+\qc $(E_3)$: $|iz+2|=4$.
+\qd $(E_4)$: $\arg(z-1-i)=\dfrac\pi4\ [2\pi]$.
+\end{sq}
+ثم مثّلها في المعلم.
+\end{tamrin}
+\begin{hal}
+\begin{molahada}[تذكير]
+إذا كانت $A(z_A)$ و$B(z_B)$ و$M(z)$: $|z-z_A|=AM$؛ و$|z-z_A|=r$ ($r>0$) دائرة مركزها $A$ ونصف قطرها $r$؛ و$|z-z_A|=|z-z_B|$ محور القطعة $[AB]$؛ و$\arg(z-z_A)=\alpha$ نصف مستقيم مبدؤه $A$ (مفتوح عند $A$) يصنع الزاوية $\alpha$ مع $\vec u$.
+\end{molahada}
+\pa نكتب $|z-1+2i|=|z-(1-2i)|$، ونسمي $\Omega_1$ النقطة ذات اللاحقة $1-2i$. فالشرط هو:
+\[\Omega_1M=2.\]
+\bxt{$(E_1)$ هي الدائرة ذات المركز $\Omega_1(1-2i)$ ونصف القطر $2$}.
+\pb نسمي $A(3)$ و$B(-i)$. $|z-3|=|z-(-i)|$ معناه $AM=BM$:
+\bxt{$(E_2)$ هي محور القطعة $[AB]$}.
+تحقق جبريًا بوضع $z=x+iy$:
+\[(x-3)^2+y^2=x^2+(y+1)^2\iff -6x+9=2y+1\iff \bx{y=-3x+4}.\]
+وهو يشمل منتصف $[AB]$ ذا اللاحقة $\frac32-\frac12i$ لأن $-3\times\frac32+4=-\frac12$ \ok.
+\pc نخرج $i$ عاملًا مشتركًا، مع $\frac2i=-2i$:
+\[iz+2=i\left(z+\frac2i\right)=i(z-2i).\]
+و$|i|=1$، إذن:
+\[|iz+2|=4\iff|i|\times|z-2i|=4\iff|z-2i|=4.\]
+\bxt{$(E_3)$ هي الدائرة ذات المركز $\Omega_3(2i)$ ونصف القطر $4$}.
+\pd نسمي $C(1+i)$. الشرط $\arg(z-z_C)=\frac\pi4$ معناه:
+\[M\neq C\qquad\text{و}\qquad\left(\vec u,\overrightarrow{CM}\right)=\frac\pi4\ [2\pi].\]
+\bxt{$(E_4)$ هي نصف المستقيم الذي مبدؤه $C$ وشعاع توجيهه $\vec u+\vec v$، ما عدا النقطة $C$}.
+
+(أي جزء المستقيم $y=x$ حيث $x>1$).
+\begin{CP}{-2}{4}{-4.5}{3}{0.75}
+\draw[cDef,thick] (1,-2) circle (2);
+\draw[cThm,thick] (0.4,2.8)--(2.8,-4.4);
+\Pt{W}{(1,-2)}{\Omega_1}{below}\Pt{A}{(3,0)}{A}{above right}\Pt{B}{(0,-1)}{B}{left}
+\draw[gray,dashed] (A)--(B);
+\Pt{I}{(1.5,-0.5)}{}{}
+\TK{A}{I}\TK{I}{B}
+\node[cDef] at (-0.9,-3.4){$(E_1)$};\node[cThm] at (0.9,2.6){$(E_2)$};
+\end{CP}
+\begin{CP}{-4.5}{5}{-2.5}{6.5}{0.62}
+\draw[cRem,thick] (0,2) circle (4);
+\Pt{W}{(0,2)}{\Omega_3}{right}
+\draw[cEx,very thick] (1,1)--(4.8,4.8);
+\draw[cEx,thick,fill=white] (1,1) circle (2.2pt) node[below right]{$C$};
+\node[cRem] at (-3.6,5.4){$(E_3)$};\node[cEx] at (4.4,3.6){$(E_4)$};
+\draw[cEx] (1.6,1) arc (0:45:0.6);\node[cEx] at (2,1.3){$\frac\pi4$};
+\draw[gray,densely dotted] (1,1)--(2.2,1);
+\end{CP}
+\end{hal}
+
+\begin{tamrin}{مجموعات نقط بواسطة عدد مركب}
+نعتبر النقطتين $A(-1)$ و$B(2i)$. من أجل كل عدد مركب $z\neq-1$ نضع: $Z=\dfrac{z-2i}{z+1}$.
+\QQ{1} نضع $z=x+iy$ ($x,y$ حقيقيان). اكتب الجزء الحقيقي والجزء التخيلي لـ $Z$ بدلالة $x$ و$y$.
+\QQ{2} عيّن المجموعة $(\Delta)$ للنقط $M(z)$ بحيث يكون $Z$ حقيقيًا.
+\QQ{3} عيّن المجموعة $(\Gamma)$ للنقط $M(z)$ بحيث يكون $Z$ تخيليًا صرفًا.
+\QQ{4} عيّن المجموعة $(\mathcal D)$ للنقط $M(z)$ بحيث $|Z|=1$.
+\QQ{5} أعط تفسيرًا هندسيًا لعمدة $Z$، وتحقق به من نتيجة السؤال 3. أنشئ المجموعات الثلاث.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $Z=\dfrac{x+i(y-2)}{(x+1)+iy}$. نضرب في مرافق المقام $(x+1)-iy$:
+\[Z=\frac{\bigl[x+i(y-2)\bigr]\bigl[(x+1)-iy\bigr]}{(x+1)^2+y^2}.\]
+البسط: $x(x+1)-ixy+i(y-2)(x+1)+y(y-2)=\bigl[x^2+x+y^2-2y\bigr]+i\bigl[(y-2)(x+1)-xy\bigr]$،
+و$(y-2)(x+1)-xy=xy+y-2x-2-xy=y-2x-2$. إذن:
+\[\bx{\operatorname{Re}Z=\frac{x^2+x+y^2-2y}{(x+1)^2+y^2}},\qquad \bx{\operatorname{Im}Z=\frac{y-2x-2}{(x+1)^2+y^2}}.\]
+\QQ{2} من أجل $(x;y)\neq(-1;0)$:
+\[Z\in\R\iff\operatorname{Im}Z=0\iff y-2x-2=0\iff y=2x+2.\]
+المستقيم $y=2x+2$ يشمل $A(-1;0)$ و$B(0;2)$، فهو $(AB)$:
+\bxt{$(\Delta)$ هي المستقيم $(AB)$ ما عدا النقطة $A$}.
+\QQ{3} $Z$ تخيلي صرف $\iff\operatorname{Re}Z=0\iff x^2+x+y^2-2y=0$ مع $M\neq A$. نكمل المربعين:
+\[\left(x+\frac12\right)^2-\frac14+(y-1)^2-1=0\iff\left(x+\frac12\right)^2+(y-1)^2=\frac54.\]
+وهي دائرة مركزها $I\left(-\frac12+i\right)$ ونصف قطرها $\frac{\sqrt5}{2}$. لاحظ أن:
+\[z_I=\frac{z_A+z_B}{2}=-\frac12+i,\qquad \frac{AB}{2}=\frac{|2i+1|}{2}=\frac{\sqrt5}{2}.\]
+\bxt{$(\Gamma)$ هي الدائرة ذات القطر $[AB]$ ما عدا النقطة $A$}.
+(النقطة $B$ تعطي $Z=0$ وهو تخيلي صرف وحقيقي معًا، فهي تنتمي إلى $(\Delta)$ و$(\Gamma)$).
+\QQ{4} من أجل $z\neq-1$:
+\[|Z|=1\iff|z-2i|=|z+1|\iff BM=AM.\]
+\bxt{$(\mathcal D)$ هي محور القطعة $[AB]$}.
+جبريًا: $x^2+(y-2)^2=(x+1)^2+y^2\iff-4y+4=2x+1\iff \bx{y=-\frac12x+\frac34}$.
+\QQ{5} $Z=\dfrac{z_B-z}{z_A-z}$، إذن من أجل $M\neq A$ و$M\neq B$:
+\[\arg Z=\left(\overrightarrow{MA},\overrightarrow{MB}\right)\ [2\pi].\]
+يكون $Z$ تخيليًا صرفًا غير معدوم إذا وفقط إذا كان $\left(\overrightarrow{MA},\overrightarrow{MB}\right)=\pm\frac\pi2$، أي إذا كانت $M$ ترى القطعة $[AB]$ بزاوية قائمة، أي $M$ على الدائرة ذات القطر $[AB]$ (ما عدا $A$ و$B$). وهي نتيجة السؤال 3 \ok.
+\begin{CP}{-3}{2}{-2}{4}{1.05}
+\draw[cDef,thick] (-2,-2)--(1,4);
+\draw[cRem,thick] (-0.5,1) circle ({sqrt(5)/2});
+\draw[cThm,thick] (-3,2.25)--(2,-0.25);
+\Pt{B}{(0,2)}{B}{above right}\Pt{I}{(-0.5,1)}{I}{right}
+\draw[thick,fill=white] (-1,0) circle (2.2pt) node[below right]{$A$};
+\coordinate (A) at (-1,0);
+\Pt{M}{(-1.468,1.559)}{M}{above left}
+\draw[gray,dashed] (A)--(M)--(B);\RA{M}{A}{B}
+\node[cDef] at (0.7,3.7){$(\Delta)$};\node[cRem] at (-1.9,1.9){$(\Gamma)$};\node[cThm] at (1.6,0.3){$(\mathcal D)$};
+\end{CP}
+\end{hal}
+
+\section{التحويلات النقطية}
+
+\begin{tamrin}{الانسحاب والتحاكي}
+نعتبر التحويلين النقطيين $t$ و$h$ اللذين يرفقان بكل نقطة $M(z)$ النقطة $M'(z')$ حيث:
+\[t:\ z'=z+2-i,\qquad\qquad h:\ z'=-2z+3i.\]
+\QQ{1} عيّن طبيعة كل من $t$ و$h$ وعناصرهما المميزة.
+\QQ{2} $A$ النقطة ذات اللاحقة $1+i$. عيّن لاحقتي $A_1=t(A)$ و$A_2=h(A)$.
+\QQ{3} $(\mathcal C)$ الدائرة التي مركزها $A$ ونصف قطرها $1$. عيّن صورتيها بـ $t$ ثم بـ $h$.
+\QQ{4} عيّن الكتابة المركبة للتحويل $h\circ t$، ثم طبيعته.
+\end{tamrin}
+\begin{hal}
+\begin{molahada}[تذكير]
+الكتابة $z'=z+b$ لانسحاب شعاعه لاحقته $b$. والكتابة $z'=kz+b$ مع $k$ حقيقي و$k\notin\{0;1\}$ لتحاكٍ نسبته $k$ ومركزه النقطة الصامدة $\Omega(\omega)$ حيث $\omega=k\omega+b$ أي $\omega=\dfrac{b}{1-k}$.
+\end{molahada}
+\QQ{1} \bxt{$t$ هو الانسحاب الذي شعاعه $\vec w$ ذو اللاحقة $2-i$} (أي $\vec w(2;-1)$).
+
+$h$ من الشكل $z'=kz+b$ مع $k=-2$ حقيقي. النقطة الصامدة:
+\[\omega=-2\omega+3i\iff3\omega=3i\iff\omega=i.\]
+\bxt{$h$ هو التحاكي الذي مركزه $\Omega(i)$ ونسبته $-2$}، وكتابته $z'-i=-2(z-i)$.
+\QQ{2} $z_{A_1}=1+i+2-i=\bx{3}$، و$z_{A_2}=-2(1+i)+3i=\bx{-2+i}$.
+تحقق: $z_{A_2}-\omega=-2$ و$z_A-\omega=1$، فعلًا $z_{A_2}-\omega=-2(z_A-\omega)$ \ok.
+\QQ{3} الانسحاب يحافظ على الأطوال، فصورة $(\mathcal C)$ بـ $t$ هي:
+
+\bxt{الدائرة $(\mathcal C_1)$ ذات المركز $A_1(3)$ ونصف القطر $1$}.
+
+التحاكي ذو النسبة $k$ يضرب الأطوال في $|k|$، فصورة $(\mathcal C)$ بـ $h$ هي:
+
+\bxt{الدائرة $(\mathcal C_2)$ ذات المركز $A_2(-2+i)$ ونصف القطر $|-2|\times1=2$}.
+\QQ{4} نطبق $t$ ثم $h$: إذا كان $z_1=z+2-i$ فإن:
+\[z'=-2z_1+3i=-2(z+2-i)+3i=\bx{-2z-4+5i}.\]
+هي من الشكل $z'=kz+b$ مع $k=-2$، ونقطتها الصامدة:
+\[\omega'=\frac{-4+5i}{1-(-2)}=-\frac43+\frac53i.\]
+\bxt{$h\circ t$ تحاكٍ نسبته $-2$ ومركزه $\Omega'\left(-\tfrac43+\tfrac53i\right)$}.
+\begin{CP}{-4.5}{4.5}{-1.5}{3.5}{0.8}
+\draw[cDef,thick] (1,1) circle (1);\draw[cRem,thick] (3,0) circle (1);\draw[cThm,thick] (-2,1) circle (2);
+\Pt{W}{(0,1)}{\Omega}{above}\Pt{A}{(1,1)}{A}{above right}\Pt{A1}{(3,0)}{A_1}{below}\Pt{A2}{(-2,1)}{A_2}{above}
+\draw[-{Stealth[length=2mm]},cRem] (A)--(A1);
+\draw[cThm,dashed] (A2)--(A);
+\node[cDef] at (1.9,2.1){$(\mathcal C)$};\node[cRem] at (4.1,0.9){$(\mathcal C_1)$};\node[cThm] at (-3.9,2.9){$(\mathcal C_2)$};
+\end{CP}
+\end{hal}
+
+\begin{tamrin}{الدوران}
+\QQ{1} $r$ التحويل النقطي الذي يرفق بكل نقطة $M(z)$ النقطة $M'(z')$ حيث $z'=iz+1+i$.
+\begin{sq}
+\qa بيّن أن $r$ دوران يطلب تعيين مركزه $\Omega$ وزاويته.
+\qb عيّن لاحقة $A'$ صورة النقطة $A(2+i)$ بـ $r$، ثم استنتج طبيعة المثلث $\Omega AA'$.
+\end{sq}
+\QQ{2} $r'$ الدوران الذي مركزه $B(1+i)$ وزاويته $-\dfrac\pi2$.
+\begin{sq}
+\qa عيّن الكتابة المركبة لـ $r'$.
+\qb عيّن لاحقة $C'$ صورة النقطة $C(3+i)$ بـ $r'$.
+\qc عيّن لاحقة النقطة $E$ التي صورتها بـ $r'$ هي $O$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\begin{molahada}[تذكير]
+الكتابة $z'=az+b$ مع $|a|=1$ و$a\neq1$ لدوران زاويته $\arg a$ ومركزه $\Omega(\omega)$ حيث $\omega=\dfrac{b}{1-a}$. والدوران الذي مركزه $\Omega(\omega)$ وزاويته $\theta$ كتابته: $z'-\omega=e^{i\theta}(z-\omega)$.
+\end{molahada}
+\QQ{1}
+\pa $a=i$: $|a|=1$ و$a\neq1$ و$\arg i=\frac\pi2$. النقطة الصامدة:
+\[\omega=i\omega+1+i\iff\omega(1-i)=1+i\iff\omega=\frac{1+i}{1-i}=\frac{(1+i)^2}{2}=\frac{2i}{2}=i.\]
+\bxt{$r$ دوران مركزه $\Omega(i)$ وزاويته $\frac\pi2$}.
+\pb نعوض $z=2+i$:
+\[z_{A'}=i(2+i)+1+i=2i-1+1+i=\bx{3i}.\]
+بما أن $A'=r(A)$ فإن $\Omega A'=\Omega A$ و$\left(\overrightarrow{\Omega A},\overrightarrow{\Omega A'}\right)=\frac\pi2$.
+
+تحقق: $z_A-\omega=2$ و$z_{A'}-\omega=2i=i\times2$ \ok.
+\bxt{المثلث $\Omega AA'$ قائم في $\Omega$ ومتساوي الساقين}.
+\QQ{2}
+\pa $e^{-i\frac\pi2}=-i$، إذن $z'-(1+i)=-i\bigl(z-(1+i)\bigr)$، أي:
+\[z'=-iz+i+i^2+1+i=\bx{z'=-iz+2i}.\]
+\pb $z_{C'}=-i(3+i)+2i=-3i+1+2i=\bx{1-i}$. تحقق: $z_C-z_B=2$ و$z_{C'}-z_B=-2i=-i\times2$ \ok.
+\pc $r'(E)=O\iff -iz_E+2i=0\iff z_E=\dfrac{2i}{i}=\bx{2}$.
+\begin{CP}{-1}{4}{-1.6}{3.6}{0.95}
+\Pt{W}{(0,1)}{\Omega}{left}\Pt{A}{(2,1)}{A}{above right}\Pt{A'}{(0,3)}{A'}{left}
+\draw[cDef,thick,fill=cDef!10] (W)--(A)--(A')--cycle;\RA{W}{A}{A'}
+\draw[-{Stealth[length=2mm]},cDef] (1.3,1) arc (0:90:1.3);
+\Pt{B}{(1,1)}{B}{below left}\Pt{C}{(3,1)}{C}{above}\Pt{C'}{(1,-1)}{C'}{right}\Pt{E}{(2,0)}{E}{below right}
+\draw[cThm,thick] (C)--(B)--(C');\RA{B}{C}{C'}
+\draw[-{Stealth[length=2mm]},cThm] (2.2,1) arc (0:-90:1.2);
+\end{CP}
+\end{hal}
+
+\begin{tamrin}{تعيين تحويل بمعرفة صورتي نقطتين}
+نعتبر النقط $A(0)$، $B(4)$، $A'\left(1-i\sqrt3\right)$ و$B'\left(3+i\sqrt3\right)$.
+$f$ التحويل النقطي ذو الكتابة المركبة $z'=az+b$ ($a,b$ عددان مركبان) الذي يحول $A$ إلى $A'$ و$B$ إلى $B'$.
+\QQ{1} عيّن $a$ و$b$.
+\QQ{2} اكتب $a$ على الشكل الأسي، ثم استنتج طبيعة $f$ وعناصره المميزة.
+\QQ{3} بيّن أن المثلثين $\Omega AA'$ و$\Omega BB'$ متقايسا الأضلاع، حيث $\Omega$ مركز $f$. أنشئ الشكل.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $f(A)=A'$ و$f(B)=B'$ معناه:
+\[\begin{cases}a\times0+b=1-i\sqrt3\\ 4a+b=3+i\sqrt3\end{cases}\]
+من الأولى $\bx{b=1-i\sqrt3}$، وبالطرح: $4a=3+i\sqrt3-1+i\sqrt3=2+2i\sqrt3$، إذن $\bx{a=\frac12+\frac{\sqrt3}{2}i}$.
+\QQ{2} $|a|=\sqrt{\frac14+\frac34}=1$ و$\cos\theta=\frac12$، $\sin\theta=\frac{\sqrt3}2$، إذن $\bx{a=e^{i\frac\pi3}}$.
+$|a|=1$ و$a\neq1$، فـ $f$ دوران زاويته $\frac\pi3$، ومركزه $\Omega(\omega)$ حيث:
+\[\omega=\frac{b}{1-a}=\frac{1-i\sqrt3}{\frac12-\frac{\sqrt3}2i}=\frac{1-i\sqrt3}{\frac12\left(1-i\sqrt3\right)}=2.\]
+\bxt{$f$ دوران مركزه $\Omega(2)$ وزاويته $\frac\pi3$}.
+\QQ{3} بما أن $f(A)=A'$: $\Omega A'=\Omega A$ و$\left(\overrightarrow{\Omega A},\overrightarrow{\Omega A'}\right)=\frac\pi3$؛ مثلث متساوي الساقين زاوية رأسه $\frac\pi3$ فهو متقايس الأضلاع. تحقق بالأطوال:
+\[\Omega A=|0-2|=2,\quad \Omega A'=|-1-i\sqrt3|=2,\quad AA'=|1-i\sqrt3|=2.\]
+وبنفس الطريقة $f(B)=B'$: $\Omega B=|2|=2$، $\Omega B'=|1+i\sqrt3|=2$ و$BB'=|-1+i\sqrt3|=2$.
+\bxt{المثلثان $\Omega AA'$ و$\Omega BB'$ متقايسا الأضلاع}.
+\begin{CP}{-1}{5}{-2.3}{2.3}{0.95}
+\Pt{W}{(2,0)}{\Omega}{below}\Pt{B}{(4,0)}{B}{below right}\Pt{A'}{(1,-1.732)}{A'}{below left}\Pt{B'}{(3,1.732)}{B'}{above right}
+\coordinate (A) at (0,0);\node[above left] at (A){$A$};
+\draw[cDef,thick,fill=cDef!10] (W)--(A)--(A')--cycle;
+\draw[cThm,thick,fill=cThm!10] (W)--(B)--(B')--cycle;
+\TK{W}{A}\TK{A}{A'}\TK{A'}{W}\TKK{W}{B}\TKK{B}{B'}\TKK{B'}{W}
+\draw[-{Stealth[length=2mm]},cEx] (2.8,0) arc (0:60:0.8);\node[cEx] at (3.15,0.35){$\frac\pi3$};
+\end{CP}
+\end{hal}
+
+\begin{tamrin}{المرجح ومجموعة نقط وصورتها}
+نعتبر النقط $A(4+2i)$، $B(2-2i)$ و$C(-1+2i)$.
+\QQ{1} عيّن لاحقة النقطة $G$ مرجح الجملة $\{(A;1),(B;1),(C;2)\}$.
+\QQ{2} عيّن المجموعة $(\Gamma)$ للنقط $M$ من المستوي التي تحقق: $\left\|\overrightarrow{MA}+\overrightarrow{MB}+2\overrightarrow{MC}\right\|=8$.
+\QQ{3} اكتب هذا الشرط بدلالة لاحقة $M$.
+\QQ{4} عيّن صورة $(\Gamma)$ بالانسحاب $t$ الذي شعاعه $\overrightarrow{AB}$، ثم صورتها بالتحاكي $h$ الذي مركزه $A$ ونسبته $\frac12$. أنشئ الشكل.
+\end{tamrin}
+\begin{hal}
+\QQ{1} مجموع المعاملات $1+1+2=4\neq0$، فالمرجح موجود ولاحقته:
+\[z_G=\frac{1\times z_A+1\times z_B+2\times z_C}{4}=\frac{4+2i+2-2i-2+4i}{4}=\frac{4+4i}{4}=\bx{1+i}.\]
+\QQ{2} حسب خاصية المرجح: من أجل كل نقطة $M$: $\overrightarrow{MA}+\overrightarrow{MB}+2\overrightarrow{MC}=4\overrightarrow{MG}$. إذن:
+\[\left\|\overrightarrow{MA}+\overrightarrow{MB}+2\overrightarrow{MC}\right\|=8\iff4MG=8\iff MG=2.\]
+\bxt{$(\Gamma)$ هي الدائرة ذات المركز $G(1+i)$ ونصف القطر $2$}.
+\QQ{3} لاحقة الشعاع $\overrightarrow{MA}+\overrightarrow{MB}+2\overrightarrow{MC}$ هي $(z_A-z)+(z_B-z)+2(z_C-z)=4+4i-4z$، إذن الشرط هو:
+\[|4+4i-4z|=8\iff4|z-(1+i)|=8\iff\bx{|z-1-i|=2}.\]
+\QQ{4} لاحقة $\overrightarrow{AB}$ هي $z_B-z_A=-2-4i$. الانسحاب يحافظ على الأطوال وينقل المركز $G$ إلى $G_1$:
+\[z_{G_1}=z_G+(-2-4i)=-1-3i.\]
+إذن \bxt{$t(\Gamma)$ دائرة مركزها $G_1(-1-3i)$ ونصف قطرها $2$}.
+
+التحاكي $h$ كتابته $z'-z_A=\frac12(z-z_A)$، فصورة $G$:
+\[z_{G_2}=z_A+\frac12(z_G-z_A)=\frac{z_A+z_G}{2}=\frac52+\frac32i,\]
+ونصف القطر يضرب في $\frac12$:
+\bxt{$h(\Gamma)$ دائرة مركزها $G_2\left(\tfrac52+\tfrac32i\right)$ ونصف قطرها $1$}.
+\begin{CP}{-3.5}{5}{-5.5}{3.5}{0.62}
+\draw[cDef,thick] (1,1) circle (2);\draw[cRem,thick] (-1,-3) circle (2);\draw[cThm,thick] (2.5,1.5) circle (1);
+\Pt{A}{(4,2)}{A}{above right}\Pt{B}{(2,-2)}{B}{below right}\Pt{C}{(-1,2)}{C}{above left}\Pt{G}{(1,1)}{G}{below left}
+\Pt{G1}{(-1,-3)}{G_1}{below}\Pt{G2}{(2.5,1.5)}{G_2}{below}
+\draw[-{Stealth[length=2mm]},cRem] (A)--(B);\draw[cThm,dashed] (A)--(G);
+\node[cDef] at (3.1,-0.7){$(\Gamma)$};\node[cRem] at (-3,-4.9){$t(\Gamma)$};\node[cThm] at (3.9,3){$h(\Gamma)$};
+\end{CP}
+\end{hal}
+\section{تمارين شعبة رياضيات}
+
+\begin{tamrin}{التشابه المباشر وعناصره المميزة -- شعبة رياضيات}
+$S$ التحويل النقطي الذي يرفق بكل نقطة $M(z)$ النقطة $M'(z')$ حيث: $z'=(1+i)z+2-i$.
+\QQ{1} بيّن أن $S$ تشابه مباشر يطلب تعيين مركزه $\Omega$ ونسبته وزاويته.
+\QQ{2} بيّن أنه من أجل كل نقطة $M\neq\Omega$: $\dfrac{z'-z}{\omega-z}=-i$، واستنتج طبيعة المثلث $\Omega MM'$.
+\QQ{3} عيّن لاحقة $A'$ صورة النقطة $A(1)$ بـ $S$، وتحقق من نتيجة السؤال 2 على المثلث $\Omega AA'$.
+\QQ{4} $(\mathcal C)$ الدائرة ذات المركز $A$ ونصف القطر $1$. عيّن صورتها $(\mathcal C')$ بـ $S$.
+\QQ{5} عيّن الكتابة المركبة للتشابه المباشر $T$ الذي يحول $O$ إلى $E(2)$ و$E$ إلى $F(4+2i)$، ثم عناصره المميزة.
+\end{tamrin}
+\begin{hal}
+\begin{molahada}[تذكير]
+الكتابة $z'=az+b$ مع $a\in\mathbb{C}$، $a\neq0$ و$a\neq1$ هي كتابة تشابه مباشر نسبته $|a|$ وزاويته $\arg a$ ومركزه النقطة الصامدة $\Omega(\omega)$ حيث $\omega=\dfrac{b}{1-a}$؛ وتكافئ $z'-\omega=a(z-\omega)$.
+\end{molahada}
+\QQ{1} $a=1+i$: $a\neq0$ و$a\neq1$، $|a|=\sqrt2$ و$\arg a=\frac\pi4$ (لأن $1+i=\sqrt2e^{i\frac\pi4}$).
+\[\omega=\frac{2-i}{1-(1+i)}=\frac{2-i}{-i}=\frac{(2-i)\,i}{-i\times i}=\frac{2i+1}{1}=1+2i.\]
+\bxt{$S$ تشابه مباشر مركزه $\Omega(1+2i)$، نسبته $\sqrt2$ وزاويته $\frac\pi4$}.
+\QQ{2} من جهة: $z'-z=(1+i)z+2-i-z=iz+2-i$. ومن جهة أخرى:
+\[-i(\omega-z)=-i(1+2i-z)=-i-2i^2+iz=iz+2-i.\]
+إذن $z'-z=-i(\omega-z)$، ومن أجل $z\neq\omega$: \bx{\dfrac{z'-z}{\omega-z}=-i}.
+وبما أن $|-i|=1$ و$\arg(-i)=-\frac\pi2$:
+\[\frac{MM'}{M\Omega}=1\quad\text{أي}\quad MM'=M\Omega,\qquad \left(\overrightarrow{M\Omega},\overrightarrow{MM'}\right)=-\frac\pi2\ [2\pi].\]
+\bxt{المثلث $\Omega MM'$ قائم في $M$ ومتساوي الساقين}.
+\QQ{3} $z_{A'}=(1+i)\times1+2-i=\bx{3}$.
+تحقق:
+\[\Omega A=|1-(1+2i)|=|-2i|=2,\qquad AA'=|3-1|=2,\qquad \frac{z_{A'}-z_A}{\omega-z_A}=\frac{2}{2i}=-i\ \ \textcolor{cRem}{\checkmark}\]
+\QQ{4} التشابه ذو النسبة $\sqrt2$ يحول دائرة إلى دائرة مركزها صورة المركز ونصف قطرها مضروب في $\sqrt2$:
+\bxt{$(\mathcal C')$ هي الدائرة ذات المركز $A'(3)$ ونصف القطر $\sqrt2$}.
+\QQ{5} نبحث عن $T$: $z'=az+b$ بحيث:
+\[\begin{cases}a\times0+b=2\\ 2a+b=4+2i\end{cases}\iff\begin{cases}b=2\\ 2a=2+2i\end{cases}\iff\begin{cases}b=2\\ a=1+i\end{cases}\]
+إذن \bx{T:\ z'=(1+i)z+2}. نسبته $|1+i|=\sqrt2$، زاويته $\frac\pi4$، ومركزه:
+\[\omega_T=\frac{2}{1-(1+i)}=\frac2{-i}=2i.\]
+\bxt{$T$ تشابه مباشر مركزه $\Omega_T(2i)$، نسبته $\sqrt2$ وزاويته $\frac\pi4$}.
+\begin{CP}{-1}{5}{-1.6}{3}{0.95}
+\draw[cDef,thick] (1,0) circle (1);\draw[cThm,thick] (3,0) circle ({sqrt(2)});
+\Pt{W}{(1,2)}{\Omega}{above}\Pt{A}{(1,0)}{A}{below left}\Pt{A'}{(3,0)}{A'}{below right}
+\draw[cRem,thick,fill=cRem!10] (W)--(A)--(A')--cycle;
+\RA{A}{W}{A'}\TK{W}{A}\TK{A}{A'}
+\node[cDef] at (-0.2,0.9){$(\mathcal C)$};\node[cThm] at (4.4,1.3){$(\mathcal C')$};
+\end{CP}
+\end{hal}
+
+\begin{tamrin}{تركيب دوران وتحاكٍ -- شعبة رياضيات}
+$r$ الدوران الذي مركزه $A(1)$ وزاويته $\dfrac\pi2$، و$h$ التحاكي الذي مركزه $B(-i)$ ونسبته $2$.
+\QQ{1} عيّن الكتابة المركبة لكل من $r$ و$h$.
+\QQ{2} عيّن الكتابة المركبة لكل من $f=h\circ r$ و$g=r\circ h$.
+\QQ{3} بيّن أن $f$ و$g$ تشابهان مباشران لهما نفس النسبة ونفس الزاوية، وعيّن مركز كل منهما. هل $h\circ r=r\circ h$؟
+\QQ{4} عيّن طبيعة التحويل $f\circ f$ وعناصره المميزة.
+\QQ{5} عيّن لاحقتي $f(O)$ و$g(O)$، ومثّل النقط في المعلم.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $r$: $z'-1=e^{i\frac\pi2}(z-1)=i(z-1)$، أي \bx{r:\ z'=iz+1-i}.
+
+$h$: $z'-(-i)=2\bigl(z-(-i)\bigr)$، أي $z'=2z+2i-i$: \bx{h:\ z'=2z+i}.
+\QQ{2} $f=h\circ r$: نطبق $r$ أولًا ثم $h$. إذا كان $z_1=iz+1-i$:
+\[f:\ z'=2z_1+i=2(iz+1-i)+i=\bx{2iz+2-i}.\]
+$g=r\circ h$: نطبق $h$ أولًا ثم $r$. إذا كان $z_2=2z+i$:
+\[g:\ z'=iz_2+1-i=i(2z+i)+1-i=2iz-1+1-i=\bx{2iz-i}.\]
+\QQ{3} في الكتابتين المعامل $a=2i$: $|a|=2$ و$\arg a=\frac\pi2$ (و$a\neq0$، $a\neq1$). إذن $f$ و$g$ تشابهان مباشران نسبتهما $2$ وزاويتهما $\frac\pi2$ (النسبة جداء النسبتين $1\times2$ والزاوية مجموع الزاويتين $\frac\pi2+0$).
+مركز $f$: $\omega_f=\dfrac{2-i}{1-2i}=\dfrac{(2-i)(1+2i)}{5}=\dfrac{2+4i-i+2}{5}=\bx{\dfrac45+\dfrac35i}$.
+
+مركز $g$: $\omega_g=\dfrac{-i}{1-2i}=\dfrac{-i(1+2i)}{5}=\dfrac{-i+2}{5}=\bx{\dfrac25-\dfrac15i}$.
+
+المركزان مختلفان (والجزآن الثابتان $2-i\neq-i$)، إذن \bxt{$h\circ r\neq r\circ h$: التركيب غير تبديلي}.
+\QQ{4} نعوض $z$ بـ $f(z)$ في كتابة $f$:
+\[f\circ f:\ z'=2i(2iz+2-i)+2-i=4i^2z+4i-2i^2+2-i=\bx{-4z+4+3i}.\]
+المعامل $-4$ حقيقي، و$f\circ f$ يترك $\Omega_f$ صامدة (لأن $f$ تتركها صامدة)، ومركزه $\dfrac{4+3i}{1+4}=\dfrac45+\dfrac35i=\omega_f$ \ok.
+\bxt{$f\circ f$ تحاكٍ مركزه $\Omega_f$ ونسبته $-4$} (وهذا منتظر: النسبة $2\times2$ والزاوية $\frac\pi2+\frac\pi2=\pi$).
+\QQ{5} $f(O)$: $z=0$ يعطي $\bx{2-i}$ (المرور بـ $r(O)=1-i$). و$g(O)$: $\bx{-i}$ أي النقطة $B$ (المرور بـ $h(O)=i$).
+\begin{CP}{-1}{3}{-1.6}{1.6}{1.25}
+\Pt{A}{(1,0)}{A}{above right}\Pt{B}{(0,-1)}{B}{left}\Pt{Wf}{(0.8,0.6)}{\Omega_f}{above}\Pt{Wg}{(0.4,-0.2)}{\Omega_g}{below}
+\Pt{R}{(1,-1)}{r(O)}{below}\Pt{F}{(2,-1)}{f(O)}{below right}\Pt{H}{(0,1)}{h(O)}{left}
+\draw[-{Stealth[length=2mm]},cDef,thick] (0,0)--(R);\draw[-{Stealth[length=2mm]},cDef,thick] (R)--(F);
+\draw[-{Stealth[length=2mm]},cThm,thick] (0,0)--(H);\draw[-{Stealth[length=2mm]},cThm,thick,bend right=40] (H) to (B);
+\end{CP}
+\end{hal}
+
+\begin{tamrin}{متتالية نقط $z_{n+1}=az_n+b$ -- شعبة رياضيات}
+نعتبر المتتالية $(z_n)$ للأعداد المركبة المعرفة بـ: $z_0=4+2i$، ومن أجل كل عدد طبيعي $n$: $z_{n+1}=\dfrac{1+i}{2}\,z_n+1+i$. نسمي $M_n$ النقطة ذات اللاحقة $z_n$، و$\Omega$ النقطة ذات اللاحقة $2i$.
+\QQ{1} بيّن أن $M_{n+1}$ صورة $M_n$ بتشابه مباشر $s$ يطلب تعيين عناصره المميزة.
+\QQ{2} نضع من أجل كل عدد طبيعي $n$: $u_n=z_n-2i$. بيّن أن $(u_n)$ متتالية هندسية، واكتب $u_n$ على الشكل الأسي بدلالة $n$.
+\QQ{3} نضع $r_n=\Omega M_n$. عبّر عن $r_n$ بدلالة $n$ واحسب $\limn r_n$.
+\QQ{4} بيّن أن المثلث $\Omega M_nM_{n+1}$ قائم ومتساوي الساقين.
+\QQ{5} نضع $L_n=M_0M_1+M_1M_2+\dots+M_{n-1}M_n$. احسب $L_n$ بدلالة $n$ ثم $\limn L_n$.
+\QQ{6} عيّن قيم $n$ التي تكون من أجلها النقطة $M_n$ على نصف المستقيم $[\Omega M_0)$. مثّل النقط من $M_0$ إلى $M_6$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} الكتابة $z'=az+b$ مع $a=\frac{1+i}2$ و$b=1+i$. $a=\frac{\sqrt2}{2}\left(\frac{\sqrt2}2+\frac{\sqrt2}2i\right)=\frac{\sqrt2}{2}e^{i\frac\pi4}$، فـ $|a|=\frac{\sqrt2}2$ و$\arg a=\frac\pi4$. المركز:
+\[\omega=\frac{1+i}{1-\frac{1+i}{2}}=\frac{2(1+i)}{1-i}=\frac{2(1+i)^2}{2}=2i.\]
+\bxt{$s$ تشابه مباشر مركزه $\Omega(2i)$، نسبته $\frac{\sqrt2}2$ وزاويته $\frac\pi4$}.
+\QQ{2} بما أن $\omega=a\omega+b$، بطرح هذه المساواة من $z_{n+1}=az_n+b$:
+\[u_{n+1}=z_{n+1}-\omega=a(z_n-\omega)=a\,u_n.\]
+إذن $(u_n)$ هندسية أساسها $a=\frac{\sqrt2}2e^{i\frac\pi4}$ وحدها الأول $u_0=4+2i-2i=4$:
+\[\bx{u_n=4\left(\frac{\sqrt2}{2}\right)^ne^{i\frac{n\pi}{4}}}.\]
+\QQ{3} من أجل كل عدد طبيعي $n$:
+\[r_n=\Omega M_n=|z_n-2i|=|u_n|=\bx{4\left(\frac{\sqrt2}2\right)^n}.\]
+$(r_n)$ متتالية هندسية حقيقية أساسها $\frac{\sqrt2}2$ وهو ينتمي إلى $]0;1[$، إذن \bx{\limn r_n=0}.
+
+(النقط $M_n$ تقترب من $\Omega$ وفق «حلزون»).
+\QQ{4} $z_{n+1}-z_n=u_{n+1}-u_n=(a-1)u_n$ و$\omega-z_{n+1}=-u_{n+1}=-a\,u_n$. إذن:
+\[\frac{z_n-z_{n+1}}{\omega-z_{n+1}}=\frac{-(a-1)u_n}{-a\,u_n}=\frac{a-1}{a}=\frac{\frac{-1+i}{2}}{\frac{1+i}2}=\frac{(-1+i)(1-i)}{2}=\frac{2i}{2}=i.\]
+وبما أن $|i|=1$ و$\arg i=\frac\pi2$:
+\[M_{n+1}M_n=M_{n+1}\Omega,\qquad \left(\overrightarrow{M_{n+1}\Omega},\overrightarrow{M_{n+1}M_n}\right)=\frac\pi2\ [2\pi].\]
+\bxt{المثلث $\Omega M_nM_{n+1}$ قائم في $M_{n+1}$ ومتساوي الساقين}.
+\QQ{5} حسب السؤال 4: $M_kM_{k+1}=\Omega M_{k+1}=r_{k+1}$. إذن، بوضع $q=\frac{\sqrt2}2$:
+\[L_n=r_1+r_2+\dots+r_n=4q\,\frac{1-q^n}{1-q}=\bx{\frac{4\sqrt2}{2-\sqrt2}\left(1-\left(\frac{\sqrt2}{2}\right)^n\right)}\]
+لأن $\frac{4q}{1-q}=\frac{2\sqrt2}{\frac{2-\sqrt2}{2}}=\frac{4\sqrt2}{2-\sqrt2}$. وبما أن $\limn q^n=0$ ($0<q<1$):
+\[\limn L_n=\frac{4\sqrt2}{2-\sqrt2}=\frac{4\sqrt2\left(2+\sqrt2\right)}{4-2}=\bx{4+4\sqrt2}\approx9{,}66.\]
+\QQ{6} $M_n\in[\Omega M_0)$ و$M_n\neq\Omega$ معناه $\overrightarrow{\Omega M_n}$ و$\overrightarrow{\Omega M_0}$ لهما نفس الاتجاه، أي $\dfrac{u_n}{u_0}$ حقيقي موجب تمامًا: $\arg u_n=\arg u_0=0\ [2\pi]$.
+\[\frac{n\pi}{4}=2k\pi\iff n=8k\quad(k\in\N).\]
+\bxt{$M_n\in[\Omega M_0)$ إذا وفقط إذا كان $n$ مضاعفًا لـ $8$}.
+
+نحسب النقط: $z_1=2+4i$، $z_2=4i$، $z_3=-1+3i$، $z_4=-1+2i$، $z_5=-\frac12+\frac32i$، $z_6=\frac32i$.
+\begin{CP}{-1.5}{4.5}{-0.5}{4.5}{1.15}
+\Pt{W}{(0,2)}{\Omega}{below left}
+\coordinate (M0) at (4,2);\coordinate (M1) at (2,4);\coordinate (M2) at (0,4);\coordinate (M3) at (-1,3);\coordinate (M4) at (-1,2);\coordinate (M5) at (-0.5,1.5);\coordinate (M6) at (0,1.5);
+\foreach \k in {0,...,6}{\draw[gray!60] (W)--(M\k);}
+\draw[cDef,thick] (M0)--(M1)--(M2)--(M3)--(M4)--(M5)--(M6);
+\foreach \k/\p in {0/above right,1/above right,2/above,3/left,4/left,5/below left,6/below right}{\fill[cDef] (M\k) circle (1.8pt) node[\p]{$M_\k$};}
+\RA{M1}{W}{M0}\RA{M2}{W}{M1}
+\draw[cThm,dashed,thick] (W)--(4.5,2);
+\end{CP}
+\end{hal}
+
+\begin{tamrin}{مجموعات نقط معرفة وسيطيًا -- شعبة رياضيات}
+$\theta$ و$t$ و$k$ وسائط حقيقية.
+\QQ{1} عيّن في كل حالة مجموعة النقط $M(z)$:
+\begin{sq}
+\qa $(\Gamma_1)$: $z=-1+i+\sqrt2\,e^{i\theta}$ مع $\theta\in\R$.
+\qb $(\Delta)$: $z=2i+t(1+i)$ مع $t\in\R$.
+\qc $(\Delta')$: $z=k\,e^{i\frac\pi3}$ مع $k\in]0;+\infty[$.
+\qd $(\Gamma_2)$: $z=2+e^{i\theta}$ مع $\theta\in\left[-\frac\pi2;\frac\pi2\right]$.
+\end{sq}
+\QQ{2} عيّن نقطتي تقاطع $(\Gamma_1)$ و$(\Delta)$.
+\QQ{3} نرفق بكل نقطة $M(z)$ النقطة $M'(z')$ حيث $z'=(1+i)z$. عيّن المجموعة $(\Gamma_2')$ التي ترسمها $M'$ لما ترسم $M$ المجموعة $(\Gamma_2)$. ارسم كل المجموعات.
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa نسمي $\Omega_1(-1+i)$. المساواة $z-(-1+i)=\sqrt2e^{i\theta}$ تعني:
+\[\Omega_1M=\left|\sqrt2e^{i\theta}\right|=\sqrt2,\qquad \left(\vec u,\overrightarrow{\Omega_1M}\right)=\theta\ [2\pi].\]
+ولما يمسح $\theta$ المجموعة $\R$ تمسح الزاوية كل القيم، إذن:
+
+\bxt{$(\Gamma_1)$ هي الدائرة ذات المركز $\Omega_1(-1+i)$ ونصف القطر $\sqrt2$}.
+
+وهي تشمل $O$ لأن $|0-(-1+i)|=\sqrt2$.
+\pb نسمي $B(2i)$ و$\vec w$ الشعاع ذا اللاحقة $1+i$. المساواة $z-2i=t(1+i)$ تعني:
+\[\overrightarrow{BM}=t\,\vec w,\qquad t\in\R.\]
+\bxt{$(\Delta)$ هي المستقيم الذي يشمل $B(2i)$ وشعاع توجيهه $\vec w(1;1)$}.
+
+بوضع $z=x+iy$: $x=t$ و$y=2+t$، إذن معادلته $y=x+2$.
+\pc لدينا $|z|=k>0$ و$\arg z=\frac\pi3$، أي:
+\[M\neq O,\qquad \left(\vec u,\overrightarrow{OM}\right)=\frac\pi3\ [2\pi].\]
+\bxt{$(\Delta')$ نصف المستقيم ذو المبدأ $O$ (ما عدا $O$) الموجه بالشعاع ذي اللاحقة $e^{i\frac\pi3}$}.
+\pd نسمي $I(2)$. المساواة $z-2=e^{i\theta}$ تعني:
+\[IM=1,\qquad \left(\vec u,\overrightarrow{IM}\right)=\theta\in\left[-\frac\pi2;\frac\pi2\right],\qquad x-2=\cos\theta\geqslant0.\]
+\bxt{$(\Gamma_2)$ نصف الدائرة ذات المركز $I(2)$ ونصف القطر $1$ الواقع في نصف المستوي $x\geqslant2$}.
+
+طرفاها النقطتان ذواتا اللاحقتين $2-i$ ($\theta=-\frac\pi2$) و$2+i$ ($\theta=\frac\pi2$).
+\QQ{2} نعوض $y=x+2$ في معادلة $(\Gamma_1)$: $(x+1)^2+(y-1)^2=2$:
+\[(x+1)^2+(x+1)^2=2\iff(x+1)^2=1\iff x=0\ \ \text{أو}\ \ x=-2.\]
+نقطتا التقاطع: \bx{B(2i)} و\bx{C(-2)} (وهذا منتظر: $(\Delta)$ تشمل المركز $\Omega_1$ لأن $1=-1+2$، فـ $[BC]$ قطر).
+\QQ{3} بما أن $1+i=\sqrt2e^{i\frac\pi4}$:
+\[z'=(1+i)\left(2+e^{i\theta}\right)=2+2i+\sqrt2e^{i\frac\pi4}e^{i\theta}=(2+2i)+\sqrt2\,e^{i\left(\theta+\frac\pi4\right)}.\]
+لما $\theta\in\left[-\frac\pi2;\frac\pi2\right]$ فإن $\theta'=\theta+\frac\pi4\in\left[-\frac\pi4;\frac{3\pi}4\right]$ (مجال طوله $\pi$)، إذن:
+
+\bxt{$(\Gamma_2')$ نصف الدائرة ذات المركز $I'(2+2i)$ ونصف القطر $\sqrt2$}.
+
+طرفاها: $(2+2i)+\sqrt2e^{-i\frac\pi4}=3+i$ و$(2+2i)+\sqrt2e^{i\frac{3\pi}4}=1+3i$.
+(التحويل $z'=(1+i)z$ تشابه مباشر مركزه $O$ نسبته $\sqrt2$ وزاويته $\frac\pi4$، فهو يحول نصف دائرة إلى نصف دائرة).
+\begin{CP}{-3}{4}{-1.5}{3.6}{0.9}
+\draw[cDef,thick] (-1,1) circle ({sqrt(2)});
+\draw[cThm,thick] (-3,-1)--(1.6,3.6);
+\draw[cEx,very thick] (0,0)--(2,3.464);
+\draw[cRem,very thick] (2,-1) arc (-90:90:1);
+\draw[cSec,very thick] (3,1) arc (-45:135:{sqrt(2)});
+\Pt{W}{(-1,1)}{\Omega_1}{below}\Pt{B}{(0,2)}{B}{above left}\Pt{C}{(-2,0)}{C}{below right}\Pt{I}{(2,0)}{I}{below}\Pt{I'}{(2,2)}{I'}{below}
+\draw[cEx,thick,fill=white] (0,0) circle (2.2pt);
+\node[cDef] at (-2.6,2.3){$(\Gamma_1)$};\node[cThm] at (1.1,3.5){$(\Delta)$};\node[cEx] at (2.3,3.4){$(\Delta')$};
+\node[cRem] at (3.4,-0.6){$(\Gamma_2)$};\node[cSec] at (3.8,2.3){$(\Gamma_2')$};
+\end{CP}
+\end{hal}
+
+\begin{tamrin}{دستور موافر ودستورا أولر -- شعبة رياضيات}
+$\theta$ عدد حقيقي.
+\QQ{1} باستعمال دستور موافر ونشر $(\cos\theta+i\sin\theta)^3$، بيّن أن:
+\[\cos3\theta=4\cos^3\theta-3\cos\theta,\qquad \sin3\theta=3\sin\theta-4\sin^3\theta.\]
+\QQ{2} نعتبر المعادلة $(E)$: $8x^3-6x-1=0$ حيث $x$ عدد حقيقي.
+\begin{sq}
+\qa بوضع $x=\cos\theta$ مع $\theta\in[0;\pi]$، بيّن أن $(E)$ تكافئ $\cos3\theta=\frac12$.
+\qb استنتج حلول $(E)$.
+\qc استنتج قيمتي $\cos\frac\pi9+\cos\frac{5\pi}9+\cos\frac{7\pi}9$ و$\cos\frac\pi9\times\cos\frac{5\pi}9\times\cos\frac{7\pi}9$.
+\end{sq}
+\QQ{3} باستعمال دستوري أولر، اكتب $\cos^4\theta$ خطيًا (بدلالة $\cos4\theta$ و$\cos2\theta$).
+\QQ{4} $n$ عدد طبيعي غير معدوم و$\theta\in]0;2\pi[$. نضع $S=1+e^{i\theta}+e^{2i\theta}+\dots+e^{in\theta}$.
+\begin{sq}
+\qa بيّن أن $S=e^{i\frac{n\theta}2}\,\dfrac{\sin\frac{(n+1)\theta}{2}}{\sin\frac\theta2}$.
+\qb استنتج أن $\displaystyle\sum_{k=0}^n\cos k\theta=\frac{\cos\frac{n\theta}2\,\sin\frac{(n+1)\theta}2}{\sin\frac\theta2}$، ثم أن $\cos\frac{2\pi}5+\cos\frac{4\pi}5=-\frac12$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} حسب موافر: $(\cos\theta+i\sin\theta)^3=e^{3i\theta}=\cos3\theta+i\sin3\theta$. وبالنشر (دستور $(a+b)^3$) مع $i^2=-1$ و$i^3=-i$، وبوضع $c=\cos\theta$ و$s=\sin\theta$:
+\[(c+is)^3=c^3+3c^2(is)+3c(is)^2+(is)^3=\left(c^3-3cs^2\right)+i\left(3c^2s-s^3\right).\]
+بمطابقة الجزأين الحقيقيين ثم التخيليين، واستعمال $s^2=1-c^2$ و$c^2=1-s^2$:
+\begin{align*}
+\cos3\theta&=c^3-3c\left(1-c^2\right)=\bx{4\cos^3\theta-3\cos\theta},\\
+\sin3\theta&=3\left(1-s^2\right)s-s^3=\bx{3\sin\theta-4\sin^3\theta}.
+\end{align*}
+\QQ{2}
+\pa نبيّن أولًا أن كل حلول $(E)$ تنتمي إلى $[-1;1]$: إذا كان $|x|>1$ فإن $4x^2-3>1$، ومنه:
+\[|8x^3-6x|=2|x|\times\left|4x^2-3\right|>2\times1\times1=2>1,\]
+فلا يمكن أن يكون $8x^3-6x=1$. والدالة $\theta\mapsto\cos\theta$ تقابل من $[0;\pi]$ نحو $[-1;1]$، فيمكن وضع $x=\cos\theta$ مع $\theta\in[0;\pi]$. عندئذ:
+\[8x^3-6x-1=0\iff2\left(4\cos^3\theta-3\cos\theta\right)=1\iff\bx{\cos3\theta=\frac12}.\]
+\pb $\cos3\theta=\cos\frac\pi3\iff3\theta=\pm\frac\pi3+2k\pi\iff\theta=\pm\frac\pi9+\frac{2k\pi}3$. مع $\theta\in[0;\pi]$ أي $3\theta\in[0;3\pi]$:
+\[3\theta\in\left\{\frac\pi3;\frac{5\pi}3;\frac{7\pi}3\right\}\iff\theta\in\left\{\frac\pi9;\frac{5\pi}9;\frac{7\pi}9\right\}.\]
+الدالة $\cos$ متناقصة تمامًا على $[0;\pi]$ فهذه القيم تعطي ثلاثة أعداد مختلفة، و$(E)$ من الدرجة الثالثة فلها ثلاثة حلول على الأكثر:
+\[\bx{S=\left\{\cos\frac\pi9\,;\,\cos\frac{5\pi}9\,;\,\cos\frac{7\pi}9\right\}}\quad(\approx0{,}940\ ;\ -0{,}174\ ;\ -0{,}766).\]
+\pc الحلول الثلاثة $x_1,x_2,x_3$ فـ $8x^3-6x-1=8(x-x_1)(x-x_2)(x-x_3)$. بنشر الطرف الثاني ومطابقة معامل $x^2$ والحد الثابت:
+\[-8(x_1+x_2+x_3)=0,\qquad -8x_1x_2x_3=-1.\]
+\[\bx{\cos\frac\pi9+\cos\frac{5\pi}9+\cos\frac{7\pi}9=0},\qquad\bx{\cos\frac\pi9\cos\frac{5\pi}9\cos\frac{7\pi}9=\frac18}.\]
+\QQ{3} حسب أولر $\cos\theta=\dfrac{e^{i\theta}+e^{-i\theta}}{2}$، وبدستور ثنائي الحد ($1,4,6,4,1$):
+\[\cos^4\theta=\frac{1}{16}\left(e^{4i\theta}+4e^{2i\theta}+6+4e^{-2i\theta}+e^{-4i\theta}\right)=\frac1{16}\left(2\cos4\theta+8\cos2\theta+6\right).\]
+\[\bx{\cos^4\theta=\frac18\cos4\theta+\frac12\cos2\theta+\frac38}.\]
+\QQ{4}
+\pa $S$ مجموع $n+1$ حدًّا متتابعًا لمتتالية هندسية أساسها $e^{i\theta}\neq1$ (لأن $\theta\in]0;2\pi[$):
+\[S=\frac{e^{i(n+1)\theta}-1}{e^{i\theta}-1}=\frac{e^{i\frac{(n+1)\theta}2}\left(e^{i\frac{(n+1)\theta}2}-e^{-i\frac{(n+1)\theta}2}\right)}{e^{i\frac\theta2}\left(e^{i\frac\theta2}-e^{-i\frac\theta2}\right)}=\frac{e^{i\frac{(n+1)\theta}2}\times2i\sin\frac{(n+1)\theta}2}{e^{i\frac\theta2}\times2i\sin\frac\theta2}.\]
+و$\frac{(n+1)\theta}{2}-\frac\theta2=\frac{n\theta}2$، إذن \bx{S=e^{i\frac{n\theta}2}\dfrac{\sin\frac{(n+1)\theta}{2}}{\sin\frac\theta2}} ($\sin\frac\theta2\neq0$ لأن $\frac\theta2\in]0;\pi[$).
+\pb $\operatorname{Re}S=\displaystyle\sum_{k=0}^n\cos k\theta$، وبأخذ الجزء الحقيقي للعبارة السابقة نحصل على المطلوب.
+
+من أجل $\theta=\frac{2\pi}5$ و$n=4$: $\sin\frac{5\theta}{2}=\sin\pi=0$، إذن:
+\[1+\cos\frac{2\pi}5+\cos\frac{4\pi}5+\cos\frac{6\pi}5+\cos\frac{8\pi}5=0.\]
+لكن $\cos\frac{6\pi}5=\cos\left(2\pi-\frac{4\pi}5\right)=\cos\frac{4\pi}5$ و$\cos\frac{8\pi}5=\cos\frac{2\pi}5$، فـ $1+2\left(\cos\frac{2\pi}5+\cos\frac{4\pi}5\right)=0$:
+\[\bx{\cos\frac{2\pi}5+\cos\frac{4\pi}5=-\frac12}.\]
+\end{hal}
+
+\begin{tamrin}{معادلة من الدرجة الثالثة وتشابه -- شعبة رياضيات}
+نعتبر كثير الحدود $P(z)=z^3-(2+2i)z^2+(2+4i)z-4i$.
+\QQ{1} بيّن أن المعادلة $P(z)=0$ تقبل حلًّا تخيليًا صرفًا $z_0=iy$ ($y$ حقيقي) يطلب تعيينه.
+\QQ{2} عيّن العددين الحقيقيين $\alpha$ و$\beta$ بحيث: $P(z)=(z-2i)(z^2+\alpha z+\beta)$، ثم حل في $\mathbb{C}$ المعادلة $P(z)=0$.
+\QQ{3} $A$، $B$ و$C$ النقط ذات اللواحق $z_A=1+i$، $z_B=1-i$ و$z_C=2i$. بيّن أن المثلث $OAB$ قائم ومتساوي الساقين.
+\QQ{4} $S$ التشابه المباشر الذي مركزه $O$ ويحول $B$ إلى $C$.
+\begin{sq}
+\qa عيّن الكتابة المركبة لـ $S$ وعناصره المميزة.
+\qb عيّن لاحقة $D=S(A)$، واستنتج طبيعة المثلث $OCD$.
+\qc احسب النسبة بين مساحتي المثلثين $OCD$ و$OAB$. أنشئ الشكل.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} نعوض $z=iy$، مع $i^2=-1$ و$i^3=-i$:
+\[P(iy)=-iy^3-(2+2i)(-y^2)+(2+4i)(iy)-4i=\left(2y^2-4y\right)+i\left(-y^3+2y^2+2y-4\right).\]
+$P(iy)=0$ معناه انعدام الجزأين معًا:
+\[\begin{cases}2y^2-4y=0\\ -y^3+2y^2+2y-4=0\end{cases}\]
+الأولى: $2y(y-2)=0$ أي $y=0$ أو $y=2$. نعوض في الثانية: $y=0$ يعطي $-4\neq0$ (مرفوض)، و$y=2$ يعطي $-8+8+4-4=0$ \ok.
+\bxt{الحل التخيلي الصرف هو $z_0=2i$}.
+\QQ{2} ننشر: $(z-2i)(z^2+\alpha z+\beta)=z^3+(\alpha-2i)z^2+(\beta-2i\alpha)z-2i\beta$. بالمطابقة مع $P(z)$:
+\[\begin{cases}\alpha-2i=-2-2i\\ \beta-2i\alpha=2+4i\\ -2i\beta=-4i\end{cases}\iff\begin{cases}\alpha=-2\\ \beta=2\end{cases}\]
+(والمعادلة الثانية محققة: $2-2i(-2)=2+4i$). إذن \bx{P(z)=(z-2i)(z^2-2z+2)}.
+
+$z^2-2z+2=0$: $\Delta=4-8=-4=(2i)^2$ فـ $z=1-i$ أو $z=1+i$. إذن:
+\[\bx{S=\{2i\,;\,1-i\,;\,1+i\}}.\]
+\QQ{3} نحسب:
+\[\frac{z_A-z_O}{z_B-z_O}=\frac{1+i}{1-i}=\frac{(1+i)^2}{2}=\frac{2i}2=i.\]
+بما أن $|i|=1$ و$\arg i=\frac\pi2$:
+\[OA=OB,\qquad \left(\overrightarrow{OB},\overrightarrow{OA}\right)=\frac\pi2\ [2\pi].\]
+\bxt{المثلث $OAB$ قائم في $O$ ومتساوي الساقين}.
+\QQ{4}
+\pa $S$ مركزه $O$: كتابته $z'=az$. و$S(B)=C$ يعطي:
+\[a=\frac{z_C}{z_B}=\frac{2i}{1-i}=\frac{2i(1+i)}{2}=i+i^2=-1+i.\]
+إذن \bx{S:\ z'=(-1+i)z}. ولدينا $|a|=\sqrt2$ و:
+\[a=\sqrt2\left(-\frac{\sqrt2}2+\frac{\sqrt2}2i\right)=\sqrt2e^{i\frac{3\pi}4}.\]
+\bxt{$S$ تشابه مباشر مركزه $O$، نسبته $\sqrt2$ وزاويته $\frac{3\pi}4$}.
+\pb $z_D=(-1+i)(1+i)=-1-i+i+i^2=\bx{-2}$.
+التشابه المباشر يحافظ على الزوايا الموجهة ويضرب الأطوال في $\sqrt2$، وصورة المثلث $OAB$ هي $OCD$ (لأن $S(O)=O$، $S(A)=D$، $S(B)=C$). تحقق مباشر: $\dfrac{z_D}{z_C}=\dfrac{-2}{2i}=i$:
+\bxt{المثلث $OCD$ قائم في $O$ ومتساوي الساقين}.
+\pc التشابه ذو النسبة $k$ يضرب المساحات في $k^2$:
+\[\mathcal A(OAB)=\frac{OA\times OB}{2}=\frac{\sqrt2\times\sqrt2}{2}=1,\qquad \mathcal A(OCD)=\frac{OC\times OD}{2}=\frac{2\times2}{2}=2.\]
+\[\frac{\mathcal A(OCD)}{\mathcal A(OAB)}=\bx{2=\left(\sqrt2\right)^2}.\]
+\begin{CP}{-2.6}{2}{-1.6}{2.6}{1.05}
+\coordinate (O) at (0,0);
+\Pt{A}{(1,1)}{A}{above right}\Pt{B}{(1,-1)}{B}{below right}\Pt{C}{(0,2)}{C}{above right}\Pt{D}{(-2,0)}{D}{above left}
+\draw[cDef,thick,fill=cDef!10] (O)--(A)--(B)--cycle;\draw[cThm,thick,fill=cThm!10] (O)--(C)--(D)--cycle;
+\RA{O}{A}{B}\RA{O}{C}{D}
+\end{CP}
+\end{hal}
+\end{document}
