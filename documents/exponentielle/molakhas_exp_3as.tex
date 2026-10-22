@@ -187,7 +187,8 @@
 \item الدالة $e^{u}$: الاشتقاق والنهايات.
 \item دوال مرجعية: $e^{-x}$ ، $xe^{x}$ ، $e^{ax+b}$.
 \item المعادلات التفاضلية $y'=ay$ و $y'=ay+b$.
-\item تمارين محلولة (دراسة دالة كاملة، عائلة دوال $f_m$، معادلة تفاضلية)، ثم خلاصة الطرائق.
+\item تمارين شاملة محلولة (نمط البكالوريا): دراسة دوال كاملة، مقاربات ونقط انعطاف، مراكز تناظر، دوال مساعدة، مناقشة بيانية، عائلة دوال $f_m$.
+\item تمارين محلولة في المعادلات التفاضلية، ثم خلاصة الطرائق.
 \end{enumerate}
 \end{BOX}
 
@@ -235,6 +236,18 @@ e^{nx}&=\left(e^{x}\right)^{n} & e^{\frac{x}{2}}&=\sqrt{e^{x}} & e^{x}\times e^{
 \end{itemize}
 \end{mithal}
 
+\begin{mithal}[التحقق من مساواة]
+تحقق أنه من أجل كل $x\in\R$:
+\begin{itemize}
+\item $\dfrac{e^{x}}{x+e^{x}}=\dfrac{1}{1+xe^{-x}}$: \ نقسم البسط والمقام على $e^{x}\neq0$: \ $\dfrac{e^{x}}{x+e^{x}}=\dfrac{1}{\frac{x}{e^{x}}+1}=\bx{\dfrac{1}{1+xe^{-x}}}$.
+\item $\dfrac{4}{1+e^{-x}}-1=\dfrac{3e^{x}-1}{e^{x}+1}$: \ نضرب البسط والمقام في $e^{x}$: \ $\dfrac{4e^{x}}{e^{x}+1}-1=\dfrac{4e^{x}-\left(e^{x}+1\right)}{e^{x}+1}=\bx{\dfrac{3e^{x}-1}{e^{x}+1}}$.
+\item $\dfrac{e^{-x}+2}{3x+e^{x}}\times\dfrac{6xe^{x}+2e^{2x}}{1+2e^{x}}=2$: \ نحلل $6xe^{x}+2e^{2x}=2e^{x}\left(3x+e^{x}\right)$، ومنه:
+\[ \frac{e^{-x}+2}{3x+e^{x}}\times\frac{2e^{x}\left(3x+e^{x}\right)}{1+2e^{x}}=\frac{\left(e^{-x}+2\right)e^{x}\times2}{1+2e^{x}}=\frac{\left(1+2e^{x}\right)\times2}{1+2e^{x}}=\bx{2} \]
+\item $e^{-x}-e^{-2x}=\dfrac{1}{e^{x}}-\dfrac{1}{e^{2x}}=\dfrac{e^{x}-1}{e^{2x}}$ \quad (توحيد المقامات على $e^{2x}$).
+\item $\dfrac{e^{x}-e^{-x}}{e^{x}+e^{-x}}=\dfrac{e^{x}\left(e^{x}-e^{-x}\right)}{e^{x}\left(e^{x}+e^{-x}\right)}=\bx{\dfrac{e^{2x}-1}{e^{2x}+1}}$.
+\end{itemize}
+\end{mithal}
+
 \begin{tariqa}[إثبات مساواة أو تحويل كتابة]
 \begin{itemize}
 \item نضرب البسط والمقام في $e^{x}$ (أو $e^{-x}$) للتخلص من الأسس السالبة أو لإظهارها.
@@ -248,6 +261,12 @@ e^{nx}&=\left(e^{x}\right)^{n} & e^{\frac{x}{2}}&=\sqrt{e^{x}} & e^{x}\times e^{
 \par\smallskip
 \[ ae^{x}+b+\frac{c}{e^{x}+2}=\frac{(ae^{x}+b)(e^{x}+2)+c}{e^{x}+2}=\frac{ae^{2x}+(2a+b)e^{x}+2b+c}{e^{x}+2} \]
 بالمطابقة: $a=1$ ، $2a+b=0$ ، $2b+c=0$؛ إذن $a=1$ ، $b=-2$ ، $c=4$ \ و\ \bx{\dfrac{e^{2x}}{e^{x}+2}=e^{x}-2+\dfrac{4}{e^{x}+2}}.
+\par\medskip
+عيّن العددين الحقيقيين $\alpha$ و $\beta$ بحيث من أجل كل $x\in\R$: \ $\dfrac{e^{x}-1}{3e^{x}+1}=\alpha+\dfrac{\beta}{3+e^{-x}}$.
+\par\smallskip
+نوحّد المقامات ثم نضرب البسط والمقام في $e^{x}$:
+\[ \alpha+\frac{\beta}{3+e^{-x}}=\frac{3\alpha+\beta+\alpha e^{-x}}{3+e^{-x}}=\frac{(3\alpha+\beta)e^{x}+\alpha}{3e^{x}+1} \]
+بالمطابقة مع $\dfrac{e^{x}-1}{3e^{x}+1}$: $3\alpha+\beta=1$ و $\alpha=-1$، إذن $\alpha=-1$ ، $\beta=4$ \ و\ \bx{\dfrac{e^{x}-1}{3e^{x}+1}=-1+\dfrac{4}{3+e^{-x}}}.
 \end{mithal}
 
 \begin{mithal}[مركز تناظر]
@@ -344,6 +363,8 @@ $e^{x}=1\iff x=0$ \qquad $e^{x}>1\iff x>0$ \qquad $0<e^{x}<1\iff x<0$
 \item $e^{2x-1}=3$ تكافئ $2x-1=\ln3$، إذن \bx{S=\left\{\dfrac{1+\ln3}{2}\right\}}.
 \item $e^{2x}+6e^{x}-7=0$: نضع $X=e^{x}>0$: $X^{2}+6X-7=0$، $\Delta=64$، $X=1$ أو $X=-7$ (مرفوض)؛ $e^{x}=1$ أي $x=0$؛ إذن \bx{S=\{0\}}.
 \item $7e^{x}-5-2e^{-x}=0$: نضرب في $e^{x}>0$: $7e^{2x}-5e^{x}-2=0$؛ $X=e^{x}$: $7X^{2}-5X-2=0$، $\Delta=81$، $X=1$ أو $X=-\frac{2}{7}$ (مرفوض)؛ إذن \bx{S=\{0\}}.
+\item $-2e^{x-4}+7e^{-x+4}-5=0$: نضرب في $e^{x-4}>0$: $-2e^{2(x-4)}-5e^{x-4}+7=0$. نضع $t=e^{x-4}>0$: $-2t^{2}-5t+7=0$، $\Delta=81$، $t=1$ أو $t=-\frac{7}{2}$ (مرفوض)؛ $e^{x-4}=1$ أي $x=4$؛ إذن \bx{S=\{4\}}.
+\item $e^{\frac{x^{2}}{x-2}}-\left[e^{\frac{x+1}{3(x-2)}}\right]^{4}=0$ \ (الشرط $x\neq2$): تكافئ $\dfrac{x^{2}}{x-2}=\dfrac{4x+4}{3(x-2)}$ أي $3x^{2}-4x-4=0$، $\Delta=64$، $x=2$ (مرفوض) أو $x=-\frac{2}{3}$؛ إذن \bx{S=\left\{-\frac{2}{3}\right\}}.
 \end{itemize}
 \end{mithal}
 
@@ -360,13 +381,19 @@ $e^{x}=1\iff x=0$ \qquad $e^{x}>1\iff x>0$ \qquad $0<e^{x}<1\iff x<0$
 \tkzTabLine{,+,z,-,z,+,}
 \end{TAB}
 إذن \bx{S=]-\infty;-1]\cup[3;+\infty[}.
+\item $e^{x^{2}}\leqslant\left[e^{2x-3}\right]^{3}=e^{6x-9}$ تكافئ $x^{2}-6x+9\leqslant0$ أي $(x-3)^{2}\leqslant0$، وهذا محقق فقط من أجل $x=3$؛ إذن \bx{S=\{3\}}.
+\item $2e^{2(x-3)}+5e^{x-3}-7\leqslant0$: نضع $X=e^{x-3}>0$: $2X^{2}+5X-7\leqslant0$ أي $2\left(X+\frac{7}{2}\right)(X-1)\leqslant0$. وبما أن $X+\frac{7}{2}>0$ فهي تكافئ $X\leqslant1$ أي $e^{x-3}\leqslant1$ أي $x\leqslant3$؛ إذن \bx{S=]-\infty;3]}.
 \end{itemize}
 \end{mithal}
 
-\begin{mithal}[جملة معادلتين]
-حل في $\R^{2}$ الجملة: \ $\begin{cases}\left(e^{x}\right)^{2}e^{y-1}=e^{9}\\[2pt] \dfrac{e^{x-2}}{e^{y}}=1\end{cases}$
-\par\smallskip
-تكافئ $\begin{cases}e^{2x+y-1}=e^{9}\\ e^{x-2-y}=e^{0}\end{cases}$ أي $\begin{cases}2x+y=10\\ x-y=2\end{cases}$؛ بالجمع: $3x=12$ أي $x=4$، ثم $y=2$. إذن \bx{S=\{(4;2)\}}.
+\begin{mithal}[جمل معادلات]
+حل في $\R^{2}$ الجمل التالية:
+\begin{itemize}
+\item $\begin{cases}\left(e^{x}\right)^{2}e^{y-1}=e^{9}\\[2pt] \dfrac{e^{x-2}}{e^{y}}=1\end{cases}$ تكافئ $\begin{cases}e^{2x+y-1}=e^{9}\\ e^{x-2-y}=e^{0}\end{cases}$ أي $\begin{cases}2x+y=10\\ x-y=2\end{cases}$؛ بالجمع: $3x=12$ أي $x=4$، ثم $y=2$. إذن \bx{S=\{(4;2)\}}.
+\item $\begin{cases}e^{4x}\times e^{y}=\dfrac{1}{e^{2}}\\[2pt] xy=-2\end{cases}$ تكافئ $\begin{cases}4x+y=-2\\ xy=-2\end{cases}$. من الأولى $y=-2-4x$، وبالتعويض: $x(-2-4x)=-2$ أي $2x^{2}+x-1=0$، ومنه $x=\frac{1}{2}$ أو $x=-1$.\par
+إذا كان $x=\frac{1}{2}$ فإن $y=-4$، وإذا كان $x=-1$ فإن $y=2$. إذن \bx{S=\left\{\left(\tfrac{1}{2};-4\right);(-1;2)\right\}}.
+\item $\begin{cases}e^{x}\times e^{y}=e^{3}\\[2pt] e^{x-3}\times\left(e^{y}\right)^{2}=e^{2}\end{cases}$ تكافئ $\begin{cases}x+y=3\\ x-3+2y=2\end{cases}$ أي $\begin{cases}x+y=3\\ x+2y=5\end{cases}$؛ بالطرح: $y=2$، ثم $x=1$. إذن \bx{S=\{(1;2)\}}.
+\end{itemize}
 \end{mithal}
 
 %================================================================
@@ -385,6 +412,14 @@ $e^{x}=1\iff x=0$ \qquad $e^{x}>1\iff x>0$ \qquad $0<e^{x}<1\iff x<0$
 \tkzTabLine{,\mbox{\ar{عكس إشارة $a\alpha$}},z,\mbox{\ar{إشارة $a\alpha$}},}
 \end{TAB}
 \end{khassia}
+
+\begin{tariqa}[إشارة $ae^{2x}+be^{x}+c$]
+\begin{enumerate}[label=\textbf{\arabic*.}]
+\item نضع $X=e^{x}$ فتصبح العبارة من الشكل $aX^{2}+bX+c$.
+\item نحلل العبارة الأخيرة (بالمميز $\Delta$) إلى جداء عاملين، ثم نعوض $X$ بـ $e^{x}$.
+\item ندرس إشارة كل عامل (من الشكل $e^{x}-k$) في جدول، مع العلم أن $e^{x}>0$: إذا كان $k\leqslant0$ فالعامل موجب تمامًا.
+\end{enumerate}
+\end{tariqa}
 
 \begin{mithal}
 \begin{itemize}
@@ -420,10 +455,16 @@ $e^{x}=1\iff x=0$ \qquad $e^{x}>1\iff x>0$ \qquad $0<e^{x}<1\iff x<0$
 \section{النهايات الشهيرة وحالات عدم التعيين}
 \begin{khassia}[التزايد المقارن والنهايات الشهيرة]
 من أجل كل عدد طبيعي غير معدوم $n$:
-\begin{align*}
-\lim_{x\to+\infty}\frac{e^{x}}{x}&=+\infty & \lim_{x\to+\infty}\frac{e^{x}}{x^{n}}&=+\infty & \lim_{x\to+\infty}\frac{x}{e^{x}}&=\lim_{x\to+\infty}xe^{-x}=0 & \lim_{x\to+\infty}x^{n}e^{-x}&=0\\
-\lim_{x\to-\infty}xe^{x}&=0 & \lim_{x\to-\infty}x^{n}e^{x}&=0 & \lim_{x\to0}\frac{e^{x}-1}{x}&=1 & \lim_{x\to0}\frac{e^{ax}-1}{x}&=a
-\end{align*}
+\begin{center}
+\renewcommand{\arraystretch}{2.1}
+\begin{tabular}{|c|c|}\hline
+\rowcolor{cSec!12} \ar{\textbf{الحالة الخاصة ($n=1$ أو $a=1$)}} & \ar{\textbf{الحالة العامة}}\\\hline
+$\displaystyle\lim_{x\to+\infty}\frac{e^{x}}{x}=+\infty$ & $\displaystyle\lim_{x\to+\infty}\frac{e^{x}}{x^{n}}=+\infty$\\\hline
+$\displaystyle\lim_{x\to+\infty}\frac{x}{e^{x}}=\lim_{x\to+\infty}xe^{-x}=0$ & $\displaystyle\lim_{x\to+\infty}\frac{x^{n}}{e^{x}}=\lim_{x\to+\infty}x^{n}e^{-x}=0$\\\hline
+$\displaystyle\lim_{x\to-\infty}xe^{x}=0$ & $\displaystyle\lim_{x\to-\infty}x^{n}e^{x}=0$\\\hline
+$\displaystyle\lim_{x\to0}\frac{e^{x}-1}{x}=1$ & $\displaystyle\lim_{x\to0}\frac{e^{ax}-1}{x}=a$\\\hline
+\end{tabular}
+\end{center}
 وعمومًا: إذا كان $\lim u=0$ فإن $\lim\dfrac{e^{u}-1}{u}=1$. \quad نقول: عند $+\infty$ «$e^{x}$ يتغلب على $x^{n}$».
 \end{khassia}
 
@@ -435,12 +476,16 @@ $e^{x}=1\iff x=0$ \qquad $e^{x}>1\iff x>0$ \qquad $0<e^{x}<1\iff x<0$
 \end{molahada}
 
 \begin{tariqa}[إزالة حالات عدم التعيين]
-\begin{itemize}
-\item \textbf{الحالة $0\times\infty$:} ننشر (نفك الأقواس) ونستعمل $\lim\limits_{x\to-\infty}x^{n}e^{x}=0$ أو $\lim\limits_{x\to+\infty}x^{n}e^{-x}=0$.
-\item \textbf{الحالة $\frac{\infty}{\infty}$:} نخرج الحد الغالب ($x$ أو $e^{x}$) عاملًا مشتركًا في البسط والمقام، ونستعمل $\frac{e^{x}}{x}\to+\infty$ و $\frac{x}{e^{x}}\to0$.
-\item \textbf{الحالة $\frac{0}{0}$ عند $0$:} نغير الشكل لإظهار $\frac{e^{x}-1}{x}$ أو $\frac{e^{u}-1}{u}$.
-\item \textbf{الحالة $\infty-\infty$:} نخرج $e^{x}$ أو $x$ (أو $e^{-x}$) عاملًا مشتركًا.
-\end{itemize}
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{|p{0.72\textwidth}|>{\centering\arraybackslash}p{0.14\textwidth}|}\hline
+\rowcolor{cSec!12} \textbf{الطريقة} & \textbf{الحالة}\\\hline
+ننشر (نفك الأقواس) ونستعمل $\lim\limits_{x\to-\infty}x^{n}e^{x}=0$ أو $\lim\limits_{x\to+\infty}x^{n}e^{-x}=0$. & $0\times\infty$\\\hline
+نخرج الحد الغالب ($x$ أو $e^{x}$) عاملًا مشتركًا في البسط والمقام (أو نفرّق الكسر إذا كان المقام حدًا واحدًا)، ونستعمل $\frac{e^{x}}{x}\to+\infty$ و $\frac{x}{e^{x}}\to0$. & $\dfrac{\infty}{\infty}$\\\hline
+نغير شكل العبارة لإظهار $\frac{e^{x}-1}{x}$ أو $\frac{e^{u}-1}{u}$ (معدل تغير عند $0$). & $\dfrac{0}{0}$\\\hline
+نخرج عاملًا مشتركًا مناسبًا: $e^{x}$ أو $x$ أو $e^{-x}$ أو $e^{2x}$. & $\infty-\infty$\\\hline
+\end{tabular}
+\end{center}
 \end{tariqa}
 
 \begin{mithal}[الحالة $\infty-\infty$]
@@ -458,6 +503,8 @@ $e^{x}=1\iff x=0$ \qquad $e^{x}>1\iff x>0$ \qquad $0<e^{x}<1\iff x<0$
 \item $\lim\limits_{x\to-\infty}\dfrac{e^{x}-2x}{2-2x}=\lim\limits_{x\to-\infty}\dfrac{\frac{e^{x}}{x}-2}{\frac{2}{x}-2}=\dfrac{0-2}{0-2}=\bx{1}$ \quad (هنا $e^{x}\to0$: ليست حالة التزايد المقارن).
 \item $\lim\limits_{x\to+\infty}\dfrac{e^{x}-x}{2e^{x}+x}=\lim\limits_{x\to+\infty}\dfrac{e^{x}\left(1-\frac{x}{e^{x}}\right)}{e^{x}\left(2+\frac{x}{e^{x}}\right)}=\bx{\dfrac{1}{2}}$.
 \item $\lim\limits_{x\to+\infty}\dfrac{x^{2}}{e^{x}-1}=\lim\limits_{x\to+\infty}\dfrac{1}{\frac{e^{x}}{x^{2}}-\frac{1}{x^{2}}}=\bx{0}$.
+\item $\lim\limits_{x\to+\infty}\dfrac{e^{x}-1}{x}=\lim\limits_{x\to+\infty}\left(\dfrac{e^{x}}{x}-\dfrac{1}{x}\right)=\bx{+\infty}$ \quad (تفريق الكسر).
+\item $\lim\limits_{x\to+\infty}\dfrac{x-1}{e^{x}-1}=\lim\limits_{x\to+\infty}\dfrac{x}{e^{x}}\times\dfrac{1-\frac{1}{x}}{1-\frac{1}{e^{x}}}=0\times1=\bx{0}$.
 \end{itemize}
 \end{mithal}
 
@@ -584,6 +631,8 @@ $a$ و $b$ عددان حقيقيان مع $a\neq0$. حل المعادلة الت
 \begin{khassia}[المعادلة $y'=ay+b$]
 حلول المعادلة التفاضلية $y'=ay+b$ هي الدوال: \quad \bx{x\mapsto Ce^{ax}-\dfrac{b}{a}} \quad حيث $C$ ثابت حقيقي.
 \par\smallskip
+\textbf{البرهان:} نضع $h=g+\frac{b}{a}$. لدينا $h'=g'$ و $ah=ag+b$، إذن: $g'=ag+b\iff h'=ah$، أي $g$ حل للمعادلة $y'=ay+b$ إذا وفقط إذا كانت $h$ حلًا للمعادلة $y'=ay$، أي $h(x)=Ce^{ax}$ ومنه $g(x)=Ce^{ax}-\frac{b}{a}$.
+\par\smallskip
 \textbf{الحل الخاص:} من أجل كل $x_0$ و $y_0$ حقيقيين يوجد حل \textbf{وحيد} $f$ يحقق الشرط الابتدائي $f(x_0)=y_0$.
 \end{khassia}
 
@@ -611,7 +660,8 @@ $a$ و $b$ عددان حقيقيان مع $a\neq0$. حل المعادلة الت
 \end{mithal}
 
 %================================================================
-\section{تمارين محلولة}
+\section{تمارين شاملة محلولة (نمط البكالوريا)}
+\origNeedspace{20\baselineskip}
 \begin{tmr}
 \textbf{I.} $g$ الدالة المعرفة على $\R$ بـ: $g(x)=(2-x)e^{x}-1$.
 \begin{sq}
@@ -688,6 +738,475 @@ $\lim\limits_{x\to+\infty}f(x)=\bx{-\infty}$ لأن $(3-x)e^{x}\to-\infty$ و $-
 \end{itemize}
 \end{hal}
 
+%---------------- مقارب مائل ونقطة انعطاف
+\origNeedspace{20\baselineskip}
+\begin{tmr}
+\textbf{I.} $g$ الدالة المعرفة على $\R$ بـ: $g(x)=e^{x}-x+2$.
+\begin{sq}
+\qa ادرس تغيرات الدالة $g$، ثم استنتج إشارة $g(x)$ على $\R$.
+\end{sq}
+\textbf{II.} $f$ الدالة المعرفة على $\R$ بـ: $f(x)=(x-1)e^{-x}+x+1$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس.
+\begin{sq}
+\qa احسب نهايتي $f$ عند $-\infty$ وعند $+\infty$.
+\qb بيّن أن $f'(x)=\dfrac{g(x)}{e^{x}}$، ثم شكّل جدول تغيرات $f$.
+\qc بيّن أن المستقيم $(\Delta):y=x+1$ مقارب مائل لـ $(C_f)$ بجوار $+\infty$، وادرس وضعيتهما النسبية.
+\qd بيّن أن $(C_f)$ يقبل نقطة انعطاف $\omega$ يطلب تعيينها.
+\qe عيّن العدد الحقيقي $k$ بحيث يكون المستقيم $(T_k):y=x+k$ مماسًا لـ $(C_f)$، ثم أنشئ $(\Delta)$ ، $(T_k)$ و $(C_f)$.
+\item[(و)] ناقش بيانيًا، حسب قيم الوسيط الحقيقي $m$، عدد حلول المعادلة: $(1-m)e^{x}+x-1=0$.
+\end{sq}
+\end{tmr}
+
+\begin{hal}
+\textbf{I.} \ $\lim\limits_{x\to-\infty}g(x)=\bx{+\infty}$ (لأن $e^{x}\to0$ و $-x\to+\infty$)؛ \ $\lim\limits_{x\to+\infty}g(x)=\lim\limits_{x\to+\infty}x\left(\dfrac{e^{x}}{x}-1+\dfrac{2}{x}\right)=\bx{+\infty}$.\par
+$g'(x)=e^{x}-1$: تنعدم عند $0$، سالبة على $]-\infty;0[$ وموجبة على $]0;+\infty[$؛ القيمة الحدية الصغرى $g(0)=3$:
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3]{$x$/1,$g'(x)$/1,$g(x)$/2}{$-\infty$,$0$,$+\infty$}
+\tkzTabLine{,-,z,+,}
+\tkzTabVar{+/$+\infty$,-/$3$,+/$+\infty$}
+\end{TAB}
+إذن من أجل كل $x\in\R$: $g(x)\geqslant3>0$، أي \bxt{$g(x)>0$ على $\R$}.
+
+\textbf{II.}
+\pa $\lim\limits_{x\to-\infty}f(x)=\bx{-\infty}$ لأن $(x-1)\to-\infty$ و $e^{-x}\to+\infty$ و $x+1\to-\infty$ (ليست حالة عدم تعيين).\par
+$\lim\limits_{x\to+\infty}f(x)=\lim\limits_{x\to+\infty}\left(xe^{-x}-e^{-x}+x+1\right)=0-0+\infty=\bx{+\infty}$.
+\pb $f'(x)=e^{-x}-(x-1)e^{-x}+1=(2-x)e^{-x}+1=\dfrac{2-x+e^{x}}{e^{x}}=\bx{\dfrac{g(x)}{e^{x}}}>0$؛ إذن \bxt{$f$ متزايدة تمامًا على $\R$}:
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=4]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$+\infty$}
+\tkzTabLine{,+,}
+\tkzTabVar{-/$-\infty$,+/$+\infty$}
+\end{TAB}
+\pc $f(x)-(x+1)=(x-1)e^{-x}=xe^{-x}-e^{-x}$ و $\lim\limits_{x\to+\infty}\left(xe^{-x}-e^{-x}\right)=0$، إذن \bxt{$(\Delta):y=x+1$ مقارب مائل لـ $(C_f)$ بجوار $+\infty$}.\par
+إشارة الفرق هي إشارة $x-1$ (لأن $e^{-x}>0$): على $]-\infty;1[$: $(C_f)$ تحت $(\Delta)$؛ على $]1;+\infty[$: $(C_f)$ فوق $(\Delta)$؛ ويتقاطعان في $A(1;2)$.
+\pd $f''(x)=-e^{-x}-(2-x)e^{-x}=(x-3)e^{-x}$: تنعدم عند $3$ مغيرة إشارتها (سالبة ثم موجبة)، إذن \bx{\omega\left(3;\,4+2e^{-3}\right)} نقطة انعطاف ($f(3)\approx4{,}10$).
+\pe $(T_k)$ معامل توجيهه $1$، فهو مماس عند نقطة فاصلتها $x_0$ تحقق $f'(x_0)=1$:
+\[ (2-x_0)e^{-x_0}+1=1\iff(2-x_0)e^{-x_0}=0\iff x_0=2 \]
+$f(2)=e^{-2}+3$، والمماس: $y=1\times(x-2)+e^{-2}+3$ أي $y=x+1+e^{-2}$. إذن \bx{k=1+e^{-2}\approx1{,}14}.
+\begin{GR}{-1.5}{5.5}{-3}{6.5}{0.85}
+\Ticks{-1,1,2,3,4,5}{-2,-1,1,2,3,4,5,6}
+\draw[cRem,thick,dashed,domain=-1.5:5.5] plot(\x,{\x+1});
+\draw[cEx,thick,domain=-1.5:5.5] plot(\x,{\x+1+exp(-2)});
+\draw[cDef,very thick,domain=-0.75:5.5,samples=150] plot(\x,{(\x-1)*exp(-\x)+\x+1});
+\fill (1,2) circle (1.6pt) node[below right]{$A$};
+\fill (3,4.0996) circle (1.6pt) node[below right]{$\omega$};
+\fill (2,3.1353) circle (1.6pt);
+\node[cDef] at (-0.3,-2.5){$(C_f)$};
+\node[cRem] at (4.9,5.0){$(\Delta)$};
+\node[cEx] at (3.6,5.4){$(T_k)$};
+\end{GR}
+\par\smallskip\textbf{(و)} من أجل كل $x\in\R$، بالضرب في $e^{-x}>0$:
+\begin{align*}
+(1-m)e^{x}+x-1=0&\iff(1-m)+(x-1)e^{-x}=0\\
+&\iff(x-1)e^{-x}+x+1=x+m\iff f(x)=x+m
+\end{align*}
+الحلول هي فواصل نقط تقاطع $(C_f)$ مع المستقيمات $(D_m):y=x+m$ الموازية لـ $(\Delta)$:
+\begin{itemize}
+\item إذا كان $m\leqslant1$: حل وحيد؛
+\item إذا كان $1<m<1+e^{-2}$: حلان؛
+\item إذا كان $m=1+e^{-2}$: حل وحيد (مضاعف) هو $x=2$؛
+\item إذا كان $m>1+e^{-2}$: لا توجد حلول.
+\end{itemize}
+\end{hal}
+
+%---------------- مقارب أفقي ومقارب مائل
+\origNeedspace{20\baselineskip}
+\begin{tmr}
+\textbf{I.} $g$ الدالة المعرفة على $\R$ بـ: $g(x)=(1-x)e^{x}+1$.
+\begin{sq}
+\qa ادرس تغيرات $g$.
+\qb بيّن أن المعادلة $g(x)=0$ تقبل حلًا وحيدًا $\alpha$ حيث $1{,}27<\alpha<1{,}28$، ثم استنتج إشارة $g(x)$.
+\end{sq}
+\textbf{II.} $f$ الدالة المعرفة على $\R$ بـ: $f(x)=\dfrac{x}{e^{x}+1}+2$، و $(C_f)$ تمثيلها البياني.
+\begin{sq}
+\qa احسب نهايتي $f$، وفسّر النتيجة عند $+\infty$ هندسيًا.
+\qb بيّن أن $f'(x)=\dfrac{g(x)}{\left(e^{x}+1\right)^{2}}$، ثم شكّل جدول تغيرات $f$.
+\qc بيّن أن المستقيم $(d):y=x+2$ مقارب مائل لـ $(C_f)$ بجوار $-\infty$، وادرس الوضع النسبي.
+\qd بيّن أن $f(\alpha)=\alpha+1$، ثم أعط حصرًا لـ $f(\alpha)$، وارسم $(C_f)$.
+\end{sq}
+\end{tmr}
+
+\begin{hal}
+\textbf{I.}
+\pa $\lim\limits_{x\to-\infty}g(x)=\lim\limits_{x\to-\infty}\left(e^{x}-xe^{x}+1\right)=0-0+1=\bx{1}$؛ \ $\lim\limits_{x\to+\infty}g(x)=\bx{-\infty}$ (لأن $1-x\to-\infty$ و $e^{x}\to+\infty$).\par
+$g'(x)=-e^{x}+(1-x)e^{x}=-xe^{x}$، إشارتها إشارة $-x$؛ القيمة الحدية العظمى $g(0)=2$:
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3]{$x$/1,$g'(x)$/1,$g(x)$/2}{$-\infty$,$0$,$+\infty$}
+\tkzTabLine{,+,z,-,}
+\tkzTabVar{-/$1$,+/$2$,-/$-\infty$}
+\end{TAB}
+\pb على $]-\infty;0]$: $g(x)>1>0$، فلا حلول. على $[0;+\infty[$: $g$ مستمرة ومتناقصة تمامًا من $2$ إلى $-\infty$، إذن (مبرهنة القيم المتوسطة) المعادلة $g(x)=0$ تقبل حلًا وحيدًا $\alpha$. \ $g(1{,}27)\approx0{,}039>0$ و $g(1{,}28)\approx-0{,}007<0$، إذن \bx{1{,}27<\alpha<1{,}28}.\par
+الإشارة: $g(x)>0$ على $]-\infty;\alpha[$ ، $g(x)<0$ على $]\alpha;+\infty[$.
+
+\textbf{II.}
+\pa عند $+\infty$ (نستعمل $\frac{x}{e^{x}}\to0$):
+\[ \lim_{x\to+\infty}f(x)=\lim_{x\to+\infty}\left(\frac{x}{e^{x}}\times\frac{1}{1+e^{-x}}+2\right)=0\times1+2=\bx{2} \]
+إذن \bxt{المستقيم $y=2$ مقارب أفقي بجوار $+\infty$}.\par
+$\lim\limits_{x\to-\infty}f(x)=\bx{-\infty}$ (لأن $x\to-\infty$ و $e^{x}+1\to1$).
+\pb $f'(x)=\dfrac{1\times\left(e^{x}+1\right)-x\,e^{x}}{\left(e^{x}+1\right)^{2}}=\dfrac{(1-x)e^{x}+1}{\left(e^{x}+1\right)^{2}}=\bx{\dfrac{g(x)}{\left(e^{x}+1\right)^{2}}}$، إشارتها إشارة $g(x)$:
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$\alpha$,$+\infty$}
+\tkzTabLine{,+,z,-,}
+\tkzTabVar{-/$-\infty$,+/$f(\alpha)$,-/$2$}
+\end{TAB}
+\pc $f(x)-(x+2)=\dfrac{x}{e^{x}+1}-x=\dfrac{-xe^{x}}{e^{x}+1}$ و $\lim\limits_{x\to-\infty}\dfrac{-xe^{x}}{e^{x}+1}=\dfrac{0}{1}=0$ (لأن $xe^{x}\to0$)، إذن \bxt{$(d):y=x+2$ مقارب مائل بجوار $-\infty$}.\par
+إشارة الفرق هي إشارة $-x$: $(C_f)$ فوق $(d)$ على $]-\infty;0[$، وتحته على $]0;+\infty[$، ويقطعه في $(0;2)$.
+\pd $g(\alpha)=0$ يعني $(1-\alpha)e^{\alpha}=-1$ أي $e^{\alpha}=\dfrac{1}{\alpha-1}$، ومنه $e^{\alpha}+1=\dfrac{\alpha}{\alpha-1}$ و:
+\[ f(\alpha)=\alpha\times\frac{\alpha-1}{\alpha}+2=\bx{\alpha+1} \]
+ومن $1{,}27<\alpha<1{,}28$: \ \bx{2{,}27<f(\alpha)<2{,}28}.
+\begin{GR}{-5}{5}{-3}{4}{0.7}
+\Ticks{-4,-3,-2,-1,1,2,3,4}{-2,-1,1,2,3}
+\draw[cRem,thick,dashed,domain=-5:2] plot(\x,{\x+2});
+\draw[cEx,thick,dashed] (-5,2)--(5,2);
+\draw[cDef,very thick,domain=-5:5,samples=150] plot(\x,{\x/(exp(\x)+1)+2});
+\draw[dotted] (1.278,0)--(1.278,2.278);
+\fill (1.278,2.278) circle (1.6pt);
+\fill (0,2) circle (1.6pt);
+\node[below,font=\scriptsize] at (1.35,0){$\alpha$};
+\node[cDef] at (3.8,1.6){$(C_f)$};
+\node[cRem] at (-3.2,0.9){$(d)$};
+\node[cEx] at (4.3,2.4){$y=2$};
+\end{GR}
+\end{hal}
+
+%---------------- دالتان مساعدتان ووضعية مماس
+\origNeedspace{20\baselineskip}
+\begin{tmr}
+\textbf{I.} $g(x)=x+2-e^{x}$ على $\R$. ادرس تغيرات $g$، وبيّن أن المعادلة $g(x)=0$ تقبل حلين $\alpha$ و $\beta$ حيث $1{,}1<\alpha<1{,}2$ و $-1{,}9<\beta<-1{,}8$، ثم استنتج إشارة $g(x)$.\par
+\textbf{II.} $h(x)=xe^{x}+1$ على $\R$. ادرس تغيرات $h$ واستنتج إشارة $h(x)$.\par
+\textbf{III.} $f(x)=\dfrac{e^{x}-1}{xe^{x}+1}$ على $\R$، و $(C_f)$ تمثيلها البياني.
+\begin{sq}
+\qa احسب نهايتي $f$ وفسّرهما بيانيًا.
+\qb بيّن أن $f'(x)=\dfrac{e^{x}g(x)}{\left(xe^{x}+1\right)^{2}}$، واستنتج اتجاه تغير $f$.
+\qc بيّن أن $f(\alpha)=\dfrac{1}{\alpha+1}$، وأعط حصرًا له.
+\qd اكتب معادلة المماس $(T)$ عند النقطة ذات الفاصلة $0$.
+\qe $K(x)=(1-x)e^{x}-1$. ادرس تغيرات $K$ واستنتج إشارته، ثم تحقق أن $f(x)-x=\dfrac{(1+x)K(x)}{xe^{x}+1}$، واستنتج وضعية $(C_f)$ بالنسبة إلى $(T)$.
+\end{sq}
+\end{tmr}
+
+\begin{hal}
+\textbf{I.} $g'(x)=1-e^{x}$: موجبة على $]-\infty;0[$ وسالبة على $]0;+\infty[$؛ $g(0)=1$. \ $\lim\limits_{x\to-\infty}g(x)=-\infty$ و $\lim\limits_{x\to+\infty}g(x)=\lim\limits_{x\to+\infty}x\left(1+\frac{2}{x}-\frac{e^{x}}{x}\right)=-\infty$.
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3]{$x$/1,$g'(x)$/1,$g(x)$/2}{$-\infty$,$0$,$+\infty$}
+\tkzTabLine{,+,z,-,}
+\tkzTabVar{-/$-\infty$,+/$1$,-/$-\infty$}
+\end{TAB}
+على كل من المجالين $]-\infty;0]$ و $[0;+\infty[$ الدالة $g$ مستمرة ورتيبة تمامًا وتأخذ قيمها في $]-\infty;1]$ الذي يحوي $0$: حل وحيد في كل مجال.\par
+$g(-1{,}9)\approx-0{,}050<0$ ، $g(-1{,}8)\approx0{,}035>0$، إذن \bx{-1{,}9<\beta<-1{,}8}؛ \ $g(1{,}1)\approx0{,}096>0$ ، $g(1{,}2)\approx-0{,}120<0$، إذن \bx{1{,}1<\alpha<1{,}2}.
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=2.4]{$x$/1,$g(x)$/1}{$-\infty$,$\beta$,$\alpha$,$+\infty$}
+\tkzTabLine{,-,z,+,z,-,}
+\end{TAB}
+\textbf{II.} $h'(x)=e^{x}+xe^{x}=(1+x)e^{x}$: $h$ متناقصة على $]-\infty;-1]$ ومتزايدة على $[-1;+\infty[$؛ قيمتها الحدية الصغرى $h(-1)=1-e^{-1}\approx0{,}63>0$، إذن \bxt{$h(x)>0$ من أجل كل $x\in\R$}، و $f$ معرفة على $\R$.
+
+\textbf{III.}
+\pa $\lim\limits_{x\to+\infty}f(x)=\lim\limits_{x\to+\infty}\dfrac{e^{x}\left(1-e^{-x}\right)}{e^{x}\left(x+e^{-x}\right)}=\lim\limits_{x\to+\infty}\dfrac{1-e^{-x}}{x+e^{-x}}=\bx{0}$: مقارب أفقي $y=0$ بجوار $+\infty$.\par
+$\lim\limits_{x\to-\infty}f(x)=\dfrac{0-1}{0+1}=\bx{-1}$ (لأن $xe^{x}\to0$): مقارب أفقي $y=-1$ بجوار $-\infty$.
+\pb باشتقاق حاصل القسمة:
+\begin{align*}
+f'(x)&=\frac{e^{x}\left(xe^{x}+1\right)-\left(e^{x}-1\right)(1+x)e^{x}}{\left(xe^{x}+1\right)^{2}}=\frac{e^{x}\left[xe^{x}+1-(1+x)e^{x}+1+x\right]}{\left(xe^{x}+1\right)^{2}}\\
+&=\bx{\frac{e^{x}\left(x+2-e^{x}\right)}{\left(xe^{x}+1\right)^{2}}=\frac{e^{x}g(x)}{\left(xe^{x}+1\right)^{2}}}
+\end{align*}
+إشارة $f'(x)$ هي إشارة $g(x)$: $f$ متناقصة تمامًا على $]-\infty;\beta]$ وعلى $[\alpha;+\infty[$، ومتزايدة تمامًا على $[\beta;\alpha]$.
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=2.6]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$\beta$,$\alpha$,$+\infty$}
+\tkzTabLine{,-,z,+,z,-,}
+\tkzTabVar{+/$-1$,-/$f(\beta)$,+/$f(\alpha)$,-/$0$}
+\end{TAB}
+\pc $g(\alpha)=0$ يعني $e^{\alpha}=\alpha+2$، ومنه:
+\[ f(\alpha)=\frac{\alpha+2-1}{\alpha(\alpha+2)+1}=\frac{\alpha+1}{\alpha^{2}+2\alpha+1}=\frac{\alpha+1}{(\alpha+1)^{2}}=\bx{\frac{1}{\alpha+1}} \]
+$2{,}1<\alpha+1<2{,}2$، إذن $\frac{1}{2{,}2}<f(\alpha)<\frac{1}{2{,}1}$ أي \bx{0{,}45<f(\alpha)<0{,}48}. \ (وبنفس الطريقة $f(\beta)=\frac{1}{\beta+1}$ و $-1{,}25<f(\beta)<-1{,}11$.)
+\pd $f(0)=0$ و $f'(0)=\dfrac{1\times g(0)}{1}=1$، إذن \bx{(T):y=x}.
+\pe $K'(x)=-e^{x}+(1-x)e^{x}=-xe^{x}$: $K$ متزايدة على $]-\infty;0]$ ومتناقصة على $[0;+\infty[$، قيمتها الحدية العظمى $K(0)=0$؛ إذن $K(x)\leqslant0$ (وتنعدم عند $0$ فقط).\par
+\begin{align*}
+f(x)-x&=\frac{e^{x}-1-x^{2}e^{x}-x}{xe^{x}+1}=\frac{\left(1-x^{2}\right)e^{x}-(1+x)}{xe^{x}+1}\\
+&=\frac{(1+x)\left[(1-x)e^{x}-1\right]}{xe^{x}+1}=\bx{\frac{(1+x)K(x)}{xe^{x}+1}}
+\end{align*}
+بما أن $xe^{x}+1>0$ و $K(x)<0$ من أجل $x\neq0$، فإشارة الفرق عكس إشارة $1+x$:
+\begin{itemize}
+\item على $]-\infty;-1[$: $(C_f)$ فوق $(T)$؛ \ على $]-1;0[\cup]0;+\infty[$: $(C_f)$ تحت $(T)$؛
+\item يتقاطعان في النقطتين $(-1;-1)$ و $O(0;0)$.
+\end{itemize}
+\begin{GR}{-5}{5}{-1.5}{1.5}{0.95}
+\Ticks{-4,-3,-2,-1,1,2,3,4}{-1,1}
+\draw[cRem,thick,dashed] (-5,-1)--(5,-1);
+\draw[cEx,thick,domain=-1.5:1.5] plot(\x,{\x});
+\draw[cDef,very thick,domain=-5:5,samples=200] plot(\x,{(exp(\x)-1)/(\x*exp(\x)+1)});
+\fill (1.146,0.466) circle (1.5pt);
+\fill (-1.841,-1.188) circle (1.5pt);
+\fill (-1,-1) circle (1.5pt);
+\draw[dotted] (1.146,0)--(1.146,0.466);
+\draw[dotted] (-1.841,0)--(-1.841,-1.188);
+\node[below,font=\scriptsize] at (1.2,0){$\alpha$};
+\node[above,font=\scriptsize] at (-1.841,0){$\beta$};
+\node[cDef] at (3.2,0.55){$(C_f)$};
+\node[cEx] at (1.3,1.35){$(T)$};
+\node[cRem] at (-4.2,-0.75){$y=-1$};
+\end{GR}
+\end{hal}
+
+%---------------- مركز تناظر ومقاربان مائلان
+\origNeedspace{20\baselineskip}
+\begin{tmr}
+$f$ الدالة المعرفة على $\R^{*}$ بـ: $f(x)=x-\dfrac{4}{3\left(e^{x}-1\right)}$، و $(C_f)$ تمثيلها البياني.
+\begin{sq}
+\qa احسب نهايات $f$ عند أطراف مجموعة تعريفها.
+\qb ادرس اتجاه تغير $f$ وشكّل جدول تغيراتها.
+\qc بيّن أن المستقيمين $(\Delta):y=x$ و $(\Delta'):y=x+\frac{4}{3}$ مقاربان مائلان لـ $(C_f)$، وحدد الوضع النسبي.
+\qd بيّن أن المعادلة $f(x)=0$ تقبل حلين $\alpha\in]0{,}9;1[$ و $\beta\in]-1{,}7;-1{,}6[$، واستنتج إشارة $f(x)$.
+\qe بيّن أن $f(x)+f(-x)=\frac{4}{3}$ من أجل كل $x\in\R^{*}$، وفسّر النتيجة.
+\item[(و)] ناقش بيانيًا، حسب قيم الوسيط الحقيقي $m$، عدد حلول المعادلة: $\dfrac{4}{3\left(e^{x}-1\right)}+m=0$.
+\end{sq}
+\end{tmr}
+
+\begin{hal}
+\pa $\lim\limits_{x\to-\infty}f(x)=\bx{-\infty}$ (لأن $e^{x}-1\to-1$ فالكسر $\to-\frac{4}{3}$)؛ \ $\lim\limits_{x\to+\infty}f(x)=\bx{+\infty}$ (الكسر $\to0$).\par
+$\lim\limits_{x\to0^{+}}f(x)=\bx{-\infty}$ (لأن $e^{x}-1\to0^{+}$)؛ \ $\lim\limits_{x\to0^{-}}f(x)=\bx{+\infty}$ (لأن $e^{x}-1\to0^{-}$): \bxt{المستقيم $x=0$ مقارب عمودي}.
+\pb $f'(x)=1-\dfrac{4}{3}\times\dfrac{-e^{x}}{\left(e^{x}-1\right)^{2}}=\bx{1+\dfrac{4e^{x}}{3\left(e^{x}-1\right)^{2}}}>0$؛ إذن $f$ متزايدة تمامًا على $]-\infty;0[$ وعلى $]0;+\infty[$:
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$0$,$+\infty$}
+\tkzTabLine{,+,d,+,}
+\tkzTabVar{-/$-\infty$,+D-/$+\infty$/$-\infty$,+/$+\infty$}
+\end{TAB}
+\pc $f(x)-x=\dfrac{-4}{3\left(e^{x}-1\right)}\xrightarrow[x\to+\infty]{}0$: \ $(\Delta):y=x$ مقارب مائل بجوار $+\infty$.\par
+$f(x)-\left(x+\frac{4}{3}\right)=\dfrac{-4-4\left(e^{x}-1\right)}{3\left(e^{x}-1\right)}=\dfrac{-4e^{x}}{3\left(e^{x}-1\right)}\xrightarrow[x\to-\infty]{}0$: \ $(\Delta'):y=x+\frac{4}{3}$ مقارب مائل بجوار $-\infty$.\par
+إشارة الفرقين عكس إشارة $e^{x}-1$: \ $(C_f)$ فوق $(\Delta)$ وفوق $(\Delta')$ على $]-\infty;0[$، وتحتهما على $]0;+\infty[$.
+\pd على $]0;+\infty[$: $f$ مستمرة ومتزايدة تمامًا من $-\infty$ إلى $+\infty$: حل وحيد $\alpha$؛ \ $f(0{,}9)\approx-0{,}013<0$ و $f(1)\approx0{,}224>0$، إذن \bx{0{,}9<\alpha<1}.\par
+على $]-\infty;0[$: بنفس الطريقة حل وحيد $\beta$؛ \ $f(-1{,}7)\approx-0{,}069<0$ و $f(-1{,}6)\approx0{,}071>0$، إذن \bx{-1{,}7<\beta<-1{,}6}.
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=2.2]{$x$/1,$f(x)$/1}{$-\infty$,$\beta$,$0$,$\alpha$,$+\infty$}
+\tkzTabLine{,-,z,+,d,-,z,+,}
+\end{TAB}
+\pe من أجل $x\in\R^{*}$ لدينا $-x\in\R^{*}$، و $f(-x)=-x-\dfrac{4}{3\left(e^{-x}-1\right)}=-x-\dfrac{4e^{x}}{3\left(1-e^{x}\right)}=-x+\dfrac{4e^{x}}{3\left(e^{x}-1\right)}$، ومنه:
+\[ f(x)+f(-x)=\frac{4e^{x}-4}{3\left(e^{x}-1\right)}=\frac{4}{3}=2\times\frac{2}{3} \]
+إذن \bxt{النقطة $\Omega\left(0;\frac{2}{3}\right)$ مركز تناظر للمنحنى $(C_f)$}.
+\begin{GR}{-4}{4}{-4}{4.5}{0.8}
+\Ticks{-3,-2,-1,1,2,3}{-3,-2,-1,1,2,3,4}
+\draw[cRem,thick,dashed,domain=-4:4] plot(\x,{\x});
+\draw[cEx,thick,dashed,domain=-4:3.2] plot(\x,{\x+4/3});
+\draw[cDef,very thick,domain=-4:-0.22,samples=150] plot(\x,{\x-4/(3*(exp(\x)-1))});
+\draw[cDef,very thick,domain=0.22:4,samples=150] plot(\x,{\x-4/(3*(exp(\x)-1))});
+\fill (0,0.667) circle (1.6pt) node[left,font=\scriptsize]{$\Omega$};
+\fill (0.905,0) circle (1.5pt);
+\fill (-1.65,0) circle (1.5pt);
+\node[below right,font=\scriptsize] at (0.9,0){$\alpha$};
+\node[below,font=\scriptsize] at (-1.65,-0.05){$\beta$};
+\node[cDef] at (-0.9,4.1){$(C_f)$};
+\node[cRem] at (3.6,2.9){$(\Delta)$};
+\node[cEx] at (2.2,4.1){$(\Delta')$};
+\end{GR}
+\par\smallskip\textbf{(و)} $\dfrac{4}{3\left(e^{x}-1\right)}+m=0\iff x-\dfrac{4}{3\left(e^{x}-1\right)}=x+m\iff f(x)=x+m$: نقط تقاطع $(C_f)$ مع المستقيمات $y=x+m$ الموازية لـ $(\Delta)$ و $(\Delta')$:
+\begin{itemize}
+\item إذا كان $m<0$: حل وحيد موجب؛
+\item إذا كان $0\leqslant m\leqslant\frac{4}{3}$: لا توجد حلول؛
+\item إذا كان $m>\frac{4}{3}$: حل وحيد سالب.
+\end{itemize}
+\end{hal}
+
+%---------------- نقطة انعطاف وانسحاب
+\origNeedspace{20\baselineskip}
+\begin{tmr}
+\textbf{I.} $g(x)=e^{x-2}+1-x$ على $\R$. ادرس تغيرات $g$ واستنتج إشارتها.\par
+\textbf{II.} $f(x)=x-1+\dfrac{x}{e^{x-2}}$ على $\R$، و $(C_f)$ تمثيلها البياني.
+\begin{sq}
+\qa احسب النهايتين.
+\qb بيّن أن $f'(x)=\dfrac{g(x)}{e^{x-2}}$، واستنتج اتجاه التغير.
+\qc احسب $\lim\limits_{x\to+\infty}\left[f(x)-x+1\right]$ وفسّر، وادرس الوضع النسبي.
+\qd بيّن أن $(C_f)$ يقبل نقطة انعطاف.
+\qe بيّن أنه يوجد مماس وحيد $(T)$ يوازي $(\Delta):y=x-1$، واكتب معادلته.
+\item[(و)] $h(x)=(x-1)\left(1+e^{3-x}\right)$. تحقق أن $h(x)-1=f(x-1)$، واستنتج كيفية إنشاء $(C_h)$.
+\end{sq}
+\end{tmr}
+
+\begin{hal}
+\textbf{I.} $g'(x)=e^{x-2}-1$: تنعدم عند $2$، سالبة قبله وموجبة بعده؛ القيمة الحدية الصغرى $g(2)=e^{0}+1-2=0$. إذن \bx{g(x)\geqslant0} وتنعدم عند $2$ فقط.
+
+\textbf{II.} نكتب $f(x)=x-1+xe^{2-x}$.
+\pa $\lim\limits_{x\to-\infty}f(x)=\bx{-\infty}$ (لأن $xe^{2-x}\to(-\infty)(+\infty)=-\infty$)؛ \ $\lim\limits_{x\to+\infty}f(x)=\bx{+\infty}$ (لأن $xe^{2-x}=e^{2}\,xe^{-x}\to0$).
+\pb $f'(x)=1+e^{2-x}-xe^{2-x}=1+(1-x)e^{2-x}=\dfrac{e^{x-2}+1-x}{e^{x-2}}=\bx{\dfrac{g(x)}{e^{x-2}}}\geqslant0$ وتنعدم عند $2$ فقط؛ إذن \bxt{$f$ متزايدة تمامًا على $\R$}:
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$2$,$+\infty$}
+\tkzTabLine{,+,z,+,}
+\tkzTabVar{-/$-\infty$,R/,+/$+\infty$}
+\tkzTabIma{1}{3}{2}{$3$}
+\end{TAB}
+\pc $\lim\limits_{x\to+\infty}\left[f(x)-x+1\right]=\lim\limits_{x\to+\infty}e^{2}\,xe^{-x}=\bx{0}$: \bxt{$(\Delta):y=x-1$ مقارب مائل بجوار $+\infty$}.\par
+إشارة الفرق $xe^{2-x}$ هي إشارة $x$: $(C_f)$ تحت $(\Delta)$ على $]-\infty;0[$، وفوقه على $]0;+\infty[$، ويقطعه في $(0;-1)$.
+\pd $f''(x)=-e^{2-x}-(1-x)e^{2-x}=(x-2)e^{2-x}$: تنعدم عند $2$ مغيرة إشارتها، إذن \bx{\Omega(2;3)} نقطة انعطاف (والمماس فيها أفقي لأن $f'(2)=0$).
+\pe $f'(x_0)=1\iff(1-x_0)e^{2-x_0}=0\iff x_0=1$ (حل وحيد)؛ $f(1)=e$، إذن \bx{(T):y=x-1+e}.
+\begin{GR}{-1}{5.5}{-3}{5.5}{0.85}
+\Ticks{1,2,3,4,5}{-2,-1,1,2,3,4,5}
+\draw[cRem,thick,dashed,domain=-1:5.5] plot(\x,{\x-1});
+\draw[cEx,thick,domain=-1:3.5] plot(\x,{\x-1+exp(1)});
+\draw[cDef,very thick,domain=-0.4:5.5,samples=150] plot(\x,{\x-1+\x*exp(2-\x)});
+\draw[cThm,thick,densely dotted,domain=0.6:5.5,samples=150] plot(\x,{(\x-1)*(1+exp(3-\x))});
+\fill (2,3) circle (1.6pt) node[above left]{$\Omega$};
+\fill (1,2.718) circle (1.6pt);
+\fill (0,-1) circle (1.6pt);
+\node[cDef] at (0.9,-2.3){$(C_f)$};
+\node[cRem] at (4.9,3.4){$(\Delta)$};
+\node[cEx] at (2.9,5.2){$(T)$};
+\node[cThm] at (4.6,5.1){$(C_h)$};
+\end{GR}
+\par\smallskip\textbf{(و)} $f(x-1)=(x-1)-1+(x-1)e^{2-(x-1)}=x-2+(x-1)e^{3-x}$، و $h(x)-1=x-1+(x-1)e^{3-x}-1=x-2+(x-1)e^{3-x}$. إذن $h(x)=f(x-1)+1$: \bxt{$(C_h)$ صورة $(C_f)$ بالانسحاب الذي شعاعه $\vec{v}(1;1)$}.
+\end{hal}
+
+%---------------- دالة زوجية بقيمة مطلقة
+\origNeedspace{20\baselineskip}
+\begin{tmr}
+\textbf{I.} $g(x)=2e^{x}+2x-7$ على $\R$. ادرس تغيرات $g$، وبيّن أن المعادلة $g(x)=0$ تقبل حلًا وحيدًا $\alpha$ حيث $0{,}94<\alpha<0{,}95$، واستنتج إشارة $g(x)$.\par
+\textbf{II.} $f(x)=(2x-5)\left(1-e^{-x}\right)$ على $\R$، و $(C_f)$ تمثيلها البياني.
+\begin{sq}
+\qa احسب النهايتين.
+\qb بيّن أن $f'(x)=e^{-x}g(x)$، وشكّل جدول التغيرات.
+\qc بيّن أن $f(\alpha)=\dfrac{(2\alpha-5)^{2}}{2\alpha-7}$، ثم جد حصرًا له.
+\qd بيّن أن $(\Delta):y=2x-5$ مقارب مائل لـ $(C_f)$، وادرس الوضع النسبي.
+\qe ادرس إشارة $f(x)$.
+\item[(و)] $K(x)=\left(2|x|+5\right)\left(1-e^{|x|}\right)$. بيّن أن $K$ زوجية، وأن $K(x)=-f(x)$ من أجل $x\leqslant0$، ثم اشرح كيفية رسم $(C_K)$.
+\end{sq}
+\end{tmr}
+
+\begin{hal}
+\textbf{I.} $g'(x)=2e^{x}+2>0$: $g$ متزايدة تمامًا على $\R$، مع $\lim\limits_{x\to-\infty}g(x)=-\infty$ و $\lim\limits_{x\to+\infty}g(x)=+\infty$؛ فهي تقبل حلًا وحيدًا $\alpha$. \ $g(0{,}94)\approx-3{,}7\times10^{-5}<0$ و $g(0{,}95)\approx0{,}071>0$، إذن \bx{0{,}94<\alpha<0{,}95}.\par
+$g(x)<0$ على $]-\infty;\alpha[$ ، $g(x)>0$ على $]\alpha;+\infty[$.
+
+\textbf{II.}
+\pa $\lim\limits_{x\to+\infty}f(x)=(+\infty)\times1=\bx{+\infty}$؛ \ $\lim\limits_{x\to-\infty}f(x)=(-\infty)\times(-\infty)=\bx{+\infty}$ (لأن $e^{-x}\to+\infty$).
+\pb $f'(x)=2\left(1-e^{-x}\right)+(2x-5)e^{-x}=2+(2x-7)e^{-x}=e^{-x}\left(2e^{x}+2x-7\right)=\bx{e^{-x}g(x)}$:
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$\alpha$,$+\infty$}
+\tkzTabLine{,-,z,+,}
+\tkzTabVar{+/$+\infty$,-/$f(\alpha)$,+/$+\infty$}
+\end{TAB}
+\pc $g(\alpha)=0$ يعني $e^{\alpha}=\frac{7-2\alpha}{2}$، ومنه $e^{-\alpha}=\frac{2}{7-2\alpha}$ و $1-e^{-\alpha}=\frac{5-2\alpha}{7-2\alpha}$:
+\[ f(\alpha)=(2\alpha-5)\times\frac{5-2\alpha}{7-2\alpha}=\bx{\frac{(2\alpha-5)^{2}}{2\alpha-7}} \]
+من $0{,}94<\alpha<0{,}95$: $3{,}1<5-2\alpha<3{,}12$ أي $9{,}61<(2\alpha-5)^{2}<9{,}7344$، و $5{,}1<7-2\alpha<5{,}12$.\par
+ومنه $\frac{9{,}61}{5{,}12}<-f(\alpha)<\frac{9{,}7344}{5{,}1}$ أي $1{,}87<-f(\alpha)<1{,}91$، إذن \bx{-1{,}91<f(\alpha)<-1{,}87}.
+\pd $f(x)-(2x-5)=-(2x-5)e^{-x}=-2xe^{-x}+5e^{-x}\xrightarrow[x\to+\infty]{}0$: \bxt{$(\Delta)$ مقارب مائل بجوار $+\infty$}.\par
+إشارة الفرق عكس إشارة $2x-5$: $(C_f)$ فوق $(\Delta)$ على $\left]-\infty;\frac{5}{2}\right[$، وتحته على $\left]\frac{5}{2};+\infty\right[$، ويقطعه في $A\left(\frac{5}{2};0\right)$.
+\pe $f(x)=0\iff x=\frac{5}{2}$ أو $e^{-x}=1$ أي $x=0$:
+\begin{TAB}
+\tkzTabInit[lgt=2.6,espcl=2.2]{$x$/1,$2x-5$/1,$1-e^{-x}$/1,$f(x)$/1}{$-\infty$,$0$,$\frac{5}{2}$,$+\infty$}
+\tkzTabLine{,-,t,-,z,+,}
+\tkzTabLine{,-,z,+,t,+,}
+\tkzTabLine{,+,z,-,z,+,}
+\end{TAB}
+\par\smallskip\textbf{(و)} $|-x|=|x|$ إذن $K(-x)=K(x)$: \bxt{$K$ زوجية و $(C_K)$ متناظر بالنسبة إلى محور التراتيب}.\par
+من أجل $x\leqslant0$: $|x|=-x$ و $K(x)=(-2x+5)\left(1-e^{-x}\right)=-(2x-5)\left(1-e^{-x}\right)=-f(x)$.\par
+\textbf{الرسم:} على $]-\infty;0]$ نرسم نظير $(C_f)$ بالنسبة إلى محور الفواصل، ثم نكمل بالتناظر بالنسبة إلى محور التراتيب.
+\begin{GR}{-3}{5}{-5}{5}{0.7}
+\Ticks{-2,-1,1,2,3,4}{-4,-3,-2,-1,1,2,3,4}
+\draw[cRem,thick,dashed,domain=0:5] plot(\x,{2*\x-5});
+\draw[cDef,very thick,domain=-0.6:5,samples=150] plot(\x,{(2*\x-5)*(1-exp(-\x))});
+\draw[cThm,very thick,domain=-0.62:0.62,samples=80] plot(\x,{(2*abs(\x)+5)*(1-exp(abs(\x)))});
+\fill (0.94,-1.901) circle (1.6pt);
+\fill (2.5,0) circle (1.6pt) node[above left,font=\scriptsize]{$A$};
+\node[cDef] at (-1.3,4.3){$(C_f)$};
+\node[cThm] at (-1.3,-4.3){$(C_K)$};
+\node[cRem] at (4.2,4.4){$(\Delta)$};
+\end{GR}
+\end{hal}
+
+%---------------- تعيين معاملات من منحنى
+\origNeedspace{20\baselineskip}
+\begin{tmr}
+\textbf{I.} $f(x)=(ax+b)e^{x-1}+c$ حيث $a$ ، $b$ ، $c$ أعداد حقيقية. المنحنى $(C_f)$ يقبل مماسًا أفقيًا عند النقطة ذات الفاصلة $-\frac{1}{2}$، ومماسًا $(T)$ عند $A(1;5)$ يشمل النقطة $B(0;2)$.
+\begin{sq}
+\qa عيّن $f(1)$ ، $f'\!\left(-\frac{1}{2}\right)$ ، $f'(1)$، ثم اكتب معادلة $(T)$، واستنتج $a$ ، $b$ ، $c$.
+\end{sq}
+\textbf{II.} نأخذ $f(x)=(2x-1)e^{x-1}+4$.
+\begin{sq}
+\qa احسب النهايتين، وفسّر النتيجة عند $-\infty$.
+\qb ادرس اتجاه تغير $f$.
+\qc بيّن أن المعادلة $f(x)=6$ تقبل حلًا وحيدًا $\alpha\in]1;1{,}5[$، ثم جد حصرًا له سعته $0{,}1$.
+\qd هل توجد مماسات لـ $(C_f)$ تشمل النقطة $I(0;4)$؟
+\end{sq}
+\end{tmr}
+
+\begin{hal}
+\textbf{I.} $f'(x)=ae^{x-1}+(ax+b)e^{x-1}=(ax+a+b)e^{x-1}$.\par
+$A\in(C_f)$: $f(1)=5$؛ \ المماس الأفقي: $f'\!\left(-\frac{1}{2}\right)=0$؛ \ $(T)$ يشمل $A(1;5)$ و $B(0;2)$، فمعامل توجيهه $\frac{5-2}{1-0}=3$، أي $f'(1)=3$ و \bx{(T):y=3x+2}.\par
+$f(1)=a+b+c=5$ ، \ $f'\!\left(-\frac{1}{2}\right)=\left(\frac{a}{2}+b\right)e^{-\frac{3}{2}}=0$ أي $\frac{a}{2}+b=0$ ، \ $f'(1)=2a+b=3$.\par
+من الأخيرتين: $b=-\frac{a}{2}$ و $\frac{3a}{2}=3$؛ إذن \bx{a=2\ ;\ b=-1\ ;\ c=4}.
+
+\textbf{II.}
+\pa $f(x)=\frac{2}{e}xe^{x}-\frac{1}{e}e^{x}+4$، إذن $\lim\limits_{x\to-\infty}f(x)=\bx{4}$: \bxt{المستقيم $y=4$ مقارب أفقي بجوار $-\infty$}؛ \ $\lim\limits_{x\to+\infty}f(x)=\bx{+\infty}$.
+\pb $f'(x)=(2x+1)e^{x-1}$، إشارتها إشارة $2x+1$؛ $f\left(-\frac{1}{2}\right)=4-2e^{-\frac{3}{2}}\approx3{,}55$:
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3.2]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$-\frac{1}{2}$,$+\infty$}
+\tkzTabLine{,-,z,+,}
+\tkzTabVar{+/$4$,-/$4-2e^{-\frac{3}{2}}$,+/$+\infty$}
+\end{TAB}
+\pc على $\left]-\infty;-\frac{1}{2}\right]$: $f(x)<4<6$، فلا حلول. على $\left[-\frac{1}{2};+\infty\right[$: $f$ مستمرة ومتزايدة تمامًا من $3{,}55$ إلى $+\infty$: حل وحيد $\alpha$؛ و $f(1)=5<6$ ، $f(1{,}5)\approx7{,}30>6$ فإن $\alpha\in]1;1{,}5[$.\par
+$f(1{,}2)\approx5{,}71<6$ و $f(1{,}3)\approx6{,}16>6$، إذن \bx{1{,}2<\alpha<1{,}3}.
+\pd المماس عند $x_0$: $y=f'(x_0)(x-x_0)+f(x_0)$. يشمل $I(0;4)$ إذا وفقط إذا كان $-x_0f'(x_0)+f(x_0)=4$:
+\[ -x_0(2x_0+1)e^{x_0-1}+(2x_0-1)e^{x_0-1}=0\iff\left(-2x_0^{2}+x_0-1\right)e^{x_0-1}=0\iff2x_0^{2}-x_0+1=0 \]
+$\Delta=1-8=-7<0$: لا حلول، إذن \bxt{لا توجد مماسات لـ $(C_f)$ تشمل النقطة $I(0;4)$}.
+\begin{GR}{-5}{2}{-1}{8}{0.8}
+\Ticks{-4,-3,-2,-1,1}{1,2,3,4,5,6,7}
+\draw[cRem,thick,dashed] (-5,4)--(2,4);
+\draw[cEx,thick,domain=-1:2] plot(\x,{3*\x+2});
+\draw[cDef,very thick,domain=-5:1.62,samples=150] plot(\x,{(2*\x-1)*exp(\x-1)+4});
+\draw[gray,dotted] (-5,6)--(1.266,6)--(1.266,0);
+\fill (1,5) circle (1.6pt) node[right]{$A$};
+\fill (0,2) circle (1.6pt) node[right]{$B$};
+\fill (0,4) circle (1.6pt) node[above right]{$I$};
+\fill (-0.5,3.554) circle (1.6pt);
+\node[below,font=\scriptsize] at (1.4,0){$\alpha$};
+\node[cDef] at (-3.6,3.4){$(C_f)$};
+\node[cEx] at (1.6,7.4){$(T)$};
+\node[cRem] at (-4.3,4.4){$y=4$};
+\end{GR}
+\end{hal}
+
+%---------------- استمرارية وقابلية اشتقاق عند 0
+\origNeedspace{20\baselineskip}
+\begin{tmr}
+\textbf{I.} $g(x)=(2-x)e^{x}-2$ على $\R$. ادرس تغيرات $g$، وبيّن أن المعادلة $g(x)=0$ تقبل حلين: أحدهما معدوم والآخر $\alpha\in]1{,}5;1{,}6[$، واستنتج إشارتها.\par
+\textbf{II.} $f(x)=\dfrac{x^{2}}{e^{x}-1}$ إذا كان $x\neq0$، و $f(0)=0$.
+\begin{sq}
+\qa ادرس استمرارية $f$ عند $0$.
+\qb احسب النهايتين.
+\qc ادرس قابلية اشتقاق $f$ عند $0$ وفسّر النتيجة.
+\qd بيّن أن $f'(x)=\dfrac{x\,g(x)}{\left(e^{x}-1\right)^{2}}$ من أجل $x\neq0$، واستنتج اتجاه التغير.
+\qe بيّن أن $f(\alpha)=\alpha(2-\alpha)$ وجد حصرًا له، ثم اكتب معادلة المماس $(T)$ عند المبدأ وأنشئ $(C_f)$.
+\end{sq}
+\end{tmr}
+
+\begin{hal}
+\textbf{I.} $g'(x)=-e^{x}+(2-x)e^{x}=(1-x)e^{x}$: $g$ متزايدة على $]-\infty;1]$ ومتناقصة على $[1;+\infty[$؛ $g(1)=e-2\approx0{,}72$؛ \ $\lim\limits_{x\to-\infty}g(x)=-2$ و $\lim\limits_{x\to+\infty}g(x)=-\infty$.\par
+$g(0)=0$: الحل المعدوم (وحيد في $]-\infty;1]$ لأن $g$ رتيبة تمامًا عليه). على $[1;+\infty[$: $g$ متناقصة تمامًا من $e-2>0$ إلى $-\infty$: حل وحيد $\alpha$؛ $g(1{,}5)\approx0{,}24>0$ و $g(1{,}6)\approx-0{,}019<0$، إذن \bx{1{,}5<\alpha<1{,}6}.
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=2.4]{$x$/1,$g(x)$/1}{$-\infty$,$0$,$\alpha$,$+\infty$}
+\tkzTabLine{,-,z,+,z,-,}
+\end{TAB}
+\textbf{II.}
+\pa $\lim\limits_{x\to0}f(x)=\lim\limits_{x\to0}x\times\dfrac{1}{\frac{e^{x}-1}{x}}=0\times1=0=f(0)$، إذن \bxt{$f$ مستمرة عند $0$}.
+\pb $\lim\limits_{x\to+\infty}f(x)=\lim\limits_{x\to+\infty}\dfrac{1}{\frac{e^{x}}{x^{2}}-\frac{1}{x^{2}}}=\bx{0}$ (مقارب أفقي $y=0$ بجوار $+\infty$)؛ \ $\lim\limits_{x\to-\infty}f(x)=\dfrac{+\infty}{-1}=\bx{-\infty}$.
+\pc $\lim\limits_{x\to0}\dfrac{f(x)-f(0)}{x-0}=\lim\limits_{x\to0}\dfrac{x}{e^{x}-1}=1$، إذن \bxt{$f$ قابلة للاشتقاق عند $0$ و $f'(0)=1$}: $(C_f)$ يقبل عند $O$ مماسًا معامل توجيهه $1$.
+\pd $f'(x)=\dfrac{2x\left(e^{x}-1\right)-x^{2}e^{x}}{\left(e^{x}-1\right)^{2}}=\dfrac{x\left[(2-x)e^{x}-2\right]}{\left(e^{x}-1\right)^{2}}=\bx{\dfrac{x\,g(x)}{\left(e^{x}-1\right)^{2}}}$.\par
+إشارة $x\,g(x)$: موجبة على $]-\infty;0[$ (جداء سالبين) وعلى $]0;\alpha[$، وسالبة على $]\alpha;+\infty[$؛ ومع $f'(0)=1$: $f$ متزايدة على $]-\infty;\alpha]$ ومتناقصة على $[\alpha;+\infty[$.
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$\alpha$,$+\infty$}
+\tkzTabLine{,+,z,-,}
+\tkzTabVar{-/$-\infty$,+/$f(\alpha)$,-/$0$}
+\end{TAB}
+\pe $g(\alpha)=0$ يعني $e^{\alpha}=\frac{2}{2-\alpha}$، ومنه $e^{\alpha}-1=\frac{\alpha}{2-\alpha}$ و $f(\alpha)=\alpha^{2}\times\frac{2-\alpha}{\alpha}=\bx{\alpha(2-\alpha)}$.\par
+الدالة $t\mapsto t(2-t)$ متناقصة على $[1;2]$، إذن $1{,}6\times0{,}4<f(\alpha)<1{,}5\times0{,}5$ أي \bx{0{,}64<f(\alpha)<0{,}75}.\par
+$(T):y=f'(0)(x-0)+f(0)$ أي \bx{(T):y=x}.
+\begin{GR}{-2}{6}{-3}{2}{0.85}
+\Ticks{-1,1,2,3,4,5}{-2,-1,1}
+\draw[cEx,thick,domain=-2:2] plot(\x,{\x});
+\draw[cDef,very thick,domain=-1.55:-0.01,samples=80] plot(\x,{\x*\x/(exp(\x)-1)});
+\draw[cDef,very thick,domain=0.01:6,samples=150] plot(\x,{\x*\x/(exp(\x)-1)});
+\draw[dotted] (1.594,0)--(1.594,0.648);
+\fill (1.594,0.648) circle (1.6pt);
+\node[below,font=\scriptsize] at (1.594,0){$\alpha$};
+\node[cDef] at (4.3,0.6){$(C_f)$};
+\node[cEx] at (1.5,1.75){$(T)$};
+\end{GR}
+\end{hal}
+
+
+\origNeedspace{20\baselineskip}
 \begin{tmr}
 \textbf{(شعبة رياضيات)} \ من أجل كل عدد حقيقي $m$ نعتبر الدالة $f_m$ المعرفة على $\R$ بـ: $f_m(x)=(x+m)e^{-x}$، و $(C_m)$ تمثيلها البياني.
 \begin{sq}
@@ -724,6 +1243,9 @@ $f_m'(x)=e^{-x}-(x+m)e^{-x}=(1-m-x)e^{-x}$، إشارتها إشارة $1-m-x$،
 \end{GR}
 \end{hal}
 
+%================================================================
+\section{تمارين محلولة في المعادلات التفاضلية}
+\origNeedspace{20\baselineskip}
 \begin{tmr}
 نعتبر المعادلة التفاضلية $(E):\ 2y'+3y=x^{2}+1$.
 \begin{sq}
@@ -747,12 +1269,34 @@ $f_m'(x)=e^{-x}-(x+m)e^{-x}=(1-m-x)e^{-x}$، إشارتها إشارة $1-m-x$،
 \pd $g(0)=C+\frac{17}{27}=0$ أي $C=-\frac{17}{27}$، إذن \bx{g(x)=-\frac{17}{27}e^{-\frac{3}{2}x}+\frac{1}{3}x^{2}-\frac{4}{9}x+\frac{17}{27}}.
 \end{hal}
 
+\origNeedspace{20\baselineskip}
+\begin{tmr}
+نعتبر المعادلة التفاضلية $(E):\ y'=-2y+2e^{-2x}$.
+\begin{sq}
+\qa عيّن العدد الحقيقي $\alpha$ حتى تكون الدالة $g:x\mapsto\alpha xe^{-2x}$ حلًا للمعادلة $(E)$.
+\qb بيّن أن الدالة $f$ حل لـ $(E)$ إذا وفقط إذا كانت $f-g$ حلًا للمعادلة $(E'):\ y'=-2y$.
+\qc حل المعادلة $(E')$، ثم استنتج حلول $(E)$.
+\qd عيّن حل $(E)$ الذي يشمل تمثيله البياني النقطة $A(0;1)$.
+\end{sq}
+\end{tmr}
+
+\begin{hal}
+\pa $g'(x)=\alpha e^{-2x}-2\alpha xe^{-2x}=-2g(x)+\alpha e^{-2x}$. \ $g$ حل لـ $(E)$ يعني $-2g(x)+\alpha e^{-2x}=-2g(x)+2e^{-2x}$ من أجل كل $x$، أي بالمطابقة \bx{\alpha=2} و $g(x)=2xe^{-2x}$.
+\pb لدينا $g'=-2g+2e^{-2x}$. إذن:
+\[ f'=-2f+2e^{-2x}\iff f'-g'=-2f+2g\iff(f-g)'=-2(f-g) \]
+أي $f$ حل لـ $(E)$ إذا وفقط إذا كانت $f-g$ حلًا لـ $(E')$.
+\pc حلول $(E')$: $x\mapsto Ce^{-2x}$ ، $C\in\R$. ومنه $f(x)-2xe^{-2x}=Ce^{-2x}$، أي حلول $(E)$: \ \bx{f_C(x)=(C+2x)e^{-2x}} ، $C\in\R$.
+\pd $f_C(0)=C=1$، إذن \bx{f(x)=(1+2x)e^{-2x}}.
+\end{hal}
+
+
 %================================================================
+
 \clearpage
 \section{خلاصة الطرائق}
 \begin{BOX}{cMeth}{الطريقة حسب المطلوب}
 \begin{center}
-\renewcommand{\arraystretch}{1.5}
+\renewcommand{\arraystretch}{1.3}
 \begin{tabular}{|p{0.62\textwidth}|p{0.3\textwidth}|}\hline
 \rowcolor{cSec!12} \textbf{الطريقة} & \textbf{المطلوب}\\\hline
 $e^{x+y}=e^{x}e^{y}$ ، $e^{-x}=\frac{1}{e^{x}}$ ، $\left(e^{x}\right)^{n}=e^{nx}$؛ نضرب البسط والمقام في $e^{x}$ أو $e^{-x}$. & تبسيط عبارة أو إثبات مساواة\\\hline
@@ -762,10 +1306,23 @@ $e^{u}=e^{v}\iff u=v$ ؛ \ $e^{u}=k>0\iff u=\ln k$ ؛ \ $e^{u}=k\leqslant0$: ل�
 $e^{u}<e^{v}\iff u<v$، أو نحلل ثم جدول إشارة. & متراجحة أسية\\\hline
 إشارة $u(x)e^{v(x)}$ هي إشارة $u(x)$؛ \ $ae^{\alpha x+\beta}+b$: نحل المعادلة ثم إشارة $a\alpha$ على يمين الجذر وعكسها على يساره. & إشارة عبارة أسية\\\hline
 نخرج الحد الغالب ونستعمل $\frac{e^{x}}{x^{n}}\to+\infty$ ، $x^{n}e^{x}\to0$ عند $-\infty$ ، $\frac{e^{u}-1}{u}\to1$. & حالة عدم تعيين\\\hline
+\end{tabular}
+\end{center}
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{0.62\textwidth}|p{0.3\textwidth}|}\hline
+\rowcolor{cSec!12} \textbf{الطريقة} & \textbf{المطلوب}\\\hline
 $\left(e^{u}\right)'=u'e^{u}$؛ \ $e^{u}$ و $u$ لهما نفس اتجاه التغير؛ \ $\lim e^{u}$ بنهاية دالة مركبة. & مشتقة ونهاية $e^{u}$\\\hline
 ندرس دالة مساعدة $\varphi=A-B$ وقيمتها الحدية (مثل $e^{x}-x-1\geqslant0$). & مقارنة أو متباينة\\\hline
 $\lim\big(f(x)-(ax+b)\big)=0$ ثم ندرس إشارة الفرق $f(x)-(ax+b)$. & المقارب المائل والوضع النسبي\\\hline
 مبرهنة القيم المتوسطة (استمرار + رتابة تامة + تغير الإشارة) ثم حصر بالحاسبة. & حل وحيد $\alpha$ وحصره\\\hline
+نعوض $e^{\alpha}$ من $g(\alpha)=0$ في عبارة $f(\alpha)$ ثم نستعمل حصر $\alpha$. & حصر $f(\alpha)$\\\hline
+$f''$ تنعدم مغيرة إشارتها (أو $f'$ تنعدم دون أن تغير إشارتها). & نقطة انعطاف\\\hline
+$f(2a-x)+f(x)=2b$ (مع تناظر مجموعة التعريف). & مركز تناظر $\Omega(a;b)$\\\hline
+$f'(x_0)=$ معامل توجيه المستقيم المعطى. & مماس يوازي مستقيمًا\\\hline
+$y_A=f'(x_0)(x_A-x_0)+f(x_0)$: معادلة مجهولها $x_0$. & مماس يشمل نقطة $A$\\\hline
+$\lim\limits_{x\to x_0}f(x)=f(x_0)$ ثم نهاية $\frac{f(x)-f(x_0)}{x-x_0}$ (نظهر $\frac{e^{x}-1}{x}$). & استمرار واشتقاق عند نقطة\\\hline
+$h(x)=f(x-a)+b$: انسحاب شعاعه $\vec{v}(a;b)$؛ \ $K$ زوجية: تناظر بالنسبة إلى محور التراتيب. & رسم منحنى انطلاقًا من $(C_f)$\\\hline
 نقاط تقاطع $(C_f)$ مع المستقيم $y=m$ (أو $y=x+m$) مستعينين بجدول التغيرات. & مناقشة بيانية\\\hline
 $y'=ay$: $Ce^{ax}$ ؛ \ $y'=ay+b$: $Ce^{ax}-\frac{b}{a}$؛ ثم نعيّن $C$ بالشرط الابتدائي. & معادلة تفاضلية\\\hline
 \end{tabular}
