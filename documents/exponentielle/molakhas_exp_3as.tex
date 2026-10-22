@@ -179,11 +179,10 @@
 \item التعريف، العدد $e$ والترميز $e^{x}$.
 \item الخواص الجبرية، التبسيط والمطابقة.
 \item دراسة الدالة الأسية: الإشارة، الاتجاه، النهايات، الجدول، المماس عند $0$ والتمثيل البياني.
-\item العلاقة بين الدالتين $\ln$ و $\exp$.
 \item المعادلات والمتراجحات والجمل.
 \item إشارة عبارات أسية: $u(x)e^{v(x)}$ ، $ae^{\alpha x+\beta}+b$ ، $ae^{2x}+be^{x}+c$.
 \item النهايات الشهيرة (التزايد المقارن) وإزالة حالات عدم التعيين.
-\item مقارنات: $e^{x}\geqslant x+1$ ، $e^{x}>x$ ، $\ln x<x<e^{x}$.
+\item مقارنات: $e^{x}\geqslant x+1$ ، $e^{x}>x$ ، $e^{x}>\frac{x^{2}}{2}$.
 \item الدالة $e^{u}$: الاشتقاق والنهايات.
 \item دوال مرجعية: $e^{-x}$ ، $xe^{x}$ ، $e^{ax+b}$.
 \item المعادلات التفاضلية $y'=ay$ و $y'=ay+b$.
@@ -315,39 +314,23 @@ $e^{x}=1\iff x=0$ \qquad $e^{x}>1\iff x>0$ \qquad $0<e^{x}<1\iff x<0$
 \Ticks{-3,-2,-1,1,2,3}{-1,1,2,4}
 \draw[gray,dashed] (-2,-2)--(5,5);
 \draw[cThm,very thick,domain=-4:1.62,samples=100] plot(\x,{exp(\x)});
-\draw[cDef,very thick,domain=0.1:4,samples=120] plot(\x,{ln(\x)});
 \draw[cRem,thick,domain=-3:4] plot(\x,{\x+1});
 \fill (0,1) circle (1.6pt) node[above left]{$A$};
 \fill (1,2.718) circle (1.6pt);
 \draw[dotted] (1,0)--(1,2.718)--(0,2.718);
 \node[left] at (0,2.718){$e$};
 \node[cThm] at (2.3,4.6){$y=e^{x}$};
-\node[cDef] at (3.3,0.8){$y=\ln x$};
 \node[cRem] at (-0.9,-1.1){$(T)$};
 \node[gray] at (3.6,3.2){$y=x$};
 \end{GR}
-
-%================================================================
-\section{العلاقة بين الدالتين $\ln$ و $\exp$}
-\begin{khassia}
-\begin{itemize}
-\item من أجل كل $x\in\R$ ومن أجل كل $y>0$: \quad \bx{e^{x}=y\iff x=\ln y}.
-\item من أجل كل $x\in\R$: \bx{\ln\left(e^{x}\right)=x} \ ، ومن أجل كل $x>0$: \bx{e^{\ln x}=x}.
-\item الدالتان $\exp$ و $\ln$ \textbf{متعاكستان}: منحنياهما متناظران بالنسبة إلى المستقيم $y=x$ (الشكل السابق).
-\end{itemize}
-\end{khassia}
-
-\begin{molahada}[القوة ذات الأس الحقيقي]
-من أجل $a>0$ و $x\in\R$ نعرف: $a^{x}=e^{x\ln a}$. أمثلة:
-\[ 2^{x}=e^{x\ln2}\qquad \left(\frac{1}{2}\right)^{x}=e^{-x\ln2}\qquad e^{\ln3}=3\qquad e^{2\ln5}=e^{\ln25}=25\qquad e^{-\ln2}=\frac{1}{2} \]
-\end{molahada}
 
 %================================================================
 \section{المعادلات والمتراجحات}
 \begin{tariqa}
 \begin{itemize}
 \item $e^{u(x)}=e^{v(x)}\iff u(x)=v(x)$ \quad و\quad $e^{u(x)}<e^{v(x)}\iff u(x)<v(x)$.
-\item $e^{u(x)}=k$: \ إذا كان $k\leqslant0$ فلا حلول (لأن $e^{u(x)}>0$)؛ وإذا كان $k>0$ فإن $u(x)=\ln k$.
+\item $e^{u(x)}=k$: \ إذا كان $k\leqslant0$ فلا حلول (لأن $e^{u(x)}>0$)؛ وإذا كان $k>0$ نكتبه على الشكل $k=e^{a}$ (مثل $1=e^{0}$ ، $\sqrt{e}=e^{\frac{1}{2}}$ ، $\frac{1}{e^{2}}=e^{-2}$) فتصبح $u(x)=a$.
+\item إذا تعذرت كتابة $k$ على الشكل $e^{a}$ (مثل $e^{x}=3$): الدالة $x\mapsto e^{x}$ مستمرة ومتزايدة تمامًا على $\R$ من $0$ إلى $+\infty$، إذن (مبرهنة القيم المتوسطة) المعادلة تقبل \textbf{حلًا وحيدًا} $\alpha$ نحصره بالحاسبة.
 \item $ae^{2x}+be^{x}+c=0$: نضع $X=e^{x}$ \textbf{مع} $X>0$، نحل $aX^{2}+bX+c=0$، ونرفض الحلول $X\leqslant0$.
 \item إذا ظهر $e^{-x}$ نضرب طرفي المعادلة في $e^{x}>0$.
 \end{itemize}
@@ -360,7 +343,8 @@ $e^{x}=1\iff x=0$ \qquad $e^{x}>1\iff x>0$ \qquad $0<e^{x}<1\iff x<0$
 \item $e^{-2x+10}=1$ تكافئ $e^{-2x+10}=e^{0}$ أي $-2x+10=0$، إذن \bx{S=\{5\}}.
 \item $e^{5x-3}=\dfrac{1}{e^{11-3x}}=e^{3x-11}$ تكافئ $5x-3=3x-11$ أي $x=-4$، إذن \bx{S=\{-4\}}.
 \item $e^{x^{2}}=\dfrac{\left(e^{x}\right)^{5}}{\left(e^{2}\right)^{3}}=e^{5x-6}$ تكافئ $x^{2}-5x+6=0$: \ $\Delta=1$، الحلان $2$ و $3$؛ إذن \bx{S=\{2;3\}}.
-\item $e^{2x-1}=3$ تكافئ $2x-1=\ln3$، إذن \bx{S=\left\{\dfrac{1+\ln3}{2}\right\}}.
+\item $e^{2x-1}=\sqrt{e}=e^{\frac{1}{2}}$ تكافئ $2x-1=\frac{1}{2}$ أي $x=\frac{3}{4}$، إذن \bx{S=\left\{\tfrac{3}{4}\right\}}.
+\item $e^{x}=3$: $x\mapsto e^{x}$ مستمرة ومتزايدة تمامًا على $\R$ وتأخذ قيمها في $]0;+\infty[$ الذي يحوي $3$، إذن المعادلة تقبل حلًا وحيدًا $\alpha$؛ \ $e^{1}\approx2{,}72<3$ و $e^{1{,}1}\approx3{,}004>3$، إذن \bx{1<\alpha<1{,}1}.
 \item $e^{2x}+6e^{x}-7=0$: نضع $X=e^{x}>0$: $X^{2}+6X-7=0$، $\Delta=64$، $X=1$ أو $X=-7$ (مرفوض)؛ $e^{x}=1$ أي $x=0$؛ إذن \bx{S=\{0\}}.
 \item $7e^{x}-5-2e^{-x}=0$: نضرب في $e^{x}>0$: $7e^{2x}-5e^{x}-2=0$؛ $X=e^{x}$: $7X^{2}-5X-2=0$، $\Delta=81$، $X=1$ أو $X=-\frac{2}{7}$ (مرفوض)؛ إذن \bx{S=\{0\}}.
 \item $-2e^{x-4}+7e^{-x+4}-5=0$: نضرب في $e^{x-4}>0$: $-2e^{2(x-4)}-5e^{x-4}+7=0$. نضع $t=e^{x-4}>0$: $-2t^{2}-5t+7=0$، $\Delta=81$، $t=1$ أو $t=-\frac{7}{2}$ (مرفوض)؛ $e^{x-4}=1$ أي $x=4$؛ إذن \bx{S=\{4\}}.
@@ -374,7 +358,7 @@ $e^{x}=1\iff x=0$ \qquad $e^{x}>1\iff x>0$ \qquad $0<e^{x}<1\iff x<0$
 \item $3e^{x}+5>0$: محققة دومًا لأن $e^{x}>0$، إذن \bx{S=\R}.
 \item $e^{x+2}+4\leqslant0$: مستحيلة لأن $e^{x+2}+4>0$، إذن \bx{S=\varnothing}.
 \item $-3e^{-4x+8}+3\geqslant0$ تكافئ $e^{-4x+8}\leqslant1=e^{0}$ أي $-4x+8\leqslant0$ أي $x\geqslant2$، إذن \bx{S=[2;+\infty[}.
-\item $e^{x}<5$ تكافئ $x<\ln5$، إذن \bx{S=]-\infty;\ln5[}.
+\item $e^{x}<\dfrac{1}{e^{2}}=e^{-2}$ تكافئ $x<-2$، إذن \bx{S=]-\infty;-2[}.
 \item $e^{x^{2}}\geqslant\dfrac{\left(e^{x}\right)^{2}}{e^{-3}}=e^{2x+3}$ تكافئ $x^{2}-2x-3\geqslant0$؛ جذرا ثلاثي الحدود $-1$ و $3$:
 \begin{TAB}
 \tkzTabInit[lgt=2.6,espcl=2]{$x$/1,$x^{2}-2x-3$/1}{$-\infty$,$-1$,$3$,$+\infty$}
@@ -405,7 +389,7 @@ $e^{x}=1\iff x=0$ \qquad $e^{x}>1\iff x>0$ \qquad $0<e^{x}<1\iff x<0$
 \begin{khassia}[إشارة $ae^{\alpha x+\beta}+b$ \ ($a\alpha\neq0$)]
 \begin{itemize}
 \item إذا كان $a$ و $b$ موجبين: العبارة \textbf{موجبة تمامًا}؛ وإذا كانا سالبين: العبارة \textbf{سالبة تمامًا}.
-\item إذا كان $a$ و $b$ مختلفين في الإشارة: المعادلة $ae^{\alpha x+\beta}+b=0$ تقبل حلًا وحيدًا $x_0=\dfrac{1}{\alpha}\left(\ln\left(-\dfrac{b}{a}\right)-\beta\right)$، والإشارة:
+\item إذا كان $a$ و $b$ مختلفين في الإشارة: المعادلة $ae^{\alpha x+\beta}+b=0$ تقبل حلًا وحيدًا $x_0$ (الدالة $x\mapsto ae^{\alpha x+\beta}+b$ مستمرة ورتيبة تمامًا وتغير إشارتها)، والإشارة:
 \end{itemize}
 \begin{TAB}
 \tkzTabInit[lgt=3,espcl=3.6]{$x$/1,$ae^{\alpha x+\beta}+b$/1}{$-\infty$,$x_0$,$+\infty$}
@@ -425,10 +409,10 @@ $e^{x}=1\iff x=0$ \qquad $e^{x}>1\iff x>0$ \qquad $0<e^{x}<1\iff x<0$
 \begin{itemize}
 \item $2e^{x}-2$: ينعدم عند $x=0$، و $a\alpha=2>0$: سالب على $]-\infty;0[$ وموجب على $]0;+\infty[$.
 \item $-e^{-2x+1}+e$: ينعدم عندما $-2x+1=1$ أي $x=0$، و $a\alpha=(-1)(-2)=2>0$: سالب على $]-\infty;0[$ وموجب على $]0;+\infty[$.
-\item $e^{2x}-3e^{x}+2=\left(e^{x}-1\right)\left(e^{x}-2\right)$ (بوضع $X=e^{x}$: $X^{2}-3X+2=(X-1)(X-2)$):
+\item $e^{2x}-(1+e)e^{x}+e=\left(e^{x}-1\right)\left(e^{x}-e\right)$ (بوضع $X=e^{x}$: $X^{2}-(1+e)X+e=(X-1)(X-e)$)؛ \ $e^{x}-1=0\iff x=0$ و $e^{x}-e=0\iff x=1$:
 \end{itemize}
 \begin{TAB}
-\tkzTabInit[lgt=3.4,espcl=2.2]{$x$/1,$e^{x}-1$/1,$e^{x}-2$/1,$e^{2x}-3e^{x}+2$/1}{$-\infty$,$0$,$\ln2$,$+\infty$}
+\tkzTabInit[lgt=3.4,espcl=2.2]{$x$/1,$e^{x}-1$/1,$e^{x}-e$/1,$e^{2x}-(1+e)e^{x}+e$/1}{$-\infty$,$0$,$1$,$+\infty$}
 \tkzTabLine{,-,z,+,t,+,}
 \tkzTabLine{,-,t,-,z,+,}
 \tkzTabLine{,+,z,-,z,+,}
@@ -525,7 +509,6 @@ $\displaystyle\lim_{x\to0}\frac{e^{x}-1}{x}=1$ & $\displaystyle\lim_{x\to0}\frac
 \item من أجل كل $x\in\R$: \bx{e^{x}\geqslant x+1} \ (المساواة من أجل $x=0$ فقط)، وبالتالي \bx{e^{x}>x}.
 \item من أجل كل $x\in\R$: $e^{-x}\geqslant1-x$ (بتعويض $x$ بـ $-x$).
 \item من أجل كل $x\geqslant0$: $e^{x}>\dfrac{x^{2}}{2}$.
-\item من أجل كل $x>0$: $\ln x\leqslant x-1<x<x+1\leqslant e^{x}$، إذن \bx{\ln x<x<e^{x}}.
 \end{itemize}
 \end{khassia}
 
@@ -1301,7 +1284,7 @@ $f_m'(x)=e^{-x}-(x+m)e^{-x}=(1-m-x)e^{-x}$، إشارتها إشارة $1-m-x$،
 \rowcolor{cSec!12} \textbf{الطريقة} & \textbf{المطلوب}\\\hline
 $e^{x+y}=e^{x}e^{y}$ ، $e^{-x}=\frac{1}{e^{x}}$ ، $\left(e^{x}\right)^{n}=e^{nx}$؛ نضرب البسط والمقام في $e^{x}$ أو $e^{-x}$. & تبسيط عبارة أو إثبات مساواة\\\hline
 نوحّد المقامات ثم نطابق معاملات $e^{2x}$ ، $e^{x}$ والثابت. & تعيين معاملات (مطابقة)\\\hline
-$e^{u}=e^{v}\iff u=v$ ؛ \ $e^{u}=k>0\iff u=\ln k$ ؛ \ $e^{u}=k\leqslant0$: لا حلول. & معادلة أسية\\\hline
+$e^{u}=e^{v}\iff u=v$ ؛ \ $e^{u}=e^{a}\iff u=a$ (نكتب $k>0$ على الشكل $e^{a}$، وإلا: حل وحيد $\alpha$ بمبرهنة القيم المتوسطة) ؛ \ $e^{u}=k\leqslant0$: لا حلول. & معادلة أسية\\\hline
 نضع $X=e^{x}>0$، نحل المعادلة من الدرجة الثانية ونرفض $X\leqslant0$ (ونضرب في $e^{x}$ إذا ظهر $e^{-x}$). & $ae^{2x}+be^{x}+c=0$\\\hline
 $e^{u}<e^{v}\iff u<v$، أو نحلل ثم جدول إشارة. & متراجحة أسية\\\hline
 إشارة $u(x)e^{v(x)}$ هي إشارة $u(x)$؛ \ $ae^{\alpha x+\beta}+b$: نحل المعادلة ثم إشارة $a\alpha$ على يمين الجذر وعكسها على يساره. & إشارة عبارة أسية\\\hline
