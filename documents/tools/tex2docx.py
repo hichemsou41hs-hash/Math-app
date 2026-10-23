@@ -980,6 +980,15 @@ def postprocess(path, out, head, foot, figs):
             rpr.remove(sc)
             set_shd(rpr, color_hex("cDef!12"))
 
+    # --- 3b. two tables in a row (or a table followed by text) must not touch: Word glues them
+    for tbl in list(body.iter(qn("w:tbl"))):
+        nxt = tbl.getnext()
+        if nxt is not None and nxt.tag == qn("w:tbl"):
+            tbl.addnext(OxmlElement("w:p"))
+        elif nxt is not None and nxt.tag == qn("w:p"):
+            ppr = ensure_ppr(nxt)
+            if ppr.find(qn("w:spacing")) is None:
+                ppr.append(el("w:spacing", before=120))
     # --- 4. data tables (from tabular): borders, LTR column order, RTL cell text
     for tbl in body.iter(qn("w:tbl")):
         pr = tbl.find(qn("w:tblPr"))
@@ -1002,8 +1011,10 @@ def postprocess(path, out, head, foot, figs):
                         txt = "".join(t.text or "" for t in tc.iter() if t.tag in (qn("w:t"), qn("m:t")))
                         need[k] = max(need[k], len(txt.strip()) + 1.5)
                 tot_need = sum(need)
-                scale = min(avail / (tot_need * 150), 1.0)   # ~150 twips per character
-                ws = [int(n * 150 * scale) for n in need]
+                # ~190 twips per character + 300 for the cell margins ("β\\α" must not wrap)
+                raw = [n * 190 + 300 for n in need]
+                scale = min(avail / sum(raw), 1.0)
+                ws = [int(r_ * scale) for r_ in raw]
                 for c, w_ in zip(cols, ws):
                     c.set(qn("w:w"), str(w_))
                 for o in pr.findall(qn("w:tblW")) + pr.findall(qn("w:tblLayout")):
