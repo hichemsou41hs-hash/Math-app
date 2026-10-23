@@ -258,15 +258,20 @@ class Figures:
 
         def trim(args):
             (key, _, _), page = args
-            subprocess.run(["convert", os.path.join(tmp, page), "-trim", "+repage", "-bordercolor", "white",
-                            "-border", "4", self.png(key)], check=True)
+            # Pillow, not ImageMagick: "convert" clashes with a Windows system command
+            from PIL import Image, ImageChops, ImageOps
+            im = Image.open(os.path.join(tmp, page)).convert("RGB")
+            box = ImageChops.difference(im, Image.new("RGB", im.size, "white")).getbbox()
+            if box:
+                im = im.crop(box)
+            ImageOps.expand(im, border=4, fill="white").save(self.png(key))
         with ThreadPoolExecutor(max_workers=os.cpu_count() or 2) as ex:
             list(ex.map(trim, zip(items, pages)))
         return True
 
     def size_cm(self, key):
-        out = subprocess.run(["identify", "-format", "%w %h", self.png(key)], capture_output=True, text=True).stdout
-        w, h = map(int, out.split())
+        from PIL import Image
+        w, h = Image.open(self.png(key)).size
         return w / DPI * 2.54, h / DPI * 2.54
 
 
@@ -432,6 +437,7 @@ def rewrite_body(body, meta):
     def colspec(m):
         spec = m.group(1)
         spec = re.sub(r"[><@!]\{(?:[^{}]|\{[^{}]*\})*\}", "", spec)
+        spec = re.sub(r"[MLR](?=\{)", "p", spec)   # custom array column types (M{..} etc.) -> p{..}
         spec = spec.replace("|", "").replace("C", "c").replace("\\textwidth", "\\linewidth")
         spec = re.sub(r"\{([\d.]+)\s*cm\}", lambda mm: "{%.3f\\linewidth}" % (float(mm.group(1)) / TEXT_W), spec)
         return "\\begin{tabular}{%s}" % spec
