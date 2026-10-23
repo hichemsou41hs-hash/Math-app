@@ -414,7 +414,8 @@ def rewrite_body(body, meta):
 
     # side-by-side blocks
     def twocol(o, r):
-        return ("\n\n" + mk("MP+") + "\n\n" + r[1] + "\n\n" + mk("MP-") + "\n\n" + mk("MP+") + "\n\n"
+        w1, w2 = (re.sub(r"[^\d.]", "", x) or "0.5" for x in (r[0], r[2]))
+        return ("\n\n" + mk("MP+|" + w1) + "\n\n" + r[1] + "\n\n" + mk("MP-") + "\n\n" + mk("MP+|" + w2) + "\n\n"
                 + r[3] + "\n\n" + mk("MP-") + "\n\n")
     body = replace_macro(body, "TwoCol", 0, 4, twocol)
     body = replace_macro(body, "RL", 0, 4, lambda o, r: twocol(None, [r[2], r[3], r[0], r[1]]))
@@ -872,8 +873,9 @@ def postprocess(path, out, head, foot, figs):
                             pr.remove(o)
                         pr.append(el("w:jc", val="center"))
                 bp.getparent().remove(bp)
-            elif btag == "MP+":
+            elif btag.startswith("MP+"):
                 wrap = OxmlElement("w:MPGROUP")  # temporary holder
+                wrap.set("frac", btag.split("|", 1)[1] if "|" in btag else "")
                 bp.addprevious(wrap)
                 for e in inner:
                     wrap.append(e)
@@ -903,12 +905,16 @@ def postprocess(path, out, head, foot, figs):
             for g in group:
                 g.getparent().remove(g)
             continue
-        w = TEXT_W / len(group)
-        tbl = new_table([w] * len(group))
+        try:
+            fr = [float(g.get("frac")) for g in group]
+            ws = [TEXT_W * f / sum(fr) for f in fr]
+        except (TypeError, ValueError):
+            ws = [TEXT_W / len(group)] * len(group)
+        tbl = new_table(ws)
         tbl.find(qn("w:tblPr")).append(borders("w:tblBorders", "FFFFFF", 0, val="nil"))
         tr = OxmlElement("w:tr")
         tbl.append(tr)
-        for g in group:
+        for g, w in zip(group, ws):
             tc = new_cell(w)
             for e in list(g):
                 tc.append(e)
@@ -988,12 +994,30 @@ def postprocess(path, out, head, foot, figs):
             avail = int((TEXT_W - (0.8 if nested else 0.2)) / 2.54 * 1440)
             cols = tbl.find(qn("w:tblGrid")).findall(qn("w:gridCol"))
             if len({c.get(qn("w:w")) for c in cols}) == 1 and pr.find(qn("w:tblW")).get(qn("w:type")) == "auto":
-                # no explicit widths in the source: let Word size the columns by content
-                pr.append(el("w:tblLayout", type="autofit"))
-                for tc in tbl.iter(qn("w:tc")):
-                    tcpr = tc.find(qn("w:tcPr"))
-                    for o in (tcpr.findall(qn("w:tcW")) if tcpr is not None else []):
-                        tcpr.remove(o)
+                # no explicit widths in the source: size the columns by their content ourselves
+                # (Word keeps pandoc's equal grid, which cuts a long first column such as lim f(x))
+                need = [3.0] * len(cols)
+                for tr in tbl.findall(qn("w:tr")):
+                    for k, tc in enumerate(tr.findall(qn("w:tc"))[:len(cols)]):
+                        txt = "".join(t.text or "" for t in tc.iter() if t.tag in (qn("w:t"), qn("m:t")))
+                        need[k] = max(need[k], len(txt.strip()) + 1.5)
+                tot_need = sum(need)
+                scale = min(avail / (tot_need * 150), 1.0)   # ~150 twips per character
+                ws = [int(n * 150 * scale) for n in need]
+                for c, w_ in zip(cols, ws):
+                    c.set(qn("w:w"), str(w_))
+                for o in pr.findall(qn("w:tblW")) + pr.findall(qn("w:tblLayout")):
+                    pr.remove(o)
+                pr.append(el("w:tblW", w=sum(ws), type="dxa"))
+                pr.append(el("w:tblLayout", type="fixed"))
+                for tr in tbl.findall(qn("w:tr")):
+                    for tc, w_ in zip(tr.findall(qn("w:tc")), ws):
+                        tcpr = tc.find(qn("w:tcPr"))
+                        if tcpr is None:
+                            tcpr = OxmlElement("w:tcPr"); tc.insert(0, tcpr)
+                        for o in tcpr.findall(qn("w:tcW")):
+                            tcpr.remove(o)
+                        tcpr.insert(0, el("w:tcW", w=w_, type="dxa"))
                 for o in pr.findall(qn("w:jc")):
                     pr.remove(o)
                 pr.append(el("w:jc", val="center"))
