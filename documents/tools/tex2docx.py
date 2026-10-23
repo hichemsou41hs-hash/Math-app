@@ -64,6 +64,9 @@ def read_group(s, i, o="{", c="}"):
         if ch == "\\":
             j += 2
             continue
+        if o == "[" and ch == "{":   # braces protect ] [ inside optional arguments
+            _, j = read_group(s, j)
+            continue
         if ch == o:
             depth += 1
         elif ch == c:
@@ -132,6 +135,48 @@ def strip_comments(s):
     return "\n".join(re.sub(r"(?<!\\)%.*$", "", ln) if "%" in ln else ln for ln in s.split("\n"))
 
 
+DEF_RE = re.compile(r"\\(providecommand|newcommand|renewcommand|newenvironment|renewenvironment|"
+                    r"tikzset|definecolor|colorlet|newcolumntype|pgfmathsetmacro|DeclareMathOperator)(\*?)(?![A-Za-z])")
+DEF_ARGS = {  # (name args incl. braces/cs, optional args, mandatory body args)
+    "providecommand": (1, 2, 1), "newcommand": (1, 2, 1), "renewcommand": (1, 2, 1),
+    "newenvironment": (1, 2, 2), "renewenvironment": (1, 2, 2), "tikzset": (0, 0, 1),
+    "definecolor": (0, 0, 3), "colorlet": (0, 0, 2), "newcolumntype": (1, 1, 1), "pgfmathsetmacro": (1, 0, 1),
+    "DeclareMathOperator": (1, 0, 1)}
+
+
+def hoist_definitions(body):
+    """Move \newcommand/\newenvironment/\tikzset... found in the body to the preamble.
+    \renewcommand{\arraystretch} stays (it is just dropped later)."""
+    hoisted, out, pos = [], [], 0
+    while True:
+        m = DEF_RE.search(body, pos)
+        if not m:
+            out.append(body[pos:])
+            break
+        kind = m.group(1)
+        nname, nopt, nreq = DEF_ARGS[kind]
+        i = m.end()
+        try:
+            if nname:
+                k = skip_ws(body, i)
+                if body[k] == "{":
+                    _, i = read_group(body, k)
+                else:
+                    mm = re.match(r"\\[A-Za-z@]+", body[k:])
+                    i = k + mm.end()
+            _, _, i = read_args(body, i, nopt, nreq)
+        except Exception:
+            out.append(body[pos:m.end()]); pos = m.end(); continue
+        stmt = body[m.start():i]
+        out.append(body[pos:m.start()])
+        if "arraystretch" in stmt[:40]:
+            out.append(stmt)
+        else:
+            hoisted.append(stmt)
+        pos = i
+    return "".join(out), "\n".join(hoisted)
+
+
 def split_document(tex):
     i = tex.index("\\begin{document}")
     j = tex.index("\\end{document}")
@@ -142,11 +187,11 @@ def split_document(tex):
 def figure_names(preamble):
     """Environments / macros whose definition draws with TikZ."""
     envs, macros = {"tikzpicture"}, set()
-    for m in re.finditer(r"\\newenvironment\{([A-Za-z]+)\}", preamble):
+    for m in re.finditer(r"\\(?:re)?newenvironment\{([A-Za-z]+)\}", preamble):
         line_end = preamble.find("\n\\new", m.end())
         if "tikzpicture" in preamble[m.end(): line_end if line_end > 0 else None][:600]:
             envs.add(m.group(1))
-    for m in re.finditer(r"\\newcommand\{\\([A-Za-z]+)\}(\[\d\])?", preamble):
+    for m in re.finditer(r"\\(?:provide|new|renew)command\{\\([A-Za-z]+)\}(\[\d\])?", preamble):
         line_end = preamble.find("\n\\new", m.end())
         body = preamble[m.end(): line_end if line_end > 0 else None][:800]
         if "begin{tikzpicture}" in body:
@@ -227,6 +272,9 @@ class Figures:
 
 def extract_figures(body, preamble, figs):
     envs, macros = figure_names(preamble)
+    for name in envs - {"tikzpicture"}:   # plain-TeX form \TAB ... \endTAB
+        body = re.sub(r"\\end%s(?![A-Za-z])" % name, r"\\end{%s}" % name, body)
+        body = re.sub(r"\\%s(?![A-Za-z])" % name, r"\\begin{%s}" % name, body)
     # environments (outermost first, scanning left to right)
     pat = re.compile(r"\\begin\{(" + "|".join(sorted(envs, key=len, reverse=True)) + r")\}")
     out, pos = [], 0
@@ -377,6 +425,8 @@ def rewrite_body(body, meta):
     body = re.sub(r"\\(smallskip|medskip|bigskip|noindent|centering|hfill)(?![A-Za-z])", "", body)
     body = re.sub(r"\\renewcommand\{\\arraystretch\}\{[^}]*\}", "", body)
     body = re.sub(r"\\newline(?![A-Za-z])\s*", mk("BR") + " ", body)
+    body = re.sub(r"\\rule(\[[^\]]*\])?\{[^}]*\}\{[^}]*\}", "", body)        # struts
+    body = re.sub(r"\\\\\s*\[[-\d.]+\s*(pt|em|ex|mm|cm)\]", r"\\\\", body)   # \\[4pt] -> \\
 
     # tables
     def colspec(m):
@@ -479,8 +529,12 @@ def split_arabic_math(inner, display):
             if core:
                 lead = "\u2003" if re.match(r"\s*\\q", v) else " "
                 trail = "\u2003" if re.search(r"\\q+uad\s*$", v) else " "
-                vv = re.sub(r"^\s*(\\qquad|\\quad)+|(\\qquad|\\quad)+\s*$", "", v)
-                out.append(lead + "$" + ("\\displaystyle " if display else "") + vv.strip() + "$" + trail)
+                sp = r"(?:\s|\\[ ,;:!]|\\q?quad(?![A-Za-z]))+"
+                vv = re.sub("^" + sp + "|" + sp + "$", "", v)
+                if re.fullmatch(r"[.,;:]+", vv):
+                    out.append(vv)
+                else:
+                    out.append(lead + "$" + ("\\displaystyle " if display else "") + vv + "$" + trail)
             else:
                 out.append(text_spaces(v) if v.strip() else " ")
     return "".join(out)
@@ -725,6 +779,11 @@ def postprocess(path, out, head, foot, figs):
                         nr.remove(c)
                 if m:
                     key, inline = m.group(1), m.group(2) == "1"
+                    if not os.path.exists(figs.png(key)):
+                        print("  !! missing figure %s (compile failed) -> placeholder" % key, file=sys.stderr)
+                        tt = el("w:t"); tt.text = "[شكل غير متوفر]"; nr.append(tt)
+                        anchor.addnext(nr); anchor = nr
+                        continue
                     w, h = figs.size_cm(key)
                     if w > TEXT_W - 0.6:
                         h, w = h * (TEXT_W - 0.6) / w, TEXT_W - 0.6
@@ -922,7 +981,9 @@ def postprocess(path, out, head, foot, figs):
         rpr = r.find(qn("w:rPr"))
         if rpr is None:
             rpr = OxmlElement("w:rPr"); r.insert(0, rpr)
-        if rpr.find(qn("w:rtl")) is None:
+        txt = "".join(t.text or "" for t in r.findall(qn("w:t")))
+        latin = re.search(r"[A-Za-z0-9]", txt) and not ARABIC.search(txt)
+        if rpr.find(qn("w:rtl")) is None and not latin:
             rpr.append(OxmlElement("w:rtl"))
     fix_order(body)
 
@@ -1081,6 +1142,9 @@ def convert(tex_path, out_path, cache, keep=False, log=print):
     t0 = time.time()
     tex = strip_comments(open(tex_path, encoding="utf-8").read())
     preamble, body = split_document(tex)
+    body, hoisted = hoist_definitions(body)
+    if hoisted:
+        preamble = preamble + "\n% --- definitions hoisted from the body\n" + hoisted + "\n"
     figs = Figures(preamble, cache)
     body = extract_figures(body, preamble, figs)
     body = rewrite_body(body, {})
