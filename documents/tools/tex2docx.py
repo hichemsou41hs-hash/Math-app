@@ -578,6 +578,36 @@ PANDOC_MACROS = r"""
 """
 
 
+_NOT_MATH = re.compile(r"tikz|tcb|\\begin|\\color|\\fill|\\draw|\\node|\\foreignlanguage|\\ar\b|\\selectfont|\\hbox|\\vbox|\\par\b|\\item|TwoCol|baselineskip|Needspace|@")
+
+
+def math_macros(preamble, body):
+    """Pure-math \\newcommand definitions of the document (e.g. \\V for vectors), so pandoc
+    expands them; otherwise a math span using them is left as raw text. Only macros that
+    the body actually uses inside math are passed on."""
+    used = set()
+    for mm in re.finditer(r"\$\$.*?\$\$|\$[^$]*\$|\\\[.*?\\\]", body, re.S):
+        used.update(re.findall(r"\\([A-Za-z]+)", mm.group(0)))
+    have = set(re.findall(r"\\newcommand\{\\([A-Za-z]+)\}", PANDOC_MACROS)) | {"dots", "ldots", "cdots"}
+    out = []
+    for m in re.finditer(r"\\(?:provide|new|renew)command\*?\s*\{?\\([A-Za-z]+)\}?\s*(\[\d\])?\s*(?=\{)", preamble):
+        name = m.group(1)
+        if name in have or name not in used:
+            continue
+        try:
+            _, (defn,), _ = read_args(preamble, m.end(), 0, 1)
+        except Exception:
+            continue
+        if _NOT_MATH.search(defn):
+            continue
+        out.append("\\newcommand{\\%s}%s{%s}" % (name, m.group(2) or "", defn))
+        have.add(name)
+    for m in re.finditer(r"\\DeclareMathOperator\*?\{\\([A-Za-z]+)\}\{([^{}]*)\}", preamble):
+        if m.group(1) not in have:
+            out.append("\\newcommand{\\%s}{\\operatorname{%s}}" % (m.group(1), m.group(2)))
+    return "\n".join(out) + "\n"
+
+
 def header_text(preamble):
     m = re.search(r"^\\SetHeader", preamble, re.M)
     if not m:
@@ -1167,7 +1197,7 @@ def convert(tex_path, out_path, cache, keep=False, log=print):
     make_reference(ref)
     src = os.path.join(work, "in.tex")
     with open(src, "w", encoding="utf-8") as f:
-        f.write("\\documentclass{article}\n" + PANDOC_MACROS + "\\begin{document}\n" + body + "\n\\end{document}\n")
+        f.write("\\documentclass{article}\n" + PANDOC_MACROS + math_macros(preamble, body) + "\\begin{document}\n" + body + "\n\\end{document}\n")
     raw = os.path.join(work, "raw.docx")
     r = subprocess.run(["pandoc", "--verbose", "-f", "latex", "-t", "docx", "--number-sections",
                         "--reference-doc", ref, "-M", "lang=ar-DZ", "-M", "dir=rtl", "-o", raw, src],
