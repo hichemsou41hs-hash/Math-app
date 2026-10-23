@@ -242,7 +242,7 @@ class Figures:
         for key, src, inline in items:
             body.append("\\begin{LTR}\\noindent " + src + "\\end{LTR}\\par\\clearpage\n")
         doc = pre + "\\begin{document}\\pagestyle{empty}\n" + "".join(body) + "\\end{document}\n"
-        with open(os.path.join(tmp, "f.tex"), "w") as f:
+        with open(os.path.join(tmp, "f.tex"), "w", encoding="utf-8") as f:
             f.write(doc)
         subprocess.run(["xelatex", "-interaction=nonstopmode", "-halt-on-error" if len(items) == 1 else "-interaction=nonstopmode", "f.tex"],
                        cwd=tmp, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -311,7 +311,8 @@ def clean_inline(s):
     s = re.sub(r"\\(selectfont|bfseries|mdseries|large|Large|LARGE|huge|Huge|small|footnotesize|normalsize|centering)(?![A-Za-z])", "", s)
     s = re.sub(r"\\(ar|foreignlanguage\{[a-z]+\})", "", s)
     s = s.replace("--", "–")
-    s = re.sub(r"[{}]", "", s)
+    # braces go, except inside $...$ ($\mathbb{R}$ in a title)
+    s = "".join(p if p.startswith("$") else re.sub(r"[{}]", "", p) for p in re.split(r"(\$[^$]*\$)", s))
     return re.sub(r"\s+", " ", s).strip()
 
 
@@ -378,6 +379,14 @@ def rewrite_body(body, meta):
 
     # highlights
     body = replace_macro(body, "bxt", 0, 1, lambda o, r: "\\textsc{%s}" % r[0])
+    # numbered badge (\tikz node in the source) -> circled digit ① ... ⑳
+    body = replace_macro(body, "circled", 0, 1, lambda o, r: chr(0x2460 + int(r[0]) - 1)
+                         if r[0].strip().isdigit() and 1 <= int(r[0]) <= 20 else "(%s)" % r[0])
+    # text macros pandoc cannot expand (paragraphs, lists): substitute their definition
+    for name, (nargs, defn) in meta.get("text_macros", {}).items():
+        body = replace_macro(body, name, 0, nargs,
+                             lambda o, r, defn=defn: re.sub(r"#(\d)", lambda mm: r[int(mm.group(1)) - 1], defn))
+    body = re.sub(r"\\cline\{[^}]*\}", "", body)
 
     # sub-questions
     for k, letter in enumerate(ARLETTERS):
@@ -506,8 +515,20 @@ def text_spaces(t):
     return t
 
 
+SIZE = r"\\(?:big|Big|bigg|Bigg)[lr]?(?![A-Za-z])\s*"
+
+
+def balance_sizes(v):
+    """Drop \\big/\\Big sizing when its opening and closing delimiters ended up in different pieces."""
+    opens = len(re.findall(SIZE + r"(?:[(\[]|\\\{|\\langle)", v))
+    closes = len(re.findall(SIZE + r"(?:[)\]]|\\\}|\\rangle)", v))
+    return re.sub(SIZE, "", v) if opens != closes else v
+
+
 def split_arabic_math(inner, display):
     """Split math content at top-level \\text{arabic} into [('m',..),('t',..)]."""
+    if "\\begin{" in inner:   # cases/matrix: splitting would cut the environment; keep \text inside the equation
+        return None
     parts, buf, depth, i = [], [], 0, 0
     while i < len(inner):
         mt = re.match(r"\\(text|mbox|textrm|textnormal)\{", inner[i:]) if depth == 0 else None
@@ -541,15 +562,29 @@ def split_arabic_math(inner, display):
                 if re.fullmatch(r"[.,;:]+", vv):
                     out.append(vv)
                 else:
-                    out.append(lead + "$" + ("\\displaystyle " if display else "") + vv + "$" + trail)
+                    vv = balance_sizes(vv)
+                    # "{}" keeps pandoc's OMML writer working when vv itself starts with \displaystyle (e.g. \Lp)
+                    out.append(lead + "$" + ("\\displaystyle{} " if display else "") + vv + "$" + trail)
             else:
                 out.append(text_spaces(v) if v.strip() else " ")
     return "".join(out)
 
 
+def clean_math(t):
+    """Constructs pandoc's math reader rejects (it then leaves the whole equation as raw text)."""
+    # \textcolor{cRem}{X} / \color{cRem}: custom colour names are unknown -> keep X, drop the colour
+    t = replace_macro(t, "textcolor", 0, 2, lambda o, r: "{%s}" % r[1])
+    t = re.sub(r"\\color\{[^}]*\}", "", t)
+    # {\rm X} (plain-TeX font switch) -> \mathrm{X}
+    t = re.sub(r"\{\\(rm|bf|it)\s+([^{}]*)\}", lambda m: "\\math%s{%s}" % (m.group(1), m.group(2)), t)
+    return t
+
+
 def fix_math_text(body):
     out = []
     for kind, t in segments(body):
+        if kind != "text":
+            t = clean_math(t)
         if kind == "text":
             out.append(text_spaces(t))
         elif kind in ("inline", "display"):
@@ -572,14 +607,16 @@ PANDOC_MACROS = r"""
 \newcommand{\Q}{\mathbb{Q}}\newcommand{\R}{\mathbb{R}}\newcommand{\C}{\mathbb{C}}
 \newcommand{\pgcd}{\operatorname{PGCD}}\newcommand{\ppcm}{\operatorname{PPCM}}
 \newcommand{\bx}[1]{\ensuremath{\boxed{#1}}}
+\newcommand{\hl}[1]{\ensuremath{\boxed{\displaystyle #1}}}
 \newcommand{\ok}{$\checkmark$}
+\newcommand{\no}{$\times$}
 \newcommand{\texttimes}{×}
 \newcommand{\limn}{\lim\limits_{n\to+\infty}}
 \newcommand{\dx}{\,\mathrm{d}x}\newcommand{\dt}{\,\mathrm{d}t}\newcommand{\ua}{\ \mathrm{u.a}}
 """
 
 
-_NOT_MATH = re.compile(r"tikz|tcb|\\begin|\\color|\\fill|\\draw|\\node|\\foreignlanguage|\\ar\b|\\selectfont|\\hbox|\\vbox|\\par\b|\\item|TwoCol|baselineskip|Needspace|@")
+_NOT_MATH = re.compile(r"tikz|tcb|\\begin(?!\{(?:p|b|v|V)?matrix\}|\{cases\}|\{array\})|\\color|\\fill|\\draw|\\node|\\foreignlanguage|\\ar\b|\\selectfont|\\hbox|\\vbox|\\par\b|\\item|TwoCol|baselineskip|Needspace|@")
 
 
 def math_macros(preamble, body):
@@ -599,14 +636,34 @@ def math_macros(preamble, body):
             _, (defn,), _ = read_args(preamble, m.end(), 0, 1)
         except Exception:
             continue
+        while re.search(r"\\ar\s*\{", defn):   # \ar{X} -> X (language switch only)
+            k = re.search(r"\\ar\s*\{", defn)
+            inner, end = read_group(defn, k.end() - 1)
+            defn = defn[:k.start()] + inner + defn[end:]
         if _NOT_MATH.search(defn):
             continue
+        defn = re.sub(r"\\lim(?![A-Za-z])(\s*)_", r"\\lim\\limits\1_", defn)
         out.append("\\newcommand{\\%s}%s{%s}" % (name, m.group(2) or "", defn))
         have.add(name)
     for m in re.finditer(r"\\DeclareMathOperator\*?\{\\([A-Za-z]+)\}\{([^{}]*)\}", preamble):
         if m.group(1) not in have:
             out.append("\\newcommand{\\%s}{\\operatorname{%s}}" % (m.group(1), m.group(2)))
     return "\n".join(out) + "\n"
+
+
+TEXT_MACROS = ("Rec",)
+
+
+def text_macros(preamble):
+    """Definitions of the text-level macros in TEXT_MACROS (e.g. \\Rec: induction proof with a list)."""
+    out = {}
+    for m in re.finditer(r"\\(?:provide|new|renew)command\*?\s*\{\\(%s)\}\s*(\[\d\])?\s*(?=\{)" % "|".join(TEXT_MACROS), preamble):
+        try:
+            _, (defn,), _ = read_args(preamble, m.end(), 0, 1)
+        except Exception:
+            continue
+        out[m.group(1)] = (int(m.group(2)[1]) if m.group(2) else 0, defn)
+    return out
 
 
 def header_text(preamble):
@@ -910,6 +967,7 @@ def postprocess(path, out, head, foot, figs):
             ws = [TEXT_W * f / sum(fr) for f in fr]
         except (TypeError, ValueError):
             ws = [TEXT_W / len(group)] * len(group)
+        ws = fit_figure_columns(group, ws)
         tbl = new_table(ws)
         tbl.find(qn("w:tblPr")).append(borders("w:tblBorders", "FFFFFF", 0, val="nil"))
         tr = OxmlElement("w:tr")
@@ -1010,7 +1068,6 @@ def postprocess(path, out, head, foot, figs):
                     for k, tc in enumerate(tr.findall(qn("w:tc"))[:len(cols)]):
                         txt = "".join(t.text or "" for t in tc.iter() if t.tag in (qn("w:t"), qn("m:t")))
                         need[k] = max(need[k], len(txt.strip()) + 1.5)
-                tot_need = sum(need)
                 # ~190 twips per character + 300 for the cell margins ("β\\α" must not wrap)
                 raw = [n * 190 + 300 for n in need]
                 scale = min(avail / sum(raw), 1.0)
@@ -1101,6 +1158,21 @@ def postprocess(path, out, head, foot, figs):
     if pgmar is not None and pgmar.get(qn("w:gutter")) is None:
         pgmar.set(qn("w:gutter"), "0")
     d.save(out)
+
+
+def fit_figure_columns(group, ws):
+    """Shrink columns that only hold pictures to the picture width; give the freed space to text columns."""
+    fig_w = []
+    for g in group:
+        has_text = any(para_text(e).strip() or list(e.iter(qn("m:oMath"))) for e in g)
+        exts = [int(x.get("cx")) / 360000 for x in g.iter(qn("wp:extent"))]   # EMU -> cm
+        fig_w.append(max(exts) + 0.6 if exts and not has_text else None)
+    if all(f is None for f in fig_w) or all(f is not None for f in fig_w):
+        return ws
+    new = [min(w, f) if f is not None else w for w, f in zip(ws, fig_w)]
+    freed = sum(ws) - sum(new)
+    text_tot = sum(w for w, f in zip(new, fig_w) if f is None)
+    return [w + freed * w / text_tot if f is None else w for w, f in zip(new, fig_w)]
 
 
 def fix_order(body):
@@ -1236,7 +1308,7 @@ def convert(tex_path, out_path, cache, keep=False, log=print):
         preamble = preamble + "\n% --- definitions hoisted from the body\n" + hoisted + "\n"
     figs = Figures(preamble, cache)
     body = extract_figures(body, preamble, figs)
-    body = rewrite_body(body, {})
+    body = rewrite_body(body, {"text_macros": text_macros(preamble)})
     body = fix_math_text(body)
     # limits written UNDER lim (x→a below the word), also inline: saves room on the line
     body = re.sub(r"\\lim(?![A-Za-z])(\s*)_", r"\\lim\\limits\1_", body)
@@ -1251,7 +1323,7 @@ def convert(tex_path, out_path, cache, keep=False, log=print):
     raw = os.path.join(work, "raw.docx")
     r = subprocess.run(["pandoc", "--verbose", "-f", "latex", "-t", "docx", "--number-sections",
                         "--reference-doc", ref, "-M", "lang=ar-DZ", "-M", "dir=rtl", "-o", raw, src],
-                       capture_output=True, text=True)
+                       capture_output=True, text=True, encoding="utf-8", errors="replace")
     if r.returncode:
         sys.exit("pandoc failed:\n" + r.stderr)
     skipped = sorted(set(re.findall(r"Skipped '([^']*)'", r.stderr)))
@@ -1266,6 +1338,11 @@ def convert(tex_path, out_path, cache, keep=False, log=print):
 
 
 def main():
+    for st in (sys.stdout, sys.stderr):
+        try:
+            st.reconfigure(encoding="utf-8")
+        except Exception:
+            pass
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("tex", nargs="+")
     ap.add_argument("-o", "--out", help="output .docx (only with a single input)")
