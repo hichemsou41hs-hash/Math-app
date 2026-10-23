@@ -890,6 +890,19 @@ def postprocess(path, out, head, foot, figs):
             if n.tag == qn("w:MPGROUP"):
                 group.append(n)
             n = n.getnext()
+        if len(group) > 1 and any(g.find(".//" + qn("w:tbl")) is not None or g.find(qn("w:tbl")) is not None
+                                  for g in group):
+            # a box (table) beside a figure does not fit in half a page in Word: it gets clipped.
+            # Stack the columns instead, right column first (Arabic reading order), figures centred.
+            anchor = group[0]
+            for g in reversed(group):
+                for e in list(g):
+                    if e.tag == qn("w:p") and list(e.iter(qn("w:drawing"))):
+                        set_jc(e, "center")
+                    anchor.addprevious(e)
+            for g in group:
+                g.getparent().remove(g)
+            continue
         w = TEXT_W / len(group)
         tbl = new_table([w] * len(group))
         tbl.find(qn("w:tblPr")).append(borders("w:tblBorders", "FFFFFF", 0, val="nil"))
