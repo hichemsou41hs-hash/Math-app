@@ -11,6 +11,8 @@ import ex3Data from './data/ex3.words.json';
 import { buildEx3 } from './episodes/ex3';
 import ex4Data from './data/ex4.words.json';
 import { buildEx4 } from './episodes/ex4';
+import bac1Data from './data/bac1.words.json';
+import { buildBac1 } from './episodes/bac1';
 
 export interface Episode {
   id: string;
@@ -69,6 +71,15 @@ export const EPISODES: Record<string, Episode> = {
     keys: [],
     build: buildEx4,
     parts: ['السلام عليكم', 'المشتقة: f بريم', 'التمرين الثاني'],
+  },
+  bac1: {
+    id: 'bac1',
+    title: 'حلول تمارين البكالوريا: الدالة الأسية',
+    badge: 'الحلقة 1',
+    timing: bac1Data as Timing,
+    keys: [],
+    build: buildBac1,
+    parts: ['السلام عليكم', 'السؤال الثاني', 'ثم: استنتج', 'السؤال الثالث', 'السؤال الرابع', 'السؤال الخامس'],
   },
 };
 

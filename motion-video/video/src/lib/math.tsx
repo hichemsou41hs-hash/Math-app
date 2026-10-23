@@ -8,10 +8,10 @@ export interface Box { w: number; asc: number; desc: number; draw: El[] }
 
 const SYMBOLS: Record<string, string> = {
   infty: '∞', to: '→', R: 'ℝ', times: '×', cdot: '·', le: '≤', ge: '≥', iff: '⟺', approx: '≈', ne: '≠',
-  Delta: 'Δ', in: '∈', forall: '∀', mapsto: '↦', implies: '⟹', quad: ' ', pm: '±', lt: '<', gt: '>',
+  Delta: 'Δ', Omega: 'Ω', in: '∈', forall: '∀', mapsto: '↦', implies: '⟹', quad: ' ', pm: '±', lt: '<', gt: '>',
 };
 const REL = new Set(['=', '<', '>', '≤', '≥', '⟺', '≈', '≠', '→', '∈', '↦', '⟹', '+', '−', '×', '·', '±']);
-const SYMFONT = new Set(['Δ', '∞', 'ℝ', '⟺', '≤', '≥', '≈', '≠', '∈', '∀', '↦', '⟹', '→', '−', '×', '·', '±']);
+const SYMFONT = new Set(['Δ', 'Ω', '∞', 'ℝ', '⟺', '≤', '≥', '≈', '≠', '∈', '∀', '↦', '⟹', '→', '−', '×', '·', '±']);
 
 function glyph(s: string, size: number, font: string, weight = 400): Box {
   const css = `${weight} ${size}px ${font}`;
@@ -170,6 +170,8 @@ export function typeset(src: string, size: number, weight = 400): Box {
       return glyph(s, sz * 0.95, NASKH, 700);
     }
     if (c === 'left' || c === 'right') return space(0); // handled in seq
+    // unary signs (−∞, −3, +∞): no relation spacing
+    if (c === 'umin' || c === 'uplus') return scripts(row([glyph(c === 'umin' ? '−' : '+', sz, c === 'umin' ? SYM : HAND, weight), space(sz * 0.03)]), sz);
     if (c === ',') return space(sz * 0.2);
     if (c === ';') return space(sz * 0.35);
     if (SYMBOLS[c]) return scripts(atomText(SYMBOLS[c], sz), sz);
