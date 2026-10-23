@@ -422,7 +422,7 @@ def rewrite_body(body, meta):
     body = re.sub(r"\\(clearpage|newpage)\b", "\n\n" + mk("PB") + "\n\n", body)
     body = re.sub(r"\\(origNeedspace|Needspace\*?)\{[^}]*\}", "", body)
     body = re.sub(r"\\(vspace|hspace)\*?\{[^}]*\}", " ", body)
-    body = re.sub(r"\\(smallskip|medskip|bigskip|noindent|centering|hfill)(?![A-Za-z])", "", body)
+    body = re.sub(r"\\(smallskip|medskip|bigskip|noindent|centering|hfill|tiny|scriptsize|footnotesize|small|normalsize|large|Large|LARGE)(?![A-Za-z])", "", body)
     body = re.sub(r"\\renewcommand\{\\arraystretch\}\{[^}]*\}", "", body)
     body = re.sub(r"\\newline(?![A-Za-z])\s*", mk("BR") + " ", body)
     body = re.sub(r"\\rule(\[[^\]]*\])?\{[^}]*\}\{[^}]*\}", "", body)        # struts
@@ -566,6 +566,7 @@ PANDOC_MACROS = r"""
 \newcommand{\pgcd}{\operatorname{PGCD}}\newcommand{\ppcm}{\operatorname{PPCM}}
 \newcommand{\bx}[1]{\ensuremath{\boxed{#1}}}
 \newcommand{\ok}{$\checkmark$}
+\newcommand{\texttimes}{×}
 \newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
 \newcommand{\dx}{\,\mathrm{d}x}\newcommand{\dt}{\,\mathrm{d}t}\newcommand{\ua}{\ \mathrm{u.a}}
 """
@@ -985,6 +986,10 @@ def postprocess(path, out, head, foot, figs):
         latin = re.search(r"[A-Za-z0-9]", txt) and not ARABIC.search(txt)
         if rpr.find(qn("w:rtl")) is None and not latin:
             rpr.append(OxmlElement("w:rtl"))
+        if latin and re.search(r"[A-Za-z]", txt) and r.getparent().tag == qn("w:p"):
+            t0 = r.find(qn("w:t"))   # LRM: keep a leading number inside the Latin run (e.g. "5 nCr 2")
+            if t0 is not None and t0.text and not t0.text.startswith("\u200e"):
+                t0.text = "\u200e" + t0.text
     fix_order(body)
 
     # --- 6. header / footer
