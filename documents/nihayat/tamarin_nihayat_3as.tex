@@ -1,0 +1,1515 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}تمارين تجريبية: النهايات والاستمرارية والاشتقاقية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\tikzset{od/.style={draw=cDef,fill=white,thick},fd/.style={fill=cDef}}
+\BeforeBeginEnvironment{tamrin}{\Needspace{12\baselineskip}}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{22}{30}\selectfont\bfseries تمارين تجريبية: النهايات والاستمرارية والاشتقاقية}\\[8pt]
+{\color{white}\large تمارين متدرجة ومسائل شاملة مع الحلول المفصلة خطوة بخطوة}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- الشعب العلمية}
+\end{tcolorbox}
+\end{LTR}
+\section{النهايات}
+% ------------------------------------------------------------------
+\begin{tamrin}{الأشكال غير المعينة في الدوال كثيرات الحدود والناطقة}
+احسب النهايات التالية، مع تحديد الشكل غير المعين إن وُجد:
+\begin{sq}
+\qa $\displaystyle\lim_{x\to+\infty}\left(-2x^{3}+x^{2}-5\right)$
+\qb $\displaystyle\lim_{x\to-\infty}\frac{3x^{2}-x+1}{1-2x^{2}}$
+\qc $\displaystyle\lim_{x\to+\infty}\frac{x^{3}+1}{x^{2}-4}$
+\qd $\displaystyle\lim_{x\to-\infty}\frac{5x+2}{x^{2}+1}$
+\qe $\displaystyle\lim_{x\to2}\frac{x^{2}-4}{x^{2}-3x+2}$
+\item[(و)] $\displaystyle\lim_{x\to1}\frac{x^{3}-1}{x-1}$
+\item[(ز)] $\displaystyle\lim_{\substack{x\to3\\ x<3}}\frac{x+1}{x-3}$ \ و \ $\displaystyle\lim_{\substack{x\to3\\ x>3}}\frac{x+1}{x-3}$
+\item[(ح)] $\displaystyle\lim_{x\to0}\left(\frac{1}{x}-\frac{1}{x^{2}+x}\right)$
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\textbf{قواعد نستعملها:} نهاية كثير حدود عند $\pm\infty$ هي نهاية حده الأعلى درجة، ونهاية دالة ناطقة عند $\pm\infty$ هي نهاية حاصل قسمة الحدين الأعلى درجة. والأشكال غير المعينة أربعة: $\infty-\infty$، \ $0\times\infty$، \ $\dfrac{\infty}{\infty}$، \ $\dfrac{0}{0}$.
+
+\pa $\lim\limits_{x\to+\infty}(-2x^{3})=-\infty$ و $\lim\limits_{x\to+\infty}x^{2}=+\infty$: شكل غير معين من النوع $\infty-\infty$. نخرج الحد الأعلى درجة عاملا مشتركا:
+\[-2x^{3}+x^{2}-5=-2x^{3}\left(1-\frac{1}{2x}+\frac{5}{2x^{3}}\right)\]
+لما $x\to+\infty$: القوس يؤول إلى $1$ و $-2x^{3}\to-\infty$. إذن \bx{\lim_{x\to+\infty}\left(-2x^{3}+x^{2}-5\right)=-\infty}
+
+\pb شكل غير معين $\dfrac{\infty}{\infty}$. نأخذ الحدين الأعلى درجة:
+\[\lim_{x\to-\infty}\frac{3x^{2}-x+1}{1-2x^{2}}=\lim_{x\to-\infty}\frac{3x^{2}}{-2x^{2}}=\bx{-\frac{3}{2}}\]
+
+\pc شكل غير معين $\dfrac{\infty}{\infty}$:
+\[\lim_{x\to+\infty}\frac{x^{3}+1}{x^{2}-4}=\lim_{x\to+\infty}\frac{x^{3}}{x^{2}}=\lim_{x\to+\infty}x=\bx{+\infty}\]
+
+\pd شكل غير معين $\dfrac{\infty}{\infty}$:
+\[\lim_{x\to-\infty}\frac{5x+2}{x^{2}+1}=\lim_{x\to-\infty}\frac{5x}{x^{2}}=\lim_{x\to-\infty}\frac{5}{x}=\bx{0}\]
+
+\pe بالتعويض: البسط $2^{2}-4=0$ والمقام $4-6+2=0$: شكل غير معين $\dfrac00$. العدد $2$ جذر للبسط والمقام، فنحلّل:
+$x^{2}-4=(x-2)(x+2)$ و $x^{2}-3x+2=(x-2)(x-1)$. ومن أجل $x\neq2$:
+\[\frac{x^{2}-4}{x^{2}-3x+2}=\frac{(x-2)(x+2)}{(x-2)(x-1)}=\frac{x+2}{x-1}\qquad\text{ومنه}\qquad \lim_{x\to2}\frac{x^{2}-4}{x^{2}-3x+2}=\frac{2+2}{2-1}=\bx{4}\]
+
+\par\smallskip\textbf{(و)} شكل غير معين $\dfrac00$. نستعمل المتطابقة $a^{3}-b^{3}=(a-b)(a^{2}+ab+b^{2})$: \ $x^{3}-1=(x-1)(x^{2}+x+1)$، ومنه:
+\[\lim_{x\to1}\frac{x^{3}-1}{x-1}=\lim_{x\to1}\left(x^{2}+x+1\right)=\bx{3}\]
+
+\par\smallskip\textbf{(ز)} البسط يؤول إلى $4>0$ والمقام يؤول إلى $0$، فالنهاية لا نهائية وإشارتها حسب إشارة $x-3$:
+\begin{itemize}
+\item لما $x<3$: $x-3\to0^{-}$، ومنه \bx{\displaystyle\lim_{x\to3^{-}}\frac{x+1}{x-3}=-\infty}
+\item لما $x>3$: $x-3\to0^{+}$، ومنه \bx{\displaystyle\lim_{x\to3^{+}}\frac{x+1}{x-3}=+\infty}
+\end{itemize}
+التفسير: المستقيم ذو المعادلة $x=3$ مقارب عمودي لمنحنى الدالة.
+
+\par\smallskip\textbf{(ح)} لما $x\to0$ كل من الحدين يؤول إلى لا نهاية (شكل $\infty-\infty$). نوحّد المقامات ($x^{2}+x=x(x+1)$):
+\[\frac{1}{x}-\frac{1}{x(x+1)}=\frac{(x+1)-1}{x(x+1)}=\frac{x}{x(x+1)}=\frac{1}{x+1}\qquad\text{ومنه}\qquad \lim_{x\to0}\left(\frac{1}{x}-\frac{1}{x^{2}+x}\right)=\bx{1}\]
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{إزالة حالات عدم التعيين بالمرافق}
+احسب النهايات التالية:
+\begin{sq}
+\qa $\displaystyle\lim_{x\to+\infty}\left(\sqrt{x^{2}+x}-x\right)$
+\qb $\displaystyle\lim_{x\to-\infty}\left(\sqrt{x^{2}+x}+x\right)$
+\qc $\displaystyle\lim_{x\to3}\frac{\sqrt{x+1}-2}{x-3}$
+\qd $\displaystyle\lim_{x\to+\infty}\left(\sqrt{x+1}-\sqrt{x}\right)$
+\qe $\displaystyle\lim_{x\to-\infty}\left(\sqrt{x^{2}+1}+2x\right)$
+\item[(و)] $\displaystyle\lim_{x\to0}\frac{x}{\sqrt{x+4}-2}$
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\textbf{الفكرة:} نضرب في المرافق ونستعمل $(\sqrt{A}-B)(\sqrt{A}+B)=A-B^{2}$. ونتذكر أن $\sqrt{x^{2}}=|x|$، أي $\sqrt{x^{2}}=x$ لما $x>0$ و $\sqrt{x^{2}}=-x$ لما $x<0$.
+
+\pa شكل $\infty-\infty$. نضرب ونقسم على المرافق $\sqrt{x^{2}+x}+x$ (موجب لما $x>0$):
+\[\sqrt{x^{2}+x}-x=\frac{(x^{2}+x)-x^{2}}{\sqrt{x^{2}+x}+x}=\frac{x}{\sqrt{x^{2}+x}+x}\]
+ولما $x>0$: $\sqrt{x^{2}+x}=\sqrt{x^{2}\left(1+\frac1x\right)}=x\sqrt{1+\frac1x}$، ومنه:
+\[\frac{x}{x\sqrt{1+\frac1x}+x}=\frac{1}{\sqrt{1+\frac1x}+1}\xrightarrow[x\to+\infty]{}\frac{1}{1+1}\qquad\text{إذن}\qquad\bx{\lim_{x\to+\infty}\left(\sqrt{x^{2}+x}-x\right)=\frac12}\]
+
+\pb شكل $\infty-\infty$ (لأن $x\to-\infty$). نضرب في المرافق $\sqrt{x^{2}+x}-x$:
+\[\sqrt{x^{2}+x}+x=\frac{(x^{2}+x)-x^{2}}{\sqrt{x^{2}+x}-x}=\frac{x}{\sqrt{x^{2}+x}-x}\]
+لما $x<0$: $\sqrt{x^{2}}=-x$ ومنه $\sqrt{x^{2}+x}=-x\sqrt{1+\frac1x}$، إذن:
+\[\frac{x}{-x\sqrt{1+\frac1x}-x}=\frac{1}{-\sqrt{1+\frac1x}-1}\xrightarrow[x\to-\infty]{}\frac{1}{-2}\qquad\text{إذن}\qquad\bx{\lim_{x\to-\infty}\left(\sqrt{x^{2}+x}+x\right)=-\frac12}\]
+
+\pc شكل $\dfrac00$. نضرب البسط والمقام في المرافق $\sqrt{x+1}+2$:
+\[\frac{\sqrt{x+1}-2}{x-3}=\frac{(x+1)-4}{(x-3)\left(\sqrt{x+1}+2\right)}=\frac{1}{\sqrt{x+1}+2}\]
+ومنه \ \bx{\lim_{x\to3}\frac{\sqrt{x+1}-2}{x-3}=\frac{1}{2+2}=\frac14}
+\par
+
+\pd شكل $\infty-\infty$:
+\[\sqrt{x+1}-\sqrt{x}=\frac{(x+1)-x}{\sqrt{x+1}+\sqrt{x}}=\frac{1}{\sqrt{x+1}+\sqrt{x}}\]
+والمقام يؤول إلى $+\infty$،
+إذن \ \bx{\lim_{x\to+\infty}\left(\sqrt{x+1}-\sqrt{x}\right)=0}
+\par
+
+\pe شكل $\infty-\infty$ ($\sqrt{x^{2}+1}\to+\infty$ و $2x\to-\infty$). هنا لا نحتاج المرافق، بل نخرج $x$ عاملا مشتركا مع $\sqrt{x^{2}}=-x$ لأن $x<0$:
+\[\sqrt{x^{2}+1}+2x=-x\sqrt{1+\frac{1}{x^{2}}}+2x=x\left(2-\sqrt{1+\frac{1}{x^{2}}}\right)\]
+القوس يؤول إلى $2-1=1$ و $x\to-\infty$. إذن \bx{\lim_{x\to-\infty}\left(\sqrt{x^{2}+1}+2x\right)=-\infty}
+
+\par\smallskip\textbf{(و)} شكل $\dfrac00$. نضرب البسط والمقام في $\sqrt{x+4}+2$:
+\[\frac{x}{\sqrt{x+4}-2}=\frac{x\left(\sqrt{x+4}+2\right)}{(x+4)-4}=\sqrt{x+4}+2\qquad\text{إذن}\qquad\bx{\lim_{x\to0}\frac{x}{\sqrt{x+4}-2}=4}\]
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{نهايات مثلثية، النهايات بالمقارنة ونهاية دالة مركبة}
+\QQ{1} احسب: \quad (أ) $\displaystyle\lim_{x\to0}\frac{\sin 3x}{x}$ \qquad (ب) $\displaystyle\lim_{x\to0}\frac{\sin 2x}{\sin 5x}$ \qquad (جـ) $\displaystyle\lim_{x\to0}\frac{1-\cos x}{x^{2}}$ \qquad (د) $\displaystyle\lim_{x\to0}\frac{1-\cos x}{x}$
+\QQ{2} باستعمال الحصر أو المقارنة احسب:
+\begin{sq}
+\qa $\displaystyle\lim_{x\to+\infty}\frac{2+\cos x}{x}$
+\qb $\displaystyle\lim_{x\to+\infty}\frac{x+\sin x}{x+1}$
+\qc $\displaystyle\lim_{x\to-\infty}\left(x^{2}+3\sin x\right)$
+\end{sq}
+\QQ{3} احسب: \quad (أ) $\displaystyle\lim_{x\to+\infty}\sqrt{\frac{4x^{2}+1}{x^{2}+3}}$ \qquad (ب) $\displaystyle\lim_{x\to+\infty}\sin\left(\frac{\pi x}{2x+1}\right)$
+\end{tamrin}
+\begin{hal}
+\textbf{نتائج نستعملها:} \ $\displaystyle\lim_{x\to0}\frac{\sin x}{x}=1$ ، \ $\displaystyle\lim_{x\to0}\frac{\cos x-1}{x}=0$ ؛ و\textbf{مبرهنة الحصر}: إذا كان $g(x)\le f(x)\le h(x)$ بجوار $+\infty$ و $g$ ، $h$ لهما نفس النهاية $\ell$ فإن $\lim f=\ell$.
+
+\QQ{1}\pa نضع $X=3x$؛ لما $x\to0$ فإن $X\to0$:
+\[\frac{\sin 3x}{x}=3\times\frac{\sin 3x}{3x}=3\times\frac{\sin X}{X}\xrightarrow[x\to0]{}3\times1\qquad\text{إذن}\qquad\bx{\lim_{x\to0}\frac{\sin 3x}{x}=3}\]
+\pb نقسم البسط والمقام على $x$:
+\[\frac{\sin 2x}{\sin 5x}=\frac{2\times\dfrac{\sin 2x}{2x}}{5\times\dfrac{\sin 5x}{5x}}\xrightarrow[x\to0]{}\frac{2\times1}{5\times1}\qquad\text{إذن}\qquad\bx{\lim_{x\to0}\frac{\sin 2x}{\sin 5x}=\frac25}\]
+\pc شكل $\dfrac00$. نضرب البسط والمقام في $1+\cos x$ ونستعمل $1-\cos^{2}x=\sin^{2}x$:
+\[\frac{1-\cos x}{x^{2}}=\frac{1-\cos^{2}x}{x^{2}(1+\cos x)}=\left(\frac{\sin x}{x}\right)^{2}\times\frac{1}{1+\cos x}\xrightarrow[x\to0]{}1^{2}\times\frac{1}{1+1}\]
+إذن \ \bx{\lim_{x\to0}\frac{1-\cos x}{x^{2}}=\frac12}
+\par
+\pd $\dfrac{1-\cos x}{x}=-\dfrac{\cos x-1}{x}$، وهو العدد المشتق لـ $\cos$ عند $0$ مضروبا في $-1$، أي $-(-\sin 0)=0$. (أو: $\dfrac{1-\cos x}{x}=x\times\dfrac{1-\cos x}{x^{2}}\to0\times\frac12$). إذن \bx{\lim_{x\to0}\frac{1-\cos x}{x}=0}
+
+\QQ{2}\pa من أجل كل $x$: $-1\le\cos x\le1$ ومنه $1\le2+\cos x\le3$. ومن أجل $x>0$ نقسم على $x$:
+\[\frac{1}{x}\le\frac{2+\cos x}{x}\le\frac{3}{x}\]
+و $\lim\limits_{x\to+\infty}\dfrac1x=\lim\limits_{x\to+\infty}\dfrac3x=0$، فحسب مبرهنة الحصر: \bx{\lim_{x\to+\infty}\frac{2+\cos x}{x}=0}
+
+\pb $-1\le\sin x\le1$ ومنه $x-1\le x+\sin x\le x+1$، ومن أجل $x>0$ ($x+1>0$):
+\[\frac{x-1}{x+1}\le\frac{x+\sin x}{x+1}\le\frac{x+1}{x+1}=1\]
+و $\lim\limits_{x\to+\infty}\dfrac{x-1}{x+1}=\lim\limits_{x\to+\infty}\dfrac{x}{x}=1$. حسب مبرهنة الحصر: \bx{\lim_{x\to+\infty}\frac{x+\sin x}{x+1}=1}
+
+\pc $\sin x\ge-1$ ومنه $3\sin x\ge-3$، أي $x^{2}+3\sin x\ge x^{2}-3$. وبما أن $\lim\limits_{x\to-\infty}(x^{2}-3)=+\infty$ فإنه بالمقارنة: \bx{\lim_{x\to-\infty}\left(x^{2}+3\sin x\right)=+\infty}
+
+\QQ{3}\pa دالة مركبة: نضع $u(x)=\dfrac{4x^{2}+1}{x^{2}+3}$. لدينا $\lim\limits_{x\to+\infty}u(x)=\lim\limits_{x\to+\infty}\dfrac{4x^{2}}{x^{2}}=4$، و $\lim\limits_{X\to4}\sqrt{X}=2$. إذن \bx{\lim_{x\to+\infty}\sqrt{\frac{4x^{2}+1}{x^{2}+3}}=2}
+
+\pb $\lim\limits_{x\to+\infty}\dfrac{\pi x}{2x+1}=\lim\limits_{x\to+\infty}\dfrac{\pi x}{2x}=\dfrac{\pi}{2}$، و $\lim\limits_{X\to\frac{\pi}{2}}\sin X=\sin\dfrac{\pi}{2}=1$. إذن \bx{\lim_{x\to+\infty}\sin\left(\frac{\pi x}{2x+1}\right)=1}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{المستقيمات المقاربة والوضع النسبي}
+\QQ{1} $f$ الدالة المعرفة على $\R-\{1\}$ بـ: $f(x)=\dfrac{2x^{2}-3x+2}{x-1}$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس.
+\begin{sq}
+\qa احسب نهايات $f$ عند أطراف مجموعة تعريفها، وفسّر النتائج هندسيا.
+\qb عيّن الأعداد الحقيقية $a$ ، $b$ و $c$ بحيث: $f(x)=ax+b+\dfrac{c}{x-1}$.
+\qc استنتج أن $(C_f)$ يقبل مستقيما مقاربا مائلا $(\Delta)$ يطلب تعيين معادلة له، ثم ادرس وضعية $(C_f)$ بالنسبة إلى $(\Delta)$.
+\end{sq}
+\QQ{2} $g$ الدالة المعرفة على $\R-\{-2\}$ بـ: $g(x)=\dfrac{3x-1}{x+2}$. عيّن المستقيمات المقاربة لمنحناها وادرس الوضع النسبي للمنحنى مع المقارب الأفقي.
+\QQ{3} $h$ الدالة المعرفة على $\R$ بـ: $h(x)=\sqrt{x^{2}+2x+5}$. بيّن أن المستقيم $(d_1):\ y=x+1$ مقارب مائل لـ $(C_h)$ عند $+\infty$، وأن $(d_2):\ y=-x-1$ مقارب مائل له عند $-\infty$، ثم حدّد وضعية $(C_h)$ بالنسبة إليهما.
+\end{tamrin}
+\begin{hal}
+\QQ{1}\pa \textbf{عند $\pm\infty$:} $\lim\limits_{x\to-\infty}f(x)=\lim\limits_{x\to-\infty}\dfrac{2x^{2}}{x}=\lim\limits_{x\to-\infty}2x=\bx{-\infty}$ \ و \ $\lim\limits_{x\to+\infty}f(x)=\lim\limits_{x\to+\infty}2x=\bx{+\infty}$.
+
+\textbf{عند $1$:} البسط يؤول إلى $2-3+2=1>0$، والمقام $x-1\to0^{\pm}$:
+\[\lim_{x\to1^{-}}f(x)=\frac{1}{0^{-}}=\bx{-\infty}\qquad\qquad \lim_{x\to1^{+}}f(x)=\frac{1}{0^{+}}=\bx{+\infty}\]
+\textbf{التفسير:} المستقيم ذو المعادلة \bx{x=1} مقارب عمودي لـ $(C_f)$.
+
+\pb $ax+b+\dfrac{c}{x-1}=\dfrac{(ax+b)(x-1)+c}{x-1}=\dfrac{ax^{2}+(b-a)x+(c-b)}{x-1}$. بالمطابقة مع $\dfrac{2x^{2}-3x+2}{x-1}$:
+\[\left\{\begin{array}{l}a=2\\ b-a=-3\\ c-b=2\end{array}\right.\qquad\text{ومنه}\qquad a=2,\quad b=-1,\quad c=1\qquad\text{أي}\qquad \bx{f(x)=2x-1+\frac{1}{x-1}}\]
+
+\pc $f(x)-(2x-1)=\dfrac{1}{x-1}$ و $\lim\limits_{x\to\pm\infty}\dfrac{1}{x-1}=0$. إذن المستقيم \bx{(\Delta):\ y=2x-1} مقارب مائل لـ $(C_f)$ عند $-\infty$ وعند $+\infty$.
+
+إشارة الفرق $f(x)-y=\dfrac{1}{x-1}$ هي إشارة $x-1$:
+\begin{TAB}
+\tkzTabInit[lgt=3.2,espcl=4]{$x$ /0.8,$f(x)-y$ /0.8,\ar{الوضع النسبي} /1}{$-\infty$,$1$,$+\infty$}
+\tkzTabLine{,-,d,+,}
+\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ تحت $(\Delta)$}},d,\hbox{\ar{\footnotesize $(C_f)$ فوق $(\Delta)$}},}
+\end{TAB}
+\begin{GR}{-3}{5}{-6}{9}{0.5}
+ \Ticks{-2,-1,1,2,3,4}{-4,-2,2,4,6,8}
+ \draw[cThm,thick,dashed] (1,-6)--(1,9);
+ \draw[cEx,thick,dashed,domain=-3:5] plot (\x,{2*\x-1});
+ \draw[cDef,very thick,domain=-3:0.88,samples=150] plot (\x,{2*\x-1+1/(\x-1)});
+ \draw[cDef,very thick,domain=1.1:5,samples=150] plot (\x,{2*\x-1+1/(\x-1)});
+ \node[cEx] at (4.2,5.6){$(\Delta)$};
+ \node[cThm] at (-0.9,8.3){$x=1$};
+ \node[cDef] at (-2.1,-2.2){$(C_f)$};
+\end{GR}
+
+\QQ{2} $\lim\limits_{x\to\pm\infty}g(x)=\lim\limits_{x\to\pm\infty}\dfrac{3x}{x}=3$: المستقيم \bx{y=3} مقارب أفقي عند $\pm\infty$.
+وعند $-2$: البسط يؤول إلى $-7<0$، ومنه $\lim\limits_{x\to-2^{-}}g(x)=\dfrac{-7}{0^{-}}=+\infty$ و $\lim\limits_{x\to-2^{+}}g(x)=\dfrac{-7}{0^{+}}=-\infty$: المستقيم \bx{x=-2} مقارب عمودي.
+
+الوضع النسبي: $g(x)-3=\dfrac{3x-1-3x-6}{x+2}=\dfrac{-7}{x+2}$، إشارته عكس إشارة $x+2$:
+\begin{TAB}
+\tkzTabInit[lgt=3.2,espcl=4]{$x$ /0.8,$g(x)-3$ /0.8,\ar{الوضع النسبي} /1}{$-\infty$,$-2$,$+\infty$}
+\tkzTabLine{,+,d,-,}
+\tkzTabLine{,\hbox{\ar{\footnotesize $(C_g)$ فوق $y=3$}},d,\hbox{\ar{\footnotesize $(C_g)$ تحت $y=3$}},}
+\end{TAB}
+
+\QQ{3} نلاحظ أن $x^{2}+2x+5=(x+1)^{2}+4>0$، فـ $h$ معرفة على $\R$.
+
+\textbf{عند $+\infty$:} نضرب في المرافق:
+\[h(x)-(x+1)=\sqrt{(x+1)^{2}+4}-(x+1)=\frac{(x+1)^{2}+4-(x+1)^{2}}{\sqrt{(x+1)^{2}+4}+(x+1)}=\frac{4}{\sqrt{x^{2}+2x+5}+x+1}\]
+المقام يؤول إلى $+\infty$ لما $x\to+\infty$، ومنه $\lim\limits_{x\to+\infty}\left[h(x)-(x+1)\right]=0$: \bx{(d_1):\ y=x+1} مقارب مائل عند $+\infty$.
+
+\textbf{عند $-\infty$:}
+\[h(x)-(-x-1)=\sqrt{(x+1)^{2}+4}+(x+1)=\frac{4}{\sqrt{x^{2}+2x+5}-(x+1)}\]
+لما $x\to-\infty$: $-(x+1)\to+\infty$ فالمقام يؤول إلى $+\infty$، والفرق يؤول إلى $0$: \bx{(d_2):\ y=-x-1} مقارب مائل عند $-\infty$.
+
+\textbf{الوضعية:} بما أن $(x+1)^{2}+4>(x+1)^{2}$ فإن $\sqrt{(x+1)^{2}+4}>|x+1|$، ومنه $h(x)>x+1$ و $h(x)>-x-1$ من أجل كل $x$:
+\bxt{$(C_h)$ يقع فوق $(d_1)$ وفوق $(d_2)$ على $\R$}.
+\end{hal}
+
+\section{الاستمرارية ومبرهنة القيم المتوسطة}
+% ------------------------------------------------------------------
+\begin{tamrin}{دوال معرفة بجزأين: تعيين وسيط لتكون الدالة مستمرة}
+\QQ{1} $f$ الدالة المعرفة على $[-3;+\infty[$ بـ:
+\(f(x)=\left\{\begin{array}{ll}x^{2}+ax & ;\ x\le1\\[3pt] \dfrac{\sqrt{x+3}-2}{x-1} & ;\ x>1\end{array}\right.\) \ حيث $a$ عدد حقيقي.
+عيّن $a$ حتى تكون $f$ مستمرة عند $1$.
+\QQ{2} $g$ الدالة المعرفة على $\R$ بـ:
+\(g(x)=\left\{\begin{array}{ll}\dfrac{\sin 3x}{x} & ;\ x<0\\[3pt] x^{2}+b & ;\ x\ge0\end{array}\right.\). \ عيّن $b$ حتى تكون $g$ مستمرة على $\R$.
+\QQ{3} $k$ الدالة المعرفة على $\R$ بـ: $k(x)=\dfrac{x^{2}-4}{x-2}$ إذا كان $x\neq2$، و $k(2)=\lambda$. عيّن $\lambda$ حتى تكون $k$ مستمرة عند $2$.
+\end{tamrin}
+\begin{hal}
+\textbf{تذكير:} $f$ مستمرة عند $x_0$ معناه $\lim\limits_{x\to x_0^{-}}f(x)=\lim\limits_{x\to x_0^{+}}f(x)=f(x_0)$.
+
+\QQ{1} \textbf{القيمة:} $f(1)=1^{2}+a\times1=1+a$. \textbf{من اليسار:} $\lim\limits_{x\to1^{-}}f(x)=\lim\limits_{x\to1^{-}}(x^{2}+ax)=1+a$ (كثير حدود).
+
+\textbf{من اليمين:} شكل $\dfrac00$؛ نضرب في المرافق:
+\[\frac{\sqrt{x+3}-2}{x-1}=\frac{(x+3)-4}{(x-1)\left(\sqrt{x+3}+2\right)}=\frac{1}{\sqrt{x+3}+2}\qquad\text{ومنه}\qquad\lim_{x\to1^{+}}f(x)=\frac{1}{2+2}=\frac14\]
+$f$ مستمرة عند $1$ معناه $1+a=\dfrac14$، إذن \bx{a=-\frac34}
+
+\QQ{2} على $]-\infty;0[$: $g$ حاصل قسمة دالتين مستمرتين والمقام لا ينعدم، فهي مستمرة. على $]0;+\infty[$: كثير حدود، مستمرة. يبقى الفحص عند $0$:
+\[g(0)=b,\qquad \lim_{x\to0^{+}}g(x)=b,\qquad \lim_{x\to0^{-}}\frac{\sin 3x}{x}=\lim_{x\to0^{-}}3\times\frac{\sin 3x}{3x}=3\]
+$g$ مستمرة على $\R$ معناه \bx{b=3}
+
+\QQ{3} من أجل $x\neq2$: $k(x)=\dfrac{(x-2)(x+2)}{x-2}=x+2$، ومنه $\lim\limits_{x\to2}k(x)=4$. إذن $k$ مستمرة عند $2$ معناه \bx{\lambda=4}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{قراءة الاستمرارية من التمثيل البياني}
+الشكل المقابل هو التمثيل البياني لدالة $f$ معرفة على المجال $[-3;4]$ (النقطة المملوءة تنتمي إلى المنحنى والنقطة الفارغة لا تنتمي إليه).
+\begin{GR}{-3}{4}{-2}{3}{1}
+ \Ticks{-3,-2,-1,1,2,3,4}{-1,1,2}
+ \draw[cDef,very thick] (-3,0)--(-1,2);
+ \draw[cDef,very thick,domain=-1:1,samples=60] plot (\x,{\x*\x});
+ \draw[cDef,very thick] (1,1)--(3,-1);
+ \draw[cDef,very thick] (3,2)--(4,2);
+ \draw[od] (-1,2) circle (2.5pt);
+ \fill[fd] (-1,1) circle (2.5pt);
+ \fill[fd] (-3,0) circle (2.5pt);
+ \fill[fd] (3,-1) circle (2.5pt);
+ \draw[od] (3,2) circle (2.5pt);
+ \fill[fd] (4,2) circle (2.5pt);
+ \draw[gray,dashed] (-1,0)--(-1,2) (3,0)--(3,2);
+ \node[cDef] at (2.4,0.9){$(C_f)$};
+\end{GR}
+\QQ{1} بقراءة بيانية عيّن: $f(-1)$ ، $\lim\limits_{x\to-1^{-}}f(x)$ ، $\lim\limits_{x\to-1^{+}}f(x)$ ، $f(1)$ ، $f(3)$ ، $\lim\limits_{x\to3^{-}}f(x)$ و $\lim\limits_{x\to3^{+}}f(x)$.
+\QQ{2} هل $f$ مستمرة عند $-1$؟ عند $1$؟ عند $3$؟ علّل.
+\QQ{3} عيّن أكبر المجالات التي تكون عليها $f$ مستمرة.
+\QQ{4}
+\begin{sq}
+\qa برّر أن المعادلة $f(x)=0$ تقبل حلا في المجال $[1;3]$.
+\qb لدينا $f(-1)=1$ و $f(4)=2$ والعدد $1{,}5$ محصور بينهما. هل تقبل المعادلة $f(x)=1{,}5$ حلا في $[-1;4]$ بالضرورة حسب مبرهنة القيم المتوسطة؟ ثم اقرأ حلولها من البيان.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} من البيان:
+\[f(-1)=1,\quad \lim_{x\to-1^{-}}f(x)=2,\quad \lim_{x\to-1^{+}}f(x)=1,\quad f(1)=1\]
+\[f(3)=-1,\quad \lim_{x\to3^{-}}f(x)=-1,\quad \lim_{x\to3^{+}}f(x)=2\]
+
+\QQ{2}
+\begin{itemize}
+\item \textbf{عند $-1$:} $\lim\limits_{x\to-1^{-}}f(x)=2\neq f(-1)=1$: \bxt{$f$ غير مستمرة عند $-1$} (المنحنى ينقطع؛ لكنها مستمرة على اليمين عند $-1$).
+\item \textbf{عند $1$:} النهايتان من اليمين ومن اليسار تساويان $1=f(1)$: \bxt{$f$ مستمرة عند $1$} (المنحنى لا ينقطع، رغم وجود «زاوية»).
+\item \textbf{عند $3$:} $\lim\limits_{x\to3^{+}}f(x)=2\neq f(3)=-1$: \bxt{$f$ غير مستمرة عند $3$}.
+\end{itemize}
+
+\QQ{3} نرسم المنحنى دون رفع القلم على كل من: \bx{[-3;-1[\,,\quad [-1;3]\,,\quad ]3;4]}
+
+\QQ{4}\pa $f$ مستمرة على $[1;3]$، و $f(1)=1>0$ و $f(3)=-1<0$، أي $f(1)\times f(3)<0$. حسب مبرهنة القيم المتوسطة توجد على الأقل قيمة $c\in\,]1;3[$ حيث $f(c)=0$ (من البيان $c=2$).
+
+\pb لا: $f$ \textbf{غير مستمرة} على $[-1;4]$ (انقطاع عند $3$)، فلا يمكن تطبيق المبرهنة على هذا المجال.
+بيانيا: على $[-1;1]$ قيم $f$ هي $[0;1]$، وعلى $[1;3]$ هي $[-1;1]$، وعلى $]3;4]$ تساوي $2$. ومنه صورة $[-1;4]$ هي $[-1;1]\cup\{2\}$ ولا تحوي $1{,}5$:
+\bxt{المعادلة $f(x)=1{,}5$ ليس لها حل في $[-1;4]$}، وهذا يبيّن أهمية شرط الاستمرارية.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مبرهنة القيم المتوسطة: الوجود والوحدانية وحصر الحل}
+\QQ{1} $f$ الدالة المعرفة على $\R$ بـ: $f(x)=x^{3}+x-1$.
+\begin{sq}
+\qa ادرس اتجاه تغير $f$ وشكّل جدول تغيراتها.
+\qb بيّن أن المعادلة $f(x)=0$ تقبل حلا وحيدا $\alpha$ في $\R$، وأن $0<\alpha<1$.
+\qc عيّن حصرا للعدد $\alpha$ سعته $10^{-2}$.
+\qd استنتج إشارة $f(x)$ على $\R$، وبيّن أن $\alpha=\dfrac{1}{1+\alpha^{2}}$.
+\end{sq}
+\QQ{2} $g$ الدالة المعرفة على $\left[0;\dfrac{\pi}{2}\right]$ بـ: $g(x)=\cos x-x$. بيّن أن المعادلة $\cos x=x$ تقبل حلا وحيدا $\beta$ في $\left[0;\dfrac{\pi}{2}\right]$، ثم تحقق أن $0{,}73<\beta<0{,}74$.
+\end{tamrin}
+\begin{hal}
+\textbf{مبرهنة القيم المتوسطة (حالة الوحدانية):} إذا كانت $f$ مستمرة ورتيبة تماما على $[a;b]$ و $f(a)\times f(b)<0$، فإن المعادلة $f(x)=0$ تقبل حلا وحيدا في $]a;b[$.
+
+\QQ{1}\pa $\lim\limits_{x\to-\infty}f(x)=\lim\limits_{x\to-\infty}x^{3}=-\infty$ و $\lim\limits_{x\to+\infty}f(x)=+\infty$. \quad $f'(x)=3x^{2}+1>0$ من أجل كل $x$، فـ $f$ متزايدة تماما على $\R$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=5]{$x$ /0.8,$f'(x)$ /0.8,$f(x)$ /1.6}{$-\infty$,$+\infty$}
+\tkzTabLine{,+,}
+\tkzTabVar{-/$-\infty$,+/$+\infty$}
+\end{TAB}
+
+\pb $f$ مستمرة ومتزايدة تماما على $\R$، وتأخذ قيمها في $]-\infty;+\infty[$ الذي يحوي $0$، فالمعادلة $f(x)=0$ تقبل حلا وحيدا $\alpha$. ولدينا $f(0)=-1<0$ و $f(1)=1>0$، ومنه \bx{0<\alpha<1}
+
+\pc نجرب قيما بخطوة $0{,}1$ ثم $0{,}01$: $f(0{,}6)=-0{,}184$ و $f(0{,}7)=0{,}043$، إذن $0{,}6<\alpha<0{,}7$. ثم:
+\[f(0{,}68)\approx-0{,}0056<0\qquad\text{و}\qquad f(0{,}69)\approx0{,}0185>0\qquad\text{إذن}\qquad\bx{0{,}68<\alpha<0{,}69}\]
+
+\pd $f$ متزايدة تماما و $f(\alpha)=0$: \ $f(x)<0$ على $]-\infty;\alpha[$ و $f(x)>0$ على $]\alpha;+\infty[$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=4]{$x$ /0.8,$f(x)$ /0.8}{$-\infty$,$\alpha$,$+\infty$}
+\tkzTabLine{,-,z,+,}
+\end{TAB}
+ومن $f(\alpha)=0$: $\alpha^{3}+\alpha=1$ أي $\alpha\left(\alpha^{2}+1\right)=1$، وبما أن $1+\alpha^{2}\neq0$: \bx{\alpha=\frac{1}{1+\alpha^{2}}}
+
+\QQ{2} $g$ مستمرة على $\left[0;\frac{\pi}{2}\right]$ (فرق دالتين مستمرتين)، و $g'(x)=-\sin x-1<0$ على $\left]0;\frac{\pi}{2}\right]$ (لأن $\sin x\ge0$ هناك)، فـ $g$ متناقصة تماما.
+$g(0)=1>0$ و $g\left(\frac{\pi}{2}\right)=0-\frac{\pi}{2}<0$. حسب مبرهنة القيم المتوسطة \bxt{المعادلة $\cos x=x$ تقبل حلا وحيدا $\beta$}.
+
+الحصر: $g(0{,}73)\approx0{,}0152>0$ و $g(0{,}74)\approx-0{,}0015<0$، إذن \bx{0{,}73<\beta<0{,}74}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{صورة مجال بدالة مستمرة وعدد حلول معادلة}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=x^{3}-3x+1$.
+\QQ{1} ادرس تغيرات $f$ وشكّل جدول تغيراتها.
+\QQ{2} عيّن صورة كل مجال من المجالات التالية بالدالة $f$: \ $[-1;1]$ ، $[1;+\infty[$ ، $]-\infty;-1]$ ، $[0;2]$ و $]-2;0[$.
+\QQ{3} بيّن أن المعادلة $f(x)=0$ تقبل ثلاثة حلول بالضبط، وعيّن مجالا طوله $1$ يحوي كل واحد منها.
+\QQ{4} حسب قيم الوسيط الحقيقي $m$، عيّن عدد حلول المعادلة $f(x)=m$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\lim\limits_{x\to-\infty}f(x)=\lim\limits_{x\to-\infty}x^{3}=-\infty$ ، $\lim\limits_{x\to+\infty}f(x)=+\infty$. \quad
+$f'(x)=3x^{2}-3=3(x-1)(x+1)$. \quad $f(-1)=-1+3+1=3$ و $f(1)=1-3+1=-1$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$ /0.8,$f'(x)$ /0.8,$f(x)$ /1.6}{$-\infty$,$-1$,$1$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$3$,-/$-1$,+/$+\infty$}
+\end{TAB}
+
+\QQ{2} \textbf{القاعدة:} صورة مجال بدالة مستمرة ورتيبة تماما هي المجال المحدود بصورتي (أو نهايتي) طرفيه.
+\begin{itemize}
+\item $f$ مستمرة ومتناقصة تماما على $[-1;1]$: $f([-1;1])=[f(1);f(-1)]=\bx{[-1;3]}$.
+\item متزايدة تماما على $[1;+\infty[$: $f([1;+\infty[)=\left[f(1);\lim\limits_{+\infty}f\right[=\bx{[-1;+\infty[}$.
+\item متزايدة تماما على $]-\infty;-1]$: $f(]-\infty;-1])=\bx{]-\infty;3]}$.
+\item على $[0;2]$ $f$ ليست رتيبة: متناقصة على $[0;1]$ ومتزايدة على $[1;2]$، مع $f(0)=1$ ، $f(1)=-1$ ، $f(2)=3$: \ $f([0;1])=[-1;1]$ و $f([1;2])=[-1;3]$، إذن $f([0;2])=\bx{[-1;3]}$.
+\item على $]-2;0[$: $f(-2)=-1$ ، $f(-1)=3$ ، $f(0)=1$: \ $f(]-2;-1])=]-1;3]$ و $f([-1;0[)=]1;3]$، إذن $f(]-2;0[)=\bx{]-1;3]}$.
+\end{itemize}
+
+\QQ{3} نطبق مبرهنة القيم المتوسطة على كل مجال تكون فيه $f$ رتيبة تماما:
+\begin{itemize}
+\item على $[-2;-1]$: $f$ متزايدة تماما، $f(-2)=-1<0$ و $f(-1)=3>0$: حل وحيد $x_1\in\,]-2;-1[$.
+\item على $[0;1]$: $f$ متناقصة تماما، $f(0)=1>0$ و $f(1)=-1<0$: حل وحيد $x_2\in\,]0;1[$.
+\item على $[1;2]$: $f$ متزايدة تماما، $f(1)=-1<0$ و $f(2)=3>0$: حل وحيد $x_3\in\,]1;2[$.
+\end{itemize}
+ولا توجد حلول أخرى: على $]-\infty;-2]$ لدينا $f(x)\le-1<0$، وعلى $[-1;0]$ لدينا $f(x)\ge1>0$، وعلى $[2;+\infty[$ لدينا $f(x)\ge3$. إذن \bxt{المعادلة $f(x)=0$ تقبل ثلاثة حلول بالضبط} (قيمها التقريبية $-1{,}88$ ، $0{,}35$ ، $1{,}53$).
+
+\QQ{4} حلول $f(x)=m$ هي فواصل نقط تقاطع $(C_f)$ مع المستقيم الأفقي $y=m$. من جدول التغيرات:
+\begin{itemize}
+\item $m<-1$ أو $m>3$: حل وحيد.
+\item $m=-1$ أو $m=3$: حلان (أحدهما مضاعف: $x=1$ أو $x=-1$).
+\item $-1<m<3$: ثلاثة حلول.
+\end{itemize}
+\end{hal}
+\section{الاشتقاقية}
+% ------------------------------------------------------------------
+\begin{tamrin}{العدد المشتق بالتعريف والتقريب التآلفي}
+باستعمال التعريف، أحسب العدد المشتق للدالة عند القيمة المعطاة، ثم اكتب معادلة المماس:
+\begin{sq}
+\qa $f(x)=x^{2}-3x$ \ عند $x_0=2$.
+\qb $g(x)=\sqrt{x+3}$ \ عند $x_0=1$.
+\qc $h(x)=\dfrac{1}{x}$ \ عند $x_0=-1$.
+\end{sq}
+\QQ{2} باستعمال التقريب التآلفي للدالة $g$ بجوار $1$، أعط قيمة مقربة للعدد $\sqrt{4{,}02}$.
+\end{tamrin}
+\begin{hal}
+\textbf{تعريف:} $f$ قابلة للاشتقاق عند $x_0$ إذا كانت النهاية $\displaystyle\lim_{x\to x_0}\frac{f(x)-f(x_0)}{x-x_0}$ موجودة ومنتهية، وهذه النهاية هي $f'(x_0)$. ومعادلة المماس: $y=f'(x_0)(x-x_0)+f(x_0)$.
+
+\pa $f(2)=4-6=-2$. من أجل $x\neq2$:
+\[\frac{f(x)-f(2)}{x-2}=\frac{x^{2}-3x+2}{x-2}=\frac{(x-2)(x-1)}{x-2}=x-1\xrightarrow[x\to2]{}1\]
+إذن $f$ قابلة للاشتقاق عند $2$ و \bx{f'(2)=1}. المماس: $y=1(x-2)-2$ أي \bx{y=x-4}
+
+\pb $g(1)=2$. نضرب في المرافق:
+\[\frac{g(x)-g(1)}{x-1}=\frac{\sqrt{x+3}-2}{x-1}=\frac{(x+3)-4}{(x-1)\left(\sqrt{x+3}+2\right)}=\frac{1}{\sqrt{x+3}+2}\xrightarrow[x\to1]{}\frac14\]
+إذن \bx{g'(1)=\frac14}. المماس: $y=\frac14(x-1)+2$ أي \bx{y=\frac14x+\frac74}
+
+\pc $h(-1)=-1$:
+\[\frac{h(x)-h(-1)}{x+1}=\frac{\frac1x+1}{x+1}=\frac{\frac{1+x}{x}}{x+1}=\frac{1}{x}\xrightarrow[x\to-1]{}-1\]
+إذن \bx{h'(-1)=-1}. المماس: $y=-(x+1)-1$ أي \bx{y=-x-2}
+
+\QQ{2} التقريب التآلفي بجوار $1$: من أجل $k$ قريب من $0$: $g(1+k)\approx g(1)+g'(1)\,k$، أي $\sqrt{4+k}\approx2+\dfrac{k}{4}$.
+مع $k=0{,}02$: \ $\sqrt{4{,}02}\approx2+\dfrac{0{,}02}{4}=\bx{2{,}005}$ \ (القيمة الحقيقية $2{,}004994\ldots$).
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{قابلية الاشتقاق عند نقطة: القيمة المطلقة والجذر، نصفا المماسين}
+\QQ{1} $f$ الدالة المعرفة على $\R$ بـ: $f(x)=\left|x^{2}-1\right|$.
+\begin{sq}
+\qa اكتب $f(x)$ دون رمز القيمة المطلقة.
+\qb ادرس قابلية اشتقاق $f$ عند $1$، وفسّر النتيجة هندسيا (اكتب معادلتي نصفي المماسين).
+\end{sq}
+\QQ{2} $g$ الدالة المعرفة على $[0;+\infty[$ بـ: $g(x)=x\sqrt{x}$. ادرس قابلية اشتقاق $g$ على يمين $0$ وفسّر.
+\QQ{3} $k$ الدالة المعرفة على $]-\infty;2]$ بـ: $k(x)=\sqrt{2-x}$. ادرس قابلية اشتقاق $k$ على يسار $2$ وفسّر.
+\end{tamrin}
+\begin{hal}
+\QQ{1}\pa $x^{2}-1=(x-1)(x+1)$ موجب على $]-\infty;-1]\cup[1;+\infty[$ وسالب على $]-1;1[$، ومنه:
+\[f(x)=\left\{\begin{array}{ll}x^{2}-1 & ;\ x\in\,]-\infty;-1]\cup[1;+\infty[\\ 1-x^{2} & ;\ x\in\,]-1;1[\end{array}\right.\]
+\pb $f(1)=0$.
+\begin{itemize}
+\item على اليمين ($x>1$): $\dfrac{f(x)-f(1)}{x-1}=\dfrac{x^{2}-1}{x-1}=x+1\xrightarrow[x\to1^{+}]{}2$.
+\item على اليسار ($x<1$ قريب من $1$): $\dfrac{f(x)-f(1)}{x-1}=\dfrac{1-x^{2}}{x-1}=-(x+1)\xrightarrow[x\to1^{-}]{}-2$.
+\end{itemize}
+العددان المشتقان على اليمين ($2$) وعلى اليسار ($-2$) مختلفان: \bxt{$f$ غير قابلة للاشتقاق عند $1$}.
+
+\textbf{التفسير:} $(C_f)$ يقبل عند النقطة $A(1;0)$ نصفي مماسين معادلتاهما:
+\bx{y=2(x-1)\ ;\ x\ge1} \ و \ \bx{y=-2(x-1)\ ;\ x\le1}، فالنقطة $A$ \textbf{نقطة زاوية}.
+\begin{GR}{-2.5}{2.5}{-1}{4}{0.8}
+ \Ticks{-2,-1,1,2}{1,2,3}
+ \draw[cDef,very thick,domain=-2.5:2.5,samples=200] plot (\x,{abs(\x*\x-1)});
+ \draw[cThm,thick,-{Stealth}] (1,0)--(2.2,2.4);
+ \draw[cEx,thick,-{Stealth}] (1,0)--(-0.2,2.4);
+ \fill[cThm] (1,0) circle (2.2pt) node[below right]{$A$};
+ \node[cDef] at (-2.1,3.6){$(C_f)$};
+\end{GR}
+
+\QQ{2} $g(0)=0$. من أجل $x>0$: $\dfrac{g(x)-g(0)}{x-0}=\dfrac{x\sqrt{x}}{x}=\sqrt{x}\xrightarrow[x\to0^{+}]{}0$.
+إذن \bxt{$g$ قابلة للاشتقاق على يمين $0$} و $g'_d(0)=0$: $(C_g)$ يقبل عند $O$ نصف مماس أفقي (منطبق على محور الفواصل).
+
+\QQ{3} $k(2)=0$. من أجل $x<2$: $\dfrac{k(x)-k(2)}{x-2}=\dfrac{\sqrt{2-x}}{x-2}=\dfrac{\sqrt{2-x}}{-\left(\sqrt{2-x}\right)^{2}}=\dfrac{-1}{\sqrt{2-x}}$.
+لما $x\to2^{-}$: $\sqrt{2-x}\to0^{+}$، ومنه النهاية $-\infty$. إذن \bxt{$k$ غير قابلة للاشتقاق على يسار $2$}، و $(C_k)$ يقبل عند النقطة $B(2;0)$ \textbf{نصف مماس عمودي} (موازيا لمحور التراتيب) موجها نحو الأعلى.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{معادلات المماسات: عند نقطة، موازية لمستقيم، تشمل نقطة}
+\QQ{1} $f$ الدالة المعرفة على $\R-\{-1\}$ بـ: $f(x)=\dfrac{2x-1}{x+1}$، و $(C_f)$ تمثيلها البياني.
+\begin{sq}
+\qa احسب $f'(x)$، ثم اكتب معادلة المماس $(T)$ لـ $(C_f)$ عند النقطة ذات الفاصلة $0$.
+\qb هل توجد مماسات لـ $(C_f)$ توازي المستقيم $(D):\ y=\dfrac34x$؟ إن وجدت اكتب معادلاتها.
+\qc هل يوجد مماس لـ $(C_f)$ معامل توجيهه سالب؟
+\end{sq}
+\QQ{2} $(P)$ المنحنى الممثل للدالة $x\mapsto x^{2}$. عيّن معادلات المماسات لـ $(P)$ التي تشمل النقطة $A(1;-3)$.
+\end{tamrin}
+\begin{hal}
+\QQ{1}\pa $f$ قابلة للاشتقاق على $\R-\{-1\}$ (دالة ناطقة)، و:
+\[f'(x)=\frac{2(x+1)-1\times(2x-1)}{(x+1)^{2}}=\bx{\frac{3}{(x+1)^{2}}}\]
+$f(0)=-1$ و $f'(0)=3$، ومنه $(T):\ y=3(x-0)-1$ أي \bx{(T):\ y=3x-1}
+
+\pb المماس عند النقطة ذات الفاصلة $a$ يوازي $(D)$ معناه $f'(a)=\dfrac34$:
+\[\frac{3}{(a+1)^{2}}=\frac34\iff(a+1)^{2}=4\iff a+1=2\ \text{أو}\ a+1=-2\iff a=1\ \text{أو}\ a=-3\]
+\begin{itemize}
+\item $a=1$: $f(1)=\frac12$، المماس $y=\frac34(x-1)+\frac12$ أي \bx{y=\frac34x-\frac14}
+\item $a=-3$: $f(-3)=\frac{-7}{-2}=\frac72$، المماس $y=\frac34(x+3)+\frac72$ أي \bx{y=\frac34x+\frac{23}{4}}
+\end{itemize}
+\pc $f'(x)=\dfrac{3}{(x+1)^{2}}>0$ دائما، إذن \bxt{لا يوجد مماس معامل توجيهه سالب}.
+
+\QQ{2} المماس لـ $(P)$ عند النقطة ذات الفاصلة $a$: $y=2a(x-a)+a^{2}$ أي $y=2ax-a^{2}$.
+يشمل $A(1;-3)$ معناه: $-3=2a\times1-a^{2}$ أي $a^{2}-2a-3=0$.
+المميز $\Delta=4+12=16$، ومنه $a=\dfrac{2-4}{2}=-1$ أو $a=\dfrac{2+4}{2}=3$.
+\begin{itemize}
+\item $a=-1$: \bx{y=-2x-1} \qquad \item $a=3$: \bx{y=6x-9}
+\end{itemize}
+تحقق: $-2(1)-1=-3$ \ok \ و \ $6(1)-9=-3$ \ok
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{القيم الحدية، نقطة الانعطاف والتقريب التآلفي}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=x^{3}-3x^{2}+4$، و $(C_f)$ تمثيلها البياني.
+\QQ{1} احسب نهايتي $f$ عند $-\infty$ و $+\infty$، ثم ادرس تغيراتها وعيّن قيمها الحدية المحلية.
+\QQ{2} بيّن أن $(C_f)$ يقبل نقطة انعطاف $\omega$ يطلب تعيينها، واكتب معادلة المماس $(T)$ عند $\omega$.
+\QQ{3} ادرس وضعية $(C_f)$ بالنسبة إلى $(T)$.
+\QQ{4} بيّن أن $\omega$ مركز تناظر لـ $(C_f)$.
+\QQ{5} تحقق أن $f(x)=(x+1)(x-2)^{2}$، ثم أنشئ $(T)$ و $(C_f)$.
+\QQ{6} باستعمال التقريب التآلفي عند $1$، أعط قيمة مقربة لـ $f(1{,}02)$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\lim\limits_{x\to-\infty}f(x)=\lim\limits_{x\to-\infty}x^{3}=\bx{-\infty}$ ، \ $\lim\limits_{x\to+\infty}f(x)=\bx{+\infty}$.
+
+$f'(x)=3x^{2}-6x=3x(x-2)$، تنعدم عند $0$ و $2$. \ $f(0)=4$ ، $f(2)=8-12+4=0$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$ /0.8,$f'(x)$ /0.8,$f(x)$ /1.6}{$-\infty$,$0$,$2$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$4$,-/$0$,+/$+\infty$}
+\end{TAB}
+$f'$ تنعدم مغيّرة إشارتها عند $0$ و $2$: \bx{f(0)=4} قيمة حدية عظمى محلية، و \bx{f(2)=0} قيمة حدية صغرى محلية.
+
+\QQ{2} $f''(x)=6x-6$ تنعدم عند $1$ مغيّرة إشارتها (سالبة قبل $1$ وموجبة بعده):
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3]{$x$ /0.8,$f''(x)$ /0.8}{$-\infty$,$1$,$+\infty$}
+\tkzTabLine{,-,z,+,}
+\end{TAB}
+إذن $(C_f)$ يقبل نقطة انعطاف \bx{\omega(1;2)} (لأن $f(1)=1-3+4=2$). \ $f'(1)=3-6=-3$، ومنه $(T):\ y=-3(x-1)+2$ أي \bx{(T):\ y=-3x+5}
+
+\QQ{3} $f(x)-(-3x+5)=x^{3}-3x^{2}+3x-1=(x-1)^{3}$، إشارته إشارة $x-1$:
+\begin{TAB}
+\tkzTabInit[lgt=3.2,espcl=4]{$x$ /0.8,$f(x)-y$ /0.8,\ar{الوضع النسبي} /1}{$-\infty$,$1$,$+\infty$}
+\tkzTabLine{,-,z,+,}
+\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ تحت $(T)$}},t,\hbox{\ar{\footnotesize $(C_f)$ فوق $(T)$}},}
+\end{TAB}
+المماس $(T)$ «يخترق» المنحنى عند $\omega$، وهذه خاصية نقطة الانعطاف.
+
+\QQ{4} من أجل كل $x$: $(2-x)\in\R$ و
+\[f(2-x)=(2-x)^{3}-3(2-x)^{2}+4=-x^{3}+3x^{2}\]
+(بعد النشر: $(2-x)^{3}=8-12x+6x^{2}-x^{3}$ و $3(2-x)^{2}=12-12x+3x^{2}$). ومنه $f(2-x)+f(x)=4=2\times2$: \bxt{$\omega(1;2)$ مركز تناظر لـ $(C_f)$}.
+
+\QQ{5} $(x+1)(x-2)^{2}=(x+1)(x^{2}-4x+4)=x^{3}-3x^{2}+4$ \ok. إذن $(C_f)$ يقطع محور الفواصل عند $x=-1$ ويمسّه عند $x=2$.
+\begin{GR}{-2}{4}{-3}{6}{0.75}
+ \Ticks{-1,1,2,3}{-2,-1,1,2,3,4,5}
+ \draw[cEx,thick,dashed,domain=-0.4:2.8] plot (\x,{-3*\x+5});
+ \draw[cDef,very thick,domain=-1.5:3.2,samples=150] plot (\x,{\x*\x*\x-3*\x*\x+4});
+ \fill[cThm] (1,2) circle (2.2pt) node[above right]{$\omega$};
+ \fill[cDef] (0,4) circle (2pt) (2,0) circle (2pt) (-1,0) circle (2pt);
+ \node[cEx] at (2.9,-2.5){$(T)$};
+ \node[cDef] at (3.5,4.5){$(C_f)$};
+\end{GR}
+
+\QQ{6} $f(1+k)\approx f(1)+f'(1)\,k=2-3k$ من أجل $k$ قريب من $0$. مع $k=0{,}02$: \ $f(1{,}02)\approx2-0{,}06=\bx{1{,}94}$ (القيمة المضبوطة $1{,}940008$).
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مسألة من الواقع: أكبر حجم لعلبة}
+لدينا صفيحة مربعة من الورق المقوى طول ضلعها $12\,\text{cm}$. نقص من كل ركن مربعا طول ضلعه $x$ (بالسنتيمتر) ثم نطوي الحواف لنحصل على علبة بدون غطاء.
+\QQ{1} ما هي القيم الممكنة لـ $x$؟ بيّن أن حجم العلبة هو $V(x)=x(12-2x)^{2}$.
+\QQ{2} ادرس تغيرات الدالة $V$ على $]0;6[$.
+\QQ{3} استنتج قيمة $x$ التي يكون من أجلها حجم العلبة أكبر ما يمكن، وما هو هذا الحجم؟
+\end{tamrin}
+\begin{hal}
+\QQ{1} يجب أن يكون $x>0$ و $12-2x>0$ أي \bx{0<x<6}. قاعدة العلبة مربع ضلعه $12-2x$ وارتفاعها $x$، إذن \bx{V(x)=x(12-2x)^{2}}
+
+\QQ{2} $V$ قابلة للاشتقاق على $]0;6[$:
+\[V'(x)=(12-2x)^{2}+x\times2(12-2x)(-2)=(12-2x)\left[(12-2x)-4x\right]=(12-2x)(12-6x)\]
+على $]0;6[$: $12-2x>0$، فإشارة $V'(x)$ هي إشارة $12-6x$ (تنعدم عند $2$). \ $V(2)=2\times8^{2}=128$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3]{$x$ /0.8,$V'(x)$ /0.8,$V(x)$ /1.6}{$0$,$2$,$6$}
+\tkzTabLine{,+,z,-,}
+\tkzTabVar{-/$0$,+/$128$,-/$0$}
+\end{TAB}
+
+\QQ{3} $V$ تبلغ قيمتها العظمى عند $x=2$: يكون الحجم أكبر ما يمكن لما \bx{x=2\,\text{cm}}، وهذا الحجم هو \bx{V_{\max}=128\,\text{cm}^{3}}
+\end{hal}
+\section{مسائل شاملة}
+% ------------------------------------------------------------------
+\begin{tamrin}{أكمل الفراغات}
+أكمل الفراغات الآتية في كل ما يأتي:
+\QQ{1} معادلة المماس لبيان الدالة $f$ عند النقطة $A\left(x_0;f(x_0)\right)$ تعطى بالعبارة: $y=\ldots$
+\QQ{2} إذا كانت $y=3x+7$ معادلة لمماس المنحنى $(C_f)$ عند النقطة ذات الفاصلة $1$ فإن: $f'(1)=\ldots$ و $f(1)=\ldots$
+\QQ{3} الدالة $f$ المعرفة على المجال $[0;+\infty[$ بـ: $f(x)=\dfrac{2x}{\sqrt{x}+2}$ قابلة للاشتقاق على المجال $]0;+\infty[$ حيث: $f'(x)=\ldots$
+\QQ{4} إذا كان $f'(x)>0$ من أجل كل $x\in D_f$ فإن الدالة $f$ $\ldots$
+\QQ{5} إذا كان $f(x)>0$ من أجل كل $x\in D_f$ فإن المنحنى $(C_f)$ يقع $\ldots$
+\QQ{6} إذا كان $\lim\limits_{x\to2}f(x)=+\infty$ فإن المستقيم ذو المعادلة $\ldots$ مقارب لـ $(C_f)$، ويوازي حامل $\ldots$
+\QQ{7} إذا كان $\lim\limits_{x\to+\infty}f(x)=-3$ فإن المستقيم ذو المعادلة $\ldots$ مقارب لـ $(C_f)$، ويوازي حامل $\ldots$
+\QQ{8} نعتبر الدالة $g$ المعرفة على $\R$ بـ: $g(x)=\dfrac{3x^{2}+4x+3}{x^{2}+1}$، و $(C_g)$ منحناها البياني في معلم متعامد. لدينا $g(x)+g(-x)=\ldots$ \ التفسير البياني: $\ldots$
+\end{tamrin}
+\begin{hal}
+\QQ{1} \bx{y=f'(x_0)(x-x_0)+f(x_0)}
+
+\QQ{2} معادلة المماس عند $1$ هي $y=f'(1)(x-1)+f(1)=f'(1)\,x+\left(f(1)-f'(1)\right)$. بالمطابقة مع $y=3x+7$:
+$f'(1)=3$ و $f(1)-f'(1)=7$، ومنه \bx{f'(1)=3} و \bx{f(1)=10} (أو مباشرة: النقطة $(1;f(1))$ تنتمي إلى المماس، فـ $f(1)=3\times1+7=10$).
+
+\QQ{3} نستعمل $\left(\dfrac{u}{v}\right)'=\dfrac{u'v-uv'}{v^{2}}$ مع $u=2x$ ، $v=\sqrt{x}+2$ ، $v'=\dfrac{1}{2\sqrt{x}}$:
+\[f'(x)=\frac{2\left(\sqrt{x}+2\right)-2x\times\dfrac{1}{2\sqrt{x}}}{\left(\sqrt{x}+2\right)^{2}}=\frac{2\sqrt{x}+4-\sqrt{x}}{\left(\sqrt{x}+2\right)^{2}}=\frac{\sqrt{x}+4}{\left(\sqrt{x}+2\right)^{2}}\]
+(لأن $\dfrac{x}{\sqrt{x}}=\sqrt{x}$). وبضرب البسط والمقام في $\sqrt{x}$ نجد الشكل المعطى في المجلة: \bx{f'(x)=\frac{x+4\sqrt{x}}{\sqrt{x}\left(\sqrt{x}+2\right)^{2}}=\frac{\sqrt{x}+4}{\left(\sqrt{x}+2\right)^{2}}}
+
+\QQ{4} الدالة $f$ \bxt{متزايدة تماما على كل مجال محتوى في $D_f$}.
+
+\QQ{5} \bxt{فوق حامل محور الفواصل}.
+
+\QQ{6} المستقيم ذو المعادلة \bx{x=2} مقارب لـ $(C_f)$ (مقارب عمودي)، ويوازي \bxt{حامل محور التراتيب}.
+
+\QQ{7} المستقيم ذو المعادلة \bx{y=-3} مقارب لـ $(C_f)$ عند $+\infty$ (مقارب أفقي)، ويوازي \bxt{حامل محور الفواصل}.
+
+\QQ{8} $g(-x)=\dfrac{3x^{2}-4x+3}{x^{2}+1}$، ومنه:
+\[g(x)+g(-x)=\frac{3x^{2}+4x+3+3x^{2}-4x+3}{x^{2}+1}=\frac{6x^{2}+6}{x^{2}+1}=\frac{6\left(x^{2}+1\right)}{x^{2}+1}=\bx{6}\]
+\textbf{التفسير البياني:} $g(2\times0-x)+g(x)=2\times3$، فالنقطة \bx{A(0;3)} مركز تناظر لـ $(C_g)$.
+\begin{molahada}[ملاحظة (تصحيح)]
+\textbf{في السؤال 4:} النتيجة «$f$ متزايدة تماما على $D_f$» صحيحة فقط إذا كانت $D_f$ مجالا. مثال مضاد: $f(x)=-\dfrac1x$ تحقق $f'(x)=\dfrac{1}{x^{2}}>0$ على $\R^{*}$، لكن $f(-1)=1>f(1)=-1$. لذا نقول: متزايدة تماما على كل مجال من $D_f$.
+
+\textbf{في السؤال 7:} في حل المجلة كُتبت معادلة المقارب $y=3$، والصحيح $y=-3$ لأن $\lim\limits_{x\to+\infty}f(x)=-3$.
+\end{molahada}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{قراءة بيانية ثم تعيين عبارة الدالة}
+$a$ و $b$ عددان حقيقيان. نعتبر الدالة $g$ المعرفة على $\R$ بـ: $g(x)=x^{3}+ax+b$، وليكن $(C_g)$ تمثيلها البياني في معلم متعامد ومتجانس $\left(O;\vec{i},\vec{j}\right)$ كما في الشكل المقابل، حيث $(T)$ مماس لـ $(C_g)$ عند النقطة ذات الفاصلة $0$، و $(C_g)$ يقبل مماسين أفقيين عند النقطتين $(-1;5)$ و $(1;1)$.
+\begin{GR}{-2.5}{2.5}{-2}{6.5}{0.6}
+ \Ticks{-2,-1,1,2}{-1,1,2,3,4,5,6}
+ \draw[cThm,thick,domain=-1.2:2.5] plot (\x,{-3*\x+3});
+ \draw[cDef,very thick,domain=-2.3:2.15,samples=150] plot (\x,{\x*\x*\x-3*\x+3});
+ \draw[cEx,thick] (-1.7,5)--(-0.3,5) (0.3,1)--(1.7,1);
+ \fill[cDef] (-1,5) circle (2pt) (1,1) circle (2pt) (0,3) circle (2pt) (1,0) circle (2pt);
+ \node[cThm] at (2.1,-1.6){$(T)$};
+ \node[cDef] at (-2.0,-1.3){$(C_g)$};
+\end{GR}
+\textbf{I) بقراءة بيانية:}
+\QQ{1} أحسب: $g(0)$ ، $g(1)$ ، $g(-1)$ ، $g'(-1)$ ، $g'(0)$.
+\QQ{2} أحسب $\displaystyle\lim_{x\to1}\frac{g(x)-1}{x-1}$.
+\QQ{3} أحسب $\displaystyle\lim_{x\to-1}\frac{g(x)-5}{x+1}$.
+\QQ{4} عيّن إشارة $g'(x)$.
+\QQ{5} شكّل جدول تغيرات الدالة $g$.
+\QQ{6} عيّن معادلة المستقيم $(T)$.
+\QQ{7} عيّن $g''(0)$ مع التبرير.
+\QQ{8} عيّن وضعية $(C_g)$ بالنسبة إلى $(T)$.
+\QQ{9} مما سبق أوجد العددين الحقيقيين $a$ و $b$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} من البيان: \bx{g(0)=3} ، \bx{g(1)=1} ، \bx{g(-1)=5}.
+العدد المشتق $g'(x_0)$ بيانيا هو معامل توجيه المماس عند النقطة ذات الفاصلة $x_0$: المماس عند $-1$ أفقي، فـ \bx{g'(-1)=0}؛ والمماس $(T)$ عند $0$ يشمل $(0;3)$ و $(1;0)$، فمعامل توجيهه $\dfrac{0-3}{1-0}=-3$، أي \bx{g'(0)=-3}.
+
+\QQ{2} $\displaystyle\lim_{x\to1}\frac{g(x)-1}{x-1}=\lim_{x\to1}\frac{g(x)-g(1)}{x-1}=g'(1)=\bx{0}$ (المماس عند $(1;1)$ أفقي).
+
+\QQ{3} $\displaystyle\lim_{x\to-1}\frac{g(x)-5}{x+1}=\lim_{x\to-1}\frac{g(x)-g(-1)}{x-(-1)}=g'(-1)=\bx{0}$.
+
+\QQ{4} $g$ متزايدة على $]-\infty;-1]$ وعلى $[1;+\infty[$ ومتناقصة على $[-1;1]$ (من البيان):
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$ /0.8,$g'(x)$ /0.8}{$-\infty$,$-1$,$1$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\end{TAB}
+
+\QQ{5} من البيان $\lim\limits_{x\to-\infty}g(x)=-\infty$ و $\lim\limits_{x\to+\infty}g(x)=+\infty$:
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$ /0.8,$g'(x)$ /0.8,$g(x)$ /1.6}{$-\infty$,$-1$,$1$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$5$,-/$1$,+/$+\infty$}
+\end{TAB}
+
+\QQ{6} $(T):\ y=g'(0)(x-0)+g(0)$، أي \bx{(T):\ y=-3x+3}
+
+\QQ{7} \bx{g''(0)=0}. \textbf{التبرير:} المماس $(T)$ يخترق المنحنى $(C_g)$ عند النقطة $(0;3)$ (المنحنى تحته من جهة وفوقه من الجهة الأخرى)، فالنقطة $(0;3)$ نقطة انعطاف لـ $(C_g)$، ومنه $g''$ تنعدم عندها مغيّرة إشارتها.
+
+\QQ{8} من البيان (ويتأكد بعد إيجاد $a$ و $b$: $g(x)-(-3x+3)=x^{3}$):
+\begin{TAB}
+\tkzTabInit[lgt=3.2,espcl=4]{$x$ /0.8,$g(x)-y$ /0.8,\ar{الوضع النسبي} /1}{$-\infty$,$0$,$+\infty$}
+\tkzTabLine{,-,z,+,}
+\tkzTabLine{,\hbox{\ar{\footnotesize $(C_g)$ تحت $(T)$}},t,\hbox{\ar{\footnotesize $(C_g)$ فوق $(T)$}},}
+\end{TAB}
+$(C_g)$ يقطع $(T)$ في النقطة $(0;3)$.
+
+\QQ{9} $g(0)=b$ و $g(0)=3$، ومنه $b=3$. \ و $g(1)=1+a+b=1$، ومنه $a=-b=-3$. إذن \bx{a=-3,\ b=3} و \bx{g(x)=x^{3}-3x+3}
+
+تحقق: $g'(x)=3x^{2}-3$، $g'(-1)=0$ ، $g'(0)=-3$ ، $g(-1)=-1+3+3=5$ \ok
+\begin{molahada}
+في نص المجلة كُتب في السؤال 1 «$g0)$» (خطأ مطبعي) والمقصود $g'(0)$ كما في حلها.
+\end{molahada}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{دالة ناطقة: مقارب مائل، مناقشة بيانية والدالتان $|f|$ و $f\left(\frac1x\right)$}
+نعتبر الدالة العددية $f$ المعرفة على $\R-\{1\}$ كما يلي: $f(x)=\dfrac{x^{3}-2x^{2}}{(x-1)^{2}}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $\left(O;\vec{i},\vec{j}\right)$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to-\infty}f(x)$ و $\lim\limits_{x\to+\infty}f(x)$.
+\qb أحسب $\lim\limits_{x\to1}f(x)$، ثم فسّر النتيجة هندسيا.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa تحقق أنه من أجل كل $x$ من $\R-\{1\}$: $f(x)=x-\dfrac{x}{(x-1)^{2}}$.
+\qb بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x$ مستقيم مقارب مائل للمنحنى $(C_f)$.
+\qc ادرس وضعية المنحنى $(C_f)$ بالنسبة للمستقيم $(\Delta)$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $\R-\{1\}$ فإن: $f'(x)=\dfrac{x\left(x^{2}-3x+4\right)}{(x-1)^{3}}$.
+\qb ادرس اتجاه تغير الدالة $f$ على مجالي مجموعة تعريفها، ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{4} عيّن إحداثيي النقطة $A$ من $(C_f)$ التي يكون فيها المماس $(T)$ موازيا للمستقيم $(\Delta)$، ثم اكتب معادلة للمماس $(T)$.
+\QQ{5} أحسب إحداثيات نقطتي تقاطع المنحنى $(C_f)$ مع حامل محور الفواصل.
+\QQ{6} أنشئ المستقيم $(\Delta)$ والمنحنى $(C_f)$.
+\QQ{7} ناقش بيانيا وحسب قيم الوسيط الحقيقي $m$ عدد وإشارة حلول المعادلة: $f(x)=x+m$.
+\QQ{8} نعتبر الدالة $h$ المعرفة على $\R-\{1\}$ كما يلي: $h(x)=\dfrac{\left|x^{3}-2x^{2}\right|}{(x-1)^{2}}$، و $(C_h)$ تمثيلها البياني في نفس المعلم السابق. اشرح كيفية إنشاء المنحنى $(C_h)$ اعتمادا على المنحنى $(C_f)$ ثم أنشئه.
+\QQ{9} لتكن $k$ الدالة المعرفة على المجال $]-\infty;0[\cup]0;1[\cup]1;+\infty[$ كما يلي: $k(x)=f\left(\dfrac1x\right)$. ادرس تغيرات الدالة $k$ ثم شكّل جدول تغيراتها (لا يطلب حساب $k(x)$ بدلالة $x$).
+\end{tamrin}
+\begin{hal}
+\QQ{1}\pa نهاية دالة ناطقة عند $\pm\infty$ هي نهاية حاصل قسمة الحدين الأعلى درجة ($(x-1)^{2}=x^{2}-2x+1$):
+\[\lim_{x\to-\infty}f(x)=\lim_{x\to-\infty}\frac{x^{3}}{x^{2}}=\lim_{x\to-\infty}x=\bx{-\infty}\qquad\qquad\lim_{x\to+\infty}f(x)=\lim_{x\to+\infty}x=\bx{+\infty}\]
+\pb لما $x\to1$: البسط يؤول إلى $1-2=-1<0$، والمقام $(x-1)^{2}\to0^{+}$ (موجب من الجهتين). ومنه \bx{\lim_{x\to1}f(x)=\frac{-1}{0^{+}}=-\infty}
+\textbf{التفسير الهندسي:} المستقيم ذو المعادلة $x=1$ مقارب عمودي للمنحنى $(C_f)$.
+
+\QQ{2}\pa من أجل كل $x\neq1$:
+\[x-\frac{x}{(x-1)^{2}}=\frac{x(x-1)^{2}-x}{(x-1)^{2}}=\frac{x\left[(x-1)^{2}-1\right]}{(x-1)^{2}}=\frac{x\left(x^{2}-2x\right)}{(x-1)^{2}}=\frac{x^{3}-2x^{2}}{(x-1)^{2}}=f(x)\ \ \text{\ok}\]
+\pb $f(x)-x=-\dfrac{x}{(x-1)^{2}}$، و $\lim\limits_{x\to\pm\infty}\left(-\dfrac{x}{(x-1)^{2}}\right)=\lim\limits_{x\to\pm\infty}\left(-\dfrac{x}{x^{2}}\right)=\lim\limits_{x\to\pm\infty}\left(-\dfrac1x\right)=0$.
+إذن المستقيم \bx{(\Delta):\ y=x} مقارب مائل لـ $(C_f)$ بجوار $-\infty$ و $+\infty$.
+
+\pc إشارة $f(x)-x=\dfrac{-x}{(x-1)^{2}}$ هي إشارة $-x$ (لأن $(x-1)^{2}>0$):
+\begin{TAB}
+\tkzTabInit[lgt=3.2,espcl=3]{$x$ /0.8,$f(x)-y$ /0.8,\ar{الوضع النسبي} /1.2}{$-\infty$,$0$,$1$,$+\infty$}
+\tkzTabLine{,+,z,-,d,-,}
+\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ فوق $(\Delta)$}},t,\hbox{\ar{\footnotesize تحت $(\Delta)$}},d,\hbox{\ar{\footnotesize تحت $(\Delta)$}},}
+\end{TAB}
+$(C_f)$ يقطع $(\Delta)$ في المبدأ $O(0;0)$.
+
+\QQ{3}\pa $f$ قابلة للاشتقاق على $\R-\{1\}$ (دالة ناطقة). مع $u=x^{3}-2x^{2}$ و $v=(x-1)^{2}$: $u'=3x^{2}-4x$ و $v'=2(x-1)$:
+\[f'(x)=\frac{\left(3x^{2}-4x\right)(x-1)^{2}-2(x-1)\left(x^{3}-2x^{2}\right)}{(x-1)^{4}}=\frac{\left(3x^{2}-4x\right)(x-1)-2\left(x^{3}-2x^{2}\right)}{(x-1)^{3}}\]
+البسط: $3x^{3}-3x^{2}-4x^{2}+4x-2x^{3}+4x^{2}=x^{3}-3x^{2}+4x=x\left(x^{2}-3x+4\right)$. إذن \bx{f'(x)=\frac{x\left(x^{2}-3x+4\right)}{(x-1)^{3}}}
+
+\pb $x^{2}-3x+4$: مميزه $\Delta=9-16=-7<0$، فهو موجب تماما. إشارة $f'(x)$ من إشارة $x$ و $(x-1)^{3}$:
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=2.6]{$x$ /0.7,$x$ /0.7,$x^{2}-3x+4$ /0.7,$(x-1)^{3}$ /0.7,$f'(x)$ /0.7}{$-\infty$,$0$,$1$,$+\infty$}
+\tkzTabLine{,-,z,+,t,+,}
+\tkzTabLine{,+,t,+,t,+,}
+\tkzTabLine{,-,t,-,z,+,}
+\tkzTabLine{,+,z,-,d,+,}
+\end{TAB}
+$f$ متزايدة تماما على $]-\infty;0]$ وعلى $]1;+\infty[$، ومتناقصة تماما على $[0;1[$. \ $f(0)=0$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$ /0.8,$f'(x)$ /0.8,$f(x)$ /1.8}{$-\infty$,$0$,$1$,$+\infty$}
+\tkzTabLine{,+,z,-,d,+,}
+\tkzTabVar{-/$-\infty$,+/$0$,-D-/$-\infty$/$-\infty$,+/$+\infty$}
+\end{TAB}
+
+\QQ{4} المماس يوازي $(\Delta)$ (معامل توجيهه $1$) معناه $f'(x)=1$:
+\[\frac{x\left(x^{2}-3x+4\right)}{(x-1)^{3}}=1\iff x^{3}-3x^{2}+4x=x^{3}-3x^{2}+3x-1\iff x=-1\]
+$f(-1)=\dfrac{-1-2}{4}=-\dfrac34$، إذن \bx{A\left(-1;-\frac34\right)}، و $(T):\ y=1(x+1)-\dfrac34$ أي \bx{(T):\ y=x+\frac14}
+
+\QQ{5} $f(x)=0\iff x^{3}-2x^{2}=0\iff x^{2}(x-2)=0\iff x=0$ أو $x=2$ (وكلاهما $\neq1$).
+إذن $(C_f)$ يقطع حامل محور الفواصل في النقطتين \bx{O(0;0)} و \bx{B(2;0)}
+
+\QQ{6} الإنشاء:
+\begin{GR}{-4}{6}{-6}{6}{0.6}
+ \Ticks{-3,-2,-1,1,2,3,4,5}{-5,-4,-3,-2,-1,1,2,3,4,5}
+ \draw[cThm,thick,dashed] (1,-6)--(1,6);
+ \draw[cEx,thick,dashed,domain=-4:6] plot (\x,{\x});
+ \draw[cRem,thick,domain=-4:6] plot (\x,{\x+0.25});
+ \draw[cDef,very thick,domain=-4:0.75,samples=200] plot (\x,{\x-\x/((\x-1)*(\x-1))});
+ \draw[cDef,very thick,domain=1.3:6,samples=200] plot (\x,{\x-\x/((\x-1)*(\x-1))});
+ \fill[cThm] (-1,-0.75) circle (2.2pt) node[below right]{$A$};
+ \fill[cDef] (0,0) circle (2pt) (2,0) circle (2pt);
+ \node[cEx] at (5.3,4.4){$(\Delta)$};
+ \node[cRem] at (4.4,5.4){$(T)$};
+ \node[cDef] at (3.3,-2.5){$(C_f)$};
+\end{GR}
+
+\QQ{7} حلول المعادلة $f(x)=x+m$ هي فواصل نقط تقاطع $(C_f)$ مع المستقيم $(d_m):\ y=x+m$ الموازي لـ $(\Delta)$. (جبريا: $f(x)=x+m\iff\dfrac{-x}{(x-1)^{2}}=m$.) المستقيم $(d_m)$ يمر بالمبدأ $O$ لما $m=0$، ويطابق $(T)$ لما $m=\frac14$:
+\begin{itemize}
+\item $m\in\left]\frac14;+\infty\right[$: \bxt{لا حلول}.
+\item $m=\frac14$: \bxt{حل وحيد سالب} ($x=-1$، نقطة التماس $A$).
+\item $m\in\left]0;\frac14\right[$: \bxt{حلان سالبان}.
+\item $m=0$: \bxt{حل وحيد معدوم} ($x=0$).
+\item $m\in\,]-\infty;0[$: \bxt{حلان موجبان} (أحدهما في $]0;1[$ والآخر في $]1;+\infty[$).
+\end{itemize}
+
+\QQ{8} $h(x)=\dfrac{\left|x^{3}-2x^{2}\right|}{(x-1)^{2}}=\left|\dfrac{x^{3}-2x^{2}}{(x-1)^{2}}\right|=|f(x)|$ لأن $(x-1)^{2}>0$. ومنه:
+\[h(x)=\left\{\begin{array}{ll}f(x) & ;\ f(x)\ge0\\ -f(x) & ;\ f(x)\le0\end{array}\right.\]
+من السؤال 5 وإشارة $x^{2}(x-2)$: $f(x)\ge0$ على $[2;+\infty[$ وعند $x=0$، و $f(x)<0$ على $]-\infty;0[\cup]0;1[\cup]1;2[$.
+\begin{itemize}
+\item على $[2;+\infty[$ (وعند $O$): $(C_h)$ ينطبق على $(C_f)$.
+\item على $]-\infty;2[$ ما عدا $1$: $(C_h)$ نظير $(C_f)$ بالنسبة لحامل محور الفواصل.
+\end{itemize}
+\begin{GR}{-4}{6}{-6}{6}{0.6}
+ \Ticks{-3,-2,-1,1,2,3,4,5}{-5,-4,-3,-2,-1,1,2,3,4,5}
+ \draw[cThm,thick,dashed] (1,-6)--(1,6);
+ \draw[cDef,thick,dashed,domain=-4:0.75,samples=200] plot (\x,{\x-\x/((\x-1)*(\x-1))});
+ \draw[cDef,thick,dashed,domain=1.3:2,samples=100] plot (\x,{\x-\x/((\x-1)*(\x-1))});
+ \draw[cSol,very thick,domain=-4:0.75,samples=200] plot (\x,{-(\x-\x/((\x-1)*(\x-1)))});
+ \draw[cSol,very thick,domain=1.3:6,samples=200] plot (\x,{abs(\x-\x/((\x-1)*(\x-1)))});
+ \node[cSol] at (-3.2,4.4){$(C_h)$};
+ \node[cDef] at (-3.2,-2.4){$(C_f)$};
+\end{GR}
+\begin{molahada}[ملاحظة (تصحيح)]
+في حل المجلة كُتب: «على المجال $[0;1[\cup]1;+\infty[$: $(C_h)$ منطبق على $(C_f)$، وعلى $]-\infty;0]$: نظيره». هذا غير صحيح: $f(x)=\dfrac{x^{2}(x-2)}{(x-1)^{2}}$ سالبة على $]0;1[\cup]1;2[$ أيضا (مثلا $f\left(\frac12\right)=-\frac32<0$)، فالانطباق يكون على $[2;+\infty[$ فقط، والتناظر على $]-\infty;2[-\{1\}$ (والرسم في المجلة يوافق هذا التصحيح).
+\end{molahada}
+
+\QQ{9} $k(x)=f\left(\dfrac1x\right)$: نضع $u(x)=\dfrac1x$، فـ $u$ قابلة للاشتقاق على مجموعة التعريف و $u(x)\neq1$ و $u(x)\neq0$. ومنه $k=f\circ u$ قابلة للاشتقاق و:
+\[k'(x)=u'(x)\times f'\left(u(x)\right)=-\frac{1}{x^{2}}\,f'\left(\frac1x\right)\]
+إشارة $k'(x)$ عكس إشارة $f'\left(\frac1x\right)$:
+\begin{itemize}
+\item $x<0$: $\frac1x<0$ فـ $f'\left(\frac1x\right)>0$ ومنه $k'(x)<0$.
+\item $0<x<1$: $\frac1x>1$ فـ $f'\left(\frac1x\right)>0$ ومنه $k'(x)<0$.
+\item $x>1$: $0<\frac1x<1$ فـ $f'\left(\frac1x\right)<0$ ومنه $k'(x)>0$.
+\end{itemize}
+\textbf{النهايات (نهاية دالة مركبة):}
+$x\to-\infty$: $\frac1x\to0^{-}$ و $f\to f(0)=0$؛ \ $x\to0^{-}$: $\frac1x\to-\infty$ فـ $k\to-\infty$؛ \ $x\to0^{+}$: $\frac1x\to+\infty$ فـ $k\to+\infty$؛ \ $x\to1^{\pm}$: $\frac1x\to1$ فـ $k\to-\infty$؛ \ $x\to+\infty$: $\frac1x\to0^{+}$ فـ $k\to0$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$ /0.8,$k'(x)$ /0.8,$k(x)$ /1.8}{$-\infty$,$0$,$1$,$+\infty$}
+\tkzTabLine{,-,d,-,d,+,}
+\tkzTabVar{+/$0$,-D+/$-\infty$/$+\infty$,-D-/$-\infty$/$-\infty$,+/$0$}
+\end{TAB}
+$k$ متناقصة تماما على $]-\infty;0[$ وعلى $]0;1[$، ومتزايدة تماما على $]1;+\infty[$.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{دالة مساعدة كثير حدود ودالة ناطقة، الدالة $f(-|x|)$}
+\textbf{I-} نعتبر الدالة $g$ المعرفة على $\R$ بـ: $g(x)=x^{3}+\alpha x^{2}+\beta x+\gamma$ و $(C_g)$ تمثيلها البياني.
+\QQ{1} عيّن الأعداد الحقيقية $\alpha$ ، $\beta$ و $\gamma$ إذا علمت أن $(C_g)$ يشمل النقطة $A(0;-5)$ ويقبل مماسا عند النقطة $B(-1;-4)$ موازيا للمستقيم ذي المعادلة $y=-2x+1$.
+\QQ{2} نضع فيما يلي: $g(x)=x^{3}+3x^{2}+x-5$.
+\begin{sq}
+\qa ادرس تغيرات الدالة $g$، ثم شكّل جدول تغيراتها.
+\qb احسب $g(1)$، ثم استنتج إشارة $g(x)$ على $\R$.
+\end{sq}
+\textbf{II-} لتكن $f$ دالة معرفة على $\R-\{-1\}$ بـ: $f(x)=\dfrac{x^{3}+3x^{2}+5x+5}{(x+1)^{2}}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد المتجانس $\left(O;\vec{i},\vec{j}\right)$.
+\QQ{1} احسب نهايات الدالة $f$ عند أطراف مجموعة تعريفها. إذا علمت أن الدالة $f$ تكتب من الشكل: $f(x)=ax+b+\dfrac{cx+d}{(x+1)^{2}}$ حيث $a$ ، $b$ ، $c$ و $d$ أعداد حقيقية:
+\begin{sq}
+\qa عيّن كلا من $a$ ، $b$ ، $c$ و $d$.
+\qb استنتج أن المنحنى $(C_f)$ يقبل مستقيما مقاربا مائلا $(\Delta)$ يطلب تعيين معادلته.
+\qc ادرس الوضع النسبي للمنحنى $(C_f)$ و $(\Delta)$.
+\end{sq}
+\QQ{2} بيّن أنه من أجل كل $x\neq-1$ فإن: $f'(x)=\dfrac{g(x)}{(x+1)^{3}}$.
+\QQ{3} استنتج تغيرات الدالة $f$ ثم شكّل جدول تغيراتها.
+\QQ{4} بيّن أن $(C_f)$ يقبل مماسا $(T)$ موازيا للمستقيم $(\Delta)$، يطلب تعيين معادلته.
+\QQ{5} أنشئ كلا من $(\Delta)$ و $(T)$ و $(C_f)$. \ (خذ $f(-1{,}8)\approx0$)
+\QQ{6} عيّن بيانيا قيم العدد الحقيقي $m$ حتى تقبل المعادلة $(1-m)(x+1)^{2}+2x+4=0$ حلين مختلفين في الإشارة.
+
+\textbf{III-} نعتبر الدالة $h$ المعرفة على $\R-\{-1;1\}$ بـ: $h(x)=f(-|x|)$.
+\QQ{1} ادرس شفعية الدالة $h$.
+\QQ{2} اشرح كيف يمكن إنشاء $(C_h)$ التمثيل البياني للدالة $h$ انطلاقا من $(C_f)$، ثم أنشئه.
+\end{tamrin}
+\begin{hal}
+\textbf{I-}\QQ{1} الشروط: $A\in(C_g)$ أي $g(0)=-5$؛ $B\in(C_g)$ أي $g(-1)=-4$؛ المماس عند $B$ يوازي $y=-2x+1$ أي $g'(-1)=-2$.
+\begin{itemize}
+\item $g(0)=\gamma=-5$.
+\item $g(-1)=-1+\alpha-\beta-5=-4$ ومنه $\alpha-\beta=2\ \ldots(1)$.
+\item $g'(x)=3x^{2}+2\alpha x+\beta$، و $g'(-1)=3-2\alpha+\beta=-2$ ومنه $-2\alpha+\beta=-5\ \ldots(2)$.
+\end{itemize}
+بجمع $(1)$ و $(2)$: $-\alpha=-3$ أي $\alpha=3$، ثم من $(1)$: $\beta=\alpha-2=1$. إذن \bx{\alpha=3,\ \beta=1,\ \gamma=-5}
+
+\QQ{2}\pa \textbf{النهايات:} $\lim\limits_{x\to-\infty}g(x)=\lim\limits_{x\to-\infty}x^{3}=-\infty$ ، $\lim\limits_{x\to+\infty}g(x)=+\infty$.
+
+$g'(x)=3x^{2}+6x+1$، مميزه $\Delta=36-12=24$، جذراه: $x_1=\dfrac{-6+2\sqrt6}{6}=-1+\dfrac{\sqrt6}{3}\approx-0{,}18$ و $x_2=-1-\dfrac{\sqrt6}{3}\approx-1{,}82$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$ /0.8,$g'(x)$ /0.8,$g(x)$ /1.8}{$-\infty$,$x_2$,$x_1$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$g(x_2)$,-/$g(x_1)$,+/$+\infty$}
+\end{TAB}
+حيث $g(x_2)\approx-2{,}91$ و $g(x_1)\approx-5{,}09$.
+\begin{molahada}
+في حل المجلة تبادلت القيمتان التقريبيتان: كُتب $g(x_1)\approx-2{,}91$ و $g(x_2)\approx-5{,}09$، والصحيح $g(x_2)\approx-2{,}91$ (قيمة عظمى محلية) و $g(x_1)\approx-5{,}09$ (قيمة صغرى محلية)، لأن القيمة العظمى أكبر من الصغرى.
+\end{molahada}
+
+\pb $g(1)=1+3+1-5=\bx{0}$. إذن $1$ جذر لـ $g$، ونكتب $g(x)=(x-1)\left(x^{2}+ax+b\right)$؛ بالنشر والمطابقة (أو القسمة الإقليدية) نجد:
+\[g(x)=(x-1)\left(x^{2}+4x+5\right)\]
+$x^{2}+4x+5$: مميزه $16-20=-4<0$، فهو موجب تماما. إشارة $g(x)$ هي إشارة $x-1$:
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3]{$x$ /0.8,$g(x)$ /0.8}{$-\infty$,$1$,$+\infty$}
+\tkzTabLine{,-,z,+,}
+\end{TAB}
+(نتحقق أيضا من الجدول: القيمة العظمى المحلية $g(x_2)\approx-2{,}91<0$، فـ $g<0$ على $]-\infty;x_1]$، وعلى $[x_1;+\infty[$ تنعدم مرة واحدة عند $1$.)
+
+\textbf{II-}\QQ{1} \textbf{عند $\pm\infty$:} $\lim\limits_{x\to-\infty}f(x)=\lim\limits_{x\to-\infty}\dfrac{x^{3}}{x^{2}}=\lim\limits_{x\to-\infty}x=\bx{-\infty}$ ، \ $\lim\limits_{x\to+\infty}f(x)=\bx{+\infty}$.
+
+\textbf{عند $-1$:} البسط يؤول إلى $-1+3-5+5=2>0$ والمقام $(x+1)^{2}\to0^{+}$ من الجهتين:
+\bx{\lim_{x\to-1^{-}}f(x)=\lim_{x\to-1^{+}}f(x)=+\infty}. المستقيم $x=-1$ مقارب عمودي لـ $(C_f)$.
+
+\pa نوحّد المقامات:
+\begin{align*}ax+b+\frac{cx+d}{(x+1)^{2}}&=\frac{(ax+b)\left(x^{2}+2x+1\right)+cx+d}{(x+1)^{2}}\\
+&=\frac{ax^{3}+(2a+b)x^{2}+(a+2b+c)x+(b+d)}{(x+1)^{2}}\end{align*}
+بالمطابقة مع $x^{3}+3x^{2}+5x+5$:
+\[\left\{\begin{array}{l}a=1\\ 2a+b=3\\ a+2b+c=5\\ b+d=5\end{array}\right.\qquad\text{ومنه}\qquad \bx{a=1,\ b=1,\ c=2,\ d=4}\]
+أي $f(x)=x+1+\dfrac{2x+4}{(x+1)^{2}}$.
+
+\pb $f(x)-(x+1)=\dfrac{2x+4}{(x+1)^{2}}$ و $\lim\limits_{x\to\pm\infty}\dfrac{2x+4}{(x+1)^{2}}=\lim\limits_{x\to\pm\infty}\dfrac{2x}{x^{2}}=\lim\limits_{x\to\pm\infty}\dfrac{2}{x}=0$.
+إذن \bx{(\Delta):\ y=x+1} مقارب مائل لـ $(C_f)$ عند $\pm\infty$.
+
+\pc إشارة $f(x)-(x+1)$ هي إشارة $2x+4$ (لأن $(x+1)^{2}>0$)، وتنعدم عند $-2$:
+\begin{TAB}
+\tkzTabInit[lgt=3.2,espcl=3]{$x$ /0.8,$f(x)-y$ /0.8,\ar{الوضع النسبي} /1.2}{$-\infty$,$-2$,$-1$,$+\infty$}
+\tkzTabLine{,-,z,+,d,+,}
+\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ تحت $(\Delta)$}},t,\hbox{\ar{\footnotesize فوق $(\Delta)$}},d,\hbox{\ar{\footnotesize فوق $(\Delta)$}},}
+\end{TAB}
+$(C_f)$ يقطع $(\Delta)$ في النقطة $(-2;-1)$.
+
+\QQ{2} $f$ قابلة للاشتقاق على $\R-\{-1\}$:
+\begin{align*}f'(x)&=\frac{\left(3x^{2}+6x+5\right)(x+1)^{2}-2(x+1)\left(x^{3}+3x^{2}+5x+5\right)}{(x+1)^{4}}\\
+&=\frac{\left(3x^{2}+6x+5\right)(x+1)-2\left(x^{3}+3x^{2}+5x+5\right)}{(x+1)^{3}}\end{align*}
+البسط: $3x^{3}+9x^{2}+11x+5-2x^{3}-6x^{2}-10x-10=x^{3}+3x^{2}+x-5=g(x)$. إذن \bx{f'(x)=\frac{g(x)}{(x+1)^{3}}}
+\begin{molahada}[ملاحظة (تصحيح)]
+في نص المجلة كُتب $f'(x)=\dfrac{g(x)}{(x+1)^{2}}$، والصحيح $\dfrac{g(x)}{(x+1)^{3}}$ كما في حلها وكما يبيّن الحساب أعلاه.
+\end{molahada}
+
+\QQ{3} إشارة $f'(x)$ من إشارة $g(x)$ و $(x+1)^{3}$:
+\begin{TAB}
+\tkzTabInit[lgt=1.8,espcl=2.6]{$x$ /0.7,$g(x)$ /0.7,$(x+1)^{3}$ /0.7,$f'(x)$ /0.7,$f(x)$ /1.8}{$-\infty$,$-1$,$1$,$+\infty$}
+\tkzTabLine{,-,t,-,z,+,}
+\tkzTabLine{,-,z,+,t,+,}
+\tkzTabLine{,+,d,-,z,+,}
+\tkzTabVar{-/$-\infty$,+D+/$+\infty$/$+\infty$,-/$\frac72$,+/$+\infty$}
+\end{TAB}
+$f$ متزايدة تماما على $]-\infty;-1[$ وعلى $[1;+\infty[$، ومتناقصة تماما على $]-1;1]$. \ $f(1)=\dfrac{1+3+5+5}{4}=\dfrac72$.
+
+\QQ{4} نبحث عن $a\neq-1$ حيث $f'(a)=1$ (معامل توجيه $(\Delta)$):
+\[\frac{g(a)}{(a+1)^{3}}=1\iff a^{3}+3a^{2}+a-5=a^{3}+3a^{2}+3a+1\iff -2a=6\iff a=-3\]
+$f(-3)=\dfrac{-27+27-15+5}{4}=-\dfrac52$، ومنه $(T):\ y=1(x+3)-\dfrac52$ أي \bx{(T):\ y=x+\frac12}
+
+\QQ{5}
+\begin{GR}{-4}{5}{-4}{8}{0.55}
+ \Ticks{-3,-2,-1,1,2,3,4}{-3,-2,-1,1,2,3,4,5,6,7}
+ \draw[cThm,thick,dashed] (-1,-4)--(-1,8);
+ \draw[cEx,thick,dashed,domain=-4:5] plot (\x,{\x+1});
+ \draw[cRem,thick,domain=-4:5] plot (\x,{\x+0.5});
+ \draw[cDef,very thick,domain=-4:-1.3,samples=200] plot (\x,{\x+1+(2*\x+4)/((\x+1)*(\x+1))});
+ \draw[cDef,very thick,domain=-0.7:5,samples=200] plot (\x,{\x+1+(2*\x+4)/((\x+1)*(\x+1))});
+ \fill[cRem] (-3,-2.5) circle (2.2pt);
+ \fill[cDef] (1,3.5) circle (2pt) (0,5) circle (2pt) (-2,-1) circle (2pt) (-1.77,0) circle (2pt);
+ \node[cEx] at (4.4,6.2){$(\Delta)$};
+ \node[cRem] at (4.5,4.3){$(T)$};
+ \node[cDef] at (2.6,6.9){$(C_f)$};
+\end{GR}
+\begin{molahada}[ملاحظة (تصحيح)]
+في نص المجلة أعطي «$f'(-1{,}8)=0$»، وهذا خطأ: $f'(-1{,}8)=\dfrac{g(-1{,}8)}{(-0{,}8)^{3}}\approx5{,}69$. المقصود أن $(C_f)$ يقطع حامل محور الفواصل قرب $x=-1{,}8$: فعلا $f(-1{,}8)\approx-0{,}17$، والحل الوحيد للمعادلة $f(x)=0$ هو $x_0\approx-1{,}77$.
+\end{molahada}
+
+\QQ{6} بما أن $x=-1$ ليس حلا (يعطي $2=0$)، نقسم على $(x+1)^{2}\neq0$:
+\begin{align*}(1-m)(x+1)^{2}+2x+4=0&\iff\frac{2x+4}{(x+1)^{2}}=m-1\\
+&\iff x+1+\frac{2x+4}{(x+1)^{2}}=x+m\iff f(x)=x+m\end{align*}
+الحلول هي فواصل نقط تقاطع $(C_f)$ مع المستقيم $(d_m):\ y=x+m$ الموازي لـ $(\Delta)$. لدينا $(d_1)=(\Delta)$ ، $(d_{1/2})=(T)$ ، و $(d_5)$ يشمل النقطة $(0;5)$ من $(C_f)$.
+\begin{itemize}
+\item لما $1<m<5$: $(d_m)$ يقطع الفرع الأيسر ($x<-1$) مرة واحدة، ويقطع الفرع الأيمن مرة واحدة في نقطة فاصلتها موجبة: حلان مختلفان في الإشارة.
+\item لما $m\ge5$: نقطتا التقاطع فاصلتاهما $\le0$؛ ولما $\frac12<m<1$: نقطتان على الفرع الأيسر (سالبتان)؛ ولما $m=1$ حل وحيد $x=-2$؛ ولما $m\le\frac12$: حل وحيد ($m=\frac12$) أو لا حلول.
+\end{itemize}
+إذن تقبل المعادلة حلين مختلفين في الإشارة لما \bx{m\in\,]1;5[}
+
+\textbf{III-}\QQ{1} $D_h=\R-\{-1;1\}$ متناظرة بالنسبة إلى $0$، ومن أجل كل $x\in D_h$:
+$h(-x)=f(-|-x|)=f(-|x|)=h(x)$. إذن \bxt{$h$ دالة زوجية}، و $(C_h)$ متناظر بالنسبة لحامل محور التراتيب.
+
+\QQ{2} \[h(x)=f(-|x|)=\left\{\begin{array}{ll}f(x) & ;\ x\in\,]-\infty;-1[\cup]-1;0]\\ f(-x) & ;\ x\in[0;1[\cup]1;+\infty[\end{array}\right.\]
+\begin{itemize}
+\item على $]-\infty;-1[\cup]-1;0]$: $(C_h)$ ينطبق على $(C_f)$.
+\item على $[0;1[\cup]1;+\infty[$: $(C_h)$ نظير الجزء السابق بالنسبة لحامل محور التراتيب (لأن $h$ زوجية).
+\end{itemize}
+\begin{GR}{-4}{4}{-4}{8}{0.55}
+ \Ticks{-3,-2,-1,1,2,3}{-3,-2,-1,1,2,3,4,5,6,7}
+ \draw[cThm,thick,dashed] (-1,-4)--(-1,8) (1,-4)--(1,8);
+ \draw[cDef,thick,dashed,domain=0:4,samples=150] plot (\x,{\x+1+(2*\x+4)/((\x+1)*(\x+1))});
+ \draw[cSol,very thick,domain=-4:-1.3,samples=200] plot (\x,{\x+1+(2*\x+4)/((\x+1)*(\x+1))});
+ \draw[cSol,very thick,domain=-0.7:0,samples=100] plot (\x,{\x+1+(2*\x+4)/((\x+1)*(\x+1))});
+ \draw[cSol,very thick,domain=0:0.7,samples=100] plot (\x,{-\x+1+(-2*\x+4)/((1-\x)*(1-\x))});
+ \draw[cSol,very thick,domain=1.3:4,samples=200] plot (\x,{-\x+1+(-2*\x+4)/((1-\x)*(1-\x))});
+ \node[cSol] at (3.1,-2.6){$(C_h)$};
+ \node[cDef] at (3.0,5.7){$(C_f)$};
+\end{GR}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{دالة ناطقة بوسيطين: مركز تناظر ومناقشتان بيانيتان}
+\textbf{I-} $f$ الدالة العددية المعرفة على $\R-\{1\}$ بـ: $f(x)=\dfrac{\alpha x^{2}+\beta x+1}{1-x}$ حيث $\alpha$ و $\beta$ عددان حقيقيان، و $(C_f)$ تمثيلها البياني في المعلم المتعامد المتجانس $\left(O;\vec{i},\vec{j}\right)$.
+عيّن $\alpha$ و $\beta$ حيث يقبل $(C_f)$ قيمة حدية عند $0$ والنقطة $A(2;-3)$ تنتمي إليه.
+
+\textbf{II-} نضع فيما يلي: $\alpha=1$ و $\beta=-1$.
+\QQ{1} احسب $\lim\limits_{x\to1^{-}}f(x)$ و $\lim\limits_{x\to1^{+}}f(x)$، ثم فسّر النتيجتين هندسيا.
+\QQ{2} احسب: $\lim\limits_{x\to-\infty}f(x)$ و $\lim\limits_{x\to+\infty}f(x)$.
+\QQ{3}
+\begin{sq}
+\qa عيّن الأعداد الحقيقية $a$ ، $b$ و $c$ حيث: $f(x)=ax+b+\dfrac{c}{1-x}$.
+\qb استنتج أن $(C_f)$ يقبل مستقيما مقاربا مائلا $(\Delta)$ بجوار $\pm\infty$ يطلب تعيين معادلة له.
+\qc ادرس وضعية $(C_f)$ بالنسبة إلى $(\Delta)$.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x\in\R-\{1\}$ لدينا: $f'(x)=\dfrac{x(2-x)}{(1-x)^{2}}$.
+\qb ادرس تغيرات الدالة $f$ ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{5}
+\begin{sq}
+\qa عيّن إحداثيي $\omega$ نقطة تقاطع المستقيم $(\Delta)$ مع المستقيم المقارب العمودي ذي المعادلة $x=1$.
+\qb بيّن أن النقطة $\omega$ هي مركز تناظر للمنحنى $(C_f)$.
+\qc أثبت أنه لا يوجد أي مماس للمنحنى $(C_f)$ يشمل النقطة $\omega$.
+\end{sq}
+\QQ{6} ارسم كلا من $(\Delta)$ و $(C_f)$.
+\QQ{7} ناقش بيانيا حسب قيم الوسيط الحقيقي $m$ عدد وإشارة حلول المعادلتين: $\dfrac{1}{1-x}=x+m\ \ldots(E)$ \ و \ $f(x)+x=m\ \ldots(E')$.
+
+\textbf{III-} لتكن $h$ الدالة المعرفة على $\R-\{-1;1\}$ بـ: $h(x)=f(|x|)$.
+\QQ{1} ادرس شفعية الدالة $h$.
+\QQ{2} وضّح كيف يمكن إنشاء المنحنى $(C_h)$ الممثل للدالة $h$ انطلاقا من $(C_f)$، ثم أنشئه.
+\end{tamrin}
+\begin{hal}
+\textbf{I-} «$(C_f)$ يقبل قيمة حدية عند $0$» معناه $f'(0)=0$ (المشتقة تنعدم مغيّرة إشارتها). باستعمال $\left(\frac uv\right)'$ مع $v=1-x$ و $v'=-1$:
+\[f'(x)=\frac{(2\alpha x+\beta)(1-x)+\left(\alpha x^{2}+\beta x+1\right)}{(1-x)^{2}}\qquad\text{ومنه}\qquad f'(0)=\frac{\beta+1}{1}\]
+$f'(0)=0$ يعطي $\beta=-1$. \ و $A(2;-3)\in(C_f)$: $f(2)=\dfrac{4\alpha+2\beta+1}{1-2}=-3$ أي $4\alpha+2\beta+1=3$، ومع $\beta=-1$: $4\alpha=4$.
+إذن \bx{\alpha=1,\ \beta=-1} و $f(x)=\dfrac{x^{2}-x+1}{1-x}$ (ونتحقق لاحقا أن $f'$ تغيّر إشارتها عند $0$).
+
+\textbf{II-}\QQ{1} البسط يؤول إلى $1-1+1=1>0$:
+\[\lim_{x\to1^{-}}f(x)=\frac{1}{0^{+}}=\bx{+\infty}\qquad\qquad\lim_{x\to1^{+}}f(x)=\frac{1}{0^{-}}=\bx{-\infty}\]
+(لما $x<1$: $1-x>0$، ولما $x>1$: $1-x<0$). \textbf{التفسير:} المستقيم ذو المعادلة $x=1$ مقارب عمودي لـ $(C_f)$.
+
+\QQ{2} $\lim\limits_{x\to-\infty}f(x)=\lim\limits_{x\to-\infty}\dfrac{x^{2}}{-x}=\lim\limits_{x\to-\infty}(-x)=\bx{+\infty}$ \ و \ $\lim\limits_{x\to+\infty}f(x)=\lim\limits_{x\to+\infty}(-x)=\bx{-\infty}$.
+
+\QQ{3}\pa $ax+b+\dfrac{c}{1-x}=\dfrac{(ax+b)(1-x)+c}{1-x}=\dfrac{-ax^{2}+(a-b)x+b+c}{1-x}$. بالمطابقة مع $x^{2}-x+1$:
+\[\left\{\begin{array}{l}-a=1\\ a-b=-1\\ b+c=1\end{array}\right.\qquad\text{ومنه}\qquad a=-1,\ b=0,\ c=1\qquad\text{أي}\qquad\bx{f(x)=-x+\frac{1}{1-x}}\]
+\pb $f(x)-(-x)=\dfrac{1}{1-x}\xrightarrow[x\to\pm\infty]{}0$، إذن \bx{(\Delta):\ y=-x} مقارب مائل لـ $(C_f)$ بجوار $\pm\infty$.
+
+\pc إشارة $f(x)-(-x)=\dfrac{1}{1-x}$ هي إشارة $1-x$:
+\begin{TAB}
+\tkzTabInit[lgt=3.2,espcl=4]{$x$ /0.8,$f(x)-y$ /0.8,\ar{الوضع النسبي} /1}{$-\infty$,$1$,$+\infty$}
+\tkzTabLine{,+,d,-,}
+\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ فوق $(\Delta)$}},d,\hbox{\ar{\footnotesize $(C_f)$ تحت $(\Delta)$}},}
+\end{TAB}
+
+\QQ{4}\pa \begin{align*}f'(x)&=\frac{(2x-1)(1-x)-(-1)\left(x^{2}-x+1\right)}{(1-x)^{2}}\\
+&=\frac{2x-2x^{2}-1+x+x^{2}-x+1}{(1-x)^{2}}\\
+&=\frac{-x^{2}+2x}{(1-x)^{2}}\\
+&=\bx{\frac{x(2-x)}{(1-x)^{2}}}\end{align*}
+\pb $(1-x)^{2}>0$، فإشارة $f'(x)$ هي إشارة $x(2-x)$ (تنعدم عند $0$ و $2$). \ $f(0)=1$ و $f(2)=\dfrac{4-2+1}{-1}=-3$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.2]{$x$ /0.8,$f'(x)$ /0.8,$f(x)$ /1.8}{$-\infty$,$0$,$1$,$2$,$+\infty$}
+\tkzTabLine{,-,z,+,d,+,z,-,}
+\tkzTabVar{+/$+\infty$,-/$1$,+D-/$+\infty$/$-\infty$,+/$-3$,-/$-\infty$}
+\end{TAB}
+$f$ متناقصة تماما على $]-\infty;0]$ وعلى $[2;+\infty[$، ومتزايدة تماما على $[0;1[$ وعلى $]1;2]$.
+
+\QQ{5}\pa بتعويض $x=1$ في $y=-x$: $y=-1$، إذن \bx{\omega(1;-1)}
+
+\pb من أجل كل $x\in\R-\{1\}$: $x\neq1$ يكافئ $2-x\neq1$، أي $(2-x)\in D_f$. و:
+\[f(2-x)+f(x)=-(2-x)+\frac{1}{1-(2-x)}-x+\frac{1}{1-x}=-2+\frac{1}{x-1}+\frac{1}{1-x}=-2=2\times(-1)\]
+إذن \bxt{النقطة $\omega(1;-1)$ مركز تناظر للمنحنى $(C_f)$}.
+
+\pc نفرض وجود مماس عند نقطة فاصلتها $a\neq1$ يشمل $\omega$: \ $-1=f'(a)(1-a)+f(a)$.
+\[f'(a)(1-a)+f(a)=\frac{a(2-a)}{1-a}+\frac{a^{2}-a+1}{1-a}=\frac{2a-a^{2}+a^{2}-a+1}{1-a}=\frac{a+1}{1-a}\]
+فالشرط يصبح $\dfrac{a+1}{1-a}=-1$ أي $a+1=a-1$ أي $1=-1$: تناقض. إذن \bxt{لا يوجد أي مماس لـ $(C_f)$ يشمل $\omega$}.
+
+\QQ{6}
+\begin{GR}{-4}{5}{-7}{7}{0.5}
+ \Ticks{-3,-2,-1,1,2,3,4}{-6,-5,-4,-3,-2,-1,1,2,3,4,5,6}
+ \draw[cThm,thick,dashed] (1,-7)--(1,7);
+ \draw[cEx,thick,dashed,domain=-4:5] plot (\x,{-\x});
+ \draw[cDef,very thick,domain=-4:0.86,samples=200] plot (\x,{-\x+1/(1-\x)});
+ \draw[cDef,very thick,domain=1.14:5,samples=200] plot (\x,{-\x+1/(1-\x)});
+ \fill[cThm] (1,-1) circle (2.2pt) node[left]{$\omega$};
+ \fill[cDef] (0,1) circle (2pt) (2,-3) circle (2pt);
+ \node[cEx] at (-3.3,2.4){$(\Delta)$};
+ \node[cDef] at (-3.2,5.6){$(C_f)$};
+\end{GR}
+
+\QQ{7} \textbf{المعادلة $(E)$:} $\dfrac{1}{1-x}=x+m\iff-x+\dfrac{1}{1-x}=m\iff f(x)=m$. الحلول هي فواصل نقط تقاطع $(C_f)$ مع المستقيم الأفقي $y=m$:
+\begin{itemize}
+\item $m\in\,]-\infty;-3[$: حلان موجبان تماما (في $]1;2[$ و $]2;+\infty[$).
+\item $m=-3$: حل مضاعف موجب $x=2$.
+\item $m\in\,]-3;1[$: لا حلول.
+\item $m=1$: حل مضاعف معدوم $x=0$.
+\item $m\in\,]1;+\infty[$: حلان، أحدهما سالب تماما والآخر في $]0;1[$ (موجب تماما).
+\end{itemize}
+\textbf{المعادلة $(E')$:} $f(x)+x=m\iff f(x)=-x+m$. الحلول هي فواصل نقط تقاطع $(C_f)$ مع المستقيم $y=-x+m$ الموازي لـ $(\Delta)$. وبما أن $f(x)+x=\dfrac{1}{1-x}$، فإن $(E')$ تكافئ $\dfrac{1}{1-x}=m$:
+\begin{itemize}
+\item $m=0$: لا حلول (المستقيم هو $(\Delta)$ نفسه).
+\item $m\neq0$: حل وحيد $x=1-\dfrac1m$ (المستقيم يقطع أحد الفرعين مرة واحدة)، وإشارته:
+\begin{itemize}
+\item $m\in\,]-\infty;0[$: $x>1$ \ (حل موجب تماما).
+\item $m\in\,]0;1[$: $x<0$ \ (حل سالب تماما).
+\item $m=1$: $x=0$ \ (حل معدوم).
+\item $m\in\,]1;+\infty[$: $0<x<1$ \ (حل موجب تماما).
+\end{itemize}
+\end{itemize}
+\begin{molahada}[ملاحظة (تصحيح)]
+\begin{itemize}
+\item في نص المجلة كُتب في السؤال 2 «$\lim\limits_{x\to+\infty}f(x)$ و $\lim\limits_{x\to+\infty}f(x)$»، والمقصود $-\infty$ و $+\infty$ (حلها يحسب النهايتين). وكُتب «$x\in\R-1$» والصحيح $x\in\R-\{1\}$.
+\item في مناقشة $(E')$ كتبت المجلة أن المعادلة تقبل «حلا مضاعفا» لما $m=-1$ ولما $m=1$. هذا غير صحيح: $f(x)+x=\dfrac{1}{1-x}$، فالمعادلة $\dfrac{1}{1-x}=m$ لها حل \textbf{بسيط} واحد $x=1-\frac1m$ لكل $m\neq0$ ($x=2$ لما $m=-1$، و $x=0$ لما $m=1$)، والمستقيم $y=-x+m$ ليس مماسا لـ $(C_f)$ لأن $f'(x)=-1$ مستحيلة (تعطي $-x^{2}+2x=-(1-x)^{2}$ أي $0=-1$).
+\end{itemize}
+\end{molahada}
+
+\textbf{III-}\QQ{1} $D_h=\R-\{-1;1\}$ متناظرة بالنسبة إلى $0$، و $h(-x)=f(|-x|)=f(|x|)=h(x)$: \bxt{$h$ زوجية}.
+
+\QQ{2} \[h(x)=f(|x|)=\left\{\begin{array}{ll}f(x) & ;\ x\in[0;1[\cup]1;+\infty[\\ f(-x) & ;\ x\in\,]-\infty;-1[\cup]-1;0]\end{array}\right.\]
+من أجل $x\ge0$: $(C_h)$ ينطبق على $(C_f)$، ونكمل بالتناظر بالنسبة لحامل محور التراتيب (لأن $h$ زوجية).
+\begin{GR}{-5}{5}{-7}{7}{0.5}
+ \Ticks{-4,-3,-2,-1,1,2,3,4}{-6,-5,-4,-3,-2,-1,1,2,3,4,5,6}
+ \draw[cThm,thick,dashed] (1,-7)--(1,7) (-1,-7)--(-1,7);
+ \draw[cDef,thick,dashed,domain=-5:0,samples=100] plot (\x,{-\x+1/(1-\x)});
+ \draw[cSol,very thick,domain=0:0.86,samples=100] plot (\x,{-\x+1/(1-\x)});
+ \draw[cSol,very thick,domain=1.14:5,samples=200] plot (\x,{-\x+1/(1-\x)});
+ \draw[cSol,very thick,domain=-0.86:0,samples=100] plot (\x,{\x+1/(1+\x)});
+ \draw[cSol,very thick,domain=-5:-1.14,samples=200] plot (\x,{\x+1/(1+\x)});
+ \node[cSol] at (3.6,-6.2){$(C_h)$};
+ \node[cDef] at (-3.6,5.8){$(C_f)$};
+\end{GR}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{دراسة شاملة لدالة صماء ومناقشة بيانية}
+$f$ الدالة المعرفة على $[-1;+\infty[$ بـ: $f(x)=x-2\sqrt{x+1}$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس.
+\QQ{1} احسب $\lim\limits_{x\to+\infty}f(x)$.
+\QQ{2} ادرس قابلية اشتقاق $f$ على يمين $-1$ وفسّر النتيجة هندسيا.
+\QQ{3} بيّن أنه من أجل كل $x>-1$: $f'(x)=\dfrac{\sqrt{x+1}-1}{\sqrt{x+1}}$، ثم ادرس تغيرات $f$ وشكّل جدول تغيراتها.
+\QQ{4} عيّن نقط تقاطع $(C_f)$ مع محوري الإحداثيات.
+\QQ{5} اكتب معادلة المماس $(T)$ لـ $(C_f)$ عند النقطة ذات الفاصلة $3$.
+\QQ{6} أنشئ $(T)$ و $(C_f)$.
+\QQ{7} ناقش بيانيا، حسب قيم الوسيط الحقيقي $m$، عدد حلول المعادلة $f(x)=m$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} شكل غير معين $\infty-\infty$. من أجل $x>0$ نخرج $x$ عاملا مشتركا:
+\[f(x)=x\left(1-\frac{2\sqrt{x+1}}{x}\right)=x\left(1-2\sqrt{\frac{x+1}{x^{2}}}\right)=x\left(1-2\sqrt{\frac1x+\frac{1}{x^{2}}}\right)\]
+الجذر يؤول إلى $0$ فالقوس يؤول إلى $1$، ومنه \bx{\lim_{x\to+\infty}f(x)=+\infty}
+
+\QQ{2} $f(-1)=-1$. من أجل $x>-1$:
+\[\frac{f(x)-f(-1)}{x+1}=\frac{x+1-2\sqrt{x+1}}{x+1}=1-\frac{2\sqrt{x+1}}{x+1}=1-\frac{2}{\sqrt{x+1}}\]
+لما $x\to-1^{+}$: $\sqrt{x+1}\to0^{+}$ فـ $\dfrac{2}{\sqrt{x+1}}\to+\infty$، والنهاية $-\infty$.
+إذن \bxt{$f$ غير قابلة للاشتقاق على يمين $-1$}، و $(C_f)$ يقبل عند النقطة $(-1;-1)$ نصف مماس عمودي (موجه نحو الأسفل).
+
+\QQ{3} $\left(\sqrt{x+1}\right)'=\dfrac{1}{2\sqrt{x+1}}$، ومنه:
+\[f'(x)=1-\frac{2}{2\sqrt{x+1}}=1-\frac{1}{\sqrt{x+1}}=\bx{\frac{\sqrt{x+1}-1}{\sqrt{x+1}}}\]
+إشارة $f'(x)$ هي إشارة $\sqrt{x+1}-1$: $\sqrt{x+1}>1\iff x+1>1\iff x>0$. \ $f(0)=0-2=-2$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3]{$x$ /0.8,$f'(x)$ /0.8,$f(x)$ /1.6}{$-1$,$0$,$+\infty$}
+\tkzTabLine{d,-,z,+,}
+\tkzTabVar{+/$-1$,-/$-2$,+/$+\infty$}
+\end{TAB}
+$f$ متناقصة تماما على $[-1;0]$ ومتزايدة تماما على $[0;+\infty[$؛ \ $f(0)=-2$ قيمة حدية صغرى.
+
+\QQ{4} \textbf{مع محور التراتيب:} $f(0)=-2$، النقطة $(0;-2)$.
+\textbf{مع محور الفواصل:} $f(x)=0\iff x=2\sqrt{x+1}$، وهذا يتطلب $x\ge0$؛ وبتربيع الطرفين: $x^{2}=4x+4$ أي $x^{2}-4x-4=0$، $\Delta=32$، الحلان $2+2\sqrt2$ و $2-2\sqrt2<0$ (مرفوض). إذن النقطة \bx{\left(2+2\sqrt2;0\right)} أي $x\approx4{,}83$.
+
+\QQ{5} $f(3)=3-2\times2=-1$ و $f'(3)=\dfrac{2-1}{2}=\dfrac12$. ومنه $(T):\ y=\dfrac12(x-3)-1$ أي \bx{(T):\ y=\frac12x-\frac52}
+
+\QQ{6}
+\begin{GR}{-1.5}{9}{-3}{4}{0.6}
+ \Ticks{-1,1,2,3,4,5,6,7,8}{-2,-1,1,2,3}
+ \draw[cEx,thick,domain=0:9] plot (\x,{0.5*\x-2.5});
+ \draw[cDef,very thick,domain=-1:9,samples=300] plot (\x,{\x-2*sqrt(\x+1)});
+ \draw[cThm,thick,-{Stealth}] (-1,-1)--(-1,-2.2);
+ \fill[cDef] (-1,-1) circle (2pt) (0,-2) circle (2pt) (4.83,0) circle (2pt);
+ \fill[cEx] (3,-1) circle (2pt);
+ \draw[gray,dashed] (-1.5,-1)--(9,-1);
+ \node[cEx] at (8.3,1.0){$(T)$};
+ \node[cDef] at (7.6,3.4){$(C_f)$};
+\end{GR}
+
+\QQ{7} حلول $f(x)=m$ هي فواصل نقط تقاطع $(C_f)$ مع المستقيم $y=m$ (المستقيم $y=-1$ مرسوم بخط متقطع: يقطع $(C_f)$ في $(-1;-1)$ و $(3;-1)$):
+\begin{itemize}
+\item $m<-2$: لا حلول.
+\item $m=-2$: حل وحيد $x=0$.
+\item $-2<m\le-1$: حلان (أحدهما في $[-1;0[$ والآخر في $]0;3]$).
+\item $m>-1$: حل وحيد (في $]3;+\infty[$).
+\end{itemize}
+\end{hal}
+\section{تمارين للتعمق -- شعبة رياضيات}
+% ------------------------------------------------------------------
+\begin{tamrin}{عائلة دوال $f_m$: نقطة ثابتة، تمديد بالاستمرار ومقاربات -- شعبة رياضيات}
+$m$ وسيط حقيقي. نعتبر الدالة $f_m$ المعرفة على $\R-\{-1\}$ بـ: $f_m(x)=\dfrac{x^{2}+mx+1}{x+1}$، و $(C_m)$ تمثيلها البياني في معلم متعامد ومتجانس.
+\QQ{1} بيّن أن جميع المنحنيات $(C_m)$ تشمل نقطة ثابتة $I$ يطلب تعيينها.
+\QQ{2} عيّن الأعداد الحقيقية $a$ ، $b$ و $c$ (بدلالة $m$) بحيث: $f_m(x)=ax+b+\dfrac{c}{x+1}$.
+\QQ{3}
+\begin{sq}
+\qa في حالة $m=2$: بسّط $f_2(x)$، وبيّن أن $f_2$ تقبل تمديدا بالاستمرار عند $-1$ يطلب تعريفه. ما طبيعة $(C_2)$؟
+\qb في حالة $m\neq2$: احسب $\lim\limits_{x\to-1^{-}}f_m(x)$ و $\lim\limits_{x\to-1^{+}}f_m(x)$ حسب قيم $m$.
+\end{sq}
+\QQ{4} من أجل $m\neq2$: بيّن أن $(C_m)$ يقبل مستقيما مقاربا مائلا $(\Delta_m)$، وأن نقطة تقاطع المقاربين $\Omega_m$ مركز تناظر لـ $(C_m)$. ما هي مجموعة النقط $\Omega_m$ لما يتغير $m$؟
+\QQ{5} احسب $f_m'(x)$، ثم عيّن حسب قيم $m$ ($m\neq2$) عدد القيم الحدية المحلية للدالة $f_m$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $f_m(x)=\dfrac{x^{2}+1}{x+1}+m\,\dfrac{x}{x+1}$. تكون $f_m(x)$ مستقلة عن $m$ إذا وفقط إذا كان $\dfrac{x}{x+1}=0$ أي $x=0$؛ و $f_m(0)=1$ مهما كان $m$.
+إذن جميع المنحنيات $(C_m)$ تشمل النقطة \bx{I(0;1)}
+
+\QQ{2} $(ax+b)(x+1)+c=ax^{2}+(a+b)x+(b+c)$. بالمطابقة مع $x^{2}+mx+1$: $a=1$ ، $a+b=m$ ، $b+c=1$، ومنه:
+\[a=1,\qquad b=m-1,\qquad c=2-m\qquad\text{أي}\qquad \bx{f_m(x)=x+m-1+\frac{2-m}{x+1}}\]
+
+\QQ{3}\pa لما $m=2$: $c=0$ و $f_2(x)=x+1$ من أجل كل $x\neq-1$ (أو: $x^{2}+2x+1=(x+1)^{2}$).
+$\lim\limits_{x\to-1}f_2(x)=0$ (نهاية منتهية)، فـ $f_2$ تقبل تمديدا بالاستمرار عند $-1$ هو الدالة $g$ المعرفة على $\R$ بـ:
+\[g(x)=f_2(x)\ \ (x\neq-1),\qquad g(-1)=0\qquad\text{أي}\qquad \bx{g(x)=x+1\ \text{على}\ \R}\]
+$(C_2)$ هو المستقيم $y=x+1$ محروما من النقطة $(-1;0)$.
+
+\pb لما $m\neq2$: البسط $x^{2}+mx+1\to2-m\neq0$ و $x+1\to0^{\pm}$:
+\begin{itemize}
+\item إذا كان $m<2$ ($2-m>0$): \ $\lim\limits_{x\to-1^{-}}f_m(x)=-\infty$ و $\lim\limits_{x\to-1^{+}}f_m(x)=+\infty$.
+\item إذا كان $m>2$ ($2-m<0$): \ $\lim\limits_{x\to-1^{-}}f_m(x)=+\infty$ و $\lim\limits_{x\to-1^{+}}f_m(x)=-\infty$.
+\end{itemize}
+في الحالتين: المستقيم $x=-1$ مقارب عمودي لـ $(C_m)$.
+
+\QQ{4} $f_m(x)-(x+m-1)=\dfrac{2-m}{x+1}\xrightarrow[x\to\pm\infty]{}0$: المستقيم \bx{(\Delta_m):\ y=x+m-1} مقارب مائل. نقطة تقاطعه مع $x=-1$: $y=-1+m-1=m-2$، أي $\Omega_m(-1;m-2)$.
+
+من أجل $x\neq-1$: $(-2-x)\neq-1$ و
+\[f_m(-2-x)+f_m(x)=(-2-x+m-1)+\frac{2-m}{-1-x}+(x+m-1)+\frac{2-m}{x+1}=2m-4=2(m-2)\]
+إذن \bxt{$\Omega_m(-1;m-2)$ مركز تناظر لـ $(C_m)$}. ولما يتغير $m$ في $\R-\{2\}$ تبقى الفاصلة $-1$ وتأخذ الترتيبة كل القيم غير المعدومة: مجموعة النقط $\Omega_m$ هي \bxt{المستقيم $x=-1$ محروما من النقطة $(-1;0)$}.
+
+\QQ{5} $f_m'(x)=1-\dfrac{2-m}{(x+1)^{2}}=\dfrac{(x+1)^{2}-(2-m)}{(x+1)^{2}}$.
+\begin{itemize}
+\item $m>2$: $2-m<0$ فـ $f_m'(x)>0$: $f_m$ متزايدة تماما على كل مجال، \bxt{لا توجد قيم حدية}.
+\item $m<2$: $f_m'(x)=0\iff(x+1)^{2}=2-m\iff x=-1-\sqrt{2-m}$ أو $x=-1+\sqrt{2-m}$، و $f_m'$ تغيّر إشارتها عند كل منهما: \bxt{قيمتان حديتان} (عظمى عند $-1-\sqrt{2-m}$ وصغرى عند $-1+\sqrt{2-m}$).
+\end{itemize}
+مثال: $m=1$: $f_1(x)=x+\dfrac{1}{x+1}$، القيمتان الحديتان $f_1(-2)=-3$ و $f_1(0)=1$.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مناقشة بيانية بمستقيم دوّار حول مركز التناظر -- شعبة رياضيات}
+$f$ الدالة المعرفة على $\R-\{1\}$ بـ: $f(x)=\dfrac{x^{2}-2x+2}{x-1}$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس.
+\QQ{1} تحقق أن $f(x)=x-1+\dfrac{1}{x-1}$، ثم استنتج المستقيمين المقاربين لـ $(C_f)$.
+\QQ{2} ادرس تغيرات $f$ وشكّل جدول تغيراتها.
+\QQ{3} بيّن أن النقطة $\Omega(1;0)$ مركز تناظر لـ $(C_f)$، ثم أنشئ $(C_f)$.
+\QQ{4} من أجل كل عدد حقيقي $m$، نعتبر المستقيم $(D_m):\ y=m(x-1)$.
+\begin{sq}
+\qa تحقق أن جميع المستقيمات $(D_m)$ تشمل النقطة $\Omega$.
+\qb ناقش بيانيا، حسب قيم $m$، عدد حلول المعادلة: $(m-1)x^{2}-2(m-1)x+m-2=0$.
+\qc عيّن جبريا هذه الحلول، ثم ناقش إشارتها.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} $x-1+\dfrac{1}{x-1}=\dfrac{(x-1)^{2}+1}{x-1}=\dfrac{x^{2}-2x+2}{x-1}=f(x)$ \ok.
+\begin{itemize}
+\item $\lim\limits_{x\to1^{\pm}}\dfrac{1}{x-1}=\pm\infty$ و $x-1\to0$: $\lim\limits_{x\to1^{-}}f(x)=-\infty$ و $\lim\limits_{x\to1^{+}}f(x)=+\infty$: \bx{x=1} مقارب عمودي.
+\item $f(x)-(x-1)=\dfrac{1}{x-1}\xrightarrow[x\to\pm\infty]{}0$: \bx{y=x-1} مقارب مائل عند $\pm\infty$ (و $\lim\limits_{x\to\pm\infty}f(x)=\pm\infty$).
+\end{itemize}
+
+\QQ{2} $f'(x)=1-\dfrac{1}{(x-1)^{2}}=\dfrac{(x-1)^{2}-1}{(x-1)^{2}}=\dfrac{x(x-2)}{(x-1)^{2}}$. \ $f(0)=-2$ و $f(2)=2$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.2]{$x$ /0.8,$f'(x)$ /0.8,$f(x)$ /1.8}{$-\infty$,$0$,$1$,$2$,$+\infty$}
+\tkzTabLine{,+,z,-,d,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$-2$,-D+/$-\infty$/$+\infty$,-/$2$,+/$+\infty$}
+\end{TAB}
+
+\QQ{3} من أجل $x\neq1$: $2-x\neq1$ و $f(2-x)=(1-x)+\dfrac{1}{1-x}=-f(x)$، ومنه $f(2-x)+f(x)=0=2\times0$: \bxt{$\Omega(1;0)$ مركز تناظر لـ $(C_f)$}.
+\begin{GR}{-3}{5}{-6}{6}{0.55}
+ \Ticks{-2,-1,1,2,3,4}{-5,-4,-3,-2,-1,1,2,3,4,5}
+ \draw[cThm,thick,dashed] (1,-6)--(1,6);
+ \draw[cEx,thick,dashed,domain=-3:5] plot (\x,{\x-1});
+ \draw[cRem,thick,domain=-3:5] plot (\x,{2*(\x-1)});
+ \draw[cMeth,thick,domain=-3:5] plot (\x,{1.5*(\x-1)});
+ \draw[cDef,very thick,domain=-3:0.82,samples=200] plot (\x,{\x-1+1/(\x-1)});
+ \draw[cDef,very thick,domain=1.18:5,samples=200] plot (\x,{\x-1+1/(\x-1)});
+ \fill[cThm] (1,0) circle (2.2pt) node[below right]{$\Omega$};
+ \fill[cDef] (0,-2) circle (2pt) (2,2) circle (2pt);
+ \node[cEx] at (4.4,2.6){$y=x-1$};
+ \node[cRem] at (3.0,5.4){$(D_2)$};
+ \node[cMeth] at (4.6,5.4){$(D_{1{,}5})$};
+ \node[cDef] at (-2.2,-5){$(C_f)$};
+\end{GR}
+
+\QQ{4}\pa من أجل $x=1$: $y=m(1-1)=0$، فكل المستقيمات $(D_m)$ تشمل $\Omega(1;0)$ \ok (مستقيم «دوّار» حول $\Omega$، معامل توجيهه $m$).
+
+\pb من أجل $x\neq1$:
+\[f(x)=m(x-1)\iff\frac{x^{2}-2x+2}{x-1}=m(x-1)\iff x^{2}-2x+2=m(x-1)^{2}\]
+أي $(m-1)(x-1)^{2}-1=0$، وبالنشر: $(m-1)x^{2}-2(m-1)x+m-2=0$. والعدد $1$ ليس حلا لها (يعطي $-1=0$).
+إذن حلول المعادلة هي فواصل نقط تقاطع $(C_f)$ مع $(D_m)$. المستقيم $(D_1)$ يوازي المقارب المائل:
+\begin{itemize}
+\item $m\le1$: $(D_m)$ لا يقطع $(C_f)$: \bxt{لا حلول}.
+\item $m>1$: $(D_m)$ يقطع كل فرع مرة واحدة: \bxt{حلان} متناظران بالنسبة إلى $1$.
+\end{itemize}
+
+\pc لما $m>1$: $(x-1)^{2}=\dfrac{1}{m-1}$، ومنه $x_1=1+\dfrac{1}{\sqrt{m-1}}$ و $x_2=1-\dfrac{1}{\sqrt{m-1}}$.
+\begin{itemize}
+\item $x_1>1>0$ دائما (موجب).
+\item $x_2<0\iff\sqrt{m-1}<1\iff1<m<2$؛ \ $x_2=0\iff m=2$ (المستقيم $(D_2)$ يشمل النقطة $(0;-2)$)؛ \ $x_2>0\iff m>2$.
+\end{itemize}
+\textbf{الخلاصة:} $m\le1$: لا حلول؛ $1<m<2$: حلان مختلفان في الإشارة؛ $m=2$: حل معدوم وحل موجب؛ $m>2$: حلان موجبان.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{التمديد بالاستمرار وتعيين وسيطين للاستمرارية والاشتقاقية -- شعبة رياضيات}
+\QQ{1} في كل حالة، بيّن أن الدالة تقبل تمديدا بالاستمرار عند $x_0$ وعرّفه، أو بيّن أن ذلك غير ممكن:
+\begin{sq}
+\qa $f(x)=\dfrac{\sqrt{x+4}-2}{x}$ على $[-4;0[\cup]0;+\infty[$ ، \ $x_0=0$.
+\qb $g(x)=\dfrac{1-\cos x}{x^{2}}$ على $\R^{*}$ ، \ $x_0=0$.
+\qc $k(x)=\dfrac{x^{3}-8}{x^{2}-4}$ على $\R-\{-2;2\}$ ، عند $x_0=2$ ثم عند $x_0=-2$.
+\end{sq}
+\QQ{2} $a$ و $b$ عددان حقيقيان، و $\varphi$ الدالة المعرفة على $\R_{+}$ بـ:
+\(\varphi(x)=\left\{\begin{array}{ll}x^{2}+ax+b & ;\ 0\le x<1\\ 2\sqrt{x} & ;\ x\ge1\end{array}\right.\)
+عيّن $a$ و $b$ حتى تكون $\varphi$ مستمرة وقابلة للاشتقاق عند $1$.
+\end{tamrin}
+\begin{hal}
+\textbf{تذكير:} إذا كانت $f$ غير معرفة عند $x_0$ و $\lim\limits_{x\to x_0}f(x)=\ell$ (عدد حقيقي) فإن الدالة $\tilde f$ المعرفة بـ $\tilde f(x)=f(x)$ لما $x\neq x_0$ و $\tilde f(x_0)=\ell$ مستمرة عند $x_0$، وتسمى \textbf{تمديدا بالاستمرار} لـ $f$ عند $x_0$.
+
+\QQ{1}\pa بالمرافق: $\dfrac{\sqrt{x+4}-2}{x}=\dfrac{x}{x\left(\sqrt{x+4}+2\right)}=\dfrac{1}{\sqrt{x+4}+2}\xrightarrow[x\to0]{}\dfrac14$.
+التمديد: \bx{\tilde f(x)=\frac{\sqrt{x+4}-2}{x}\ (x\neq0),\quad \tilde f(0)=\frac14}
+
+\pb $\dfrac{1-\cos x}{x^{2}}=\left(\dfrac{\sin x}{x}\right)^{2}\dfrac{1}{1+\cos x}\xrightarrow[x\to0]{}\dfrac12$. التمديد: \bx{\tilde g(0)=\frac12} و $\tilde g(x)=g(x)$ لما $x\neq0$.
+
+\pc $x^{3}-8=(x-2)\left(x^{2}+2x+4\right)$ و $x^{2}-4=(x-2)(x+2)$، ومنه من أجل $x\neq\pm2$: $k(x)=\dfrac{x^{2}+2x+4}{x+2}$.
+\begin{itemize}
+\item عند $2$: $\lim\limits_{x\to2}k(x)=\dfrac{4+4+4}{4}=3$: \bx{\tilde k(2)=3} تمديد بالاستمرار.
+\item عند $-2$: البسط يؤول إلى $4-4+4=4\neq0$ والمقام إلى $0$: $\lim\limits_{x\to-2^{\pm}}k(x)=\pm\infty$، \bxt{لا يمكن التمديد بالاستمرار عند $-2$}.
+\end{itemize}
+
+\QQ{2} \textbf{الاستمرارية عند $1$:} $\varphi(1)=2$ و $\lim\limits_{x\to1^{-}}\varphi(x)=1+a+b$. الشرط: $1+a+b=2$ أي $a+b=1\ \ldots(1)$.
+
+\textbf{الاشتقاقية عند $1$:} على اليمين: $\dfrac{2\sqrt{x}-2}{x-1}=\dfrac{2(\sqrt{x}-1)}{(\sqrt{x}-1)(\sqrt{x}+1)}=\dfrac{2}{\sqrt{x}+1}\xrightarrow[x\to1^{+}]{}1$.
+على اليسار (مع $1+a+b=2$): $\dfrac{x^{2}+ax+b-2}{x-1}=\dfrac{x^{2}-1+a(x-1)}{x-1}=x+1+a\xrightarrow[x\to1^{-}]{}2+a$ (عوّضنا $b-2=-1-a$).
+الشرط: $2+a=1$ أي $a=-1$، ومن $(1)$: $b=2$. إذن \bx{a=-1,\ b=2}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{الحصر والمقارنة مع $|x|$ و $\sin$، والاشتقاقية عند $0$ -- شعبة رياضيات}
+\QQ{1} $f$ الدالة المعرفة على $\R^{*}$ بـ: $f(x)=|x|\sin\left(\dfrac1x\right)$.
+\begin{sq}
+\qa بيّن أنه من أجل كل $x\neq0$: $|f(x)|\le|x|$، ثم استنتج $\lim\limits_{x\to0}f(x)$. هل تقبل $f$ تمديدا بالاستمرار عند $0$؟
+\qb احسب $\lim\limits_{x\to+\infty}f(x)$ و $\lim\limits_{x\to-\infty}f(x)$ (ضع $t=\dfrac1x$)، وفسّر النتيجتين هندسيا.
+\end{sq}
+\QQ{2} $F$ الدالة المعرفة على $\R$ بـ: $F(x)=x^{2}\sin\left(\dfrac1x\right)$ إذا كان $x\neq0$ و $F(0)=0$. بيّن أن $F$ قابلة للاشتقاق عند $0$ وعيّن $F'(0)$.
+\QQ{3} احسب: \quad (أ) $\displaystyle\lim_{x\to+\infty}x\left(2+\sin x\right)$ \qquad (ب) $\displaystyle\lim_{x\to-\infty}\frac{x+|x|\cos x}{x^{2}+1}$
+\end{tamrin}
+\begin{hal}
+\QQ{1}\pa $\left|\sin\frac1x\right|\le1$، ومنه $|f(x)|=|x|\left|\sin\frac1x\right|\le|x|$، أي $-|x|\le f(x)\le|x|$.
+وبما أن $\lim\limits_{x\to0}|x|=0$ فحسب مبرهنة الحصر: \bx{\lim_{x\to0}f(x)=0}
+النهاية منتهية، إذن نعم: $f$ تقبل تمديدا بالاستمرار عند $0$ بوضع \bx{\tilde f(0)=0}
+
+\pb لما $x\to+\infty$: $|x|=x$، ونضع $t=\dfrac1x\to0^{+}$: \ $f(x)=x\sin\dfrac1x=\dfrac{\sin t}{t}\to1$. إذن \bx{\lim_{x\to+\infty}f(x)=1}
+
+لما $x\to-\infty$: $|x|=-x$، و $t=\dfrac1x\to0^{-}$: \ $f(x)=-x\sin\dfrac1x=-\dfrac{\sin t}{t}\to-1$. إذن \bx{\lim_{x\to-\infty}f(x)=-1}
+
+\textbf{التفسير:} المستقيم $y=1$ مقارب أفقي لـ $(C_f)$ عند $+\infty$، والمستقيم $y=-1$ مقارب أفقي عند $-\infty$.
+
+\QQ{2} من أجل $x\neq0$: $\dfrac{F(x)-F(0)}{x-0}=\dfrac{x^{2}\sin\frac1x}{x}=x\sin\dfrac1x$، و $\left|x\sin\dfrac1x\right|\le|x|\xrightarrow[x\to0]{}0$.
+حسب الحصر النهاية $0$، إذن \bxt{$F$ قابلة للاشتقاق عند $0$} و \bx{F'(0)=0}
+
+\QQ{3}\pa $\sin x\ge-1$ ومنه $2+\sin x\ge1$، ومن أجل $x>0$: $x(2+\sin x)\ge x$. و $\lim\limits_{x\to+\infty}x=+\infty$، فبالمقارنة: \bx{\lim_{x\to+\infty}x\left(2+\sin x\right)=+\infty}
+
+\pb $\left|x+|x|\cos x\right|\le|x|+|x|=2|x|$، ومنه $\left|\dfrac{x+|x|\cos x}{x^{2}+1}\right|\le\dfrac{2|x|}{x^{2}+1}$.
+و $\lim\limits_{x\to-\infty}\dfrac{2|x|}{x^{2}+1}=\lim\limits_{x\to-\infty}\dfrac{-2x}{x^{2}}=0$. حسب الحصر: \bx{\lim_{x\to-\infty}\frac{x+|x|\cos x}{x^{2}+1}=0}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{عدد حلول معادلة من الدرجة الثالثة وحلها بالدوال المثلثية -- شعبة رياضيات}
+$g$ الدالة المعرفة على $\R$ بـ: $g(x)=x^{3}-3x$.
+\QQ{1} ادرس تغيرات $g$، ثم عيّن حسب قيم الوسيط الحقيقي $m$ عدد حلول المعادلة $g(x)=m$.
+\QQ{2} نعتبر المعادلة $(E):\ x^{3}-3x-1=0$.
+\begin{sq}
+\qa بيّن أن $(E)$ تقبل ثلاثة حلول $x_1<x_2<x_3$، وأنها جميعا تنتمي إلى $]-2;2[$؛ عيّن مجالا طوله $1$ يحوي كلا منها.
+\qb بيّن أنه من أجل كل عدد حقيقي $t$: $\cos 3t=4\cos^{3}t-3\cos t$.
+\qc بوضع $x=2\cos t$ مع $t\in[0;\pi]$، بيّن أن $(E)$ تكافئ $\cos 3t=\dfrac12$، ثم استنتج القيم المضبوطة لـ $x_1$ ، $x_2$ و $x_3$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\lim\limits_{x\to-\infty}g(x)=-\infty$ ، $\lim\limits_{x\to+\infty}g(x)=+\infty$. \ $g'(x)=3x^{2}-3=3(x-1)(x+1)$؛ \ $g(-1)=2$ ، $g(1)=-2$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$ /0.8,$g'(x)$ /0.8,$g(x)$ /1.6}{$-\infty$,$-1$,$1$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$2$,-/$-2$,+/$+\infty$}
+\end{TAB}
+عدد حلول $g(x)=m$ (تقاطع $(C_g)$ مع $y=m$): \ $|m|>2$: حل وحيد؛ \ $m=\pm2$: حلان (أحدهما مضاعف)؛ \ $-2<m<2$: \bxt{ثلاثة حلول}.
+
+\QQ{2}\pa $(E)$ تكافئ $g(x)=1$ و $-2<1<2$: ثلاثة حلول. ولدينا $g(-2)=-2$ ، $g(2)=2$، فـ $g([-2;-1])=[-2;2]$ ، $g([-1;1])=[-2;2]$ ، $g([1;2])=[-2;2]$، والقيمة $1$ تؤخذ مرة واحدة في كل مجال (رتابة تامة). وخارج $[-2;2]$: $g(x)<-2$ لما $x<-2$ و $g(x)>2$ لما $x>2$. إذن الحلول الثلاثة في $]-2;2[$.
+بحساب $h(x)=x^{3}-3x-1$: $h(-2)=-3$ ، $h(-1)=1$ ، $h(0)=-1$ ، $h(1)=-3$ ، $h(2)=1$، ومنه:
+\[x_1\in\,]-2;-1[,\qquad x_2\in\,]-1;0[,\qquad x_3\in\,]1;2[\]
+
+\pb $\cos 3t=\cos(2t+t)=\cos2t\cos t-\sin2t\sin t=\left(2\cos^{2}t-1\right)\cos t-2\sin^{2}t\cos t$.
+وبتعويض $\sin^{2}t=1-\cos^{2}t$: $\cos3t=2\cos^{3}t-\cos t-2\cos t+2\cos^{3}t=\bx{4\cos^{3}t-3\cos t}$
+
+\pc كل حل في $]-2;2[$ يكتب $x=2\cos t$ مع $t\in\,]0;\pi[$ (لأن $\cos$ تقابل من $[0;\pi]$ نحو $[-1;1]$). ومنه:
+\[x^{3}-3x=8\cos^{3}t-6\cos t=2\left(4\cos^{3}t-3\cos t\right)=2\cos3t\]
+فـ $(E)\iff2\cos3t=1\iff\cos3t=\dfrac12=\cos\dfrac{\pi}{3}$، أي $3t=\pm\dfrac{\pi}{3}+2k\pi$ ($k\in\Z$)، أي $t=\pm\dfrac{\pi}{9}+\dfrac{2k\pi}{3}$.
+في $[0;\pi]$: $t\in\left\{\dfrac{\pi}{9},\dfrac{5\pi}{9},\dfrac{7\pi}{9}\right\}$. وبما أن $\cos$ متناقصة على $[0;\pi]$:
+\[\bx{x_1=2\cos\frac{7\pi}{9}\approx-1{,}532},\qquad \bx{x_2=2\cos\frac{5\pi}{9}\approx-0{,}347},\qquad \bx{x_3=2\cos\frac{\pi}{9}\approx1{,}879}\]
+وهي توافق المجالات المحصل عليها في (أ) \ok
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{عائلة دوال $f_m$: النقط المشتركة والمماسات ومحل نقط الانعطاف -- شعبة رياضيات}
+$m$ وسيط حقيقي، و $f_m$ الدالة المعرفة على $\R$ بـ: $f_m(x)=x^{3}+m\left(x^{2}-1\right)$، و $(C_m)$ تمثيلها البياني في معلم متعامد ومتجانس.
+\QQ{1} بيّن أن جميع المنحنيات $(C_m)$ تشمل نقطتين ثابتتين $A$ و $B$ يطلب تعيينهما ($A$ ذات الفاصلة الموجبة).
+\QQ{2} اكتب بدلالة $m$ معادلتي المماسين $(T_A)$ و $(T_B)$ لـ $(C_m)$ عند $A$ و $B$.
+\QQ{3} عيّن قيم $m$ التي من أجلها يكون: (أ) $(T_A)$ و $(T_B)$ متوازيين؛ \ (ب) متعامدين؛ \ (جـ) $(T_A)$ يشمل المبدأ $O$.
+\QQ{4} بيّن أن $(C_m)$ يقبل نقطة انعطاف وحيدة $I_m$، ثم عيّن المحل الهندسي للنقط $I_m$ لما يتغير $m$ في $\R$.
+\QQ{5} عيّن قيم $m$ التي من أجلها تقبل $f_m$ قيمتين حديتين محليتين.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $f_m(x)$ مستقلة عن $m$ معناه $x^{2}-1=0$ أي $x=1$ أو $x=-1$. \ $f_m(1)=1$ و $f_m(-1)=-1$ مهما كان $m$.
+إذن جميع المنحنيات تشمل \bx{A(1;1)} و \bx{B(-1;-1)}
+
+\QQ{2} $f_m'(x)=3x^{2}+2mx$، ومنه $f_m'(1)=3+2m$ و $f_m'(-1)=3-2m$:
+\[(T_A):\ y=(3+2m)(x-1)+1\qquad\qquad (T_B):\ y=(3-2m)(x+1)-1\]
+
+\QQ{3}\pa متوازيان: $3+2m=3-2m$ أي \bx{m=0} (لما $m=0$: $(T_A):y=3x-2$ و $(T_B):y=3x+2$، متوازيان تماما).
+\pb متعامدان: $(3+2m)(3-2m)=-1$ أي $9-4m^{2}=-1$، $m^{2}=\dfrac{5}{2}$، ومنه \bx{m=\frac{\sqrt{10}}{2}} أو \bx{m=-\frac{\sqrt{10}}{2}}
+\pc $O\in(T_A)$: $0=(3+2m)(0-1)+1$ أي $-2-2m=0$، ومنه \bx{m=-1} (و $(T_A):\ y=x$).
+
+\QQ{4} $f_m''(x)=6x+2m$ تنعدم مغيّرة إشارتها عند $x=-\dfrac{m}{3}$ فقط: نقطة انعطاف وحيدة $I_m\left(-\dfrac{m}{3};f_m\left(-\dfrac m3\right)\right)$.
+نضع $x=-\dfrac m3$ أي $m=-3x$، فتكون الترتيبة $y=x^{3}-3x\left(x^{2}-1\right)=-2x^{3}+3x$.
+ولما يمسح $m$ المجموعة $\R$ تمسح $x=-\frac m3$ المجموعة $\R$. إذن المحل الهندسي للنقط $I_m$ هو \bxt{المنحنى ذو المعادلة $y=-2x^{3}+3x$}.
+
+\QQ{5} $f_m'(x)=x(3x+2m)$ تنعدم عند $0$ و $-\dfrac{2m}{3}$. تقبل $f_m$ قيمتين حديتين إذا وفقط إذا كان الجذران متمايزين ($f'_m$ تغيّر إشارتها عند كل منهما)، أي \bx{m\neq0} (لما $m=0$: $f_0'(x)=3x^{2}\ge0$ ولا توجد قيم حدية).
+\end{hal}
+\end{document}
