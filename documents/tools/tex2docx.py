@@ -574,7 +574,7 @@ PANDOC_MACROS = r"""
 \newcommand{\bx}[1]{\ensuremath{\boxed{#1}}}
 \newcommand{\ok}{$\checkmark$}
 \newcommand{\texttimes}{×}
-\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+\newcommand{\limn}{\lim\limits_{n\to+\infty}}
 \newcommand{\dx}{\,\mathrm{d}x}\newcommand{\dt}{\,\mathrm{d}t}\newcommand{\ua}{\ \mathrm{u.a}}
 """
 
@@ -1227,6 +1227,8 @@ def convert(tex_path, out_path, cache, keep=False, log=print):
     body = extract_figures(body, preamble, figs)
     body = rewrite_body(body, {})
     body = fix_math_text(body)
+    # limits written UNDER lim (x→a below the word), also inline: saves room on the line
+    body = re.sub(r"\\lim(?![A-Za-z])(\s*)_", r"\\lim\\limits\1_", body)
     figs.build(log)
     t1 = time.time()
     work = tempfile.mkdtemp(prefix="tex2docx_w_")
