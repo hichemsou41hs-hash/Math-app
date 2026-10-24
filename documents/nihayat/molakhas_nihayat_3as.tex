@@ -948,50 +948,6 @@ $f''$ تنعدم عند $0$ مغيرة إشارتها، إذن:\par
 \[ -1<k<3\iff-1<2m+1<3\iff\bx{-1<m<1} \]
 \end{mithal}
 
-\subsection{المناقشة المائلة والدورانية -- شعبة رياضيات}
-\begin{tariqa}
-\begin{itemize}
-\item \textbf{مائلة:} $f(x)=ax+g(m)$: المستقيمات $(\Delta_m):y=ax+g(m)$ متوازية (لها نفس معامل التوجيه $a$)؛ نعيّن قيم $m$ الموافقة للمقارب المائل وللمماسات الموازية له، ثم نحرك المسطرة بالتوازي.
-\item \textbf{دورانية:} $f(x)=g(m)x+h(m)$: نبحث عن نقطة ثابتة $A$ تشملها كل المستقيمات $(\Delta_m)$، ثم ندير المسطرة حول $A$ ونقارن معامل التوجيه بمعاملات المستقيمات الحدية (المقارب، المماسات المارة بـ $A$، مستقيم يوازي محور التراتيب).
-\end{itemize}
-\end{tariqa}
-
-\begin{mithal}[{$f(x)=x+2+\dfrac{3}{x-1}$}]
-\textbf{1. مناقشة مائلة $f(x)=x+m$:} \ $\dfrac{3}{x-1}=m-2$:
-\begin{itemize}
-\item $m=2$: لا حلول ($(\Delta_m)$ هو المقارب المائل).
-\item $m\neq2$: حل وحيد \bx{x=1+\dfrac{3}{m-2}=\dfrac{m+1}{m-2}}.
-\end{itemize}
-\textbf{2. مناقشة دورانية $f(x)=m(x-1)+3$:} \ كل المستقيمات $(\Delta_m):y=m(x-1)+3$ تشمل $\Omega(1;3)$ (مركز التناظر). نضع $t=x-1\neq0$:
-\[ t+3+\frac3t=mt+3\iff t^{2}+3=mt^{2}\iff(m-1)t^{2}=3 \]
-\begin{itemize}
-\item $m\leqslant1$: لا حلول؛ \quad $m>1$: \bxt{حلان} $x=1\pm\sqrt{\frac{3}{m-1}}$ (متناظران بالنسبة إلى $1$).
-\end{itemize}
-\begin{GR}{-4}{6}{-5}{11}{0.42}
-\Ticks{-2,2,4}{-4,-2,2,4,6,8,10}
-\draw[cDef,very thick,domain=-4:0.6,samples=80] plot(\x,{\x+2+3/(\x-1)});
-\draw[cDef,very thick,domain=1.39:6,samples=80] plot(\x,{\x+2+3/(\x-1)});
-\draw[cRem,thick,dashed] (1,-5)--(1,11);
-\draw[cEx,thick] (-4,0.5)--(6,5.5);
-\node[cEx,font=\scriptsize] at (4.8,3.6){$m=\frac12$};
-\draw[cRem,thick,dashed,domain=-4:6] plot(\x,{\x+2});
-\draw[cThm,thick,domain=-1.7:3.6] plot(\x,{3*(\x-1)+3});
-\node[cThm,font=\scriptsize] at (3.3,7.3){$m=3$};
-\fill (1,3) circle (2pt) node[left,font=\scriptsize]{$\Omega$};
-\end{GR}
-\end{mithal}
-
-\begin{mithal}[{عائلة دوال $f_m(x)=\dfrac{x^{2}+mx+1}{x-1}$ \ ($m\neq-2$) -- شعبة رياضيات}]
-\begin{itemize}
-\item $x^{2}+mx+1=(x-1)(x+m+1)+(m+2)$، إذن:
-\[ f_m(x)=x+m+1+\frac{m+2}{x-1} \]
-المقارب المائل \bx{y=x+m+1} والمقارب العمودي \bx{x=1}.
-\item $f_m(0)=-1$ مهما كان $m$: كل المنحنيات $(C_m)$ تشمل \bxt{النقطة الثابتة $A(0;-1)$}.
-\item $\Lim{x\to1^{+}}f_m(x)=+\infty$ إذا كان $m>-2$، و $-\infty$ إذا كان $m<-2$ (إشارة $m+2$).
-\item $m=-2$: $f_{-2}(x)=x-1$ من أجل $x\neq1$ (مستقيم محروم من النقطة $(1;0)$).
-\end{itemize}
-\end{mithal}
-
 %================================================================
 \section{أخطاء شائعة}
 \begin{BOX}{cThm}{أخطاء شائعة يجب تجنبها}

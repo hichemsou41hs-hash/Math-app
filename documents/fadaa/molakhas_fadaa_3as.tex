@@ -1,0 +1,529 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}ملخص: الهندسة في الفضاء}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\let\origNeedspace\Needspace
+\renewcommand{\Needspace}[1]{\origNeedspace{12\baselineskip}}
+\newcommand{\V}[1]{\overrightarrow{#1}}
+\newcommand{\vu}{\vec{u}}\newcommand{\vv}{\vec{v}}\newcommand{\vw}{\vec{w}}\newcommand{\vn}{\vec{n}}
+\newcommand{\MT}{\textcolor{cThm}{\small(رياضيات وتقني رياضي فقط)}}
+% 3D figure (oblique view): \begin{FIG}[scale] ... \end{FIG}
+\newenvironment{FIG}[1][1]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=#1,x={(-0.45cm,-0.42cm)},y={(1cm,0cm)},z={(0cm,1cm)},font=\footnotesize,>={Stealth[length=2mm]}]}{\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Axes}[3]{\draw[->](0,0,0)--(#1,0,0) node[below left]{$x$};\draw[->](0,0,0)--(0,#2,0) node[right]{$y$};\draw[->](0,0,0)--(0,0,#3) node[above]{$z$};\node[left] at (0,0,0){$O$};}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{25}{32}\selectfont\bfseries الهندسة في الفضاء}\\[8pt]
+{\color{white}\large ملخص مبسّط مع أمثلة محلولة وأشكال}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- علوم تجريبية، رياضيات، تقني رياضي}
+\end{tcolorbox}
+\end{LTR}
+
+\begin{BOX}{cSec}{محتوى الملخص}
+\begin{enumerate}[label=\textbf{\arabic*.}]
+\item الأشعة في الفضاء: التوازي، الاستقامية، الأشعة من نفس المستوي.
+\item المعلم في الفضاء: الإحداثيات، المنتصف، المسافة، مستويات موازية لمستويات الإحداثيات.
+\item المرجح في الفضاء.
+\item التمثيل الوسيطي لمستقيم ولمستوٍ، والانتقال إلى الجمل والمعادلات.
+\item الجداء السلمي: التعامد، الشعاع الناظمي، معادلة مستوٍ.
+\item مسافة نقطة عن مستوٍ والمسقط العمودي؛ مجموعات نقط.
+\item سطح الكرة، الأسطوانة والمخروط الدورانيان \MT.
+\item الأوضاع النسبية والتقاطعات؛ ثم خلاصة الطرائق.
+\end{enumerate}
+\textbf{ملاحظة:} شعبة علوم تجريبية تدرس كل ما في الملخص \textbf{ما عدا} الفقرة 7.
+\end{BOX}
+%================================================================
+\section{الأشعة في الفضاء}
+\begin{tarif}[شعاعان مرتبطان خطيًّا -- استقامية]
+\begin{itemize}
+\item $\vu$ و $\vv$ \textbf{مرتبطان خطيًّا} (متوازيان) إذا وُجد عدد حقيقي $k$ حيث \bx{\vv=k\,\vu} (أو $\vu=\vec0$).
+\item النقط $A$ ، $B$ ، $C$ \textbf{في استقامية} $\iff$ $\V{AB}$ و $\V{AC}$ مرتبطان خطيًّا.
+\item $(AB)\parallel(CD)$ $\iff$ $\V{AB}$ و $\V{CD}$ مرتبطان خطيًّا.
+\end{itemize}
+\end{tarif}
+\begin{tarif}[أشعة من نفس المستوي]
+إذا كان $\vu$ و $\vv$ غير مرتبطين خطيًّا، فإن $\vu$ ، $\vv$ ، $\vw$ \textbf{من نفس المستوي} إذا وُجد عددان حقيقيان $a$ و $b$ حيث \bx{\vw=a\,\vu+b\,\vv}.\par
+\textbf{تطبيق:} النقط $A$ ، $B$ ، $C$ ، $D$ \textbf{من نفس المستوي} $\iff$ الأشعة $\V{AB}$ ، $\V{AC}$ ، $\V{AD}$ من نفس المستوي.
+\end{tarif}
+\begin{mithal}
+\textbf{(1)} $A(1;2;-1)$ ، $B(3;1;0)$ ، $C(7;-1;2)$: \ $\V{AB}(2;-1;1)$ و $\V{AC}(6;-3;3)$، إذن $\V{AC}=3\V{AB}$ و\bxt{$A$ ، $B$ ، $C$ في استقامية}.\par
+\textbf{(2)} $\vu(1;0;2)$ ، $\vv(0;1;-1)$ ، $\vw(2;3;1)$: نبحث عن $a,b$ حيث $\vw=a\vu+b\vv$:
+\[ \begin{cases} a=2\\ b=3\\ 2a-b=1 \end{cases}\quad (4-3=1\ \text{\ok}) \]
+إذن $\vw=2\vu+3\vv$ و\bxt{الأشعة $\vu$ ، $\vv$ ، $\vw$ من نفس المستوي}.
+\end{mithal}
+%================================================================
+\section{المعلم في الفضاء}
+\begin{khassia}[الإحداثيات في معلم متعامد ومتجانس $(O;\vec i,\vec j,\vec k)$]
+\RL{0.5}{
+\begin{itemize}
+\item $M(x;y;z)\iff \V{OM}=x\vec i+y\vec j+z\vec k$.
+\item $\V{AB}(x_B-x_A;\,y_B-y_A;\,z_B-z_A)$.
+\item منتصف $[AB]$: \ $I\Big(\frac{x_A+x_B}{2};\frac{y_A+y_B}{2};\frac{z_A+z_B}{2}\Big)$.
+\item $\|\vu\|=\sqrt{x^{2}+y^{2}+z^{2}}$ ، و
+\[ \bx{AB=\sqrt{(x_B-x_A)^{2}+(y_B-y_A)^{2}+(z_B-z_A)^{2}}} \]
+\end{itemize}}{0.46}{
+\begin{FIG}[1]
+\Axes{3}{3.6}{2.8}
+\coordinate (M) at (2,2.5,1.8);
+\draw[dashed,gray] (2,0,0)--(2,2.5,0)--(0,2.5,0);
+\draw[dashed,gray] (2,2.5,0)--(M);
+\draw[dashed,gray] (0,0,1.8)--(0,2.5,1.8)--(M);
+\draw[dashed,gray] (0,2.5,0)--(0,2.5,1.8);
+\draw[dashed,gray] (0,0,1.8)--(2,0,1.8)--(M);\draw[dashed,gray] (2,0,0)--(2,0,1.8);
+\fill[cThm] (M) circle (1.5pt) node[above right]{$M(x;y;z)$};
+\node[below left] at (2,0,0){$x$};\node[below] at (0,2.5,0){$y$};\node[left] at (0,0,1.8){$z$};
+\draw[->,very thick,cDef](0,0,0)--(1,0,0) node[above left=-1pt]{$\vec i$};
+\draw[->,very thick,cDef](0,0,0)--(0,1,0) node[below]{$\vec j$};
+\draw[->,very thick,cDef](0,0,0)--(0,0,1) node[left]{$\vec k$};
+\end{FIG}}
+\end{khassia}
+\begin{khassia}[مستويات موازية لمستويات الإحداثيات]
+\begin{itemize}
+\item المستوي الموازي لـ $(xOy)$ والذي يشمل $A(x_0;y_0;z_0)$ معادلته \bx{z=z_0} \ (و $(xOy)$: $z=0$).
+\item الموازي لـ $(yOz)$: \bx{x=x_0} ؛ \ الموازي لـ $(xOz)$: \bx{y=y_0}.
+\end{itemize}
+\end{khassia}
+\begin{mithal}
+$A(1;2;-1)$ و $B(3;-2;3)$: \ $\V{AB}(2;-4;4)$، $AB=\sqrt{4+16+16}=\bx{6}$، ومنتصف $[AB]$ هو \bx{I(2;0;1)}.\par
+المستوي الذي يشمل $A$ ويوازي $(xOy)$ معادلته $z=-1$.
+\end{mithal}
+%================================================================
+\section{المرجح في الفضاء}
+\begin{tarif}
+$\alpha+\beta+\gamma\neq0$: مرجح الجملة $\{(A,\alpha),(B,\beta),(C,\gamma)\}$ هو النقطة الوحيدة $G$ حيث \bx{\alpha\V{GA}+\beta\V{GB}+\gamma\V{GC}=\vec0}، وإحداثياتها:
+\[ x_G=\frac{\alpha x_A+\beta x_B+\gamma x_C}{\alpha+\beta+\gamma}\ ،\quad y_G=\frac{\alpha y_A+\beta y_B+\gamma y_C}{\alpha+\beta+\gamma}\ ،\quad z_G=\frac{\alpha z_A+\beta z_B+\gamma z_C}{\alpha+\beta+\gamma}. \]
+\end{tarif}
+\begin{khassia}[استعمال المرجح]
+\begin{itemize}
+\item مرجح نقطتين $A$ و $B$ ينتمي إلى المستقيم $(AB)$: يُستعمل لإثبات \textbf{الاستقامية}.
+\item مرجح ثلاث نقط $A$ ، $B$ ، $C$ (ليست في استقامية) ينتمي إلى المستوي $(ABC)$: يُستعمل لإثبات أن \textbf{أربع نقط من نفس المستوي}.
+\item المستقيم $(AB)$ هو مجموعة مرجحات $A$ و $B$؛ والمستوي $(ABC)$ هو مجموعة مرجحات $A$ ، $B$ ، $C$.
+\end{itemize}
+\end{khassia}
+\begin{mithal}
+$A(1;2;0)$ ، $B(3;0;2)$ ، $C(-1;2;2)$. مرجح $\{(A,2),(B,1),(C,1)\}$:
+\[ x_G=\frac{2+3-1}{4}=1\ ،\quad y_G=\frac{4+0+2}{4}=\frac32\ ،\quad z_G=\frac{0+2+2}{4}=1, \]
+إذن $G\big(1;\frac32;1\big)$، والنقطة $G$ \bxt{تنتمي إلى المستوي $(ABC)$}.
+\end{mithal}
+%================================================================
+\section{التمثيل الوسيطي لمستقيم ولمستوٍ}
+\begin{khassia}[المستقيم]
+\RL{0.56}{
+المستقيم $(D)$ الذي يشمل $A(x_0;y_0;z_0)$ وشعاع توجيهه $\vu(a;b;c)$ ($\vu\neq\vec0$):
+\[ M\in(D)\iff \V{AM}=t\,\vu\iff \bx{\begin{cases}x=x_0+a\,t\\ y=y_0+b\,t\\ z=z_0+c\,t\end{cases}\ (t\in\R)} \]
+المستقيم $(AB)$: نأخذ $\vu=\V{AB}$.}{0.4}{
+\begin{FIG}[1]
+\draw[thick,cDef] (0,-0.5,0.2)--(0,4,2.2) node[right]{$(D)$};
+\fill (0,0.5,0.644) circle (1.5pt) node[above left]{$A$};
+\draw[->,very thick,cThm] (0,0.5,0.644)--(0,1.8,1.222) node[above left]{$\vu$};
+\fill (0,3,1.778) circle (1.5pt) node[above left]{$M$};
+\end{FIG}}
+\end{khassia}
+\begin{mithal}
+$(D)$ يشمل $A(1;-1;2)$ و $\vu(2;1;-3)$: \quad $\begin{cases}x=1+2t\\y=-1+t\\z=2-3t\end{cases}\ (t\in\R)$.\par
+$B(5;1;-4)$: من $x$ نجد $t=2$، ثم $y=1$ و $z=-4$ \ok: \bxt{$B\in(D)$}.\par
+$C(3;0;0)$: من $x$ نجد $t=1$، لكن $z=-1\neq0$: \bxt{$C\notin(D)$}.
+\end{mithal}
+\begin{khassia}[المستوي]
+المستوي الذي يشمل $A$ وشعاعا توجيهه $\vu$ ، $\vv$ (غير مرتبطين خطيًّا):
+\[ M\in(P)\iff \V{AM}=t\,\vu+s\,\vv\iff \begin{cases}x=x_0+a\,t+a'\,s\\ y=y_0+b\,t+b'\,s\\ z=z_0+c\,t+c'\,s\end{cases}\ (t,s\in\R) \]
+\end{khassia}
+\begin{tariqa}[الانتقال بين التمثيلات]
+\begin{itemize}
+\item \textbf{تمثيل وسيطي $\leftarrow$ معادلة مستوٍ:} نضع مجهولين وسيطين. مثال: $x+2y-z-4=0$: نضع $x=t$ ، $y=s$ فنجد $z=t+2s-4$.
+\item \textbf{معادلة مستوٍ $\leftarrow$ تمثيل وسيطي:} نحذف $t$ و $s$. مثال: $\begin{cases}x=1+t\\y=t+s\\z=2-s\end{cases}$: $t=x-1$ ، $s=2-z$، ومنه $y=x-1+2-z$، أي \bx{x-y-z+1=0}.
+\item \textbf{تمثيل وسيطي $\leftarrow$ مستقيم معرّف بجملة معادلتين} (تقاطع مستويين): نضع أحد المجاهيل $t$ ونعبّر عن الآخرين. مثال:
+\[ \begin{cases}x+y-z-1=0\\x-y+z-3=0\end{cases}\ \xrightarrow{\ \text{بالجمع}\ }\ 2x=4\ ؛\ \text{نضع } z=t:\quad \begin{cases}x=2\\y=-1+t\\z=t\end{cases}\ (t\in\R) \]
+\item \textbf{جملة معادلتين $\leftarrow$ تمثيل وسيطي لمستقيم:} نستخرج $t$ من معادلة ونعوّض في الأخريين. مثال: $x=1+2t$ ، $y=-1+t$ ، $z=2-3t$: \ $t=y+1$ فنجد $\begin{cases}x-2y-3=0\\3y+z+1=0\end{cases}$.
+\end{itemize}
+\end{tariqa}
+%================================================================
+\section{الجداء السلمي ومعادلة مستوٍ}
+\begin{khassia}[الجداء السلمي]
+\begin{itemize}
+\item $\vu\cdot\vv=\|\vu\|\times\|\vv\|\times\cos(\vu,\vv)$.
+\item \textbf{العبارة التحليلية:} $\vu(x;y;z)$ ، $\vv(x';y';z')$: \ \bx{\vu\cdot\vv=xx'+yy'+zz'} \ و $\vu\cdot\vu=\|\vu\|^{2}$.
+\item \bx{\vu\perp\vv\iff\vu\cdot\vv=0}.
+\end{itemize}
+\end{khassia}
+\begin{tarif}[شعاع ناظمي -- معادلة ديكارتية لمستوٍ]
+\RL{0.56}{
+$\vn\neq\vec0$ \textbf{ناظمي} للمستوي $(P)$ إذا كان عموديًّا على شعاعي توجيه له.\par
+المستوي الذي يشمل $A(x_0;y_0;z_0)$ و $\vn(a;b;c)$ ناظمي له:
+\[ M\in(P)\iff \V{AM}\cdot\vn=0 \]
+\[ \iff a(x-x_0)+b(y-y_0)+c(z-z_0)=0 \]
+أي من الشكل \bx{ax+by+cz+d=0}، و\bxt{$\vn(a;b;c)$ ناظمي له}.}{0.4}{
+\begin{FIG}[1]
+\fill[cDef!12] (2,-0.5,0)--(2,3,0)--(-1.5,3,0)--(-1.5,-0.5,0)--cycle;
+\draw[cDef] (2,-0.5,0)--(2,3,0)--(-1.5,3,0)--(-1.5,-0.5,0)--cycle;
+\node[cDef] at (1.6,2.7,0){$(P)$};
+\fill (0,1.2,0) circle (1.5pt) node[below]{$A$};
+\fill (0.8,2.3,0) circle (1.5pt) node[below]{$M$};
+\draw[->,thick] (0,1.2,0)--(0.8,2.3,0);
+\draw[->,very thick,cThm] (0,1.2,0)--(0,1.2,1.6) node[above]{$\vn$};
+\draw (0,1.2,0.25)--(0.15,1.41,0.25)--(0.15,1.41,0);
+\end{FIG}}
+\end{tarif}
+\begin{mithal}
+\textbf{(1)} المستوي الذي يشمل $A(1;0;3)$ و $\vn(2;-1;1)$ ناظمي له: \ $2(x-1)-(y-0)+(z-3)=0$، أي \bx{2x-y+z-5=0}.\par
+\textbf{(2)} المستوي $(ABC)$ مع $A(1;0;0)$ ، $B(0;2;0)$ ، $C(0;0;3)$: \ $\V{AB}(-1;2;0)$ ، $\V{AC}(-1;0;3)$. نبحث عن $\vn(a;b;c)$:
+\[ \begin{cases}\vn\cdot\V{AB}=-a+2b=0\\ \vn\cdot\V{AC}=-a+3c=0\end{cases} \]
+نأخذ $a=6$: $b=3$ ، $c=2$، إذن $\vn(6;3;2)$ و $(ABC):6x+3y+2z+d=0$؛ و $A\in(ABC)$ يعطي $d=-6$:
+\TwoCol{0.44}{
+\begin{FIG}[0.75]
+\Axes{2.2}{3.2}{3.8}
+\fill[cDef!20,opacity=0.8] (1,0,0)--(0,2,0)--(0,0,3)--cycle;
+\draw[thick,cDef] (1,0,0)--(0,2,0)--(0,0,3)--cycle;
+\node[below left] at (1,0,0){$A$};\node[below] at (0,2,0){$B$};\node[right] at (0,0,3){$C$};
+\end{FIG}}{0.52}{\vspace{1.2cm}\[ \bx{(ABC):\ 6x+3y+2z-6=0} \]
+\textbf{تحقق:} $B$: $6-6=0$ \ok ، \ $C$: $6-6=0$ \ok.}
+\end{mithal}
+\begin{khassia}[التعامد والتوازي بالأشعة]
+$(D)$ و $(D')$ شعاعا توجيههما $\vu$ ، $\vu'$؛ \ $(P)$ و $(P')$ ناظمياهما $\vn$ ، $\vn'$:
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{0.42\textwidth}|p{0.42\textwidth}|}\hline
+\rowcolor{cSec!12} \textbf{التوازي} & \textbf{التعامد}\\\hline
+$(D)\parallel(D')\iff \vu$ و $\vu'$ مرتبطان خطيًّا & $(D)\perp(D')\iff \vu\cdot\vu'=0$\\\hline
+$(D)\parallel(P)\iff \vu\cdot\vn=0$ & $(D)\perp(P)\iff \vu$ و $\vn$ مرتبطان خطيًّا\\\hline
+$(P)\parallel(P')\iff \vn$ و $\vn'$ مرتبطان خطيًّا & $(P)\perp(P')\iff \vn\cdot\vn'=0$\\\hline
+\end{tabular}
+\end{center}
+\end{khassia}
+\begin{mithal}[مكعب]
+\RL{0.58}{
+$ABCDEFGH$ مكعب طول حرفه $1$، في المعلم $(A;\V{AB},\V{AD},\V{AE})$:\par
+$B(1;0;0)$ ، $D(0;1;0)$ ، $E(0;0;1)$ ، $G(1;1;1)$.\par
+$\V{AG}(1;1;1)$ ، $\V{BD}(-1;1;0)$ ، $\V{BE}(-1;0;1)$:
+\[ \V{AG}\cdot\V{BD}=-1+1=0\ ،\quad \V{AG}\cdot\V{BE}=-1+1=0 \]
+إذن \bxt{$(AG)$ عمودي على المستوي $(BDE)$} و $\V{AG}$ ناظمي له:\par
+$(BDE):x+y+z+d=0$ و $B\in(BDE)$ يعطي $d=-1$:\par
+\hfill\bx{(BDE):\ x+y+z-1=0}\hfill\null}{0.38}{
+\begin{FIG}[1.9]
+\coordinate (A) at (0,0,0);\coordinate (B) at (1,0,0);\coordinate (C) at (1,1,0);\coordinate (D) at (0,1,0);
+\coordinate (E) at (0,0,1);\coordinate (F) at (1,0,1);\coordinate (G) at (1,1,1);\coordinate (H) at (0,1,1);
+\fill[cEx!20,opacity=0.8] (B)--(D)--(E)--cycle;
+\draw[thick] (B)--(C)--(D) (B)--(F)--(G)--(C) (F)--(E)--(H)--(G) (H)--(D);
+\draw[dashed] (A)--(B) (A)--(D) (A)--(E);
+\draw[cEx!80!black,thick] (B)--(D)--(E)--cycle;
+\draw[cThm,thick] (A)--(G);
+\foreach \p/\q in {A/left,B/below left,C/below right,D/right,E/left,F/left,G/above right,H/above}{\node[\q] at (\p){$\p$};}
+\end{FIG}}
+\end{mithal}
+%================================================================
+\section{مسافة نقطة عن مستوٍ -- مجموعات نقط}
+\begin{khassia}[مسافة نقطة عن مستوٍ]
+مسافة النقطة $A(x_0;y_0;z_0)$ عن المستوي $(P):ax+by+cz+d=0$:
+\[ \bx{d\big(A,(P)\big)=\frac{|ax_0+by_0+cz_0+d|}{\sqrt{a^{2}+b^{2}+c^{2}}}} \]
+وهي المسافة $AH$ حيث $H$ \textbf{المسقط العمودي} لـ $A$ على $(P)$.
+\end{khassia}
+\begin{tariqa}[المسقط العمودي $H$ لنقطة $A$ على $(P)$]
+$H$ هي تقاطع $(P)$ مع المستقيم الذي يشمل $A$ وشعاع توجيهه $\vn$: نكتب $\V{AH}=k\,\vn$ ثم نعوّض في معادلة $(P)$.
+\end{tariqa}
+\begin{mithal}
+$(P):2x-y+2z+3=0$ و $A(1;2;-3)$:
+\[ d\big(A,(P)\big)=\frac{|2-2-6+3|}{\sqrt{4+1+4}}=\frac{3}{3}=\bx{1} \]
+المسقط العمودي: $H(1+2k;\,2-k;\,-3+2k)$، نعوّض: $2(1+2k)-(2-k)+2(-3+2k)+3=9k-3=0$، ومنه $k=\frac13$:
+\[ \bx{H\Big(\frac53;\frac53;-\frac73\Big)}\qquad\text{(تحقق: } AH=|k|\,\|\vn\|=\tfrac13\times3=1\ \text{\ok)} \]
+\end{mithal}
+\begin{khassia}[مجموعات نقط]
+\begin{itemize}
+\item $\{M:\ MA=MB\}$ هي \textbf{المستوي المحوري} لـ $[AB]$: يشمل منتصف $[AB]$ و $\V{AB}$ ناظمي له.
+\item $\{M:\ \V{AM}\cdot\vn=0\}$ هي المستوي الذي يشمل $A$ و $\vn$ ناظمي له.
+\item $\{M:\ \V{MA}\cdot\V{MB}=0\}$ هي سطح الكرة التي قطرها $[AB]$ \MT.
+\end{itemize}
+\end{khassia}
+\begin{mithal}
+$A(1;0;2)$ ، $B(3;2;0)$: \ $MA^{2}=MB^{2}\iff (x-1)^{2}+y^{2}+(z-2)^{2}=(x-3)^{2}+(y-2)^{2}+z^{2}$\par
+$\iff -2x-4z+5=-6x-4y+13\iff 4x+4y-4z-8=0$، أي المستوي المحوري \bx{x+y-z-2=0}.\par
+\textbf{تحقق:} المنتصف $I(2;1;1)$: $2+1-1-2=0$ \ok، والناظمي $(1;1;-1)$ يوازي $\V{AB}(2;2;-2)$ \ok.
+\end{mithal}
+%================================================================
+\section{سطح الكرة، الأسطوانة، المخروط \MT}
+\begin{khassia}[معادلات بدستور المسافة]
+\begin{itemize}
+\item \textbf{سطح الكرة} التي مركزها $\Omega(a;b;c)$ ونصف قطرها $R$: \ $\Omega M=R\iff$ \bx{(x-a)^{2}+(y-b)^{2}+(z-c)^{2}=R^{2}}.
+\item \textbf{الأسطوانة الدورانية} التي محورها $(Oz)$ ونصف قطرها $r$: (مسافة $M$ عن $(Oz)$ تساوي $r$) \ \bx{x^{2}+y^{2}=r^{2}}.
+\item \textbf{المخروط الدوراني} الذي رأسه $O$ ومحوره $(Oz)$ ونصف زاوية رأسه $\theta$: \ \bx{x^{2}+y^{2}=(\tan\theta)^{2}\,z^{2}}.
+\end{itemize}
+\end{khassia}
+\TwoCol{0.3}{
+\begin{FIG}[0.8]
+\shade[ball color=cDef!30] (0,0,0) circle (1.3);
+\draw (0,0,0) circle (1.3);
+\draw[dashed] (0,1.3,0) arc (0:180:1.3 and 0.35);
+\draw (0,-1.3,0) arc (180:360:1.3 and 0.35);
+\fill (0,0,0) circle (1.2pt) node[below]{$\Omega$};
+\draw[->] (0,0,0)--(0,0.92,0.92) node[midway,above left=-2pt]{$R$};
+\end{FIG}\centering\ar{سطح كرة}}{0.3}{
+\begin{FIG}[0.8]
+\draw[->] (0,0,-0.3)--(0,0,3) node[above]{$z$};
+\draw (0,-0.9,0) arc (180:360:0.9 and 0.25);\draw[dashed] (0,0.9,0) arc (0:180:0.9 and 0.25);
+\draw (0,0,2.4) ellipse (0.9 and 0.25);
+\draw (0,-0.9,0)--(0,-0.9,2.4) (0,0.9,0)--(0,0.9,2.4);
+\draw (0,0,2.4)--(0,0.9,2.4) node[midway,above]{$r$};
+\end{FIG}\centering\ar{أسطوانة محورها $(Oz)$}}
+\hfill
+\begin{minipage}[t]{0.3\textwidth}
+\begin{FIG}[0.8]
+\draw[->] (0,0,-0.3)--(0,0,3) node[above]{$z$};
+\draw (0,0,2.4) ellipse (1 and 0.27);
+\draw (0,-1,2.4)--(0,0,0)--(0,1,2.4);
+\fill (0,0,0) circle (1.2pt) node[right]{$O$};
+\draw (0,0,0.9) arc (90:68:0.9) node[midway,above=1pt]{$\theta$};
+\end{FIG}\centering\ar{مخروط رأسه $O$}
+\end{minipage}
+\begin{khassia}[سطح كرة ومستوٍ]
+$d=d\big(\Omega,(P)\big)$: \ إذا $d>R$: لا تقاطع؛ \ إذا $d=R$: $(P)$ \textbf{مماس} للكرة في المسقط $H$ لـ $\Omega$؛ \ إذا $d<R$: التقاطع \textbf{دائرة} مركزها $H$ ونصف قطرها \bx{r=\sqrt{R^{2}-d^{2}}}.
+\end{khassia}
+\begin{mithal}
+\textbf{(1)} $x^{2}+y^{2}+z^{2}-2x+4y-4=0\iff (x-1)^{2}-1+(y+2)^{2}-4+z^{2}-4=0\iff (x-1)^{2}+(y+2)^{2}+z^{2}=9$:\par
+\bxt{سطح كرة مركزها $\Omega(1;-2;0)$ ونصف قطرها $R=3$}.\par
+\textbf{(2)} $(P):2x-y+2z+2=0$: \ $d=\dfrac{|2+2+0+2|}{3}=2<3$، إذن التقاطع دائرة نصف قطرها $r=\sqrt{9-4}=\bx{\sqrt5}$، ومركزها $H\big(-\frac13;-\frac43;-\frac43\big)$ (المسقط العمودي لـ $\Omega$ على $(P)$).\par
+\textbf{(3)} $x^{2}+y^{2}=4$: أسطوانة محورها $(Oz)$ ونصف قطرها $2$؛ \ $x^{2}+y^{2}=3z^{2}$: مخروط رأسه $O$ ومحوره $(Oz)$ مع $\tan\theta=\sqrt3$ ($\theta=\frac{\pi}{3}$).
+\end{mithal}
+%================================================================
+\section{الأوضاع النسبية والتقاطعات}
+\begin{khassia}[مستويان $(P)$ و $(P')$]
+\begin{itemize}
+\item $\vn$ و $\vn'$ مرتبطان خطيًّا: $(P)\parallel(P')$ (متطابقان إذا اشتركا في نقطة، وإلا متوازيان تمامًا).
+\item غير ذلك: $(P)$ و $(P')$ \textbf{متقاطعان وفق مستقيم} (نجد تمثيله الوسيطي بحل الجملة، الفقرة 4).
+\end{itemize}
+\end{khassia}
+\begin{khassia}[مستقيم $(D)$ ومستوٍ $(P)$]
+\begin{itemize}
+\item $\vu\cdot\vn\neq0$: $(D)$ \textbf{يقطع} $(P)$ في نقطة وحيدة (نعوّض التمثيل الوسيطي في معادلة $(P)$).
+\item $\vu\cdot\vn=0$: $(D)\parallel(P)$: إذا كانت $A\in(D)$ تنتمي إلى $(P)$ فإن $(D)\subset(P)$، وإلا متوازيان تمامًا.
+\end{itemize}
+\begin{FIG}[0.75]
+\begin{scope}
+\fill[cDef!12] (1.5,-0.5,0)--(1.5,3,0)--(-1.5,3,0)--(-1.5,-0.5,0)--cycle;\draw[cDef] (1.5,-0.5,0)--(1.5,3,0)--(-1.5,3,0)--(-1.5,-0.5,0)--cycle;
+\draw[thick,cThm] (0,1,-0.9)--(0,1.4,0); \draw[thick,cThm] (0,1.4,0)--(0,2.4,2.2);\fill (0,1.4,0) circle (1.5pt);
+\node at (2.6,1.25,0){\ar{يقطعه}};
+\end{scope}
+\begin{scope}[shift={(0,4.2,0)}]
+\fill[cDef!12] (1.5,-0.5,0)--(1.5,3,0)--(-1.5,3,0)--(-1.5,-0.5,0)--cycle;\draw[cDef] (1.5,-0.5,0)--(1.5,3,0)--(-1.5,3,0)--(-1.5,-0.5,0)--cycle;
+\draw[thick,cThm] (0,-0.5,1)--(0,3,1);
+\node at (2.6,1.25,0){\ar{يوازيه تمامًا}};
+\end{scope}
+\begin{scope}[shift={(0,8.4,0)}]
+\fill[cDef!12] (1.5,-0.5,0)--(1.5,3,0)--(-1.5,3,0)--(-1.5,-0.5,0)--cycle;\draw[cDef] (1.5,-0.5,0)--(1.5,3,0)--(-1.5,3,0)--(-1.5,-0.5,0)--cycle;
+\draw[thick,cThm] (0.3,-0.3,0)--(-0.3,2.8,0);
+\node at (2.6,1.25,0){\ar{محتوى فيه}};
+\end{scope}
+\end{FIG}
+\end{khassia}
+\begin{mithal}
+$(D):\ x=1+t$ ، $y=2-t$ ، $z=3+2t$ \ و \ $(P):x+y+z-2=0$: \ $\vu(1;-1;2)$ ، $\vn(1;1;1)$ ، $\vu\cdot\vn=2\neq0$ فهما متقاطعان:
+\[ (1+t)+(2-t)+(3+2t)-2=0\iff 2t+4=0\iff t=-2\ ،\qquad \bx{(D)\cap(P)=\{I(-1;4;-1)\}} \]
+\end{mithal}
+\begin{khassia}[مستقيمان $(D)$ و $(D')$]
+\begin{itemize}
+\item $\vu$ و $\vu'$ مرتبطان خطيًّا: \textbf{متوازيان} (متطابقان إذا اشتركا في نقطة).
+\item غير ذلك: نحل الجملة (بوسيطين مختلفين $t$ و $s$): حل وحيد $\Leftarrow$ \textbf{متقاطعان}؛ لا حل $\Leftarrow$ \textbf{ليسا من نفس المستوي}.
+\end{itemize}
+\end{khassia}
+\begin{mithal}
+$(D):\begin{cases}x=1+t\\y=2t\\z=-1+t\end{cases}$ ، \ $(D'):\begin{cases}x=s\\y=1+s\\z=2-s\end{cases}$ ، \ $(D''):\begin{cases}x=s\\y=1+s\\z=4-s\end{cases}$ \quad ($t,s\in\R$).\par
+$\vu(1;2;1)$ و $\vu'(1;1;-1)$ غير مرتبطين خطيًّا. من المعادلتين الأوليين: $1+t=s$ و $2t=1+s$ ، ومنه $t=2$ ، $s=3$.
+\begin{itemize}
+\item مع $(D')$: $z$: $-1+2=1$ و $2-3=-1$، $1\neq-1$: \bxt{$(D)$ و $(D')$ ليسا من نفس المستوي}.
+\item مع $(D'')$: $-1+2=1$ و $4-3=1$ \ok: \bxt{$(D)$ و $(D'')$ متقاطعان في $(3;4;1)$}.
+\end{itemize}
+\end{mithal}
+\begin{khassia}[تقاطع ثلاثة مستويات]
+نحل جملة ثلاث معادلات بثلاثة مجاهيل: حل وحيد (نقطة)، أو ما لا نهاية من الحلول (مستقيم أو مستوٍ)، أو لا حل (تقاطع خالٍ).
+\end{khassia}
+\begin{mithal}
+\[ \begin{cases}x+y+z=6\\x-y+z=2\\2x+y-z=1\end{cases} \]
+بطرح الثانية من الأولى: $2y=4$، $y=2$؛ ثم $x+z=4$ و $2x-z=-1$، بالجمع $3x=3$: $x=1$ ، $z=3$.\par
+المستويات الثلاثة تتقاطع في النقطة \bx{(1;2;3)}.
+\end{mithal}
+%================================================================
+\section{خلاصة الطرائق}
+\begin{BOX}{cMeth}{الطريقة حسب المطلوب}
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{0.62\textwidth}|p{0.3\textwidth}|}\hline
+\rowcolor{cSec!12} \textbf{الطريقة} & \textbf{المطلوب}\\\hline
+$\V{AC}=k\V{AB}$ (أو $G$ مرجح $A$ و $B$). & استقامية $A$ ، $B$ ، $C$\\\hline
+$\V{AD}=a\V{AB}+b\V{AC}$، أو $D\in(ABC)$ بالمعادلة، أو $D$ مرجح $A$ ، $B$ ، $C$. & أربع نقط من نفس المستوي\\\hline
+$\V{AM}=t\vu$: $x=x_0+at$ ، $y=y_0+bt$ ، $z=z_0+ct$. & تمثيل وسيطي لمستقيم\\\hline
+نجد $t$ من معادلة ونتحقق في الأخريين. & انتماء نقطة إلى مستقيم\\\hline
+$a(x-x_0)+b(y-y_0)+c(z-z_0)=0$. & مستوٍ بنقطة وناظمي $\vn(a;b;c)$\\\hline
+$\vn\cdot\V{AB}=0$ و $\vn\cdot\V{AC}=0$، ثم $d$ بتعويض $A$. & معادلة المستوي $(ABC)$\\\hline
+الجداء السلمي $=0$ (أشعة توجيه أو ناظمية). & التعامد\\\hline
+$\dfrac{|ax_0+by_0+cz_0+d|}{\sqrt{a^{2}+b^{2}+c^{2}}}$. & مسافة نقطة عن مستوٍ\\\hline
+$\V{AH}=k\vn$ ثم $H\in(P)$. & المسقط العمودي على مستوٍ\\\hline
+$\V{AB}$ ناظمي ويشمل منتصف $[AB]$. & المستوي المحوري\\\hline
+$(x-a)^{2}+(y-b)^{2}+(z-c)^{2}=R^{2}$ (إكمال المربعات للتعرف) \MT. & سطح كرة\\\hline
+نقارن $d(\Omega,(P))$ بـ $R$؛ $r=\sqrt{R^{2}-d^{2}}$ \MT. & كرة ومستوٍ\\\hline
+$\vn$ ، $\vn'$ مرتبطان: متوازيان؛ وإلا متقاطعان وفق مستقيم (نحل الجملة بوضع $z=t$). & وضع مستويين\\\hline
+$\vu\cdot\vn\neq0$: نقطة تقاطع بتعويض التمثيل؛ $\vu\cdot\vn=0$: موازٍ أو محتوى. & وضع مستقيم ومستوٍ\\\hline
+$\vu$ ، $\vu'$ مرتبطان: متوازيان؛ وإلا جملة بوسيطين: حل $\leftarrow$ متقاطعان، لا حل $\leftarrow$ ليسا من نفس المستوي. & وضع مستقيمين\\\hline
+حل جملة $3\times3$ بالحذف. & تقاطع ثلاثة مستويات\\\hline
+\end{tabular}
+\end{center}
+\end{BOX}
+\end{document}

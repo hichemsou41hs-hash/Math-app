@@ -157,7 +157,7 @@
 \newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
 \newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
 \newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
-\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newenvironment{tmr}[1][]{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo#1}}{\end{BOX}}
 \newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
 \pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
 \newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
@@ -183,9 +183,9 @@
 \item العدّ: المبدأ الأساسي، القوائم، الترتيبات، التبديلات، التوفيقات، مثلث باسكال ودستور ثنائي الحد.
 \item أنواع السحب: في آن واحد، على التوالي بإرجاع، على التوالي دون إرجاع (جدول مقارنة).
 \item التجربة العشوائية، قانون الاحتمال، المتغير العشوائي: الأمل الرياضياتي، التباين، الانحراف المعياري.
-\item الاحتمال الشرطي، شجرة الاحتمالات، دستور الاحتمالات الكلية.
-\item الاستقلالية.
-\item التجارب المتكررة وقانون برنولي والقانون الثنائي (شعبة رياضيات أساسًا).
+\item الاحتمال الشرطي، شجرة الاحتمالات، دستور الاحتمالات الكلية (شعبتا رياضيات وعلوم تجريبية).
+\item الاستقلالية (شعبتا رياضيات وعلوم تجريبية).
+\item نمذجة وضعيات بتجارب مرجعية، والمحاكاة وتلاؤم معطيات مع نموذج متساوي الاحتمال (شعبة علوم تجريبية).
 \item تمرينان محلولان، ثم خلاصة الطرائق.
 \end{enumerate}
 \end{BOX}
@@ -473,7 +473,7 @@ $P(X=x_i)$ & $0{,}5$ & $0{,}3$ & $0{,}2$ & $1$\\\hline
 \end{mithal}
 
 %================================================================
-\section{الاحتمال الشرطي وشجرة الاحتمالات}
+\section{الاحتمال الشرطي وشجرة الاحتمالات -- رياضيات وعلوم تجريبية}
 \subsection{الاحتمال الشرطي}
 \begin{tarif}[الاحتمال الشرطي]
 لتكن $A$ حادثة حيث $P(A)\neq0$. احتمال $B$ \textbf{علمًا أن} $A$ محققة هو العدد:
@@ -575,7 +575,7 @@ $P(X=x_i)$ & $0{,}5$ & $0{,}3$ & $0{,}2$ & $1$\\\hline
 \end{mithal}
 
 %================================================================
-\section{الاستقلالية}
+\section{الاستقلالية -- رياضيات وعلوم تجريبية}
 \begin{tarif}[حادثتان مستقلتان]
 نقول إن الحادثتين $A$ و$B$ \textbf{مستقلتان} إذا كان:
 \[\bx{P(A\cap B)=P(A)\times P(B)}\]
@@ -595,93 +595,53 @@ $P(X=x_i)$ & $0{,}5$ & $0{,}3$ & $0{,}2$ & $1$\\\hline
 \item $P(A\cap C)=P(\{4;6\})=\dfrac13$ و$P(A)\times P(C)=\dfrac12\times\dfrac12=\dfrac14\neq\dfrac13$: إذن \bxt{$A$ و$C$ غير مستقلتين}.
 \end{itemize}
 \end{mithal}
-\begin{mithal}[تجارب مستقلة]
-$30\%$ من تلاميذ ثانوية يملكون هاتفًا نقالًا. نختار $3$ تلاميذ عشوائيًا (الاختيارات مستقلة).
-\begin{itemize}
-\item احتمال أن يملك الثلاثة هاتفًا: $0{,}3^3=\bx{0{,}027}$.
-\item احتمال أن يملك واحد على الأقل هاتفًا: $1-0{,}7^3=1-0{,}343=\bx{0{,}657}$.
-\end{itemize}
-\end{mithal}
 
 %================================================================
-\section{التجارب المتكررة والقانون الثنائي}
-\begin{molahada}[للتنبيه]
-هذا الجزء مقرر أساسًا في شعبة الرياضيات؛ تحتاجه الشعب الأخرى عند تكرار تجربة بشكل مستقل (سحب مع الإرجاع مثلًا).
-\end{molahada}
-\begin{tarif}[تجربة برنولي وقانون برنولي]
-\textbf{تجربة برنولي} تجربة عشوائية لها مخرجان فقط: \textbf{نجاح} $S$ باحتمال $p$، و\textbf{فشل} $\overline{S}$ باحتمال $1-p$.
-المتغير $X$ الذي يأخذ $1$ عند النجاح و$0$ عند الفشل يتبع \textbf{قانون برنولي} ذا الوسيط $p$:
-\begin{center}
-\begin{tabular}{|C|c|c|C|}\hline
-\rowcolor{cSec!12} $x_i$ & $0$ & $1$ & المجموع\\\hline
-$P(X=x_i)$ & $1-p$ & $p$ & $1$\\\hline
-\end{tabular}
-\qquad $E(X)=p$ \quad و\quad $V(X)=p(1-p)$.
-\end{center}
+%================================================================
+\section{النمذجة والمحاكاة}
+\subsection{نمذجة وضعية بتجربة مرجعية}
+\begin{tarif}[النمذجة]
+\textbf{نمذجة} وضعية عشوائية هي تعويضها بتجربة مرجعية بسيطة (سحب كريات من كيس، رمي نرد أو قطعة نقدية) لها \textbf{نفس الاحتمالات}، ثم الحساب في هذه التجربة.
+\begin{itemize}
+\item اختيار أشخاص أو قطع «عشوائيًا وفي آن واحد» \quad$\longleftrightarrow$\quad سحب كريات في آن واحد.
+\item نسبة مئوية معلومة (مثلًا $20\%$ معيبة) \quad$\longleftrightarrow$\quad كيس به كريات ملونة بنفس النسبة.
+\end{itemize}
 \end{tarif}
-\begin{khassia}[القانون الثنائي]
-نكرر تجربة برنولي $n$ مرة بشكل \textbf{مستقل وفي نفس الظروف} (مخطط برنولي). $X$ عدد النجاحات، قيمه $0;1;\ldots;n$.
-نقول إن $X$ يتبع \textbf{القانون الثنائي} ذا الوسيطين $n$ و$p$ ونكتب $X\sim\mathcal{B}(n;p)$:
-\[\bx{P(X=k)=C_n^k\,p^k\,(1-p)^{n-k}}\qquad (0\leqslant k\leqslant n)\]
-\[\bx{E(X)=np}\qquad \bx{V(X)=np(1-p)}\qquad \bx{\sigma(X)=\sqrt{np(1-p)}}\]
-($C_n^k$ هو عدد المسارات في الشجرة التي تحوي $k$ نجاحًا بالضبط.)
-\end{khassia}
+\begin{mithal}[مراقبة الجودة]
+علبة بها $20$ مصباحًا منها $4$ معيبة. يأخذ مراقب مصباحين عشوائيًا في آن واحد.
+\textbf{النموذج}: كيس به $4$ كريات سوداء (معيب) و$16$ بيضاء (سليم)، نسحب منه كريتين في آن واحد: $\mathrm{card}\,\Omega=C_{20}^2=190$.
+\begin{itemize}
+\item احتمال ألا يجد أي مصباح معيب: $\dfrac{C_{16}^2}{190}=\dfrac{120}{190}=\dfrac{12}{19}$.
+\item احتمال أن يجد مصباحًا معيبًا على الأقل: $1-\dfrac{12}{19}=\bx{\dfrac{7}{19}}\approx0{,}37$.
+\end{itemize}
+\end{mithal}
 
-\begin{mithal}[شجرة مخطط برنولي: $n=3$ و$p=0{,}3$]
-\begin{center}\begin{LTR}\begin{tikzpicture}[grow=right,level distance=2.7cm,
-  level 1/.style={sibling distance=5.6cm}, level 2/.style={sibling distance=2.8cm}, level 3/.style={sibling distance=1.4cm},
-  edge from parent/.style={draw,thick,cDef!70!black}]
-\node[ev]{}
-  child{node[ev]{$\overline{S}$}
-    child{node[ev]{$\overline{S}$}
-      child{node[ev,pr={$0{,}7^3=0{,}343$\quad($X=0$)}]{$\overline{S}$} edge from parent node[p]{$0{,}7$}}
-      child{node[ev,pr={$0{,}3\times0{,}7^2=0{,}147$\quad($X=1$)}]{$S$} edge from parent node[p]{$0{,}3$}}
-      edge from parent node[p]{$0{,}7$}}
-    child{node[ev]{$S$}
-      child{node[ev,pr={$0{,}3\times0{,}7^2=0{,}147$\quad($X=1$)}]{$\overline{S}$} edge from parent node[p]{$0{,}7$}}
-      child{node[ev,pr={$0{,}3^2\times0{,}7=0{,}063$\quad($X=2$)}]{$S$} edge from parent node[p]{$0{,}3$}}
-      edge from parent node[p]{$0{,}3$}}
-    edge from parent node[p]{$0{,}7$}}
-  child{node[ev]{$S$}
-    child{node[ev]{$\overline{S}$}
-      child{node[ev,pr={$0{,}3\times0{,}7^2=0{,}147$\quad($X=1$)}]{$\overline{S}$} edge from parent node[p]{$0{,}7$}}
-      child{node[ev,pr={$0{,}3^2\times0{,}7=0{,}063$\quad($X=2$)}]{$S$} edge from parent node[p]{$0{,}3$}}
-      edge from parent node[p]{$0{,}7$}}
-    child{node[ev]{$S$}
-      child{node[ev,pr={$0{,}3^2\times0{,}7=0{,}063$\quad($X=2$)}]{$\overline{S}$} edge from parent node[p]{$0{,}7$}}
-      child{node[ev,pr={$0{,}3^3=0{,}027$\quad($X=3$)}]{$S$} edge from parent node[p]{$0{,}3$}}
-      edge from parent node[p]{$0{,}3$}}
-    edge from parent node[p]{$0{,}3$}};
-\node[hd] at (2.7,5.7){\ar{الرمية الأولى}};
-\node[hd] at (5.4,5.7){\ar{الثانية}};
-\node[hd] at (8.1,5.7){\ar{الثالثة}};
-\node[hd,anchor=south west] at (9.05,5.7){\ar{الاحتمال}};
-\end{tikzpicture}\end{LTR}\end{center}
-بجمع المسارات حسب عدد النجاحات (عدد المسارات $C_3^k$):
+\subsection{المحاكاة وتلاؤم معطيات مع نموذج -- شعبة علوم تجريبية}
+\begin{tarif}[المحاكاة]
+\textbf{محاكاة} تجربة عشوائية هي إنتاج نتائجها بأعداد عشوائية (زر \texttt{Ran\#} في الحاسبة، أو الدالة \texttt{ALEA.ENTRE.BORNES(1;6)} في المجدول) بدل إجرائها فعلًا.
+عند تكرار المحاكاة تتذبذب التواترات من سلسلة إلى أخرى (\textbf{تذبذب العينات})، وتستقر حول الاحتمال كلما كبر عدد التجارب.
+\end{tarif}
+\begin{khassia}[تلاؤم معطيات تجربة واقعية مع نموذج متساوي الاحتمال]
+تجربة لها $k$ مخرجًا، أجريناها $n$ مرة فحصلنا على التواترات $f_1;f_2;\ldots;f_k$. لنعرف هل تتلاءم مع \textbf{النموذج المتساوي الاحتمال} (كل مخرج احتماله $\frac1k$):
+\begin{enumerate}[label=\textbf{\arabic*.}]
+\item نحسب المؤشر: \quad $\bx{d^2=\Big(f_1-\frac1k\Big)^2+\Big(f_2-\frac1k\Big)^2+\cdots+\Big(f_k-\frac1k\Big)^2}$.
+\item نحاكي (مثلًا $1000$ مرة) سلسلة من $n$ تجربة وفق النموذج المتساوي، ونحسب $d^2$ لكل سلسلة، ثم نعيّن \textbf{العشير التاسع} $D_9$ لهذه القيم ($90\%$ منها أصغر من أو تساوي $D_9$).
+\item القرار: إذا كان $d^2\leqslant D_9$ نقول إن المعطيات \textbf{ملائمة} للنموذج المتساوي (بخطر $10\%$)، وإذا كان $d^2>D_9$ نرفض النموذج بخطر $10\%$.
+\end{enumerate}
+\end{khassia}
+\begin{mithal}[هل النرد متوازن؟]
+رمينا نردًا $120$ مرة فحصلنا على:
 \begin{center}
-\begin{tabular}{|C|c|c|c|c|C|}\hline
-\rowcolor{cSec!12} $k$ & $0$ & $1$ & $2$ & $3$ & المجموع\\\hline
-$P(X=k)$ & $0{,}343$ & $0{,}441$ & $0{,}189$ & $0{,}027$ & $1$\\\hline
+\begin{tabular}{|C|c|c|c|c|c|c|C|}\hline
+\rowcolor{cSec!12} الوجه & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & المجموع\\\hline
+العدد $n_i$ & $15$ & $22$ & $18$ & $25$ & $19$ & $21$ & $120$\\\hline
 \end{tabular}
 \end{center}
-\begin{itemize}
-\item مثلًا: $P(X=1)=C_3^1\times0{,}3\times0{,}7^2=3\times0{,}147=0{,}441$.
-\item $E(X)=np=3\times0{,}3=\bx{0{,}9}$ \quad و\quad $V(X)=np(1-p)=3\times0{,}3\times0{,}7=\bx{0{,}63}$.
-\end{itemize}
-\end{mithal}
-
-\begin{mithal}[نرد يُرمى $4$ مرات]
-نرمي نردًا غير مزيف $4$ مرات، النجاح: «ظهور الرقم $6$»، $p=\frac16$. $X\sim\mathcal{B}\big(4;\frac16\big)$:
-\begin{itemize}
-\item $P(X=2)=C_4^2\Big(\dfrac16\Big)^2\Big(\dfrac56\Big)^2=6\times\dfrac{1}{36}\times\dfrac{25}{36}=\bx{\dfrac{25}{216}}$.
-\item $P(X\geqslant1)=1-P(X=0)=1-\Big(\dfrac56\Big)^4=1-\dfrac{625}{1296}=\bx{\dfrac{671}{1296}}$.
-\item $E(X)=4\times\dfrac16=\dfrac23$ \quad و\quad $V(X)=4\times\dfrac16\times\dfrac56=\dfrac59$.
-\end{itemize}
-\end{mithal}
-\begin{mithal}[أصغر عدد من الرميات]
-نرمي النرد $n$ مرة، و$F$: «ظهور الرقم $6$ مرة على الأقل». نريد $P(F)\geqslant0{,}9$، أي $1-\big(\frac56\big)^n\geqslant0{,}9$:
-\[\Big(\frac56\Big)^n\leqslant0{,}1\iff n\ln\frac56\leqslant\ln0{,}1\iff n\geqslant\frac{\ln0{,}1}{\ln\frac56}\approx12{,}63\]
-(انقلب اتجاه المتراجحة لأن $\ln\frac56<0$). إذن أصغر عدد هو \bx{n=13}.
+النموذج المتساوي: $\frac16=\frac{20}{120}$، إذن $f_i-\frac16=\dfrac{n_i-20}{120}$ والفروق $n_i-20$ هي $-5;2;-2;5;-1;1$:
+\[d^2=\frac{25+4+4+25+1+1}{120^2}=\frac{60}{14400}=\bx{\frac{1}{240}}\approx0{,}0042\]
+محاكاة $1000$ سلسلة من $120$ رمية لنرد متوازن أعطت العشير التاسع $D_9\approx0{,}0128$، ولدينا:
+\[d^2\approx0{,}0042\leqslant D_9\approx0{,}0128\]
+إذن \bxt{المعطيات ملائمة لنموذج نرد متوازن} بخطر $10\%$.
 \end{mithal}
 
 %================================================================
@@ -696,7 +656,7 @@ $P(X=k)$ & $0{,}343$ & $0{,}441$ & $0{,}189$ & $0{,}027$ & $1$\\\hline
 \qb $B$: «الكريات الثلاث تحمل نفس الرقم».
 \qc $C$: «مجموع الأرقام المسجلة يساوي $5$».
 \end{sq}
-\QQ{3} احسب $P_A(B)$. هل الحادثتان $A$ و$B$ مستقلتان؟
+\QQ{3} (شعبتا رياضيات وعلوم تجريبية) احسب $P_A(B)$. هل الحادثتان $A$ و$B$ مستقلتان؟
 \QQ{4} $X$ المتغير العشوائي الذي يرفق بكل سحبة عدد الكريات الحمراء المسحوبة. عيّن قانون احتمال $X$ ثم احسب $E(X)$ و$V(X)$ و$\sigma(X)$.
 \end{tmr}
 \begin{hal}
@@ -727,18 +687,13 @@ $P(X=x_i)$ & $\frac{4}{35}$ & $\frac{18}{35}$ & $\frac{12}{35}$ & $\frac{1}{35}$
 \[V(X)=\frac{0+18+48+9}{35}-\Big(\frac97\Big)^2=\frac{15}{7}-\frac{81}{49}=\bx{\frac{24}{49}}\ ,\qquad \sigma(X)=\sqrt{\frac{24}{49}}=\bx{\frac{2\sqrt6}{7}}\approx0{,}70\]
 \end{hal}
 
-\begin{tmr}
+\begin{tmr}[ -- رياضيات وعلوم تجريبية]
 لدينا صندوقان: $U_1$ يحوي $3$ كريات بيضاء و$2$ سوداوين، و$U_2$ يحوي كرية بيضاء و$4$ سوداء.
 نرمي نردًا غير مزيف: إذا ظهر $1$ أو $2$ نسحب كرية من $U_1$، وإلا نسحب كرية من $U_2$.
 نسمي $U_1$: «السحب من $U_1$»، $U_2$: «السحب من $U_2$»، $W$: «الكرية المسحوبة بيضاء».
 \QQ{1} أنشئ شجرة الاحتمالات.
 \QQ{2} احسب $P(W)$.
 \QQ{3} الكرية المسحوبة بيضاء، ما احتمال أن تكون من $U_1$؟
-\QQ{4} (شعبة رياضيات) نكرر التجربة $4$ مرات مع إرجاع الكرية في كل مرة. $Y$ عدد الكريات البيضاء المحصل عليها.
-\begin{sq}
-\qa ما قانون $Y$؟ احسب $P(Y=2)$ و$P(Y\geqslant1)$.
-\qb احسب $E(Y)$ و$V(Y)$.
-\end{sq}
 \end{tmr}
 \begin{hal}
 \QQ{1} $P(U_1)=\dfrac26=\dfrac13$ و$P(U_2)=\dfrac23$؛ $P_{U_1}(W)=\dfrac35$ و$P_{U_2}(W)=\dfrac15$:
@@ -761,10 +716,6 @@ $P(X=x_i)$ & $\frac{4}{35}$ & $\frac{18}{35}$ & $\frac{12}{35}$ & $\frac{1}{35}$
 $P(W)=P(U_1)P_{U_1}(W)+P(U_2)P_{U_2}(W)=\dfrac{3}{15}+\dfrac{2}{15}=\bx{\dfrac13}$.
 \QQ{3} المطلوب احتمال شرطي:
 $P_W(U_1)=\dfrac{P(U_1\cap W)}{P(W)}=\dfrac{3/15}{1/3}=\bx{\dfrac35}$.
-\QQ{4}
-\pa التجارب الأربع مستقلة ومتماثلة (مع الإرجاع)، ولكل منها مخرجان: نجاح $W$ باحتمال $\frac13$ أو فشل. إذن $Y$ يتبع القانون الثنائي \bx{\mathcal{B}\big(4;\tfrac13\big)}:
-\[P(Y=2)=C_4^2\Big(\frac13\Big)^2\Big(\frac23\Big)^2=6\times\frac19\times\frac49=\bx{\frac{8}{27}}\ ,\qquad P(Y\geqslant1)=1-\Big(\frac23\Big)^4=1-\frac{16}{81}=\bx{\frac{65}{81}}\]
-\pb $E(Y)=np=4\times\dfrac13=\bx{\dfrac43}$ \quad و\quad $V(Y)=np(1-p)=4\times\dfrac13\times\dfrac23=\bx{\dfrac89}$.
 \end{hal}
 
 %================================================================
@@ -786,10 +737,13 @@ $P_A(B)=\frac{P(A\cap B)}{P(A)}$، أو نقرأ فرع الشجرة مباشر�
 مجموع المسارات المؤدية إلى $B$: $P(B)=P(A)P_A(B)+P(\overline{A})P_{\overline{A}}(B)$. & احتمال حادثة في المستوى الثاني\\\hline
 نحسب $P(B)$ أولًا ثم $P_B(A)=\frac{P(A\cap B)}{P(B)}$. & «علمًا أن» النتيجة معروفة\\\hline
 نتحقق من $P(A\cap B)=P(A)\times P(B)$. & إثبات الاستقلالية\\\hline
-$n$ تجربة مستقلة متماثلة بمخرجين: \newline $P(X=k)=C_n^kp^k(1-p)^{n-k}$ \newline $E(X)=np$ \quad و\quad $V(X)=np(1-p)$ & القانون الثنائي\\\hline
-نحل $1-(1-p)^n\geqslant\alpha$ باستعمال $\ln$ (مع قلب اتجاه المتراجحة). & أصغر عدد من التكرارات\\\hline
+نعوّض الوضعية بسحب من كيس (أو رمي نرد/قطعة نقدية) له نفس الاحتمالات، ثم نحسب فيه. & نمذجة وضعية بتجربة مرجعية\\\hline
+نحسب $d^2=\sum\big(f_i-\frac1k\big)^2$ ونقارنه بـ $D_9$ للمحاكاة: $d^2\leqslant D_9$ ملائمة، $d^2>D_9$ مرفوضة (خطر $10\%$). & تلاؤم معطيات مع نموذج متساوٍ\\\hline
 \end{tabular}
 \end{center}
 \end{BOX}
+\begin{molahada}
+الأسطر من «احتمال شرطي» إلى «إثبات الاستقلالية» تخص شعبتي رياضيات وعلوم تجريبية فقط (ليست في برنامج تقني رياضي)، وسطر «تلاؤم معطيات» يخص شعبة علوم تجريبية.
+\end{molahada}
 
 \end{document}

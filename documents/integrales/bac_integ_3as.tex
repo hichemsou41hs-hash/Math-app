@@ -2205,38 +2205,24 @@ $f$ الدالة المعرفة على $\R$ بـ: $f(x)=\dfrac{x^2e^x}{e^x+1}$،
 
 $(u_n)$ المتتالية العددية المعرفة بـ: $u_0=\displaystyle\int_0^1\frac{e^x}{e^x+1}\,dx$، ومن أجل كل $n$ من $\N^*$: $u_n=\displaystyle\int_0^1\frac{x^ne^x}{e^x+1}\,dx$.
 \begin{sq}
-\qa أحسب $u_0$ وبرّر أن المتتالية $(u_n)$ موجبة.
-\qb بيّن أن المتتالية $(u_n)$ متناقصة ثم استنتج أنها متقاربة.
-\qc تحقق أنه من أجل كل عدد حقيقي $x$ حيث $0\le x\le 1$: $\dfrac12\le\dfrac{e^x}{e^x+1}\le\dfrac{e}{e+1}$.
-\qd استنتج أنه من أجل كل $n$ من $\N^*$: $\dfrac{1}{2(n+1)}\le u_n\le\dfrac{e}{(e+1)(n+1)}$، ثم أحسب نهاية المتتالية $(u_n)$.
-\qe فسّر هندسيا العدد $u_2$ وأعط حصرا له.
+\qa أحسب $u_0$.
+\qb تحقق أنه من أجل كل عدد حقيقي $x$ حيث $0\le x\le 1$: $\dfrac12\le\dfrac{e^x}{e^x+1}\le\dfrac{e}{e+1}$.
+\qc فسّر هندسيا العدد $u_2$ وأعط حصرا له.
 \end{sq}
+\begin{molahada}
+حُذف السؤالان «برّر أن المتتالية $(u_n)$ موجبة، بيّن أنها متناقصة ثم متقاربة» و«حصر $u_n$ من أجل كل $n$ ونهاية $(u_n)$» لأنهما خارج المنهاج الحالي (التوزيع السنوي 2026-2027): المتتاليات التكاملية غير مدرجة. الحصر في (ج) يُستنتج مباشرة من (ب).
+\end{molahada}
 \end{tamrin}
 
 \begin{hal}
 \pa \textbf{حساب $u_0$:} بوضع $u(x)=e^x+1$ يكون $u'(x)=e^x$ و $u(x)>0$، إذن $\dfrac{e^x}{e^x+1}=\dfrac{u'(x)}{u(x)}$ ودالتها الأصلية $x\mapsto\ln(e^x+1)$:
 \[u_0=\Big[\ln(e^x+1)\Big]_0^1=\ln(e+1)-\ln2\qquad\Rightarrow\qquad\bx{u_0=\ln\Big(\frac{e+1}{2}\Big)}\approx0{,}62\]
-\textbf{الإشارة:} من أجل كل $n$ من $\N$ ومن أجل كل $x\in[0;1]$: $x^n\ge0$ و $e^x>0$ و $e^x+1>0$، إذن $\dfrac{x^ne^x}{e^x+1}\ge0$.
-وبما أن $0<1$ (الحدان مرتبان) فإنه حسب موجبية التكامل: \bx{u_n\ge 0} من أجل كل $n\in\N$؛ المتتالية $(u_n)$ موجبة.
-
-\pb من أجل كل $n\in\N$، حسب خطية التكامل:
-\[u_{n+1}-u_n=\int_0^1\frac{x^{n+1}e^x-x^ne^x}{e^x+1}\,dx=\int_0^1\frac{x^n(x-1)e^x}{e^x+1}\,dx\]
-من أجل كل $x\in[0;1]$: $x^n\ge0$، $x-1\le0$، $\dfrac{e^x}{e^x+1}>0$، إذن المكامَل سالب، ومنه $u_{n+1}-u_n\le0$.
-إذن \bxt{المتتالية $(u_n)$ متناقصة}. وبما أنها متناقصة ومحدودة من الأسفل بـ $0$ فإنها \bxt{متقاربة}.
-
-\pc نضع $\varphi(x)=\dfrac{e^x}{e^x+1}$. $\varphi$ قابلة للاشتقاق على $\R$ و:
+\pb نضع $\varphi(x)=\dfrac{e^x}{e^x+1}$. $\varphi$ قابلة للاشتقاق على $\R$ و:
 \[\varphi'(x)=\frac{e^x(e^x+1)-e^x\cdot e^x}{(e^x+1)^2}=\frac{e^x}{(e^x+1)^2}>0\]
 إذن $\varphi$ متزايدة تماما على $[0;1]$، ومنه من أجل $0\le x\le1$: $\varphi(0)\le\varphi(x)\le\varphi(1)$، أي:
 \[\bx{\frac12\le\frac{e^x}{e^x+1}\le\frac{e}{e+1}}\]
 
-\pd من أجل $x\in[0;1]$ و $n\in\N^*$: $x^n\ge0$، فبضرب أطراف الحصر السابق في $x^n$:
-\[\frac12x^n\le\frac{x^ne^x}{e^x+1}\le\frac{e}{e+1}x^n\]
-وبالمكاملة من $0$ إلى $1$ (حفظ الترتيب لأن $0<1$):
-\[\frac12\int_0^1x^n\,dx\le u_n\le\frac{e}{e+1}\int_0^1x^n\,dx\qquad\text{مع}\qquad\int_0^1x^n\,dx=\Big[\frac{x^{n+1}}{n+1}\Big]_0^1=\frac{1}{n+1}\]
-\[\bx{\frac{1}{2(n+1)}\le u_n\le\frac{e}{(e+1)(n+1)}}\]
-\textbf{النهاية:} $\limn\dfrac{1}{2(n+1)}=0$ و $\limn\dfrac{e}{(e+1)(n+1)}=0$، إذن حسب مبرهنة الحصر (الدركي): \bx{\lim_{n\to+\infty}u_n=0}.
-
-\pe \textbf{التفسير الهندسي:} $u_2=\displaystyle\int_0^1\frac{x^2e^x}{e^x+1}\,dx=\int_0^1f(x)\,dx$.
+\pc \textbf{التفسير الهندسي:} $u_2=\displaystyle\int_0^1\frac{x^2e^x}{e^x+1}\,dx=\int_0^1f(x)\,dx$.
 
 \textbf{إشارة $f$ على $[0;1]$:}
 \begin{TAB}
@@ -2253,7 +2239,7 @@ $(u_n)$ المتتالية العددية المعرفة بـ: $u_0=\displaystyl
  \node at (0.72,0.18){$u_2$};
  \node[cDef] at (1.55,2.6){$(C_f)$};
 \end{GR}
-\textbf{الحصر:} بوضع $n=2$ في الحصر السابق:
+\textbf{الحصر:} من أجل $x\in[0;1]$: $x^2\ge0$، فبضرب أطراف حصر (ب) في $x^2$: $\dfrac12x^2\le f(x)\le\dfrac{e}{e+1}x^2$، وبالمكاملة من $0$ إلى $1$ (حفظ الترتيب لأن $0<1$) مع $\displaystyle\int_0^1x^2\,dx=\Big[\frac{x^3}{3}\Big]_0^1=\frac13$:
 \[\bx{\frac16\le u_2\le\frac{e}{3(e+1)}}\qquad\text{أي}\qquad 0{,}166\le u_2\le 0{,}244\ \ \text{u.a}\]
 \end{hal}
 

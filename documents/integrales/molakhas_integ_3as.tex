@@ -180,11 +180,12 @@
 \begin{enumerate}[label=\arabic*.]
 \item الدوال الأصلية
 \item جدول الدوال الأصلية المألوفة والعمليات
+\item المعادلات التفاضلية $y'=f(x)$
 \item التكامل وخواصه
 \item القيمة المتوسطة وحصر تكامل
 \item التكامل بالتجزئة
-\item حساب المساحات (والحجوم)
-\item الدالة التكاملية والمتتاليات التكاملية
+\item حساب المساحات والحجوم
+\item توظيف الحساب التكاملي لحساب دوال أصلية
 \item تمارين محلولة
 \item خلاصة الطرائق
 \end{enumerate}
@@ -312,12 +313,33 @@ $u(x)\neq 0$ & $\ln|u|+c$ & $\dfrac{u'}{u}$\\\hline
 لتعيين $a$ و $b$ حتى تكون $F(x)=(ax+b)e^{x}$ دالة أصلية لـ $f$: نحسب $F'(x)$ ونطابقها مع $f(x)$ (مطابقة المعاملات).
 \end{tariqa}
 
-\begin{molahada}[المعادلتان $y'=f(x)$ و $y''=f(x)$]
+%=====================================================
+\section{المعادلات التفاضلية $y'=f(x)$}
+\begin{tarif}
+$f$ دالة مستمرة على مجال $I$. حل المعادلة التفاضلية $y'=f(x)$ على $I$ هو إيجاد كل الدوال $y$ القابلة للاشتقاق على $I$ التي تحقق $y'(x)=f(x)$ من أجل كل $x$ من $I$.
+\end{tarif}
+
+\begin{khassia}
 \begin{itemize}
-\item حلول $y'=f(x)$ هي الدوال $y=F(x)+c$ حيث $F$ دالة أصلية لـ $f$. مثال: $y'=\frac{1}{(x+1)^{2}}$ على $]-1;+\infty[$: $y=-\frac{1}{x+1}+c$.
-\item حلول $y''=f(x)$ هي الدوال $y=G(x)+c_1x+c_2$ حيث $G$ دالة أصلية لدالة أصلية لـ $f$. مثال: $y''=4e^{2x}$: $y'=2e^{2x}+c_1$ ثم $y=e^{2x}+c_1x+c_2$.
+\item إذا كانت $F$ دالة أصلية لـ $f$ على $I$ فإن حلول المعادلة $y'=f(x)$ هي الدوال $y=F(x)+c$ حيث $c\in\R$.
+\item من أجل $x_0\in I$ و $y_0\in\R$، يوجد \textbf{حل وحيد} يحقق الشرط الابتدائي $y(x_0)=y_0$.
 \end{itemize}
-\end{molahada}
+\end{khassia}
+
+\begin{tariqa}[حل $y'=f(x)$ بشرط ابتدائي]
+\begin{enumerate}
+\item نعين دالة أصلية $F$ للدالة $f$ على $I$، فتكون الحلول $y=F(x)+c$.
+\item نعوض الشرط $y(x_0)=y_0$ لإيجاد $c$.
+\end{enumerate}
+\end{tariqa}
+
+\begin{mithal}
+\begin{enumerate}
+\item $y'=\dfrac{1}{(x+1)^{2}}$ على $]-1;+\infty[$: الشكل $\frac{u'}{u^{2}}$ مع $u(x)=x+1$، إذن الحلول \bx{y=-\dfrac{1}{x+1}+c}، $c\in\R$.
+\item $y'=2xe^{x^{2}}$ على $\R$ مع $y(0)=3$: الحلول $y=e^{x^{2}}+c$، و $y(0)=1+c=3$ أي $c=2$، إذن \bx{y=e^{x^{2}}+2}.
+\item $y'=\cos(2x)$ على $\R$ مع $y\big(\frac{\pi}{4}\big)=1$: الحلول $y=\frac{1}{2}\sin(2x)+c$، و $y\big(\frac{\pi}{4}\big)=\frac{1}{2}+c=1$ أي $c=\frac{1}{2}$، إذن \bx{y=\tfrac{1}{2}\sin(2x)+\tfrac{1}{2}}.
+\end{enumerate}
+\end{mithal}
 
 %=====================================================
 \section{التكامل وخواصه}
@@ -483,7 +505,7 @@ $M=\displaystyle\int_0^1 x^{2}e^{x}\dx$: نضع $u=x^{2}$، $v'=e^{x}$: $M=\Big[
 \end{mithal}
 
 %=====================================================
-\section{حساب المساحات (والحجوم)}
+\section{حساب المساحات والحجوم}
 \begin{tarif}[وحدة المساحة]
 في معلم متعامد $(O;\vec i,\vec j)$، \textbf{وحدة المساحة} $(\mathrm{u.a})$ هي مساحة المستطيل الذي بعداه $\|\vec i\|$ و $\|\vec j\|$.\par
 مثلا: إذا كان $\|\vec i\|=2\,\mathrm{cm}$ و $\|\vec j\|=1\,\mathrm{cm}$ فإن $1\ua=2\,\mathrm{cm}^{2}$؛ وإذا كان $\|\vec i\|=\|\vec j\|=2\,\mathrm{cm}$ فإن $1\ua=4\,\mathrm{cm}^{2}$.
@@ -588,7 +610,7 @@ $\displaystyle\lim_{\lambda\to+\infty}\mathcal{A}(\lambda)=1$. إذا كان $\|
 \end{GR}
 \end{mithal}
 
-\begin{khassia}[حجم مجسم دوراني -- شعبة رياضيات أساسًا]
+\begin{khassia}[حجم مجسم]
 \begin{itemize}
 \item إذا كانت $S(z)$ مساحة مقطع مجسم بمستوٍ يعامد المحور عند الراقم $z$ حيث $a\leqslant z\leqslant b$: $V=\displaystyle\int_a^b S(z)\,\mathrm{d}z$ (وحدة الحجوم).
 \item دوران $(C_f)$ حول محور الفواصل على $[a;b]$ يولد مجسما حجمه $V=\displaystyle\int_a^b\pi\big[f(x)\big]^{2}\dx$.
@@ -597,44 +619,21 @@ $\displaystyle\lim_{\lambda\to+\infty}\mathcal{A}(\lambda)=1$. إذا كان $\|
 \end{khassia}
 
 %=====================================================
-\section{الدالة التكاملية والمتتاليات التكاملية}
+\section{توظيف الحساب التكاملي لحساب دوال أصلية}
 \begin{khassia}[الدالة $F(x)=\int_a^x f(t)\dt$]
 $f$ مستمرة على مجال $I$ و $a\in I$. الدالة $F:x\mapsto\displaystyle\int_a^x f(t)\dt$ هي \textbf{الدالة الأصلية الوحيدة} للدالة $f$ على $I$ التي تنعدم عند $a$:
 \[ F'(x)=f(x)\qquad\text{و}\qquad F(a)=0 \]
 \end{khassia}
 
-\begin{mithal}
-\begin{itemize}
-\item $F(x)=\displaystyle\int_1^x\ln t\dt$ على $]0;+\infty[$: بالتجزئة ($u=\ln t$، $v'=1$): $F(x)=\Big[t\ln t\Big]_1^x-\displaystyle\int_1^x 1\dt$، إذن \bx{F(x)=x\ln x-x+1}.
-\item $G(x)=\displaystyle\int_0^x e^{-t^{2}}\dt$: لا نعرف عبارتها، لكن $G'(x)=e^{-x^{2}}>0$، إذن \bxt{$G$ متزايدة تمامًا على $\R$}، و $G(0)=0$.
-\item (رياضيات) إذا كانت $u$ قابلة للاشتقاق:
-\[ \left(\int_a^{u(x)}f(t)\dt\right)'=u'(x)\,f\big(u(x)\big) \]
-مثلا $H(x)=\displaystyle\int_0^{x^{2}}e^{-t^{2}}\dt$: \bx{H'(x)=2xe^{-x^{4}}}.
-\end{itemize}
-\end{mithal}
-
-\begin{tariqa}[دراسة متتالية تكاملية $I_n=\int_a^b f_n(x)\dx$]
-\begin{itemize}
-\item \textbf{الإشارة:} ندرس إشارة $f_n(x)$ على $[a;b]$ (الإيجابية).
-\item \textbf{الرتابة:} ندرس إشارة $I_{n+1}-I_n=\displaystyle\int_a^b\big[f_{n+1}(x)-f_n(x)\big]\dx$.
-\item \textbf{الحصر والنهاية:} نحصر $f_n(x)$ ثم نكامل، ونستعمل مبرهنة الحصر (الدركي).
-\item \textbf{علاقة تراجعية:} غالبًا بالتكامل بالتجزئة.
-\end{itemize}
+\begin{tariqa}[دالة أصلية بالحساب التكاملي]
+لتعيين الدالة الأصلية لـ $f$ التي تنعدم عند $a$ (خاصة لجداء لا يظهر في الجدول): نكتب $F(x)=\displaystyle\int_a^x f(t)\dt$ ونحسب التكامل، غالبًا بالتجزئة.
 \end{tariqa}
 
-\begin{mithal}[$I_n=\int_0^1\frac{x^{n}}{1+x}\dx$ من أجل كل عدد طبيعي $n$]
+\begin{mithal}
 \begin{itemize}
-\item $I_0=\Big[\ln(1+x)\Big]_0^1=\ln 2$، و $I_n+I_{n+1}=\displaystyle\int_0^1\frac{x^{n}(1+x)}{1+x}\dx=\int_0^1x^{n}\dx=\frac{1}{n+1}$؛ ومنه $I_1=1-\ln 2$.
-\item $I_{n+1}-I_n=\displaystyle\int_0^1\frac{x^{n}(x-1)}{1+x}\dx\leqslant 0$ لأن $x-1\leqslant 0$ على $[0;1]$: \bxt{$(I_n)$ متناقصة}.
-\item من أجل $x\in[0;1]$: $\frac{1}{2}\leqslant\frac{1}{1+x}\leqslant 1$، إذن $\frac{x^{n}}{2}\leqslant\frac{x^{n}}{1+x}\leqslant x^{n}$، وبالمكاملة:
-\[ \frac{1}{2(n+1)}\leqslant I_n\leqslant\frac{1}{n+1}\qquad\text{ومنه}\qquad\bx{\lim_{n\to+\infty}I_n=0} \]
+\item $F(x)=\displaystyle\int_1^x\ln t\dt$ على $]0;+\infty[$: بالتجزئة ($u=\ln t$، $v'=1$): $F(x)=\Big[t\ln t\Big]_1^x-\displaystyle\int_1^x 1\dt$، إذن \bx{F(x)=x\ln x-x+1}، وهي الدالة الأصلية لـ $\ln$ التي تنعدم عند $1$.
+\item الدالة الأصلية لـ $x\mapsto xe^{x}$ على $\R$ التي تنعدم عند $0$: $F(x)=\displaystyle\int_0^x te^{t}\dt$، بالتجزئة ($u=t$، $v'=e^{t}$): $F(x)=\Big[te^{t}\Big]_0^x-\displaystyle\int_0^x e^{t}\dt=xe^{x}-\big(e^{x}-1\big)$، إذن \bx{F(x)=(x-1)e^{x}+1}.
 \end{itemize}
-\end{mithal}
-
-\begin{mithal}[علاقة تراجعية بالتجزئة: $J_n=\int_1^e(\ln x)^{n}\dx$، $n\in\N^{*}$]
-نضع $u(x)=(\ln x)^{n+1}$، $v'(x)=1$: $u'(x)=\frac{(n+1)(\ln x)^{n}}{x}$، $v(x)=x$:
-\[ J_{n+1}=\Big[x(\ln x)^{n+1}\Big]_1^e-(n+1)\int_1^e(\ln x)^{n}\dx\quad\Longrightarrow\quad\bx{J_{n+1}=e-(n+1)J_n} \]
-مع $J_1=1$ نجد $J_2=e-2$.
 \end{mithal}
 
 %=====================================================
@@ -723,14 +722,15 @@ $\mathcal{A}(\lambda)=2\iff(\ln\lambda)^{2}=4\iff\ln\lambda=2$ (لأن $\lambda>
 نبين أن $F'(x)=f(x)$ من أجل كل $x$ من $I$. & إثبات أن $F$ دالة أصلية لـ $f$\\\hline
 نتعرف على الشكل ($u'u^{n}$، $\frac{u'}{u^{2}}$، $\frac{u'}{\sqrt u}$، $\frac{u'}{u}$، $u'e^{u}$) ونعدل بمعامل ثابت. & تعيين دالة أصلية\\\hline
 نكتب $F(x)+c$ ونعوض $F(x_0)=y_0$ لإيجاد $c$. & دالة أصلية تأخذ قيمة معلومة\\\hline
+الحلول $y=F(x)+c$ ($F$ أصلية لـ $f$)، ثم الشرط $y(x_0)=y_0$ يعين $c$. & حل $y'=f(x)$\\\hline
 نشتق الشكل المعطى ونطابق المعاملات مع $f(x)$. & تعيين $a$، $b$ في دالة أصلية\\\hline
 $\int_a^b f(x)\dx=F(b)-F(a)$، مع شال والخطية. & حساب تكامل\\\hline
 $u'v$: نختار $u$ (لوغاريتم، كثير حدود، أسية، مثلثية) ثم $\big[uv\big]_a^b-\int_a^b u'v$. & تكامل جداء (بالتجزئة)\\\hline
 $m=\frac{1}{b-a}\int_a^b f(x)\dx$. & القيمة المتوسطة\\\hline
 نحصر $f(x)$ على $[a;b]$ ($a\leqslant b$) ثم نكامل. & حصر تكامل\\\hline
 رسم ملون، ثم جدول إشارة $f(x)$ أو $f(x)-g(x)$، ثم $\int_a^b|\ldots|$ بالـ $\mathrm{u.a}$ ثم بالـ $\mathrm{cm}^{2}$. & حساب مساحة\\\hline
-$F'(x)=f(x)$ و $F(a)=0$. & دراسة $F(x)=\int_a^x f(t)\dt$\\\hline
-إشارة $I_{n+1}-I_n$، حصر الدالة تحت التكامل، علاقة تراجعية بالتجزئة. & متتالية تكاملية\\\hline
+$V=\int_a^b S(z)\,\mathrm{d}z$؛ مجسم دوراني: $V=\pi\int_a^b\big[f(x)\big]^{2}\dx$. & حساب حجم\\\hline
+$F(x)=\int_a^x f(t)\dt$ ونحسبه (بالتجزئة غالبًا). & الدالة الأصلية التي تنعدم عند $a$\\\hline
 \end{tabular}
 \end{center}
 \end{document}
