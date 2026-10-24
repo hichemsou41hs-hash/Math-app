@@ -164,6 +164,8 @@
 {\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
 \newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
 \newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
 \newcommand{\hl}[1]{\ensuremath{\colorbox{cEx!20}{$\displaystyle #1$}}}
 \newcommand{\Lim}[1]{\displaystyle\lim_{x\to #1}}
 \newcommand{\Cf}{(C_f)}
@@ -172,13 +174,6 @@
 % عمودان: \TwoCol{عرض اليسار}{محتوى اليسار}{عرض اليمين}{محتوى اليمين}  (آمن مع TikZ)
 \newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
 \newcommand{\un}{(u_n)}\newcommand{\vn}{(v_n)}
-% برهان بالتراجع: \Rec{الخاصية P(n)}{التحقق من P(0)}{البرهان على الوراثة}
-\newcommand{\Rec}[3]{\textbf{برهان بالتراجع:} نسمي $P(n)$ الخاصية: «#1».
-\begin{itemize}
-\item \textbf{التحقق:} #2
-\item \textbf{الوراثة:} نفرض أن $P(n)$ صحيحة ونبرهن صحة $P(n+1)$: #3
-\item \textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع، $P(n)$ صحيحة من أجل كل عدد طبيعي $n$.
-\end{itemize}}
 \newcommand{\src}[1]{{\footnotesize\textbf{#1}}\par}
 \newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
 \newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
@@ -205,10 +200,10 @@
 \begin{BOX}{cDef}{محتوى الملخص (حسب ترتيب التوزيع السنوي)}
 \begin{center}
 \begin{tabular}{p{0.44\textwidth}p{0.44\textwidth}}
-5. المتتاليات المحدودة & 1. تعريف متتالية عددية ومصطلحات\\
-6. المتتاليات الحسابية & 2. طرق توليد متتالية\\
-7. المتتاليات الهندسية & 3. التمثيل البياني لمتتالية\\
-8. نهاية متتالية وخلاصة الطرائق & 4. اتجاه تغير متتالية
+5. المتتاليات الحسابية & 1. تعريف متتالية عددية ومصطلحات\\
+6. المتتاليات الهندسية & 2. طرق توليد متتالية\\
+7. نهاية متتالية وخلاصة الطرائق & 3. التمثيل البياني لمتتالية\\
+ & 4. اتجاه تغير متتالية
 \end{tabular}
 \end{center}
 \end{BOX}
@@ -243,6 +238,19 @@ $u_n=3n+5$: \ $u_0=5$ ، $u_1=8$ ، $u_2=11$ ، و $u_{100}=305$. \ الدالة
 \end{tarif}
 \begin{mithal}
 $u_0=1$ و $u_{n+1}=2u_n+1$: \ $u_1=2\times1+1=3$ ، $u_2=2\times3+1=7$ ، $u_3=15$. \ الدالة المرفقة: $f(x)=2x+1$.
+\end{mithal}
+\begin{tarif}[3. وصف ظاهرة بواسطة متتالية]
+نترجم وضعية من الواقع (ادخار ، سكان ، أسعار ، إنتاج $\ldots$) إلى متتالية: $u_n$ هي قيمة المقدار بعد $n$ مرحلة (شهر ، سنة $\ldots$) ، ثم نكتب العلاقة بين $u_{n+1}$ و $u_n$.
+\begin{itemize}
+\item زيادة (أو نقصان) \textbf{بمقدار ثابت} $r$ في كل مرحلة: \ $u_{n+1}=u_n+r$ \ (متتالية حسابية).
+\item زيادة \textbf{بنسبة} $t\,\%$ في كل مرحلة: \ $u_{n+1}=u_n+\dfrac{t}{100}u_n=\Big(1+\dfrac{t}{100}\Big)u_n$ \ (متتالية هندسية) ؛ ونقصان بنسبة $t\,\%$: \ $u_{n+1}=\Big(1-\dfrac{t}{100}\Big)u_n$.
+\end{itemize}
+\end{tarif}
+\begin{mithal}
+\begin{itemize}
+\item \textbf{ادخار:} في حساب أحمد $10000$ DA ، ويودع كل شهر $2000$ DA. \ نسمي $u_n$ رصيده بعد $n$ شهراً: $u_0=10000$ و $u_{n+1}=u_n+2000$ ، إذن $u_n=10000+2000n$. \ بعد سنة: $u_{12}=\bx{34000}$ DA.
+\item \textbf{سكان:} عدد سكان مدينة $50000$ نسمة سنة $2025$ ، ويزداد بـ $3\,\%$ كل سنة. \ نسمي $p_n$ عدد السكان سنة $2025+n$: $p_0=50000$ و $p_{n+1}=p_n+0{,}03\,p_n=1{,}03\,p_n$ ، إذن $p_n=50000\times1{,}03^n$. \ $p_1=51500$ ، $p_2=\bx{53045}$.
+\end{itemize}
 \end{mithal}
 
 % =====================================================================
@@ -301,22 +309,21 @@ $f(x)=\dfrac12x+\dfrac13$.\par
 \item $w_n=-2n+3=f(n)$ حيث $f(x)=-2x+3$ متناقصة تماماً على $[0;+\infty[$: \ $(w_n)$ \textbf{متناقصة تماماً}.
 \end{itemize}
 \end{mithal}
+\begin{tarif}[اتجاه التغير ابتداءً من رتبة معيّنة]
+قد لا تكون $\Un$ رتيبة من حدها الأول ، لكنها تصبح رتيبة ابتداءً من رتبة $n_0$. \ نقول إن $\Un$ \textbf{متزايدة تماماً ابتداءً من الرتبة $n_0$} إذا كان من أجل كل $n\ge n_0$: \ $u_{n+1}>u_n$ (وبالمثل للمتناقصة).
+\end{tarif}
+\begin{tariqa}[تعيين الرتبة $n_0$]
+نحسب $u_{n+1}-u_n$ ، ثم نحل المتراجحة $u_{n+1}-u_n>0$ (أو $<0$) في $\N$: أصغر عدد طبيعي يحققها هو $n_0$.
+\end{tariqa}
+\begin{mithal}
+$u_n=n^2-6n$ ، $n\in\N$: \ $u_{n+1}-u_n=(n+1)^2-6(n+1)-n^2+6n=2n-5$.\par
+$2n-5>0\iff n>\dfrac52$ ، أي $n\ge3$ (لأن $n$ طبيعي).\par
+إذن من أجل كل $n\ge3$: $u_{n+1}>u_n$ ، و \bxt{$\Un$ متزايدة تماماً ابتداءً من الرتبة $n_0=3$}.\par
+أما من أجل $n\in\{0;1;2\}$ فإن $2n-5<0$: \ $u_0=0>u_1=-5>u_2=-8>u_3=-9$ ،\par ثم $u_3=-9<u_4=-8<u_5=-5<u_6=0<\cdots$
+\end{mithal}
 \begin{molahada}
 عكس الطريقة 3 خاطئ: إذا كانت $u_{n+1}=f(u_n)$ و $f$ متزايدة ، فلا نستنتج أن $\Un$ متزايدة. \ (مع $f(x)=\dfrac12x+\dfrac13$ المتزايدة ، المتتالية السابقة متناقصة.)
 \end{molahada}
-
-% =====================================================================
-\section{المتتاليات المحدودة}
-\begin{tarif}[متتالية محدودة]
-$\Un$ \textbf{محدودة من الأعلى} إذا وجد عدد $M$ حيث $u_n\le M$ لكل $n$ ، و\textbf{محدودة من الأسفل} إذا وجد $m$ حيث $u_n\ge m$ لكل $n$. \ وهي \textbf{محدودة} إذا كانت محدودة من الأعلى ومن الأسفل.
-\end{tarif}
-\begin{mithal}
-$u_n=2+\dfrac{1}{n+1}$ ، $n\in\N$. \ من أجل كل $n\in\N$: \ $n+1\ge1$ ، إذن $0<\dfrac{1}{n+1}\le1$ ، ومنه \bx{2<u_n\le3}.\par
-$\Un$ محدودة من الأسفل بـ $2$ ومن الأعلى بـ $3$ ، فهي \textbf{محدودة}.
-\end{mithal}
-\begin{tariqa}[إثبات أن متتالية محدودة]
-نكتب $u_n$ بدلالة $n$ (الحد العام) ثم ننطلق من $n\ge n_0$ ونطبّق العمليات على المتباينات ، أو ندرس إشارة الفرق $u_n-a$.
-\end{tariqa}
 
 % =====================================================================
 \section{المتتاليات الحسابية}
@@ -341,14 +348,16 @@ $\Un$ محدودة من الأسفل بـ $2$ ومن الأعلى بـ $3$ ، ف
 \begin{khassia}[ثلاثة حدود متتابعة]
 الأعداد $a$ ، $b$ ، $c$ بهذا الترتيب حدود متتابعة من متتالية حسابية إذا وفقط إذا كان \bx{a+c=2b}. \ ($b$ هو \textbf{الوسط الحسابي} لـ $a$ و $c$.) \ مثال: $2$ ، $7$ ، $12$ لأن $2+12=2\times7$.
 \end{khassia}
-\begin{khassia}[مجموع حدود متتابعة]
-\[\bx{S=\text{\ar{عدد الحدود}}\times\frac{\text{\ar{الحد الأول}}+\text{\ar{الحد الأخير}}}{2}}\qquad;\qquad u_0+u_1+\cdots+u_n=(n+1)\,\frac{u_0+u_n}{2}.\]
-عدد الحدود $=$ (دليل الحد الأخير $-$ دليل الحد الأول) $+1$. \ حالة خاصة: $1+2+\cdots+n=\dfrac{n(n+1)}{2}$.
+\begin{khassia}[مجموع $p$ حداً متعاقباً]
+مجموع $p$ حداً متعاقباً أولها $u_k$ وآخرها $u_{k+p-1}$:
+\[\bx{S=u_k+u_{k+1}+\cdots+u_{k+p-1}=p\times\frac{u_k+u_{k+p-1}}{2}}\]
+أي: المجموع $=$ عدد الحدود $\times$ (الحد الأول $+$ الحد الأخير) $\div\,2$. \ حالة خاصة ($k=0$ ، $p=n+1$): $u_0+u_1+\cdots+u_n=(n+1)\dfrac{u_0+u_n}{2}$.\par
+عدد الحدود $p=$ (دليل الحد الأخير $-$ دليل الحد الأول) $+1$. \ مثال: $1+2+\cdots+n=\dfrac{n(n+1)}{2}$ ($p=n$).
 \end{khassia}
 \begin{mithal}
 \begin{itemize}
 \item $u_n=3n+5$: \ $u_{n+1}-u_n=3$ ، فهي حسابية أساسها $r=3$ وحدها الأول $u_0=5$.
-\item $\Un$ حسابية ، $u_0=7$ و $u_{32}=103$: \ $r=\dfrac{103-7}{32}=3$ ، و $u_0+\cdots+u_{32}=33\times\dfrac{7+103}{2}=\bx{1815}$.
+\item $\Un$ حسابية ، $u_0=7$ و $u_{32}=103$: \ $r=\dfrac{103-7}{32}=3$ ، و $u_0+\cdots+u_{32}$ مجموع $p=32-0+1=33$ حداً: $33\times\dfrac{7+103}{2}=\bx{1815}$.
 \end{itemize}
 \end{mithal}
 
@@ -376,14 +385,16 @@ $\Un$ محدودة من الأسفل بـ $2$ ومن الأعلى بـ $3$ ، ف
 \begin{khassia}[ثلاثة حدود متتابعة]
 الأعداد $a$ ، $b$ ، $c$ بهذا الترتيب حدود متتابعة من متتالية هندسية إذا وفقط إذا كان \bx{a\times c=b^2}. \ ($b$ هو \textbf{الوسط الهندسي}.) \ مثال: $1$ ، $5$ ، $25$ لأن $1\times25=5^2$.
 \end{khassia}
-\begin{khassia}[مجموع حدود متتابعة ($q\ne1$)]
-\[\bx{S=\text{\ar{الحد الأول}}\times\frac{1-q^{\,\text{\ar{عدد الحدود}}}}{1-q}}\qquad;\qquad u_0+u_1+\cdots+u_n=u_0\,\frac{1-q^{n+1}}{1-q}.\]
-إذا كان $q=1$: \ $u_0+\cdots+u_n=(n+1)u_0$.
+\begin{khassia}[مجموع $p$ حداً متعاقباً ($q\ne1$)]
+مجموع $p$ حداً متعاقباً أولها $u_k$:
+\[\bx{S=u_k+u_{k+1}+\cdots+u_{k+p-1}=u_k\times\frac{1-q^{p}}{1-q}}\]
+أي: المجموع $=$ الحد الأول $\times\dfrac{1-q^{p}}{1-q}$ ، حيث $p$ عدد الحدود. \ حالة خاصة ($k=0$ ، $p=n+1$): $u_0+u_1+\cdots+u_n=u_0\,\dfrac{1-q^{n+1}}{1-q}$.\par
+إذا كان $q=1$: \ $S=p\times u_k$.
 \end{khassia}
 \begin{mithal}
 \begin{itemize}
 \item $v_n=\dfrac{3}{2^n}$: \ $v_{n+1}=\dfrac{3}{2^{n}\times2}=\dfrac12v_n$ ، فهي هندسية أساسها $q=\dfrac12$ وحدها الأول $v_0=3$.
-\item $u_0=2$ و $q=3$: \ $u_0+\cdots+u_n=2\times\dfrac{1-3^{n+1}}{1-3}=\bx{3^{n+1}-1}$.
+\item $u_0=2$ و $q=3$: \ $u_0+\cdots+u_n$ مجموع $p=n+1$ حداً: $2\times\dfrac{1-3^{n+1}}{1-3}=\bx{3^{n+1}-1}$.
 \end{itemize}
 \end{mithal}
 
@@ -433,7 +444,7 @@ $(v_n)$ هندسية أساسها \bx{q=\dfrac25} وحدها الأول $v_0=2-\
 $u_{n+1}=q\,u_n$ & $u_{n+1}=u_n+r$ & التعريف\\\hline
 $u_n=u_0\,q^n=u_p\,q^{n-p}$ & $u_n=u_0+nr=u_p+(n-p)r$ & الحد العام\\\hline
 $a\times c=b^2$ & $a+c=2b$ & ثلاثة حدود متتابعة\\\hline
-$u_0\dfrac{1-q^{n+1}}{1-q}$ \ ($q\ne1$) & $(n+1)\dfrac{u_0+u_n}{2}$ & $u_0+u_1+\cdots+u_n$\\\hline
+$u_k\dfrac{1-q^{p}}{1-q}$ \ ($q\ne1$) & $p\,\dfrac{u_k+u_{k+p-1}}{2}$ & مجموع $p$ حداً أولها $u_k$\\\hline
 \end{tabular}
 \end{BOX}
 \begin{BOX}{cMeth}{ماذا أفعل عندما يُطلب مني $\ldots$؟}
@@ -446,7 +457,8 @@ $u_0\dfrac{1-q^{n+1}}{1-q}$ \ ($q\ne1$) & $(n+1)\dfrac{u_0+u_n}{2}$ & $u_0+u_1+\
 نكتب $v_{n+1}$ بدلالة $u_n$ ثم نُخرج $q$ عاملاً: $v_{n+1}=q\,v_n$. & إثبات أن $(v_n)$ هندسية\\\hline
 نكتب $v_n$ بدلالة $n$ ، ثم نعوّض في العلاقة بين $u_n$ و $v_n$. & $u_n$ بدلالة $n$\\\hline
 نحل المعادلة $u_n=a$ في $\N$ ؛ الرتبة $=n-n_0+1$. & هل $a$ حد من حدودها؟\\\hline
-نكتب $u_n$ بدلالة $n$ ثم ننطلق من $n\ge n_0$ ، أو ندرس إشارة $u_n-a$. & حصر الحدود $u_n>a$\\\hline
+نحل في $\N$ المتراجحة $u_{n+1}-u_n>0$ (أو $<0$) ؛ أصغر حل هو $n_0$. & اتجاه التغير ابتداءً من رتبة $n_0$\\\hline
+مقدار ثابت يُضاف: حسابية ؛ نسبة $t\,\%$: هندسية أساسها $1\pm\dfrac{t}{100}$. & وصف ظاهرة بمتتالية\\\hline
 $S'=u_0+\cdots+u_n$: نكتب $u_k=v_k+c$ فنجد $S'=S+(n+1)c$. & مجموع $u_k$ إذا $u_k=v_k+c$\\\hline
 \end{tabular}
 \end{BOX}
