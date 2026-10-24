@@ -1,0 +1,896 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+\pgfplotsset{sc/.style={width=0.8\textwidth,height=6.3cm,axis lines=left,grid=both,minor tick num=1,
+  major grid style={gray!40},minor grid style={gray!15},tick label style={font=\scriptsize},label style={font=\footnotesize},
+  /pgf/number format/use comma,/pgf/number format/1000 sep={},scaled ticks=false,
+  xlabel style={at={(ticklabel* cs:1)},anchor=north east},ylabel style={rotate=-90,at={(ticklabel* cs:1)},anchor=south west}},
+  pt/.style={only marks,mark=*,mark size=2.2pt,color=cDef},
+  gp/.style={only marks,mark=square*,mark size=2.6pt,color=cThm},
+  gq/.style={only marks,mark=triangle*,mark size=3pt,color=cEx},
+  ln/.style={thick,color=cThm,samples=2},
+  lm/.style={thick,dashed,color=cRem,samples=2}}
+% scatter plot on graph paper: \begin{SC}{axis options}
+\newenvironment{SC}[1]{\par\begin{center}\begin{LTR}\begin{tikzpicture}\begin{axis}[sc,#1]}{\end{axis}\end{tikzpicture}\end{LTR}\end{center}}
+\SetHeader{\small\bfseries\color{cSec}تمارين تجريبية: الإحصاء}{\small\color{cSec}السنة الثالثة ثانوي -- تسيير واقتصاد}
+\BeforeBeginEnvironment{tamrin}{\Needspace{12\baselineskip}}
+\BeforeBeginEnvironment{hal}{\Needspace{20\baselineskip}}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{24}{32}\selectfont\bfseries تمارين تجريبية: الإحصاء}\\[8pt]
+{\color{white}\large سحابة النقط -- طريقة ماير -- المربعات الدنيا -- الارتباط -- تغيير المتغير}\\[5pt]
+{\color{white}\large 12 تمرينا متدرجا مع الحلول المفصلة خطوة بخطوة}\\[5pt]{\color{white}\large السنة الثالثة ثانوي -- تسيير واقتصاد}
+\end{tcolorbox}
+\end{LTR}
+
+\begin{tarif}[تذكير: القوانين التي نستعملها]
+$(x_i;y_i)$ سلسلة إحصائية ذات متغيرين عدد نقطها $n$.
+\begin{itemize}
+\item \textbf{النقطة المتوسطة:} $G(\bar x;\bar y)$ حيث $\bar x=\dfrac{1}{n}\sum x_i$ و $\bar y=\dfrac{1}{n}\sum y_i$.
+\item \textbf{التباين والانحراف المعياري:} $V(x)=\dfrac{1}{n}\sum x_i^{2}-\bar x^{2}$ ، \ $\sigma(x)=\sqrt{V(x)}$ (وبالمثل لـ $y$).
+\item \textbf{التغاير:} $\operatorname{cov}(x;y)=\dfrac{1}{n}\sum x_iy_i-\bar x\,\bar y$.
+\item \textbf{مستقيم الانحدار بالمربعات الدنيا} $y=ax+b$: \ $a=\dfrac{\operatorname{cov}(x;y)}{V(x)}$ \ و \ $b=\bar y-a\bar x$ (يشمل $G$).
+\item \textbf{معامل الارتباط الخطي:} $r=\dfrac{\operatorname{cov}(x;y)}{\sigma(x)\,\sigma(y)}$ مع $-1\le r\le1$. كلما اقترب $|r|$ من $1$ كان الارتباط الخطي قويا (عمليا: $|r|\ge0{,}87$ يبرّر تعديلا خطيا).
+\item \textbf{طريقة ماير:} نرتب النقط حسب $x_i$، نقسمها إلى مجموعتين متساويتين في العدد، نحسب النقطتين المتوسطتين $G_1$ و $G_2$؛ المستقيم $(G_1G_2)$ هو مستقيم ماير ويشمل $G$.
+\item \textbf{تغيير المتغير:} إذا كان $z=\ln y$ و $z=ax+b$ فإن $y=e^{ax+b}=e^{b}\left(e^{a}\right)^{x}$، أي $y=k\,q^{x}$ مع $k=e^{b}$ و $q=e^{a}$.
+\end{itemize}
+\end{tarif}
+
+\section{سحابة النقط، النقطة المتوسطة وطريقة ماير}
+% ------------------------------------------------------------------
+\begin{tamrin}{مبيعات متجر -- تعديل بطريقة ماير}
+يعطي الجدول التالي المبيعات الشهرية $y_i$ (بالألف دينار جزائري) لمتجر خلال الأشهر الستة الأولى من سنة 2025، حيث $x_i$ رتبة الشهر ($x_i=1$ يوافق جانفي).
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{رتبة الشهر} $x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\\hline
+\ar{المبيعات} $y_i$ & $420$ & $470$ & $490$ & $520$ & $590$ & $630$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد (على محور الفواصل: $1\,\text{cm}$ لكل شهر؛ وعلى محور التراتيب: $1\,\text{cm}$ لكل $20$ ألف دينار، ونبدأ التدريج من $400$).
+\QQ{2} احسب إحداثيي النقطة المتوسطة $G$ لهذه السلسلة ثم علّمها.
+\QQ{3} هل يبرّر شكل السحابة إجراء تعديل خطي؟
+\QQ{4} نقسم السلسلة إلى مجموعتين: الأولى تضم النقط الثلاث الأولى، والثانية تضم النقط الثلاث الأخيرة.
+\begin{sq}
+\qa احسب إحداثيي $G_1$ و $G_2$ النقطتين المتوسطتين للمجموعتين.
+\qb عيّن معادلة مستقيم ماير $(G_1G_2)$ وتحقق أن $G$ تنتمي إليه، ثم ارسمه.
+\end{sq}
+\QQ{5} باستعمال هذا التعديل:
+\begin{sq}
+\qa قدّر مبيعات شهر سبتمبر 2025.
+\qb ابتداء من أي شهر من سنة 2025 تتجاوز المبيعات $800$ ألف دينار (إذا استمر الاتجاه نفسه)؟
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1}{\bfseries و 2 و 4.} سحابة النقط (بالأزرق)، النقطة المتوسطة $G$ (بالأحمر)، النقطتان $G_1$ و $G_2$ (بالبرتقالي) ومستقيم ماير:
+\begin{SC}{xmin=0,xmax=7.4,ymin=400,ymax=660,xtick={0,...,7},ytick={400,440,...,640},xlabel={$x_i$},ylabel={$y_i$}}
+\addplot[ln,domain=0:7.2]{40*x+380};
+\addplot[pt] coordinates {(1,420)(2,470)(3,490)(4,520)(5,590)(6,630)};
+\addplot[gq] coordinates {(2,460)(5,580)};
+\addplot[gp] coordinates {(3.5,520)};
+\node[above left] at (axis cs:3.5,520){$G$};
+\node[below right] at (axis cs:2,460){$G_1$};
+\node[below right] at (axis cs:5,580){$G_2$};
+\node[cThm,above left] at (axis cs:6.9,656){$(G_1G_2)$};
+\end{SC}
+\QQ{2} عدد النقط $n=6$:
+\[\bar x=\frac{1+2+3+4+5+6}{6}=\frac{21}{6}=3{,}5\]\[\bar y=\frac{420+470+490+520+590+630}{6}=\frac{3120}{6}=520\]
+إذن \bx{G(3{,}5\,;\,520)}
+
+\QQ{3} نقط السحابة متقاربة من مستقيم (تتزايد المبيعات بانتظام تقريبا)، إذن يمكن إجراء \textbf{تعديل خطي}.
+
+\QQ{4}\pa المجموعة الأولى: النقط ذات الفواصل $1$ ، $2$ ، $3$:
+\[x_{G_1}=\frac{1+2+3}{3}=2\qquad y_{G_1}=\frac{420+470+490}{3}=\frac{1380}{3}=460\qquad\text{إذن}\qquad \bx{G_1(2\,;\,460)}\]
+المجموعة الثانية: النقط ذات الفواصل $4$ ، $5$ ، $6$:
+\[x_{G_2}=\frac{4+5+6}{3}=5\qquad y_{G_2}=\frac{520+590+630}{3}=\frac{1740}{3}=580\qquad\text{إذن}\qquad \bx{G_2(5\,;\,580)}\]
+\pb معادلة $(G_1G_2)$ من الشكل $y=ax+b$ حيث المعامل الموجه:
+\[a=\frac{y_{G_2}-y_{G_1}}{x_{G_2}-x_{G_1}}=\frac{580-460}{5-2}=\frac{120}{3}=40\]
+و $G_1\in(G_1G_2)$ ومنه $460=40\times2+b$ أي $b=380$. إذن معادلة مستقيم ماير: \bx{y=40x+380}
+
+التحقق: $40\times3{,}5+380=140+380=520=\bar y$، إذن \bx{G\in(G_1G_2)} \ok
+
+\textbf{تفسير:} $a=40$ يعني أن المبيعات تزداد في المتوسط بـ $40$ ألف دينار كل شهر.
+
+\QQ{5}\pa شهر سبتمبر رتبته $x=9$: \ $y=40\times9+380=740$. تقدَّر مبيعات سبتمبر بـ \bxt{$740$ ألف دينار} تقريبا.
+\pb نحل المتراجحة: $40x+380>800$ \ أي \ $40x>420$ \ أي \ $x>10{,}5$. أصغر رتبة طبيعية هي $x=11$، إذن ابتداء من \bxt{شهر نوفمبر 2025} تتجاوز المبيعات $800$ ألف دينار.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{السعر والطلب -- مستقيم ماير والإيراد الأعظمي}
+درست مؤسسة الطلب اليومي $y_i$ (عدد الوحدات المطلوبة) على منتوج بدلالة سعر الوحدة $x_i$ (بالدينار) فتحصلت على:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{السعر} $x_i$ & $20$ & $30$ & $40$ & $50$ & $60$ & $70$\\\hline
+\ar{الطلب} $y_i$ & $412$ & $381$ & $350$ & $302$ & $275$ & $251$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ (على محور الفواصل: $1\,\text{cm}$ لكل $10$ دنانير؛ وعلى محور التراتيب: $1\,\text{cm}$ لكل $20$ وحدة ابتداء من $200$).
+\QQ{2} احسب إحداثيي النقطة المتوسطة $G$.
+\QQ{3} باستعمال طريقة ماير (مجموعة أولى: النقط الثلاث الأولى) بيّن أن معادلة مستقيم التعديل هي: $y=-3{,}5x+486$.
+\QQ{4} فسّر اقتصاديا المعامل $-3{,}5$.
+\QQ{5}
+\begin{sq}
+\qa قدّر الطلب اليومي إذا كان سعر الوحدة $80$ دينارا.
+\qb ما السعر الذي يوافق طلبا يوميا قدره $300$ وحدة؟ (دوّر إلى $10^{-2}$).
+\end{sq}
+\QQ{6} نعتبر أن الطلب معطى بـ $y=-3{,}5x+486$ من أجل $x\in[20;100]$. الإيراد اليومي هو $R(x)=x\cdot y$.
+\begin{sq}
+\qa بيّن أن $R(x)=-3{,}5x^{2}+486x$.
+\qb ادرس اتجاه تغير الدالة $R$ على $[20;100]$، واستنتج السعر الذي يجعل الإيراد أعظميا وقيمة هذا الإيراد (دوّر إلى $10^{-2}$).
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} السحابة ومستقيم ماير ($G$ بالأحمر و $G_1,G_2$ بالبرتقالي):
+\begin{SC}{xmin=0,xmax=88,ymin=200,ymax=440,xtick={0,10,...,80},ytick={200,240,...,440},xlabel={$x_i$},ylabel={$y_i$}}
+\addplot[ln,domain=0:85]{-3.5*x+486};
+\addplot[pt] coordinates {(20,412)(30,381)(40,350)(50,302)(60,275)(70,251)};
+\addplot[gq] coordinates {(30,381)(60,276)};
+\addplot[gp] coordinates {(45,328.5)};
+\node[above right] at (axis cs:45,328.5){$G$};
+\node[below left] at (axis cs:30,381){$G_1$};
+\node[below left] at (axis cs:60,276){$G_2$};
+\end{SC}
+\QQ{2}
+\[\bar x=\frac{20+30+40+50+60+70}{6}=\frac{270}{6}=45\]\[\bar y=\frac{412+381+350+302+275+251}{6}=\frac{1971}{6}=328{,}5\]
+إذن \bx{G(45\,;\,328{,}5)}
+
+\QQ{3} المجموعة الأولى ($x_i=20;30;40$) والثانية ($x_i=50;60;70$):
+\[G_1\left(\frac{20+30+40}{3}\,;\,\frac{412+381+350}{3}\right)=G_1\left(30\,;\,\frac{1143}{3}\right)=G_1(30\,;\,381)\]
+\[G_2\left(\frac{50+60+70}{3}\,;\,\frac{302+275+251}{3}\right)=G_2\left(60\,;\,\frac{828}{3}\right)=G_2(60\,;\,276)\]
+\[a=\frac{276-381}{60-30}=\frac{-105}{30}=-3{,}5\qquad b=y_{G_1}-a\,x_{G_1}=381-(-3{,}5)\times30=381+105=486\]
+إذن \bx{(G_1G_2):\ y=-3{,}5x+486}. \ التحقق: $-3{,}5\times45+486=-157{,}5+486=328{,}5=\bar y$ ومنه $G\in(G_1G_2)$ \ok
+
+\QQ{4} كلما ارتفع سعر الوحدة بدينار واحد \textbf{انخفض} الطلب اليومي بـ $3{,}5$ وحدات تقريبا (المعامل سالب: الطلب دالة متناقصة للسعر).
+
+\QQ{5}\pa $y=-3{,}5\times80+486=-280+486=206$. الطلب المقدَّر: \bxt{$206$ وحدة يوميا}
+\pb $-3{,}5x+486=300$ \ أي \ $3{,}5x=186$ \ أي \ $x=\dfrac{186}{3{,}5}\approx53{,}142\ldots$ \ إذن السعر \bx{x\approx53{,}14\ \text{DA}}
+
+\QQ{6}\pa $R(x)=x\left(-3{,}5x+486\right)=\bx{-3{,}5x^{2}+486x}$
+\pb $R'(x)=-7x+486$، و $R'(x)=0$ يكافئ $x=\dfrac{486}{7}\approx69{,}43$.
+لما $x<\dfrac{486}{7}$ يكون $R'(x)>0$، ولما $x>\dfrac{486}{7}$ يكون $R'(x)<0$:
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3.2]{$x$/1,$R'(x)$/1,$R(x)$/2}{$20$,$\dfrac{486}{7}$,$100$}
+\tkzTabLine{,+,z,-,}
+\tkzTabVar{-/$8320$,+/$\approx16871{,}14$,-/$13600$}
+\end{TAB}
+$R(20)=-1400+9720=8320$ ، \ $R(100)=-35000+48600=13600$ ، و:
+\[R\left(\frac{486}{7}\right)=-3{,}5\times\frac{486^{2}}{49}+\frac{486^{2}}{7}=\frac{486^{2}}{14}=\frac{236196}{14}\approx16871{,}14\]
+
+يكون الإيراد أعظميا لما \bx{x\approx69{,}43\ \text{DA}}، والإيراد الأعظمي \bx{R_{\max}\approx16871{,}14\ \text{DA}} يوميا.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{تطور عدد سكان مدينة -- ماير بثماني نقط}
+يمثل الجدول التالي عدد سكان مدينة $y_i$ (بالآلاف) بين سنتي 2016 و 2023، حيث $x_i$ رتبة السنة.
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{السنة} & $2016$ & $2017$ & $2018$ & $2019$ & $2020$ & $2021$ & $2022$ & $2023$\\\hline
+\ar{الرتبة} $x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$\\\hline
+\ar{السكان} $y_i$ & $24,2$ & $24,9$ & $25,7$ & $26,4$ & $27,5$ & $28,6$ & $29,4$ & $30,1$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ (على محور الفواصل: $1\,\text{cm}$ لكل سنة؛ وعلى محور التراتيب: $1\,\text{cm}$ لكل ألف نسمة ابتداء من $24$).
+\QQ{2} احسب إحداثيي النقطة المتوسطة $G$.
+\QQ{3} عيّن معادلة مستقيم ماير $(G_1G_2)$، حيث $G_1$ و $G_2$ النقطتان المتوسطتان للنقط الأربع الأولى وللنقط الأربع الأخيرة على الترتيب، ثم تحقق أن $G\in(G_1G_2)$.
+\QQ{4} فسّر المعامل الموجه لهذا المستقيم.
+\QQ{5}
+\begin{sq}
+\qa قدّر عدد سكان المدينة سنة 2026.
+\qb في أي سنة يتجاوز عدد السكان $35$ ألف نسمة لأول مرة؟
+\end{sq}
+\QQ{6} احسب النسبة المئوية لزيادة عدد السكان بين سنتي 2016 و 2023 (دوّر إلى $10^{-2}$).
+\end{tamrin}
+\begin{hal}
+\QQ{1} السحابة ومستقيم ماير:
+\begin{SC}{xmin=0,xmax=9.3,ymin=24,ymax=31,xtick={0,...,9},ytick={24,...,31},xlabel={$x_i$},ylabel={$y_i$}}
+\addplot[ln,domain=0:9.2]{0.9*x+23.05};
+\addplot[pt] coordinates {(1,24.2)(2,24.9)(3,25.7)(4,26.4)(5,27.5)(6,28.6)(7,29.4)(8,30.1)};
+\addplot[gq] coordinates {(2.5,25.3)(6.5,28.9)};
+\addplot[gp] coordinates {(4.5,27.1)};
+\node[above left] at (axis cs:4.5,27.1){$G$};
+\node[below right] at (axis cs:2.5,25.3){$G_1$};
+\node[below right] at (axis cs:6.5,28.9){$G_2$};
+\end{SC}
+\QQ{2} $n=8$:
+\[\bar x=\frac{1+2+\cdots+8}{8}=\frac{36}{8}=4{,}5\]
+\[\bar y=\frac{24{,}2+24{,}9+25{,}7+26{,}4+27{,}5+28{,}6+29{,}4+30{,}1}{8}=\frac{216{,}8}{8}=27{,}1\]
+إذن \bx{G(4{,}5\,;\,27{,}1)}
+
+\QQ{3} المجموعة الأولى ($x_i=1;2;3;4$):
+\[x_{G_1}=\frac{1+2+3+4}{4}=2{,}5\qquad y_{G_1}=\frac{24{,}2+24{,}9+25{,}7+26{,}4}{4}=\frac{101{,}2}{4}=25{,}3\]
+إذن \bx{G_1(2{,}5\,;\,25{,}3)}. \ المجموعة الثانية ($x_i=5;6;7;8$):
+\[x_{G_2}=\frac{5+6+7+8}{4}=6{,}5\qquad y_{G_2}=\frac{27{,}5+28{,}6+29{,}4+30{,}1}{4}=\frac{115{,}6}{4}=28{,}9\]
+إذن \bx{G_2(6{,}5\,;\,28{,}9)}
+\[a=\frac{28{,}9-25{,}3}{6{,}5-2{,}5}=\frac{3{,}6}{4}=0{,}9\qquad b=25{,}3-0{,}9\times2{,}5=25{,}3-2{,}25=23{,}05\]
+إذن \bx{(G_1G_2):\ y=0{,}9x+23{,}05}. \ التحقق: $0{,}9\times4{,}5+23{,}05=4{,}05+23{,}05=27{,}1=\bar y$ \ok
+
+\QQ{4} $a=0{,}9$: يزداد عدد السكان في المتوسط بـ $0{,}9$ ألف، أي بـ $900$ نسمة كل سنة.
+
+\QQ{5}\pa سنة 2026 رتبتها $x=2026-2015=11$: \ $y=0{,}9\times11+23{,}05=32{,}95$. أي حوالي \bxt{$32\,950$ نسمة}
+\pb $0{,}9x+23{,}05>35$ \ أي \ $x>\dfrac{11{,}95}{0{,}9}\approx13{,}28$، ومنه $x=14$، أي السنة $2015+14$: \bxt{سنة 2029}
+
+\QQ{6} النسبة المئوية للزيادة: \ $\dfrac{30{,}1-24{,}2}{24{,}2}\times100=\dfrac{5{,}9}{24{,}2}\times100\approx\bx{24{,}38\,\%}$
+\end{hal}
+
+\section{التعديل الخطي بطريقة المربعات الدنيا ومعامل الارتباط}
+% ------------------------------------------------------------------
+\begin{tamrin}{تكلفة الإنتاج -- أول تعديل بالمربعات الدنيا}
+يعطي الجدول التالي التكلفة الإجمالية $y_i$ (بالألف دينار) لإنتاج $x_i$ مئة وحدة من سلعة في ورشة:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{الإنتاج} $x_i$ & $1$ & $2$ & $3$ & $4$ & $5$\\\hline
+\ar{التكلفة} $y_i$ & $120$ & $150$ & $190$ & $230$ & $260$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ (على محور الفواصل: $2\,\text{cm}$ لكل مئة وحدة؛ وعلى محور التراتيب: $1\,\text{cm}$ لكل $20$ ألف دينار ابتداء من $80$)، ثم احسب إحداثيي النقطة المتوسطة $G$.
+\QQ{2} انقل ثم أتمم جدول الحساب: $x_i^{2}$ ، $x_iy_i$ ، $y_i^{2}$ مع المجاميع.
+\QQ{3} احسب $V(x)$ و $\operatorname{cov}(x;y)$، ثم استنتج معادلة مستقيم الانحدار $(D)$ لـ $y$ بدلالة $x$ بطريقة المربعات الدنيا، وارسمه.
+\QQ{4} احسب $V(y)$ ثم معامل الارتباط الخطي $r$ (دوّر إلى $10^{-3}$) وفسّر النتيجة.
+\QQ{5} فسّر اقتصاديا العددين $a$ و $b$.
+\QQ{6}
+\begin{sq}
+\qa قدّر تكلفة إنتاج $700$ وحدة.
+\qb ميزانية الورشة $400$ ألف دينار. ما أكبر عدد من الوحدات يمكن إنتاجه؟
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} السحابة ومستقيم الانحدار $(D)$:
+\begin{SC}{xmin=0,xmax=6.4,ymin=80,ymax=300,xtick={0,...,6},ytick={80,120,...,280},xlabel={$x_i$},ylabel={$y_i$}}
+\addplot[ln,domain=0:6.2]{36*x+82};
+\addplot[pt] coordinates {(1,120)(2,150)(3,190)(4,230)(5,260)};
+\addplot[gp] coordinates {(3,190)};
+\node[above left] at (axis cs:3,190){$G$};
+\node[cThm,below right] at (axis cs:5.2,269){$(D)$};
+\end{SC}
+$\bar x=\dfrac{15}{5}=3$ \ و \ $\bar y=\dfrac{120+150+190+230+260}{5}=\dfrac{950}{5}=190$ \ إذن \bx{G(3\,;\,190)}
+
+\QQ{2} جدول الحساب ($n=5$):
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$i$ & $1$ & $2$ & $3$ & $4$ & $5$ & \ar{\textbf{المجموع}}\\\hline
+$x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $15$\\\hline
+$y_i$ & $120$ & $150$ & $190$ & $230$ & $260$ & $950$\\\hline
+$x_i^{2}$ & $1$ & $4$ & $9$ & $16$ & $25$ & $55$\\\hline
+$x_iy_i$ & $120$ & $300$ & $570$ & $920$ & $1300$ & $3210$\\\hline
+$y_i^{2}$ & $14400$ & $22500$ & $36100$ & $52900$ & $67600$ & $193500$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{3}
+\[V(x)=\frac{1}{n}\sum x_i^{2}-\bar x^{2}=\frac{55}{5}-3^{2}=11-9=\bx{2}\]
+\[\operatorname{cov}(x;y)=\frac{1}{n}\sum x_iy_i-\bar x\,\bar y=\frac{3210}{5}-3\times190=642-570=\bx{72}\]
+\[a=\frac{\operatorname{cov}(x;y)}{V(x)}=\frac{72}{2}=36\qquad b=\bar y-a\bar x=190-36\times3=190-108=82\]
+إذن معادلة مستقيم الانحدار: \bx{(D):\ y=36x+82} \ (وهو يشمل $G$).
+
+\QQ{4} $V(y)=\dfrac{193500}{5}-190^{2}=38700-36100=2600$. ومنه $\sigma(x)=\sqrt2\approx1{,}414$ و $\sigma(y)=\sqrt{2600}\approx50{,}990$:
+\[r=\frac{\operatorname{cov}(x;y)}{\sigma(x)\,\sigma(y)}=\frac{72}{\sqrt2\times\sqrt{2600}}=\frac{72}{\sqrt{5200}}\approx\bx{0{,}998}\]
+$r$ موجب وقريب جدا من $1$: يوجد \textbf{ارتباط خطي قوي وموجب} بين الإنتاج والتكلفة، فالتعديل الخطي مبرَّر.
+
+\QQ{5} $b=82$: \textbf{التكاليف الثابتة} (لما $x=0$) حوالي $82$ ألف دينار. \ $a=36$: كل مئة وحدة إضافية تكلّف حوالي $36$ ألف دينار، أي $360$ دينارا للوحدة.
+
+\QQ{6}\pa $700$ وحدة توافق $x=7$: \ $y=36\times7+82=252+82=334$. التكلفة \bxt{$334$ ألف دينار تقريبا}
+\pb $36x+82\le400$ \ يكافئ \ $x\le\dfrac{318}{36}\approx8{,}83$، أي $883$ وحدة على الأكثر: \bx{883}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{الإشهار ورقم الأعمال -- معامل الارتباط}
+يعطي الجدول التالي مصاريف الإشهار $x_i$ (بعشرات الآلاف من الدنانير) ورقم الأعمال $y_i$ (بملايين الدنانير) لمؤسسة خلال ستة أشهر:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{الإشهار} $x_i$ & $2$ & $3$ & $5$ & $6$ & $8$ & $12$\\\hline
+\ar{رقم الأعمال} $y_i$ & $2,9$ & $3,8$ & $4,6$ & $5,4$ & $6,1$ & $8,6$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد.
+\QQ{2} أنجز جدول الحساب ($x_i^{2}$ ، $y_i^{2}$ ، $x_iy_i$) واحسب إحداثيي $G$.
+\QQ{3} احسب $V(x)$ ، $V(y)$ و $\operatorname{cov}(x;y)$ (دوّر إلى $10^{-4}$).
+\QQ{4} احسب معامل الارتباط الخطي $r$ (دوّر إلى $10^{-3}$). هل التعديل الخطي مبرَّر؟
+\QQ{5} عيّن معادلة مستقيم الانحدار $(D)$ لـ $y$ بدلالة $x$ بالمربعات الدنيا (دوّر $a$ و $b$ إلى $10^{-2}$).
+\QQ{6}
+\begin{sq}
+\qa قدّر رقم الأعمال إذا خصصت المؤسسة $150\,000$ دينار للإشهار.
+\qb ما مبلغ الإشهار اللازم لبلوغ رقم أعمال قدره $10$ ملايين دينار؟
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} السحابة ومستقيم الانحدار:
+\begin{SC}{xmin=0,xmax=13.5,ymin=2,ymax=9.5,xtick={0,2,...,12},ytick={2,...,9},xlabel={$x_i$},ylabel={$y_i$}}
+\addplot[ln,domain=0:13.3]{0.55*x+1.94};
+\addplot[pt] coordinates {(2,2.9)(3,3.8)(5,4.6)(6,5.4)(8,6.1)(12,8.6)};
+\addplot[gp] coordinates {(6,5.2333)};
+\node[below right] at (axis cs:6,5.2333){$G$};
+\node[cThm,above left] at (axis cs:13,9.1){$(D)$};
+\end{SC}
+\QQ{2} جدول الحساب ($n=6$):
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & \ar{\textbf{المجموع}}\\\hline
+$x_i$ & $2$ & $3$ & $5$ & $6$ & $8$ & $12$ & $36$\\\hline
+$y_i$ & $2,9$ & $3,8$ & $4,6$ & $5,4$ & $6,1$ & $8,6$ & $31,4$\\\hline
+$x_i^{2}$ & $4$ & $9$ & $25$ & $36$ & $64$ & $144$ & $282$\\\hline
+$x_iy_i$ & $5,8$ & $11,4$ & $23$ & $32,4$ & $48,8$ & $103,2$ & $224,6$\\\hline
+$y_i^{2}$ & $8,41$ & $14,44$ & $21,16$ & $29,16$ & $37,21$ & $73,96$ & $184,34$\\\hline
+\end{tabular}\end{LTR}\end{center}
+$\bar x=\dfrac{36}{6}=6$ \ و \ $\bar y=\dfrac{31{,}4}{6}\approx5{,}2333$ \ إذن \bx{G(6\,;\,5{,}2333)} \ تقريبا.
+
+\QQ{3}
+\[V(x)=\frac{282}{6}-6^{2}=47-36=\bx{11}\qquad V(y)=\frac{184{,}34}{6}-\left(\frac{31{,}4}{6}\right)^{2}\approx30{,}7233-27{,}3878=\bx{3{,}3356}\]
+\[\operatorname{cov}(x;y)=\frac{224{,}6}{6}-6\times\frac{31{,}4}{6}\approx37{,}4333-31{,}4=\bx{6{,}0333}\]
+\QQ{4} $\sigma(x)=\sqrt{11}\approx3{,}3166$ ، \ $\sigma(y)=\sqrt{3{,}3356}\approx1{,}8264$:
+\[r=\frac{6{,}0333}{3{,}3166\times1{,}8264}\approx\bx{0{,}996}\]
+$r$ قريب جدا من $1$: ارتباط خطي قوي وموجب (كلما زاد الإشهار زاد رقم الأعمال)، إذن التعديل الخطي \textbf{مبرَّر}.
+
+\QQ{5}
+\[a=\frac{\operatorname{cov}(x;y)}{V(x)}=\frac{6{,}0333}{11}\approx0{,}5485\approx0{,}55\qquad b=\bar y-a\bar x\approx5{,}2333-0{,}5485\times6\approx1{,}94\]
+إذن \bx{(D):\ y=0{,}55x+1{,}94}
+
+\QQ{6}\pa $150\,000$ دينار توافق $x=15$: \ $y=0{,}55\times15+1{,}94=8{,}25+1{,}94=10{,}19$. رقم الأعمال المقدَّر: \bxt{$10{,}19$ مليون دينار}
+\pb $0{,}55x+1{,}94=10$ \ أي \ $x=\dfrac{8{,}06}{0{,}55}\approx14{,}65$، أي مبلغ إشهار حوالي \bxt{$146\,500$ دينار}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مشتركو الإنترنت -- تغيير المبدأ على محور الزمن}
+يعطي الجدول عدد المشتركين $y_i$ (بالآلاف) في خدمة الإنترنت عبر الألياف البصرية في بلدية بين 2018 و 2024:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{السنة} & $2018$ & $2019$ & $2020$ & $2021$ & $2022$ & $2023$ & $2024$\\\hline
+\ar{المشتركون} $y_i$ & $3,2$ & $3,9$ & $4,5$ & $5,4$ & $6$ & $6,8$ & $7,5$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} نضع $x_i=a_i-2018$ حيث $a_i$ السنة. أعط قيم $x_i$ ثم مثّل سحابة النقط $M_i(x_i;y_i)$.
+\QQ{2} أنجز جدول الحساب، ثم احسب $V(x)$ و $\operatorname{cov}(x;y)$ (دوّر إلى $10^{-4}$).
+\QQ{3} عيّن معادلة مستقيم الانحدار بالمربعات الدنيا (دوّر $a$ و $b$ إلى $10^{-2}$).
+\QQ{4} احسب معامل الارتباط الخطي $r$ (دوّر إلى $10^{-3}$).
+\QQ{5}
+\begin{sq}
+\qa قدّر عدد المشتركين سنة 2027.
+\qb ابتداء من أي سنة يتجاوز عدد المشتركين $10$ آلاف؟
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} السنوات 2018، 2019، $\ldots$، 2024 توافق $x_i=0;1;2;3;4;5;6$:
+\begin{SC}{xmin=0,xmax=7.4,ymin=0,ymax=9,xtick={0,...,7},ytick={0,...,9},xlabel={$x_i$},ylabel={$y_i$}}
+\addplot[ln,domain=0:7.2]{0.72*x+3.16};
+\addplot[pt] coordinates {(0,3.2)(1,3.9)(2,4.5)(3,5.4)(4,6.0)(5,6.8)(6,7.5)};
+\addplot[gp] coordinates {(3,5.3286)};
+\node[above left] at (axis cs:3,5.3286){$G$};
+\end{SC}
+\QQ{2} جدول الحساب ($n=7$):
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & \ar{\textbf{المجموع}}\\\hline
+$x_i$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $21$\\\hline
+$y_i$ & $3,2$ & $3,9$ & $4,5$ & $5,4$ & $6$ & $6,8$ & $7,5$ & $37,3$\\\hline
+$x_i^{2}$ & $0$ & $1$ & $4$ & $9$ & $16$ & $25$ & $36$ & $91$\\\hline
+$x_iy_i$ & $0$ & $3,9$ & $9$ & $16,2$ & $24$ & $34$ & $45$ & $132,1$\\\hline
+$y_i^{2}$ & $10,24$ & $15,21$ & $20,25$ & $29,16$ & $36$ & $46,24$ & $56,25$ & $213,35$\\\hline
+\end{tabular}\end{LTR}\end{center}
+$\bar x=\dfrac{21}{7}=3$ ، \ $\bar y=\dfrac{37{,}3}{7}\approx5{,}3286$:
+\[V(x)=\frac{91}{7}-3^{2}=13-9=\bx{4}\qquad \operatorname{cov}(x;y)=\frac{132{,}1}{7}-3\times\frac{37{,}3}{7}\approx18{,}8714-15{,}9857=\bx{2{,}8857}\]
+\QQ{3} $a=\dfrac{2{,}8857}{4}\approx0{,}7214\approx0{,}72$ \ و \ $b=\bar y-a\bar x\approx5{,}3286-0{,}7214\times3\approx3{,}16$. \ إذن \bx{y=0{,}72x+3{,}16}
+
+\QQ{4} $V(y)=\dfrac{213{,}35}{7}-\bar y^{2}\approx30{,}4786-28{,}3937=2{,}0849$ ومنه $\sigma(y)\approx1{,}4439$، و $\sigma(x)=2$:
+\[r=\frac{2{,}8857}{2\times1{,}4439}\approx\bx{0{,}999}\]
+ارتباط خطي قوي جدا وموجب.
+\QQ{5}\pa سنة 2027 توافق $x=9$: \ $y=0{,}72\times9+3{,}16=9{,}64$، أي حوالي \bxt{$9\,640$ مشتركا}
+\pb $0{,}72x+3{,}16>10$ \ أي \ $x>\dfrac{6{,}84}{0{,}72}=9{,}5$، ومنه $x=10$، أي ابتداء من \bxt{سنة 2028}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{العرض والطلب -- سعر التوازن}
+في سوق الجملة، سجّل عدد من المنتجين الكمية المعروضة $y_i$ (بالأطنان) من البطاطا بدلالة سعر الكيلوغرام $x_i$ (بالدينار):
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{السعر} $x_i$ & $40$ & $45$ & $50$ & $55$ & $60$ & $65$\\\hline
+\ar{الكمية المعروضة} $y_i$ & $120$ & $131$ & $139$ & $152$ & $160$ & $171$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ (المبدأ $(35;110)$).
+\QQ{2} أنجز جدول الحساب ثم احسب $\bar x$ ، $\bar y$ ، $V(x)$ و $\operatorname{cov}(x;y)$ (دوّر إلى $10^{-4}$).
+\QQ{3} بيّن أن معادلة مستقيم الانحدار $(D_1)$ (مستقيم العرض) هي $y=2{,}03x+39$ (معاملات مدوّرة إلى $10^{-2}$).
+\QQ{4} احسب معامل الارتباط الخطي $r$ (دوّر إلى $10^{-3}$).
+\QQ{5} دراسة أخرى بيّنت أن الكمية المطلوبة تعطى بالمستقيم $(D_2):\ y=-1{,}97x+279$.
+\begin{sq}
+\qa عيّن سعر التوازن (السعر الذي تتساوى عنده الكميتان المعروضة والمطلوبة) والكمية الموافقة.
+\qb إذا حُدّد السعر بـ $65$ DA، احسب الفائض في العرض.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} السحابة، مستقيم العرض $(D_1)$ بالأحمر ومستقيم الطلب $(D_2)$ بالأخضر المتقطع، ونقطة التوازن $E$:
+\begin{SC}{xmin=35,xmax=70,ymin=110,ymax=185,xtick={35,40,...,70},ytick={110,120,...,180},xlabel={$x_i$},ylabel={$y_i$}}
+\addplot[ln,domain=35:70]{2.03*x+39};
+\addplot[lm,domain=35:70]{-1.97*x+279};
+\addplot[pt] coordinates {(40,120)(45,131)(50,139)(55,152)(60,160)(65,171)};
+\addplot[gp] coordinates {(52.5,145.5)};
+\node[above left] at (axis cs:52.5,145.5){$G$};
+\addplot[gq] coordinates {(60,160.8)};
+\node[above right] at (axis cs:60,161){$E$};
+\node[cThm,left] at (axis cs:64,176){$(D_1)$};
+\node[cRem,below left] at (axis cs:69,141){$(D_2)$};
+\end{SC}
+\QQ{2} جدول الحساب ($n=6$):
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & \ar{\textbf{المجموع}}\\\hline
+$x_i$ & $40$ & $45$ & $50$ & $55$ & $60$ & $65$ & $315$\\\hline
+$y_i$ & $120$ & $131$ & $139$ & $152$ & $160$ & $171$ & $873$\\\hline
+$x_i^{2}$ & $1600$ & $2025$ & $2500$ & $3025$ & $3600$ & $4225$ & $16975$\\\hline
+$x_iy_i$ & $4800$ & $5895$ & $6950$ & $8360$ & $9600$ & $11115$ & $46720$\\\hline
+$y_i^{2}$ & $14400$ & $17161$ & $19321$ & $23104$ & $25600$ & $29241$ & $128827$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\[\bar x=\frac{315}{6}=52{,}5\qquad \bar y=\frac{873}{6}=145{,}5\]
+\[V(x)=\frac{16975}{6}-52{,}5^{2}\approx2829{,}1667-2756{,}25=\bx{72{,}9167}\]
+\[\operatorname{cov}(x;y)=\frac{46720}{6}-52{,}5\times145{,}5\approx7786{,}6667-7638{,}75=\bx{147{,}9167}\]
+\QQ{3} $a=\dfrac{147{,}9167}{72{,}9167}\approx2{,}0286\approx2{,}03$ \ و \ $b=\bar y-a\bar x=145{,}5-2{,}0286\times52{,}5\approx145{,}5-106{,}5=39$.
+
+إذن \bx{(D_1):\ y=2{,}03x+39}
+
+\QQ{4} $V(y)=\dfrac{128827}{6}-145{,}5^{2}\approx21471{,}1667-21170{,}25=300{,}9167$، ومنه:
+\[r=\frac{147{,}9167}{\sqrt{72{,}9167}\times\sqrt{300{,}9167}}\approx\frac{147{,}9167}{8{,}5391\times17{,}3470}\approx\bx{0{,}999}\]
+ارتباط خطي قوي وموجب: كلما ارتفع السعر زاد العرض.
+
+\QQ{5}\pa عند التوازن: $2{,}03x+39=-1{,}97x+279$ \ أي \ $4x=240$ \ أي \ \bx{x=60\ \text{DA}}.
+
+والكمية: $y=2{,}03\times60+39=121{,}8+39=160{,}8$ \ (وفي $(D_2)$: $-118{,}2+279=160{,}8$ \ok)، أي \bxt{$160{,}8$ طنا}
+
+\pb لما $x=65$: العرض $2{,}03\times65+39=170{,}95$ والطلب $-1{,}97\times65+279=150{,}95$. الفائض في العرض: $170{,}95-150{,}95=$ \bxt{$20$ طنا}
+\end{hal}
+
+\section{المقارنة بين طريقة ماير وطريقة المربعات الدنيا}
+% ------------------------------------------------------------------
+\begin{tamrin}{أي التعديلين أدق؟}
+يمثل الجدول عدد الزبائن الجدد $y_i$ (بالمئات) لوكالة تأمين خلال ثمانية ثلاثيات متتالية، حيث $x_i$ رتبة الثلاثي:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{الثلاثي} $x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$\\\hline
+\ar{الزبائن} $y_i$ & $5$ & $7$ & $6$ & $10$ & $11$ & $12$ & $15$ & $14$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ واحسب إحداثيي $G$.
+\QQ{2} عيّن معادلة مستقيم ماير $(\Delta_1)$ (المجموعة الأولى: النقط الأربع الأولى).
+\QQ{3} عيّن معادلة مستقيم الانحدار $(\Delta_2)$ بالمربعات الدنيا (دوّر $a$ و $b$ إلى $10^{-2}$)، ثم احسب $r$.
+\QQ{4} نسمي $\hat y_i$ القيمة المقدَّرة بأحد المستقيمين، ونضع $S=\sum\left(y_i-\hat y_i\right)^{2}$ (مجموع مربعات الانحرافات).
+\begin{sq}
+\qa احسب $S_1$ من أجل $(\Delta_1)$ و $S_2$ من أجل $(\Delta_2)$.
+\qb أي التعديلين أدق؟ علّل.
+\end{sq}
+\QQ{5} قدّر عدد الزبائن الجدد في الثلاثي العاشر بكل طريقة، وقارن.
+\end{tamrin}
+\begin{hal}
+\QQ{1} السحابة: $(\Delta_1)$ بالأخضر المتقطع و $(\Delta_2)$ بالأحمر:
+\begin{SC}{legend pos=north west,legend style={font=\footnotesize},xmin=0,xmax=9.3,ymin=0,ymax=17,xtick={0,...,9},ytick={0,2,...,16},xlabel={$x_i$},ylabel={$y_i$}}
+\addplot[ln,domain=0:9.2]{1.45*x+3.46};
+\addplot[lm,domain=0:9.2]{1.5*x+3.25};
+\addplot[pt,forget plot] coordinates {(1,5)(2,7)(3,6)(4,10)(5,11)(6,12)(7,15)(8,14)};
+\addplot[gq,forget plot] coordinates {(2.5,7)(6.5,13)};
+\addplot[gp,forget plot] coordinates {(4.5,10)};
+\node[above left] at (axis cs:4.5,10){$G$};
+\node[below right] at (axis cs:2.5,7){$G_1$};
+\node[below right] at (axis cs:6.5,13){$G_2$};
+\legend{$(\Delta_2)$,$(\Delta_1)$}
+\end{SC}
+$\bar x=\dfrac{36}{8}=4{,}5$ \ و \ $\bar y=\dfrac{80}{8}=10$ \ إذن \bx{G(4{,}5\,;\,10)}
+
+\QQ{2}
+\[G_1\left(\frac{1+2+3+4}{4}\,;\,\frac{5+7+6+10}{4}\right)=G_1(2{,}5\,;\,7)\]\[G_2\left(\frac{5+6+7+8}{4}\,;\,\frac{11+12+15+14}{4}\right)=G_2(6{,}5\,;\,13)\]
+\[a_1=\frac{13-7}{6{,}5-2{,}5}=\frac{6}{4}=1{,}5\qquad b_1=7-1{,}5\times2{,}5=3{,}25\qquad\text{إذن}\qquad\bx{(\Delta_1):\ y=1{,}5x+3{,}25}\]
+\QQ{3} جدول الحساب:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$ & \ar{\textbf{المجموع}}\\\hline
+$x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$ & $36$\\\hline
+$y_i$ & $5$ & $7$ & $6$ & $10$ & $11$ & $12$ & $15$ & $14$ & $80$\\\hline
+$x_i^{2}$ & $1$ & $4$ & $9$ & $16$ & $25$ & $36$ & $49$ & $64$ & $204$\\\hline
+$x_iy_i$ & $5$ & $14$ & $18$ & $40$ & $55$ & $72$ & $105$ & $112$ & $421$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\[V(x)=\frac{204}{8}-4{,}5^{2}=25{,}5-20{,}25=5{,}25\qquad \operatorname{cov}(x;y)=\frac{421}{8}-4{,}5\times10=52{,}625-45=7{,}625\]
+\[a_2=\frac{7{,}625}{5{,}25}\approx1{,}4524\approx1{,}45\qquad b_2=10-1{,}4524\times4{,}5\approx3{,}46\]
+إذن \bx{(\Delta_2):\ y=1{,}45x+3{,}46}
+ولدينا $\sum y_i^{2}=896$ ومنه $V(y)=\dfrac{896}{8}-10^{2}=12$، إذن:
+\[r=\frac{7{,}625}{\sqrt{5{,}25}\times\sqrt{12}}\approx\frac{7{,}625}{2{,}2913\times3{,}4641}\approx\bx{0{,}961}\]
+\QQ{4}\pa \textbf{مستقيم ماير} $\hat y_i=1{,}5x_i+3{,}25$:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$\\\hline
+$y_i$ & $5$ & $7$ & $6$ & $10$ & $11$ & $12$ & $15$ & $14$\\\hline
+$\hat y_i$ & $4,75$ & $6,25$ & $7,75$ & $9,25$ & $10,75$ & $12,25$ & $13,75$ & $15,25$\\\hline
+$y_i-\hat y_i$ & $0,25$ & $0,75$ & $-1,75$ & $0,75$ & $0,25$ & $-0,25$ & $1,25$ & $-1,25$\\\hline
+$(y_i-\hat y_i)^{2}$ & $0,0625$ & $0,5625$ & $3,0625$ & $0,5625$ & $0,0625$ & $0,0625$ & $1,5625$ & $1,5625$\\\hline
+\end{tabular}\end{LTR}\end{center}
+$S_1=0{,}0625+0{,}5625+3{,}0625+0{,}5625+0{,}0625+0{,}0625+1{,}5625+1{,}5625=\bx{S_1=7{,}5}$
+
+\textbf{مستقيم المربعات الدنيا} $\hat y_i=1{,}45x_i+3{,}46$:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$\\\hline
+$y_i$ & $5$ & $7$ & $6$ & $10$ & $11$ & $12$ & $15$ & $14$\\\hline
+$\hat y_i$ & $4,91$ & $6,36$ & $7,81$ & $9,26$ & $10,71$ & $12,16$ & $13,61$ & $15,06$\\\hline
+$y_i-\hat y_i$ & $0,09$ & $0,64$ & $-1,81$ & $0,74$ & $0,29$ & $-0,16$ & $1,39$ & $-1,06$\\\hline
+$(y_i-\hat y_i)^{2}$ & $0,0081$ & $0,4096$ & $3,2761$ & $0,5476$ & $0,0841$ & $0,0256$ & $1,9321$ & $1,1236$\\\hline
+\end{tabular}\end{LTR}\end{center}
+بجمع السطر الأخير: \bx{S_2\approx7{,}41}
+
+\pb $S_2<S_1$: مستقيم المربعات الدنيا \textbf{أدق}، وهذا متوقع لأنه بالتعريف المستقيم الذي يجعل مجموع مربعات الانحرافات $\sum\left(y_i-\hat y_i\right)^{2}$ أصغر ما يمكن. أما طريقة ماير فهي أسرع حسابا لكنها تقريبية. (كلا المستقيمين يشمل $G$ تقريبا: $1{,}45\times4{,}5+3{,}46=9{,}985\approx10$.)
+
+\QQ{5} الثلاثي العاشر $x=10$: \ بطريقة ماير: $1{,}5\times10+3{,}25=18{,}25$ أي حوالي \bxt{$1825$ زبونا}، \ وبالمربعات الدنيا: $1{,}45\times10+3{,}46=17{,}96$ أي حوالي \bxt{$1796$ زبونا}.
+الفرق صغير ($29$ زبونا) لأن المستقيمين متقاربان جدا.
+\end{hal}
+
+\section{التعديل بتغيير المتغير $z=\ln y$}
+% ------------------------------------------------------------------
+\begin{tamrin}{طلبيات متجر إلكتروني -- نمو أسي}
+يعطي الجدول عدد الطلبيات الشهرية $y_i$ لمتجر إلكتروني خلال الأشهر الستة الأولى من نشاطه ($x_i$ رتبة الشهر):
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{الشهر} $x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\\hline
+\ar{الطلبيات} $y_i$ & $120$ & $165$ & $230$ & $310$ & $430$ & $590$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$. نعطي معامل الارتباط الخطي بين $x$ و $y$: $r(x;y)\approx0{,}975$. هل شكل السحابة يوحي بتعديل خطي؟
+\QQ{2} نضع $z=\ln y$. انقل ثم أتمم الجدول بقيم $z_i$ مدوّرة إلى $10^{-2}$.
+\QQ{3}
+\begin{sq}
+\qa مثّل سحابة النقط $N_i(x_i;z_i)$.
+\qb باستعمال جدول حساب، عيّن معادلة مستقيم انحدار $z$ بدلالة $x$ بالمربعات الدنيا (دوّر $a$ و $b$ إلى $10^{-3}$).
+\qc احسب معامل الارتباط الخطي $r(x;z)$ (دوّر إلى $10^{-4}$) وقارنه بـ $r(x;y)$.
+\end{sq}
+\QQ{4} استنتج أن $y\approx k\,q^{x}$ حيث يطلب تعيين $k$ (إلى $10^{-2}$) و $q$ (إلى $10^{-3}$)، ثم فسّر $q$.
+\QQ{5}
+\begin{sq}
+\qa قدّر عدد الطلبيات في الشهر التاسع.
+\qb ابتداء من أي شهر يتجاوز عدد الطلبيات $2000$ طلبية؟
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} النقط (بالأزرق) والمنحنى الأسي الذي سنحصل عليه في السؤال 4 (بالأحمر):
+\begin{SC}{xmin=0,xmax=7.4,ymin=0,ymax=700,xtick={0,...,7},ytick={0,100,...,700},xlabel={$x_i$},ylabel={$y_i$}}
+\addplot[thick,cThm,domain=0:7,samples=60]{87.97*1.373^x};
+\addplot[pt] coordinates {(1,120)(2,165)(3,230)(4,310)(5,430)(6,590)};
+\end{SC}
+رغم أن $r(x;y)\approx0{,}975$، فالنقط \textbf{ليست على استقامة}: الزيادة من شهر لآخر تكبر ($45$ ، $65$ ، $80$ ، $120$ ، $160$)، والسحابة منحنية (تقعر نحو الأعلى). إذن التعديل الخطي \textbf{غير ملائم}، ويوحي الشكل بنمو أسي.
+
+\QQ{2} $z_1=\ln120\approx4{,}79$ ، \ $z_2=\ln165\approx5{,}11$ ، $\ldots$
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\\hline
+$y_i$ & $120$ & $165$ & $230$ & $310$ & $430$ & $590$\\\hline
+$z_i=\ln y_i$ & $4,79$ & $5,11$ & $5,44$ & $5,74$ & $6,06$ & $6,38$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{3}\pa السحابة $N_i(x_i;z_i)$ ومستقيم الانحدار:
+\begin{SC}{height=5.6cm,xmin=0,xmax=7.4,ymin=4.4,ymax=6.8,xtick={0,...,7},ytick={4.4,4.8,...,6.8},xlabel={$x_i$},ylabel={$z_i$}}
+\addplot[ln,domain=0:7.2]{0.317*x+4.477};
+\addplot[pt] coordinates {(1,4.79)(2,5.11)(3,5.44)(4,5.74)(5,6.06)(6,6.38)};
+\addplot[gp] coordinates {(3.5,5.5867)};
+\node[above left] at (axis cs:3.5,5.5867){$G'$};
+\end{SC}
+النقط $N_i$ تكاد تكون على استقامة واحدة.
+
+\pb جدول الحساب (السطر الثاني هو $z_i$):
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & \ar{\textbf{المجموع}}\\\hline
+$x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $21$\\\hline
+$y_i$ & $4,79$ & $5,11$ & $5,44$ & $5,74$ & $6,06$ & $6,38$ & $33,52$\\\hline
+$x_i^{2}$ & $1$ & $4$ & $9$ & $16$ & $25$ & $36$ & $91$\\\hline
+$x_iy_i$ & $4,79$ & $10,22$ & $16,32$ & $22,96$ & $30,3$ & $38,28$ & $122,87$\\\hline
+$y_i^{2}$ & $22,9441$ & $26,1121$ & $29,5936$ & $32,9476$ & $36,7236$ & $40,7044$ & $189,0254$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\[\bar x=\frac{21}{6}=3{,}5\qquad \bar z=\frac{33{,}52}{6}\approx5{,}5867\qquad V(x)=\frac{91}{6}-3{,}5^{2}\approx15{,}1667-12{,}25=2{,}9167\]
+\[\operatorname{cov}(x;z)=\frac{122{,}87}{6}-3{,}5\times5{,}5867\approx20{,}4783-19{,}5533=0{,}925\]
+\[a=\frac{0{,}925}{2{,}9167}\approx0{,}317\qquad b=\bar z-a\bar x\approx5{,}5867-0{,}3171\times3{,}5\approx4{,}477\]
+إذن \bx{z=0{,}317x+4{,}477}
+
+\pc $V(z)=\dfrac{189{,}0254}{6}-\bar z^{2}\approx31{,}5042-31{,}2108=0{,}2934$، ومنه $\sigma(z)\approx0{,}5417$ و $\sigma(x)\approx1{,}7078$:
+\[r(x;z)=\frac{0{,}925}{1{,}7078\times0{,}5417}\approx\bx{0{,}9999}\]
+$r(x;z)$ أقرب إلى $1$ من $r(x;y)\approx0{,}975$: التعديل الخطي لـ $z$ بدلالة $x$ (أي التعديل الأسي لـ $y$) \textbf{أفضل}.
+
+\QQ{4} $z=\ln y$ يعني $y=e^{z}$، ومنه:
+\[y=e^{0{,}317x+4{,}477}=e^{4{,}477}\times\left(e^{0{,}317}\right)^{x}\qquad\text{مع}\qquad e^{4{,}477}\approx87{,}97\quad\text{و}\quad e^{0{,}317}\approx1{,}373\]
+إذن \bx{y\approx87{,}97\times(1{,}373)^{x}}. \ \textbf{التفسير:} $q\approx1{,}373=1+0{,}373$: يزداد عدد الطلبيات كل شهر بنسبة \bx{37{,}3\,\%} تقريبا.
+
+\QQ{5}\pa $x=9$: \ $z=0{,}317\times9+4{,}477=7{,}33$ ومنه $y=e^{7{,}33}\approx1525$. أي حوالي \bxt{$1525$ طلبية}
+\pb $y>2000$ \ يكافئ \ $z>\ln2000$ (لأن $\ln$ متزايدة تماما) \ أي \ $0{,}317x+4{,}477>7{,}601$ \ أي \ $x>\dfrac{3{,}124}{0{,}317}\approx9{,}85$.
+
+إذن ابتداء من \bxt{الشهر العاشر}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{سكان مدينة جديدة -- ماير بعد تغيير المتغير}
+يعطي الجدول عدد سكان $y_i$ (بالآلاف) لمدينة جديدة بين 2017 و 2024:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{السنة} & $2017$ & $2018$ & $2019$ & $2020$ & $2021$ & $2022$ & $2023$ & $2024$\\\hline
+\ar{الرتبة} $x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$\\\hline
+\ar{السكان} $y_i$ & $50$ & $53,1$ & $56$ & $59,4$ & $63$ & $66,6$ & $70,6$ & $74,9$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} نضع $z=\ln y$. أعط قيم $z_i$ مدوّرة إلى $10^{-2}$.
+\QQ{2} مثّل سحابة النقط $N_i(x_i;z_i)$. هل يبرّر شكلها تعديلا خطيا؟
+\QQ{3} باستعمال طريقة ماير (النقط الأربع الأولى ثم الأربع الأخيرة)، بيّن أن معادلة المستقيم المعدِّل هي \mbox{$z=0{,}058x+3{,}852$} (معاملات مدوّرة إلى $10^{-3}$).
+\QQ{4} استنتج عبارة $y$ بدلالة $x$ على الشكل $y=k\,q^{x}$ ، ثم استنتج نسبة النمو السنوي للسكان.
+\QQ{5}
+\begin{sq}
+\qa قدّر عدد سكان المدينة سنة 2028.
+\qb في أي سنة يتجاوز عدد السكان $100$ ألف نسمة؟
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} $z_i=\ln y_i$ مدوّرة إلى $10^{-2}$:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$\\\hline
+$y_i$ & $50$ & $53,1$ & $56$ & $59,4$ & $63$ & $66,6$ & $70,6$ & $74,9$\\\hline
+$z_i=\ln y_i$ & $3,91$ & $3,97$ & $4,03$ & $4,08$ & $4,14$ & $4,2$ & $4,26$ & $4,32$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{2} السحابة $N_i(x_i;z_i)$ مع مستقيم ماير:
+\begin{SC}{height=5.8cm,xmin=0,xmax=9.3,ymin=3.85,ymax=4.4,xtick={0,...,9},ytick={3.85,3.95,...,4.35},yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=2,/pgf/number format/use comma},xlabel={$x_i$},ylabel={$z_i$}}
+\addplot[ln,domain=0:9.2]{0.058*x+3.852};
+\addplot[pt] coordinates {(1,3.91)(2,3.97)(3,4.03)(4,4.08)(5,4.14)(6,4.20)(7,4.26)(8,4.32)};
+\addplot[gq] coordinates {(2.5,3.9975)(6.5,4.23)};
+\node[below right] at (axis cs:2.5,3.9975){$G_1$};
+\node[below right] at (axis cs:6.5,4.23){$G_2$};
+\end{SC}
+النقط $N_i$ تقريبا على استقامة واحدة ($z$ يزداد بحوالي $0{,}06$ كل سنة)، إذن التعديل الخطي لـ $z$ بدلالة $x$ مبرَّر.
+
+\QQ{3} \textbf{المجموعة الأولى} ($x_i=1;2;3;4$):
+\[x_{G_1}=\frac{1+2+3+4}{4}=2{,}5\qquad z_{G_1}=\frac{3{,}91+3{,}97+4{,}03+4{,}08}{4}=\frac{15{,}99}{4}=3{,}9975\]
+\textbf{المجموعة الثانية} ($x_i=5;6;7;8$):
+\[x_{G_2}=\frac{5+6+7+8}{4}=6{,}5\qquad z_{G_2}=\frac{4{,}14+4{,}20+4{,}26+4{,}32}{4}=\frac{16{,}92}{4}=4{,}23\]
+\[a=\frac{4{,}23-3{,}9975}{6{,}5-2{,}5}=\frac{0{,}2325}{4}=0{,}058125\approx0{,}058\qquad b=3{,}9975-0{,}058125\times2{,}5\approx3{,}852\]
+إذن \bx{z=0{,}058x+3{,}852}. \ (تحقق: $\bar z=\dfrac{32{,}91}{8}\approx4{,}114$ و $0{,}058125\times4{,}5+3{,}8522\approx4{,}114$ \ok)
+
+\QQ{4} $y=e^{z}=e^{3{,}852}\times\left(e^{0{,}058}\right)^{x}$ \ مع \ $e^{3{,}852}\approx47{,}09$ و $e^{0{,}058}\approx1{,}06$. إذن \bx{y\approx47{,}09\times(1{,}06)^{x}}
+
+$q\approx1{,}06=1+0{,}06$: يزداد عدد السكان كل سنة بنسبة \bx{6\,\%} تقريبا.
+
+\QQ{5}\pa سنة 2028 توافق $x=2028-2016=12$: \ $z=0{,}058\times12+3{,}852=4{,}548$ ومنه $y=e^{4{,}548}\approx94{,}44$، أي حوالي \bxt{$94\,440$ نسمة}
+\pb $y>100$ \ يكافئ \ $z>\ln100\approx4{,}605$ \ أي \ $0{,}058x>0{,}753$ \ أي \ $x>12{,}98$ تقريبا، ومنه $x=13$، أي \bxt{سنة 2029}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{اهتلاك سيارة -- نقصان أسي}
+يعطي الجدول قيمة سيارة $y_i$ (بملايين الدنانير) بدلالة عمرها $x_i$ (بالسنوات) في سوق السيارات المستعملة:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{العمر} $x_i$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\\hline
+\ar{القيمة} $y_i$ & $2,4$ & $2,04$ & $1,75$ & $1,49$ & $1,27$ & $1,08$ & $0,93$\\\hline
+\end{tabular}\end{LTR}\end{center}
+نعطي معامل الارتباط الخطي بين $x$ و $y$: $r(x;y)\approx-0{,}9905$.
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ وصف شكلها.
+\QQ{2} نضع $z=\ln y$. أتمم جدول القيم بـ $z_i$ مدوّرة إلى $10^{-2}$، ثم أنجز جدول الحساب.
+\QQ{3} احسب $r(x;z)$ (دوّر إلى $10^{-4}$). أي التعديلين أنسب: $y$ بدلالة $x$ أم $z$ بدلالة $x$؟
+\QQ{4} عيّن معادلة مستقيم انحدار $z$ بدلالة $x$ بالمربعات الدنيا (دوّر $a$ و $b$ إلى $10^{-3}$).
+\QQ{5} استنتج أن $y\approx2{,}40\times(0{,}854)^{x}$، ثم استنتج نسبة الاهتلاك السنوي.
+\QQ{6}
+\begin{sq}
+\qa قدّر قيمة السيارة بعد $8$ سنوات.
+\qb ابتداء من أي عمر تصبح قيمة السيارة أقل من نصف قيمتها وهي جديدة ($2{,}40$ مليون دينار)؟
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} السحابة والمنحنى الأسي المعدِّل (السؤال 5):
+\begin{SC}{height=5.8cm,xmin=0,xmax=8.4,ymin=0,ymax=2.6,xtick={0,...,8},ytick={0,0.5,...,2.5},xlabel={$x_i$},ylabel={$y_i$}}
+\addplot[thick,cThm,domain=0:8.2,samples=60]{2.40*0.854^x};
+\addplot[pt] coordinates {(0,2.40)(1,2.04)(2,1.75)(3,1.49)(4,1.27)(5,1.08)(6,0.93)};
+\end{SC}
+القيمة تتناقص، لكن النقصان السنوي يصغر ($0{,}36$ ، $0{,}29$ ، $0{,}26$ ، $0{,}22$ ، $0{,}19$ ، $0{,}15$): السحابة منحنية وليست على استقامة.
+
+\QQ{2} قيم $z_i$:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\\hline
+$y_i$ & $2,4$ & $2,04$ & $1,75$ & $1,49$ & $1,27$ & $1,08$ & $0,93$\\\hline
+$z_i=\ln y_i$ & $0,88$ & $0,71$ & $0,56$ & $0,4$ & $0,24$ & $0,08$ & $-0,07$\\\hline
+\end{tabular}\end{LTR}\end{center}
+جدول الحساب (السطر الثاني هو $z_i$):
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & \ar{\textbf{المجموع}}\\\hline
+$x_i$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $21$\\\hline
+$y_i$ & $0,88$ & $0,71$ & $0,56$ & $0,4$ & $0,24$ & $0,08$ & $-0,07$ & $2,8$\\\hline
+$x_i^{2}$ & $0$ & $1$ & $4$ & $9$ & $16$ & $25$ & $36$ & $91$\\\hline
+$x_iy_i$ & $0$ & $0,71$ & $1,12$ & $1,2$ & $0,96$ & $0,4$ & $-0,42$ & $3,97$\\\hline
+$y_i^{2}$ & $0,7744$ & $0,5041$ & $0,3136$ & $0,16$ & $0,0576$ & $0,0064$ & $0,0049$ & $1,821$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{3} $\bar x=\dfrac{21}{7}=3$ ، \ $\bar z=\dfrac{2{,}8}{7}=0{,}4$ ، \ $V(x)=\dfrac{91}{7}-9=4$:
+\[\operatorname{cov}(x;z)=\frac{3{,}97}{7}-3\times0{,}4\approx0{,}5671-1{,}2=-0{,}6329\]\[V(z)=\frac{1{,}821}{7}-0{,}4^{2}\approx0{,}2601-0{,}16=0{,}1001\]
+\[r(x;z)=\frac{-0{,}6329}{2\times\sqrt{0{,}1001}}\approx\frac{-0{,}6329}{2\times0{,}3165}\approx\bx{-0{,}9999}\]
+$|r(x;z)|\approx0{,}9999>|r(x;y)|\approx0{,}9905$: تعديل \textbf{$z$ بدلالة $x$} أنسب.
+
+\QQ{4} $a=\dfrac{-0{,}6329}{4}\approx-0{,}158$ \ و \ $b=\bar z-a\bar x\approx0{,}4+0{,}1582\times3\approx0{,}875$. \ إذن \bx{z=-0{,}158x+0{,}875}
+
+\QQ{5} $y=e^{z}=e^{0{,}875}\times\left(e^{-0{,}158}\right)^{x}$ \ مع \ $e^{0{,}875}\approx2{,}40$ و $e^{-0{,}158}\approx0{,}854$. إذن \bx{y\approx2{,}40\times(0{,}854)^{x}}
+
+$q\approx0{,}854=1-0{,}146$: تفقد السيارة كل سنة حوالي \bx{14{,}6\,\%} من قيمتها.
+
+\QQ{6}\pa $x=8$: \ $z=-0{,}158\times8+0{,}875=-0{,}389$ ومنه $y=e^{-0{,}389}\approx0{,}678$، أي حوالي \bxt{$678\,000$ دينار}
+\pb $y<1{,}20$ \ يكافئ \ $z<\ln1{,}2\approx0{,}182$ \ أي \ $-0{,}158x<-0{,}693$ \ أي \ $x>\dfrac{0{,}693}{0{,}158}\approx4{,}39$.
+
+إذن ابتداء من \bxt{عمر $5$ سنوات} تصبح قيمتها أقل من نصف قيمتها الأصلية (يتوافق مع الجدول: $1{,}27$ عند 4 سنوات و $1{,}08$ عند 5 سنوات).
+\end{hal}
+
+\section{تمرين تقييمي}
+% ------------------------------------------------------------------
+\begin{tamrin}{اختيار من متعدد وصحيح أم خاطئ}
+نعتبر السلسلة الإحصائية ذات المتغيرين:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $1$ & $2$ & $3$ & $4$ & $5$\\\hline
+$y_i$ & $2$ & $4$ & $5$ & $7$ & $7$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\textbf{الجزء الأول:} اختر الجواب الصحيح الوحيد في كل حالة.
+\QQ{1} النقطة المتوسطة $G$ هي: \ABC{$G(3;5)$}{$G(5;3)$}{$G(2{,}5;5)$}
+\QQ{2} التباين $V(x)$ يساوي: \ABC{$2{,}5$}{$2$}{$11$}
+\QQ{3} التغاير $\operatorname{cov}(x;y)$ يساوي: \ABC{$17{,}6$}{$2{,}6$}{$3{,}6$}
+\QQ{4} مستقيم الانحدار بالمربعات الدنيا هو: \ABC{$y=1{,}3x+1{,}1$}{$y=1{,}1x+1{,}3$}{$y=1{,}3x+5$}
+
+\textbf{الجزء الثاني:} أجب بصحيح أو خاطئ مع التعليل.
+\QQ{5} معامل الارتباط الخطي $r\approx0{,}97$، فالارتباط الخطي قوي.
+\QQ{6} القيمة المقدَّرة لـ $y$ من أجل $x=8$ بمستقيم المربعات الدنيا هي $12$.
+\QQ{7} إذا ضربنا كل القيم $y_i$ في $10$ فإن $r$ يصبح $9{,}7$ تقريبا.
+\QQ{8} مستقيم الانحدار بالمربعات الدنيا يشمل دائما النقطة المتوسطة $G$.
+\end{tamrin}
+\begin{hal}
+$\sum x_i=15$ ، $\sum y_i=25$ ، $\sum x_i^{2}=55$ ، $\sum x_iy_i=2+8+15+28+35=88$ ، $\sum y_i^{2}=4+16+25+49+49=143$.
+
+\QQ{1} $\bar x=\dfrac{15}{5}=3$ و $\bar y=\dfrac{25}{5}=5$: الجواب \bxt{(أ) $G(3;5)$}
+\QQ{2} $V(x)=\dfrac{55}{5}-3^{2}=11-9=2$: الجواب \bxt{(ب)}. (العدد $11$ هو $\frac1n\sum x_i^{2}$ فقط.)
+\QQ{3} $\operatorname{cov}(x;y)=\dfrac{88}{5}-3\times5=17{,}6-15=2{,}6$: الجواب \bxt{(ب)}
+\QQ{4} $a=\dfrac{2{,}6}{2}=1{,}3$ و $b=5-1{,}3\times3=1{,}1$: الجواب \bxt{(أ) $y=1{,}3x+1{,}1$}
+\QQ{5} $V(y)=\dfrac{143}{5}-25=3{,}6$، $r=\dfrac{2{,}6}{\sqrt2\times\sqrt{3{,}6}}=\dfrac{2{,}6}{\sqrt{7{,}2}}\approx0{,}969$: \bxt{صحيح}، $|r|$ قريب من $1$.
+\QQ{6} $1{,}3\times8+1{,}1=11{,}5\neq12$: \bxt{خاطئ}
+\QQ{7} \bxt{خاطئ}: دائما $-1\le r\le1$. ضرب $y_i$ في $10$ يضرب $\operatorname{cov}(x;y)$ في $10$ ويضرب $\sigma(y)$ في $10$، فيبقى $r$ دون تغيير ($r\approx0{,}969$).
+\QQ{8} \bxt{صحيح}: $b=\bar y-a\bar x$ يعني $\bar y=a\bar x+b$، أي إحداثيا $G$ يحققان المعادلة. هنا: $1{,}3\times3+1{,}1=5$ \ok
+\end{hal}
+\end{document}
