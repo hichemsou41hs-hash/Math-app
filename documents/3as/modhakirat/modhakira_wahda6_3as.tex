@@ -1,0 +1,461 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\usepackage{longtable}
+\setlength{\LTpre}{4pt}\setlength{\LTpost}{0pt}
+\newcommand{\Phase}[1]{\textbf{#1}}
+\newcommand{\Fld}[2]{\textbf{#1:}\ #2}
+% رأس المذكرة على نمط النموذج: إطار بعنوان «مذكرة رقم»، معلومات الحصة، ثم إطار الكفاءات
+\newcommand{\ModhHead}[9]{%
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=4mm,boxrule=1pt,top=14pt,bottom=6pt,left=8pt,right=8pt,
+ overlay={\node[fill=cThm!85!black,text=white,rounded corners=3mm,inner xsep=14pt,inner ysep=4pt,font=\large\bfseries] at ([yshift=0pt]frame.north){\ar{مذكرة رقم #1}};},
+ before upper={\selectlanguage{arabic}}]
+\begin{tabular}{@{}p{0.4\linewidth}p{0.55\linewidth}@{}}
+\Fld{المستوى}{#2} & \Fld{الثانوية}{\dotfill}\\[3pt]
+\Fld{المادة}{رياضيات} & \Fld{ميدان التعلم}{#3}\\[3pt]
+\Fld{المدة}{#5} & \Fld{الوحدة التعلمية}{#4}\\[3pt]
+\Fld{الأستاذ}{\dotfill} & \Fld{المحتوى المعرفي}{#6}\\
+\end{tabular}
+\end{tcolorbox}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=3mm,boxrule=0.8pt,sidebyside,sidebyside align=top,lefthand ratio=0.5,
+ segmentation style={dashed,cThm!60},before upper={\selectlanguage{arabic}},before lower={\selectlanguage{arabic}}]
+\textbf{الكفاءات المستهدفة:}\par #8
+\tcblower
+\textbf{الكفاءات القبلية:}\par #7
+\end{tcolorbox}
+\end{LTR}
+\par\smallskip\textbf{الوسائل:} #9\par\smallskip}
+\newenvironment{Sayr}{%
+\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\hline\endfoot}{\end{longtable}\end{LTR}}
+% سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
+\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
+
+\newcommand{\Lab}[2]{\foreignlanguage{english}{\tcbox[on line,colback=#1,colframe=#1,boxrule=0pt,arc=2pt,boxsep=1pt,left=5pt,right=5pt,top=1pt,bottom=1pt]{\ar{\textcolor{white}{\textbf{#2}}}}}}
+\newcommand{\Num}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[fill=cDef,text=white,inner sep=2pt,font=\footnotesize\bfseries](c){#1};}}
+\newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
+\newenvironment{Kad}[1]{\par\smallskip\Lab{#1}}{\par}
+\SetHeader{\small\bfseries\color{cSec}مذكرات محور: الدوال الأصلية والحساب التكاملي}{\small\color{cSec}السنة الثالثة ثانوي -- علوم تجريبية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cThm!85!black,colframe=cThm!85!black,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{22}{28}\selectfont\bfseries مذكرات محور: الدوال الأصلية والحساب التكاملي}\\[8pt]
+{\color{white}\large السنة الثالثة ثانوي -- علوم تجريبية (صالحة لشعبتي رياضيات وتقني رياضي)}\\[4pt]
+{\color{white}\large 10 مذكرات (20 ساعة) -- السنة الدراسية 2026-2027}
+\end{tcolorbox}
+\end{LTR}
+\begin{BOX}{cThm}{يتضمن هذا العمل}
+\begin{enumerate}[label=\textbf{مذكرة \arabic{enumi}:},leftmargin=6em,start=36]
+\item الدوال الأصلية: تعريف وخواص.
+\item الدوال الأصلية للدوال المألوفة ، الدالة الأصلية التي تحقق شرطاً.
+\item قواعد حساب الدوال الأصلية.
+\item المعادلات التفاضلية $y^{\prime}=f$ ، $y^{\prime\prime}=f$ ، $y^{\prime\prime}=-\omega^2y$.
+\item الحساب التكاملي: المقاربة والتعريف.
+\item خواص التكامل ، مساحة حيز بين منحنيين.
+\item القيمة المتوسطة لدالة على مجال وحصرها.
+\item حساب مساحة حيز: حالة دالة سالبة.
+\item التكامل بالتجزئة ، توظيف التكامل لحساب دوال أصلية.
+\item حساب حجوم مجسمات بسيطة ، حل مشكلات.
+\end{enumerate}
+مراجع النشاطات والتمارين: الكتاب المدرسي للسنة الثالثة ثانوي ، الجزء الأول (باب الدوال الأصلية ص 158--162 ، باب الحساب التكاملي: نشاطا ص 166--167 ، تمارين ص 183--189). في كل حساب مساحة: جدول الوضع النسبي ورسم الحيز الملون.
+\end{BOX}
+\newpage
+\ModhHead{36}{3 ع ت}{تحليل}{الدوال الأصلية والحساب التكاملي}{02 سا}{الدوال الأصلية: تعريف وخواص}%
+{\begin{itemize}\item المشتقات ، المعادلات $y^{\prime}=f$.\end{itemize}}%
+{\begin{itemize}\item تعيين دالة أصلية لدالة على مجال.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الأول) ، مراجع ، الحاسبة البيانية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} ما الدالة التي مشتقتها $2x$ ؟ هل هي وحيدة؟}{10 د}{سؤال عكسي.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ $x^2$ ، $x^2+1$ ، $x^2-7$ كلها مشتقتها $2x$.\par
+\ck\ الفرق بين اثنتين منها ثابت.\par
+}{35 د}{أمثلة.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $F$ \textbf{دالة أصلية} لـ $f$ على المجال $I$ إذا كانت $F$ قابلة للاشتقاق على $I$ و $F^{\prime}=f$.\par\Lab{cThm}{خاصية}\par\ck\ كل دالة مستمرة على مجال تقبل دوال أصلية عليه.\par
+\ck\ إذا كانت $F$ دالة أصلية لـ $f$ فالدوال الأصلية هي $F+c$ ($c$ ثابت).\par
+\ck\ دالة أصلية لـ $f+g$ هي $F+G$ ، ولـ $kf$ هي $kF$.\par
+}{50 د}{التحقق بالاشتقاق.}
+\Row{}{%
+\Lab{cEx}{مثال}\ $F(x)=x^3-x$ دالة أصلية لـ $f(x)=3x^2-1$ على $\mathbb R$.\par\Lab{cThm!80!black}{حذار}\ نتحقق دائماً بالاشتقاق.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par بيّن أن $F(x)=xe^x$ دالة أصلية لـ $f(x)=(x+1)e^x$ على $\mathbb R$.\par\textbf{الحل:} $F^{\prime}(x)=e^x+xe^x=(x+1)e^x$.\par\textbf{واجب منزلي:} تمارين من باب الدوال الأصلية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{37}{3 ع ت}{تحليل}{الدوال الأصلية والحساب التكاملي}{02 سا}{الدوال الأصلية للدوال المألوفة ، الدالة الأصلية التي تحقق شرطاً}%
+{\begin{itemize}\item تعريف الدالة الأصلية.\end{itemize}}%
+{\begin{itemize}\item تعيين الدوال الأصلية للدوال المألوفة ، والدالة الأصلية التي تأخذ القيمة $y_0$ عند $x_0$.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الأول) ، مراجع ، الحاسبة البيانية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} اقرأ جدول المشتقات «بالعكس».}{10 د}{قراءة عكسية.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ من $(x^3)^{\prime}=3x^2$ نستنتج دالة أصلية لـ $x^2$: $\frac{x^3}3$.\par
+}{35 د}{جدول يُحفظ.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{جدول الدوال الأصلية}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.6}\begin{tabular}{|c|c|}\hline
+\rowcolor{cSec!12}$f(x)$ & $F(x)$\\\hline
+$x^n\ (n\neq-1)$ & $\dfrac{x^{n+1}}{n+1}$\\\hline
+$\dfrac1{x^2}$ & $-\dfrac1x$\\\hline
+$\dfrac1{\sqrt x}$ & $2\sqrt x$\\\hline
+$\dfrac1x$ & $\ln x$\\\hline
+$e^x$ & $e^x$\\\hline
+$\cos x$ & $\sin x$\\\hline
+$\sin x$ & $-\cos x$\\\hline
+\end{tabular}}\end{LTR}\par \Lab{cThm}{الشرط الابتدائي}\ توجد دالة أصلية وحيدة $F$ لـ $f$ على $I$ تحقق $F(x_0)=y_0$.\par}{50 د}{الشرط لتعيين الثابت.}
+\Row{}{%
+\Lab{cEx}{مثال}\ $f(x)=3x^2+2x-1$ و $F(1)=0$: $F(x)=x^3+x^2-x+c$ ، $1+c=0$ ، $c=-1$.\par\Lab{cThm!80!black}{حذار}\ $\dfrac1x$ أصليتها $\ln x$ على $]0;+\infty[$.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par عيّن الدالة الأصلية لـ $g(x)=\cos x+e^x$ التي تنعدم عند $0$.\par\textbf{الحل:} $G(x)=\sin x+e^x+c$ ، $1+c=0$: $G(x)=\sin x+e^x-1$.\par\textbf{واجب منزلي:} تمارين 4 إلى 6 صفحة 158 ، و 24 ، 25 ، 27 ، 28 صفحة 160.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{38}{3 ع ت}{تحليل}{الدوال الأصلية والحساب التكاملي}{02 سا}{قواعد حساب الدوال الأصلية}%
+{\begin{itemize}\item الدوال الأصلية للدوال المألوفة ، مشتق دالة مركبة.\end{itemize}}%
+{\begin{itemize}\item تعيين دوال أصلية لدوال من الشكل $u^{\prime}u^n$ ، $\frac{u^{\prime}}u$ ، $u^{\prime}e^u$ ، $\ldots$\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الأول) ، مراجع ، الحاسبة البيانية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} ما مشتقة $(x^2+1)^4$ ؟ استنتج دالة أصلية لـ $2x(x^2+1)^3$.}{10 د}{سؤال تمهيدي.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ $\big((x^2+1)^4\big)^{\prime}=8x(x^2+1)^3$ ، إذن دالة أصلية لـ $2x(x^2+1)^3$ هي $\frac14(x^2+1)^4$.\par
+}{35 د}{التعرف على الشكل.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.6}\begin{tabular}{|c|c|}\hline
+\rowcolor{cSec!12}\ar{الدالة} & \ar{دالة أصلية}\\\hline
+$u^{\prime}u^n\ (n\neq-1)$ & $\dfrac{u^{n+1}}{n+1}$\\\hline
+$\dfrac{u^{\prime}}{u^2}$ & $-\dfrac1u$\\\hline
+$\dfrac{u^{\prime}}{\sqrt u}$ & $2\sqrt u$\\\hline
+$\dfrac{u^{\prime}}u\ (u>0)$ & $\ln u$\\\hline
+$u^{\prime}e^u$ & $e^u$\\\hline
+$\cos(ax+b)$ & $\dfrac1a\sin(ax+b)$\\\hline
+\end{tabular}}\end{LTR}\par \Lab{cEx}{مثال}\par\ck\ $g(x)=\dfrac x{x^2+1}=\frac12\times\dfrac{2x}{x^2+1}$: $G(x)=\frac12\ln(x^2+1)$.\par
+\ck\ $h(x)=e^{2x}$: $H(x)=\frac12e^{2x}$.\par
+}{50 د}{جدول القواعد.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نُظهر $u^{\prime}$ بضرب وقسمة على ثابت فقط.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par عيّن دالة أصلية: $f(x)=\dfrac{3}{(3x+1)^2}$ ؛ $g(x)=\dfrac{2x}{\sqrt{x^2+5}}$ ؛ $h(x)=\sin(2x)$.\par\textbf{الحل:} $-\dfrac1{3x+1}$ ؛ $2\sqrt{x^2+5}$ ؛ $-\frac12\cos2x$.\par\textbf{واجب منزلي:} تمارين 53 ، 54 ، 56 ، 57 صفحة 162.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{39}{3 ع ت}{تحليل}{الدوال الأصلية والحساب التكاملي}{02 سا}{المعادلات التفاضلية $y^{\prime}=f$ ، $y^{\prime\prime}=f$ ، $y^{\prime\prime}=-\omega^2y$}%
+{\begin{itemize}\item الدوال الأصلية ، الدوال المثلثية.\end{itemize}}%
+{\begin{itemize}\item حل معادلات تفاضلية بسيطة مع شروط ابتدائية.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الأول) ، مراجع ، الحاسبة البيانية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} نابض مهتز: تسارعه متناسب مع موضعه وعكس إشارته. كيف نكتب ذلك؟}{10 د}{وضعية فيزيائية.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ $y^{\prime\prime}=6x$: $y^{\prime}=3x^2+a$ ، $y=x^3+ax+b$.\par
+\ck\ نتحقق أن $\cos2x$ و $\sin2x$ حلان لـ $y^{\prime\prime}=-4y$.\par
+}{35 د}{التحقق بالتعويض.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\par\ck\ حلول $y^{\prime}=f$: الدوال الأصلية لـ $f$.\par
+\ck\ حلول $y^{\prime\prime}=f$: دالتان أصليتان متتاليتان (ثابتان).\par
+\ck\ حلول $y^{\prime\prime}+\omega^2y=0$: $y=A\cos\omega x+B\sin\omega x$.\par
+\Lab{cEx}{مثال}\ $y^{\prime\prime}+4y=0$ مع $y(0)=1$ و $y^{\prime}(0)=2$: $A=1$ ، $2B=2$: $y=\cos2x+\sin2x$.\par}{50 د}{جدول الحالات.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ معادلة من الرتبة الثانية تحتاج شرطين.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par حل $y^{\prime\prime}+9y=0$ مع $y(0)=0$ و $y^{\prime}(0)=3$.\par\textbf{الحل:} $y=A\cos3x+B\sin3x$ ، $A=0$ ، $3B=3$: $y=\sin3x$.\par\textbf{واجب منزلي:} تمارين 31 إلى 34 صفحة 161.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{40}{3 ع ت}{تحليل}{الدوال الأصلية والحساب التكاملي}{02 سا}{الحساب التكاملي: المقاربة والتعريف}%
+{\begin{itemize}\item الدوال الأصلية ، المساحات.\end{itemize}}%
+{\begin{itemize}\item حساب تكامل دالة على مجال وتفسيره بمساحة.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الأول) ، مراجع ، الحاسبة البيانية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} كيف نحسب مساحة حيز محدود بمنحنٍ؟}{10 د}{سؤال تاريخي (أرخميدس).}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{مناقشة النشاطين 01 صفحة 166 و 02 صفحة 167}\par\ck\ تقريب المساحة تحت منحنٍ بمستطيلات (بالنقصان وبالزيادة).\par
+\ck\ المساحة تتعلق بدالة أصلية: $\mathcal A=F(b)-F(a)$.\par
+}{35 د}{نشاطا الكتاب.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $f$ مستمرة على $[a;b]$ و $F$ دالة أصلية لها: $\displaystyle\int_{a}^{b}f(x)\,\mathrm dx=F(b)-F(a)=\big[F(x)\big]_a^b$.\par\Lab{cThm}{التفسير الهندسي}\ إذا كانت $f\geqslant0$ على $[a;b]$ فالتكامل هو مساحة الحيز بين $C_f$ ومحور الفواصل والمستقيمين $x=a$ و $x=b$ (بوحدة المساحات).\par}{50 د}{رسم الحيز الملون.}
+\Row{}{%
+\Lab{cEx}{مثال}\ $\displaystyle\int_{0}^{2}x^2\,\mathrm dx=\left[\dfrac{x^3}3\right]_0^2=\dfrac83$ u.a.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.1cm,y=0.45cm,font=\scriptsize]
+\fill[cDef!25] (0,0) -- plot[domain=0:2,samples=50] (\x,{\x*\x}) -- (2,0) -- cycle;
+\draw[->] (-0.4,0)--(2.7,0) node[right]{$x$}; \draw[->] (0,-0.4)--(0,5.2) node[above]{$y$};
+\draw[cDef,thick,domain=-0.3:2.2,samples=50] plot (\x,{\x*\x}) node[right]{$y=x^2$};
+\node[below] at (2,0){$2$}; \node at (1.45,1){$\mathcal A$};
+\end{tikzpicture}\end{LTR}\par \Lab{cThm!80!black}{حذار}\ وحدة المساحة $\mathrm{u.a}$ تتعلق بالمعلم.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par احسب $\displaystyle\int_{1}^{e}\dfrac1x\,\mathrm dx$ و $\displaystyle\int_{0}^{\frac\pi2}\cos x\,\mathrm dx$.\par\textbf{الحل:} $[\ln x]_1^e=1$ ؛ $[\sin x]_0^{\frac\pi2}=1$.\par\textbf{واجب منزلي:} تمرين 10 صفحة 184 ، وتمارين 11 إلى 14 صفحتي 183 و 184.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{41}{3 ع ت}{تحليل}{الدوال الأصلية والحساب التكاملي}{02 سا}{خواص التكامل ، مساحة حيز بين منحنيين}%
+{\begin{itemize}\item تعريف التكامل.\end{itemize}}%
+{\begin{itemize}\item استعمال خواص التكامل ، وحساب مساحة حيز بين منحنيين.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الأول) ، مراجع ، الحاسبة البيانية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} كيف نحسب المساحة بين منحنيي $y=x$ و $y=x^2$ ؟}{10 د}{سؤال.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ المساحة تحت $y=x$ ناقص المساحة تحت $y=x^2$ على $[0;1]$.\par
+}{35 د}{جدول الوضع النسبي ثم الرسم.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\par\ck\ الخطية: $\int(\alpha f+\beta g)=\alpha\int f+\beta\int g$ ؛ علاقة شال: $\int_a^c=\int_a^b+\int_b^c$.\par
+\ck\ إذا كانت $f\geqslant0$ على $[a;b]$ فإن $\int_a^bf\geqslant0$ ؛ إذا كان $f\leqslant g$ فإن $\int_a^bf\leqslant\int_a^bg$.\par
+\ck\ إذا كان $C_f$ فوق $C_g$ على $[a;b]$: $\mathcal A=\displaystyle\int_{a}^{b}\big(f(x)-g(x)\big)\,\mathrm dx$.\par
+\Lab{cEx}{الوضع النسبي أولاً}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|ccccc|}\hline
+\rowcolor{cSec!12}$x$ & $0$ & & & & $1$\\\hline
+$x-x^2$ & $0$ & & $+$ & & $0$\\\hline
+\ar{الوضع النسبي} & & & \ar{$C_f$ فوق $C_g$} & & \\\hline
+\end{tabular}}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[scale=2.4,font=\scriptsize]
+\fill[cThm!25] plot[domain=0:1,samples=40] (\x,\x) -- plot[domain=1:0,samples=40] (\x,{\x*\x}) -- cycle;
+\draw[->] (-0.15,0)--(1.3,0) node[right]{$x$}; \draw[->] (0,-0.15)--(0,1.3) node[above]{$y$};
+\draw[cDef,thick] (-0.1,-0.1)--(1.2,1.2); \node[cDef] at (0.5,0.85){$C_f:y=x$};
+\draw[cRem!80!black,thick,domain=-0.2:1.1,samples=40] plot (\x,{\x*\x}); \node[cRem!80!black] at (0.95,0.3){$C_g:y=x^2$};
+\node[below] at (1,0){$1$};
+\end{tikzpicture}\end{LTR}\par $\mathcal A=\displaystyle\int_{0}^{1}(x-x^2)\,\mathrm dx=\left[\dfrac{x^2}2-\dfrac{x^3}3\right]_0^1=\dfrac16$ u.a.\par}{50 د}{تلوين الحيز.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ ندرس إشارة الفرق قبل الحساب.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par احسب $I=\displaystyle\int_{0}^{1}(2x+3e^x)\,\mathrm dx$ بالخطية.\par\textbf{الحل:} $I=1+3(e-1)=3e-2$.\par\textbf{واجب منزلي:} تمارين 30 إلى 33 صفحة 186.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{42}{3 ع ت}{تحليل}{الدوال الأصلية والحساب التكاملي}{02 سا}{القيمة المتوسطة لدالة على مجال وحصرها}%
+{\begin{itemize}\item خواص التكامل.\end{itemize}}%
+{\begin{itemize}\item حساب القيمة المتوسطة لدالة ، وحصر تكامل.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الأول) ، مراجع ، الحاسبة البيانية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} درجات الحرارة خلال يوم تتغير باستمرار: ما معنى «الحرارة المتوسطة»؟}{10 د}{وضعية مناخية.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ مستطيل له نفس مساحة الحيز وقاعدته $[a;b]$: ارتفاعه هو القيمة المتوسطة.\par
+}{35 د}{تفسير هندسي.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ القيمة المتوسطة لـ $f$ على $[a;b]$: $\mu=\dfrac1{b-a}\displaystyle\int_{a}^{b}f(x)\,\mathrm dx$.\par\Lab{cThm}{الحصر}\ إذا كان $m\leqslant f(x)\leqslant M$ على $[a;b]$ فإن $m(b-a)\leqslant\int_a^bf\leqslant M(b-a)$.\par}{50 د}{الحصر.}
+\Row{}{%
+\Lab{cEx}{مثال}\ القيمة المتوسطة لـ $x^2$ على $[0;3]$: $\mu=\frac13\times9=3$ ؛ من أجل $x\in[0;1]$: $1\leqslant e^{x^2}\leqslant e$ ، إذن $1\leqslant\displaystyle\int_{0}^{1}e^{x^2}\,\mathrm dx\leqslant e$.\par\Lab{cThm!80!black}{حذار}\ لا نستطيع حساب $\int e^{x^2}$ بدالة أصلية مألوفة: الحصر هو الحل.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par احسب القيمة المتوسطة لـ $\sin$ على $[0;\pi]$.\par\textbf{الحل:} $\mu=\dfrac1\pi[-\cos x]_0^\pi=\dfrac2\pi$.\par\textbf{واجب منزلي:} تمرين 36 صفحة 186 ، وتمرين 51 صفحة 188.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{43}{3 ع ت}{تحليل}{الدوال الأصلية والحساب التكاملي}{02 سا}{حساب مساحة حيز: حالة دالة سالبة}%
+{\begin{itemize}\item التكامل ، الوضع النسبي.\end{itemize}}%
+{\begin{itemize}\item حساب مساحة حيز يقع تحت محور الفواصل أو على جانبيه.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الأول) ، مراجع ، الحاسبة البيانية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} ما إشارة $\displaystyle\int_{-2}^{2}(x^2-4)\,\mathrm dx$ ؟ هل المساحة سالبة؟}{10 د}{سؤال إشكالي.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ $f(x)=x^2-4$ سالبة على $[-2;2]$: التكامل سالب ، والمساحة موجبة.\par
+}{35 د}{جدول الإشارة.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\ إذا كانت $f\leqslant0$ على $[a;b]$: $\mathcal A=-\displaystyle\int_{a}^{b}f(x)\,\mathrm dx$ ؛ وإذا تغيرت الإشارة نقسم المجال (علاقة شال).\par\Lab{cEx}{الوضع النسبي أولاً}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|ccccc|}\hline
+\rowcolor{cSec!12}$x$ & $-2$ & & & & $2$\\\hline
+$f(x)=x^2-4$ & $0$ & & $-$ & & $0$\\\hline
+\ar{الوضع النسبي} & & & \ar{$C_f$ تحت محور الفواصل} & & \\\hline
+\end{tabular}}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.8cm,y=0.4cm,font=\scriptsize]
+\fill[cEx!30] (-2,0) -- plot[domain=-2:2,samples=50] (\x,{\x*\x-4}) -- (2,0) -- cycle;
+\draw[->] (-3,0)--(3.2,0) node[right]{$x$}; \draw[->] (0,-4.6)--(0,3) node[above]{$y$};
+\draw[cDef,thick,domain=-2.6:2.6,samples=50] plot (\x,{\x*\x-4}) node[right]{$C_f$};
+\node[above left] at (-2,0){$-2$}; \node[above right] at (2,0){$2$}; \node at (0.6,-1.8){$\mathcal A$};
+\end{tikzpicture}\end{LTR}\par $\mathcal A=-\displaystyle\int_{-2}^{2}(x^2-4)\,\mathrm dx=-\left[\dfrac{x^3}3-4x\right]_{-2}^2=\dfrac{32}3$ u.a.\par}{50 د}{تلوين الحيز.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ المساحة دائماً موجبة.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par احسب مساحة الحيز بين منحني $\sin$ ومحور الفواصل على $[0;2\pi]$.\par\textbf{الحل:} $\sin\geqslant0$ على $[0;\pi]$ و $\leqslant0$ على $[\pi;2\pi]$: $\mathcal A=2+2=4$ u.a.\par\textbf{واجب منزلي:} تمارين 52 إلى 59 صفحتي 188 و 189.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{44}{3 ع ت}{تحليل}{الدوال الأصلية والحساب التكاملي}{02 سا}{التكامل بالتجزئة ، توظيف التكامل لحساب دوال أصلية}%
+{\begin{itemize}\item خواص التكامل ، مشتق جداء.\end{itemize}}%
+{\begin{itemize}\item حساب تكاملات بالتجزئة ، وتعيين دوال أصلية بالتكامل.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الأول) ، مراجع ، الحاسبة البيانية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} كيف نحسب $\displaystyle\int_{0}^{1}xe^x\,\mathrm dx$ ؟ لا يوجد في الجدول.}{10 د}{سؤال.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ $(uv)^{\prime}=u^{\prime}v+uv^{\prime}$ ، نكامل الطرفين على $[a;b]$.\par
+}{35 د}{مشتق الجداء.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{التكامل بالتجزئة}\ $\displaystyle\int_{a}^{b}u(x)v^{\prime}(x)\,\mathrm dx=\big[u(x)v(x)\big]_a^b-\displaystyle\int_{a}^{b}u^{\prime}(x)v(x)\,\mathrm dx$.\par\Lab{cEx}{مثال}\ $u=x$ ، $v^{\prime}=e^x$: $\displaystyle\int_{0}^{1}xe^x\,\mathrm dx=[xe^x]_0^1-\displaystyle\int_{0}^{1}e^x\,\mathrm dx=e-(e-1)=1$.\par}{50 د}{اختيار $u$ و $v^{\prime}$.}
+\Row{}{%
+\Lab{cThm}{دالة أصلية بالتكامل}\ $x\mapsto\displaystyle\int_a^xf(t)\,\mathrm dt$ هي الدالة الأصلية لـ $f$ التي تنعدم عند $a$ ؛ مثلاً $\displaystyle\int_1^x\ln t\,\mathrm dt=x\ln x-x+1$.\par\Lab{cThm!80!black}{حذار}\ نختار $u$ التي تبسط بالاشتقاق.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par احسب $\displaystyle\int_{0}^{\pi}x\cos x\,\mathrm dx$.\par\textbf{الحل:} $u=x$ ، $v^{\prime}=\cos x$: $[x\sin x]_0^\pi-\displaystyle\int_{0}^{\pi}\sin x\,\mathrm dx=0-2=-2$.\par\textbf{واجب منزلي:} تمارين 62 إلى 65 ، و 68 إلى 70 صفحة 189.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{45}{3 ع ت}{تحليل}{الدوال الأصلية والحساب التكاملي}{02 سا}{حساب حجوم مجسمات بسيطة ، حل مشكلات}%
+{\begin{itemize}\item الحساب التكاملي.\end{itemize}}%
+{\begin{itemize}\item حساب حجم مجسم بالتكامل ، وتوظيف التكامل في حل مشكلات بسيطة.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الأول) ، مراجع ، الحاسبة البيانية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} كيف نبرهن أن حجم المخروط ثلث حجم الأسطوانة؟}{10 د}{سؤال تاريخي.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ نقطع المجسم بمستويات عمودية على محور: مساحة المقطع $S(x)$ ، والحجم مجموع «شرائح» رقيقة.\par
+}{35 د}{نموذج حقيقي.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\ $V=\displaystyle\int_{a}^{b}S(x)\,\mathrm dx$ ؛ مجسم دوراني حول محور الفواصل: $V=\pi\displaystyle\int_{a}^{b}f(x)^2\,\mathrm dx$.\par\Lab{cEx}{مثال}\ مخروط نصف قطر قاعدته $r$ وارتفاعه $h$: $S(x)=\pi\left(\dfrac{rx}h\right)^2$ ، $V=\displaystyle\int_{0}^{h}\pi\dfrac{r^2x^2}{h^2}\,\mathrm dx=\dfrac{\pi r^2h}3$.\par}{50 د}{رسم المقطع.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ وحدة الحجم $\mathrm{u.v}$.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par احسب حجم المجسم الناتج عن دوران منحني $f(x)=\sqrt x$ حول محور الفواصل على $[0;4]$.\par\textbf{الحل:} $V=\pi\displaystyle\int_{0}^{4}x\,\mathrm dx=8\pi$ u.v.\par\textbf{واجب منزلي:} تمرينا 72 و 73 صفحة 189.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\end{Sayr}
+\end{document}
