@@ -1,0 +1,1140 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+% أعمدة جداول تُكتب خلاياها بالعربية في الاتجاه الصحيح
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+% تجنب عنوان يتيم في أسفل الصفحة
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+% ---------- الألوان ----------
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+% ---------- العناوين ----------
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+% ---------- الصناديق (تُرسم في سياق LTR ويُكتب محتواها بالعربية) ----------
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+% ---------- التمارين والحلول ----------
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+% رسومات TikZ تُوضع في سياق LTR
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+% ---------- رموز ----------
+% نقاط الحذف داخل الرياضيات (\dots يسبب خللاً في الاتجاه مع babel)
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% ---------- تمثيل مجال على مستقيم عددي ----------
+% \NLseg{a}{b}{[}{]}  مجال محدود
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+% \NLright{a}{[}  مجال نحو +∞
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+% \NLleft{b}{]}  مجال نحو −∞
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- أيقونات مواقع التواصل (مرسومة بـ TikZ، لا تحتاج أي حزمة) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% سطر مواقع التواصل أسفل كل صفحة
+% (يُكتب السطر بترتيب بصري من اليسار إلى اليمين: الأيقونة يمين كل اسم)
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+% ---------- رأس وتذييل الصفحة ----------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{يمين الرأس}{يسار الرأس}{يمين التذييل}{يسار التذييل}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% جدول تغيرات / إشارة (يُرسم في سياق LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% معلم بشبكة: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \def\xmn{#1}\def\xmx{#2}\def\ymn{#3}\def\ymx{#4}
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \draw[very thick,-{Stealth[length=1.6mm]}] (0,0)--(1,0) node[below,pos=.55]{$\vec i$};
+ \draw[very thick,-{Stealth[length=1.6mm]}] (0,0)--(0,1) node[left,pos=.55]{$\vec j$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\hl}[1]{\ensuremath{\colorbox{cEx!20}{$\displaystyle #1$}}}
+\newcommand{\Lim}[1]{\displaystyle\lim_{x\to #1}}
+\newcommand{\Cf}{(C_f)}
+\newenvironment{qst}{\begin{enumerate}[label=\protect\circled{\arabic*},leftmargin=*]}{\end{enumerate}}
+\newcommand{\circled}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[circle,fill=cDef,text=white,inner sep=1.2pt,font=\scriptsize\bfseries](c){#1};}}
+% عمودان: \TwoCol{عرض اليسار}{محتوى اليسار}{عرض اليمين}{محتوى اليمين}  (آمن مع TikZ)
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\un}{(u_n)}\newcommand{\vn}{(v_n)}
+% برهان بالتراجع: \Rec{الخاصية P(n)}{التحقق من P(0)}{البرهان على الوراثة}
+\newcommand{\Rec}[3]{\textbf{برهان بالتراجع:} نسمي $P(n)$ الخاصية: «#1».
+\begin{itemize}
+\item \textbf{التحقق:} #2
+\item \textbf{الوراثة:} نفرض أن $P(n)$ صحيحة ونبرهن صحة $P(n+1)$: #3
+\item \textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع، $P(n)$ صحيحة من أجل كل عدد طبيعي $n$.
+\end{itemize}}
+\newcommand{\src}[1]{{\footnotesize\textbf{#1}}\par}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% أسئلة فرعية (أ) (ب) (جـ) كل سؤال في سطر
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\ccl}[1]{\par\textbf{الخلاصة:} #1}
+
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\SetHeader{\small\bfseries\color{cSec}تمارين: الاحتمالات}{\small\color{cSec}السنة الثانية ثانوي -- الشعب العلمية}
+\begin{document}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}p{#1}}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newcommand{\card}{\operatorname{Card}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries سلسلة تمارين: الاحتمالات}\\[8pt]
+{\color{white}\large تمارين متنوعة ومسائل شاملة مع الحلول المفصلة خطوة بخطوة}\\[5pt]
+{\color{white}\large السنة الثانية ثانوي -- الشعب العلمية}
+\end{tcolorbox}
+\end{LTR}
+
+% =====================================================================
+\section{التواترات والمحاكاة}
+% ------------------------------------------------- 1
+\begin{tamrin}{استقرار التواترات}
+رمى تلميذ زهرة نرد $600$ مرة وسجل النتائج في الجدول التالي:
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|C|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}الرقم الظاهر & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & \ar{المجموع}\\
+\hline
+التكرار $n_i$ & $95$ & $104$ & $98$ & $107$ & $96$ & $100$ & $600$\\
+\hline
+\end{tabular}
+\end{center}
+\begin{enumerate}
+\item احسب تواتر ظهور كل رقم (تُدوَّر النتائج إلى $10^{-3}$).
+\item قارن هذه التواترات بالعدد $\dfrac16$. \ ماذا تستنتج حول النرد؟
+\item كيف يمكن محاكاة التجربة العشوائية «نجاح أو رسوب $15$ تلميذاً» (باحتمالين متساويين) باستعمال قطعة نقدية؟
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $f_i=\dfrac{n_i}{600}$:
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|C|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}الرقم & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & \ar{المجموع}\\
+\hline
+التواتر $f_i$ & $0{,}158$ & $0{,}173$ & $0{,}163$ & $0{,}178$ & $0{,}160$ & $0{,}167$ & $1$\\
+\hline
+\end{tabular}
+\end{center}
+(تحقق: مجموع التكرارات $95+104+98+107+96+100=600$ ، ومجموع التواترات يساوي $1$.)
+
+\QQ{2} $\dfrac16\approx0{,}167$. \ كل التواترات قريبة من $0{,}167$ (الفروق أصغر من $0{,}012$) ، وهي تذبذبات عادية للعينة.\par
+نستنتج أن النرد \textbf{متوازن} على الأرجح: احتمال ظهور كل رقم هو $\dfrac16$ ، وكلما زاد عدد الرميات اقتربت التواترات أكثر من $\dfrac16$.
+
+\QQ{3} نرمي قطعة نقدية $15$ مرة ، ونرفق الوجه $F$ بالنجاح والظهر $P$ بالرسوب.\par
+مثلاً العينة $\{P;P;F;F;F;P;F;P;F;F;P;F;P;F;F\}$ تعني نجاح $9$ تلاميذ ورسوب $6$.
+\end{hal}
+
+% =====================================================================
+\section{قانون الاحتمال ، الأمل والتباين}
+% ------------------------------------------------- 2
+\begin{tamrin}{التعرف على قانون احتمال}
+\begin{enumerate}
+\item أي الجداول التالية يمثل قانون احتمال على $\{x_1;x_2;x_3\}$؟ علّل.
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|C|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{القانون} & $x_1$ & $x_2$ & $x_3$\\
+\hline
+(1) & $\frac34$ & $\frac14$ & $\frac14$\\
+\hline
+(2) & $\frac26$ & $\frac16$ & $\frac36$\\
+\hline
+(3) & $\frac12$ & $\frac32$ & $\frac12$\\
+\hline
+(4) & $\frac34$ & $-\frac14$ & $\frac12$\\
+\hline
+\end{tabular}
+\end{center}
+\item نرمي حجر نرد مرقماً من $1$ إلى $6$ ، ونصف هذه التجربة بقانون الاحتمال التالي:
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\
+\hline
+$p_i$ & $0{,}1$ & $0{,}2$ & $2\alpha$ & $0{,}15$ & $\alpha$ & $0{,}1$\\
+\hline
+\end{tabular}
+\end{center}
+\begin{sq}
+\qa احسب العدد $\alpha$.
+\qb احسب احتمال الحادثة $A$: «الحصول على رقم زوجي».
+\qc احسب الأمل الرياضياتي $E$ لهذا القانون.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} نتحقق من الشرطين: كل $p_i\in[0;1]$ ، و $\sum p_i=1$.
+\begin{itemize}
+\item (1): $\dfrac34+\dfrac14+\dfrac14=\dfrac54\ne1$: \ \textbf{لا يمثل} قانون احتمال.
+\item (2): $\dfrac26+\dfrac16+\dfrac36=1$ وكلها بين $0$ و $1$: \ \textbf{يمثل} قانون احتمال.
+\item (3): $\dfrac32>1$: \ \textbf{لا يمثل} قانون احتمال.
+\item (4): $-\dfrac14<0$ (رغم أن المجموع يساوي $1$): \ \textbf{لا يمثل} قانون احتمال.
+\end{itemize}
+
+\QQ{2} \pa مجموع الاحتمالات يساوي $1$: $0{,}1+0{,}2+2\alpha+0{,}15+\alpha+0{,}1=1$ ، أي $3\alpha+0{,}55=1$ ، ومنه $3\alpha=0{,}45$: \ \bx{\alpha=0{,}15}.
+\pb $A=\{2;4;6\}$: \ $P(A)=0{,}2+0{,}15+0{,}1=\bx{0{,}45}$.
+\pc $E=1\times0{,}1+2\times0{,}2+3\times0{,}3+4\times0{,}15+5\times0{,}15+6\times0{,}1$\par
+$E=0{,}1+0{,}4+0{,}9+0{,}6+0{,}75+0{,}6=\bx{3{,}35}$.
+\end{hal}
+
+% ------------------------------------------------- 3
+\begin{tamrin}{إيجاد احتمالين مجهولين باستعمال الأمل}
+$a$ و $b$ عددان حقيقيان. نعرف المتغير العشوائي $X$ الذي قانون احتماله هو:
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|C|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $-2$ & $-1$ & $0$ & $1$ & $3$\\
+\hline
+$P(X=x_i)$ & $0{,}25$ & $a$ & $b$ & $0{,}05$ & $0{,}25$\\
+\hline
+\end{tabular}
+\end{center}
+\begin{enumerate}
+\item عيّن قيمتي $a$ و $b$ علماً أن: $E(X)=0$.
+\item احسب التباين $V(X)$ والانحراف المعياري $\sigma(X)$.
+\item احسب $P(X\ge0)$ و $P(X^2\le1)$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \textbf{شرط الأمل:} $E(X)=-2\times0{,}25-1\times a+0\times b+1\times0{,}05+3\times0{,}25=0$\par
+أي $-0{,}5-a+0{,}05+0{,}75=0$ ، ومنه $-a+0{,}3=0$: \ \bx{a=0{,}3}.\par
+\textbf{مجموع الاحتمالات:} $0{,}25+0{,}3+b+0{,}05+0{,}25=1$ ، أي $b+0{,}85=1$: \ \bx{b=0{,}15}.
+
+\QQ{2} $\displaystyle\sum x_i^2p_i=4\times0{,}25+1\times0{,}3+0+1\times0{,}05+9\times0{,}25=1+0{,}3+0{,}05+2{,}25=3{,}6$.\par
+$V(X)=3{,}6-0^2=\bx{3{,}6}$ ، \quad $\sigma(X)=\sqrt{3{,}6}\approx\bx{1{,}90}$.
+
+\QQ{3} $P(X\ge0)=P(X=0)+P(X=1)+P(X=3)=0{,}15+0{,}05+0{,}25=\bx{0{,}45}$.\par
+$X^2\le1\iff-1\le X\le1$ ، أي $X\in\{-1;0;1\}$: \ $P(X^2\le1)=0{,}3+0{,}15+0{,}05=\bx{0{,}5}$.
+\end{hal}
+
+% ------------------------------------------------- 4
+\begin{tamrin}{اختيار من متعدد}
+عيّن الاقتراح الصحيح الوحيد في كل حالة مع التعليل:
+\begin{enumerate}
+\item $A$ و $B$ حادثتان. إذا كان: $P(\overline A)=0{,}6$ ، $P(B)=0{,}5$ و $P(A\cup B)=0{,}65$ فإن $P(A\cap B)$ يساوي:
+\ABC{$0{,}2$}{$0{,}25$}{$0{,}45$}
+\item يحتوي صندوق على $3$ كريات بيضاء و $5$ كريات سوداء متشابهة. نسحب من الصندوق كريتين على التوالي مع إعادة الكرية المسحوبة إلى الصندوق في كل مرة. عدد الحالات الممكنة هو:
+\ABC{$16$}{$56$}{$64$}
+\item الجدول التالي يعرف قانون احتمال لتجربة عشوائية:
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|C|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $-2$ & $-1$ & $2$ & $3$\\
+\hline
+$p_i$ & $0{,}12$ & $0{,}50$ & $0{,}08$ & $0{,}30$\\
+\hline
+\end{tabular}
+\end{center}
+التباين $V$ يساوي (بالتقريب):
+\ABC{$3{,}89$}{$3{,}68$}{$4$}
+\item تجربة عشوائية تحتوي على $12$ حادثة بسيطة متساوية الاحتمال $\{x_1\}$ ، $\{x_2\}$ ، $\ldots$ ، $\{x_{12}\}$. \ $P\big(\{x_9\}\big)$ يساوي:
+\ABC{$\frac{9}{12}$}{$\frac{1}{12}$}{$\frac{1}{9}$}
+\item نرمي نرداً: $\Omega=\{1;2;3;4;5;6\}$. \ إذا كانت $A=\{2;3;5\}$ فإن $\overline A$ هي:
+\ABC{$\{1;4;5;6\}$}{$\{1;4;6\}$}{$\{2;3;5\}$}
+\item في كيس $5$ كريات ، نسحب كريتين في آن واحد. عدد الحالات الممكنة هو:
+\ABC{$25$}{$20$}{$10$}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} (ب): $P(A)=1-P(\overline A)=0{,}4$.\par
+$P(A\cap B)=P(A)+P(B)-P(A\cup B)=0{,}4+0{,}5-0{,}65=\bx{0{,}25}$.
+
+\QQ{2} (جـ): سحب على التوالي مع الإرجاع من $8$ كريات: $8\times8=\bx{64}$.
+
+\QQ{3} (أ): $E=-2\times0{,}12-1\times0{,}5+2\times0{,}08+3\times0{,}3=-0{,}24-0{,}5+0{,}16+0{,}9=0{,}32$.\par
+$\sum x_i^2p_i=4\times0{,}12+1\times0{,}5+4\times0{,}08+9\times0{,}3=0{,}48+0{,}5+0{,}32+2{,}7=4$.\par
+$V=4-(0{,}32)^2=4-0{,}1024=3{,}8976\approx\bx{3{,}89}$. \ (الاقتراح (جـ) $=4$ خطأ شائع: نسيان طرح $E^2$.)
+
+\QQ{4} (ب): الحوادث البسيطة متساوية الاحتمال ومجموع احتمالاتها $1$ ، فكل منها احتمالها \bx{\dfrac{1}{12}}.
+
+\QQ{5} (ب): $\overline A$ هي مخارج $\Omega$ التي لا تنتمي إلى $A$: \bx{\overline A=\{1;4;6\}}.
+
+\QQ{6} (جـ): في آن واحد: $\dfrac{5\times4}{2}=\bx{10}$.
+\end{hal}
+\begin{molahada}
+في النص الأصلي للسؤال 1 كُتب $P(A\cup B)=0{,}45$ وهذا مستحيل لأن $P(A\cup B)\ge P(B)=0{,}5$ ، فصححناه إلى $0{,}65$.
+\end{molahada}
+
+% ------------------------------------------------- 5
+\begin{tamrin}{صحيح أم خطأ}
+\textbf{I)} $A$ و $B$ حادثتان بحيث: $P(A\cup B)=0{,}76$ ، $P(B)=0{,}4$ و $P(\overline A)=0{,}4$. \ عيّن الاقتراح الصحيح من بين المقترحين:
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|C|}\hline
+\ar{المقترح ب} & \ar{المقترح أ} & القضية\\
+\hline
+$0{,}42$ & $0{,}24$ & $P(A\cap B)$ يساوي\\
+\hline
+$0{,}16$ & $0{,}61$ & $P(\overline A\cap B)$ يساوي\\
+\hline
+$0{,}67$ & $0{,}76$ & $P(\overline A\cup\overline B)$ يساوي\\
+\hline
+$0{,}24$ & $0{,}42$ & $P(\overline A\cap\overline B)$ يساوي\\
+\hline
+\end{tabular}
+\end{center}
+\textbf{II)} $\alpha$ و $\beta$ من $\R$. \ $X$ متغير عشوائي معرّف بقانون احتماله التالي ، وأمله الرياضياتي $E(X)=-\dfrac{7}{12}$:
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|C|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $-2$ & $-1$ & $\beta$ & $2$\\
+\hline
+$P(X=x_i)$ & $\frac12$ & $\frac16$ & $\frac{1}{24}$ & $\alpha$\\
+\hline
+\end{tabular}
+\end{center}
+أجب بصحيح أو خطأ مع التبرير:
+\begin{enumerate}
+\item $\alpha=\dfrac{7}{24}$ و $\beta=1$.
+\item $V(X)=3$.
+\item $\sigma(X)=1{,}5$.
+\item $E(2X-3)=-\dfrac{25}{6}$.
+\item $\sigma(-2X+3)=2\,\sigma(X)$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{I)} $P(A)=1-0{,}4=0{,}6$.
+\begin{itemize}
+\item $P(A\cap B)=P(A)+P(B)-P(A\cup B)=0{,}6+0{,}4-0{,}76=0{,}24$: \ \textbf{المقترح أ}.
+\item الحادثتان $A\cap B$ و $\overline A\cap B$ منفصلتان واتحادهما $B$ ، إذن $P(\overline A\cap B)=P(B)-P(A\cap B)=0{,}4-0{,}24=0{,}16$: \ \textbf{المقترح ب}.
+\item $P(\overline A\cup\overline B)=P\big(\overline{A\cap B}\big)=1-0{,}24=0{,}76$: \ \textbf{المقترح أ}.
+\item $P(\overline A\cap\overline B)=P\big(\overline{A\cup B}\big)=1-0{,}76=0{,}24$: \ \textbf{المقترح ب}.
+\end{itemize}
+
+\textbf{II) 1. خطأ:} $\alpha=1-\dfrac12-\dfrac16-\dfrac1{24}=\dfrac{24-12-4-1}{24}=\dfrac{7}{24}$ \ (صحيح).\par
+$E(X)=-2\times\dfrac12-1\times\dfrac16+\dfrac{\beta}{24}+2\times\dfrac{7}{24}=-1-\dfrac16+\dfrac{\beta}{24}+\dfrac{7}{12}=-\dfrac{7}{12}+\dfrac{\beta}{24}$.\par
+$E(X)=-\dfrac7{12}\iff\dfrac{\beta}{24}=0\iff\beta=0$ ، وليس $1$.
+
+\QQ{2} \textbf{خطأ:} مع $\beta=0$: $\sum x_i^2p_i=4\times\dfrac12+1\times\dfrac16+0+4\times\dfrac{7}{24}=2+\dfrac16+\dfrac76=\dfrac{10}{3}$.\par
+$V(X)=\dfrac{10}{3}-\dfrac{49}{144}=\dfrac{480-49}{144}=\dfrac{431}{144}\approx2{,}99\ne3$.
+
+\QQ{3} \textbf{خطأ:} $\sigma(X)=\sqrt{\dfrac{431}{144}}=\dfrac{\sqrt{431}}{12}\approx1{,}73$.
+
+\QQ{4} \textbf{صحيح:} $E(2X-3)=2E(X)-3=-\dfrac{7}{6}-3=-\dfrac{25}{6}$.
+
+\QQ{5} \textbf{صحيح:} $\sigma(aX+b)=|a|\,\sigma(X)$ ، ومنه $\sigma(-2X+3)=|-2|\,\sigma(X)=2\sigma(X)\approx3{,}46$.
+\end{hal}
+
+% =====================================================================
+\section{الحوادث وتساوي الاحتمال وخواص الاحتمال}
+% ------------------------------------------------- 6
+\begin{tamrin}{احتمالات من جدول إحصائي}
+الجدول التالي يعطي توزيع $500$ تلميذ في إحدى الثانويات:
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|C|c|c|c|}\hline
+\rowcolor{cSec!12}التلميذ & \ar{ذكور} & \ar{إناث} & \ar{المجموع}\\
+\hline
+يملك هاتفاً نقالاً & $240$ & $60$ & $300$\\
+\hline
+لا يملك هاتفاً نقالاً & $80$ & $120$ & $200$\\
+\hline
+\ar{المجموع} & $320$ & $180$ & $500$\\
+\hline
+\end{tabular}
+\end{center}
+نختار عشوائياً تلميذاً من الثانوية ونسمي الحوادث: \ $H$: «التلميذ المختار ذكر» ، \ $F$: «التلميذ المختار أنثى» ، \ $S$: «التلميذ يملك هاتفاً نقالاً».
+\begin{enumerate}
+\item احسب $P(H)$ ، $P(F)$ و $P(S)$.
+\item احسب احتمال الحوادث التالية:
+\begin{sq}
+\qa «التلميذ المختار أنثى وتملك هاتفاً نقالاً».
+\qb «التلميذ المختار لا يملك هاتفاً نقالاً».
+\qc «التلميذ المختار ذكر أو يملك هاتفاً نقالاً».
+\end{sq}
+\item نفرض أن التلميذ المختار لا يملك هاتفاً نقالاً. ما احتمال أن يكون هذا التلميذ ذكراً؟
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+الاختيار عشوائي ، فالتلاميذ الـ $500$ متساوو الاحتمال: \ $\card\Omega=500$. \ عدد الذكور: $240+80=320$ ، عدد الإناث: $60+120=180$.
+
+\QQ{1} $P(H)=\dfrac{320}{500}=\bx{0{,}64}$ ، \quad $P(F)=\dfrac{180}{500}=\bx{0{,}36}$ ، \quad $P(S)=\dfrac{240+60}{500}=\dfrac{300}{500}=\bx{0{,}6}$.
+
+\QQ{2} \pa $P(F\cap S)=\dfrac{60}{500}=\bx{0{,}12}$.
+\pb $P(\overline S)=1-P(S)=1-0{,}6=\bx{0{,}4}$.
+\pc $P(H\cap S)=\dfrac{240}{500}=0{,}48$ ، ومنه:
+\[P(H\cup S)=P(H)+P(S)-P(H\cap S)=0{,}64+0{,}6-0{,}48=\bx{0{,}76}.\]
+(تحقق: العكسية هي «أنثى لا تملك هاتفاً»: $1-\dfrac{120}{500}=0{,}76$ \ok.)
+
+\QQ{3} نعلم أن التلميذ من بين الـ $200$ الذين لا يملكون هاتفاً ، فمجموعة الإمكانيات تصبح هؤلاء الـ $200$ (متساوو الاحتمال) ، والذكور منهم $80$:
+\[p=\frac{80}{200}=\bx{0{,}4}.\]
+\end{hal}
+
+% ------------------------------------------------- 7
+\begin{tamrin}{سحب كرية ثم كريتين مع الإرجاع}
+كيس يحتوي على كريتين بيضاوين $B_1$ ، $B_2$ ، وثلاث كريات حمراء $R_0$ ، $R_1$ ، $R_3$ ، وكريتين سوداوين $N_2$ ، $N_3$ (الرقم يمثل الرقم المسجل على الكرية). الكريات لا نفرق بينها عند اللمس.\par
+\textbf{الجزء الأول:} نسحب عشوائياً من الكيس كرية واحدة.
+\begin{enumerate}
+\item عيّن مجموعة إمكانيات الحادثتين $A$ و $B$ حيث: \ $A$: «الكرية المسحوبة تحمل رقماً من مضاعفات $3$» ، \ $B$: «الكرية المسحوبة تحمل رقماً أولياً».
+\item احسب كلاً من: $P(A)$ ، $P(B)$ ، $P(A\cap B)$ ، ثم استنتج $P(A\cup B)$ و $P\big(\overline B\big)$.
+\end{enumerate}
+\textbf{الجزء الثاني:} نسحب عشوائياً كريتين من الكيس على التوالي مع إرجاع الكرية قبل السحب الموالي.
+\begin{enumerate}[resume]
+\item ما عدد النتائج الممكنة؟ \ احسب احتمال الحصول على كريتين تحملان نفس الرقم.
+\item ليكن $X$ المتغير العشوائي الذي يرفق بكل عملية سحب جداء الرقمين الظاهرين.
+\begin{sq}
+\qa عيّن قيم المتغير العشوائي $X$ وقانون احتماله.
+\qb احسب الأمل الرياضياتي $E(X)$.
+\qc احسب: $P\big(-2023X^2+2022X+2006>0\big)$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} الأرقام: $B_1\to1$ ، $B_2\to2$ ، $R_0\to0$ ، $R_1\to1$ ، $R_3\to3$ ، $N_2\to2$ ، $N_3\to3$. \ $\card\Omega=7$ (متساوية الاحتمال).\par
+مضاعفات $3$ (و $0$ مضاعف لكل عدد): \bx{A=\{R_0;R_3;N_3\}} ؛ \quad الأعداد الأولية ($2$ و $3$): \bx{B=\{B_2;R_3;N_2;N_3\}}.
+
+\QQ{2} $P(A)=\dfrac37$ ، \ $P(B)=\dfrac47$ ، \ $A\cap B=\{R_3;N_3\}$: $P(A\cap B)=\dfrac27$.\par
+$P(A\cup B)=\dfrac37+\dfrac47-\dfrac27=\bx{\dfrac57}$ \ ؛ \ $P\big(\overline B\big)=1-\dfrac47=\bx{\dfrac37}$.
+
+\QQ{3} مع الإرجاع: \textbf{كل خانات الجدول} مخارج: $\card\Omega=7\times7=\bx{49}$. \ نكتب في كل خانة جداء الرقمين (قيمة $X$) ، والخانات الملونة: «نفس الرقم».
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|}\hline
+\rowcolor{cSec!12}$\text{I}\backslash\text{II}$ & $B_1$ & $B_2$ & $R_0$ & $R_1$ & $R_3$ & $N_2$ & $N_3$\\\hline
+\cellcolor{cSec!12}$B_1$ & \cellcolor{cRem!25}$1$ & $2$ & $0$ & \cellcolor{cRem!25}$1$ & $3$ & $2$ & $3$\\\hline
+\cellcolor{cSec!12}$B_2$ & $2$ & \cellcolor{cRem!25}$4$ & $0$ & $2$ & $6$ & \cellcolor{cRem!25}$4$ & $6$\\\hline
+\cellcolor{cSec!12}$R_0$ & $0$ & $0$ & \cellcolor{cRem!25}$0$ & $0$ & $0$ & $0$ & $0$\\\hline
+\cellcolor{cSec!12}$R_1$ & \cellcolor{cRem!25}$1$ & $2$ & $0$ & \cellcolor{cRem!25}$1$ & $3$ & $2$ & $3$\\\hline
+\cellcolor{cSec!12}$R_3$ & $3$ & $6$ & $0$ & $3$ & \cellcolor{cRem!25}$9$ & $6$ & \cellcolor{cRem!25}$9$\\\hline
+\cellcolor{cSec!12}$N_2$ & $2$ & \cellcolor{cRem!25}$4$ & $0$ & $2$ & $6$ & \cellcolor{cRem!25}$4$ & $6$\\\hline
+\cellcolor{cSec!12}$N_3$ & $3$ & $6$ & $0$ & $3$ & \cellcolor{cRem!25}$9$ & $6$ & \cellcolor{cRem!25}$9$\\\hline
+\end{tabular}\end{LTR}\end{center}
+
+الرقم $0$: كرية واحدة ؛ الرقم $1$: كريتان ؛ الرقم $2$: كريتان ؛ الرقم $3$: كريتان. \ عدد حالات نفس الرقم: $1\times1+2\times2+2\times2+2\times2=13$ ، \ الاحتمال: \bx{\dfrac{13}{49}}.
+
+\QQ{4} \pa نحسب الجداء حسب الرقمين (عدد الكريات: $0\to1$ ، $1\to2$ ، $2\to2$ ، $3\to2$):
+\begin{itemize}
+\item $X=0$: الكرية $R_0$ في السحب الأول أو الثاني: $49-6\times6=13$ حالة.
+\item $X=1$: $(1;1)$: $2\times2=4$ \ ؛ \ $X=2$: $(1;2)$ أو $(2;1)$: $2\times2+2\times2=8$.
+\item $X=3$: $(1;3)$ أو $(3;1)$: $8$ \ ؛ \ $X=4$: $(2;2)$: $4$ \ ؛ \ $X=6$: $(2;3)$ أو $(3;2)$: $8$ \ ؛ \ $X=9$: $(3;3)$: $4$.
+\end{itemize}
+$X(\Omega)=\{0;1;2;3;4;6;9\}$ \ (تحقق: $13+4+8+8+4+8+4=49$):
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|C|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $0$ & $1$ & $2$ & $3$ & $4$ & $6$ & $9$\\
+\hline
+$P(X=x_i)$ & $\frac{13}{49}$ & $\frac{4}{49}$ & $\frac{8}{49}$ & $\frac{8}{49}$ & $\frac{4}{49}$ & $\frac{8}{49}$ & $\frac{4}{49}$\\
+\hline
+\end{tabular}
+\end{center}
+\pb $E(X)=\dfrac{0+4+16+24+16+48+36}{49}=\bx{\dfrac{144}{49}\approx2{,}94}$.
+\pc كثير الحدود $-2023x^2+2022x+2006$ مميزه $\Delta=2022^2+4\times2023\times2006>0$ ، وجذراه $x_1\approx-0{,}61$ و $x_2\approx1{,}61$ ، وهو موجب بين الجذرين (عكس إشارة $a=-2023$).\par
+قيم $X$ الواقعة في $]x_1;x_2[$ هي $0$ و $1$ فقط ، إذن:
+\[P\big(-2023X^2+2022X+2006>0\big)=P(X=0)+P(X=1)=\frac{13}{49}+\frac{4}{49}=\bx{\frac{17}{49}}.\]
+\end{hal}
+
+% ------------------------------------------------- 8
+\begin{tamrin}{رمي نرد مرتين}
+نرمي زهرة نرد متوازنة ذات $6$ أوجه مرقمة من $1$ إلى $6$ للمرة الأولى ونسجل الرقم $\alpha$ ، ثم نرميها مرة ثانية ونسجل الرقم $\beta$.
+\begin{enumerate}
+\item احسب احتمال كل حادثة مما يلي:
+\begin{sq}
+\qa $A$: «$\alpha$ و $\beta$ يحققان المساواة $2\alpha+1=\beta$».
+\qb $B$: «$\alpha$ و $\beta$ يحققان المتباينة $|\alpha-\beta|<1$».
+\qc $C$: «$\alpha$ و $\beta$ يحققان المتباينة $|\alpha-\beta|>5$».
+\end{sq}
+\item $X$ المتغير العشوائي الذي يرفق بكل رميتين العدد $|\alpha-\beta|$.
+\begin{sq}
+\qa ما هي القيم الممكنة لـ $X$؟
+\qb عيّن قانون احتمال $X$ ثم احسب $E(X)$.
+\end{sq}
+\item نعتبر المعادلة: $x^2+\alpha x+\beta=0$ \ ...$(E)$. \ ليكن $Y$ المتغير العشوائي الذي يرفق بكل رميتين عدد حلول المعادلة $(E)$ في $\R$. \ عرّف قانون احتمال $Y$ ثم احسب أمله الرياضياتي.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+$\card\Omega=6\times6=36$ ثنائية $(\alpha;\beta)$ متساوية الاحتمال (نرد متوازن).
+
+\QQ{1} \pa $\beta=2\alpha+1\le6$ يعطي: $\alpha=1\Rightarrow\beta=3$ ؛ \ $\alpha=2\Rightarrow\beta=5$. \ $A=\{(1;3);(2;5)\}$: \ $P(A)=\dfrac{2}{36}=\bx{\dfrac{1}{18}}$.
+\pb $|\alpha-\beta|$ عدد طبيعي ، و $|\alpha-\beta|<1\iff\alpha=\beta$: $6$ حالات ، \ $P(B)=\bx{\dfrac16}$.
+\pc أكبر قيمة لـ $|\alpha-\beta|$ هي $6-1=5$ ، إذن $C$ حادثة مستحيلة: \ $P(C)=\bx{0}$.
+
+\QQ{2} \pa \bx{X(\Omega)=\{0;1;2;3;4;5\}}.
+\pb جدول قيم $|\alpha-\beta|$:
+\begin{center}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$\beta\backslash\alpha$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\
+\hline
+$1$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$\\
+\hline
+$2$ & $1$ & $0$ & $1$ & $2$ & $3$ & $4$\\
+\hline
+$3$ & $2$ & $1$ & $0$ & $1$ & $2$ & $3$\\
+\hline
+$4$ & $3$ & $2$ & $1$ & $0$ & $1$ & $2$\\
+\hline
+$5$ & $4$ & $3$ & $2$ & $1$ & $0$ & $1$\\
+\hline
+$6$ & $5$ & $4$ & $3$ & $2$ & $1$ & $0$\\
+\hline
+\end{tabular}
+\end{center}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$\\
+\hline
+$P(X=x_i)$ & $\frac{6}{36}$ & $\frac{10}{36}$ & $\frac{8}{36}$ & $\frac{6}{36}$ & $\frac{4}{36}$ & $\frac{2}{36}$\\
+\hline
+\end{tabular}
+\end{center}
+$E(X)=\dfrac{0+10+16+18+16+10}{36}=\dfrac{70}{36}=\bx{\dfrac{35}{18}\approx1{,}94}$.
+
+\QQ{3} مميز $(E)$: $\Delta=\alpha^2-4\beta$. \ $Y=2$ إذا $\Delta>0$ ، $Y=1$ إذا $\Delta=0$ ، $Y=0$ إذا $\Delta<0$.
+\begin{itemize}
+\item $\Delta=0\iff\alpha^2=4\beta$: $(2;1)$ و $(4;4)$: \ حالتان.
+\item $\Delta>0\iff\beta<\dfrac{\alpha^2}{4}$: \ $\alpha=1$: لا شيء ؛ $\alpha=2$: لا شيء ($\beta<1$) ؛ $\alpha=3$: $\beta\in\{1;2\}$ ؛ $\alpha=4$: $\beta\in\{1;2;3\}$ ؛ $\alpha=5$: $\beta\le6$: $6$ قيم ؛ $\alpha=6$: $6$ قيم. \ المجموع: $2+3+6+6=17$.
+\item $\Delta<0$: $36-17-2=17$ حالة.
+\end{itemize}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|C|c|c|c|}\hline
+\rowcolor{cSec!12}$y_i$ & $0$ & $1$ & $2$\\
+\hline
+$P(Y=y_i)$ & $\frac{17}{36}$ & $\frac{2}{36}$ & $\frac{17}{36}$\\
+\hline
+\end{tabular}
+\end{center}
+$E(Y)=\dfrac{0+2+34}{36}=\bx{1}$.
+\end{hal}
+
+% =====================================================================
+\section{أنواع السحب والمتغير العشوائي}
+% ------------------------------------------------- 9
+\begin{tamrin}{سحب مع الإرجاع ثم سحب في آن واحد}
+في صندوق كريتان لونهما أحمر ، وثلاث كريات لونها أخضر ، وكرية سوداء (الكريات لا نفرق بينها عند اللمس).
+\begin{enumerate}
+\item نسحب عشوائياً كريتين على التوالي مع الإرجاع.
+\begin{sq}
+\qa ما هو عدد الإمكانيات؟
+\qb احسب احتمال الحوادث: $A$: «كريتان لونهما أحمر» ، $B$: «كريتان من نفس اللون» ، $C$: «كريتان مختلفتان في اللون» ، $D$: «كرية خضراء على الأقل».
+\qc ليكن $X$ المتغير العشوائي الذي يرفق بكل سحب عدد الكريات الخضراء المسحوبة. عرّف قانون احتماله ، واحسب أمله الرياضياتي وتباينه وانحرافه المعياري.
+\end{sq}
+\item نسحب الآن عشوائياً كريتين في آن واحد من هذا الصندوق. أعد الإجابة على الأسئلة السابقة.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+نرقّم الكريات: $R_1$ ، $R_2$ ، $V_1$ ، $V_2$ ، $V_3$ ، $N$ (ست كريات).
+
+\textbf{1.} \pa سحب على التوالي مع الإرجاع: \ $\card\Omega=6\times6=\bx{36}$ (متساوية الاحتمال). \ نكتب في كل خانة عدد الكريات الخضراء (قيمة $X$) ، والخانات الملونة: «نفس اللون» ($B$):
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|}\hline
+\rowcolor{cSec!12}$\text{I}\backslash\text{II}$ & $R_1$ & $R_2$ & $V_1$ & $V_2$ & $V_3$ & $N$\\\hline
+\cellcolor{cSec!12}$R_1$ & \cellcolor{cRem!25}$0$ & \cellcolor{cRem!25}$0$ & $1$ & $1$ & $1$ & $0$\\\hline
+\cellcolor{cSec!12}$R_2$ & \cellcolor{cRem!25}$0$ & \cellcolor{cRem!25}$0$ & $1$ & $1$ & $1$ & $0$\\\hline
+\cellcolor{cSec!12}$V_1$ & $1$ & $1$ & \cellcolor{cRem!25}$2$ & \cellcolor{cRem!25}$2$ & \cellcolor{cRem!25}$2$ & $1$\\\hline
+\cellcolor{cSec!12}$V_2$ & $1$ & $1$ & \cellcolor{cRem!25}$2$ & \cellcolor{cRem!25}$2$ & \cellcolor{cRem!25}$2$ & $1$\\\hline
+\cellcolor{cSec!12}$V_3$ & $1$ & $1$ & \cellcolor{cRem!25}$2$ & \cellcolor{cRem!25}$2$ & \cellcolor{cRem!25}$2$ & $1$\\\hline
+\cellcolor{cSec!12}$N$ & $0$ & $0$ & $1$ & $1$ & $1$ & \cellcolor{cRem!25}$0$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\pb \begin{itemize}
+\item $A$: $2\times2=4$ حالات: \ $P(A)=\dfrac{4}{36}=\bx{\dfrac19}$.
+\item $B$: (أحمر ، أحمر) أو (أخضر ، أخضر) أو (أسود ، أسود): $4+9+1=14$: \ $P(B)=\dfrac{14}{36}=\bx{\dfrac{7}{18}}$.
+\item $C=\overline B$: \ $P(C)=1-\dfrac{7}{18}=\bx{\dfrac{11}{18}}$.
+\item $\overline D$: «لا توجد كرية خضراء»: $3\times3=9$ حالات ، \ $P(D)=1-\dfrac{9}{36}=\bx{\dfrac34}$.
+\end{itemize}
+\pc $X(\Omega)=\{0;1;2\}$:
+\begin{itemize}
+\item $X=0$: $3\times3=9$ \ ؛ \ $X=2$: $3\times3=9$ \ ؛ \ $X=1$: (خضراء ثم غير خضراء) أو العكس: $3\times3+3\times3=18$.
+\end{itemize}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|C|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $0$ & $1$ & $2$\\
+\hline
+$P(X=x_i)$ & $\frac14$ & $\frac12$ & $\frac14$\\
+\hline
+\end{tabular}
+\end{center}
+$E(X)=0+\dfrac12+\dfrac24=\bx{1}$ ، \ $V(X)=\Big(0+\dfrac12+4\times\dfrac14\Big)-1^2=\bx{\dfrac12}$ ، \ $\sigma(X)=\sqrt{\dfrac12}=\bx{\dfrac{\sqrt2}{2}\approx0{,}71}$.
+
+\textbf{2.} في آن واحد: نحتفظ بما فوق القطر: \ $\card\Omega=\dfrac{6\times5}{2}=\bx{15}$.
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|}\hline
+\rowcolor{cSec!12}$\text{I}\backslash\text{II}$ & $R_1$ & $R_2$ & $V_1$ & $V_2$ & $V_3$ & $N$\\\hline
+\cellcolor{cSec!12}$R_1$ & \cellcolor{gray!20} & \cellcolor{cRem!25}$0$ & $1$ & $1$ & $1$ & $0$\\\hline
+\cellcolor{cSec!12}$R_2$ & \cellcolor{gray!20} & \cellcolor{gray!20} & $1$ & $1$ & $1$ & $0$\\\hline
+\cellcolor{cSec!12}$V_1$ & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{cRem!25}$2$ & \cellcolor{cRem!25}$2$ & $1$\\\hline
+\cellcolor{cSec!12}$V_2$ & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{cRem!25}$2$ & $1$\\\hline
+\cellcolor{cSec!12}$V_3$ & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & $1$\\\hline
+\cellcolor{cSec!12}$N$ & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20}\\\hline
+\end{tabular}\end{LTR}\end{center}
+\begin{itemize}
+\item $A$: الكريتان الحمراوان: حالة واحدة ، \ $P(A)=\bx{\dfrac{1}{15}}$.
+\item $B$: حمراوان ($1$) أو خضراوان ($\dfrac{3\times2}{2}=3$) ، \ $P(B)=\dfrac{4}{15}$ \ ؛ \ $P(C)=1-\dfrac4{15}=\bx{\dfrac{11}{15}}$.
+\item $\overline D$: كريتان من بين الثلاث غير الخضراء: $3$ حالات ، \ $P(D)=1-\dfrac{3}{15}=\bx{\dfrac45}$.
+\item $X=0$: $3$ حالات ؛ \ $X=2$: $3$ حالات ؛ \ $X=1$: خضراء وأخرى غير خضراء: $3\times3=9$.
+\end{itemize}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|C|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $0$ & $1$ & $2$\\
+\hline
+$P(X=x_i)$ & $\frac15$ & $\frac35$ & $\frac15$\\
+\hline
+\end{tabular}
+\end{center}
+$E(X)=\dfrac35+\dfrac25=\bx{1}$ ، \ $V(X)=\Big(\dfrac35+\dfrac45\Big)-1=\bx{\dfrac25}$ ، \ $\sigma(X)=\sqrt{\dfrac25}\approx\bx{0{,}63}$.
+\end{hal}
+
+% ------------------------------------------------- 10
+\begin{tamrin}{سحب دون إرجاع ولعبة}
+كيس به $7$ كريات متماثلة: منها $3$ سوداء و $4$ حمراء. نسحب عشوائياً كريتين على التوالي دون إرجاع.
+\begin{enumerate}
+\item ما هو عدد الإمكانيات؟
+\item احسب احتمال كل حادثة: \ $A$: «سحب كريتين مختلفتين في اللون» ، \ $B$: «سحب كريتين من نفس اللون» ، \ $C$: «الحصول على كرية سوداء على الأقل».
+\item نقترح اللعبة التالية: يدفع اللاعب $\alpha$ دج ($\alpha$ عدد طبيعي) ويسحب كريتين: إذا سحب كريتين سوداوين يحصل على $100$ دج ، وإذا سحب كريتين مختلفتين في اللون يحصل على $50$ دج ، وإذا سحب كريتين حمراوين يخسر ما دفعه. \ ليكن $X$ المتغير العشوائي الذي يمثل ربح أو خسارة اللاعب.
+\begin{sq}
+\qa برّر أن قيم $X$ هي: $\{100-\alpha;\,50-\alpha;\,-\alpha\}$ ، ثم عرّف قانون احتماله.
+\qb أثبت أن: $E(X)=-\alpha+\dfrac{300}{7}$ ، ثم أوجد أكبر قيمة لـ $\alpha$ حتى تكون اللعبة في صالح اللاعب.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} على التوالي دون إرجاع: نشطب القطر: \ $\card\Omega=7\times6=\bx{42}$. \ في كل خانة لونا الكريتين ، والخانات الملونة: «مختلفتان في اللون» ($A$):
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|}\hline
+\rowcolor{cSec!12}$\text{I}\backslash\text{II}$ & $N_1$ & $N_2$ & $N_3$ & $R_1$ & $R_2$ & $R_3$ & $R_4$\\\hline
+\cellcolor{cSec!12}$N_1$ & \cellcolor{gray!20}$\times$ & $NN$ & $NN$ & \cellcolor{cRem!25}$NR$ & \cellcolor{cRem!25}$NR$ & \cellcolor{cRem!25}$NR$ & \cellcolor{cRem!25}$NR$\\\hline
+\cellcolor{cSec!12}$N_2$ & $NN$ & \cellcolor{gray!20}$\times$ & $NN$ & \cellcolor{cRem!25}$NR$ & \cellcolor{cRem!25}$NR$ & \cellcolor{cRem!25}$NR$ & \cellcolor{cRem!25}$NR$\\\hline
+\cellcolor{cSec!12}$N_3$ & $NN$ & $NN$ & \cellcolor{gray!20}$\times$ & \cellcolor{cRem!25}$NR$ & \cellcolor{cRem!25}$NR$ & \cellcolor{cRem!25}$NR$ & \cellcolor{cRem!25}$NR$\\\hline
+\cellcolor{cSec!12}$R_1$ & \cellcolor{cRem!25}$RN$ & \cellcolor{cRem!25}$RN$ & \cellcolor{cRem!25}$RN$ & \cellcolor{gray!20}$\times$ & $RR$ & $RR$ & $RR$\\\hline
+\cellcolor{cSec!12}$R_2$ & \cellcolor{cRem!25}$RN$ & \cellcolor{cRem!25}$RN$ & \cellcolor{cRem!25}$RN$ & $RR$ & \cellcolor{gray!20}$\times$ & $RR$ & $RR$\\\hline
+\cellcolor{cSec!12}$R_3$ & \cellcolor{cRem!25}$RN$ & \cellcolor{cRem!25}$RN$ & \cellcolor{cRem!25}$RN$ & $RR$ & $RR$ & \cellcolor{gray!20}$\times$ & $RR$\\\hline
+\cellcolor{cSec!12}$R_4$ & \cellcolor{cRem!25}$RN$ & \cellcolor{cRem!25}$RN$ & \cellcolor{cRem!25}$RN$ & $RR$ & $RR$ & $RR$ & \cellcolor{gray!20}$\times$\\\hline
+\end{tabular}\end{LTR}\end{center}
+
+\QQ{2} \begin{itemize}
+\item سوداء ثم سوداء: $3\times2=6$ \ ؛ \ حمراء ثم حمراء: $4\times3=12$ \ ؛ \ مختلفتان: $3\times4+4\times3=24$ \ (المجموع $42$ \ok).
+\item $P(A)=\dfrac{24}{42}=\bx{\dfrac47}$ \ ؛ \ $P(B)=\dfrac{6+12}{42}=\bx{\dfrac37}$ \ (ونلاحظ $B=\overline A$).
+\item $\overline C$: «كريتان حمراوان»: \ $P(C)=1-\dfrac{12}{42}=\dfrac{30}{42}=\bx{\dfrac57}$.
+\end{itemize}
+
+\QQ{3} \pa الربح الصافي = ما يحصل عليه $-$ ما دفعه: \ كريتان سوداوان: $100-\alpha$ ؛ مختلفتان: $50-\alpha$ ؛ حمراوان: $0-\alpha=-\alpha$.
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|C|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $100-\alpha$ & $50-\alpha$ & $-\alpha$\\
+\hline
+$P(X=x_i)$ & $\frac{6}{42}=\frac17$ & $\frac{24}{42}=\frac47$ & $\frac{12}{42}=\frac27$\\
+\hline
+\end{tabular}
+\end{center}
+\pb \[E(X)=(100-\alpha)\frac17+(50-\alpha)\frac47-\alpha\times\frac27=\frac{100+200}{7}-\alpha\Big(\frac17+\frac47+\frac27\Big)=\bx{-\alpha+\frac{300}{7}}.\]
+اللعبة في صالح اللاعب $\iff E(X)>0\iff\alpha<\dfrac{300}{7}\approx42{,}86$. \ $\alpha$ عدد طبيعي ، إذن أكبر قيمة هي \bx{\alpha=42\ \text{\ar{دج}}}.
+\end{hal}
+
+% ------------------------------------------------- 11
+\begin{tamrin}{مجموع رقمين}
+كيس به $4$ كرات حمراء تحمل الأرقام $0$ ، $1$ ، $2$ ، $3$ ، وكريتان خضراوان تحملان الرقمين $0$ و $1$ (لا نميز بينها باللمس). نسحب من الكيس كريتين على التوالي دون إرجاع.
+\begin{enumerate}
+\item ما هو عدد الحالات الكلية للسحب؟
+\item احسب احتمال كل من الأحداث الآتية: \ $A$: «الكريتان المسحوبتان من نفس اللون» ، \ $B$: «الكريتان تحملان نفس الرقم» ، \ $C$: «الكريتان مختلفتان في اللون ورقميهما مختلفين» ، \ $D$: «جداء الرقمين المسجلين على الكريتين معدوم».
+\item نعتبر المتغير العشوائي $X$ الذي يربط كل عملية سحب بمجموع الرقمين المسجلين عليهما.
+\begin{sq}
+\qa عيّن قيم المتغير العشوائي $X$.
+\qb عيّن قانون الاحتمال للمتغير العشوائي $X$ ، ثم احسب أمله الرياضياتي $E(X)$.
+\qc احسب احتمال الحدث: «$X^2-X>0$».
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+نرمز للكريات: $R_0$ ، $R_1$ ، $R_2$ ، $R_3$ ، $V_0$ ، $V_1$.
+
+\textbf{1.} دون إرجاع: نشطب القطر: $\card\Omega=6\times5=\bx{30}$. \ في كل خانة مجموع الرقمين (قيمة $X$) ، والخانات الملونة: «نفس الرقم» ($B$):
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|}\hline
+\rowcolor{cSec!12}$\text{I}\backslash\text{II}$ & $R_0$ & $R_1$ & $R_2$ & $R_3$ & $V_0$ & $V_1$\\\hline
+\cellcolor{cSec!12}$R_0$ & \cellcolor{gray!20}$\times$ & $1$ & $2$ & $3$ & \cellcolor{cRem!25}$0$ & $1$\\\hline
+\cellcolor{cSec!12}$R_1$ & $1$ & \cellcolor{gray!20}$\times$ & $3$ & $4$ & $1$ & \cellcolor{cRem!25}$2$\\\hline
+\cellcolor{cSec!12}$R_2$ & $2$ & $3$ & \cellcolor{gray!20}$\times$ & $5$ & $2$ & $3$\\\hline
+\cellcolor{cSec!12}$R_3$ & $3$ & $4$ & $5$ & \cellcolor{gray!20}$\times$ & $3$ & $4$\\\hline
+\cellcolor{cSec!12}$V_0$ & \cellcolor{cRem!25}$0$ & $1$ & $2$ & $3$ & \cellcolor{gray!20}$\times$ & $1$\\\hline
+\cellcolor{cSec!12}$V_1$ & $1$ & \cellcolor{cRem!25}$2$ & $3$ & $4$ & $1$ & \cellcolor{gray!20}$\times$\\\hline
+\end{tabular}\end{LTR}\end{center}
+
+\QQ{2} \begin{itemize}
+\item $A$: حمراوان: $4\times3=12$ ، خضراوان: $2\times1=2$: \ $P(A)=\dfrac{14}{30}=\bx{\dfrac{7}{15}}$.
+\item $B$: الرقمان المتكرران $0$ ($R_0$ ، $V_0$) و $1$ ($R_1$ ، $V_1$): $(R_0;V_0)$ ، $(V_0;R_0)$ ، $(R_1;V_1)$ ، $(V_1;R_1)$: \ $P(B)=\dfrac{4}{30}=\bx{\dfrac{2}{15}}$.
+\item $C$: مختلفتان في اللون: $4\times2+2\times4=16$ ، نطرح منها الحالات الأربع ذات نفس الرقم: $16-4=12$ ، \ $P(C)=\dfrac{12}{30}=\bx{\dfrac25}$.
+\item $\overline D$: الرقمان غير معدومين: نسحب من $\{R_1;R_2;R_3;V_1\}$: $4\times3=12$ ، \ $P(D)=1-\dfrac{12}{30}=\bx{\dfrac35}$.
+\end{itemize}
+
+\QQ{3} \pa الأرقام المتاحة: $0;0;1;1;2;3$ ، أصغر مجموع $0+0=0$ وأكبر مجموع $2+3=5$: \ \bx{X(\Omega)=\{0;1;2;3;4;5\}}.
+\pb نعدّ الحالات (مرتبة):
+\begin{itemize}
+\item $X=0$: $(0;0)$: $2$ \ ؛ \ $X=1$: $(0;1)$ أو $(1;0)$: $2\times2\times2=8$ \ ؛ \ $X=2$: $(0;2)$ ، $(2;0)$ ، $(1;1)$: $2+2+2=6$.
+\item $X=3$: $(0;3)$ ، $(3;0)$ ، $(1;2)$ ، $(2;1)$: $2+2+2+2=8$ \ ؛ \ $X=4$: $(1;3)$ ، $(3;1)$: $4$ \ ؛ \ $X=5$: $(2;3)$ ، $(3;2)$: $2$.
+\end{itemize}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$\\
+\hline
+$P(X=x_i)$ & $\frac{2}{30}$ & $\frac{8}{30}$ & $\frac{6}{30}$ & $\frac{8}{30}$ & $\frac{4}{30}$ & $\frac{2}{30}$\\
+\hline
+\end{tabular}
+\end{center}
+$E(X)=\dfrac{0+8+12+24+16+10}{30}=\dfrac{70}{30}=\bx{\dfrac73\approx2{,}33}$.
+\pc $X^2-X=X(X-1)>0\iff X<0$ أو $X>1$ ، أي $X\ge2$:
+\[P(X^2-X>0)=1-P(X=0)-P(X=1)=1-\frac{2}{30}-\frac{8}{30}=\bx{\frac23}.\]
+\end{hal}
+
+% ------------------------------------------------- 12
+\begin{tamrin}{جداء الكريات المتبقية}
+كيس غير شفاف يحوي $7$ كريات لا نفرق بينها عند اللمس: منها $3$ بيضاء مرقمة $1$ ، $1$ ، $5$ ، وكريتان حمراوان مرقمتان $0$ ، $5$ ، وكريتان خضراوان مرقمتان $1$ ، $5$. \ نسحب كريتين على التوالي دون إرجاع ونسمي الأحداث التالية:\par
+$A$: «الكريتان من نفس اللون» ، $B$: «الكريتان من نفس الرقم» ، $C$: «الكريتان من نفس اللون ونفس الرقم» ، $E$: «جداء الرقمين معدوم» ، $F$: «الكريتان من نفس اللون أو نفس الرقم» ، $G$: «جداء الرقمين غير معدوم».
+\begin{enumerate}
+\item احسب احتمال الأحداث $A$ ، $B$ ، ثم بيّن أن: $P(C)=\dfrac{1}{21}$ و $P(E)=\dfrac27$.
+\item استنتج $P(G)$ و $P(F)$.
+\item نعتبر المتغير العشوائي $X$ الذي يرفق بكل عملية سحب جداء أرقام الكريات المتبقية في الكيس.
+\begin{sq}
+\qa بيّن أن قيم المتغير العشوائي $X$ هي: $\{0;25;125\}$.
+\qb عرّف قانون احتمال المتغير العشوائي $X$ واحسب أمله الرياضياتي.
+\qc احسب احتمال الحدث: $X^3-150X^2+5^5X=0$. \ كيف نسمي هذا الحدث؟
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+$\card\Omega=7\times6=42$. \ الكريات: $B_1$ ، $B_1'$ ، $B_5$ ، $R_0$ ، $R_5$ ، $V_1$ ، $V_5$.
+
+\QQ{1} \begin{itemize}
+\item $A$: بيضاوان $3\times2=6$ ، حمراوان $2$ ، خضراوان $2$: \ $P(A)=\dfrac{10}{42}=\bx{\dfrac{5}{21}}$.
+\item $B$: الرقم $1$ على $3$ كريات ($B_1$ ، $B_1'$ ، $V_1$): $3\times2=6$ ؛ الرقم $5$ على $3$ كريات: $6$ ؛ الرقم $0$ على كرية واحدة: $0$. \ $P(B)=\dfrac{12}{42}=\bx{\dfrac27}$.
+\item $C$: نفس اللون ونفس الرقم: فقط $(B_1;B_1')$ و $(B_1';B_1)$: \ $P(C)=\dfrac{2}{42}=\dfrac{1}{21}$ \ok.
+\item $E$: الكرية $R_0$ مسحوبة (أولى أو ثانية) مع كرية أخرى: $6+6=12$: \ $P(E)=\dfrac{12}{42}=\dfrac27$ \ok.
+\end{itemize}
+\QQ{2} $G=\overline E$: \ $P(G)=1-\dfrac27=\bx{\dfrac57}$. \ $F=A\cup B$ و $C=A\cap B$:
+\[P(F)=P(A)+P(B)-P(C)=\frac{10}{42}+\frac{12}{42}-\frac{2}{42}=\bx{\frac{10}{21}}.\]
+\QQ{3} \pa جداء أرقام الكريات السبع: $1\times1\times5\times0\times5\times1\times5=0$.
+\begin{itemize}
+\item إذا لم تُسحب $R_0$: تبقى في الكيس ، والجداء $X=0$.
+\item إذا سُحبت $R_0$ مع كرية رقمها $1$: تبقى $1;1;5;5;5$ (بعد حذف واحد من الآحاد): $X=125$.
+\item إذا سُحبت $R_0$ مع كرية رقمها $5$: يبقى رقمان $5$ وثلاثة آحاد: $X=25$.
+\end{itemize}
+إذن \bx{X(\Omega)=\{0;25;125\}}.
+\pb $P(X=0)=P(G)=\dfrac{30}{42}$ ؛ \ $X=25$: $R_0$ مع إحدى الكريات $B_5$ ، $R_5$ ، $V_5$ بترتيبين: $6$ ؛ \ $X=125$: $R_0$ مع إحدى $B_1$ ، $B_1'$ ، $V_1$: $6$.
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|C|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $0$ & $25$ & $125$\\
+\hline
+$P(X=x_i)$ & $\frac57$ & $\frac17$ & $\frac17$\\
+\hline
+\end{tabular}
+\end{center}
+$E(X)=0+\dfrac{25}{7}+\dfrac{125}{7}=\bx{\dfrac{150}{7}\approx21{,}43}$.
+\pc $X^3-150X^2+5^5X=X\big(X^2-150X+3125\big)$. \ $\Delta=22500-12500=10000=100^2$ ، والجذران $\dfrac{150-100}{2}=25$ و $\dfrac{150+100}{2}=125$.\par
+إذن المعادلة تتحقق من أجل $X\in\{0;25;125\}=X(\Omega)$: \ الاحتمال يساوي \bx{1} ، وهي \textbf{حادثة أكيدة}.
+\end{hal}
+
+% ------------------------------------------------- 13
+\begin{tamrin}{متغير عشوائي معرّف بقاعدتين}
+كيس غير شفاف به $5$ كريات متماثلة: كريتان بيضاوان مرقمتان بـ $1$ و $0$ ، وكرية خضراء مرقمة بـ $-1$ ، وكريتان حمراوان مرقمتان بـ $1$ ، $2$. نسحب عشوائياً على التوالي دون إرجاع كريتين ونسجل النتائج الظاهرة.
+\begin{enumerate}
+\item شكّل مخططاً توضح فيه جميع الحالات الممكنة.
+\item احسب احتمال الحادثة $A$: «الحصول على كريتين مختلفتين في اللون وتحملان نفس الرقم».
+\item ليكن $X$ المتغير العشوائي المعرف كما يلي: إذا كانت الكريتان من نفس اللون يحدد $X$ جداء رقميهما ، وإذا كانت مختلفتين في اللون يحدد $X$ مجموع رقميهما.
+\begin{sq}
+\qa عيّن القيم الممكنة لـ $X$ ، ثم أوجد قانون احتماله.
+\qb احسب الأمل الرياضياتي $E(X)$ و $P(X\le1)$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} الكريات: $B_1$ ، $B_0$ ، $V_{-1}$ ، $R_1$ ، $R_2$. \ دون إرجاع: نشطب القطر: $\card\Omega=5\times4=20$. \ نكتب في كل خانة قيمة $X$ ، والخانات الملونة هي الحادثة $A$:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|}\hline
+\rowcolor{cSec!12}$\text{I}\backslash\text{II}$ & $B_1$ & $B_0$ & $V_{-1}$ & $R_1$ & $R_2$\\\hline
+\cellcolor{cSec!12}$B_1$ & \cellcolor{gray!20}$\times$ & $0$ & $0$ & \cellcolor{cRem!25}$2$ & $3$\\\hline
+\cellcolor{cSec!12}$B_0$ & $0$ & \cellcolor{gray!20}$\times$ & $-1$ & $1$ & $2$\\\hline
+\cellcolor{cSec!12}$V_{-1}$ & $0$ & $-1$ & \cellcolor{gray!20}$\times$ & $0$ & $1$\\\hline
+\cellcolor{cSec!12}$R_1$ & \cellcolor{cRem!25}$2$ & $1$ & $0$ & \cellcolor{gray!20}$\times$ & $2$\\\hline
+\cellcolor{cSec!12}$R_2$ & $3$ & $2$ & $1$ & $2$ & \cellcolor{gray!20}$\times$\\\hline
+\end{tabular}\end{LTR}\end{center}
+(مثلاً: $B_1$ و $B_0$ من نفس اللون: $X=1\times0=0$ ؛ \ $R_1$ و $R_2$: $X=1\times2=2$ ؛ \ $B_1$ و $R_2$: $X=1+2=3$.)
+
+\QQ{2} مختلفتان في اللون ونفس الرقم: $(B_1;R_1)$ و $(R_1;B_1)$: \ $P(A)=\dfrac{2}{20}=\bx{\dfrac{1}{10}}$.
+
+\QQ{3} \pa من الجدول: \ $X(\Omega)=\{-1;0;1;2;3\}$:
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|C|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $-1$ & $0$ & $1$ & $2$ & $3$\\
+\hline
+$P(X=x_i)$ & $\frac{2}{20}$ & $\frac{6}{20}$ & $\frac{4}{20}$ & $\frac{6}{20}$ & $\frac{2}{20}$\\
+\hline
+\end{tabular}
+\end{center}
+\pb $E(X)=\dfrac{-2+0+4+12+6}{20}=\dfrac{20}{20}=\bx{1}$ \ ؛ \ $P(X\le1)=\dfrac{2+6+4}{20}=\bx{\dfrac35}$.
+\end{hal}
+
+% ------------------------------------------------- 14
+\begin{tamrin}{سحب في آن واحد: عدد الكريات المتبقية}
+يحتوي كيس على أربع كريات حمراء تحمل الأرقام $0$ ، $2$ ، $3$ ، $5$ ، وثلاث كريات خضراء تحمل الأرقام $1$ ، $2$ ، $7$ (لا نفرق بين الكريات باللمس). \ نسحب كريتين عشوائياً وفي آن واحد من هذا الكيس ونسجل رقميهما ولونيهما.
+\begin{enumerate}
+\item عيّن عدد عناصر مجموعة الإمكانيات $\Omega$.
+\item احسب احتمالات الحوادث التالية: \ $A$: «الحصول على كريتين من نفس اللون» ، \ $B$: «الحصول على كرية حمراء على الأقل» ، \ $C$: «الحصول على كريتين تحملان نفس الرقم» ، \ $D$: «الحصول على كريتين مجموع رقميهما عدد أولي».
+\item ليكن $X$ المتغير العشوائي الذي يرفق بكل عملية سحب عدد الكريات الحمراء المتبقية في الكيس.
+\begin{sq}
+\qa عيّن قيم $X$ وعرّف قانون احتماله.
+\qb احسب الأمل الرياضياتي $E(X)$ والانحراف المعياري $\sigma(X)$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} سحب في آن واحد من $7$ كريات: نحتفظ بما فوق القطر: \ $\card\Omega=\dfrac{7\times6}{2}=\bx{21}$. \ في كل خانة مجموع الرقمين ، والخانات الملونة: «المجموع عدد أولي» ($D$):
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|}\hline
+\rowcolor{cSec!12}$\text{I}\backslash\text{II}$ & $R_0$ & $R_2$ & $R_3$ & $R_5$ & $V_1$ & $V_2$ & $V_7$\\\hline
+\cellcolor{cSec!12}$R_0$ & \cellcolor{gray!20} & \cellcolor{cRem!25}$2$ & \cellcolor{cRem!25}$3$ & \cellcolor{cRem!25}$5$ & $1$ & \cellcolor{cRem!25}$2$ & \cellcolor{cRem!25}$7$\\\hline
+\cellcolor{cSec!12}$R_2$ & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{cRem!25}$5$ & \cellcolor{cRem!25}$7$ & \cellcolor{cRem!25}$3$ & $4$ & $9$\\\hline
+\cellcolor{cSec!12}$R_3$ & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & $8$ & $4$ & \cellcolor{cRem!25}$5$ & $10$\\\hline
+\cellcolor{cSec!12}$R_5$ & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & $6$ & \cellcolor{cRem!25}$7$ & $12$\\\hline
+\cellcolor{cSec!12}$V_1$ & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{cRem!25}$3$ & $8$\\\hline
+\cellcolor{cSec!12}$V_2$ & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & $9$\\\hline
+\cellcolor{cSec!12}$V_7$ & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20}\\\hline
+\end{tabular}\end{LTR}\end{center}
+
+\QQ{2} \begin{itemize}
+\item $A$: حمراوان $\dfrac{4\times3}{2}=6$ ، خضراوان $\dfrac{3\times2}{2}=3$: \ $P(A)=\dfrac{9}{21}=\bx{\dfrac37}$.
+\item $\overline B$: «كريتان خضراوان»: $3$ ، \ $P(B)=1-\dfrac{3}{21}=\dfrac{18}{21}=\bx{\dfrac67}$.
+\item $C$: الرقم $2$ وحده مكرر (حمراء وخضراء): حالة واحدة ، \ $P(C)=\bx{\dfrac{1}{21}}$.
+\item $D$: نعدد الأزواج ذات المجموع الأولي ($2$ ، $3$ ، $5$ ، $7$ ، $11$ ، $\ldots$):
+$\{0;2_R\}$ ، $\{0;3\}$ ، $\{0;5\}$ ، $\{0;2_V\}$ ، $\{0;7\}$ ، $\{2_R;3\}$ ، $\{2_R;5\}$ ، $\{2_R;1\}$ ، $\{3;2_V\}$ ، $\{5;2_V\}$ ، $\{1;2_V\}$: \ $11$ حالة ،
+\ $P(D)=\bx{\dfrac{11}{21}}$.
+\end{itemize}
+
+\QQ{3} \pa إذا سحبنا $k$ كرية حمراء ($k=0$ ، $1$ أو $2$) يبقى $4-k$ كرية حمراء: \ $X(\Omega)=\{2;3;4\}$.
+\begin{itemize}
+\item $X=2$ (حمراوان مسحوبتان): $6$ \ ؛ \ $X=3$ (حمراء وخضراء): $4\times3=12$ \ ؛ \ $X=4$ (خضراوان): $3$.
+\end{itemize}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|C|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $2$ & $3$ & $4$\\
+\hline
+$P(X=x_i)$ & $\frac{6}{21}=\frac27$ & $\frac{12}{21}=\frac47$ & $\frac{3}{21}=\frac17$\\
+\hline
+\end{tabular}
+\end{center}
+\pb $E(X)=\dfrac{4+12+4}{7}=\bx{\dfrac{20}{7}\approx2{,}86}$.\par
+$\sum x_i^2p_i=\dfrac{8+36+16}{7}=\dfrac{60}{7}$ ، \ $V(X)=\dfrac{60}{7}-\dfrac{400}{49}=\dfrac{420-400}{49}=\dfrac{20}{49}$ ، \ $\sigma(X)=\dfrac{\sqrt{20}}{7}=\bx{\dfrac{2\sqrt5}{7}\approx0{,}64}$.
+\end{hal}
+\begin{molahada}
+في بعض الحلول المتداولة لهذا التمرين وُجد $P(D)=\dfrac{12}{21}$ و $\sigma(X)\approx0{,}62$ (بسبب تدوير $E(X)$ قبل حساب التباين). \ القيمتان الصحيحتان: $P(D)=\dfrac{11}{21}$ و $\sigma(X)=\dfrac{2\sqrt5}{7}\approx0{,}64$.
+\end{molahada}
+
+% ------------------------------------------------- 15
+\begin{tamrin}{بطاقات مرقمة}
+يحوي صندوق $5$ بطاقات متشابهة مرقمة من $5$ إلى $9$ ، لا نميز بينها باللمس. نسحب عشوائياً وفي آن واحد بطاقتين من الصندوق.
+\begin{enumerate}
+\item
+\begin{sq}
+\qa أنشئ مخططاً تبين فيه كل الحالات الممكنة.
+\qb احسب احتمال الأحداث التالية: \ $A$: «إحدى البطاقتين المسحوبتين على الأقل تحمل رقماً يقبل القسمة على $3$» ، \ $B$: «سحب بطاقتين تحملان رقمين فرديين» ، \ $C$: «سحب بطاقتين مجموع رقميهما عدد أولي».
+\end{sq}
+\item نعرّف المتغير العشوائي $X$ الذي يرفق بكل عملية سحب مجموع الرقمين الظاهرين.
+\begin{sq}
+\qa عيّن مجموعة القيم الممكنة للمتغير العشوائي $X$.
+\qb عرّف قانون احتمال $X$ ، ثم احسب أمله الرياضياتي $E(X)$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \pa في آن واحد: نحتفظ بما فوق القطر: $\dfrac{5\times4}{2}=10$ حالات. \ نكتب المجموع في كل خانة ، والخانات الملونة: «المجموع عدد أولي» ($C$):
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\centering\arraybackslash}m{0.9cm}|>{\centering\arraybackslash}m{0.9cm}|>{\centering\arraybackslash}m{0.9cm}|>{\centering\arraybackslash}m{0.9cm}|>{\centering\arraybackslash}m{0.9cm}|>{\centering\arraybackslash}m{0.9cm}|}\hline
+\rowcolor{cSec!12}$\text{I}\backslash\text{II}$ & $5$ & $6$ & $7$ & $8$ & $9$\\\hline
+\cellcolor{cSec!12}$5$ & \cellcolor{gray!20} & \cellcolor{cRem!25}$11$ & $12$ & \cellcolor{cRem!25}$13$ & $14$\\\hline
+\cellcolor{cSec!12}$6$ & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{cRem!25}$13$ & $14$ & $15$\\\hline
+\cellcolor{cSec!12}$7$ & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & $15$ & $16$\\\hline
+\cellcolor{cSec!12}$8$ & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{cRem!25}$17$\\\hline
+\cellcolor{cSec!12}$9$ & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20}\\\hline
+\end{tabular}\end{LTR}\end{center}
+\pb \begin{itemize}
+\item $\overline A$: البطاقتان من $\{5;7;8\}$: $3$ حالات ، \ $P(A)=1-\dfrac{3}{10}=\bx{\dfrac{7}{10}}$.
+\item $B$: من $\{5;7;9\}$: $3$ حالات ، \ $P(B)=\bx{\dfrac{3}{10}}$.
+\item $C$: المجاميع الأولية: $11$ ، $13$ ، $13$ ، $17$: \ $P(C)=\dfrac{4}{10}=\bx{\dfrac25}$.
+\end{itemize}
+\QQ{2} \pa \bx{X(\Omega)=\{11;12;13;14;15;16;17\}}.
+\pb
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|C|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $11$ & $12$ & $13$ & $14$ & $15$ & $16$ & $17$\\
+\hline
+$P(X=x_i)$ & $\frac1{10}$ & $\frac1{10}$ & $\frac2{10}$ & $\frac2{10}$ & $\frac2{10}$ & $\frac1{10}$ & $\frac1{10}$\\
+\hline
+\end{tabular}
+\end{center}
+$E(X)=\dfrac{11+12+26+28+30+16+17}{10}=\dfrac{140}{10}=\bx{14}$.
+\end{hal}
+
+% ------------------------------------------------- 16
+\begin{tamrin}{قريصات مع الإرجاع}
+نضع في كيس $3$ قريصات تحمل الرقم $1$ ، وقريصتين تحملان الرقم $2$ ، وقريصة واحدة تحمل الرقم $3$. \ نسحب عشوائياً قريصتين على التوالي حيث نعيد القريصة المسحوبة إلى الكيس قبل السحب الموالي. ليكن $X$ المتغير العشوائي الذي يرفق بكل سحب مجموع الرقمين المسحوبين.
+\begin{enumerate}
+\item عيّن بالاستعانة بجدول مجموعة الإمكانيات (وعدد عناصرها).
+\item عيّن القيم الممكنة للمتغير العشوائي $X$.
+\item عيّن قانون الاحتمال لـ $X$ ، ثم احسب $P(X\le4)$.
+\item احسب الأمل الرياضياتي $E(X)$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} مع الإرجاع من $6$ قريصات: $\card\Omega=6\times6=36$. \ نجمع الحالات حسب الأرقام (عدد القريصات: $1\to3$ ، $2\to2$ ، $3\to1$):
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|c|c|c|}\hline
+\rowcolor{cSec!12}$\text{II}\backslash\text{I}$ & $1$ $(\times3)$ & $2$ $(\times2)$ & $3$ $(\times1)$\\
+\hline
+$1$ & $2$: \ $9$ \ar{حالات} & $3$: \ $6$ \ar{حالات} & $4$: \ $3$ \ar{حالات}\\
+\hline
+$2$ & $3$: \ $6$ & $4$: \ $4$ & $5$: \ $2$\\
+\hline
+$3$ & $4$: \ $3$ & $5$: \ $2$ & $6$: \ $1$\\
+\hline
+\end{tabular}
+\end{center}
+\QQ{2} \bx{X(\Omega)=\{2;3;4;5;6\}}.
+\QQ{3} $X=2$: $9$ ؛ \ $X=3$: $6+6=12$ ؛ \ $X=4$: $3+4+3=10$ ؛ \ $X=5$: $2+2=4$ ؛ \ $X=6$: $1$ \ (المجموع $36$ \ok).
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|C|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $2$ & $3$ & $4$ & $5$ & $6$\\
+\hline
+$P(X=x_i)$ & $\frac{9}{36}$ & $\frac{12}{36}$ & $\frac{10}{36}$ & $\frac{4}{36}$ & $\frac{1}{36}$\\
+\hline
+\end{tabular}
+\end{center}
+$P(X\le4)=\dfrac{9+12+10}{36}=\bx{\dfrac{31}{36}}$ \ (أو $1-\dfrac{4+1}{36}$).
+\QQ{4} $E(X)=\dfrac{18+36+40+20+6}{36}=\dfrac{120}{36}=\bx{\dfrac{10}{3}\approx3{,}33}$.
+\end{hal}
+\begin{molahada}
+في النص الأصلي طُلب حساب $P(X\le1)$ ، وهي حادثة مستحيلة (أصغر مجموع $2$) فاحتمالها $0$ ؛ لذلك استبدلناها بـ $P(X\le4)$.
+\end{molahada}
+
+% =====================================================================
+\section{مسائل: الألعاب والأمل الرياضياتي}
+% ------------------------------------------------- 17
+\begin{tamrin}{هل اللعبة عادلة؟}
+يحتوي كيس على $4$ كريات مرقمة بـ $0$ ، و $3$ كريات مرقمة بـ $2$ ، وكريتين مرقمتين بـ $3$ (لا نميز بينها باللمس). يسحب لاعب عشوائياً كرية واحدة:
+\begin{itemize}
+\item إذا ظهر رقم زوجي يربح اللاعب ضعف الرقم الظاهر (بالدينار).
+\item إذا ظهر رقم فردي يخسر ضعفه أيضاً.
+\end{itemize}
+نعتبر $X$ المتغير العشوائي الذي يرفق بكل عملية سحب قيمة الربح أو الخسارة الممكنة.
+\begin{enumerate}
+\item عيّن القيم الممكنة للمتغير $X$ ، ثم عرّف قانون احتماله.
+\item احسب الأمل الرياضياتي $E(X)$. \ هل اللعبة في صالح اللاعب؟
+\item احسب الانحراف المعياري $\sigma(X)$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+$\card\Omega=9$ (كريات متماثلة).
+\QQ{1} الرقم $0$ (زوجي): ربح $2\times0=0$ ؛ \ الرقم $2$: ربح $4$ ؛ \ الرقم $3$ (فردي): خسارة $6$ ، أي $-6$. \ $X(\Omega)=\{-6;0;4\}$:
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|C|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $-6$ & $0$ & $4$\\
+\hline
+$P(X=x_i)$ & $\frac29$ & $\frac49$ & $\frac39$\\
+\hline
+\end{tabular}
+\end{center}
+\QQ{2} $E(X)=-6\times\dfrac29+0\times\dfrac49+4\times\dfrac39=\dfrac{-12+12}{9}=\bx{0}$: \ اللعبة \textbf{عادلة} (ليست في صالح اللاعب ولا ضده).
+\QQ{3} $V(X)=36\times\dfrac29+16\times\dfrac39-0=\dfrac{72+48}{9}=\dfrac{120}{9}=\dfrac{40}{3}$ ، \ $\sigma(X)=\sqrt{\dfrac{40}{3}}\approx\bx{3{,}65}$.
+\end{hal}
+\begin{molahada}
+في بعض المذكرات وُجد $E(X)\approx0{,}66$ وهو خطأ: الحساب الصحيح يعطي $E(X)=0$.
+\end{molahada}
+
+% ------------------------------------------------- 18
+\begin{tamrin}{تعيين المبلغ العادل}
+يرمي لاعب نرداً متوازناً مرة واحدة:
+\begin{itemize}
+\item إذا ظهر الرقم $6$ يربح $12$ دج.
+\item إذا ظهر الرقم $4$ أو $5$ يربح $3$ دج.
+\item في الحالات الأخرى يخسر $a$ دج ($a>0$).
+\end{itemize}
+ليكن $X$ ربح اللاعب الجبري.
+\begin{enumerate}
+\item عرّف قانون احتمال $X$ ، ثم احسب $E(X)$ بدلالة $a$.
+\item عيّن قيمة $a$ حتى تكون اللعبة عادلة ، ثم احسب $\sigma(X)$ في هذه الحالة.
+\item ما هي قيم $a$ التي تجعل اللعبة في صالح اللاعب؟
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $P(X=12)=\dfrac16$ ، $P(X=3)=\dfrac26$ ، $P(X=-a)=\dfrac36$ (الأرقام $1$ ، $2$ ، $3$).
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|C|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $-a$ & $3$ & $12$\\
+\hline
+$P(X=x_i)$ & $\frac12$ & $\frac13$ & $\frac16$\\
+\hline
+\end{tabular}
+\end{center}
+$E(X)=-\dfrac a2+3\times\dfrac13+12\times\dfrac16=-\dfrac a2+1+2=\bx{3-\dfrac a2}$.
+\QQ{2} عادلة $\iff E(X)=0\iff a=\bx{6}$. \ عندئذ: $\sum x_i^2p_i=36\times\dfrac12+9\times\dfrac13+144\times\dfrac16=18+3+24=45$ ، \ $V(X)=45$ ، \ $\sigma(X)=\sqrt{45}=\bx{3\sqrt5\approx6{,}71}$.
+\QQ{3} في صالح اللاعب $\iff3-\dfrac a2>0\iff\bx{0<a<6}$.
+\end{hal}
+
+% ------------------------------------------------- 19
+\begin{tamrin}{تمرين شامل: احتمال أعظمي (توظيف المشتقة)}
+يحتوي كيس على $n$ قريصة متماثلة لا نفرق بينها عند اللمس ($n\in\N$ و $n\ge7$) ، منها $7$ بيضاء والباقي حمراء. نسحب قريصتين على التوالي وبدون إرجاع.
+\begin{enumerate}
+\item نفرض في هذا السؤال أن $n=10$. احسب احتمالات الحوادث التالية:
+\begin{sq}
+\qa $A$: «القريصة الأولى بيضاء والثانية حمراء».
+\qb $B$: «قريصة بيضاء وقريصة حمراء».
+\qc $C$: «القريصتان بيضاوان».
+\qd $D$: «القريصتان من نفس اللون».
+\end{sq}
+\item نعتبر الآن $n\ge8$. نرمز بـ $P_n$ إلى احتمال أن تكون القريصتان المسحوبتان من لونين مختلفين.
+\begin{sq}
+\qa أثبت أن: $P_n=\dfrac{14(n-7)}{n^2-n}$.
+\qb بدراسة الدالة $f:x\mapsto\dfrac{14(x-7)}{x^2-x}$ على $[8;+\infty[$ ، عيّن قيم العدد الطبيعي $n$ الذي يكون من أجله لـ $P_n$ قيمة حدية عظمى ، ثم عيّن هذه القيمة.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $n=10$: $7$ بيضاء و $3$ حمراء ، \ $\card\Omega=10\times9=90$.
+\pa بيضاء ثم حمراء: $7\times3=21$ ، \ $P(A)=\dfrac{21}{90}=\bx{\dfrac{7}{30}}$.
+\pb بيضاء ثم حمراء أو حمراء ثم بيضاء: $21+21=42$ ، \ $P(B)=\dfrac{42}{90}=\bx{\dfrac{7}{15}}$.
+\pc $7\times6=42$ ، \ $P(C)=\dfrac{42}{90}=\bx{\dfrac{7}{15}}$.
+\pd $D=\overline B$: \ $P(D)=1-\dfrac{7}{15}=\bx{\dfrac{8}{15}}$ \ (أو $\dfrac{42+3\times2}{90}=\dfrac{48}{90}$).
+
+\QQ{2} \pa $\card\Omega=n(n-1)=n^2-n$. \ عدد الحمراء $n-7$. \ لونان مختلفان: $7(n-7)+(n-7)\times7=14(n-7)$ ، \ ومنه: \bx{P_n=\dfrac{14(n-7)}{n^2-n}}.
+\pb \begin{align*}
+f'(x)&=14\times\frac{1\times(x^2-x)-(x-7)(2x-1)}{(x^2-x)^2}=14\times\frac{x^2-x-2x^2+15x-7}{(x^2-x)^2}\\
+&=\frac{14(-x^2+14x-7)}{(x^2-x)^2}.
+\end{align*}
+$-x^2+14x-7=0$: $\Delta=196-28=168$ ، والجذر الأكبر $x_0=\dfrac{14+\sqrt{168}}{2}=7+\sqrt{42}\approx13{,}48$.\par
+على $[8;x_0]$: $f'(x)\ge0$ ($f$ متزايدة) ، وعلى $[x_0;+\infty[$: $f'(x)\le0$ ($f$ متناقصة).\par
+إذن القيمة العظمى لـ $P_n$ (مع $n$ طبيعي) تكون عند $n=13$ أو $n=14$:
+\[P_{13}=\frac{14\times6}{156}=\frac{84}{156}=\frac{7}{13}\qquad;\qquad P_{14}=\frac{14\times7}{182}=\frac{98}{182}=\frac{7}{13}.\]
+القيمة العظمى هي \bx{\dfrac{7}{13}\approx0{,}54} ، وتُبلغ من أجل \bx{n=13} و \bx{n=14}.
+\end{hal}
+
+\end{document}
