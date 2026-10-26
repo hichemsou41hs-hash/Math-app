@@ -1,0 +1,275 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\usepackage{longtable}
+\setlength{\LTpre}{4pt}\setlength{\LTpost}{0pt}
+\newcommand{\Phase}[1]{\textbf{#1}}
+\newcommand{\Fld}[2]{\textbf{#1:}\ #2}
+% رأس المذكرة على نمط النموذج: إطار بعنوان «مذكرة رقم»، معلومات الحصة، ثم إطار الكفاءات
+\newcommand{\ModhHead}[9]{%
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=4mm,boxrule=1pt,top=14pt,bottom=6pt,left=8pt,right=8pt,
+ overlay={\node[fill=cThm!85!black,text=white,rounded corners=3mm,inner xsep=14pt,inner ysep=4pt,font=\large\bfseries] at ([yshift=0pt]frame.north){\ar{مذكرة رقم #1}};},
+ before upper={\selectlanguage{arabic}}]
+\begin{tabular}{@{}p{0.4\linewidth}p{0.55\linewidth}@{}}
+\Fld{المستوى}{#2} & \Fld{الثانوية}{\dotfill}\\[3pt]
+\Fld{المادة}{رياضيات} & \Fld{ميدان التعلم}{#3}\\[3pt]
+\Fld{المدة}{#5} & \Fld{الوحدة التعلمية}{#4}\\[3pt]
+\Fld{الأستاذ}{\dotfill} & \Fld{المحتوى المعرفي}{#6}\\
+\end{tabular}
+\end{tcolorbox}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=3mm,boxrule=0.8pt,sidebyside,sidebyside align=top,lefthand ratio=0.5,
+ segmentation style={dashed,cThm!60},before upper={\selectlanguage{arabic}},before lower={\selectlanguage{arabic}}]
+\textbf{الكفاءات المستهدفة:}\par #8
+\tcblower
+\textbf{الكفاءات القبلية:}\par #7
+\end{tcolorbox}
+\end{LTR}
+\par\smallskip\textbf{الوسائل:} #9\par\smallskip}
+\newenvironment{Sayr}{%
+\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\hline\endfoot}{\end{longtable}\end{LTR}}
+% سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
+\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
+\SetHeader{\small\bfseries\color{cSec}مذكرة رقم 01: مجموعات الأعداد}{\small\color{cSec}السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا}
+\begin{document}
+\ModhHead{01}{1 ج م ع ت}{الأعداد والحساب}{الأعداد والحساب}{1 سا}{مجموعات الأعداد $\N$ ، $\Z$ ، $\D$ ، $\Q$ ، $\R$}%
+{\begin{itemize}\item الأعداد الطبيعية والأعداد النسبية (التعليم المتوسط).\item الكسور والكتابة العشرية لعدد.\item الجذر التربيعي لعدد موجب.\end{itemize}}%
+{\begin{itemize}\item التمييز بين مختلف أنواع الأعداد.\item استعمال الرموز $\in$ ، $\notin$ ، $\subset$.\item معرفة ترتيب المجموعات $\N\subset\Z\subset\D\subset\Q\subset\R$.\end{itemize}}%
+{الكتاب المدرسي (باب «الأعداد والحساب»: نشاط 1) ، السبورة ، الحاسبة.}
+
+\begin{Sayr}
+\Row{وضعية انطلاقية}{%
+\textbf{سؤال شفهي:} ما الأعداد التي تعرفها؟ هل كل الأعداد من نفس «النوع»؟\par
+يذكر التلاميذ: أعداد طبيعية ($0$ ، $1$ ، $2$ ، $\ldots$) ، أعداد سالبة ، كسور ، أعداد عشرية ، $\sqrt2$ ، $\pi$.\par
+\textbf{الإشكالية:} كيف نصنّف هذه الأعداد؟}{5 د}{نستثمر مكتسبات التعليم المتوسط ونكتب أجوبة التلاميذ على جانب السبورة.}
+\Row{النشاط}{%
+\textbf{نشاط} (مستوحى من نشاط 1 من الكتاب المدرسي): ضع العلامة $\times$ في الخانة المناسبة عندما ينتمي العدد إلى المجموعة:
+\par\smallskip
+\begin{LTR}\centering\begin{tikzpicture}[font=\footnotesize]
+\fill[cSec!12] (0,2.75) rectangle (8.14,3.3);
+\draw (0,0)--(8.14,0);
+\draw (0,0.55)--(8.14,0.55);
+\draw (0,1.1)--(8.14,1.1);
+\draw (0,1.65)--(8.14,1.65);
+\draw (0,2.2)--(8.14,2.2);
+\draw (0,2.75)--(8.14,2.75);
+\draw (0,3.3)--(8.14,3.3);
+\draw (0,0)--(0,3.3);
+\draw (1.9,0)--(1.9,3.3);
+\draw (2.68,0)--(2.68,3.3);
+\draw (3.46,0)--(3.46,3.3);
+\draw (4.24,0)--(4.24,3.3);
+\draw (5.02,0)--(5.02,3.3);
+\draw (5.8,0)--(5.8,3.3);
+\draw (6.58,0)--(6.58,3.3);
+\draw (7.36,0)--(7.36,3.3);
+\draw (8.14,0)--(8.14,3.3);
+\node at (0.95,3.025){\ar{\textbf{العدد}}};
+\node at (2.29,3.025){$7$};
+\node at (3.07,3.025){$-3$};
+\node at (3.85,3.025){$0{,}25$};
+\node at (4.63,3.025){$\frac{2}{3}$};
+\node at (5.41,3.025){$-\frac{12}{4}$};
+\node at (6.19,3.025){$\sqrt9$};
+\node at (6.97,3.025){$\sqrt2$};
+\node at (7.75,3.025){$\pi$};
+\node at (0.95,2.475){\ar{طبيعي}};
+\node at (0.95,1.925){\ar{صحيح نسبي}};
+\node at (0.95,1.375){\ar{عشري}};
+\node at (0.95,0.825){\ar{ناطق}};
+\node at (0.95,0.275){\ar{حقيقي}};
+\end{tikzpicture}\end{LTR}}{15 د}{عمل فردي ($8$ د) ثم ثنائي. نتجول بين الصفوف ونرصد الأخطاء: $-\frac{12}{4}$ و $\sqrt9$.}
+\Row{مناقشة النشاط}{%
+\begin{itemize}
+\item $\sqrt9=3$ و $-\frac{12}{4}=-3$: \textbf{نبسّط العدد قبل الحكم عليه}.
+\item $0{,}25=\frac{25}{100}$ عشري ؛ $\frac23=0{,}666\ldots$ ليس عشرياً (الكتابة العشرية غير منتهية) لكنه ناطق.
+\item $\sqrt2$ و $\pi$ ليسا ناطقين (نقبل ذلك الآن ، وبرهان $\sqrt2\notin\Q$ في حصة البرهان بالخلف).
+\item كل عدد طبيعي هو صحيح نسبي ، وكل صحيح نسبي عشري ، $\ldots$
+\end{itemize}}{10 د}{تصحيح جماعي على السبورة ؛ نطلب من التلاميذ تبرير كل علامة.}
+\Row{بناء التعلّمات: تعاريف}{%
+\begin{itemize}
+\item $\N=\{0;1;2;\ldots\}$: مجموعة \textbf{الأعداد الطبيعية}.
+\item $\Z=\{\ldots;-2;-1;0;1;2;\ldots\}$: مجموعة \textbf{الأعداد الصحيحة النسبية}.
+\item $\D$: مجموعة \textbf{الأعداد العشرية} ، أي الأعداد التي تُكتب $\dfrac{a}{10^{n}}$ حيث $a\in\Z$ و $n\in\N$.
+\item $\Q$: مجموعة \textbf{الأعداد الناطقة} ، أي الأعداد التي تُكتب $\dfrac{a}{b}$ حيث $a\in\Z$ و $b\in\Z^{*}$.
+\item $\R$: مجموعة \textbf{الأعداد الحقيقية} (فواصل نقط المستقيم العددي). العدد الحقيقي غير الناطق يسمى \textbf{أصمّ}.
+\end{itemize}
+\textbf{خاصية:} \bx{\N\subset\Z\subset\D\subset\Q\subset\R}. \quad \textbf{ترميز:} $3\in\N$ ، $\frac23\notin\D$ ، $\R^{*}=\R-\{0\}$ ، $\R_{+}$ ، $\R_{-}$.}{12 د}{تُدوَّن في الكراريس. نرسم مخطط المجموعات المتداخلة على السبورة.}
+\Row{أمثلة}{%
+\begin{itemize}
+\item $\frac{7}{4}=1{,}75=\frac{175}{100}$: إذن $\frac74\in\D$.
+\item $\frac{1}{3}\in\Q$ و $\frac13\notin\D$.
+\item $-\sqrt{16}=-4\in\Z$ و $-4\notin\N$.
+\item $1+\sqrt2\notin\Q$ ، و $1+\sqrt2\in\R$.
+\end{itemize}}{8 د}{نُشرك التلاميذ في تعليل كل انتماء.}
+\Row{تقويم}{%
+\textbf{تمرين:} أكمل بأحد الرمزين $\in$ أو $\notin$:\quad
+$-5\ldots\N$ ؛ $\frac{9}{3}\ldots\N$ ؛ $0{,}3\ldots\D$ ؛ $\frac{5}{6}\ldots\D$ ؛ $\sqrt{25}\ldots\Z$ ؛ $\pi\ldots\Q$.\par
+\textbf{الحل:} $\notin$ ؛ $\in$ ؛ $\in$ ؛ $\notin$ ؛ $\in$ ؛ $\notin$.\par
+\textbf{واجب منزلي:} تمارين من الكتاب المدرسي حول مجموعات الأعداد (يختارها الأستاذ).}{10 د}{تقويم فردي سريع على الألواح ؛ نعالج الأخطاء الشائعة ($\frac56$ ناطق لكنه غير عشري).}
+\end{Sayr}
+\end{document}
