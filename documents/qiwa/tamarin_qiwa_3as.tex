@@ -1,0 +1,356 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}تمارين: دوال القوى والجذور النونية -- التزايد المقارن}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries تمارين في دوال القوى والجذور النونية}\\[8pt]
+{\color{white}\large التزايد المقارن -- مسائل الاستمثال -- مع الحلول المفصلة}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- علوم تجريبية، رياضيات، تقني رياضي}
+\end{tcolorbox}
+\end{LTR}
+
+\section{الحساب على الجذور والقوى}
+\begin{tamrin}{تبسيط}
+بسّط ما يلي:\quad
+$A=\sqrt[3]{16}\times\sqrt[3]{4}$،\quad $B=\dfrac{\sqrt[4]{32}}{\sqrt[4]{2}}$،\quad $C=\sqrt{\sqrt[3]{729}}$،\quad $D=27^{\frac{2}{3}}$،\quad $E=32^{-\frac{3}{5}}$،\quad $F=\left(\sqrt[5]{9}\right)^{\frac{5}{2}}$.
+\end{tamrin}
+\begin{hal}
+\begin{itemize}
+\item $A=\sqrt[3]{16\times4}=\sqrt[3]{64}=\sqrt[3]{4^{3}}=\bx{4}$.
+\item $B=\sqrt[4]{\dfrac{32}{2}}=\sqrt[4]{16}=\sqrt[4]{2^{4}}=\bx{2}$.
+\item $C=\sqrt[6]{729}=\sqrt[6]{3^{6}}=\bx{3}$.
+\item $D=\left(27^{\frac{1}{3}}\right)^{2}=3^{2}=\bx{9}$.
+\item $E=\left(2^{5}\right)^{-\frac{3}{5}}=2^{-3}=\bx{\dfrac{1}{8}}$.
+\item $F=\left(9^{\frac{1}{5}}\right)^{\frac{5}{2}}=9^{\frac{1}{2}}=\bx{3}$.
+\end{itemize}
+\end{hal}
+
+\begin{tamrin}{مقارنة جذور}
+قارن بين العددين في كل حالة: \quad (1) $\sqrt[3]{3}$ و $\sqrt{2}$\qquad (2) $\sqrt[4]{5}$ و $\sqrt[3]{3}$.
+\end{tamrin}
+\begin{hal}
+\begin{tariqa}
+العددان موجبان، والدالة $x\mapsto x^{k}$ متزايدة تمامًا على $[0;+\infty[$: نرفعهما إلى قوة تُزيل الجذرين (المضاعف المشترك الأصغر للرتبتين) ثم نقارن.
+\end{tariqa}
+\QQ{1} $\left(\sqrt[3]{3}\right)^{6}=3^{2}=9$ و $\left(\sqrt{2}\right)^{6}=2^{3}=8$. بما أن $9>8$ فإن \bx{\sqrt[3]{3}>\sqrt{2}}.
+\QQ{2} $\left(\sqrt[4]{5}\right)^{12}=5^{3}=125$ و $\left(\sqrt[3]{3}\right)^{12}=3^{4}=81$. إذن \bx{\sqrt[4]{5}>\sqrt[3]{3}}.
+\end{hal}
+
+\section{المعادلات}
+\begin{tamrin}{معادلات من الشكل $x^{n}=a$}
+حل في $\R$ المعادلات:\quad
+(1) $x^{3}=-27$\quad (2) $x^{4}=16$\quad (3) $x^{5}=7$\quad (4) $(x-1)^{3}=8$\quad (5) $2x^{4}-162=0$\quad (6) $x^{6}+64=0$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $n=3$ فردي و $-27<0$: حل وحيد $x=-\sqrt[3]{27}=\bx{-3}$.
+\QQ{2} $n=4$ زوجي و $16>0$: $x=\sqrt[4]{16}=2$ أو $x=-2$؛ \bx{S=\{-2;2\}}.
+\QQ{3} حل وحيد \bx{x=\sqrt[5]{7}\approx1{,}48}.
+\QQ{4} $x-1=\sqrt[3]{8}=2$ إذن \bx{x=3}.
+\QQ{5} $x^{4}=81$ إذن \bx{S=\{-3;3\}}.
+\QQ{6} $x^{6}=-64<0$ و $6$ زوجي: \bx{S=\varnothing}.
+\end{hal}
+
+\begin{tamrin}{معادلات بأس حقيقي}
+حل في $]0;+\infty[$ المعادلات:\quad (1) $x^{\frac{3}{2}}=8$\qquad (2) $x^{\sqrt{3}}=e$\qquad (3) $x^{\frac{2}{3}}-3x^{\frac{1}{3}}+2=0$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} نرفع الطرفين إلى القوة $\frac{2}{3}$: $x=8^{\frac{2}{3}}=\left(\sqrt[3]{8}\right)^{2}=\bx{4}$. \textit{تحقق:} $4^{\frac{3}{2}}=\left(\sqrt{4}\right)^{3}=8$ \ok
+\QQ{2} $\sqrt{3}\ln x=\ln e=1$ إذن $\ln x=\dfrac{1}{\sqrt{3}}$ أي \bx{x=e^{\frac{1}{\sqrt{3}}}}.
+\QQ{3} نضع $t=x^{\frac{1}{3}}$ ($t>0$)، فيكون $x^{\frac{2}{3}}=t^{2}$ والمعادلة تصبح $t^{2}-3t+2=0$، أي $(t-1)(t-2)=0$.\par
+$t=1$: $x^{\frac{1}{3}}=1$ أي $x=1$.\quad $t=2$: $x^{\frac{1}{3}}=2$ أي $x=2^{3}=8$.\quad إذن \bx{S=\{1;8\}}.
+\end{hal}
+
+\section{الاشتقاق والنهايات}
+\begin{tamrin}{حساب المشتقات}
+احسب مشتقة كل دالة على المجال المذكور:
+\begin{enumerate}[label=(\arabic*)]
+\item $f(x)=x^{\pi}$ على $]0;+\infty[$.
+\item $g(x)=x^{-\frac{3}{4}}$ على $]0;+\infty[$.
+\item $h(x)=\sqrt[3]{2x+1}$ على $\left]-\frac{1}{2};+\infty\right[$.
+\item $k(x)=\left(x^{2}+x+1\right)^{\frac{1}{4}}$ على $\R$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\QQ{1} $f'(x)=\bx{\pi x^{\pi-1}}$.
+\QQ{2} $g'(x)=-\dfrac{3}{4}x^{-\frac{3}{4}-1}=\bx{-\dfrac{3}{4}x^{-\frac{7}{4}}}$.
+\QQ{3} $u(x)=2x+1>0$ على المجال، $u'(x)=2$: $h'(x)=\dfrac{1}{3}\times2\times(2x+1)^{-\frac{2}{3}}=\bx{\dfrac{2}{3\sqrt[3]{(2x+1)^{2}}}}$.
+\QQ{4} $u(x)=x^{2}+x+1>0$ على $\R$ (مميزه $\Delta=-3<0$)، $u'(x)=2x+1$:
+$k'(x)=\dfrac{1}{4}(2x+1)\left(x^{2}+x+1\right)^{-\frac{3}{4}}=\bx{\dfrac{2x+1}{4\sqrt[4]{\left(x^{2}+x+1\right)^{3}}}}$.
+\end{hal}
+
+\begin{tamrin}{نهايات بالتزايد المقارن}
+احسب النهايات:
+\begin{enumerate}[label=(\arabic*)]
+\item $\lim\limits_{x\to+\infty}\dfrac{e^{x}-x^{3}}{x^{2}}$
+\item $\lim\limits_{x\to+\infty}x^{2}e^{-\sqrt{x}}$
+\item $\lim\limits_{x\to+\infty}\dfrac{\ln x}{\sqrt[3]{x}}$
+\item $\lim\limits_{x\to0^{+}}x\left(\ln x\right)^{2}$
+\item $\lim\limits_{x\to+\infty}\dfrac{\left(\ln x\right)^{3}}{x}$
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\dfrac{e^{x}-x^{3}}{x^{2}}=\dfrac{e^{x}}{x^{2}}-x$: حالة $\infty-\infty$. نكتب $=x\left(\dfrac{e^{x}}{x^{3}}-1\right)$، و $\dfrac{e^{x}}{x^{3}}\to+\infty$، إذن النهاية \bx{+\infty}.
+\QQ{2} نضع $t=\sqrt{x}$ ($t\to+\infty$): $x^{2}e^{-\sqrt{x}}=t^{4}e^{-t}\to\bx{0}$.
+\QQ{3} $\dfrac{\ln x}{x^{\frac{1}{3}}}\to\bx{0}$ (حالة $\alpha=\frac{1}{3}>0$).
+\QQ{4} $x\left(\ln x\right)^{2}=\left(x^{\frac{1}{2}}\ln x\right)^{2}$ و $\lim\limits_{x\to0^{+}}x^{\frac{1}{2}}\ln x=0$، إذن النهاية \bx{0}.
+\QQ{5} نضع $t=\ln x$ أي $x=e^{t}$ ($t\to+\infty$): $\dfrac{(\ln x)^{3}}{x}=\dfrac{t^{3}}{e^{t}}=t^{3}e^{-t}\to\bx{0}$.
+\end{hal}
+
+\section{دراسة دوال}
+\begin{tamrin}{الدالة $x\mapsto x-3\sqrt[3]{x}$}
+$f$ الدالة المعرفة على $[0;+\infty[$ بـ $f(x)=x-3\sqrt[3]{x}$، و $(C_f)$ تمثيلها البياني.
+\QQ{1} احسب $\lim\limits_{x\to+\infty}f(x)$.
+\QQ{2} بيّن أنه من أجل $x>0$: $f'(x)=\dfrac{\sqrt[3]{x^{2}}-1}{\sqrt[3]{x^{2}}}$، ثم شكّل جدول تغيّرات $f$.
+\QQ{3} حل المعادلة $f(x)=0$ واستنتج إشارة $f(x)$، ثم أنشئ $(C_f)$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} من أجل $x>0$: $f(x)=x\left(1-3x^{-\frac{2}{3}}\right)$ و $\lim\limits_{x\to+\infty}x^{-\frac{2}{3}}=0$، إذن \bx{\lim_{x\to+\infty}f(x)=+\infty}.
+\QQ{2} $f(x)=x-3x^{\frac{1}{3}}$، إذن $f'(x)=1-3\times\dfrac{1}{3}x^{-\frac{2}{3}}=1-\dfrac{1}{\sqrt[3]{x^{2}}}=\dfrac{\sqrt[3]{x^{2}}-1}{\sqrt[3]{x^{2}}}$.\par
+$\sqrt[3]{x^{2}}-1>0\iff x^{2}>1\iff x>1$ (لأن $x>0$). $f(0)=0$ و $f(1)=1-3=-2$.
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3]{$x$/1,$f'(x)$/1,$f(x)$/2}{$0$,$1$,$+\infty$}
+\tkzTabLine{,-,z,+,}
+\tkzTabVar{+/$0$,-/$-2$,+/$+\infty$}
+\end{TAB}
+\QQ{3} $f(x)=0\iff x=3x^{\frac{1}{3}}\iff x=0$ أو $x^{\frac{2}{3}}=3$، أي $x=3^{\frac{3}{2}}=3\sqrt{3}\approx5{,}2$. \bx{S=\{0;3\sqrt{3}\}}.
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3]{$x$/1,$f(x)$/1}{$0$,$3\sqrt{3}$,$+\infty$}
+\tkzTabLine{z,-,z,+,}
+\end{TAB}
+\begin{GR}{-0.5}{9}{-2.5}{3}{0.8}
+\draw[cDef,very thick,domain=0:9,samples=150] plot(\x,{\x-3*(\x)^(1/3)});
+\draw[gray,dashed] (1,0)--(1,-2);
+\fill (0,0) circle (1.5pt) (1,-2) circle (1.5pt) (5.196,0) circle (1.5pt);
+\node[above] at (5.196,0){$3\sqrt{3}$};
+\node[cDef] at (8.3,2.4){$(C_f)$};
+\Ticks{1,2,4,6,8}{-2,-1,1,2}
+\end{GR}
+\end{hal}
+
+\begin{tamrin}{الدالة $x\mapsto\dfrac{\ln x}{\sqrt{x}}$}
+$f$ الدالة المعرفة على $]0;+\infty[$ بـ $f(x)=\dfrac{\ln x}{\sqrt{x}}$.
+\QQ{1} احسب نهايتي $f$ عند $0$ وعند $+\infty$ وفسّرهما بيانيًا.
+\QQ{2} بيّن أن $f'(x)=\dfrac{2-\ln x}{2x\sqrt{x}}$ وشكّل جدول التغيّرات.
+\QQ{3} استنتج أنه من أجل كل $x>0$: $\ln x\leqslant\dfrac{2}{e}\sqrt{x}$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} عند $0$: $\ln x\to-\infty$ و $\dfrac{1}{\sqrt{x}}\to+\infty$، إذن \bx{\lim_{x\to0^{+}}f(x)=-\infty}: المستقيم $x=0$ مقارب عمودي.\par
+عند $+\infty$: $f(x)=\dfrac{\ln x}{x^{\frac{1}{2}}}\to0$ (تزايد مقارن)، إذن \bx{\lim_{x\to+\infty}f(x)=0}: المستقيم $y=0$ مقارب أفقي.
+\QQ{2} $f'(x)=\dfrac{\frac{1}{x}\sqrt{x}-\ln x\times\frac{1}{2\sqrt{x}}}{x}=\dfrac{\frac{2-\ln x}{2\sqrt{x}}}{x}=\dfrac{2-\ln x}{2x\sqrt{x}}$.\par
+إشارة $f'(x)$ هي إشارة $2-\ln x$: موجبة على $]0;e^{2}[$ وسالبة على $]e^{2};+\infty[$. و $f\left(e^{2}\right)=\dfrac{2}{e}\approx0{,}74$.
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3]{$x$/1,$f'(x)$/1,$f(x)$/2}{$0$,$e^{2}$,$+\infty$}
+\tkzTabLine{d,+,z,-,}
+\tkzTabVar{D-/$-\infty$,+/$\frac{2}{e}$,-/$0$}
+\end{TAB}
+\QQ{3} $\dfrac{2}{e}$ قيمة حدية عظمى لـ $f$، إذن من أجل كل $x>0$: $\dfrac{\ln x}{\sqrt{x}}\leqslant\dfrac{2}{e}$ أي \bx{\ln x\leqslant\frac{2}{e}\sqrt{x}}.
+\begin{GR}{-0.5}{12}{-2.5}{1.5}{0.85}
+\draw[cDef,very thick,domain=0.06:12,samples=200] plot(\x,{ln(\x)/sqrt(\x)});
+\draw[gray,dashed] (7.389,0)--(7.389,0.736);
+\fill (1,0) circle (1.5pt) (7.389,0.736) circle (1.5pt);
+\node[below] at (7.389,0){$e^{2}$};
+\node[cDef] at (10.5,1.1){$(C_f)$};
+\Ticks{1,2,4,6,10}{-2,-1,1}
+\end{GR}
+\end{hal}
+
+\section{مسائل الاستمثال}
+\begin{tamrin}{مستطيل تحت منحنى}
+$M$ نقطة من منحنى الدالة $x\mapsto e^{-x}$ فاصلتها $x>0$. $A$ و $B$ مسقطاها العموديان على محوري الإحداثيات. عيّن $x$ حتى تكون مساحة المستطيل $OAMB$ أكبر ما يمكن.
+\end{tamrin}
+\begin{hal}
+$OA=x$ و $AM=e^{-x}$، إذن المساحة $S(x)=xe^{-x}$ حيث $x\in]0;+\infty[$.\par
+$S'(x)=e^{-x}-xe^{-x}=(1-x)e^{-x}$، إشارتها إشارة $1-x$.
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3]{$x$/1,$S'(x)$/1,$S(x)$/2}{$0$,$1$,$+\infty$}
+\tkzTabLine{,+,z,-,}
+\tkzTabVar{-/$0$,+/$\frac{1}{e}$,-/$0$}
+\end{TAB}
+($\lim\limits_{x\to+\infty}xe^{-x}=0$ بالتزايد المقارن.) المساحة أكبر ما يمكن من أجل \bx{x=1} وقيمتها \bx{\frac{1}{e}\approx0{,}37} وحدة مساحة.
+\begin{GR}{-0.4}{3.2}{-0.4}{1.4}{1.6}
+\fill[cDef!20] (0,0) rectangle (1,0.368);
+\draw[cThm,very thick,domain=0:3.2,samples=80] plot(\x,{exp(-\x)});
+\draw (1,0)--(1,0.368)--(0,0.368);
+\fill (1,0.368) circle (1.5pt) node[above right]{$M$};
+\node[below] at (1,0){$A$}; \node[left] at (0,0.368){$B$};
+\Ticks{2,3}{1}
+\end{GR}
+\end{hal}
+
+\begin{tamrin}{سياج حديقة}
+نريد تسييج حديقة مستطيلة مساحتها $200\,\text{m}^{2}$ من ثلاث جهات فقط (الجهة الرابعة جدار طوله غير محدود). نرمز بـ $x$ لطول كل من الضلعين العموديين على الجدار. ما أبعاد الحديقة التي تجعل طول السياج أصغر ما يمكن؟
+\end{tamrin}
+\begin{hal}
+الضلع الموازي للجدار طوله $\dfrac{200}{x}$، إذن طول السياج $L(x)=2x+\dfrac{200}{x}$ حيث $x\in]0;+\infty[$.\par
+$L'(x)=2-\dfrac{200}{x^{2}}=\dfrac{2\left(x^{2}-100\right)}{x^{2}}=\dfrac{2(x-10)(x+10)}{x^{2}}$، إشارتها إشارة $x-10$.
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=3]{$x$/1,$L'(x)$/1,$L(x)$/2}{$0$,$10$,$+\infty$}
+\tkzTabLine{d,-,z,+,}
+\tkzTabVar{D+/$+\infty$,-/$40$,+/$+\infty$}
+\end{TAB}
+طول السياج أصغر ما يمكن ($40\,\text{m}$) عندما \bx{x=10\,\text{m}}، والضلع الموازي للجدار \bx{20\,\text{m}}.
+\end{hal}
+\end{document}
