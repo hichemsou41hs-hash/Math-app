@@ -11,7 +11,7 @@ const LESSONS = data as Lesson[];
 
 // Section starts in seconds, one per paragraph of series/promo/script.txt.
 // Placeholder estimates: replaced by the teacher's voice timing (words.json) once it is recorded.
-export const SEC = [0, 8, 18, 30, 42, 57, 67, 79, 90];
+export const SEC = [0, 12, 22, 34, 46, 61, 71, 83, 94];
 export const PROMO_SECONDS = SEC[SEC.length - 1];
 
 const C = {
@@ -149,9 +149,10 @@ const Intro: React.FC<{ t: number; d: number; frame: number }> = ({ t, d, frame 
           </At>
         ))}
       </Stage>
-      <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', background: `rgba(7,15,34,${ramp(t, d * 0.35, d * 0.5, 0, 0.55)})` }}>
-        <Title size={96} opacity={ramp(t, d * 0.3, d * 0.45)} y={ramp(t, d * 0.3, d * 0.45, 40, 0)}>كل ما تحتاجه في الرياضيات</Title>
-        <Title size={110} color={C.gold} opacity={ramp(t, d * 0.55, d * 0.7)} y={ramp(t, d * 0.55, d * 0.7, 40, 0)}>في مكان واحد</Title>
+      <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', background: `rgba(7,15,34,${ramp(t, d * 0.05, d * 0.2, 0, 0.6)})` }}>
+        <Title size={70} opacity={ramp(t, d * 0.08, d * 0.2)} y={ramp(t, d * 0.08, d * 0.2, 40, 0)}>لكل أستاذ تعليم ثانوي: في القسم أو في دروس الدعم</Title>
+        <Title size={70} opacity={ramp(t, d * 0.3, d * 0.42)} y={ramp(t, d * 0.3, d * 0.42, 40, 0)}>ولكل تلميذ في الثانوية: ملخصات وحلول تمارين</Title>
+        <Title size={100} color={C.gold} opacity={ramp(t, d * 0.6, d * 0.72)} y={ramp(t, d * 0.6, d * 0.72, 40, 0)}>كل ما تحتاجه، بجميع الصيغ</Title>
       </AbsoluteFill>
     </>
   );
