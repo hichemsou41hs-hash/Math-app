@@ -5,11 +5,13 @@ import { VIDEO } from './config';
 import { durationFrames, toFrame } from './timing';
 import { partEnd, partStart } from './parts';
 import { EPISODES } from './episodes';
+import { Promo, PROMO_SECONDS } from './promo/Promo';
 
 // For every video: <Id> 16:9 (YouTube), <Id>V 9:16 whole, <Id>R1… 9:16 reels.
 // The lesson keeps its first names: Main, Vertical, Reel1..Reel5.
 export const Root: React.FC = () => (
   <>
+    <Composition id="Promo" component={Promo} durationInFrames={PROMO_SECONDS * VIDEO.fps} fps={VIDEO.fps} width={1920} height={1080} />
     {Object.values(EPISODES).map((ep) => {
       const name = ep.id === 'lesson' ? { main: 'Main', vert: 'Vertical', reel: 'Reel' } : { main: cap(ep.id), vert: cap(ep.id) + 'V', reel: cap(ep.id) + 'R' };
       const full = durationFrames(ep.timing);

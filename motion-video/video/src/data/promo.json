@@ -1,0 +1,711 @@
+[
+{
+"level": "3AS",
+"title": "الاشتقاقية والنهايات",
+"id": "nihayat_3as",
+"docs": {
+"molakhas": [
+"molakhas_nihayat_3as-01.png",
+"molakhas_nihayat_3as-02.png",
+"molakhas_nihayat_3as-03.png"
+],
+"tamarin": [
+"tamarin_nihayat_3as-01.png",
+"tamarin_nihayat_3as-02.png",
+"tamarin_nihayat_3as-03.png"
+],
+"bac": [
+"bac_nihayat_3as-01.png",
+"bac_nihayat_3as-02.png",
+"bac_nihayat_3as-03.png"
+]
+},
+"word": [
+"molakhas_nihayat_3as-01.png",
+"molakhas_nihayat_3as-02.png",
+"molakhas_nihayat_3as-03.png"
+],
+"tex": [
+"\\section{تذكير ضروري}",
+"\\subsection{إشارة $ax+b$ \\ ($a\\neq0$) وإشارة ثلاثي الحدود}",
+"\\begin{khassia}[إشارة $ax+b$]",
+"$ax+b=0\\iff x=-\\dfrac{b}{a}$. \\ إشارة $ax+b$ هي \\textbf{عكس إشار",
+"\\begin{TAB}",
+"\\tkzTabInit[lgt=2.4,espcl=3.2]{$x$/1,$ax+b$/1}{$-\\infty$,$-\\frac",
+"\\tkzTabLine{,\\hbox{\\ar{عكس إشارة $a$}},z,\\hbox{\\ar{إشارة $a$}},}",
+"\\end{TAB}",
+"\\end{khassia}",
+"\\begin{khassia}[إشارة $ax^{2}+bx+c$ \\ ($a\\neq0$) حسب المميز $\\De",
+"\\begin{itemize}",
+"\\item $\\Delta>0$: جذران $x_1=\\dfrac{-b-\\sqrt{\\Delta}}{2a}$ و $x_",
+"\\item $\\Delta=0$: جذر مضاعف $x_0=-\\dfrac{b}{2a}$؛ التحليل $a(x-x",
+"\\item $\\Delta<0$: لا جذور ولا تحليل؛ الإشارة: \\textbf{إشارة $a$}"
+]
+},
+{
+"level": "3AS",
+"title": "الدالة الأسية",
+"id": "exp_3as",
+"docs": {
+"molakhas": [
+"molakhas_exp_3as-01.png",
+"molakhas_exp_3as-02.png",
+"molakhas_exp_3as-03.png"
+],
+"tamarin": [
+"tamarin_exp_3as-01.png",
+"tamarin_exp_3as-02.png",
+"tamarin_exp_3as-03.png"
+],
+"bac": [
+"bac_exp_3as-001.png",
+"bac_exp_3as-002.png",
+"bac_exp_3as-003.png"
+]
+},
+"word": [
+"molakhas_exp_3as-01.png",
+"molakhas_exp_3as-02.png",
+"molakhas_exp_3as-03.png"
+],
+"tex": [
+"\\section{التعريف والعدد $e$}",
+"\\begin{tarif}[الدالة الأسية]",
+"توجد دالة \\textbf{وحيدة} $f$ قابلة للاشتقاق على $\\R$ تحقق:",
+"\\[ \\bx{f'=f}\\qquad\\qquad \\bx{f(0)=1} \\]",
+"تسمى \\textbf{الدالة الأسية النيبيرية} ويرمز لها بالرمز $\\exp$. إ",
+"\\end{tarif}",
+"\\begin{khassia}[الدالة الأسية لا تنعدم]",
+"من أجل كل عدد حقيقي $x$: \\quad $\\exp(x)\\times\\exp(-x)=1$ ، \\ إذن",
+"\\par\\smallskip",
+"\\textbf{البرهان:} نضع $\\varphi(x)=\\exp(x)\\exp(-x)$، فيكون $\\varp",
+"\\end{khassia}",
+"\\begin{tarif}[العدد $e$ والترميز $e^{x}$]",
+"\\begin{itemize}",
+"\\item العدد $e$ هو صورة العدد $1$ بالدالة الأسية: \\ \\bx{e=\\exp(1"
+]
+},
+{
+"level": "3AS",
+"title": "الدالة اللوغاريتمية",
+"id": "ln_3as",
+"docs": {
+"molakhas": [
+"molakhas_ln_3as-1.png",
+"molakhas_ln_3as-2.png",
+"molakhas_ln_3as-3.png"
+],
+"tamarin": [
+"tamarin_ln_3as-01.png",
+"tamarin_ln_3as-02.png",
+"tamarin_ln_3as-03.png"
+],
+"bac": [
+"bac_ln_3as-001.png",
+"bac_ln_3as-002.png",
+"bac_ln_3as-003.png"
+]
+},
+"word": [
+"molakhas_ln_3as-01.png",
+"molakhas_ln_3as-02.png",
+"molakhas_ln_3as-03.png"
+],
+"tex": [
+"\\section{التعريف والخواص الأساسية}",
+"\\begin{tarif}",
+"الدالة الأسية مستمرة ومتزايدة تمامًا على $\\R$، وتأخذ قيمها في $]",
+"نسمي \\textbf{الدالة اللوغاريتمية النيبيرية} الدالة التي ترفق بكل",
+"\\[ y=\\ln x \\iff x=e^{y}\\qquad (x>0,\\ y\\in\\R) \\]",
+"\\end{tarif}",
+"\\begin{khassia}[نتائج مباشرة]",
+"\\begin{itemize}",
+"\\item الدالة $\\ln$ معرفة على $]0;+\\infty[$ فقط.",
+"\\item $\\ln 1=0$ و $\\ln e=1$.",
+"\\item من أجل كل $x>0$: $e^{\\ln x}=x$، ومن أجل كل $y\\in\\R$: $\\ln\\",
+"\\item الدالتان $\\ln$ و $\\exp$ متعاكستان: منحنياهما متناظران بالن",
+"\\end{itemize}",
+"\\end{khassia}"
+]
+},
+{
+"level": "3AS",
+"title": "دوال القوى والجذور النونية",
+"id": "qiwa_3as",
+"docs": {
+"molakhas": [
+"molakhas_qiwa_3as-01.png",
+"molakhas_qiwa_3as-02.png",
+"molakhas_qiwa_3as-03.png"
+],
+"tamarin": [
+"tamarin_qiwa_3as-1.png",
+"tamarin_qiwa_3as-2.png",
+"tamarin_qiwa_3as-3.png"
+],
+"bac": [
+"bac_qiwa_3as-1.png",
+"bac_qiwa_3as-2.png",
+"bac_qiwa_3as-3.png"
+]
+},
+"word": [
+"molakhas_qiwa_3as-01.png",
+"molakhas_qiwa_3as-02.png",
+"molakhas_qiwa_3as-03.png"
+],
+"tex": [
+"\\section{الدوال $x\\mapsto x^{n}$ حيث $n$ عدد طبيعي غير معدوم}",
+"\\begin{khassia}",
+"الدالة $f_n:x\\mapsto x^{n}$ معرفة وقابلة للاشتقاق على $\\R$ و $f_",
+"\\begin{itemize}",
+"\\item إذا كان $n$ \\textbf{زوجيًا}: $f_n$ زوجية، متناقصة تمامًا ع",
+"\\item إذا كان $n$ \\textbf{فرديًا}: $f_n$ فردية ومتزايدة تمامًا ع",
+"\\end{itemize}",
+"كل المنحنيات تشمل النقطتين $O(0;0)$ و $(1;1)$. على $[0;1]$ لدينا",
+"\\end{khassia}",
+"\\begin{GR}{-2}{2}{-2.5}{3}{1.1}",
+"\\draw[cRem,very thick,domain=-2:2] plot(\\x,{\\x});",
+"\\draw[cDef,very thick,domain=-1.75:1.75,samples=80] plot(\\x,{\\x*",
+"\\draw[cThm,very thick,domain=-1.4:1.4,samples=80] plot(\\x,{\\x*\\x",
+"\\node[cRem] at (1.75,1.35){$y=x$};"
+]
+},
+{
+"level": "3AS",
+"title": "المتتاليات العددية",
+"id": "suites_3as",
+"docs": {
+"molakhas": [
+"molakhas_suites_3as-01.png",
+"molakhas_suites_3as-02.png",
+"molakhas_suites_3as-03.png"
+],
+"tamarin": [
+"tamarin_suites_3as-01.png",
+"tamarin_suites_3as-02.png",
+"tamarin_suites_3as-03.png"
+],
+"bac": [
+"bac_suites_3as-001.png",
+"bac_suites_3as-002.png",
+"bac_suites_3as-003.png"
+]
+},
+"word": [
+"molakhas_suites_3as-01.png",
+"molakhas_suites_3as-02.png",
+"molakhas_suites_3as-03.png"
+],
+"tex": [
+"\\section{توليد متتالية وتمثيلها البياني}",
+"\\begin{tarif}",
+"\\textbf{المتتالية العددية} $(u_n)$ هي دالة ترفق بكل عدد طبيعي $n",
+"\\begin{itemize}",
+"\\item \\textbf{التوليد الصريح:} $u_n=f(n)$؛ نحسب أي حد مباشرة بدل",
+"\\item \\textbf{التوليد بعلاقة تراجعية:} نعطي الحد الأول $u_0$ وعل",
+"\\end{itemize}",
+"\\end{tarif}",
+"\\begin{mithal}",
+"\\begin{itemize}",
+"\\item $u_n=\\dfrac{2n+1}{n+1}$ (توليد صريح): $u_0=1$ ، $u_1=\\dfra",
+"\\item $u_0=1$ و $u_{n+1}=2u_n+3$ (توليد تراجعي): $u_1=5$ ، $u_2=",
+"\\end{itemize}",
+"\\end{mithal}"
+]
+},
+{
+"level": "3AS",
+"title": "الدوال الأصلية والتكامل",
+"id": "integ_3as",
+"docs": {
+"molakhas": [
+"molakhas_integ_3as-01.png",
+"molakhas_integ_3as-02.png",
+"molakhas_integ_3as-03.png"
+],
+"tamarin": [
+"tamarin_integ_3as-01.png",
+"tamarin_integ_3as-02.png",
+"tamarin_integ_3as-03.png"
+],
+"bac": [
+"bac_integ_3as-01.png",
+"bac_integ_3as-02.png",
+"bac_integ_3as-03.png"
+]
+},
+"word": [
+"molakhas_integ_3as-01.png",
+"molakhas_integ_3as-02.png",
+"molakhas_integ_3as-03.png"
+],
+"tex": [
+"\\section{الدوال الأصلية}",
+"\\begin{tarif}",
+"$f$ دالة معرفة على مجال $I$. نقول إن الدالة $F$ \\textbf{دالة أصل",
+"\\[ F'(x)=f(x) \\]",
+"\\end{tarif}",
+"\\begin{khassia}",
+"\\begin{itemize}",
+"\\item كل دالة مستمرة على مجال $I$ تقبل دوالًا أصلية على $I$.",
+"\\item إذا كانت $F$ دالة أصلية للدالة $f$ على $I$ فإن الدوال الأص",
+"\\item دالتان أصليتان لنفس الدالة على مجال تختلفان بثابت فقط.",
+"\\item من أجل $x_0$ من $I$ و $y_0$ عدد حقيقي، توجد \\textbf{دالة أ",
+"\\end{itemize}",
+"\\end{khassia}",
+"\\begin{tariqa}[إثبات أن $F$ دالة أصلية لـ $f$]"
+]
+},
+{
+"level": "3AS",
+"title": "الحساب",
+"id": "arith_3as",
+"docs": {
+"molakhas": [
+"molakhas_arith_3as-01.png",
+"molakhas_arith_3as-02.png",
+"molakhas_arith_3as-03.png"
+],
+"tamarin": [
+"tamarin_arith_3as-01.png",
+"tamarin_arith_3as-02.png",
+"tamarin_arith_3as-03.png"
+],
+"bac": [
+"bac_arith_3as-01.png",
+"bac_arith_3as-02.png",
+"bac_arith_3as-03.png"
+]
+},
+"word": [
+"molakhas_arith_3as-01.png",
+"molakhas_arith_3as-02.png",
+"molakhas_arith_3as-03.png"
+],
+"tex": [
+"\\section{قابلية القسمة في $\\Z$}",
+"\\begin{tarif}",
+"$a$ و $b$ عددان صحيحان مع $a\\neq 0$. نقول إن $a$ \\textbf{يقسم} $",
+"\\[ b=k\\,a \\]",
+"ونكتب $a\\mid b$، ونقول أيضًا: $a$ قاسم لـ $b$، أو $b$ مضاعف لـ $",
+"\\end{tarif}",
+"\\begin{mithal}",
+"\\begin{itemize}",
+"\\item $7\\mid 35$ لأن $35=5\\times 7$.",
+"\\item $-3\\mid 1962$ لأن $1962=(-654)\\times(-3)$.",
+"\\item مجموعة قواسم $24$ في $\\N$: $D_{24}=\\{1;2;3;4;6;8;12;24\\}$،",
+"\\end{itemize}",
+"\\end{mithal}",
+"\\begin{molahada}"
+]
+},
+{
+"level": "3AS",
+"title": "الاحتمالات",
+"id": "proba_3as",
+"docs": {
+"molakhas": [
+"molakhas_proba_3as-01.png",
+"molakhas_proba_3as-02.png",
+"molakhas_proba_3as-03.png"
+],
+"tamarin": [
+"tamarin_proba_3as-01.png",
+"tamarin_proba_3as-02.png",
+"tamarin_proba_3as-03.png"
+],
+"bac": [
+"bac_proba_3as-01.png",
+"bac_proba_3as-02.png",
+"bac_proba_3as-03.png"
+]
+},
+"word": [
+"molakhas_proba_3as-01.png",
+"molakhas_proba_3as-02.png",
+"molakhas_proba_3as-03.png"
+],
+"tex": [
+"\\section{العدّ}",
+"\\subsection{المبدأ الأساسي للعدّ والعاملي}",
+"\\begin{khassia}[المبدأ الأساسي للعدّ]",
+"ليكن حدثان: الأول يتحقق بـ $n$ طريقة مختلفة والثاني بـ $m$ طريقة",
+"\\begin{itemize}",
+"\\item \\textbf{مبدأ الجمع} («أو»): عدد طرق تحقق الأول \\textbf{أو}",
+"\\item \\textbf{مبدأ الضرب} («و»): عدد طرق تحقق الأول \\textbf{ثم} ",
+"\\end{itemize}",
+"\\end{khassia}",
+"\\begin{tarif}[العاملي]",
+"من أجل كل عدد طبيعي $n\\geqslant 1$ نسمي عاملي $n$ العدد: \\quad",
+"$\\bx{n!=n\\times(n-1)\\times(n-2)\\times\\cdots\\times 2\\times 1}$ \\q",
+"\\end{tarif}",
+"\\begin{mithal}"
+]
+},
+{
+"level": "3AS",
+"title": "الأعداد المركبة",
+"id": "cplx_3as",
+"docs": {
+"molakhas": [
+"molakhas_cplx_3as-01.png",
+"molakhas_cplx_3as-02.png",
+"molakhas_cplx_3as-03.png"
+],
+"tamarin": [
+"tamarin_cplx_3as-01.png",
+"tamarin_cplx_3as-02.png",
+"tamarin_cplx_3as-03.png"
+],
+"bac": [
+"bac_cplx_3as-001.png",
+"bac_cplx_3as-002.png",
+"bac_cplx_3as-003.png"
+]
+},
+"word": [
+"molakhas_cplx_3as-01.png",
+"molakhas_cplx_3as-02.png",
+"molakhas_cplx_3as-03.png"
+],
+"tex": [
+"\\section{الأعداد المركبة: الشكل الجبري}",
+"\\subsection{المجموعة $\\mathbb{C}$}",
+"\\begin{tarif}[العدد المركب والشكل الجبري]",
+"توجد مجموعة يرمز لها بـ $\\mathbb{C}$ تسمى \\textbf{مجموعة الأعداد",
+"\\par كل عدد مركب $z$ يُكتب بطريقة \\textbf{وحيدة} على الشكل: \\qua",
+"\\begin{itemize}",
+"\\item هذه الكتابة تسمى \\textbf{الشكل الجبري} لـ $z$.",
+"\\item $a$ هو \\textbf{الجزء الحقيقي}: $a=\\mathrm{Re}(z)$، و$b$ هو",
+"\\item إذا كان $b=0$ فإن $z=a$ عدد \\textbf{حقيقي}؛ وإذا كان $a=0$",
+"\\end{itemize}",
+"\\end{tarif}",
+"\\begin{khassia}[تساوي عددين مركبين]",
+"\\begin{center}$a+ib=a'+ib'\\iff$ \\bxt{$a=a'$ و $b=b'$}\\qquad\\qqua",
+"أي: عددان مركبان متساويان إذا وفقط إذا تساوى جزآهما الحقيقيان وت"
+]
+},
+{
+"level": "3AS",
+"title": "الهندسة في الفضاء",
+"id": "fadaa_3as",
+"docs": {
+"molakhas": [
+"molakhas_fadaa_3as-01.png",
+"molakhas_fadaa_3as-02.png",
+"molakhas_fadaa_3as-03.png"
+]
+},
+"word": [
+"molakhas_fadaa_3as-01.png",
+"molakhas_fadaa_3as-02.png",
+"molakhas_fadaa_3as-03.png"
+],
+"tex": [
+"\\section{الأشعة في الفضاء}",
+"\\begin{tarif}[شعاعان مرتبطان خطيًّا -- استقامية]",
+"\\begin{itemize}",
+"\\item $\\vu$ و $\\vv$ \\textbf{مرتبطان خطيًّا} (متوازيان) إذا وُجد ",
+"\\item النقط $A$ ، $B$ ، $C$ \\textbf{في استقامية} $\\iff$ $\\V{AB}$",
+"\\item $(AB)\\parallel(CD)$ $\\iff$ $\\V{AB}$ و $\\V{CD}$ مرتبطان خطي",
+"\\end{itemize}",
+"\\end{tarif}",
+"\\begin{tarif}[أشعة من نفس المستوي]",
+"إذا كان $\\vu$ و $\\vv$ غير مرتبطين خطيًّا، فإن $\\vu$ ، $\\vv$ ، $\\",
+"\\textbf{تطبيق:} النقط $A$ ، $B$ ، $C$ ، $D$ \\textbf{من نفس المست",
+"\\end{tarif}",
+"\\begin{mithal}",
+"\\textbf{(1)} $A(1;2;-1)$ ، $B(3;1;0)$ ، $C(7;-1;2)$: \\ $\\V{AB}(2"
+]
+},
+{
+"level": "3AS",
+"title": "الإحصاء (تسيير واقتصاد)",
+"id": "ihsa_3as_ge",
+"docs": {
+"molakhas": [
+"molakhas_ihsa_3as_ge-01.png",
+"molakhas_ihsa_3as_ge-02.png",
+"molakhas_ihsa_3as_ge-03.png"
+],
+"tamarin": [
+"tamarin_ihsa_3as_ge-01.png",
+"tamarin_ihsa_3as_ge-02.png",
+"tamarin_ihsa_3as_ge-03.png"
+],
+"bac": [
+"bac_ihsa_3as_ge-01.png",
+"bac_ihsa_3as_ge-02.png",
+"bac_ihsa_3as_ge-03.png"
+]
+},
+"word": [
+"molakhas_ihsa_3as_ge-01.png",
+"molakhas_ihsa_3as_ge-02.png",
+"molakhas_ihsa_3as_ge-03.png"
+],
+"tex": [
+"\\section{سلسلة إحصائية ذات متغيرين}",
+"\\begin{tarif}",
+"ندرس على نفس المجتمع الإحصائي \\textbf{ميزتين كميتين} $x$ و$y$. ن",
+"\\begin{center}",
+"\\begin{tabular}{|C|c|c|c|c|}\\hline",
+"\\rowcolor{cSec!12} $x_i$ & $x_1$ & $x_2$ & $\\ldots$ & $x_n$\\\\\\hl",
+"$y_i$ & $y_1$ & $y_2$ & $\\ldots$ & $y_n$\\\\\\hline",
+"\\end{tabular}",
+"\\end{center}",
+"\\end{tarif}",
+"\\begin{mithal}[المثال المرجعي (نستعمله في كل الدرس)]",
+"يمثل الجدول تطور إنتاج معمل للإسمنت $y_i$ (بملايين الأطنان) خلال",
+"\\begin{center}",
+"\\begin{tabular}{|C|c|c|c|c|c|c|}\\hline"
+]
+},
+{
+"level": "2AS",
+"title": "الدوال وكثيرات الحدود",
+"id": "2as_wahda1",
+"docs": {
+"molakhas": [
+"molakhas_2as_wahda1-01.png",
+"molakhas_2as_wahda1-02.png",
+"molakhas_2as_wahda1-03.png"
+],
+"tamarin": [
+"tamarin_2as_wahda1-01.png",
+"tamarin_2as_wahda1-02.png",
+"tamarin_2as_wahda1-03.png"
+]
+},
+"word": [
+"molakhas_2as_wahda1-01.png",
+"molakhas_2as_wahda1-02.png",
+"molakhas_2as_wahda1-03.png"
+],
+"tex": [
+"\\section{تذكير بقواعد الحساب}",
+"\\begin{khassia}[المتطابقات الشهيرة]",
+"\\begin{center}",
+"\\renewcommand{\\arraystretch}{1.5}",
+"\\begin{tabular}{|C|C|}\\hline",
+"\\textbf{من الدرجة الثالثة} & \\textbf{من الدرجة الثانية}\\\\\\hline",
+"$(a+b)^3=a^3+3a^2b+3ab^2+b^3$ & $(a+b)^2=a^2+2ab+b^2$\\\\",
+"$(a-b)^3=a^3-3a^2b+3ab^2-b^3$ & $(a-b)^2=a^2-2ab+b^2$\\\\",
+"$a^3-b^3=(a-b)\\left(a^2+ab+b^2\\right)$ & $a^2-b^2=(a-b)(a+b)$\\\\",
+" $a^3+b^3=(a+b)\\left(a^2-ab+b^2\\right)$ & \\\\\\hline",
+"\\end{tabular}",
+"\\end{center}",
+"\\end{khassia}",
+"\\begin{khassia}[القيمة المطلقة]"
+]
+},
+{
+"level": "2AS",
+"title": "الاحتمالات",
+"id": "ihtimalat_2as",
+"docs": {
+"molakhas": [
+"molakhas_ihtimalat_2as-01.png",
+"molakhas_ihtimalat_2as-02.png",
+"molakhas_ihtimalat_2as-03.png"
+],
+"tamarin": [
+"tamarin_ihtimalat_2as-01.png",
+"tamarin_ihtimalat_2as-02.png",
+"tamarin_ihtimalat_2as-03.png"
+]
+},
+"word": [
+"molakhas_ihtimalat_2as-01.png",
+"molakhas_ihtimalat_2as-02.png",
+"molakhas_ihtimalat_2as-03.png"
+],
+"tex": [
+"\\section{التجربة العشوائية ، التواترات والمحاكاة}",
+"\\begin{tarif}[التجربة العشوائية]",
+"\\textbf{التجربة العشوائية} هي كل تجربة نعرف مسبقاً جميع نتائجها ",
+"كل نتيجة ممكنة تسمى \\textbf{مخرجاً} (أو إمكانية) ، ومجموعة كل ال",
+"\\end{tarif}",
+"\\begin{mithal}",
+"\\begin{itemize}",
+"\\item رمي قطعة نقدية: \\ $\\Omega=\\{F;P\\}$ \\ ($F$: الوجه ، $P$: ال",
+"\\item رمي زهرة نرد مرقمة من $1$ إلى $6$: \\ $\\Omega=\\{1;2;3;4;5;6",
+"\\item سحب كرية من كيس به كريات مرقمة من $1$ إلى $5$: \\ $\\Omega=\\",
+"\\end{itemize}",
+"\\end{mithal}",
+"\\begin{tarif}[التواتر]",
+"نكرر تجربة عشوائية $N$ مرة ، ونسجل عدد مرات ظهور كل مخرج $x_i$ ،"
+]
+},
+{
+"level": "2AS",
+"title": "الزوايا الموجهة والمثلثات",
+"id": "zawaya_2as",
+"docs": {
+"molakhas": [
+"molakhas_zawaya_2as-1.png",
+"molakhas_zawaya_2as-2.png",
+"molakhas_zawaya_2as-3.png"
+]
+},
+"word": [
+"molakhas_zawaya_2as-01.png",
+"molakhas_zawaya_2as-02.png",
+"molakhas_zawaya_2as-03.png"
+],
+"tex": [
+"\\section{تذكير: الراديان والدائرة المثلثية}",
+"\\begin{tarif}[الراديان]",
+"الراديان ($\\text{rad}$) هو قيس زاوية مركزية تحصر على دائرة نصف ق",
+"\\[\\alpha_{\\text{rad}}=\\frac{\\pi}{180}\\times\\alpha^\\circ\\qquad;\\q",
+"\\end{tarif}",
+"\\begin{center}",
+"\\renewcommand{\\arraystretch}{1.6}",
+"\\begin{tabular}{|c|c|c|c|c|c|c|c|C|}\\hline",
+"$180^\\circ$ & $135^\\circ$ & $120^\\circ$ & $90^\\circ$ & $60^\\circ",
+"$\\pi$ & $\\frac{3\\pi}{4}$ & $\\frac{2\\pi}{3}$ & $\\frac{\\pi}{2}$ & ",
+"\\end{tabular}",
+"\\end{center}",
+"\\RL{0.55}{%",
+"\\begin{tarif}[المستوي الموجه والدائرة المثلثية]"
+]
+},
+{
+"level": "2AS",
+"title": "المتتاليات العددية",
+"id": "motataliat_2as",
+"docs": {
+"molakhas": [
+"molakhas_motataliat_2as-1.png",
+"molakhas_motataliat_2as-2.png",
+"molakhas_motataliat_2as-3.png"
+],
+"tamarin": [
+"tamarin_motataliat_2as-01.png",
+"tamarin_motataliat_2as-02.png",
+"tamarin_motataliat_2as-03.png"
+]
+},
+"word": [
+"molakhas_motataliat_2as-01.png",
+"molakhas_motataliat_2as-02.png",
+"molakhas_motataliat_2as-03.png"
+],
+"tex": [
+"\\section{تعريف متتالية عددية ومصطلحات}",
+"\\begin{tarif}",
+"\\textbf{المتتالية العددية} $u$ هي دالة ترفق بكل عدد طبيعي $n$ ، ",
+"\\end{tarif}",
+"\\begin{khassia}[ترميز ومصطلحات]",
+"\\begin{itemize}",
+"\\item نرمز للمتتالية بـ $\\Un$ أو $\\Un_{n\\in\\N}$ أو $\\Un_{n\\ge n_",
+"\\item العدد $u_n$ هو \\textbf{الحد العام} أو \\textbf{الحد ذو الدل",
+"\\item $u_0$ هو \\textbf{الحد الأول} إذا كانت $\\Un$ معرّفة على $\\N",
+"\\item إذا كان الحد الأول $u_{n_0}$ فإن رتبة الحد $u_p$ هي $p-n_0",
+"\\end{itemize}",
+"\\end{khassia}",
+"\\begin{molahada}",
+"في الحد $u_n$ ، العدد $n$ هو \\textbf{الدليل} وليس الرتبة: \\ $u_5"
+]
+},
+{
+"level": "1AS",
+"title": "الأعداد والحساب",
+"id": "03_1as",
+"docs": {
+"molakhas": [
+"molakhas_03_1as-01.png",
+"molakhas_03_1as-02.png",
+"molakhas_03_1as-03.png"
+]
+},
+"word": [
+"molakhas_03_1as-01.png",
+"molakhas_03_1as-02.png",
+"molakhas_03_1as-03.png"
+],
+"tex": [
+"\\section{مجموعات الأعداد}",
+"\\begin{tarif}[المجموعات الخمس]",
+"\\begin{itemize}",
+"\\item $\\N=\\{0;1;2;3;\\ldots\\}$: مجموعة \\textbf{الأعداد الطبيعية}.",
+"\\item $\\Z=\\{\\ldots;-2;-1;0;1;2;\\ldots\\}$: مجموعة \\textbf{الأعداد",
+"\\item $\\D$: مجموعة \\textbf{الأعداد العشرية}، وهي الأعداد التي تك",
+"\\item $\\Q$: مجموعة \\textbf{الأعداد الناطقة}، وهي الأعداد التي تك",
+"\\item $\\R$: مجموعة \\textbf{الأعداد الحقيقية}، وهي فواصل كل نقط ا",
+"\\end{itemize}",
+"العدد الحقيقي غير الناطق يسمى عددًا \\textbf{أصمّ}، مثل: $\\sqrt{2",
+"\\end{tarif}",
+"\\begin{khassia}[الاحتواء]",
+"\\RL{0.55}{%",
+"\\[ \\bx{\\N\\subset\\Z\\subset\\D\\subset\\Q\\subset\\R} \\]"
+]
+},
+{
+"level": "1AS",
+"title": "عموميات على الدوال",
+"id": "omomiyat_dawal_1as",
+"docs": {
+"molakhas": [
+"molakhas_omomiyat_dawal_1as-1.png",
+"molakhas_omomiyat_dawal_1as-2.png",
+"molakhas_omomiyat_dawal_1as-3.png"
+]
+},
+"word": [
+"molakhas_omomiyat_dawal_1as-01.png",
+"molakhas_omomiyat_dawal_1as-02.png",
+"molakhas_omomiyat_dawal_1as-03.png"
+],
+"tex": [
+"\\section{مفهوم الدالة: الصورة والسابقة}",
+"\\begin{tarif}",
+"$D$ جزء من $\\R$. \\ \\textbf{الدالة} $f$ المعرّفة على $D$ هي علاقة",
+"\\[f:\\ D\\longrightarrow\\R\\qquad;\\qquad x\\longmapsto f(x).\\]",
+"\\begin{itemize}",
+"\\item العدد $f(x)$ يسمى \\textbf{صورة} $x$ بالدالة $f$.",
+"\\item إذا كان $f(a)=b$ فإن $a$ يسمى \\textbf{سابقة} (أو سابقاً) ل",
+"\\end{itemize}",
+"\\end{tarif}",
+"\\begin{molahada}",
+"\\begin{itemize}",
+"\\item لكل عدد $x$ من $D$ \\textbf{صورة واحدة فقط}.",
+"\\item قد يكون لعدد $b$ سابقة واحدة ، أو عدة سوابق ، أو لا يكون ل",
+"\\item لإيجاد صورة $a$: نحسب $f(a)$. \\ لإيجاد سوابق $b$: نحل المع"
+]
+},
+{
+"level": "1AS",
+"title": "الهندسة المستوية",
+"id": "handasa_mostawiya_1as",
+"docs": {
+"molakhas": [
+"molakhas_handasa_mostawiya_1as-1.png",
+"molakhas_handasa_mostawiya_1as-2.png",
+"molakhas_handasa_mostawiya_1as-3.png"
+]
+},
+"word": [
+"molakhas_handasa_mostawiya_1as-01.png",
+"molakhas_handasa_mostawiya_1as-02.png",
+"molakhas_handasa_mostawiya_1as-03.png"
+],
+"tex": [
+"\\section{المستقيمات الخاصة في مثلث}",
+"\\begin{khassia}",
+"\\renewcommand{\\arraystretch}{1.5}",
+"\\centering",
+"\\begin{tabular}{|p{0.36\\textwidth}|p{0.24\\textwidth}|p{0.22\\text",
+"\\cellcolor{cThm!15}\\textbf{نقطة التلاقي وخاصيتها} & \\cellcolor{c",
+"تتلاقى في $O$ \\textbf{مركز الدائرة المحيطة} بالمثلث ($OA=OB=OC$)",
+"تتلاقى في $G$ \\textbf{مركز الثقل}: \\ $\\V{AG}=\\dfrac23\\V{AA'}$ ($",
+"تتلاقى في $H$ \\textbf{المركز القائم}. & يشمل رأساً ويعامد حامل ا",
+"تتلاقى في $I$ \\textbf{مركز الدائرة المحاطة} (متساوية البعد عن ال",
+"\\end{tabular}",
+"\\end{khassia}",
+"\\begin{molahada}[كيف نفهم هذه المستقيمات؟]",
+"في كل شكل: \\textcolor{cThm}{\\textbf{بالأحمر}} المستقيم المتعلق ب"
+]
+}
+]
