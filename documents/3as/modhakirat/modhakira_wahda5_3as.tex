@@ -1,0 +1,370 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\usepackage{longtable}
+\setlength{\LTpre}{4pt}\setlength{\LTpost}{0pt}
+\newcommand{\Phase}[1]{\textbf{#1}}
+\newcommand{\Fld}[2]{\textbf{#1:}\ #2}
+% رأس المذكرة على نمط النموذج: إطار بعنوان «مذكرة رقم»، معلومات الحصة، ثم إطار الكفاءات
+\newcommand{\ModhHead}[9]{%
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=4mm,boxrule=1pt,top=14pt,bottom=6pt,left=8pt,right=8pt,
+ overlay={\node[fill=cThm!85!black,text=white,rounded corners=3mm,inner xsep=14pt,inner ysep=4pt,font=\large\bfseries] at ([yshift=0pt]frame.north){\ar{مذكرة رقم #1}};},
+ before upper={\selectlanguage{arabic}}]
+\begin{tabular}{@{}p{0.4\linewidth}p{0.55\linewidth}@{}}
+\Fld{المستوى}{#2} & \Fld{الثانوية}{\dotfill}\\[3pt]
+\Fld{المادة}{رياضيات} & \Fld{ميدان التعلم}{#3}\\[3pt]
+\Fld{المدة}{#5} & \Fld{الوحدة التعلمية}{#4}\\[3pt]
+\Fld{الأستاذ}{\dotfill} & \Fld{المحتوى المعرفي}{#6}\\
+\end{tabular}
+\end{tcolorbox}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=3mm,boxrule=0.8pt,sidebyside,sidebyside align=top,lefthand ratio=0.5,
+ segmentation style={dashed,cThm!60},before upper={\selectlanguage{arabic}},before lower={\selectlanguage{arabic}}]
+\textbf{الكفاءات المستهدفة:}\par #8
+\tcblower
+\textbf{الكفاءات القبلية:}\par #7
+\end{tcolorbox}
+\end{LTR}
+\par\smallskip\textbf{الوسائل:} #9\par\smallskip}
+\newenvironment{Sayr}{%
+\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\hline\endfoot}{\end{longtable}\end{LTR}}
+% سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
+\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
+
+\newcommand{\Lab}[2]{\foreignlanguage{english}{\tcbox[on line,colback=#1,colframe=#1,boxrule=0pt,arc=2pt,boxsep=1pt,left=5pt,right=5pt,top=1pt,bottom=1pt]{\ar{\textcolor{white}{\textbf{#2}}}}}}
+\newcommand{\Num}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[fill=cDef,text=white,inner sep=2pt,font=\footnotesize\bfseries](c){#1};}}
+\newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
+\newenvironment{Kad}[1]{\par\smallskip\Lab{#1}}{\par}
+\SetHeader{\small\bfseries\color{cSec}مذكرات محور: المتتاليات العددية}{\small\color{cSec}السنة الثالثة ثانوي -- علوم تجريبية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cThm!85!black,colframe=cThm!85!black,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries مذكرات محور: المتتاليات العددية}\\[8pt]
+{\color{white}\large السنة الثالثة ثانوي -- علوم تجريبية (صالحة لشعبتي رياضيات وتقني رياضي)}\\[4pt]
+{\color{white}\large 7 مذكرات (14 ساعة) -- السنة الدراسية 2026-2027}
+\end{tcolorbox}
+\end{LTR}
+\begin{BOX}{cThm}{يتضمن هذا العمل}
+\begin{enumerate}[label=\textbf{مذكرة \arabic{enumi}:},leftmargin=6em,start=29]
+\item توليد متتالية ، التمثيل البياني وتخمين السلوك.
+\item الاستدلال بالتراجع.
+\item المتتاليات المحدودة والرتيبة.
+\item المتتاليتان الحسابية والهندسية ، المتتالية المساعدة.
+\item تقارب متتالية ونهايتها.
+\item المتتاليتان المتجاورتان.
+\item حل مشكلات توظف المتتاليات.
+\end{enumerate}
+مراجع النشاطات والتمارين: الكتاب المدرسي للسنة الثالثة ثانوي ، الجزء الثاني (باب المتتاليات: نشاط ص 7 ، تمارين ص 25 و 37 و 64).
+\end{BOX}
+\newpage
+\ModhHead{29}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{توليد متتالية ، التمثيل البياني وتخمين السلوك}%
+{\begin{itemize}\item المتتاليات (2 ع ت) ، الدوال.\end{itemize}}%
+{\begin{itemize}\item توليد متتالية ، واستعمال التمثيل البياني لتخمين سلوكها ونهايتها.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} ذكّر بطريقتي توليد متتالية. ما الفرق بينهما؟}{10 د}{تذكير.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\ $u_0=0$ و $u_{n+1}=\sqrt{u_n+2}$.\par\ck\ بالحاسبة: $u_1\approx1{,}41$ ، $u_2\approx1{,}85$ ، $u_3\approx1{,}96$.\par
+\ck\ نخمن: المتتالية متزايدة وتقترب من $2$.\par
+}{35 د}{الحاسبة.}
+\Row{بناء المعارف}{%
+\Lab{cMeth}{التمثيل البياني}\ نرسم $C_f$ و $y=x$ ، ونمثل الحدود على محور الفواصل بطريقة «السلم».\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[scale=1.9,font=\scriptsize]
+\draw[->] (-0.1,0)--(2.6,0) node[right]{$x$}; \draw[->] (0,-0.1)--(0,2.3) node[above]{$y$};
+\draw[cRem,dashed] (0,0)--(2.3,2.3) node[above]{$y=x$};
+\draw[cDef,thick,domain=0:2.5,samples=60] plot (\x,{sqrt(\x+2)}) node[right]{$y=\sqrt{x+2}$};
+\draw[cThm,thick,->] (0,0)--(0,1.414)--(1.414,1.414)--(1.414,1.848)--(1.848,1.848)--(1.848,1.962)--(1.962,1.962);
+\foreach \x/\n in {0/0,1.414/1,1.848/2} {\draw[dotted] (\x,0)--(\x,\x); \node[below] at (\x,0){$u_{\n}$};}
+\end{tikzpicture}\end{LTR}\par \Lab{cRem}{ملاحظات}\ فاصلة نقطة تقاطع $C_f$ و $y=x$ هي النهاية المحتملة: $l=\sqrt{l+2}$ ، أي $l=2$.\par}{50 د}{رسم السلم.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ التخمين يحتاج برهاناً (المذكرتان 30 و 33).}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par $v_0=5$ و $v_{n+1}=\frac12v_n+1$. احسب $v_1$ ، $v_2$ ، $v_3$ ، مثلها بيانياً وخمن سلوكها.\par\textbf{الحل:} $3{,}5$ ؛ $2{,}75$ ؛ $2{,}375$: متناقصة وتقترب من $2$.\par\textbf{واجب منزلي:} تمارين من باب المتتاليات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{30}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{الاستدلال بالتراجع}%
+{\begin{itemize}\item المتتاليات ، المتباينات.\end{itemize}}%
+{\begin{itemize}\item إثبات خاصية متعلقة بعدد طبيعي باستعمال الاستدلال بالتراجع.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} صف من قطع الدومينو: ماذا يكفي لتسقط كلها؟}{10 د}{مثال الدومينو.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ $1=1^2$ ، $1+3=2^2$ ، $1+3+5=3^2$: تخمين $1+3+\cdots+(2n-1)=n^2$.\par
+\ck\ إذا صحت للعدد $n$ نضيف $2n+1$: $n^2+2n+1=(n+1)^2$.\par
+}{35 د}{تخمين ثم برهان.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{مبدأ الاستدلال بالتراجع}\ لإثبات أن خاصية $P(n)$ صحيحة من أجل كل $n\geqslant n_0$:\par\ck\ \textbf{التحقق}: $P(n_0)$ صحيحة.\par
+\ck\ \textbf{الوراثة}: نفرض $P(n)$ صحيحة من أجل $n\geqslant n_0$ ونبرهن صحة $P(n+1)$.\par
+\Lab{cEx}{مثال}\ $u_0=0$ ، $u_{n+1}=\sqrt{u_n+2}$: نبرهن $0\leqslant u_n\leqslant2$. التحقق: $u_0=0$. الوراثة: إذا كان $0\leqslant u_n\leqslant2$ فإن $2\leqslant u_n+2\leqslant4$ ، ومنه $0\leqslant u_{n+1}\leqslant2$.\par}{50 د}{تحرير البرهان بالمراحل.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ الوراثة وحدها لا تكفي: لا ننسى التحقق.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par برهن بالتراجع أنه من أجل كل $n\in\mathbb N$: $3^n\geqslant1+2n$.\par\textbf{الحل:} $n=0$: $1\geqslant1$ ؛ إذا كان $3^n\geqslant1+2n$ فإن $3^{n+1}\geqslant3+6n\geqslant3+2n=1+2(n+1)$.\par\textbf{واجب منزلي:} تمرينا 64 و 65 صفحة 64.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{31}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{المتتاليات المحدودة والرتيبة}%
+{\begin{itemize}\item الاستدلال بالتراجع ، اتجاه التغير.\end{itemize}}%
+{\begin{itemize}\item إثبات أن متتالية محدودة ، ودراسة رتابتها.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} $v_n=\dfrac{2n+1}{n+1}$: هل يمكن أن يتجاوز $v_n$ العدد $2$ ؟}{10 د}{سؤال.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ $v_n=2-\dfrac1{n+1}$: $1\leqslant v_n<2$ ، و $v_n$ تتزايد.\par
+}{35 د}{كتابة جديدة للعبارة.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $(u_n)$ \textbf{محدودة من الأعلى} إذا وُجد $M$ حيث $u_n\leqslant M$ لكل $n$ ، و\textbf{من الأسفل} إذا وُجد $m$ حيث $u_n\geqslant m$ ، و\textbf{محدودة} إذا كانت محدودة من الأعلى والأسفل.\par\Lab{cMeth}{الرتابة}\ إشارة $u_{n+1}-u_n$ ، أو مقارنة $\dfrac{u_{n+1}}{u_n}$ بـ $1$ (حدود موجبة) ، أو بالتراجع إذا كانت $u_{n+1}=f(u_n)$ و $f$ متزايدة.\par}{50 د}{جدول الطرق.}
+\Row{}{%
+\Lab{cEx}{مثال}\ $u_0=0$ ، $u_{n+1}=\sqrt{u_n+2}$: نبرهن بالتراجع $u_n\leqslant u_{n+1}$: صحيحة لـ $n=0$ ($0\leqslant\sqrt2$) ، وإذا كان $u_n\leqslant u_{n+1}$ فإن $\sqrt{u_n+2}\leqslant\sqrt{u_{n+1}+2}$ ، أي $u_{n+1}\leqslant u_{n+2}$.\par\Lab{cThm!80!black}{حذار}\ محدودة لا تعني متقاربة: $(-1)^n$.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par $w_n=\dfrac{n}{n^2+1}$: بيّن أن $0\leqslant w_n\leqslant\frac12$.\par\textbf{الحل:} $w_n\geqslant0$ ؛ $\frac12-w_n=\dfrac{(n-1)^2}{2(n^2+1)}\geqslant0$.\par\textbf{واجب منزلي:} تمارين من باب المتتاليات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{32}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{المتتاليتان الحسابية والهندسية ، المتتالية المساعدة}%
+{\begin{itemize}\item المتتاليات الحسابية والهندسية (2 ع ت).\end{itemize}}%
+{\begin{itemize}\item استعمال متتالية مساعدة هندسية لحساب الحد العام لمتتالية $u_{n+1}=au_n+b$.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} ذكّر بالحد العام ومجموع الحدود لمتتالية حسابية وهندسية.}{10 د}{تذكير سريع.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\ $u_0=1$ و $u_{n+1}=\frac12u_n+3$ ، و $v_n=u_n-6$.\par\ck\ $v_{n+1}=\frac12u_n+3-6=\frac12(u_n-6)=\frac12v_n$: هندسية أساسها $\frac12$ وحدها الأول $v_0=-5$.\par
+\ck\ $u_n=6-5\left(\frac12\right)^n$ ، و $\lim u_n=6$.\par
+}{35 د}{نقطة صامدة.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{تذكير}\par\ck\ حسابية: $u_n=u_0+nr$ ؛ مجموع $N$ حداً متتابعاً: $N\times\dfrac{a+b}2$ ($a$ الأول ، $b$ الأخير).\par
+\ck\ هندسية: $v_n=v_0q^n$ ؛ المجموع: $a\times\dfrac{1-q^N}{1-q}$ ($q\neq1$).\par
+\Lab{cMeth}{المتتالية المساعدة}\ لـ $u_{n+1}=au_n+b$ ($a\neq1$): نعين $l$ حيث $l=al+b$ ، والمتتالية $v_n=u_n-l$ هندسية أساسها $a$.\par}{50 د}{مخطط الطريقة.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نبرهن أن $v_n$ هندسية بحساب $v_{n+1}$ بدلالة $v_n$.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par $u_0=1$ ، $u_{n+1}=3u_n-4$ و $v_n=u_n-2$. بيّن أن $(v_n)$ هندسية ، واستنتج $u_n$.\par\textbf{الحل:} $v_{n+1}=3v_n$ ، $v_0=-1$: $u_n=2-3^n$.\par\textbf{واجب منزلي:} تمارين من باب المتتاليات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{33}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{تقارب متتالية ونهايتها}%
+{\begin{itemize}\item المتتاليات المحدودة والرتيبة ، النهايات.\end{itemize}}%
+{\begin{itemize}\item إثبات تقارب متتالية وحساب نهايتها.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} متتالية متزايدة ولا تتجاوز $2$: هل لها نهاية؟}{10 د}{تخمين.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ الحدود تتزايد و«تتراكم» تحت $2$: تخمين التقارب.\par
+}{35 د}{برهان كامل.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\par\ck\ كل متتالية متزايدة ومحدودة من الأعلى متقاربة ؛ وكل متتالية متناقصة ومحدودة من الأسفل متقاربة.\par
+\ck\ مبرهنات النهايات (المجموع ، الجداء ، القسمة) ، المقارنة والحصر.\par
+\ck\ إذا كانت $u_{n+1}=f(u_n)$ متقاربة نحو $l$ و $f$ مستمرة عند $l$ فإن $f(l)=l$.\par
+\Lab{cEx}{مثال}\ $u_{n+1}=\sqrt{u_n+2}$: متزايدة ومحدودة من الأعلى بـ $2$ ، إذن متقاربة نحو $l\geqslant0$ حيث $l=\sqrt{l+2}$: $l^2-l-2=0$ ، $l=2$.\par}{50 د}{خطوات التحرير.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ لا نستعمل $f(l)=l$ قبل إثبات التقارب.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par احسب نهاية $w_n=\dfrac{3n^2+1}{n^2+n}$ ، و $t_n=\dfrac{(-1)^n}{n+1}$.\par\textbf{الحل:} $3$ ؛ $|t_n|\leqslant\dfrac1{n+1}$: النهاية $0$.\par\textbf{واجب منزلي:} تمرينا 28 و 29 ، و 123 و 124 صفحة 25.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{34}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{المتتاليتان المتجاورتان}%
+{\begin{itemize}\item التقارب ، الرتابة.\end{itemize}}%
+{\begin{itemize}\item إثبات أن متتاليتين متجاورتان واستنتاج نهايتهما المشتركة.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} كيف نحصر عدداً مجهولاً بين قيم مقربة بالنقصان وبالزيادة تتقارب؟}{10 د}{سؤال حصر.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{مناقشة نشاط 04 صفحة 7}\par\ck\ متتاليتان: الأولى تتزايد والثانية تتناقص ، والفرق بينهما يؤول إلى $0$.\par
+\ck\ تحصران عدداً وحيداً.\par
+}{35 د}{نشاط الكتاب.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $(u_n)$ و $(v_n)$ \textbf{متجاورتان} إذا كانت إحداهما متزايدة والأخرى متناقصة و $\lim(v_n-u_n)=0$.\par\Lab{cThm}{خاصية}\ متتاليتان متجاورتان متقاربتان ولهما نفس النهاية $l$ ، ومن أجل كل $n$: $u_n\leqslant l\leqslant v_n$.\par}{50 د}{الشروط الثلاثة في جدول.}
+\Row{}{%
+\Lab{cEx}{مثال}\ $u_n=2-\dfrac1n$ ، $v_n=2+\dfrac1{n^2}$ ($n\geqslant1$): $(u_n)$ متزايدة ، $(v_n)$ متناقصة ، $v_n-u_n=\dfrac1n+\dfrac1{n^2}\to0$: متجاورتان ، النهاية $2$.\par\Lab{cThm!80!black}{حذار}\ نتحقق من الشروط الثلاثة كلها.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par بيّن أن $u_n=1-\dfrac1{2^n}$ و $v_n=1+\dfrac1n$ ($n\geqslant1$) متجاورتان.\par\textbf{الحل:} $u_n$ متزايدة ، $v_n$ متناقصة ، $v_n-u_n=\dfrac1n+\dfrac1{2^n}\to0$: النهاية المشتركة $1$.\par\textbf{واجب منزلي:} تمرين 135 صفحة 37.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{35}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{حل مشكلات توظف المتتاليات}%
+{\begin{itemize}\item المتتالية المساعدة ، التقارب ، الاستدلال بالتراجع.\end{itemize}}%
+{\begin{itemize}\item نمذجة وضعية بمتتالية وحل المشكلة.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} غابة فيها $1000$ شجرة ، يُقطع $10\,\%$ كل سنة ويُغرس $200$: كم شجرة على المدى البعيد؟}{10 د}{وضعية بيئية.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ $P_0=1000$ ، $P_{n+1}=0{,}9P_n+200$.\par
+\ck\ النقطة الصامدة: $l=0{,}9l+200$ ، $l=2000$.\par
+}{35 د}{عمل بالأفواج.}
+\Row{بناء المعارف}{%
+\Lab{cEx}{الحل}\par\ck\ $v_n=P_n-2000$: $v_{n+1}=0{,}9v_n$ ، $v_0=-1000$.\par
+\ck\ $P_n=2000-1000\times0{,}9^n$ ، متزايدة ، $\lim P_n=2000$.\par
+\ck\ بالتراجع: $P_n\leqslant2000$ لكل $n$.\par
+\Lab{cMeth}{طريقة}\ ترييض الوضعية ، متتالية مساعدة ، عبارة الحد العام ، النهاية ، ثم تفسير النتيجة في سياق المشكلة.\par}{50 د}{تفسير النتائج.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نفسر النتيجة بلغة الوضعية (عدد الأشجار).}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par مريض يأخذ $2$ mg من دواء يومياً ، ويطرح الجسم نصف الكمية يومياً: $d_0=2$ ، $d_{n+1}=0{,}5d_n+2$. احسب $d_n$ ونهايتها.\par\textbf{الحل:} $v_n=d_n-4$ هندسية أساسها $0{,}5$ ، $v_0=-2$: $d_n=4-2\times0{,}5^n$ ، النهاية $4$ mg.\par\textbf{واجب منزلي:} مسائل من باب المتتاليات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\end{Sayr}
+\end{document}
