@@ -316,8 +316,57 @@ def clean_inline(s):
     return re.sub(r"\s+", " ", s).strip()
 
 
+def sayr_nested_tables(body, figs):
+    """pandoc cannot read a tabular inside a cell of the lesson-plan table (Sayr):
+    the inner \\end{tabular} closes the outer table. Such inner tables become pictures."""
+    def inner(s):
+        out, pos, b = [], 0, "\\begin{tabular}"
+        while True:
+            i = s.find(b, pos)
+            if i < 0:
+                out.append(s[pos:])
+                return "".join(out)
+            _, after = find_env_end(s, "tabular", i + len(b))
+            out.append(s[pos:i] + "\\par " + figs.add(s[i:after], False) + "\\par ")
+            pos = after
+    return re.sub(r"(\\begin\{Sayr\})(.*?)(\\end\{Sayr\})",
+                  lambda m: m.group(1) + inner(m.group(2)) + m.group(3), body, flags=re.S)
+
+
+def modhakira(body):
+    """Lesson-plan macros (\\ModhHead, Sayr/\\Row, \\Lab, \\ck, \\Num) -> plain tables pandoc can read."""
+    def head(o, r):
+        n, lvl, fld, unit, dur, title, qab, mus, tools = r
+        info = ("\\begin{tabular}{p{0.45\\linewidth}p{0.45\\linewidth}}\n"
+                "\\textbf{المستوى:} %s & \\textbf{الثانوية:} ..........\\\\\n"
+                "\\textbf{المادة:} رياضيات & \\textbf{ميدان التعلم:} %s\\\\\n"
+                "\\textbf{المدة:} %s & \\textbf{الوحدة التعلمية:} %s\\\\\n"
+                "\\textbf{الأستاذ:} .......... & \\textbf{المحتوى المعرفي:} %s\\\\\n\\end{tabular}" % (lvl, fld, dur, unit, title))
+        comp = ("\\begin{tabular}{p{0.45\\linewidth}p{0.45\\linewidth}}\n"
+                "\\textbf{الكفاءات المستهدفة:} %s & \\textbf{الكفاءات القبلية:} %s\\\\\n\\end{tabular}" % (mus, qab))
+        return ("\n\n" + mk("B+|cThm") + " مذكرة رقم " + n + "\n\n" + info + "\n\n" + mk("B-") + "\n\n"
+                + comp + "\n\n\\textbf{الوسائل:} " + tools + "\n\n")
+    # {\footnotesize ... \begin{tabular}...\end{tabular}} inside a Row cell: pandoc chokes on the group
+    body = re.sub(r"\{\\(?:footnotesize|scriptsize|small)\s*(?:\\renewcommand\{\\arraystretch\}\{[^}]*\})?\s*"
+                  r"(\\begin\{tabular\}.*?\\end\{tabular\})\}", r"\1", body, flags=re.S)
+    body = replace_macro(body, "ModhHead", 0, 9, head)
+    body = body.replace("\\begin{Sayr}",
+                        "\\begin{tabular}{p{0.15\\linewidth}p{0.09\\linewidth}p{0.58\\linewidth}p{0.15\\linewidth}}\n"
+                        "\\rowcolor{cThm!12}\\textbf{توجيهات وتعاليق} & \\textbf{المدة} & \\textbf{سير الحصة} & \\textbf{مراحل الحصة}\\\\\n")
+    body = body.replace("\\end{Sayr}", "\\end{tabular}")
+    body = replace_macro(body, "Row", 0, 4,
+                         lambda o, r: "%s & %s & %s & \\cellcolor{cThm!8}\\textbf{%s}\\\\\n" % (r[3], r[2], r[1], r[0]))
+    body = replace_macro(body, "Lab", 0, 2, lambda o, r: "\\textbf{[%s]}" % r[1])
+    body = replace_macro(body, "Num", 0, 1, lambda o, r: chr(0x2460 + int(r[0]) - 1)
+                         if r[0].strip().isdigit() and 1 <= int(r[0]) <= 20 else "(%s)" % r[0])
+    body = re.sub(r"\\ck(?![A-Za-z])", "✓", body)
+    body = re.sub(r"\\dotfill(?![A-Za-z])", " ..........", body)
+    return body
+
+
 def rewrite_body(body, meta):
     exo = [0]
+    body = modhakira(body)
 
     # title banner(s)
     def banner(m):
@@ -846,6 +895,24 @@ def color_runs(p, hexcol, bold=False, size=None):
 TEXT_W = 21 - 2 * 1.7
 
 
+def cell_width_cm(p):
+    """Width of the table cell holding paragraph p (from the table grid), or the text width."""
+    tc = p.getparent()
+    while tc is not None and tc.tag != qn("w:tc"):
+        tc = tc.getparent()
+    if tc is None:
+        return TEXT_W
+    tr = tc.getparent()
+    tbl = tr.getparent()
+    cols = tbl.find(qn("w:tblGrid")).findall(qn("w:gridCol"))
+    i = tr.findall(qn("w:tc")).index(tc)
+    if i >= len(cols) or not cols[i].get(qn("w:w")):
+        return TEXT_W
+    total = sum(int(c.get(qn("w:w"))) for c in cols) or 1
+    w = int(cols[i].get(qn("w:w")))
+    return min(TEXT_W * w / total, w / 1440 * 2.54)
+
+
 def postprocess(path, out, head, foot, figs):
     d = docx.Document(path)
     body = d.element.body
@@ -880,8 +947,9 @@ def postprocess(path, out, head, foot, figs):
                         anchor.addnext(nr); anchor = nr
                         continue
                     w, h = figs.size_cm(key)
-                    if w > TEXT_W - 0.6:
-                        h, w = h * (TEXT_W - 0.6) / w, TEXT_W - 0.6
+                    maxw = min(TEXT_W - 0.6, cell_width_cm(p) - 0.4)
+                    if w > maxw:
+                        h, w = h * maxw / w, maxw
                     tmp_run = P.add_run()
                     tmp_run.add_picture(figs.png(key), width=Cm(w))
                     nr = tmp_run._r
@@ -1307,6 +1375,7 @@ def convert(tex_path, out_path, cache, keep=False, log=print):
     if hoisted:
         preamble = preamble + "\n% --- definitions hoisted from the body\n" + hoisted + "\n"
     figs = Figures(preamble, cache)
+    body = sayr_nested_tables(body, figs)
     body = extract_figures(body, preamble, figs)
     body = rewrite_body(body, {"text_macros": text_macros(preamble)})
     body = fix_math_text(body)
