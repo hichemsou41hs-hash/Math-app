@@ -716,9 +716,9 @@ $|a|=1$ و$a\neq1$، فـ $f$ دوران زاويته $\frac\pi3$، ومركزه
 \node[cDef] at (3.1,-0.7){$(\Gamma)$};\node[cRem] at (-3,-4.9){$t(\Gamma)$};\node[cThm] at (3.9,3){$h(\Gamma)$};
 \end{CP}
 \end{hal}
-\section{تمارين شعبة رياضيات}
+\section{تمارين للتعمق: التشابهات المباشرة ومسائل (رياضيات، تقني رياضي، علوم تجريبية)}
 
-\begin{tamrin}{التشابه المباشر وعناصره المميزة -- شعبة رياضيات}
+\begin{tamrin}{التشابه المباشر وعناصره المميزة}
 $S$ التحويل النقطي الذي يرفق بكل نقطة $M(z)$ النقطة $M'(z')$ حيث: $z'=(1+i)z+2-i$.
 \QQ{1} بيّن أن $S$ تشابه مباشر يطلب تعيين مركزه $\Omega$ ونسبته وزاويته.
 \QQ{2} بيّن أنه من أجل كل نقطة $M\neq\Omega$: $\dfrac{z'-z}{\omega-z}=-i$، واستنتج طبيعة المثلث $\Omega MM'$.
@@ -758,7 +758,7 @@ $S$ التحويل النقطي الذي يرفق بكل نقطة $M(z)$ الن�
 \end{CP}
 \end{hal}
 
-\begin{tamrin}{تركيب دوران وتحاكٍ -- شعبة رياضيات}
+\begin{tamrin}{تركيب دوران وتحاكٍ}
 $r$ الدوران الذي مركزه $A(1)$ وزاويته $\dfrac\pi2$، و$h$ التحاكي الذي مركزه $B(-i)$ ونسبته $2$.
 \QQ{1} عيّن الكتابة المركبة لكل من $r$ و$h$.
 \QQ{2} عيّن الكتابة المركبة لكل من $f=h\circ r$ و$g=r\circ h$.
@@ -793,54 +793,49 @@ $g=r\circ h$: نطبق $h$ أولًا ثم $r$. إذا كان $z_2=2z+i$:
 \end{CP}
 \end{hal}
 
-\begin{tamrin}{متتالية نقط $z_{n+1}=az_n+b$ -- شعبة رياضيات}
-نعتبر المتتالية $(z_n)$ للأعداد المركبة المعرفة بـ: $z_0=4+2i$، ومن أجل كل عدد طبيعي $n$: $z_{n+1}=\dfrac{1+i}{2}\,z_n+1+i$. نسمي $M_n$ النقطة ذات اللاحقة $z_n$، و$\Omega$ النقطة ذات اللاحقة $2i$.
-\QQ{1} بيّن أن $M_{n+1}$ صورة $M_n$ بتشابه مباشر $s$ يطلب تعيين عناصره المميزة.
-\QQ{2} نضع من أجل كل عدد طبيعي $n$: $u_n=z_n-2i$. بيّن أن $(u_n)$ متتالية هندسية، واكتب $u_n$ على الشكل الأسي بدلالة $n$.
-\QQ{3} نضع $r_n=\Omega M_n$. عبّر عن $r_n$ بدلالة $n$ واحسب $\limn r_n$.
-\QQ{4} بيّن أن المثلث $\Omega M_nM_{n+1}$ قائم ومتساوي الساقين.
-\QQ{5} نضع $L_n=M_0M_1+M_1M_2+\dots+M_{n-1}M_n$. احسب $L_n$ بدلالة $n$ ثم $\limn L_n$.
-\QQ{6} عيّن قيم $n$ التي تكون من أجلها النقطة $M_n$ على نصف المستقيم $[\Omega M_0)$. مثّل النقط من $M_0$ إلى $M_6$.
+\begin{tamrin}{التحليل القانوني لتشابه مباشر}
+$S$ التحويل النقطي الذي يرفق بكل نقطة $M(z)$ النقطة $M'(z')$ حيث: $z'=(-1+i)z+3+i$.
+\QQ{1} بيّن أن $S$ تشابه مباشر يطلب تعيين مركزه $\Omega$ ونسبته $k$ وزاويته $\theta$.
+\QQ{2} $r$ الدوران الذي مركزه $\Omega$ وزاويته $\theta$، و$h$ التحاكي الذي مركزه $\Omega$ ونسبته $k$.
+\begin{sq}
+\qa اكتب الكتابة المركبة لكل من $r$ و$h$.
+\qb بيّن أن $h\circ r=S$ وأن $r\circ h=S$ (التحليل القانوني لـ $S$).
+\end{sq}
+\QQ{3} $A$ النقطة ذات اللاحقة $2+2i$. عيّن لاحقة $A_1=r(A)$ ثم لاحقة $A'=h(A_1)$، وتحقق أن $A'=S(A)$. أنشئ النقط.
+\QQ{4} $(\mathcal C)$ الدائرة ذات المركز $A$ ونصف القطر $1$. عيّن صورتها $(\mathcal C')$ بـ $S$.
+\QQ{5} عيّن الكتابة المركبة لـ $S\circ S$، ثم عناصره المميزة وتحليله القانوني.
 \end{tamrin}
 \begin{hal}
-\QQ{1} الكتابة $z'=az+b$ مع $a=\frac{1+i}2$ و$b=1+i$. $a=\frac{\sqrt2}{2}\left(\frac{\sqrt2}2+\frac{\sqrt2}2i\right)=\frac{\sqrt2}{2}e^{i\frac\pi4}$، فـ $|a|=\frac{\sqrt2}2$ و$\arg a=\frac\pi4$. المركز:
-\[\omega=\frac{1+i}{1-\frac{1+i}{2}}=\frac{2(1+i)}{1-i}=\frac{2(1+i)^2}{2}=2i.\]
-\bxt{$s$ تشابه مباشر مركزه $\Omega(2i)$، نسبته $\frac{\sqrt2}2$ وزاويته $\frac\pi4$}.
-\QQ{2} بما أن $\omega=a\omega+b$، بطرح هذه المساواة من $z_{n+1}=az_n+b$:
-\[u_{n+1}=z_{n+1}-\omega=a(z_n-\omega)=a\,u_n.\]
-إذن $(u_n)$ هندسية أساسها $a=\frac{\sqrt2}2e^{i\frac\pi4}$ وحدها الأول $u_0=4+2i-2i=4$:
-\[\bx{u_n=4\left(\frac{\sqrt2}{2}\right)^ne^{i\frac{n\pi}{4}}}.\]
-\QQ{3} من أجل كل عدد طبيعي $n$:
-\[r_n=\Omega M_n=|z_n-2i|=|u_n|=\bx{4\left(\frac{\sqrt2}2\right)^n}.\]
-$(r_n)$ متتالية هندسية حقيقية أساسها $\frac{\sqrt2}2$ وهو ينتمي إلى $]0;1[$، إذن \bx{\limn r_n=0}.
-
-(النقط $M_n$ تقترب من $\Omega$ وفق «حلزون»).
-\QQ{4} $z_{n+1}-z_n=u_{n+1}-u_n=(a-1)u_n$ و$\omega-z_{n+1}=-u_{n+1}=-a\,u_n$. إذن:
-\[\frac{z_n-z_{n+1}}{\omega-z_{n+1}}=\frac{-(a-1)u_n}{-a\,u_n}=\frac{a-1}{a}=\frac{\frac{-1+i}{2}}{\frac{1+i}2}=\frac{(-1+i)(1-i)}{2}=\frac{2i}{2}=i.\]
-وبما أن $|i|=1$ و$\arg i=\frac\pi2$:
-\[M_{n+1}M_n=M_{n+1}\Omega,\qquad \left(\overrightarrow{M_{n+1}\Omega},\overrightarrow{M_{n+1}M_n}\right)=\frac\pi2\ [2\pi].\]
-\bxt{المثلث $\Omega M_nM_{n+1}$ قائم في $M_{n+1}$ ومتساوي الساقين}.
-\QQ{5} حسب السؤال 4: $M_kM_{k+1}=\Omega M_{k+1}=r_{k+1}$. إذن، بوضع $q=\frac{\sqrt2}2$:
-\[L_n=r_1+r_2+\dots+r_n=4q\,\frac{1-q^n}{1-q}=\bx{\frac{4\sqrt2}{2-\sqrt2}\left(1-\left(\frac{\sqrt2}{2}\right)^n\right)}\]
-لأن $\frac{4q}{1-q}=\frac{2\sqrt2}{\frac{2-\sqrt2}{2}}=\frac{4\sqrt2}{2-\sqrt2}$. وبما أن $\limn q^n=0$ ($0<q<1$):
-\[\limn L_n=\frac{4\sqrt2}{2-\sqrt2}=\frac{4\sqrt2\left(2+\sqrt2\right)}{4-2}=\bx{4+4\sqrt2}\approx9{,}66.\]
-\QQ{6} $M_n\in[\Omega M_0)$ و$M_n\neq\Omega$ معناه $\overrightarrow{\Omega M_n}$ و$\overrightarrow{\Omega M_0}$ لهما نفس الاتجاه، أي $\dfrac{u_n}{u_0}$ حقيقي موجب تمامًا: $\arg u_n=\arg u_0=0\ [2\pi]$.
-\[\frac{n\pi}{4}=2k\pi\iff n=8k\quad(k\in\N).\]
-\bxt{$M_n\in[\Omega M_0)$ إذا وفقط إذا كان $n$ مضاعفًا لـ $8$}.
-
-نحسب النقط: $z_1=2+4i$، $z_2=4i$، $z_3=-1+3i$، $z_4=-1+2i$، $z_5=-\frac12+\frac32i$، $z_6=\frac32i$.
-\begin{CP}{-1.5}{4.5}{-0.5}{4.5}{1.15}
-\Pt{W}{(0,2)}{\Omega}{below left}
-\coordinate (M0) at (4,2);\coordinate (M1) at (2,4);\coordinate (M2) at (0,4);\coordinate (M3) at (-1,3);\coordinate (M4) at (-1,2);\coordinate (M5) at (-0.5,1.5);\coordinate (M6) at (0,1.5);
-\foreach \k in {0,...,6}{\draw[gray!60] (W)--(M\k);}
-\draw[cDef,thick] (M0)--(M1)--(M2)--(M3)--(M4)--(M5)--(M6);
-\foreach \k/\p in {0/above right,1/above right,2/above,3/left,4/left,5/below left,6/below right}{\fill[cDef] (M\k) circle (1.8pt) node[\p]{$M_\k$};}
-\RA{M1}{W}{M0}\RA{M2}{W}{M1}
-\draw[cThm,dashed,thick] (W)--(4.5,2);
+\QQ{1} $a=-1+i$: $a\neq0$ و$a\neq1$، $|a|=\sqrt2$ و$-1+i=\sqrt2\left(-\frac{\sqrt2}2+\frac{\sqrt2}2i\right)=\sqrt2e^{i\frac{3\pi}4}$. المركز:
+\[\omega=\frac{3+i}{1-(-1+i)}=\frac{3+i}{2-i}=\frac{(3+i)(2+i)}{5}=\frac{5+5i}{5}=1+i.\]
+\bxt{$S$ تشابه مباشر مركزه $\Omega(1+i)$، نسبته $k=\sqrt2$ وزاويته $\theta=\frac{3\pi}4$}.
+\QQ{2}
+\pa \bx{r:\ z'-(1+i)=e^{i\frac{3\pi}4}\bigl(z-(1+i)\bigr)} \quad و\quad \bx{h:\ z'-(1+i)=\sqrt2\bigl(z-(1+i)\bigr)}.
+\pb نضع $z_1=r(z)$: $z_1-\omega=e^{i\frac{3\pi}4}(z-\omega)$، ثم $h$: $z'-\omega=\sqrt2(z_1-\omega)=\sqrt2e^{i\frac{3\pi}4}(z-\omega)=(-1+i)(z-\omega)$.
+\[z'=(-1+i)z+(1+i)-(-1+i)(1+i)=(-1+i)z+1+i+2=(-1+i)z+3+i.\]
+إذن $h\circ r=S$. وبنفس الطريقة: $z_2=h(z)$ يحقق $z_2-\omega=\sqrt2(z-\omega)$، ثم $z'-\omega=e^{i\frac{3\pi}4}(z_2-\omega)=\sqrt2e^{i\frac{3\pi}4}(z-\omega)$، أي $r\circ h=S$.
+\bxt{$S=h\circ r=r\circ h$: دوران وتحاكٍ لهما نفس المركز $\Omega$}.
+\QQ{3} $z_A-\omega=1+i=\sqrt2e^{i\frac\pi4}$، إذن:
+\[z_{A_1}=\omega+e^{i\frac{3\pi}4}\sqrt2e^{i\frac\pi4}=1+i+\sqrt2e^{i\pi}=\bx{\left(1-\sqrt2\right)+i}.\]
+\[z_{A'}=\omega+\sqrt2\left(z_{A_1}-\omega\right)=1+i+\sqrt2\times\left(-\sqrt2\right)=\bx{-1+i}.\]
+تحقق: $z_{S(A)}=(-1+i)(2+2i)+3+i=-4+3+i=-1+i$ \ok. \ ($\Omega A=\sqrt2$، $\Omega A_1=\sqrt2$، $\Omega A'=2=\sqrt2\,\Omega A$).
+\QQ{4} التشابه ذو النسبة $\sqrt2$ يحول الدائرة $(\mathcal C)$ إلى الدائرة التي مركزها $S(A)=A'$ ونصف قطرها $\sqrt2\times1$:
+\bxt{$(\mathcal C')$ هي الدائرة ذات المركز $A'(-1+i)$ ونصف القطر $\sqrt2$}.
+\QQ{5} نعوض: $z'=(-1+i)\bigl[(-1+i)z+3+i\bigr]+3+i$، مع $(-1+i)^2=-2i$ و$(-1+i)(3+i)=-4+2i$:
+\[\bx{S\circ S:\ z'=-2iz-1+3i}.\]
+$-2i=2e^{-i\frac\pi2}$، ومركزه $\dfrac{-1+3i}{1+2i}=\dfrac{(-1+3i)(1-2i)}{5}=\dfrac{5+5i}{5}=1+i$ (أي $\Omega$ نفسه).
+\bxt{$S\circ S$ تشابه مباشر مركزه $\Omega$، نسبته $2=k^2$ وزاويته $-\frac\pi2$ (أي $2\theta=\frac{3\pi}2$)}.
+تحليله القانوني: $S\circ S=h'\circ r'$ حيث $r'$ الدوران $\left(\Omega;-\frac\pi2\right)$ و$h'$ التحاكي $(\Omega;2)$.
+\begin{CP}{-2.6}{3.2}{-0.8}{3.4}{1}
+\draw[cDef,thick] (2,2) circle (1);\draw[cThm,thick] (-1,1) circle ({sqrt(2)});
+\Pt{W}{(1,1)}{\Omega}{below right}\Pt{A}{(2,2)}{A}{above right}\Pt{A1}{(-0.414,1)}{A_1}{above}\Pt{A'}{(-1,1)}{A'}{below left}
+\draw[cRem,thick] (W)--(A);\draw[cRem,thick,dashed] (W)--(A');
+\draw[cEx,-{Stealth[length=2mm]}] ($(W)+(45:0.5)$) arc (45:180:0.5) node[midway,above,font=\scriptsize]{$\frac{3\pi}4$};
+\node[cDef] at (3.2,2.9){$(\mathcal C)$};\node[cThm] at (-2.4,2.6){$(\mathcal C')$};
 \end{CP}
 \end{hal}
 
-\begin{tamrin}{مجموعات نقط معرفة وسيطيًا -- شعبة رياضيات}
+\begin{tamrin}{مجموعات نقط معرفة وسيطيًا}
 $\theta$ و$t$ و$k$ وسائط حقيقية.
 \QQ{1} عيّن في كل حالة مجموعة النقط $M(z)$:
 \begin{sq}
@@ -898,7 +893,7 @@ $\theta$ و$t$ و$k$ وسائط حقيقية.
 \end{CP}
 \end{hal}
 
-\begin{tamrin}{دستور موافر ودستورا أولر -- شعبة رياضيات}
+\begin{tamrin}{دستور موافر ودستورا أولر}
 $\theta$ عدد حقيقي.
 \QQ{1} باستعمال دستور موافر ونشر $(\cos\theta+i\sin\theta)^3$، بيّن أن:
 \[\cos3\theta=4\cos^3\theta-3\cos\theta,\qquad \sin3\theta=3\sin\theta-4\sin^3\theta.\]
@@ -950,7 +945,7 @@ $\theta$ عدد حقيقي.
 \[\bx{\cos\frac{2\pi}5+\cos\frac{4\pi}5=-\frac12}.\]
 \end{hal}
 
-\begin{tamrin}{معادلة من الدرجة الثالثة وتشابه -- شعبة رياضيات}
+\begin{tamrin}{معادلة من الدرجة الثالثة وتشابه}
 نعتبر كثير الحدود $P(z)=z^3-(2+2i)z^2+(2+4i)z-4i$.
 \QQ{1} بيّن أن المعادلة $P(z)=0$ تقبل حلًّا تخيليًا صرفًا $z_0=iy$ ($y$ حقيقي) يطلب تعيينه.
 \QQ{2} عيّن العددين الحقيقيين $\alpha$ و$\beta$ بحيث: $P(z)=(z-2i)(z^2+\alpha z+\beta)$، ثم حل في $\mathbb{C}$ المعادلة $P(z)=0$.

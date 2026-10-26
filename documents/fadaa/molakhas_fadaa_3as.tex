@@ -168,6 +168,7 @@
 \newcommand{\V}[1]{\overrightarrow{#1}}
 \newcommand{\vu}{\vec{u}}\newcommand{\vv}{\vec{v}}\newcommand{\vw}{\vec{w}}\newcommand{\vn}{\vec{n}}
 \newcommand{\MT}{\textcolor{cThm}{\small(رياضيات وتقني رياضي فقط)}}
+\newenvironment{FIGP}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[font=\footnotesize,>={Stealth[length=2mm]}]}{\end{tikzpicture}\end{LTR}\end{center}}
 % 3D figure (oblique view): \begin{FIG}[scale] ... \end{FIG}
 \newenvironment{FIG}[1][1]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=#1,x={(-0.45cm,-0.42cm)},y={(1cm,0cm)},z={(0cm,1cm)},font=\footnotesize,>={Stealth[length=2mm]}]}{\end{tikzpicture}\end{LTR}\end{center}}
 \newcommand{\Axes}[3]{\draw[->](0,0,0)--(#1,0,0) node[below left]{$x$};\draw[->](0,0,0)--(0,#2,0) node[right]{$y$};\draw[->](0,0,0)--(0,0,#3) node[above]{$z$};\node[left] at (0,0,0){$O$};}
@@ -207,7 +208,7 @@
 \textbf{تطبيق:} النقط $A$ ، $B$ ، $C$ ، $D$ \textbf{من نفس المستوي} $\iff$ الأشعة $\V{AB}$ ، $\V{AC}$ ، $\V{AD}$ من نفس المستوي.
 \end{tarif}
 \begin{mithal}
-\textbf{(1)} $A(1;2;-1)$ ، $B(3;1;0)$ ، $C(7;-1;2)$: \ $\V{AB}(2;-1;1)$ و $\V{AC}(6;-3;3)$، إذن $\V{AC}=3\V{AB}$ و\bxt{$A$ ، $B$ ، $C$ في استقامية}.\par
+\textbf{(1)} $A(1;2;-1)$ ، $B(3;1;0)$ ، $C(7;-1;2)$: \ $\V{AB}(2;-1;1)$ و $\V{AC}(6;-3;3)$،\par إذن $\V{AC}=3\V{AB}$ و\bxt{$A$ ، $B$ ، $C$ في استقامية}.\par
 \textbf{(2)} $\vu(1;0;2)$ ، $\vv(0;1;-1)$ ، $\vw(2;3;1)$: نبحث عن $a,b$ حيث $\vw=a\vu+b\vv$:
 \[ \begin{cases} a=2\\ b=3\\ 2a-b=1 \end{cases}\quad (4-3=1\ \text{\ok}) \]
 إذن $\vw=2\vu+3\vv$ و\bxt{الأشعة $\vu$ ، $\vv$ ، $\vw$ من نفس المستوي}.
@@ -220,7 +221,7 @@
 \item $M(x;y;z)\iff \V{OM}=x\vec i+y\vec j+z\vec k$.
 \item $\V{AB}(x_B-x_A;\,y_B-y_A;\,z_B-z_A)$.
 \item منتصف $[AB]$: \ $I\Big(\frac{x_A+x_B}{2};\frac{y_A+y_B}{2};\frac{z_A+z_B}{2}\Big)$.
-\item $\|\vu\|=\sqrt{x^{2}+y^{2}+z^{2}}$ ، و
+\item $\|\vu\|=\sqrt{x^{2}+y^{2}+z^{2}}$ ، والمسافة:
 \[ \bx{AB=\sqrt{(x_B-x_A)^{2}+(y_B-y_A)^{2}+(z_B-z_A)^{2}}} \]
 \end{itemize}}{0.38}{
 \begin{FIG}[0.8]
@@ -314,7 +315,7 @@ $\vn\neq\vec0$ \textbf{ناظمي} للمستوي $(P)$ إذا كان عمودي
 المستوي الذي يشمل $A(x_0;y_0;z_0)$ و $\vn(a;b;c)$ ناظمي له:
 \[ M\in(P)\iff \V{AM}\cdot\vn=0 \]
 \[ \iff a(x-x_0)+b(y-y_0)+c(z-z_0)=0 \]
-أي من الشكل \bx{ax+by+cz+d=0}، و\bxt{$\vn(a;b;c)$ ناظمي له}.}{0.4}{
+أي من الشكل: \bx{ax+by+cz+d=0}\par و\bxt{$\vn(a;b;c)$ ناظمي له}.}{0.4}{
 \begin{FIG}[1]
 \fill[cDef!12] (2,-0.5,0)--(2,3,0)--(-1.5,3,0)--(-1.5,-0.5,0)--cycle;
 \draw[cDef] (2,-0.5,0)--(2,3,0)--(-1.5,3,0)--(-1.5,-0.5,0)--cycle;
@@ -333,10 +334,12 @@ $\vn\neq\vec0$ \textbf{ناظمي} للمستوي $(P)$ إذا كان عمودي
 نأخذ $a=6$: $b=3$ ، $c=2$، إذن $\vn(6;3;2)$ و $(ABC):6x+3y+2z+d=0$؛ و $A\in(ABC)$ يعطي $d=-6$:
 \TwoCol{0.44}{
 \begin{FIG}[0.75]
+\begin{scope}[x={(-1.1cm,-1cm)}]
 \Axes{2.2}{3.2}{3.8}
 \fill[cDef!20,opacity=0.8] (1,0,0)--(0,2,0)--(0,0,3)--cycle;
 \draw[thick,cDef] (1,0,0)--(0,2,0)--(0,0,3)--cycle;
-\node[below left] at (1,0,0){$A$};\node[below] at (0,2,0){$B$};\node[right] at (0,0,3){$C$};
+\node[left] at (1,0,0){$A$};\node[below] at (0,2,0){$B$};\node[right] at (0,0,3){$C$};
+\end{scope}
 \end{FIG}}{0.52}{\vspace{1.2cm}\[ \bx{(ABC):\ 6x+3y+2z-6=0} \]
 \textbf{تحقق:} $B$: $6-6=0$ \ok ، \ $C$: $6-6=0$ \ok.}
 \end{mithal}
@@ -354,7 +357,7 @@ $(P)\parallel(P')\iff \vn$ و $\vn'$ مرتبطان خطيًّا & $(P)\perp(P')
 \end{khassia}
 \begin{mithal}[مكعب]
 \RL{0.58}{
-$ABCDEFGH$ مكعب طول حرفه $1$، في المعلم $(A;\V{AB},\V{AD},\V{AE})$:\par
+$ABCDEFGH$ مكعب طول حرفه $1$، في المعلم\par $(A;\V{AB},\V{AD},\V{AE})$:\par
 $B(1;0;0)$ ، $D(0;1;0)$ ، $E(0;0;1)$ ، $G(1;1;1)$.\par
 $\V{AG}(1;1;1)$ ، $\V{BD}(-1;1;0)$ ، $\V{BE}(-1;0;1)$:
 \[ \V{AG}\cdot\V{BD}=-1+1=0\ ،\quad \V{AG}\cdot\V{BE}=-1+1=0 \]
@@ -404,42 +407,45 @@ $\iff -2x-4z+5=-6x-4y+13\iff 4x+4y-4z-8=0$، أي المستوي المحوري 
 \section{سطح الكرة، الأسطوانة، المخروط \MT}
 \begin{khassia}[معادلات بدستور المسافة]
 \begin{itemize}
-\item \textbf{سطح الكرة} التي مركزها $\Omega(a;b;c)$ ونصف قطرها $R$: \ $\Omega M=R\iff$ \bx{(x-a)^{2}+(y-b)^{2}+(z-c)^{2}=R^{2}}.
+\item \textbf{سطح الكرة} التي مركزها $\Omega(a;b;c)$ ونصف قطرها $R$ ($\Omega M=R$):
+\[ \bx{(x-a)^{2}+(y-b)^{2}+(z-c)^{2}=R^{2}} \]
 \item \textbf{الأسطوانة الدورانية} التي محورها $(Oz)$ ونصف قطرها $r$: (مسافة $M$ عن $(Oz)$ تساوي $r$) \ \bx{x^{2}+y^{2}=r^{2}}.
 \item \textbf{المخروط الدوراني} الذي رأسه $O$ ومحوره $(Oz)$ ونصف زاوية رأسه $\theta$: \ \bx{x^{2}+y^{2}=(\tan\theta)^{2}\,z^{2}}.
 \end{itemize}
 \end{khassia}
-\TwoCol{0.3}{
-\begin{FIG}[0.8]
-\shade[ball color=cDef!30] (0,0,0) circle (1.3);
-\draw (0,0,0) circle (1.3);
-\draw[dashed] (0,1.3,0) arc (0:180:1.3 and 0.35);
-\draw (0,-1.3,0) arc (180:360:1.3 and 0.35);
-\fill (0,0,0) circle (1.2pt) node[below]{$\Omega$};
-\draw[->] (0,0,0)--(0,0.92,0.92) node[midway,above left=-2pt]{$R$};
-\end{FIG}\centering\ar{سطح كرة}}{0.3}{
-\begin{FIG}[0.8]
-\draw[->] (0,0,-0.3)--(0,0,3) node[above]{$z$};
-\draw (0,-0.9,0) arc (180:360:0.9 and 0.25);\draw[dashed] (0,0.9,0) arc (0:180:0.9 and 0.25);
-\draw (0,0,2.4) ellipse (0.9 and 0.25);
-\draw (0,-0.9,0)--(0,-0.9,2.4) (0,0.9,0)--(0,0.9,2.4);
-\draw (0,0,2.4)--(0,0.9,2.4) node[midway,above]{$r$};
-\end{FIG}\centering\ar{أسطوانة محورها $(Oz)$}}
-\hfill
-\begin{minipage}[t]{0.3\textwidth}
-\begin{FIG}[0.8]
-\draw[->] (0,0,-0.3)--(0,0,3) node[above]{$z$};
-\draw (0,0,2.4) ellipse (1 and 0.27);
-\draw (0,-1,2.4)--(0,0,0)--(0,1,2.4);
-\fill (0,0,0) circle (1.2pt) node[right]{$O$};
-\draw (0,0,0.9) arc (90:68:0.9) node[midway,above=1pt]{$\theta$};
-\end{FIG}\centering\ar{مخروط رأسه $O$}
-\end{minipage}
+\begin{FIGP}
+\begin{scope}
+\shade[ball color=cDef!35] (0,0) circle (1.2);
+\draw (0,0) circle (1.2);
+\draw (-1.2,0) arc (180:360:1.2 and 0.32);
+\draw[dashed] (1.2,0) arc (0:180:1.2 and 0.32);
+\fill (0,0) circle (1.3pt) node[below left]{$\Omega$};
+\draw[->] (0,0)--(0.85,0.85) node[midway,above left=-1pt]{$R$};
+\node at (0,-1.8){\ar{سطح كرة}};
+\end{scope}
+\begin{scope}[xshift=4.5cm,yshift=-1.2cm]
+\draw[->] (0,-0.3)--(0,3) node[above]{$z$};
+\draw (-0.9,0) arc (180:360:0.9 and 0.25);\draw[dashed] (0.9,0) arc (0:180:0.9 and 0.25);
+\draw (0,2.4) ellipse (0.9 and 0.25);
+\draw (-0.9,0)--(-0.9,2.4) (0.9,0)--(0.9,2.4);
+\draw[cThm] (0,2.4)--(0.9,2.4) node[midway,above]{$r$};
+\node at (0,-0.6){\ar{أسطوانة محورها $(Oz)$}};
+\end{scope}
+\begin{scope}[xshift=9cm,yshift=-1.2cm]
+\draw[->] (0,-0.3)--(0,3) node[above]{$z$};
+\draw (0,2.4) ellipse (1 and 0.27);
+\draw (-1,2.4)--(0,0)--(1,2.4);
+\fill (0,0) circle (1.3pt) node[right]{$O$};
+\draw[cThm] (0,0.9) arc (90:67.4:0.9) node[midway,above=1pt]{$\theta$};
+\node at (0,-0.6){\ar{مخروط رأسه $O$}};
+\end{scope}
+\end{FIGP}
 \begin{khassia}[سطح كرة ومستوٍ]
 $d=d\big(\Omega,(P)\big)$: \ إذا $d>R$: لا تقاطع؛ \ إذا $d=R$: $(P)$ \textbf{مماس} للكرة في المسقط $H$ لـ $\Omega$؛ \ إذا $d<R$: التقاطع \textbf{دائرة} مركزها $H$ ونصف قطرها \bx{r=\sqrt{R^{2}-d^{2}}}.
 \end{khassia}
 \begin{mithal}
-\textbf{(1)} $x^{2}+y^{2}+z^{2}-2x+4y-4=0\iff (x-1)^{2}-1+(y+2)^{2}-4+z^{2}-4=0\iff (x-1)^{2}+(y+2)^{2}+z^{2}=9$:\par
+\textbf{(1)} بإكمال المربعات:
+\[ x^{2}+y^{2}+z^{2}-2x+4y-4=0\iff (x-1)^{2}-1+(y+2)^{2}-4+z^{2}-4=0\iff (x-1)^{2}+(y+2)^{2}+z^{2}=9 \]
 \bxt{سطح كرة مركزها $\Omega(1;-2;0)$ ونصف قطرها $R=3$}.\par
 \textbf{(2)} $(P):2x-y+2z+2=0$: \ $d=\dfrac{|2+2+0+2|}{3}=2<3$، إذن التقاطع دائرة نصف قطرها $r=\sqrt{9-4}=\bx{\sqrt5}$، ومركزها $H\big(-\frac13;-\frac43;-\frac43\big)$ (المسقط العمودي لـ $\Omega$ على $(P)$).\par
 \textbf{(3)} $x^{2}+y^{2}=4$: أسطوانة محورها $(Oz)$ ونصف قطرها $2$؛ \ $x^{2}+y^{2}=3z^{2}$: مخروط رأسه $O$ ومحوره $(Oz)$ مع $\tan\theta=\sqrt3$ ($\theta=\frac{\pi}{3}$).
@@ -502,6 +508,7 @@ $\vu(1;2;1)$ و $\vu'(1;1;-1)$ غير مرتبطين خطيًّا. من المع
 المستويات الثلاثة تتقاطع في النقطة \bx{(1;2;3)}.
 \end{mithal}
 %================================================================
+\clearpage
 \section{خلاصة الطرائق}
 \begin{BOX}{cMeth}{الطريقة حسب المطلوب}
 \begin{center}
@@ -518,13 +525,14 @@ $\vn\cdot\V{AB}=0$ و $\vn\cdot\V{AC}=0$، ثم $d$ بتعويض $A$. & معاد
 $\dfrac{|ax_0+by_0+cz_0+d|}{\sqrt{a^{2}+b^{2}+c^{2}}}$. & مسافة نقطة عن مستوٍ\\\hline
 $\V{AH}=k\vn$ ثم $H\in(P)$. & المسقط العمودي على مستوٍ\\\hline
 $\V{AB}$ ناظمي ويشمل منتصف $[AB]$. & المستوي المحوري\\\hline
-$(x-a)^{2}+(y-b)^{2}+(z-c)^{2}=R^{2}$ (إكمال المربعات للتعرف) \MT. & سطح كرة\\\hline
-نقارن $d(\Omega,(P))$ بـ $R$؛ $r=\sqrt{R^{2}-d^{2}}$ \MT. & كرة ومستوٍ\\\hline
+$(x-a)^{2}+(y-b)^{2}+(z-c)^{2}=R^{2}$ (إكمال المربعات للتعرف) $(\ast)$. & سطح كرة\\\hline
+نقارن $d(\Omega,(P))$ بـ $R$؛ $r=\sqrt{R^{2}-d^{2}}$ $(\ast)$. & كرة ومستوٍ\\\hline
 $\vn$ ، $\vn'$ مرتبطان: متوازيان؛ وإلا متقاطعان وفق مستقيم (نحل الجملة بوضع $z=t$). & وضع مستويين\\\hline
 $\vu\cdot\vn\neq0$: نقطة تقاطع بتعويض التمثيل؛ $\vu\cdot\vn=0$: موازٍ أو محتوى. & وضع مستقيم ومستوٍ\\\hline
 $\vu$ ، $\vu'$ مرتبطان: متوازيان؛ وإلا جملة بوسيطين: حل $\leftarrow$ متقاطعان، لا حل $\leftarrow$ ليسا من نفس المستوي. & وضع مستقيمين\\\hline
 حل جملة $3\times3$ بالحذف. & تقاطع ثلاثة مستويات\\\hline
 \end{tabular}
 \end{center}
+$(\ast)$: رياضيات وتقني رياضي فقط.
 \end{BOX}
 \end{document}

@@ -190,10 +190,10 @@
 \item مرافق عدد مركب وخواصه.
 \item الطويلة والعمدة وخواصهما.
 \item الشكل المثلثي والشكل الأسي، دستور موافر، القوى $z^n$.
-\item المعادلات في $\mathbb{C}$: من الدرجة الأولى، الثانية بمعاملات حقيقية، الجذران التربيعيان، الثالثة بجذر معلوم.
+\item المعادلات في $\mathbb{C}$: من الدرجة الأولى، الثانية بمعاملات حقيقية، معادلات تؤول إليها (الثالثة بجذر معلوم)، الجذران التربيعيان (علوم تجريبية).
 \item التفسير الهندسي: المسافات، الزوايا، الاستقامية، التعامد، طبيعة مثلث أو رباعي، النقط المتداورة.
 \item مجموعات النقط: دائرة، محور قطعة، مستقيم، نصف مستقيم.
-\item التحويلات النقطية $z'=az+b$: الانسحاب، التحاكي، الدوران، التشابه المباشر، تركيب التحويلات، متتاليات النقط.
+\item التحويلات النقطية $z'=az+b$: الانسحاب، التحاكي، الدوران، التشابه المباشر وتحليله القانوني، تركيب التحويلات.
 \item تمارين محلولة، ثم خلاصة الطرائق.
 \end{enumerate}
 \end{BOX}
@@ -475,7 +475,7 @@ $z^2-2(\cos\theta)z+1=0$ حيث $\theta\in\R$: \ $\Delta=4\cos^2\theta-4=-4\sin^
 ومنه الحلان: $z=\cos\theta-i\sin\theta=\bx{e^{-i\theta}}$ \ و\ $z=\cos\theta+i\sin\theta=\bx{e^{i\theta}}$.
 \end{mithal}
 
-\subsection{الجذران التربيعيان لعدد مركب}
+\subsection{الجذران التربيعيان لعدد مركب \ (شعبة علوم تجريبية)}
 \begin{tariqa}[حل $w^2=a+ib$]
 كل عدد مركب غير معدوم له جذران تربيعيان متناقضان. نضع $w=x+iy$؛ من $w^2=a+ib$ و$|w|^2=|a+ib|$:
 \[\begin{cases}x^2+y^2=\sqrt{a^2+b^2}\\ x^2-y^2=a\\ 2xy=b\end{cases}\]
@@ -491,7 +491,7 @@ $z^2-2(\cos\theta)z+1=0$ حيث $\theta\in\R$: \ $\Delta=4\cos^2\theta-4=-4\sin^
 \end{itemize}
 \end{mithal}
 
-\subsection{معادلات من الدرجة الثالثة بجذر معلوم}
+\subsection{معادلات تؤول إلى الدرجة الثانية: الدرجة الثالثة بجذر معلوم}
 \begin{tariqa}
 لحل $P(z)=0$ حيث $P(z)=az^3+bz^2+cz+d$:
 \begin{enumerate}
@@ -672,7 +672,7 @@ $\alpha\overrightarrow{MA}+\beta\overrightarrow{MB}+\gamma\overrightarrow{MC}=(\
  \end{scope}
 \end{tikzpicture}\end{LTR}\end{center}
 
-\subsection{التشابه المباشر \ (شعبة رياضيات وتقني رياضي)}
+\subsection{التشابه المباشر \ (رياضيات، تقني رياضي، علوم تجريبية)}
 \begin{tarif}[التشابه المباشر]
 التحويل النقطي ذو الكتابة المركبة $\bx{z'=az+b}$ حيث $a\in\mathbb{C}^*$ و$b\in\mathbb{C}$ يسمى \textbf{تشابهًا مباشرًا}.
 إذا كان $a\neq1$ فإن له مركزًا $\Omega(\omega)$ مع $\omega=\dfrac{b}{1-a}$، و:
@@ -680,6 +680,7 @@ $\alpha\overrightarrow{MA}+\beta\overrightarrow{MB}+\gamma\overrightarrow{MC}=(\
 \item \textbf{نسبته} $k=|a|$ \ و\ \textbf{زاويته} $\theta=\arg a$: \quad $\bx{z'-\omega=ke^{i\theta}(z-\omega)}$
 \item من أجل $M\neq\Omega$: \ $\Omega M'=k\,\Omega M$ \ و\ $(\overrightarrow{\Omega M};\overrightarrow{\Omega M'})=\theta+2k\pi$.
 \item إذا كان $a=1$ فهو انسحاب. الانسحاب والتحاكي والدوران حالات خاصة من التشابه المباشر.
+\item \textbf{حالة خاصة -- التقايسات}: إذا كان $|a|=1$ فإن $S$ يحافظ على المسافات ($M'N'=MN$): هو انسحاب ($a=1$) أو دوران ($a\neq1$).
 \end{itemize}
 \end{tarif}
 \begin{khassia}[خواص التشابه المباشر $S$ ذي النسبة $k$ والزاوية $\theta$]
@@ -687,7 +688,6 @@ $\alpha\overrightarrow{MA}+\beta\overrightarrow{MB}+\gamma\overrightarrow{MC}=(\
 \item إذا كانت $S(M)=M'$ و$S(N)=N'$ فإن: \ $M'N'=k\,MN$ \ و\ $(\overrightarrow{MN};\overrightarrow{M'N'})=\theta+2k\pi$؛ ويضرب المساحات في $k^2$.
 \item يحافظ على الاستقامية، التوازي، التعامد، الزوايا الموجهة والمرجح (المنتصف).
 \item صورة مستقيم مستقيم، وصورة الدائرة $\mathcal{C}(I;R)$ هي الدائرة $\mathcal{C}(S(I);kR)$.
-\item $S$ ذو المركز $\Omega$ هو مركب الدوران $r(\Omega;\theta)$ والتحاكي $h(\Omega;k)$: \ $S=h\circ r=r\circ h$.
 \item يوجد تشابه مباشر وحيد يحول $A$ إلى $A'$ و$B$ إلى $B'$ ($A\neq B$ و$A'\neq B'$): \ $a=\dfrac{z_{B'}-z_{A'}}{z_B-z_A}$ \ و\ $b=z_{A'}-az_A$.
 \end{itemize}
 \end{khassia}
@@ -696,6 +696,33 @@ $\alpha\overrightarrow{MA}+\beta\overrightarrow{MB}+\gamma\overrightarrow{MC}=(\
 إذا كان $F_1: z'=a_1z+b_1$ و$F_2: z'=a_2z+b_2$ فإن $F_2\circ F_1: z'=a_2(a_1z+b_1)+b_2=\bx{a_1a_2\,z+a_2b_1+b_2}$:
 النسبة $|a_1a_2|=k_1k_2$ والزاوية $\theta_1+\theta_2$.
 \end{khassia}
+
+\subsection{التحليل القانوني لتشابه مباشر}
+\begin{khassia}[التحليل القانوني]
+$S$ تشابه مباشر ليس انسحابًا، مركزه $\Omega(\omega)$ ، نسبته $k$ وزاويته $\theta$. نسمي $r$ الدوران الذي مركزه $\Omega$ وزاويته $\theta$ ، و$h$ التحاكي الذي مركزه $\Omega$ ونسبته $k$:
+\[\bx{S=h\circ r=r\circ h}\]
+وهي كتابة وحيدة لـ $S$ كمركب دوران وتحاكٍ نسبته موجبة لهما نفس المركز $\Omega$. \ البرهان: $r: z_1-\omega=e^{i\theta}(z-\omega)$ و$h: z'-\omega=k(z_1-\omega)$ ، إذن $h\circ r: z'-\omega=ke^{i\theta}(z-\omega)$ ، وبنفس الطريقة $r\circ h$.
+\begin{itemize}
+\item $k=1$: $S=r$ (دوران) ؛ \ $\theta=0$: $S=h$ (تحاك) ؛ \ $\theta=\pi$: $S$ تحاك نسبته $-k$.
+\item \textbf{توظيفه}: لإنشاء $M'=S(M)$ ندير $M$ حول $\Omega$ بزاوية $\theta$ فنحصل على $M_1$ ، ثم $\overrightarrow{\Omega M'}=k\,\overrightarrow{\Omega M_1}$.
+\end{itemize}
+\end{khassia}
+\begin{mithal}[التحليل القانوني]
+$S: z'=(1+i\sqrt3)z-i\sqrt3$. \ $a=1+i\sqrt3=2e^{i\frac{\pi}{3}}$ ، \ $\omega=\dfrac{-i\sqrt3}{1-(1+i\sqrt3)}=\dfrac{-i\sqrt3}{-i\sqrt3}=1$.
+\begin{itemize}
+\item \bxt{$S$ تشابه مباشر مركزه $\Omega(1)$ ، نسبته $2$ وزاويته $\frac{\pi}{3}$} ، \ وتحليله القانوني $S=h\circ r$ حيث:
+\[r:\ z'-1=e^{i\frac{\pi}{3}}(z-1)\qquad;\qquad h:\ z'-1=2(z-1)\]
+\item صورة $O$: \ $r(O)=O_1$: $z_{O_1}=1-e^{i\frac{\pi}{3}}=\dfrac12-\dfrac{\sqrt3}{2}i$ ، \ ثم $h(O_1)$: $1+2\Big(-\dfrac12-\dfrac{\sqrt3}{2}i\Big)=\bx{-i\sqrt3}$.
+\item تحقق مباشر: $z_{S(O)}=(1+i\sqrt3)\times0-i\sqrt3=-i\sqrt3$ \ok. \ المثلث $\Omega OO_1$ متقايس الأضلاع (دوران بزاوية $\frac{\pi}{3}$) و$O_1$ منتصف $[\Omega O']$.
+\end{itemize}
+\begin{CP}{-1}{2}{-2}{1}{1.3}
+ \fill[cEx!12] (1,0)--(0,0)--(0.5,-0.866)--cycle;
+ \draw[cEx,thick] (1,0)--(0,0)--(0.5,-0.866)--cycle;
+ \draw[cMeth,thick,dashed] (1,0)--(0,-1.732);
+ \draw[cEx,-{Stealth[length=2mm]}] (0.6,0) arc (180:240:0.4) node[midway,left,font=\scriptsize]{$\frac{\pi}{3}$};
+ \Pt[above]{1,0}{\Omega} \Pt[above left]{0,0}{O} \Pt[right]{0.5,-0.866}{O_1} \Pt[left]{0,-1.732}{O'}
+\end{CP}
+\end{mithal}
 
 \subsection{التعرف على تحويل انطلاقًا من $z'=az+b$}
 \begin{BOX}{cMeth}{جدول التعرف على التحويل}
@@ -721,7 +748,7 @@ $\alpha\overrightarrow{MA}+\beta\overrightarrow{MB}+\gamma\overrightarrow{MC}=(\
 \end{itemize}
 \end{mithal}
 
-\begin{mithal}[تشابه مباشر \ (شعبة رياضيات وتقني رياضي)]
+\begin{mithal}[تشابه مباشر]
 $S: z'=(1+i)z-i$. \ $a=1+i=\sqrt2e^{i\frac{\pi}{4}}\notin\R$ ، \ $\omega=\dfrac{-i}{1-(1+i)}=\dfrac{-i}{-i}=1$:
 \begin{center}\bxt{$S$ تشابه مباشر مركزه $\Omega(1)$ ، نسبته $\sqrt2$ وزاويته $\frac{\pi}{4}$}\end{center}
 صورة $A(2)$: $z_{A'}=(1+i)2-i=2+i$ ، \ وصورة $M(1+i)$: $z_{M'}=(1+i)^2-i=i$.
@@ -738,20 +765,6 @@ $S: z'=(1+i)z-i$. \ $a=1+i=\sqrt2e^{i\frac{\pi}{4}}\notin\R$ ، \ $\omega=\dfrac
 \end{CP}
 \end{mithal}
 
-\subsection{متتاليات النقط \ (شعبة رياضيات)}
-\begin{tariqa}[$z_{n+1}=az_n+b$ \ ($a\neq1$)]
-$M_{n+1}=S(M_n)$ حيث $S: z'=az+b$ ذو المركز $\Omega(\omega)$. \ المتتالية $(z_n-\omega)$ هندسية أساسها $a$:
-\[\bx{z_n-\omega=a^n(z_0-\omega)}\qquad;\qquad \Omega M_n=|a|^n\,\Omega M_0\]
-إذن المتتالية $(\Omega M_n)$ هندسية أساسها $|a|$: تتقارب نحو $0$ إذا كان $|a|<1$.
-\end{tariqa}
-\begin{mithal}
-$z_0=4$ و $z_{n+1}=\dfrac{1+i}{2}z_n$. \ $\dfrac{1+i}{2}=\dfrac{\sqrt2}{2}e^{i\frac{\pi}{4}}$: تشابه مركزه $O$ نسبته $\dfrac{\sqrt2}{2}$ وزاويته $\dfrac{\pi}{4}$.
-\begin{itemize}
-\item $z_n=4\Big(\dfrac{\sqrt2}{2}\Big)^ne^{i\frac{n\pi}{4}}$ ، \ و$OM_n=4\Big(\dfrac{\sqrt2}{2}\Big)^n$ \ ومنه $\limn OM_n=0$ لأن $0<\dfrac{\sqrt2}{2}<1$.
-\item $M_n$ تنتمي إلى نصف المستقيم $[Ox)$ $\iff\dfrac{n\pi}{4}=2k\pi\iff \bx{n=8k\ ,\ k\in\N}$.
-\item $\dfrac{z_n-z_{n+1}}{0-z_{n+1}}=\dfrac{1-\frac{1+i}{2}}{-\frac{1+i}{2}}=\dfrac{1-i}{-(1+i)}=i$ ، \ إذن المثلث $OM_{n+1}M_n$ قائم ومتساوي الساقين في $M_{n+1}$.
-\end{itemize}
-\end{mithal}
 %================================================================
 \section{تمارين محلولة}
 \begin{tmr}
@@ -797,7 +810,7 @@ $z_C=e^{i\frac{\pi}{3}}\times2e^{i\frac{\pi}{6}}=2e^{i\frac{\pi}{2}}=\bx{2i}$.
 \end{hal}
 
 \begin{tmr}
-\textbf{(شعبة رياضيات وتقني رياضي)} \ في المستوي المنسوب إلى معلم متعامد ومتجانس $(O;\vec u,\vec v)$ نعتبر النقط $A$ ، $B$ ، $C$ لواحقها $z_A=1+i$ ، $z_B=3+i$ ، $z_C=3+3i$.
+في المستوي المنسوب إلى معلم متعامد ومتجانس $(O;\vec u,\vec v)$ نعتبر النقط $A$ ، $B$ ، $C$ لواحقها $z_A=1+i$ ، $z_B=3+i$ ، $z_C=3+3i$.
 \QQ{1} اكتب $L=\dfrac{z_C-z_A}{z_B-z_A}$ على الشكلين الجبري والأسي. \ احسب $\dfrac{z_C-z_B}{z_A-z_B}$ واستنتج طبيعة المثلث $ABC$.
 \QQ{2} عيّن لاحقة النقطة $D$ بحيث يكون $ABCD$ متوازي أضلاع، ثم بيّن أنه مربع.
 \QQ{3} $S$ التشابه المباشر الذي مركزه $A$ ويحول $B$ إلى $C$.
@@ -895,6 +908,7 @@ $z^n=r^ne^{in\theta}$ \newline حقيقي: \ $n\theta=k\pi$ \newline تخيلي 
 نحسب الشكلين الجبري والأسي لنفس العدد ثم نطابق. & قيم مضبوطة لـ $\cos$ و$\sin$\\\hline
 $\Delta<0$: \ $z=\frac{-b\pm i\sqrt{-\Delta}}{2a}$ (حلان مترافقان). & معادلة من الدرجة الثانية\\\hline
 نتحقق من الجذر، نحلل بالمطابقة إلى $(z-z_0)(\alpha z^2+\beta z+\gamma)$، ثم نحل. & معادلة من الدرجة الثالثة\\\hline
+$w=x+iy$: \ $x^2-y^2=a$ ، $2xy=b$ ، $x^2+y^2=|a+ib|$ & الجذران التربيعيان لـ $a+ib$ (علوم تجريبية)\\\hline
 $AB=|z_B-z_A|$ ، \ $(\overrightarrow{AB};\overrightarrow{AC})=\arg\frac{z_C-z_A}{z_B-z_A}$. & مسافة أو زاوية\\\hline
 نحسب $L=\frac{z_C-z_A}{z_B-z_A}$: \newline $L$ حقيقي: استقامية ؛ \ $L$ تخيلي صرف: تعامد \newline $|L|=1$: متساوي الساقين ؛ \ $L=\pm i$: قائم ومتساوي الساقين \newline $L=e^{\pm i\frac{\pi}{3}}$: متقايس الأضلاع & طبيعة مثلث، استقامية، تعامد\\\hline
 $z_B-z_A=z_C-z_D$ ثم ندرس الأضلاع والزوايا. & متوازي أضلاع، معين، مستطيل، مربع\\\hline
@@ -903,7 +917,7 @@ $|z-z_A|=r$: دائرة \newline $|z-z_A|=|z-z_B|$: محور $[AB]$ \newline $\a
 $a=1$: انسحاب ؛ \ $a$ حقيقي: تحاك \newline $|a|=1$: دوران ؛ \ غير ذلك: تشابه مباشر \newline المركز $\omega=\frac{b}{1-a}$ ، النسبة $|a|$ ، الزاوية $\arg a$ & طبيعة التحويل $z'=az+b$\\\hline
 $z'-\omega=ke^{i\theta}(z-\omega)$ \newline ($k=1$: دوران ؛ \ $\theta=0$ أو $\theta=\pi$: تحاك) & كتابة مركبة بمعرفة المركز والعناصر\\\hline
 $a=\frac{z_{B'}-z_{A'}}{z_B-z_A}$ ثم $b=z_{A'}-az_A$. & تشابه يحول $A$ إلى $A'$ و$B$ إلى $B'$\\\hline
-$z_n-\omega=a^n(z_0-\omega)$ ، و$\Omega M_n=|a|^n\,\Omega M_0$ (متتالية هندسية). & متتالية نقط $z_{n+1}=az_n+b$\\\hline
+$S=h\circ r=r\circ h$: \ $r$ دوران $(\Omega;\theta)$ ، \ $h$ تحاك $(\Omega;k)$ & التحليل القانوني لتشابه مباشر\\\hline
 \end{tabular}
 \end{center}
 \end{BOX}
