@@ -1,0 +1,509 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\usepackage{longtable}
+\setlength{\LTpre}{4pt}\setlength{\LTpost}{0pt}
+\newcommand{\Phase}[1]{\textbf{#1}}
+\newcommand{\Fld}[2]{\textbf{#1:}\ #2}
+% رأس المذكرة على نمط النموذج: إطار بعنوان «مذكرة رقم»، معلومات الحصة، ثم إطار الكفاءات
+\newcommand{\ModhHead}[9]{%
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=4mm,boxrule=1pt,top=14pt,bottom=6pt,left=8pt,right=8pt,
+ overlay={\node[fill=cThm!85!black,text=white,rounded corners=3mm,inner xsep=14pt,inner ysep=4pt,font=\large\bfseries] at ([yshift=0pt]frame.north){\ar{مذكرة رقم #1}};},
+ before upper={\selectlanguage{arabic}}]
+\begin{tabular}{@{}p{0.4\linewidth}p{0.55\linewidth}@{}}
+\Fld{المستوى}{#2} & \Fld{الثانوية}{\dotfill}\\[3pt]
+\Fld{المادة}{رياضيات} & \Fld{ميدان التعلم}{#3}\\[3pt]
+\Fld{المدة}{#5} & \Fld{الوحدة التعلمية}{#4}\\[3pt]
+\Fld{الأستاذ}{\dotfill} & \Fld{المحتوى المعرفي}{#6}\\
+\end{tabular}
+\end{tcolorbox}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=3mm,boxrule=0.8pt,sidebyside,sidebyside align=top,lefthand ratio=0.5,
+ segmentation style={dashed,cThm!60},before upper={\selectlanguage{arabic}},before lower={\selectlanguage{arabic}}]
+\textbf{الكفاءات المستهدفة:}\par #8
+\tcblower
+\textbf{الكفاءات القبلية:}\par #7
+\end{tcolorbox}
+\end{LTR}
+\par\smallskip\textbf{الوسائل:} #9\par\smallskip}
+\newenvironment{Sayr}{%
+\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\hline\endfoot}{\end{longtable}\end{LTR}}
+% سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
+\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
+\SetHeader{\small\bfseries\color{cSec}المذكرة الشاملة: الأعداد والحساب}{\small\color{cSec}السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cThm!85!black,colframe=cThm!85!black,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries المذكرة الشاملة: محور الأعداد والحساب}\\[8pt]
+{\color{white}\large السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا}\\[4pt]
+{\color{white}\large 12 حصة مطابقة للتوزيع السنوي 2026-2027}
+\end{tcolorbox}
+\end{LTR}
+\begin{BOX}{cThm}{محتوى المذكرة}
+\begin{enumerate}[label=\textbf{مذكرة \arabic{enumi}:},leftmargin=6em]
+\item مجموعات الأعداد $\N$ ، $\Z$ ، $\D$ ، $\Q$ ، $\R$ (1 سا)
+\item الأعداد الأولية وتحليل عدد إلى جداء عوامل أولية (1 سا)
+\item البرهان بالخلف: $\sqrt2$ عدد أصم ، والأعداد القابلة للإنشاء (1 سا)
+\item الحساب على الكسور والقوى الصحيحة (1 سا)
+\item الجذور التربيعية (1 سا)
+\item الكتابة العشرية والعلمية ، رتبة مقدار ، التدوير والحاسبة (2 سا)
+\item المقارنة والترتيب في $\R$ (1 سا)
+\item الحصر والقيم المقربة (2 سا)
+\item المجالات: التقاطع والاتحاد (1 سا)
+\item القيمة المطلقة والمسافة (1 سا)
+\item معادلات ومتراجحات بقيمة مطلقة ، البرهان بفصل الحالات (1 سا)
+\item إشارة ثنائي حد من الدرجة الأولى (1 سا)
+\end{enumerate}
+\end{BOX}
+\newpage
+\ModhHead{01}{1 ج م ع ت}{الأعداد والحساب}{الأعداد والحساب}{1 سا}{مجموعات الأعداد $\N$ ، $\Z$ ، $\D$ ، $\Q$ ، $\R$}%
+{\begin{itemize}\item الأعداد الطبيعية والأعداد النسبية (التعليم المتوسط).\item الكسور والكتابة العشرية لعدد.\item الجذر التربيعي لعدد موجب.\end{itemize}}%
+{\begin{itemize}\item التمييز بين مختلف أنواع الأعداد.\item استعمال الرموز $\in$ ، $\notin$ ، $\subset$.\item معرفة ترتيب المجموعات $\N\subset\Z\subset\D\subset\Q\subset\R$.\end{itemize}}%
+{الكتاب المدرسي (باب «الأعداد والحساب»: نشاط 1) ، السبورة ، الحاسبة.}
+
+\begin{Sayr}
+\Row{وضعية انطلاقية}{%
+\textbf{سؤال شفهي:} ما الأعداد التي تعرفها؟ هل كل الأعداد من نفس «النوع»؟\par
+يذكر التلاميذ: أعداد طبيعية ($0$ ، $1$ ، $2$ ، $\ldots$) ، أعداد سالبة ، كسور ، أعداد عشرية ، $\sqrt2$ ، $\pi$.\par
+\textbf{الإشكالية:} كيف نصنّف هذه الأعداد؟}{5 د}{نستثمر مكتسبات التعليم المتوسط ونكتب أجوبة التلاميذ على جانب السبورة.}
+\Row{النشاط}{%
+\textbf{نشاط} (مستوحى من نشاط 1 من الكتاب المدرسي): ضع العلامة $\times$ في الخانة المناسبة عندما ينتمي العدد إلى المجموعة:
+\par\smallskip
+\begin{LTR}\centering\begin{tikzpicture}[font=\footnotesize]
+\fill[cSec!12] (0,2.75) rectangle (8.14,3.3);
+\draw (0,0)--(8.14,0);
+\draw (0,0.55)--(8.14,0.55);
+\draw (0,1.1)--(8.14,1.1);
+\draw (0,1.65)--(8.14,1.65);
+\draw (0,2.2)--(8.14,2.2);
+\draw (0,2.75)--(8.14,2.75);
+\draw (0,3.3)--(8.14,3.3);
+\draw (0,0)--(0,3.3);
+\draw (1.9,0)--(1.9,3.3);
+\draw (2.68,0)--(2.68,3.3);
+\draw (3.46,0)--(3.46,3.3);
+\draw (4.24,0)--(4.24,3.3);
+\draw (5.02,0)--(5.02,3.3);
+\draw (5.8,0)--(5.8,3.3);
+\draw (6.58,0)--(6.58,3.3);
+\draw (7.36,0)--(7.36,3.3);
+\draw (8.14,0)--(8.14,3.3);
+\node at (0.95,3.025){\ar{\textbf{العدد}}};
+\node at (2.29,3.025){$7$};
+\node at (3.07,3.025){$-3$};
+\node at (3.85,3.025){$0{,}25$};
+\node at (4.63,3.025){$\frac{2}{3}$};
+\node at (5.41,3.025){$-\frac{12}{4}$};
+\node at (6.19,3.025){$\sqrt9$};
+\node at (6.97,3.025){$\sqrt2$};
+\node at (7.75,3.025){$\pi$};
+\node at (0.95,2.475){\ar{طبيعي}};
+\node at (0.95,1.925){\ar{صحيح نسبي}};
+\node at (0.95,1.375){\ar{عشري}};
+\node at (0.95,0.825){\ar{ناطق}};
+\node at (0.95,0.275){\ar{حقيقي}};
+\end{tikzpicture}\end{LTR}}{15 د}{عمل فردي ($8$ د) ثم ثنائي. نتجول بين الصفوف ونرصد الأخطاء: $-\frac{12}{4}$ و $\sqrt9$.}
+\Row{مناقشة النشاط}{%
+\begin{itemize}
+\item $\sqrt9=3$ و $-\frac{12}{4}=-3$: \textbf{نبسّط العدد قبل الحكم عليه}.
+\item $0{,}25=\frac{25}{100}$ عشري ؛ $\frac23=0{,}666\ldots$ ليس عشرياً (الكتابة العشرية غير منتهية) لكنه ناطق.
+\item $\sqrt2$ و $\pi$ ليسا ناطقين (نقبل ذلك الآن ، وبرهان $\sqrt2\notin\Q$ في حصة البرهان بالخلف).
+\item كل عدد طبيعي هو صحيح نسبي ، وكل صحيح نسبي عشري ، $\ldots$
+\end{itemize}}{10 د}{تصحيح جماعي على السبورة ؛ نطلب من التلاميذ تبرير كل علامة.}
+\Row{بناء التعلّمات: تعاريف}{%
+\begin{itemize}
+\item $\N=\{0;1;2;\ldots\}$: مجموعة \textbf{الأعداد الطبيعية}.
+\item $\Z=\{\ldots;-2;-1;0;1;2;\ldots\}$: مجموعة \textbf{الأعداد الصحيحة النسبية}.
+\item $\D$: مجموعة \textbf{الأعداد العشرية} ، أي الأعداد التي تُكتب $\dfrac{a}{10^{n}}$ حيث $a\in\Z$ و $n\in\N$.
+\item $\Q$: مجموعة \textbf{الأعداد الناطقة} ، أي الأعداد التي تُكتب $\dfrac{a}{b}$ حيث $a\in\Z$ و $b\in\Z^{*}$.
+\item $\R$: مجموعة \textbf{الأعداد الحقيقية} (فواصل نقط المستقيم العددي). العدد الحقيقي غير الناطق يسمى \textbf{أصمّ}.
+\end{itemize}
+\textbf{خاصية:} \bx{\N\subset\Z\subset\D\subset\Q\subset\R}. \quad \textbf{ترميز:} $3\in\N$ ، $\frac23\notin\D$ ، $\R^{*}=\R-\{0\}$ ، $\R_{+}$ ، $\R_{-}$.}{12 د}{تُدوَّن في الكراريس. نرسم مخطط المجموعات المتداخلة على السبورة.}
+\Row{أمثلة}{%
+\begin{itemize}
+\item $\frac{7}{4}=1{,}75=\frac{175}{100}$: إذن $\frac74\in\D$.
+\item $\frac{1}{3}\in\Q$ و $\frac13\notin\D$.
+\item $-\sqrt{16}=-4\in\Z$ و $-4\notin\N$.
+\item $1+\sqrt2\notin\Q$ ، و $1+\sqrt2\in\R$.
+\end{itemize}}{8 د}{نُشرك التلاميذ في تعليل كل انتماء.}
+\Row{تقويم}{%
+\textbf{تمرين:} أكمل بأحد الرمزين $\in$ أو $\notin$:\quad
+$-5\ldots\N$ ؛ $\frac{9}{3}\ldots\N$ ؛ $0{,}3\ldots\D$ ؛ $\frac{5}{6}\ldots\D$ ؛ $\sqrt{25}\ldots\Z$ ؛ $\pi\ldots\Q$.\par
+\textbf{الحل:} $\notin$ ؛ $\in$ ؛ $\in$ ؛ $\notin$ ؛ $\in$ ؛ $\notin$.\par
+\textbf{واجب منزلي:} تمارين من الكتاب المدرسي حول مجموعات الأعداد (يختارها الأستاذ).}{10 د}{تقويم فردي سريع على الألواح ؛ نعالج الأخطاء الشائعة ($\frac56$ ناطق لكنه غير عشري).}
+\end{Sayr}
+\newpage
+\ModhHead{02}{1 ج م ع ت}{الأعداد والحساب}{الأعداد والحساب}{1 سا}{الأعداد الأولية وتحليل عدد طبيعي إلى جداء عوامل أولية}%
+{\begin{itemize}\item قواسم عدد طبيعي ومضاعفاته.\item قواعد قابلية القسمة على $2$ ، $3$ ، $5$ ، $9$.\end{itemize}}%
+{\begin{itemize}\item التعرّف على أولية عدد طبيعي.\item تحليل عدد طبيعي إلى جداء عوامل أولية واستعماله.\end{itemize}}%
+{الكتاب المدرسي (باب «الأعداد والحساب»: نشاط 6) ، السبورة.}
+\begin{Sayr}
+\Row{وضعية انطلاقية}{%
+هل يمكن كتابة العدد $360$ على شكل جداء أعداد «لا تتفكك» أكثر؟ نحاول: $360=36\times10=\ldots$}{5 د}{نترك التلاميذ يجربون تفكيكات مختلفة ويلاحظون أن النتيجة النهائية واحدة.}
+\Row{النشاط}{%
+(نشاط 6 من الكتاب المدرسي) اكتب قواسم كل عدد من $2$ إلى $20$. ما الأعداد التي لها قاسمان فقط؟}{12 د}{عمل ثنائي ؛ نجمع النتائج في جدول على السبورة.}
+\Row{مناقشة النشاط}{%
+الأعداد $2$ ، $3$ ، $5$ ، $7$ ، $11$ ، $13$ ، $17$ ، $19$ لها قاسمان فقط: $1$ والعدد نفسه. \ العدد $1$ له قاسم واحد فهو \textbf{ليس أولياً}.}{8 د}{ننبه إلى أن $2$ هو العدد الأولي الزوجي الوحيد.}
+\Row{بناء التعلّمات}{%
+\begin{itemize}\item \textbf{تعريف:} عدد طبيعي $p$ \textbf{أولي} إذا قبل بالضبط قاسمين مختلفين: $1$ و $p$.\item \textbf{خاصية:} إذا لم يقبل $n$ ($n\geqslant2$) القسمة على أي عدد أولي $p$ حيث $p^2\leqslant n$ فإن $n$ أولي.\item \textbf{مبرهنة:} كل عدد طبيعي $n\geqslant2$ يُكتب بطريقة وحيدة (دون اعتبار الترتيب) على شكل جداء عوامل أولية.\end{itemize}}{12 د}{ندوّن التعريف والخاصية والمبرهنة في الكراريس.}
+\Row{أمثلة}{%
+\begin{itemize}\item $97$: لا يقبل القسمة على $2$ ، $3$ ، $5$ ، $7$ ، و $11^2=121>97$ ، إذن \bx{97} أولي.\item $360=2^3\times3^2\times5$.\item \textbf{استعمال:} $\dfrac{84}{126}=\dfrac{2^2\times3\times7}{2\times3^2\times7}=\dfrac23$ ؛ \ $\sqrt{72}=\sqrt{2^3\times3^2}=6\sqrt2$.\end{itemize}}{13 د}{نعرض طريقة القسمة المتتالية على الأعداد الأولية في عمود.}
+\Row{تقويم}{%
+حلّل $1176$ إلى جداء عوامل أولية. هل $221$ أولي؟\par \textbf{الحل:} $1176=2^3\times3\times7^2$ ؛ \ $221=13\times17$ ليس أولياً.\par\textbf{واجب:} تمارين من الكتاب حول الأعداد الأولية.}{10 د}{عمل فردي ؛ نصحح جماعياً.}
+\end{Sayr}
+\newpage
+\ModhHead{03}{1 ج م ع ت}{الأعداد والحساب}{الأعداد والحساب}{1 سا}{البرهان بالخلف: $\sqrt2$ عدد أصم ، والأعداد القابلة للإنشاء}%
+{\begin{itemize}\item مبرهنة فيثاغورس ومبرهنة طالس.\item الأعداد الزوجية والفردية.\end{itemize}}%
+{\begin{itemize}\item البرهان بالخلف.\item إنشاء أعداد حقيقية بالمسطرة والمدور.\end{itemize}}%
+{الكتاب المدرسي (نشاطا 2 و 3: أعداد قابلة للإنشاء) ، أدوات الهندسة.}
+\begin{Sayr}
+\Row{وضعية انطلاقية}{%
+الحاسبة تعطي $\sqrt2\approx1{,}414213562$. هل يمكن كتابة $\sqrt2$ على شكل كسر $\dfrac pq$؟}{5 د}{نثير الشك: الحاسبة تعرض عدداً محدوداً من الأرقام فقط.}
+\Row{النشاط}{%
+(نشاطا 2 و 3 من الكتاب) أنشئ قطعة طولها $\sqrt2$ (قطر مربع ضلعه $1$) ، ثم قطعة طولها $\sqrt5$ (وتر مثلث قائم ضلعاه $1$ و $2$) ، ثم قطعة طولها $\dfrac23$ (بمبرهنة طالس).}{15 د}{عمل فردي بالأدوات الهندسية.}
+\Row{مناقشة النشاط}{%
+كل هذه الأعداد \textbf{قابلة للإنشاء} ، لكن هذا لا يعني أنها ناطقة. \ لنبرهن أن $\sqrt2\notin\Q$.}{5 د}{ننتقل من الإنشاء إلى السؤال: هل $\sqrt2$ ناطق؟}
+\Row{بناء التعلّمات}{%
+\begin{itemize}\item \textbf{تمهيدية:} إذا كان $p^2$ زوجياً فإن $p$ زوجي (لأنه إذا كان $p=2k+1$ فإن $p^2=2(2k^2+2k)+1$ فردي).\item \textbf{البرهان بالخلف:} نفرض $\sqrt2=\dfrac pq$ كسراً غير قابل للاختزال. إذن $p^2=2q^2$ ، فـ $p$ زوجي: $p=2k$ ، ومنه $q^2=2k^2$ ، فـ $q$ زوجي أيضاً. هذا يناقض أن الكسر غير قابل للاختزال ، إذن \bx{\sqrt2\notin\Q}.\item \textbf{طريقة البرهان بالخلف:} نفرض عكس ما نريد إثباته ، ونصل إلى تناقض.\end{itemize}}{20 د}{نكتب البرهان خطوة بخطوة ونطلب من التلاميذ تبرير كل سطر.}
+\Row{تقويم}{%
+برهن بالخلف أن $1+\sqrt2\notin\Q$.\par\textbf{الحل:} لو كان $1+\sqrt2=r\in\Q$ لكان $\sqrt2=r-1\in\Q$ ، وهذا تناقض.\par\textbf{واجب:} برهن أن $\sqrt3\notin\Q$ (اكتب $p=3k$ أو $p=3k\pm1$).}{15 د}{التمرين المنزلي يُصحّح في بداية الحصة القادمة.}
+\end{Sayr}
+\newpage
+\ModhHead{04}{1 ج م ع ت}{الأعداد والحساب}{الأعداد والحساب}{1 سا}{الحساب على الكسور والقوى الصحيحة}%
+{\begin{itemize}\item العمليات على الكسور (التعليم المتوسط).\item القوى ذات الأسس الطبيعية.\end{itemize}}%
+{\begin{itemize}\item التحكم في الحساب على الكسور والقوى الصحيحة والدمج بينها.\end{itemize}}%
+{الكتاب المدرسي ، السبورة.}
+\begin{Sayr}
+\Row{وضعية انطلاقية}{%
+احسب ذهنياً: $2^3\times2^2$ ، $\dfrac{10^5}{10^2}$ ، $\dfrac12+\dfrac13$.}{5 د}{تذكير سريع بالمكتسبات.}
+\Row{النشاط}{%
+احسب واكتب النتيجة على أبسط شكل:\quad $A=\Big(\dfrac23-\dfrac56\Big)\div\dfrac14$ \quad ؛ \quad $B=\dfrac{2^3\times4^{-2}}{8^{-1}}$.}{12 د}{نترك التلاميذ يكتشفون معنى الأس السالب.}
+\Row{مناقشة النشاط}{%
+$A=\Big(\dfrac46-\dfrac56\Big)\times4=-\dfrac16\times4=\bx{-\dfrac23}$ ؛ \quad $B=\dfrac{8\times\frac1{16}}{\frac18}=\dfrac12\times8=\bx{4}$.}{8 د}{نصحح الخطأ الشائع: $4^{-2}=-16$.}
+\Row{بناء التعلّمات}{%
+\begin{itemize}\item $\dfrac ab+\dfrac cd=\dfrac{ad+bc}{bd}$ ، $\dfrac ab\times\dfrac cd=\dfrac{ac}{bd}$ ، $\dfrac ab\div\dfrac cd=\dfrac ab\times\dfrac dc$.\item من أجل $a\ne0$ و $n\in\N$: $a^0=1$ و $a^{-n}=\dfrac1{a^n}$.\item $a^m\times a^n=a^{m+n}$ ، $\dfrac{a^m}{a^n}=a^{m-n}$ ، $(a^m)^n=a^{mn}$ ، $(ab)^n=a^nb^n$ ($m,n\in\Z$).\end{itemize}}{15 د}{تُدوَّن القواعد في جدول.}
+\Row{أمثلة}{%
+$C=\dfrac{3^2\times9^{-3}\times27^2}{3^{-1}}=\dfrac{3^2\times3^{-6}\times3^6}{3^{-1}}=3^{3}=\bx{27}$.}{8 د}{نكتب كل الأعداد بنفس الأساس.}
+\Row{تقويم}{%
+احسب: $D=\dfrac{5^{-2}\times25^3}{125}$ ؛ \ $E=1-\dfrac{1}{1+\frac12}$.\par\textbf{الحل:} $D=5^{-2+6-3}=\bx{5}$ ؛ \ $E=1-\dfrac23=\bx{\dfrac13}$.\par\textbf{واجب:} تمارين من الكتاب حول القوى.}{12 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{05}{1 ج م ع ت}{الأعداد والحساب}{الأعداد والحساب}{1 سا}{الجذور التربيعية}%
+{\begin{itemize}\item تعريف الجذر التربيعي لعدد موجب.\item المتطابقات الشهيرة.\end{itemize}}%
+{\begin{itemize}\item التحكم في الحساب على الجذور التربيعية.\item التمييز بين القيمة المضبوطة والقيمة المقربة.\end{itemize}}%
+{الكتاب المدرسي (نشاط 4: ضرورة استعمال الحساب المضبوط) ، الحاسبة.}
+\begin{Sayr}
+\Row{وضعية انطلاقية}{%
+هل $\sqrt9+\sqrt{16}=\sqrt{25}$؟}{5 د}{الجواب: $3+4=7\ne5$. نسجل الخطأ الشائع.}
+\Row{النشاط}{%
+(نشاط 4 من الكتاب) احسب $(\sqrt2+1)(\sqrt2-1)$ بالحاسبة باستعمال قيم مقربة ، ثم بالحساب المضبوط. قارن.}{12 د}{نبين أن القيمة المقربة قد تخفي النتيجة الحقيقية ($1$).}
+\Row{مناقشة النشاط}{%
+$(\sqrt2+1)(\sqrt2-1)=(\sqrt2)^2-1^2=2-1=\bx{1}$: الحساب المضبوط يعطي نتيجة صحيحة دقيقة.}{8 د}{نؤكد ضرورة الحساب المضبوط في البرهان.}
+\Row{بناء التعلّمات}{%
+\begin{itemize}\item من أجل $a\geqslant0$ و $b\geqslant0$: $\sqrt{ab}=\sqrt a\sqrt b$ ، $\sqrt{\dfrac ab}=\dfrac{\sqrt a}{\sqrt b}$ ($b\ne0$) ، $(\sqrt a)^2=a$.\item من أجل كل عدد حقيقي $a$: $\sqrt{a^2}=|a|$.\item \textbf{تنبيه:} $\sqrt{a+b}\ne\sqrt a+\sqrt b$ في الحالة العامة.\end{itemize}}{13 د}{تُدوَّن الخواص.}
+\Row{أمثلة}{%
+\begin{itemize}\item $\sqrt{50}=\sqrt{25\times2}=5\sqrt2$ ؛ \ $\sqrt{12}+\sqrt{27}=2\sqrt3+3\sqrt3=5\sqrt3$.\item إزالة الجذر من المقام: $\dfrac{1}{\sqrt3-1}=\dfrac{\sqrt3+1}{(\sqrt3-1)(\sqrt3+1)}=\dfrac{\sqrt3+1}{2}$.\end{itemize}}{10 د}{نستعمل التحليل إلى عوامل أولية للتبسيط.}
+\Row{تقويم}{%
+بسّط: $A=\sqrt{75}-2\sqrt{12}+\sqrt3$ ؛ \ $B=(2-\sqrt3)(2+\sqrt3)$ ؛ \ $C=\dfrac{6}{\sqrt3}$.\par\textbf{الحل:} $A=5\sqrt3-4\sqrt3+\sqrt3=\bx{2\sqrt3}$ ؛ $B=4-3=\bx{1}$ ؛ $C=\dfrac{6\sqrt3}{3}=\bx{2\sqrt3}$.\par\textbf{واجب:} تمارين من الكتاب.}{12 د}{تقويم فردي على الألواح.}
+\end{Sayr}
+\newpage
+\ModhHead{06}{1 ج م ع ت}{الأعداد والحساب}{الأعداد والحساب}{2 سا}{الكتابة العشرية ، الكتابة العلمية ، رتبة مقدار ، التدوير والحاسبة}%
+{\begin{itemize}\item الكسور والأعداد العشرية.\item القوى الصحيحة للعدد $10$.\end{itemize}}%
+{\begin{itemize}\item التحويل من وإلى الكتابة العشرية.\item الكتابة العلمية ورتبة مقدار عدد.\item تدوير عدد عشري ، والتمييز بين عدد وقيمة مقربة له.\item استعمال الحاسبة العلمية.\end{itemize}}%
+{الكتاب المدرسي (نشاط 5: الخاصية المميزة للعدد العشري) ، الحاسبة العلمية.}
+\begin{Sayr}
+\Row{وضعية انطلاقية}{%
+اكتب بالكتابة العشرية: $\dfrac{7}{40}$ و $\dfrac{5}{12}$. ماذا تلاحظ؟}{10 د}{$\frac7{40}=0{,}175$ تنتهي ، $\frac5{12}=0{,}41666\ldots$ لا تنتهي.}
+\Row{النشاط}{%
+(نشاط 5 من الكتاب) حلّل مقام كل كسر غير قابل للاختزال إلى عوامل أولية: $\dfrac{7}{40}=\dfrac{7}{2^3\times5}$ ، $\dfrac{5}{12}=\dfrac{5}{2^2\times3}$. استنتج متى يكون الكسر عدداً عشرياً.}{20 د}{عمل ثنائي ، ثم صياغة جماعية للخاصية.}
+\Row{بناء التعلّمات (1)}{%
+\begin{itemize}\item \textbf{خاصية:} الكسر غير القابل للاختزال $\dfrac pq$ عدد عشري إذا وفقط إذا كان $q$ من الشكل $2^m\times5^n$.\item \textbf{الكتابة الدورية:} كل عدد ناطق له كتابة عشرية منتهية أو دورية. مثال: $x=0{,}272727\ldots$ ، $100x-x=27$ ، إذن $x=\dfrac{27}{99}=\bx{\dfrac3{11}}$.\end{itemize}}{20 د}{نبين طريقة التحويل من الكتابة الدورية إلى كسر.}
+\Row{بناء التعلّمات (2)}{%
+\begin{itemize}\item \textbf{الكتابة العلمية:} $a\times10^n$ حيث $1\leqslant a<10$ و $n\in\Z$. أمثلة: $345000=3{,}45\times10^5$ ؛ $0{,}000042=4{,}2\times10^{-5}$.\item \textbf{رتبة مقدار:} $(3{,}1\times10^4)\times(2{,}2\times10^{-2})\approx3\times2\times10^{2}=6\times10^2$ (القيمة المضبوطة $682$).\item \textbf{التدوير إلى $10^{-p}$:} $\pi\approx3{,}14$ ؛ $\dfrac23\approx0{,}67$ (تدوير إلى $10^{-2}$). العدد $\dfrac23$ \textbf{قيمته المضبوطة} $\dfrac23$ ، و $0{,}67$ \textbf{قيمة مقربة} له.\end{itemize}}{30 د}{ننبه إلى الفرق بين «عدد» و«قيمة مقربة له».}
+\Row{الحاسبة العلمية}{%
+احسب بالحاسبة $\dfrac{1+\sqrt5}{2}$ ودوّر النتيجة إلى $10^{-3}$: \bx{1{,}618}. \quad استعمل مفتاح الكتابة العلمية لحساب $(2{,}5\times10^{-3})\times(4\times10^{6})=10^4$.}{15 د}{نوضح استعمال الأقواس ومفتاح $\times10^x$.}
+\Row{تقويم}{%
+1) اكتب $0{,}00305$ بالكتابة العلمية. \ 2) دوّر $12{,}3456$ إلى $10^{-2}$. \ 3) اكتب $0{,}181818\ldots$ على شكل كسر.\par\textbf{الحل:} $3{,}05\times10^{-3}$ ؛ $12{,}35$ ؛ $\dfrac{18}{99}=\dfrac2{11}$.\par\textbf{واجب:} تمارين من الكتاب.}{25 د}{تقويم فردي ثم تصحيح جماعي.}
+\end{Sayr}
+\newpage
+\ModhHead{07}{1 ج م ع ت}{الأعداد والحساب}{الأعداد والحساب}{1 سا}{المقارنة والترتيب في $\R$}%
+{\begin{itemize}\item العمليات على الأعداد الحقيقية.\item المتطابقات الشهيرة.\end{itemize}}%
+{\begin{itemize}\item اختيار معيار لمقارنة عددين.\item استعمال خواص الترتيب والعمليات.\end{itemize}}%
+{الكتاب المدرسي (باب «الترتيب في $\R$»: النشاطان 1 و 2) ، الحاسبة.}
+\begin{Sayr}
+\Row{وضعية انطلاقية}{%
+أيهما أكبر: $\dfrac37$ أم $\dfrac49$؟ وكيف نتأكد دون حاسبة؟}{5 د}{نجمع اقتراحات التلاميذ.}
+\Row{النشاط}{%
+(النشاطان 1 و 2 من الكتاب) قارن $A=\sqrt3+\sqrt5$ و $B=\sqrt2+\sqrt6$ بحساب $A^2$ و $B^2$.}{12 د}{عمل ثنائي.}
+\Row{مناقشة النشاط}{%
+$A^2=8+2\sqrt{15}$ و $B^2=8+2\sqrt{12}$ ، و $\sqrt{15}>\sqrt{12}$ ، إذن $A^2>B^2$ ، والعددان موجبان فـ \bx{A>B}.}{8 د}{نبرر الانتقال من المربعين إلى العددين (العددان موجبان).}
+\Row{بناء التعلّمات}{%
+\begin{itemize}\item \textbf{معيار الفرق:} $a<b\iff a-b<0$.\item $a<b\Rightarrow a+c<b+c$ ؛ إذا كان $c>0$: $a<b\Rightarrow ac<bc$ ؛ إذا كان $c<0$: $a<b\Rightarrow ac>bc$.\item من أجل $0<a<b$: $a^2<b^2$ ، $\sqrt a<\sqrt b$ ، $\dfrac1a>\dfrac1b$.\end{itemize}}{15 د}{نلخص في جدول ونؤكد على قلب الإشارة عند الضرب في عدد سالب.}
+\Row{أمثلة}{%
+$x=\dfrac{n}{n+1}$ و $y=\dfrac{n+1}{n+2}$ ($n\in\N$): $x-y=\dfrac{n(n+2)-(n+1)^2}{(n+1)(n+2)}=\dfrac{-1}{(n+1)(n+2)}<0$ ، إذن \bx{x<y}.}{8 د}{نستعمل معيار الفرق.}
+\Row{تقويم}{%
+قارن: $\dfrac37$ و $\dfrac49$ ؛ \ $2\sqrt3$ و $3\sqrt2$.\par\textbf{الحل:} $3\times9=27<28=4\times7$ إذن $\dfrac37<\dfrac49$ ؛ $(2\sqrt3)^2=12<18=(3\sqrt2)^2$ إذن $2\sqrt3<3\sqrt2$.\par\textbf{واجب:} تمارين من الكتاب.}{12 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{08}{1 ج م ع ت}{الأعداد والحساب}{الأعداد والحساب}{2 سا}{الحصر والقيم المقربة}%
+{\begin{itemize}\item خواص الترتيب والعمليات.\item الكتابة العشرية والتدوير.\end{itemize}}%
+{\begin{itemize}\item حصر عدد حقيقي.\item حصر مجموع وفرق وجداء ومقلوب ونسبة.\item حصر عبارة جبرية.\end{itemize}}%
+{الكتاب المدرسي (باب «الترتيب في $\R$»: نشاط 3 الحصر) ، الحاسبة.}
+\begin{Sayr}
+\Row{وضعية انطلاقية}{%
+نعلم أن $1{,}41<\sqrt2<1{,}42$ و $1{,}73<\sqrt3<1{,}74$. ماذا نستطيع أن نقول عن $\sqrt2+\sqrt3$ و $\sqrt6$؟}{10 د}{نطرح الإشكالية دون حاسبة.}
+\Row{النشاط}{%
+(نشاط 3 من الكتاب) احصر: $\sqrt2+\sqrt3$ ، $\sqrt3-\sqrt2$ ، $\sqrt6=\sqrt2\times\sqrt3$ ، $\dfrac1{\sqrt2}$.}{20 د}{عمل ثنائي ؛ نرصد خطأ طرح الحدود في الفرق.}
+\Row{مناقشة النشاط}{%
+\begin{itemize}\item $3{,}14<\sqrt2+\sqrt3<3{,}16$ (نجمع الحدود).\item $-1{,}42<-\sqrt2<-1{,}41$ ، إذن $0{,}31<\sqrt3-\sqrt2<0{,}33$.\item $2{,}4393<\sqrt6<2{,}4708$ (نضرب حدوداً موجبة).\item $\dfrac1{1{,}42}<\dfrac1{\sqrt2}<\dfrac1{1{,}41}$ ، أي $0{,}704<\dfrac1{\sqrt2}<0{,}710$.\end{itemize}}{20 د}{نشدد: لا نطرح الحدود ولا نقسمها مباشرة.}
+\Row{بناء التعلّمات}{%
+\begin{itemize}\item إذا كان $a<x<b$ و $c<y<d$ فإن $a+c<x+y<b+d$ ، و $a-d<x-y<b-c$.\item إذا كانت الحدود موجبة: $ac<xy<bd$ ، و $\dfrac1b<\dfrac1x<\dfrac1a$ ، و $\dfrac ad<\dfrac xy<\dfrac bc$.\item \textbf{قيمة مقربة:} إذا كان $a<x<b$ فإن $a$ قيمة مقربة لـ $x$ بالنقصان و $b$ بالزيادة ، وسعة الحصر $b-a$.\end{itemize}}{25 د}{تُدوَّن القواعد.}
+\Row{أمثلة}{%
+إذا كان $x\in[1;2]$: $2x-3\in[-1;1]$ ، $x^2\in[1;4]$ ، $\dfrac{1}{x+1}\in\Big[\dfrac13;\dfrac12\Big]$.}{20 د}{نحصر عبارة جبرية خطوة خطوة.}
+\Row{تقويم}{%
+$2<x<3$ و $1<y<2$. احصر $x+y$ ، $x-y$ ، $xy$ ، $\dfrac xy$.\par\textbf{الحل:} $3<x+y<5$ ؛ $0<x-y<2$ ؛ $2<xy<6$ ؛ $1<\dfrac xy<3$.\par\textbf{واجب:} تمارين من الكتاب.}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{09}{1 ج م ع ت}{الأعداد والحساب}{الأعداد والحساب}{1 سا}{المجالات: التمثيل ، التقاطع والاتحاد}%
+{\begin{itemize}\item المتباينات والمستقيم العددي.\end{itemize}}%
+{\begin{itemize}\item التعبير عن جزء متصل من $\R$ بمجال أو حصر.\item تعيين تقاطع واتحاد مجالين.\end{itemize}}%
+{الكتاب المدرسي ، السبورة.}
+\begin{Sayr}
+\Row{وضعية انطلاقية}{%
+مثّل على المستقيم العددي الأعداد $x$ حيث $-1<x\leqslant4$.}{5 د}{نقود التلاميذ إلى فكرة «المجال».}
+\Row{النشاط}{%
+مثّل على نفس المستقيم: $A=\{x:\ -2\leqslant x\leqslant3\}$ و $B=\{x:\ 1<x\leqslant5\}$ ، ثم لوّن الأعداد المشتركة ، ثم الأعداد التي تنتمي إلى أحدهما على الأقل.}{12 د}{عمل فردي بالألوان.}
+\Row{مناقشة النشاط}{%
+المشترك: $]1;3]$ ؛ أحدهما على الأقل: $[-2;5]$.}{8 د}{نقارن التمثيلين.}
+\Row{بناء التعلّمات}{%
+\begin{itemize}\item المجالات المحدودة: $[a;b]$ ، $]a;b[$ ، $[a;b[$ ، $]a;b]$ ؛ غير المحدودة: $[a;+\infty[$ ، $]-\infty;b]$ ، $\ldots$ ، و $\R=]-\infty;+\infty[$.\item $I\cap J$: الأعداد التي تنتمي إلى $I$ \textbf{و} $J$ ؛ $I\cup J$: الأعداد التي تنتمي إلى $I$ \textbf{أو} $J$.\end{itemize}}{15 د}{نرسم جدول التوافق: متباينة ، مجال ، تمثيل.}
+\Row{أمثلة}{%
+$[-2;3]\cap]1;5]=]1;3]$ ؛ \ $[-2;3]\cup]1;5]=[-2;5]$ ؛ \ $]-\infty;1[\cap[4;+\infty[=\varnothing$.}{8 د}{نمثل كل مثال على المستقيم.}
+\Row{تقويم}{%
+اكتب بمجال: $-1<x\leqslant4$ ؛ $x\geqslant2$. عيّن $]-3;2]\cap[0;5[$ و $]-3;2]\cup[0;5[$.\par\textbf{الحل:} $]-1;4]$ ؛ $[2;+\infty[$ ؛ $[0;2]$ ؛ $]-3;5[$.}{12 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{10}{1 ج م ع ت}{الأعداد والحساب}{الأعداد والحساب}{1 سا}{القيمة المطلقة والمسافة}%
+{\begin{itemize}\item المستقيم العددي والمجالات.\end{itemize}}%
+{\begin{itemize}\item كتابة عبارة بقيمة مطلقة دون الرمز.\item التعبير عن مجال بأربع صيغ: مجال ، حصر ، مسافة ، قيمة مطلقة.\end{itemize}}%
+{الكتاب المدرسي (باب «الترتيب في $\R$»: نشاط 4 المسافة).}
+\begin{Sayr}
+\Row{وضعية انطلاقية}{%
+على المستقيم العددي: ما المسافة بين النقطتين اللتين فاصلتاهما $-2$ و $5$؟ وبين $5$ و $-2$؟}{5 د}{المسافة موجبة ولا تتعلق بالترتيب.}
+\Row{النشاط}{%
+(نشاط 4 من الكتاب) عيّن الأعداد $x$ التي تبعد عن $3$ بأقل من $2$ أو تساوي $2$. مثّلها.}{12 د}{عمل ثنائي.}
+\Row{مناقشة النشاط}{%
+$1\leqslant x\leqslant5$ ، أي $x\in[1;5]$: مركز المجال $3$ ونصف قطره $2$.}{8 د}{نربط المسافة بمركز المجال ونصف قطره.}
+\Row{بناء التعلّمات}{%
+\begin{itemize}\item $|x|=x$ إذا كان $x\geqslant0$ ، و $|x|=-x$ إذا كان $x\leqslant0$.\item المسافة بين $a$ و $b$: $d(a;b)=|a-b|=|b-a|$.\item $|xy|=|x|\,|y|$ ، $\sqrt{x^2}=|x|$ ، $|x+y|\leqslant|x|+|y|$.\item من أجل $r>0$: $|x-a|\leqslant r\iff a-r\leqslant x\leqslant a+r\iff x\in[a-r;a+r]$.\end{itemize}}{15 د}{نلخص الصيغ الأربع في جدول.}
+\Row{أمثلة}{%
+$|\sqrt2-2|=2-\sqrt2$ (لأن $\sqrt2<2$) ؛ \ $[-1;7]$: المركز $3$ ونصف القطر $4$ ، إذن $x\in[-1;7]\iff|x-3|\leqslant4$.}{8 د}{نطلب تبرير إشارة ما داخل القيمة المطلقة.}
+\Row{تقويم}{%
+اكتب بمجال: $|x+1|<3$. اكتب $[2;8]$ بقيمة مطلقة.\par\textbf{الحل:} $]-4;2[$ ؛ $|x-5|\leqslant3$.}{12 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{11}{1 ج م ع ت}{الأعداد والحساب}{الأعداد والحساب}{1 سا}{معادلات ومتراجحات تتضمن قيمة مطلقة ، والبرهان بفصل الحالات}%
+{\begin{itemize}\item القيمة المطلقة والمسافة.\end{itemize}}%
+{\begin{itemize}\item حل معادلات ومتراجحات بقيمة مطلقة.\item البرهان بفصل الحالات.\end{itemize}}%
+{الكتاب المدرسي ، السبورة.}
+\begin{Sayr}
+\Row{وضعية انطلاقية}{%
+ما الأعداد التي تبعد عن $2$ بمسافة $3$؟}{5 د}{نترجم: $|x-2|=3$.}
+\Row{النشاط}{%
+حل: $|x-2|=3$ ؛ $|x+1|=|x-3|$ ؛ $|2x-1|\leqslant5$.}{12 د}{نشجع التفكير بالمسافة على المستقيم.}
+\Row{مناقشة النشاط}{%
+\begin{itemize}\item $|x-2|=3\iff x=5$ أو $x=-1$.\item $|x+1|=|x-3|$: $x$ على نفس البعد من $-1$ و $3$ ، إذن $x=1$.\item $|2x-1|\leqslant5\iff-5\leqslant2x-1\leqslant5\iff-2\leqslant x\leqslant3$.\end{itemize}}{10 د}{نعرض الطريقتين: المسافة ، والحساب.}
+\Row{بناء التعلّمات}{%
+\begin{itemize}\item من أجل $r>0$: $|X|=r\iff X=r$ أو $X=-r$ ؛ $|X|\leqslant r\iff-r\leqslant X\leqslant r$ ؛ $|X|>r\iff X<-r$ أو $X>r$.\item \textbf{البرهان بفصل الحالات:} نكتب $f(x)=|x-1|+|x+2|$ دون رمز القيمة المطلقة حسب مواضع $x$ بالنسبة إلى $-2$ و $1$: $f(x)=-2x-1$ إذا $x\leqslant-2$ ؛ $f(x)=3$ إذا $-2\leqslant x\leqslant1$ ؛ $f(x)=2x+1$ إذا $x\geqslant1$.\end{itemize}}{18 د}{نرسم جدولاً لإشارة ما داخل كل قيمة مطلقة.}
+\Row{تقويم}{%
+حل: $|x+2|=4$ ؛ $|x-1|<2$ ؛ $|2x+3|\geqslant1$.\par\textbf{الحل:} $\{-6;2\}$ ؛ $]-1;3[$ ؛ $]-\infty;-2]\cup[-1;+\infty[$.\par\textbf{واجب:} تمارين من الكتاب.}{15 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{12}{1 ج م ع ت}{الأعداد والحساب}{الأعداد والحساب}{1 سا}{إشارة ثنائي حد من الدرجة الأولى}%
+{\begin{itemize}\item حل معادلة ومتراجحة من الدرجة الأولى.\item المجالات.\end{itemize}}%
+{\begin{itemize}\item تعيين إشارة ثنائي حد $ax+b$.\item حل متراجحات من شكل جداء أو حاصل قسمة.\end{itemize}}%
+{الكتاب المدرسي ، السبورة.}
+\begin{Sayr}
+\Row{وضعية انطلاقية}{%
+متى يكون $-2x+6$ موجباً؟ ومتى يكون سالباً؟}{5 د}{نحل المتراجحة $-2x+6>0$.}
+\Row{النشاط}{%
+أكمل جدول القيم للعبارة $-2x+6$ من أجل $x\in\{0;1;2;3;4;5\}$ ، ثم استنتج إشارتها.}{10 د}{نلاحظ تغيّر الإشارة عند $3$.}
+\Row{مناقشة النشاط}{%
+$-2x+6=0\iff x=3$ ؛ موجبة إذا $x<3$ وسالبة إذا $x>3$: عكس إشارة $a=-2$ قبل الجذر ، ونفس إشارة $a$ بعده.}{8 د}{نعمم الملاحظة.}
+\Row{بناء التعلّمات}{%
+\textbf{خاصية:} ثنائي الحد $ax+b$ ($a\ne0$) ينعدم عند $x_0=-\dfrac ba$ ، وإشارته \textbf{إشارة $a$} على يمين $x_0$ و\textbf{عكسها} على يساره.
+\par\smallskip\begin{LTR}\centering\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|ccccc|}\hline
+\rowcolor{cSec!12}$x$ & $-\infty$ & & $-\frac ba$ & & $+\infty$\\\hline
+$ax+b$ & & \ar{عكس إشارة $a$} & $0$ & \ar{إشارة $a$} & \\\hline
+\end{tabular}\end{LTR}}{12 د}{نرسم جدول الإشارة.}
+\Row{أمثلة}{%
+حل $(x-1)(3-x)>0$: جدول إشارة العاملين ثم الجداء: $S=]1;3[$. \ حل $\dfrac{2x+1}{x-2}\leqslant0$: $S=\Big[-\dfrac12;2\Big[$ ($2$ قيمة ممنوعة).}{13 د}{نشدد على القيمة الممنوعة في المقام.}
+\Row{تقويم}{%
+عيّن إشارة $3x-6$. حل $(x+2)(1-2x)\geqslant0$.\par\textbf{الحل:} سالبة على $]-\infty;2[$ وموجبة على $]2;+\infty[$ ؛ $S=\Big[-2;\dfrac12\Big]$.\par\textbf{واجب:} تمارين من الكتاب.}{12 د}{تقويم فردي ؛ نهاية المحور: تمارين حوصلة في الحصة القادمة.}
+\end{Sayr}
+\end{document}
