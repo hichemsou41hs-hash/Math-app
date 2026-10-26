@@ -54,7 +54,7 @@
   attach boxed title to top right={xshift=-5mm,yshift=-3mm},
   boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
   before upper={\selectlanguage{arabic}},
-  before skip=8pt,after skip=8pt,#1}
+  before skip=8pt,after skip=8pt,breakable,#1}
 \newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
 \newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
 \newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
@@ -132,10 +132,11 @@
 \end{tikzpicture}\end{LTR}}
 % سطر مواقع التواصل أسفل كل صفحة
 % (يُكتب السطر بترتيب بصري من اليسار إلى اليمين: الأيقونة يمين كل اسم)
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
 \newcommand{\SocialRow}{\begin{otherlanguage}{english}%
  \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
  \textbf{prof\_hicham\_math}\ \igicon\hfill
- \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\end{otherlanguage}}
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
 
 % ---------- رأس وتذييل الصفحة ----------
 \pagestyle{fancy}
@@ -143,11 +144,9 @@
 \renewcommand{\headrulewidth}{0.6pt}
 \renewcommand{\footrulewidth}{0.4pt}
 % \SetHeader{يمين الرأس}{يسار الرأس}{يمين التذييل}{يسار التذييل}
-\newcommand{\SetHeader}[4]{%
+\newcommand{\SetHeader}[2]{%
  \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
- \fancyfoot[C]{\parbox{\textwidth}{\ar{#3\hfill #4}\\[3pt]
-   \rule{\textwidth}{0.3pt}\\[1pt]
-   \footnotesize\SocialRow}}}
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
 
 \pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
 
@@ -158,7 +157,7 @@
  \draw[-{Stealth}] (0,#3-0.2)--(0,#4+0.3) node[left]{$y$};
  \node[below left,font=\scriptsize] at (0,0){$O$};}
 
-\SetHeader{\small\bfseries\color{cSec}الوحدة الأولى: الدوال العددية -- سلسلة تمارين}{\small\color{cSec}السنة الثانية ثانوي -- الشعب العلمية}{\small الأستاذ سوايسية هشام}{\small صفحة \thepage}
+\SetHeader{\small\bfseries\color{cSec}الوحدة الأولى: الدوال العددية -- سلسلة تمارين}{\small\color{cSec}السنة الثانية ثانوي -- الشعب العلمية}
 
 \begin{document}
 
@@ -277,6 +276,25 @@ $u$ متناقصة تماماً على $]-\infty;3]$ ($-1<0$) و $u\big(]-\infty
 \item $x\mapsto\dfrac1{x-1}$ مركب $u(x)=x-1$ (متزايدة) و $\dfrac1x$ (متناقصة على $]0;+\infty[$) فهي متناقصة تماماً على $]1;+\infty[$.\\
 الضرب في $-3<0$ يعكس الاتجاه، وإضافة $2$ لا تغيره: $h$ \textbf{متزايدة تماماً} على $]1;+\infty[$.
 \item $u(x)=x+1$ متزايدة و $u\big(]-1;+\infty[\big)=]0;+\infty[$ حيث الدالة مربع متزايدة تماماً: $k$ \textbf{متزايدة تماماً}.
+\end{enumerate}
+\end{hal}
+
+\begin{tamrin}{اتجاه تغير $\sqrt u$ و $\dfrac1u$}
+ادرس اتجاه تغير كل دالة على المجال المعطى:
+\begin{enumerate}
+\item $f(x)=\sqrt{3-x}$ على $]-\infty;3]$.
+\item $g(x)=\dfrac{1}{x^2-4x+5}$ على $\R$ ، ثم استنتج القيمة الحدية العظمى لـ $g$.
+\item $h(x)=\sqrt{x^2+2x+3}$ على $\R$.
+\item $k(x)=3-\dfrac{2}{\sqrt x+1}$ على $[0;+\infty[$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\begin{enumerate}
+\item $u(x)=3-x\ge0$ على $]-\infty;3]$ ومتناقصة تماماً ، إذن $f=\sqrt u$ \textbf{متناقصة تماماً} على $]-\infty;3]$.
+\item $u(x)=x^2-4x+5=(x-2)^2+1\ge1>0$: لا تنعدم وإشارتها ثابتة. \ $u$ متناقصة تماماً على $]-\infty;2]$ ومتزايدة تماماً على $[2;+\infty[$ ، إذن $g=\dfrac1u$ \textbf{متزايدة تماماً} على $]-\infty;2]$ و\textbf{متناقصة تماماً} على $[2;+\infty[$.\\
+القيمة الحدية العظمى: $\boxed{g(2)=1}$.
+\item $u(x)=x^2+2x+3=(x+1)^2+2>0$ ، متناقصة تماماً على $]-\infty;-1]$ ومتزايدة تماماً على $[-1;+\infty[$ ، إذن $h=\sqrt u$ \textbf{متناقصة تماماً} على $]-\infty;-1]$ و\textbf{متزايدة تماماً} على $[-1;+\infty[$ ، وقيمتها الحدية الصغرى $h(-1)=\sqrt2$.
+\item $u(x)=\sqrt x+1\ge1>0$ ومتزايدة تماماً على $[0;+\infty[$ ، إذن $\dfrac1u$ متناقصة تماماً ، والضرب في $-2<0$ يعكس الاتجاه ، وإضافة $3$ لا تغيره: $k$ \textbf{متزايدة تماماً} على $[0;+\infty[$.
 \end{enumerate}
 \end{hal}
 

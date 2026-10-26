@@ -54,7 +54,7 @@
   attach boxed title to top right={xshift=-5mm,yshift=-3mm},
   boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
   before upper={\selectlanguage{arabic}},
-  before skip=8pt,after skip=8pt,#1}
+  before skip=8pt,after skip=8pt,breakable,#1}
 \newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
 \newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
 \newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
@@ -132,10 +132,11 @@
 \end{tikzpicture}\end{LTR}}
 % سطر مواقع التواصل أسفل كل صفحة
 % (يُكتب السطر بترتيب بصري من اليسار إلى اليمين: الأيقونة يمين كل اسم)
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
 \newcommand{\SocialRow}{\begin{otherlanguage}{english}%
  \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
  \textbf{prof\_hicham\_math}\ \igicon\hfill
- \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\end{otherlanguage}}
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
 
 % ---------- رأس وتذييل الصفحة ----------
 \pagestyle{fancy}
@@ -143,11 +144,9 @@
 \renewcommand{\headrulewidth}{0.6pt}
 \renewcommand{\footrulewidth}{0.4pt}
 % \SetHeader{يمين الرأس}{يسار الرأس}{يمين التذييل}{يسار التذييل}
-\newcommand{\SetHeader}[4]{%
+\newcommand{\SetHeader}[2]{%
  \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
- \fancyfoot[C]{\parbox{\textwidth}{\ar{#3\hfill #4}\\[3pt]
-   \rule{\textwidth}{0.3pt}\\[1pt]
-   \footnotesize\SocialRow}}}
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
 
 
 % ---------- رسم بياني مصغر: \MiniG{العبارة}{بداية}{نهاية}{ymin}{ymax}
@@ -158,7 +157,7 @@
  \draw[cThm,very thick,smooth,samples=60,domain=#2:#3] plot (\x,{#1});
 \end{tikzpicture}\end{LTR}}
 
-\SetHeader{\small\bfseries\color{cSec}الوحدة الأولى: الدوال العددية}{\small\color{cSec}السنة الثانية ثانوي -- الشعب العلمية}{\small الأستاذ سوايسية هشام}{\small ملخص الوحدة -- صفحة \thepage}
+\SetHeader{\small\bfseries\color{cSec}الوحدة الأولى: الدوال العددية}{\small\color{cSec}السنة الثانية ثانوي -- الشعب العلمية}
 
 \begin{document}
 
@@ -177,7 +176,7 @@
 \item عموميات: مجموعة التعريف، اتجاه التغير، الدوال المرجعية.
 \item العمليات على الدوال وتساوي دالتين.
 \item تركيب دالتين وتفكيك دالة.
-\item اتجاه تغير الدوال $f+k$ ، $\lambda f$ ، $g\circ f$.
+\item اتجاه تغير الدوال $f+k$ ، $\lambda f$ ، $\sqrt u$ ، $\dfrac1u$ ، $g\circ f$.
 \item التمثيلات البيانية المستنتجة من تمثيل بياني معلوم.
 \item دساتير تغيير المعلم، الشفعية، محور ومركز التناظر.
 \item التقاطع مع المحورين والمناقشة البيانية.
@@ -323,7 +322,7 @@ $v(x)=|x|$ & $u(x)$ & $f(x)=\big|u(x)\big|$\\\hline
 \end{tariqa}
 
 % =================================================
-\section{اتجاه تغير الدوال $f+k$ ، $\lambda f$ ، $g\circ f$}
+\section{اتجاه تغير الدوال $f+k$ ، $\lambda f$ ، $\sqrt u$ ، $\frac1u$ ، $g\circ f$}
 % =================================================
 \begin{khassia}[مبرهنات]
 $f$ دالة رتيبة تماماً على مجال $I$ ، و $k$ و $\lambda$ عددان حقيقيان ($\lambda\ne0$).
@@ -333,6 +332,8 @@ $f$ دالة رتيبة تماماً على مجال $I$ ، و $k$ و $\lambda$ 
 \textbf{اتجاه التغير} & \textbf{الدالة}\\\hline
 للدالتين $f$ و $f+k$ نفس اتجاه التغير على $I$. & $f+k$\\\hline
 إذا كان $\lambda>0$: لـ $f$ و $\lambda f$ نفس اتجاه التغير ؛ وإذا كان $\lambda<0$: اتجاها تغيرهما متعاكسان. & $\lambda f$\\\hline
+إذا كانت $f(x)\ge0$ على $I$: للدالتين $f$ و $\sqrt f$ نفس اتجاه التغير على $I$. & $\sqrt f$\\\hline
+إذا كانت $f$ لا تنعدم ولها إشارة ثابتة على $I$: اتجاها تغير $f$ و $\dfrac1f$ متعاكسان على $I$. & $\dfrac1f$\\\hline
 ($g$ رتيبة تماماً على مجال $J$ يشمل $f(I)$) \newline إذا كان لـ $f$ و $g$ نفس اتجاه التغير فإن $g\circ f$ \textbf{متزايدة تماماً} على $I$ ؛\newline وإذا كان اتجاها تغيرهما متعاكسين فإن $g\circ f$ \textbf{متناقصة تماماً} على $I$. & $g\circ f$\\\hline
 \end{tabular}
 \end{center}
@@ -347,8 +348,13 @@ $f$ دالة رتيبة تماماً على مجال $I$ ، و $k$ و $\lambda$ 
 \begin{itemize}
 \item $f(x)=2\sqrt x+3$: الدالة $x\mapsto\sqrt x$ متزايدة تماماً على $[0;+\infty[$ و $2>0$ ، إذن $f$ متزايدة تماماً على $[0;+\infty[$.
 \item $g(x)=\sqrt{-x+2}$ على $]-\infty;2]$: $u(x)=-x+2$ متناقصة و $v(x)=\sqrt x$ متزايدة، إذن $g=v\circ u$ متناقصة تماماً.
+\item $h(x)=\sqrt{2x-4}$ على $[2;+\infty[$: $u(x)=2x-4\ge0$ ومتزايدة تماماً، إذن $h=\sqrt u$ \textbf{متزايدة تماماً} على $[2;+\infty[$.
+\item $k(x)=\dfrac{1}{x^2+1}$ على $\R$: $u(x)=x^2+1>0$ (إشارة ثابتة ولا تنعدم) ، متناقصة تماماً على $]-\infty;0]$ ومتزايدة تماماً على $[0;+\infty[$ ، إذن $k=\dfrac1u$ \textbf{متزايدة تماماً} على $]-\infty;0]$ و\textbf{متناقصة تماماً} على $[0;+\infty[$.
 \end{itemize}
 \end{mithal}
+\begin{molahada}
+شرط الإشارة الثابتة ضروري في قاعدة $\dfrac1u$: الدالة $u(x)=x$ متزايدة على $\R^*$ ، لكن $\dfrac1x$ ليست متناقصة على $\R^*$ كله ($-1<1$ و $\dfrac{1}{-1}<\dfrac11$) ؛ هي متناقصة على كل من المجالين $]-\infty;0[$ و $]0;+\infty[$ على حدة.
+\end{molahada}
 
 % =================================================
 \section{التمثيلات البيانية المستنتجة}
