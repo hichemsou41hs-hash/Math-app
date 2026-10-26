@@ -1,0 +1,421 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\usepackage{longtable}
+\setlength{\LTpre}{4pt}\setlength{\LTpost}{0pt}
+\newcommand{\Phase}[1]{\textbf{#1}}
+\newcommand{\Fld}[2]{\textbf{#1:}\ #2}
+% رأس المذكرة على نمط النموذج: إطار بعنوان «مذكرة رقم»، معلومات الحصة، ثم إطار الكفاءات
+\newcommand{\ModhHead}[9]{%
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=4mm,boxrule=1pt,top=14pt,bottom=6pt,left=8pt,right=8pt,
+ overlay={\node[fill=cThm!85!black,text=white,rounded corners=3mm,inner xsep=14pt,inner ysep=4pt,font=\large\bfseries] at ([yshift=0pt]frame.north){\ar{مذكرة رقم #1}};},
+ before upper={\selectlanguage{arabic}}]
+\begin{tabular}{@{}p{0.4\linewidth}p{0.55\linewidth}@{}}
+\Fld{المستوى}{#2} & \Fld{الثانوية}{\dotfill}\\[3pt]
+\Fld{المادة}{رياضيات} & \Fld{ميدان التعلم}{#3}\\[3pt]
+\Fld{المدة}{#5} & \Fld{الوحدة التعلمية}{#4}\\[3pt]
+\Fld{الأستاذ}{\dotfill} & \Fld{المحتوى المعرفي}{#6}\\
+\end{tabular}
+\end{tcolorbox}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=3mm,boxrule=0.8pt,sidebyside,sidebyside align=top,lefthand ratio=0.5,
+ segmentation style={dashed,cThm!60},before upper={\selectlanguage{arabic}},before lower={\selectlanguage{arabic}}]
+\textbf{الكفاءات المستهدفة:}\par #8
+\tcblower
+\textbf{الكفاءات القبلية:}\par #7
+\end{tcolorbox}
+\end{LTR}
+\par\smallskip\textbf{الوسائل:} #9\par\smallskip}
+\newenvironment{Sayr}{%
+\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\hline\endfoot}{\end{longtable}\end{LTR}}
+% سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
+\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
+
+\newcommand{\Lab}[2]{\foreignlanguage{english}{\tcbox[on line,colback=#1,colframe=#1,boxrule=0pt,arc=2pt,boxsep=1pt,left=5pt,right=5pt,top=1pt,bottom=1pt]{\ar{\textcolor{white}{\textbf{#2}}}}}}
+\newcommand{\Num}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[fill=cDef,text=white,inner sep=2pt,font=\footnotesize\bfseries](c){#1};}}
+\newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
+\newenvironment{Kad}[1]{\par\smallskip\Lab{#1}}{\par}
+\SetHeader{\small\bfseries\color{cSec}مذكرات محور: الأعداد والحساب}{\small\color{cSec}السنة الثالثة ثانوي -- رياضيات وتقني رياضي}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cThm!85!black,colframe=cThm!85!black,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries مذكرات محور: الأعداد والحساب}\\[8pt]
+{\color{white}\large السنة الثالثة ثانوي -- رياضيات وتقني رياضي}\\[4pt]
+{\color{white}\large 10 مذكرات (20 ساعة) -- السنة الدراسية 2026-2027}
+\end{tcolorbox}
+\end{LTR}
+\begin{BOX}{cThm}{يتضمن هذا العمل}
+\begin{enumerate}[label=\textbf{مذكرة \arabic{enumi}:},leftmargin=6em,start=55]
+\item قابلية القسمة في $\mathbb Z$.
+\item القسمة الإقليدية في $\mathbb Z$.
+\item القاسم المشترك الأكبر وخوارزمية إقليدس.
+\item حل مشكلات بتوظيف خواص القاسم المشترك الأكبر.
+\item الموافقات في $\mathbb Z$: تعريف وخواص.
+\item تطبيقات الموافقات: الدورية ، قابلية القسمة.
+\item التعداد: نشر عدد وفق أساس.
+\item الأعداد الأولية ، التحليل إلى جداء عوامل أولية.
+\item المضاعف المشترك الأصغر وعلاقته بـ PGCD.
+\item مبرهنتا بيزو وغوص ، المعادلة $ax+by=c$.
+\end{enumerate}
+خاص بشعبتي رياضيات وتقني رياضي ، ويُدرَّس حسب التوزيع بعد محور الحساب التكاملي (أسبوع 15--17). مراجع التمارين: الكتاب المدرسي للسنة الثالثة ثانوي ، الجزء الثاني (ص 56--112).
+\end{BOX}
+\newpage
+\ModhHead{55}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{قابلية القسمة في $\mathbb Z$}%
+{\begin{itemize}\item القسمة في $\mathbb N$ ، الأعداد الأولية (1 ج م).\end{itemize}}%
+{\begin{itemize}\item إثبات أن عدداً صحيحاً يقسم آخر ، واستعمال خواص قابلية القسمة.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} هل $-12$ مضاعف لـ $3$ ؟ وهل $0$ مضاعف لكل عدد؟}{10 د}{سؤال.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ نوسع مفهوم القاسم من $\mathbb N$ إلى $\mathbb Z$: $3$ يقسم $-12$ لأن $-12=3\times(-4)$.\par
+}{35 د}{توسيع المفهوم.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $a$ يقسم $b$ ($a\neq0$) ونكتب $a\mid b$ إذا وُجد $k\in\mathbb Z$ حيث $b=ka$.\par\Lab{cThm}{خاصية}\par\ck\ إذا كان $a\mid b$ و $b\mid c$ فإن $a\mid c$.\par
+\ck\ إذا كان $a\mid b$ و $a\mid c$ فإن $a\mid(\beta b+\gamma c)$ من أجل كل $\beta,\gamma\in\mathbb Z$.\par
+}{50 د}{خاصية التركيب الخطي.}
+\Row{}{%
+\Lab{cEx}{مثال}\ عيّن $n\in\mathbb Z$ حيث $(n+1)\mid(n+5)$: $n+5=(n+1)+4$ ، إذن $(n+1)\mid4$: $n+1\in\{\pm1;\pm2;\pm4\}$ ، $n\in\{-5;-3;-2;0;1;3\}$.\par\Lab{cThm!80!black}{حذار}\ لا ننسى القواسم السالبة في $\mathbb Z$.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par عيّن الأعداد الطبيعية $n$ حيث $n\mid(n+8)$.\par\textbf{الحل:} $n\mid8$: $n\in\{1;2;4;8\}$.\par\textbf{واجب منزلي:} تمارين 2 ، 3 ، 12 ، 13 صفحة 56.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{56}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{القسمة الإقليدية في $\mathbb Z$}%
+{\begin{itemize}\item قابلية القسمة.\end{itemize}}%
+{\begin{itemize}\item إجراء القسمة الإقليدية في $\mathbb Z$ واستعمالها.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} ما حاصل وباقي قسمة $17$ على $5$ ؟ وماذا عن $-17$ ؟}{10 د}{سؤال.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ $17=5\times3+2$ ؛ $-17=5\times(-4)+3$ (الباقي يبقى موجباً).\par
+}{35 د}{تقويم الأيام.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\ من أجل $a\in\mathbb Z$ و $b\in\mathbb N^*$: يوجد ثنائية وحيدة $(q;r)$ حيث $a=bq+r$ و $0\leqslant r<b$.\par\Lab{cEx}{مثال}\ $2026=7\times289+3$: الباقي $3$ ؛ اليوم $2026$ بعد يوم الأحد هو الأربعاء.\par}{50 د}{فصل الحالات.}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\ بواقي القسمة على $b$: $0$ ، $1$ ، $\ldots$ ، $b-1$: كل عدد صحيح يكتب $bq+r$.\par\Lab{cThm!80!black}{حذار}\ في $-17=5\times(-3)-2$ الباقي سالب: ليست قسمة إقليدية.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par بيّن أن مربع كل عدد صحيح يكتب على الشكل $4k$ أو $4k+1$.\par\textbf{الحل:} $n=2m$: $n^2=4m^2$ ؛ $n=2m+1$: $n^2=4(m^2+m)+1$.\par\textbf{واجب منزلي:} تمرينا 15 و 16 صفحة 56 ، وتمرين 35 صفحة 57.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{57}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{القاسم المشترك الأكبر وخوارزمية إقليدس}%
+{\begin{itemize}\item القسمة الإقليدية.\end{itemize}}%
+{\begin{itemize}\item تعيين PGCD عددين والقواسم المشتركة بخوارزمية إقليدس.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} كيف نحسب PGCD$(1071;462)$ دون تحليل؟}{10 د}{سؤال.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ إذا كان $a=bq+r$ فإن القواسم المشتركة لـ $a$ و $b$ هي القواسم المشتركة لـ $b$ و $r$.\par
+}{35 د}{جدول الخوارزمية.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\ $\mathrm{PGCD}(a;b)=\mathrm{PGCD}(b;r)$ ؛ آخر باقٍ غير معدوم في خوارزمية إقليدس هو PGCD.\par\Lab{cEx}{مثال}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|}\hline
+\rowcolor{cSec!12}$a$ & $b$ & $q$ & $r$\\\hline
+$1071$ & $462$ & $2$ & $147$\\\hline
+$462$ & $147$ & $3$ & $21$\\\hline
+$147$ & $21$ & $7$ & $0$\\\hline
+\end{tabular}}\end{LTR}\par $\mathrm{PGCD}(1071;462)=21$ ؛ القواسم المشتركة هي قواسم $21$: $1$ ، $3$ ، $7$ ، $21$.\par}{50 د}{الحاسبة للتحقق.}
+\Row{}{%
+\Lab{cThm}{خواص}\ $\mathrm{PGCD}(ka;kb)=k\,\mathrm{PGCD}(a;b)$ ؛ $a$ و $b$ أوليان فيما بينهما إذا كان $\mathrm{PGCD}(a;b)=1$.\par\Lab{cThm!80!black}{حذار}\ نتوقف عند أول باقٍ معدوم.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par احسب $\mathrm{PGCD}(2024;345)$.\par\textbf{الحل:} $2024=345\times5+299$ ، $345=299+46$ ، $299=46\times6+23$ ، $46=23\times2$: PGCD $=23$.\par\textbf{واجب منزلي:} تمارين من باب القسمة في $\mathbb Z$.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{58}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{حل مشكلات بتوظيف خواص القاسم المشترك الأكبر}%
+{\begin{itemize}\item PGCD وخواصه.\end{itemize}}%
+{\begin{itemize}\item حل مشكلات بتوظيف PGCD.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} أرضية $360\times150$ cm نريد تبليطها بمربعات متقايسة أكبر ما يمكن: ما ضلع المربع؟}{10 د}{وضعية بناء.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ الضلع يقسم $360$ و $150$ ، وأكبر قاسم مشترك هو $\mathrm{PGCD}(360;150)=30$ cm.\par
+}{35 د}{الكتابة $a=da^{\prime}$.}
+\Row{بناء المعارف}{%
+\Lab{cMeth}{طريقة}\ إذا كان $\mathrm{PGCD}(a;b)=d$: نكتب $a=da^{\prime}$ و $b=db^{\prime}$ مع $\mathrm{PGCD}(a^{\prime};b^{\prime})=1$.\par\Lab{cEx}{مثال}\ عيّن $a$ و $b$ طبيعيين حيث $a+b=84$ و $\mathrm{PGCD}(a;b)=12$: $a^{\prime}+b^{\prime}=7$ مع $a^{\prime}$ و $b^{\prime}$ أوليين فيما بينهما: $(a;b)\in\{(12;72),(24;60),(36;48)\}$ ومقلوباتها.\par}{50 د}{جدول الحالات.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نتحقق من شرط الأولية فيما بينهما.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par عيّن $a$ و $b$ حيث $ab=1728$ و $\mathrm{PGCD}(a;b)=12$.\par\textbf{الحل:} $144a^{\prime}b^{\prime}=1728$ ، $a^{\prime}b^{\prime}=12$ مع أولية: $(1;12)$ ، $(3;4)$: $(12;144)$ ، $(36;48)$ ومقلوباتها.\par\textbf{واجب منزلي:} تمرين 17 صفحة 57.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{59}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{الموافقات في $\mathbb Z$: تعريف وخواص}%
+{\begin{itemize}\item القسمة الإقليدية.\end{itemize}}%
+{\begin{itemize}\item استعمال الموافقات وخواصها لتعيين بواقي القسمة.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} كم الساعة بعد $100$ ساعة من الآن (الساعة $8$)؟}{10 د}{وضعية الساعة.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{مناقشة نشاط 1 صفحة 67}\par\ck\ $8+100=108=24\times4+12$: الساعة $12$. نقول $108\equiv12\ [24]$.\par
+}{35 د}{نشاط الكتاب.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $a\equiv b\ [n]$ إذا كان $n\mid(a-b)$ ، أي لـ $a$ و $b$ نفس الباقي في القسمة على $n$.\par\Lab{cThm}{خاصية}\ إذا كان $a\equiv b$ و $c\equiv d\ [n]$ فإن $a+c\equiv b+d$ ، $ac\equiv bd$ ، $a^k\equiv b^k\ [n]$.\par}{50 د}{البحث عن قوة توافق $1$.}
+\Row{}{%
+\Lab{cEx}{مثال}\ باقي قسمة $2^{100}$ على $7$: $2^3=8\equiv1\ [7]$ ، $2^{100}=(2^3)^{33}\times2\equiv2\ [7]$.\par\Lab{cThm!80!black}{حذار}\ لا يمكن «القسمة» على الطرفين في الموافقة عموماً.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par عيّن باقي قسمة $5^{2026}$ على $3$.\par\textbf{الحل:} $5\equiv-1\ [3]$: $5^{2026}\equiv(-1)^{2026}=1$: الباقي $1$.\par\textbf{واجب منزلي:} تمارين 1 ، 2 ، 4 صفحة 78 ، و 17 ، 21 ، 31 ، 32 صفحة 79.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{60}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{تطبيقات الموافقات: الدورية ، قابلية القسمة}%
+{\begin{itemize}\item الموافقات وخواصها.\end{itemize}}%
+{\begin{itemize}\item دراسة بواقي قسمة $a^n$ (الدورية) ، وإثبات قابلية القسمة بالموافقات.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} ما رقم آحاد $3^{2027}$ ؟}{10 د}{سؤال رقم الآحاد.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ بواقي $3^n$ على $5$: $1$ ، $3$ ، $4$ ، $2$ ، $1$ ، $\ldots$: دورية دورها $4$.\par
+}{35 د}{جدول البواقي.}
+\Row{بناء المعارف}{%
+\Lab{cMeth}{الدورية}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$n\equiv\ldots\,[4]$ & $0$ & $1$ & $2$ & $3$\\\hline
+$3^n\equiv\ldots\,[5]$ & $1$ & $3$ & $4$ & $2$\\\hline
+\end{tabular}}\end{LTR}\par $2027=4\times506+3$: $3^{2027}\equiv2\ [5]$.\par\Lab{cEx}{قابلية القسمة}\ $9^n-2^n$ يقبل القسمة على $7$: $9\equiv2\ [7]$ ، إذن $9^n\equiv2^n$.\par}{50 د}{التحقق بقيمة صغيرة.}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\ معايير قابلية القسمة على $3$ و $9$ و $11$ تبرهن بالموافقات ($10\equiv1\ [9]$ ، $10\equiv-1\ [11]$).\par\Lab{cThm!80!black}{حذار}\ نحدد الدور قبل الاستعمال.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par بيّن أن $3^{2n+1}+2^{n+2}$ يقبل القسمة على $7$ من أجل كل $n\in\mathbb N$.\par\textbf{الحل:} $3^{2n+1}=3\times9^n\equiv3\times2^n\ [7]$ و $2^{n+2}=4\times2^n$: المجموع $\equiv7\times2^n\equiv0\ [7]$.\par\textbf{واجب منزلي:} تمارين 42 ، 43 ، 55 صفحة 79 ، و 69 إلى 71 صفحة 81.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{61}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{التعداد: نشر عدد وفق أساس}%
+{\begin{itemize}\item القسمة الإقليدية ، القوى.\end{itemize}}%
+{\begin{itemize}\item نشر عدد طبيعي وفق أساس $b$ ، والانتقال من أساس إلى آخر.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} الحاسوب يكتب الأعداد بـ $0$ و $1$ فقط: كيف يكتب $2026$ ؟}{10 د}{سؤال تقني.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ $2026=1024+512+256+128+64+32+8+2$.\par
+}{35 د}{القسمات المتتالية.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\ كل عدد طبيعي $N$ يكتب بطريقة وحيدة $N=a_nb^n+\cdots+a_1b+a_0$ مع $0\leqslant a_i<b$ ؛ نكتب $N=\overline{a_n\ldots a_0}^{(b)}$.\par\Lab{cMeth}{طريقة}\ نقسم $N$ على $b$ قسمات متتالية ونقرأ البواقي من الأخير إلى الأول.\par}{50 د}{التحقق بالنشر.}
+\Row{}{%
+\Lab{cEx}{مثال}\ $2026=\overline{11111101010}^{(2)}$ ؛ $\overline{213}^{(4)}=2\times16+1\times4+3=39$.\par\Lab{cThm!80!black}{حذار}\ الأرقام في الأساس $b$ أصغر من $b$.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par اكتب $100$ في الأساس $3$.\par\textbf{الحل:} $100=81+2\times9+1$: $\overline{10201}^{(3)}$.\par\textbf{واجب منزلي:} تمارين من باب الموافقات (التعداد).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{62}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{الأعداد الأولية ، التحليل إلى جداء عوامل أولية}%
+{\begin{itemize}\item قابلية القسمة.\end{itemize}}%
+{\begin{itemize}\item التعرف على أولية عدد ، وتحليله لتعيين قواسمه.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} هل $221$ أولي؟ هل $211$ أولي؟}{10 د}{تحدٍّ.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ يكفي اختبار القسمة على الأعداد الأولية $p\leqslant\sqrt n$.\par
+}{35 د}{غربال إراتوستين.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\par\ck\ إذا لم يقبل $n\geqslant2$ القسمة على أي عدد أولي $p\leqslant\sqrt n$ فهو أولي.\par
+\ck\ كل عدد طبيعي $n\geqslant2$ يحلل بطريقة وحيدة إلى جداء عوامل أولية.\par
+\ck\ إذا كان $n=p_1^{\alpha_1}\cdots p_k^{\alpha_k}$ فعدد قواسمه $(\alpha_1+1)\cdots(\alpha_k+1)$.\par
+\Lab{cEx}{مثال}\ $221=13\times17$ ليس أولياً ؛ $211$ أولي ($\sqrt{211}<15$) ؛ $360=2^3\times3^2\times5$ له $4\times3\times2=24$ قاسماً.\par}{50 د}{شجرة القواسم.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ $1$ ليس أولياً.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par حلل $1001$ ، وعيّن عدد قواسمه.\par\textbf{الحل:} $1001=7\times11\times13$: $2\times2\times2=8$ قواسم.\par\textbf{واجب منزلي:} تمرينا 20 و 22 صفحة 107.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{63}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{المضاعف المشترك الأصغر وعلاقته بـ PGCD}%
+{\begin{itemize}\item التحليل إلى عوامل أولية ، PGCD.\end{itemize}}%
+{\begin{itemize}\item تعيين PPCM و PGCD بالتحليل ، واستعمال العلاقة بينهما.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} حافلتان تنطلقان معاً ، الأولى كل $12$ دقيقة والثانية كل $18$: متى تلتقيان مجدداً؟}{10 د}{وضعية يومية.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ أصغر مضاعف مشترك لـ $12$ و $18$: $36$ دقيقة.\par
+}{35 د}{التحليل.}
+\Row{بناء المعارف}{%
+\Lab{cMeth}{طريقة}\ بالتحليل: PGCD جداء العوامل المشتركة بأصغر أس ، PPCM جداء كل العوامل بأكبر أس.\par\Lab{cThm}{خاصية}\ $\mathrm{PGCD}(a;b)\times\mathrm{PPCM}(a;b)=ab$.\par}{50 د}{التحقق بالعلاقة.}
+\Row{}{%
+\Lab{cEx}{مثال}\ $360=2^3\cdot3^2\cdot5$ ، $84=2^2\cdot3\cdot7$: PGCD $=12$ ، PPCM $=2520$ ، و $12\times2520=360\times84$.\par\Lab{cThm!80!black}{حذار}\ في PPCM نأخذ كل العوامل ، حتى غير المشتركة.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par احسب $\mathrm{PPCM}(48;180)$ بطريقتين.\par\textbf{الحل:} $48=2^4\cdot3$ ، $180=2^2\cdot3^2\cdot5$: PPCM $=720$ ؛ PGCD $=12$ و $\dfrac{48\times180}{12}=720$.\par\textbf{واجب منزلي:} تمرينا 35 و 37 صفحتي 107 و 108.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{64}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{مبرهنتا بيزو وغوص ، المعادلة $ax+by=c$}%
+{\begin{itemize}\item PGCD ، الموافقات.\end{itemize}}%
+{\begin{itemize}\item استعمال مبرهنتي بيزو وغوص ، وحل المعادلات $ax+by=c$ في $\mathbb Z^2$.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} هل يمكن دفع $1$ DA بقطع من $7$ DA و $5$ DA (مع إرجاع الصرف)؟}{10 د}{وضعية نقدية.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ $7\times(-2)+5\times3=1$: نعم.\par
+}{35 د}{برهان الحل العام.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{مبرهنة بيزو}\ $a$ و $b$ أوليان فيما بينهما $\Leftrightarrow$ يوجد $u,v\in\mathbb Z$ حيث $au+bv=1$.\par\Lab{cThm}{مبرهنة غوص}\ إذا كان $a\mid bc$ و $\mathrm{PGCD}(a;b)=1$ فإن $a\mid c$.\par}{50 د}{التحقق بالتعويض.}
+\Row{}{%
+\Lab{cEx}{حل $7x+5y=1$}\ حل خاص $(-2;3)$ ؛ بالطرح: $7(x+2)=-5(y-3)$ ، و $\mathrm{PGCD}(7;5)=1$ فحسب غوص $5\mid(x+2)$: $x=-2+5k$ ، $y=3-7k$ ($k\in\mathbb Z$).\par\Lab{cRem}{ملاحظات}\ $ax+by=c$ تقبل حلولاً إذا وفقط إذا كان $\mathrm{PGCD}(a;b)\mid c$.\par}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نتحقق من الحل العام بالتعويض.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par حل في $\mathbb Z^2$: $3x+4y=7$.\par\textbf{الحل:} حل خاص $(1;1)$ ؛ $3(x-1)=-4(y-1)$: $x=1+4k$ ، $y=1-3k$.\par\textbf{واجب منزلي:} تمرين 95 صفحة 112 ، ومسائل الحساب.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\end{Sayr}
+\end{document}
