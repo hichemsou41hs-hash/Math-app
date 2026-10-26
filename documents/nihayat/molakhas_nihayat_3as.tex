@@ -181,8 +181,11 @@
 \item النهايات: نهاية منتهية وغير منتهية عند $\pm\infty$ وعند عدد، النهاية من اليمين ومن اليسار، العمليات، حالات عدم التعيين وطرق إزالتها، نهاية دالة مركبة، النهايات المثلثية، المقارنة والحصر.
 \item السلوك التقاربي: المستقيمات المقاربة (أفقي، عمودي، مائل)، الوضع النسبي، المنحنيات المتقاربة، قراءة بيانية.
 \item الاستمرارية: التعريف، الدوال المألوفة، القراءة البيانية، مبرهنة القيم المتوسطة ونتيجتها، الحصر بالتنصيف وبالمسح، صورة مجال.
-\item الاشتقاقية: العدد المشتق، المماس، الاشتقاق من اليمين ومن اليسار، نصف المماس والنقطة الزاوية، التقريب التآلفي، المشتقات والعمليات، الدالة المركبة والدوال المثلثية.
-\item دراسة دالة: اتجاه التغير، القيم الحدية، نقطة الانعطاف، المناقشة البيانية (أفقية، مائلة، دورانية)، عائلة دوال $f_m$.
+\item الاشتقاقية: العدد المشتق، المماس، الاشتقاق من اليمين ومن اليسار، نصف المماس والنقطة الزاوية، التقريب التآلفي، المشتقات والعمليات، مشتق دالة مركبة، المشتقات المتتابعة.
+\item الدوال المثلثية $x\mapsto\cos(\omega x+\varphi)$ و $x\mapsto\sin(\omega x+\varphi)$: المشتقة، الدور، الدراسة على مجال طوله الدور، التمثيل البياني.
+\item المعادلات التفاضلية من الشكل $y'=f$ حيث $f$ دالة مألوفة.
+\item دراسة دالة: اتجاه التغير، القيم الحدية، نقطة الانعطاف، المناقشة البيانية $f(x)=m$.
+\item حل مشكلات بتوظيف المشتقات: الاستمثال (أكبر قيمة، أصغر قيمة).
 \item أخطاء شائعة، تمارين محلولة، ثم خلاصة الطرائق.
 \end{enumerate}
 \end{BOX}
@@ -846,9 +849,136 @@ $u$ و $v$ قابلتان للاشتقاق على مجال $I$ ، $k$ عدد ح�
 \end{itemize}
 \end{mithal}
 
-\begin{molahada}[الدوال المثلثية]
-$\sin$ و $\cos$ دوريتان دورهما $2\pi$: $\sin(x+2\pi)=\sin x$ ، $\cos(x+2\pi)=\cos x$؛ \ $\sin$ فردية و $\cos$ زوجية. \ الدالة $x\mapsto\sin(ax+b)$ دورية ودورها $\dfrac{2\pi}{|a|}$: يكفي دراستها على مجال طوله الدور.
+\subsection{المشتقات المتتابعة}
+\begin{tarif}
+$f$ قابلة للاشتقاق على مجال $I$ ومشتقتها $f'$. إذا كانت $f'$ قابلة للاشتقاق على $I$ فإن مشتقتها تسمى \textbf{المشتقة الثانية} لـ $f$ ونرمز لها بـ \bx{f''=(f')'}.\par
+وبنفس الطريقة نعرّف المشتقة الثالثة $f^{(3)}=(f'')'$، ثم المشتقة من الرتبة $n$: \bx{f^{(n)}=\left(f^{(n-1)}\right)'} \ ($n\in\N^{*}$، مع $f^{(0)}=f$).
+\end{tarif}
+\begin{mithal}
+\begin{itemize}
+\item $f(x)=\dfrac1x$ على $\R^{*}$:
+\[ f'(x)=-\frac{1}{x^{2}}\qquad f''(x)=\frac{2}{x^{3}}\qquad f^{(3)}(x)=-\frac{6}{x^{4}}\qquad f^{(4)}(x)=\frac{24}{x^{5}} \]
+\item $g(x)=\sin2x$ على $\R$:
+\[ g'(x)=2\cos2x\qquad g''(x)=-4\sin2x\qquad g^{(3)}(x)=-8\cos2x\qquad g^{(4)}(x)=16\sin2x \]
+نلاحظ أن \bx{g''(x)=-4g(x)} و $g^{(4)}=16g$.
+\item كثير حدود من الدرجة $n$: مشتقته من الرتبة $n$ ثابتة، ومشتقاته من رتبة أكبر من $n$ معدومة.
+\end{itemize}
+\end{mithal}
+\begin{molahada}
+تستعمل المشتقة الثانية في دراسة \textbf{نقطة الانعطاف} (إشارة $f''$)، وفي دراسة إشارة $f'$ عندما يصعب حل $f'(x)=0$ (اتجاه تغير $f'$).
 \end{molahada}
+
+%================================================================
+\section{الدوال المثلثية $x\mapsto\cos(\omega x+\varphi)$ و $x\mapsto\sin(\omega x+\varphi)$}
+\subsection{الدالتان $\sin$ و $\cos$}
+\begin{khassia}
+\begin{itemize}
+\item $\sin$ و $\cos$ معرفتان وقابلتان للاشتقاق على $\R$، و \bx{\sin'=\cos} ، \bx{\cos'=-\sin}.
+\item \textbf{دوريتان} دورهما $2\pi$: $\sin(x+2\pi)=\sin x$ و $\cos(x+2\pi)=\cos x$.
+\item $\sin$ \textbf{فردية} (منحناها متناظر بالنسبة إلى $O$) و $\cos$ \textbf{زوجية} (منحناها متناظر بالنسبة إلى محور التراتيب).
+\item من أجل كل $x$: $-1\leqslant\sin x\leqslant1$ و $-1\leqslant\cos x\leqslant1$.
+\end{itemize}
+\end{khassia}
+\begin{mithal}[تغيرات $\cos$ على $[0;\pi]$ و $\sin$ على $\left[-\frac{\pi}{2};\frac{\pi}{2}\right]$]
+\RL{0.48}{
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=2.2]{$x$/1,$\sin'(x)$/1,$\sin x$/1.6}{$-\frac{\pi}{2}$,$\frac{\pi}{2}$}
+\tkzTabLine{,+,}
+\tkzTabVar{-/$-1$,+/$1$}
+\end{TAB}
+}{0.48}{
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=2.2]{$x$/1,$\cos'(x)$/1,$\cos x$/1.6}{$0$,$\pi$}
+\tkzTabLine{,-,}
+\tkzTabVar{+/$1$,-/$-1$}
+\end{TAB}
+}
+\begin{GR}{-6.6}{6.6}{-1.6}{1.6}{0.75}
+\foreach \t/\l in {-6.2832/-2\pi,-3.1416/-\pi,3.1416/\pi,6.2832/2\pi}{\node[below,font=\scriptsize] at (\t,0){$\l$};}
+\node[left,font=\scriptsize] at (0,1){$1$}; \node[left,font=\scriptsize] at (0,-1){$-1$};
+\draw[cDef,very thick,domain=-6.6:6.6,samples=200] plot(\x,{sin(\x r)});
+\draw[cThm,very thick,dashed,domain=-6.6:6.6,samples=200] plot(\x,{cos(\x r)});
+\node[cDef] at (2.2,1.3){$y=\sin x$};
+\node[cThm] at (-4.2,1.3){$y=\cos x$};
+\end{GR}
+\end{mithal}
+
+\subsection{الدالتان $x\mapsto\cos(\omega x+\varphi)$ و $x\mapsto\sin(\omega x+\varphi)$}
+\begin{khassia}
+$\omega$ و $\varphi$ عددان حقيقيان مع $\omega\neq0$. الدالتان $f(x)=\cos(\omega x+\varphi)$ و $g(x)=\sin(\omega x+\varphi)$ قابلتان للاشتقاق على $\R$ (مركب دالة تآلفية ودالة مثلثية) و:
+\[ \bx{f'(x)=-\omega\sin(\omega x+\varphi)} \qquad\qquad \bx{g'(x)=\omega\cos(\omega x+\varphi)} \]
+\begin{itemize}
+\item هما \textbf{دوريتان} ودورهما \bx{T=\dfrac{2\pi}{|\omega|}} لأن $\omega(x+T)+\varphi=\omega x+\varphi\pm2\pi$.
+\item يكفي دراستهما على \textbf{مجال طوله $T$}، ثم نكمل المنحنى بانسحابات شعاعها $kT\,\vec{i}$ ($k\in\Z$).
+\item المشتقة الثانية: $f''=-\omega^{2}f$ و $g''=-\omega^{2}g$، أي \bx{f''+\omega^{2}f=0}.
+\end{itemize}
+\end{khassia}
+\begin{tariqa}[دراسة $x\mapsto A\cos(\omega x+\varphi)$ أو $x\mapsto A\sin(\omega x+\varphi)$]
+\begin{enumerate}
+\item نعيّن الدور $T=\frac{2\pi}{|\omega|}$ ونختار مجالًا طوله $T$.
+\item نحسب $f'(x)$، ونحل $f'(x)=0$ في هذا المجال (معادلة مثلثية أساسية).
+\item ندرس إشارة $f'(x)$ بوضع $X=\omega x+\varphi$ (موقع $X$ على الدائرة المثلثية)، ونشكل جدول التغيرات.
+\item نرسم المنحنى على المجال، ونكمله بالانسحاب.
+\end{enumerate}
+\end{tariqa}
+\begin{mithal}[{دراسة $f(x)=2\cos\left(2x-\frac{\pi}{3}\right)$}]
+\begin{itemize}
+\item \textbf{الدور:} $T=\dfrac{2\pi}{2}=\bx{\pi}$؛ ندرس $f$ على $[0;\pi]$.
+\item \textbf{المشتقة:} $f'(x)=2\times\left(-2\sin\left(2x-\frac{\pi}{3}\right)\right)=\bx{-4\sin\left(2x-\frac{\pi}{3}\right)}$.
+\item نضع $X=2x-\frac{\pi}{3}$: لما $x\in[0;\pi]$ يكون $X\in\left[-\frac{\pi}{3};\frac{5\pi}{3}\right]$.\par
+$\sin X=0\iff X\in\{0;\pi\}\iff x\in\left\{\frac{\pi}{6};\frac{2\pi}{3}\right\}$؛\ \ $\sin X<0$ لما $X\in\left[-\frac{\pi}{3};0\right[$ أو $X\in\left]\pi;\frac{5\pi}{3}\right]$، و $\sin X>0$ لما $X\in]0;\pi[$.
+\item الصور: $f(0)=2\cos\left(-\frac{\pi}{3}\right)=1$ ، $f\left(\frac{\pi}{6}\right)=2\cos0=2$ ، $f\left(\frac{2\pi}{3}\right)=2\cos\pi=-2$ ، $f(\pi)=1$.
+\end{itemize}
+\begin{TAB}
+\tkzTabInit[lgt=1.8,espcl=2.6]{$x$/1,$f'(x)$/1,$f(x)$/2}{$0$,$\frac{\pi}{6}$,$\frac{2\pi}{3}$,$\pi$}
+\tkzTabLine{,+,z,-,z,+,}
+\tkzTabVar{-/$1$,+/$2$,-/$-2$,+/$1$}
+\end{TAB}
+المنحنى يقطع محور الفواصل عند $x=\frac{5\pi}{12}$ و $x=\frac{11\pi}{12}$ ($2x-\frac{\pi}{3}=\pm\frac{\pi}{2}+k\pi$). نرسمه على $[0;\pi]$ (بالأزرق) ثم نكمله بالانسحاب:
+\begin{GR}{-3.2}{6.6}{-2.5}{2.6}{0.75}
+\foreach \t/\l in {-3.1416/-\pi,3.1416/\pi,6.2832/2\pi}{\node[below,font=\scriptsize] at (\t,0){$\l$};}
+\node[below,font=\scriptsize] at (0.5236,0){$\frac{\pi}{6}$};
+\node[above,font=\scriptsize] at (2.0944,0){$\frac{2\pi}{3}$};
+\foreach \t in {-2,-1,1,2}{\node[left,font=\scriptsize] at (0,\t){$\t$};}
+\draw[cThm,thick,dashed,domain=-3.2:6.6,samples=250] plot(\x,{2*cos((2*\x-1.0472) r)});
+\draw[cDef,very thick,domain=0:3.1416,samples=120] plot(\x,{2*cos((2*\x-1.0472) r)});
+\draw[dotted] (0.5236,0)--(0.5236,2); \draw[dotted] (2.0944,0)--(2.0944,-2);
+\end{GR}
+\end{mithal}
+
+%================================================================
+\section{المعادلات التفاضلية من الشكل $y'=f$}
+\begin{tarif}
+$f$ دالة معرفة على مجال $I$. \textbf{حل المعادلة التفاضلية} $y'=f$ على $I$ هو كل دالة $g$ قابلة للاشتقاق على $I$ حيث \bx{g'(x)=f(x)} من أجل كل $x\in I$.
+\end{tarif}
+\begin{khassia}
+\begin{itemize}
+\item إذا كانت $G$ حلًا للمعادلة $y'=f$ على $I$ فإن حلولها هي الدوال \bx{x\mapsto G(x)+c} حيث $c$ ثابت حقيقي.\par
+(إذا كان $g'=G'$ فإن $(g-G)'=0$ على المجال $I$، إذن $g-G$ ثابتة.)
+\item من أجل $x_0\in I$ و $y_0\in\R$ يوجد \textbf{حل وحيد} يحقق الشرط $y(x_0)=y_0$.
+\end{itemize}
+\end{khassia}
+\begin{tariqa}
+نقرأ جدول المشتقات \textbf{عكسيًا}: نبحث عن دالة مألوفة مشتقتها $f$. أهم الحالات:
+\begin{center}\renewcommand{\arraystretch}{1.7}
+\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} $f(x)$ & $x^{n}$ & $\dfrac{1}{x^{2}}$ & $\dfrac{u'}{2\sqrt{u}}$ & $nu'u^{n-1}$ & $\cos(ax+b)$ \\\hline
+$G(x)$ & $\dfrac{x^{n+1}}{n+1}$ & $-\dfrac1x$ & $\sqrt{u}$ & $u^{n}$ & $\dfrac1a\sin(ax+b)$\\\hline
+\end{tabular}\end{center}
+وكذلك: $\sin(ax+b)$ مشتقة لـ $-\frac1a\cos(ax+b)$ ، و $-\frac{u'}{u^{2}}$ مشتقة لـ $\frac1u$ ($a\neq0$).
+\end{tariqa}
+\begin{mithal}
+\begin{itemize}
+\item $y'=3x^{2}-4x+1$ على $\R$: الحلول $y=x^{3}-2x^{2}+x+c$. \ الحل الذي يحقق $y(1)=2$: $0+c=2$، أي \bx{y=x^{3}-2x^{2}+x+2}.
+\item $y'=\cos2x$ على $\R$: \bx{y=\frac12\sin2x+c} ($c\in\R$).
+\item $y'=\dfrac{x}{\sqrt{x^{2}+1}}$ على $\R$: مع $u=x^{2}+1$ لدينا $\dfrac{u'}{2\sqrt u}=\dfrac{2x}{2\sqrt{x^{2}+1}}$، إذن \bx{y=\sqrt{x^{2}+1}+c}.
+\item $y'=2x\left(x^{2}+1\right)^{3}$: هي $\frac14\times4u'u^{3}$ مع $u=x^{2}+1$، إذن \bx{y=\frac14\left(x^{2}+1\right)^{4}+c}.
+\end{itemize}
+\end{mithal}
+\begin{molahada}
+تُدرس المعادلات $y'=f$ مجددًا في درس \textbf{الدوال الأصلية}، حيث يُعطى كل حل اسم «دالة أصلية» لـ $f$.
+\end{molahada}
+
 
 %================================================================
 \section{دراسة دالة}
@@ -946,6 +1076,39 @@ $f''$ تنعدم عند $0$ مغيرة إشارتها، إذن:\par
 \[ k=-1\iff m=-1 \qquad\quad k=1\iff m=0 \qquad\quad k=3\iff m=1 \]
 مثلًا: المعادلة تقبل ثلاثة حلول إذا وفقط إذا كان:
 \[ -1<k<3\iff-1<2m+1<3\iff\bx{-1<m<1} \]
+\end{mithal}
+
+%================================================================
+\section{حل مشكلات بتوظيف المشتقات: الاستمثال}
+\begin{tariqa}[مسألة استمثال (أكبر قيمة أو أصغر قيمة لمقدار)]
+\begin{enumerate}
+\item نختار المتغير $x$ ونحدد \textbf{مجاله} حسب معطيات المسألة.
+\item نعبّر عن المقدار المطلوب بدالة $f(x)$ (كثير حدود، ناطقة أو صمّاء).
+\item ندرس تغيرات $f$ على المجال (إشارة $f'$).
+\item نقرأ من جدول التغيرات القيمة الحدية (العظمى أو الصغرى) والقيمة الموافقة لـ $x$، ثم نجيب بجملة.
+\end{enumerate}
+\end{tariqa}
+\begin{mithal}[دالة ناطقة: أقصر سياج]
+نريد تسييج قطعة أرض مستطيلة مساحتها $400\,\text{m}^{2}$. ما بعداها حتى يكون طول السياج أصغر ما يمكن؟\par
+\textbf{الحل:} أحد البعدين $x>0$ والآخر $\frac{400}{x}$، والمحيط $p(x)=2\left(x+\dfrac{400}{x}\right)$ على $]0;+\infty[$.
+\[ p'(x)=2\left(1-\frac{400}{x^{2}}\right)=\frac{2\left(x^{2}-400\right)}{x^{2}}=\frac{2(x-20)(x+20)}{x^{2}} \]
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.8]{$x$/1,$p'(x)$/1,$p(x)$/1.8}{$0$,$20$,$+\infty$}
+\tkzTabLine{d,-,z,+,}
+\tkzTabVar{D+/$+\infty$,-/$80$,+/$+\infty$}
+\end{TAB}
+طول السياج أصغر ما يمكن لما يكون البعدان $20\,\text{m}$ و $20\,\text{m}$ (مربع)، وطوله \bx{p_{\min}=80\,\text{m}}.
+\end{mithal}
+\begin{mithal}[دالة صمّاء: أقرب نقطة من منحنى]
+$(C)$ منحنى الدالة $x\mapsto\sqrt{x}$ و $A(3;0)$. عيّن النقطة $M$ من $(C)$ الأقرب إلى $A$.\par
+\textbf{الحل:} $M\left(x;\sqrt{x}\right)$ مع $x\geqslant0$، و $AM=\sqrt{(x-3)^{2}+x}=\sqrt{x^{2}-5x+9}=d(x)$.\par
+$d'(x)=\dfrac{2x-5}{2\sqrt{x^{2}-5x+9}}$ (لاحظ $x^{2}-5x+9>0$ لأن $\Delta=-11<0$)، إشارتها إشارة $2x-5$:
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.8]{$x$/1,$d'(x)$/1,$d(x)$/1.8}{$0$,$\frac52$,$+\infty$}
+\tkzTabLine{,-,z,+,}
+\tkzTabVar{+/$3$,-/$\frac{\sqrt{11}}{2}$,+/$+\infty$}
+\end{TAB}
+النقطة الأقرب هي \bx{M\left(\frac52;\sqrt{\frac52}\right)}، والمسافة الصغرى \bx{AM=\frac{\sqrt{11}}{2}\approx1{,}66}.
 \end{mithal}
 
 %================================================================
@@ -1170,7 +1333,11 @@ $f(x_0+h)\approx f(x_0)+hf'(x_0)$. & قيمة مقربة\\\hline
 $f'$ تنعدم مغيرة إشارتها. & قيمة حدية محلية\\\hline
 $f''$ تنعدم مغيرة إشارتها، أو $f'$ تنعدم دون تغيير إشارتها. & نقطة انعطاف\\\hline
 $f(2\alpha-x)+f(x)=2\beta$ ؛ \ $f(2\alpha-x)=f(x)$. & مركز أو محور تناظر\\\hline
-تقاطع $(C_f)$ مع $y=m$ ، أو $y=x+m$ ، أو مستقيمات تدور حول نقطة ثابتة. & مناقشة بيانية\\\hline
+تقاطع $(C_f)$ مع المستقيم الأفقي $y=m$. & مناقشة بيانية\\\hline
+نشتق مرة بعد مرة: $f''=(f')'$ ، $f^{(3)}=(f'')'$ ، $\ldots$ & المشتقات المتتابعة\\\hline
+الدور $T=\frac{2\pi}{|\omega|}$؛ $f'$ بقاعدة المركبة؛ ندرس على مجال طوله $T$ ثم نكمل بالانسحاب. & دراسة $\cos(\omega x+\varphi)$ أو $\sin(\omega x+\varphi)$\\\hline
+نبحث عن دالة $G$ مشتقتها $f$ (جدول المشتقات عكسيًا)؛ الحلول $G+c$؛ الشرط $y(x_0)=y_0$ يعيّن $c$. & حل $y'=f$\\\hline
+نختار المتغير ومجاله، نعبّر عن المقدار بدالة، ندرس تغيراتها ونقرأ القيمة الحدية. & مسألة استمثال\\\hline
 \end{tabular}
 \end{center}
 \end{BOX}

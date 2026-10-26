@@ -805,147 +805,10 @@ $\left(\displaystyle\int_0^1x\,dx\right)\left(\int_0^1e^{x}dx\right)=\dfrac12(e-
 (العكس صحيح: إذا كانت $f\geqslant0$ على $[a;b]$ مع $a<b$ فإن التكامل موجب.)
 \end{hal}
 
-\section{تمارين شعبة رياضيات}
+\section{تمارين للتعمق}
 
 % ===================== 18 =====================
-\begin{tamrin}{متتالية معرفة بتكامل -- شعبة رياضيات}
-من أجل كل عدد طبيعي $n$ نضع: $u_n=\displaystyle\int_0^1\frac{x^{n}}{1+x}\,dx$.
-\QQ{1} أحسب $u_0$ و $u_1$.
-\QQ{2} بيّن أن المتتالية $(u_n)$ متناقصة.
-\QQ{3}
-\begin{sq}
-\qa بيّن أنه من أجل كل عدد طبيعي $n$: $0\leqslant u_n\leqslant\dfrac{1}{n+1}$.
-\qb استنتج أن $(u_n)$ متقاربة، وعيّن نهايتها.
-\end{sq}
-\QQ{4}
-\begin{sq}
-\qa بيّن أنه من أجل كل عدد طبيعي $n$: $u_n+u_{n+1}=\dfrac{1}{n+1}$، ثم استنتج $u_2$.
-\qb استنتج أنه من أجل كل عدد طبيعي $n\geqslant1$: $\dfrac{1}{2(n+1)}\leqslant u_n\leqslant\dfrac{1}{2n}$.
-\qc أحسب $\limn n\,u_n$.
-\end{sq}
-\end{tamrin}
-
-\begin{hal}
-\QQ{1} $u_0=\displaystyle\int_0^1\frac{1}{1+x}\,dx=\Big[\ln(1+x)\Big]_0^1=\bx{\ln2}$.
-
-$\dfrac{x}{1+x}=\dfrac{(1+x)-1}{1+x}=1-\dfrac{1}{1+x}$، إذن:
-$u_1=\displaystyle\int_0^1\left(1-\frac{1}{1+x}\right)dx=\Big[x-\ln(1+x)\Big]_0^1=\bx{1-\ln2}$.
-
-\QQ{2} من أجل كل $n\in\N$، حسب الخطية:
-\[u_{n+1}-u_n=\int_0^1\frac{x^{n+1}-x^{n}}{1+x}\,dx=\int_0^1\frac{x^{n}(x-1)}{1+x}\,dx\]
-من أجل $x\in[0;1]$: $x^{n}\geqslant0$ و $x-1\leqslant0$ و $1+x>0$، إذن $\dfrac{x^{n}(x-1)}{1+x}\leqslant0$، وبما أن $0<1$ فالتكامل سالب: $u_{n+1}-u_n\leqslant0$.
-إذن \bxt{المتتالية $(u_n)$ متناقصة}.
-
-\QQ{3}
-\pa من أجل $x\in[0;1]$: $1\leqslant1+x$ ، إذن $0\leqslant\dfrac{1}{1+x}\leqslant1$، وبالضرب في $x^{n}\geqslant0$:
-\[0\leqslant\frac{x^{n}}{1+x}\leqslant x^{n}\]
-بالمكاملة على $[0;1]$ (الترتيب محفوظ): $0\leqslant u_n\leqslant\displaystyle\int_0^1x^{n}dx=\left[\frac{x^{n+1}}{n+1}\right]_0^1$، ومنه:
-\[\bx{0\leqslant u_n\leqslant\frac{1}{n+1}}\]
-\pb $\limn\dfrac{1}{n+1}=0$، وحسب مبرهنة الحصر (الدركي): \bx{\limn u_n=0}، إذن $(u_n)$ متقاربة.
-(ويمكن أيضا: متناقصة ومحدودة من الأسفل بـ $0$ فهي متقاربة.)
-
-\QQ{4}
-\pa حسب الخطية:
-\[u_n+u_{n+1}=\int_0^1\frac{x^{n}+x^{n+1}}{1+x}\,dx=\int_0^1\frac{x^{n}(1+x)}{1+x}\,dx=\int_0^1x^{n}dx=\bx{\frac{1}{n+1}}\]
-من أجل $n=1$: $u_1+u_2=\dfrac12$، إذن $u_2=\dfrac12-(1-\ln2)=\bx{\ln2-\frac{1}{2}}$.
-
-\pb $(u_n)$ متناقصة إذن $u_{n+1}\leqslant u_n$ من أجل كل $n$.
-\begin{itemize}
-\item من جهة: $\dfrac{1}{n+1}=u_n+u_{n+1}\leqslant u_n+u_n=2u_n$، ومنه $u_n\geqslant\dfrac{1}{2(n+1)}$.
-\item من جهة أخرى، من أجل $n\geqslant1$ نطبق المساواة على الرتبة $n-1$: $u_{n-1}+u_n=\dfrac1n$، و $u_n\leqslant u_{n-1}$، إذن $2u_n\leqslant u_{n-1}+u_n=\dfrac1n$، ومنه $u_n\leqslant\dfrac{1}{2n}$.
-\end{itemize}
-\[\bx{\frac{1}{2(n+1)}\leqslant u_n\leqslant\frac{1}{2n}}\quad;\ n\geqslant1\]
-\pc بالضرب في $n>0$: $\dfrac{n}{2(n+1)}\leqslant n\,u_n\leqslant\dfrac12$.
-و $\limn\dfrac{n}{2(n+1)}=\limn\dfrac{1}{2\left(1+\frac1n\right)}=\dfrac12$، إذن حسب الحصر:
-\[\bx{\limn n\,u_n=\frac{1}{2}}\]
-\textbf{تحقق عددي:} $u_1\approx0{,}307$ و $u_2\approx0{,}193$، وكلاهما في الحصر $\left[\frac14;\frac12\right]$ ثم $\left[\frac16;\frac14\right]$.
-\end{hal}
-
-% ===================== 19 =====================
-\begin{tamrin}{دالة معرفة بتكامل -- شعبة رياضيات}
-نعتبر الدالة $F$ المعرفة على $\R$ بـ: $F(x)=\displaystyle\int_0^xe^{-t^{2}}\,dt$، و $(C_F)$ تمثيلها البياني في معلم متعامد ومتجانس.
-\QQ{1} برّر أن $F$ قابلة للاشتقاق على $\R$، أحسب $F'(x)$، ثم استنتج اتجاه تغير $F$. أحسب $F(0)$.
-\QQ{2} نضع من أجل كل $x$ من $\R$: $G(x)=F(x)+F(-x)$. أحسب $G'(x)$ ثم استنتج أن $F$ دالة فردية.
-\QQ{3}
-\begin{sq}
-\qa بيّن أنه من أجل كل $t\geqslant1$: $e^{-t^{2}}\leqslant e^{-t}$.
-\qb استنتج أنه من أجل كل $x\geqslant1$: $F(x)\leqslant F(1)+\dfrac1e-e^{-x}$.
-\qc بيّن أن $F(1)\leqslant1$، ثم استنتج أنه من أجل كل $x\geqslant0$: $F(x)<1+\dfrac1e$.
-\qd نقبل أن الدالة المتزايدة والمحدودة من الأعلى على $[0;+\infty[$ تقبل نهاية منتهية $\ell$ عند $+\infty$. ماذا تستنتج؟ وما هي النهاية عند $-\infty$؟
-\end{sq}
-\QQ{4}
-\begin{sq}
-\qa أكتب معادلة المماس $(T)$ لـ $(C_F)$ عند المبدأ $O$.
-\qb بيّن أنه من أجل كل $x\geqslant0$: $F(x)\leqslant x$، ثم استنتج الوضع النسبي لـ $(C_F)$ و $(T)$ على $\R$.
-\end{sq}
-\QQ{5} شكّل جدول تغيرات $F$، ثم أنشئ $(T)$ و $(C_F)$ (نأخذ $\ell\approx0{,}89$).
-\end{tamrin}
-
-\begin{hal}
-\QQ{1} الدالة $f:t\mapsto e^{-t^{2}}$ مستمرة على $\R$، إذن $F:x\mapsto\displaystyle\int_0^xf(t)\,dt$ هي الدالة الأصلية لـ $f$ على $\R$ التي تنعدم عند $0$. ومنه $F$ قابلة للاشتقاق على $\R$ و:
-\[\bx{F'(x)=e^{-x^{2}}}\qquad;\qquad \bx{F(0)=\int_0^0e^{-t^{2}}dt=0}\]
-بما أن $F'(x)=e^{-x^{2}}>0$ من أجل كل $x$، فإن \bxt{$F$ متزايدة تماما على $\R$}.
-
-\QQ{2} $G$ قابلة للاشتقاق على $\R$، وباستعمال مشتقة الدالة المركبة $\big(F(-x)\big)'=-F'(-x)$:
-\[G'(x)=F'(x)-F'(-x)=e^{-x^{2}}-e^{-(-x)^{2}}=0\]
-إذن $G$ ثابتة على $\R$ (مجال)، و $G(0)=2F(0)=0$، ومنه $G(x)=0$ أي $F(-x)=-F(x)$ من أجل كل $x$.
-و $\R$ متناظر بالنسبة إلى $0$، إذن \bxt{$F$ دالة فردية} و $(C_F)$ متناظر بالنسبة إلى المبدأ $O$.
-
-\QQ{3}
-\pa من أجل $t\geqslant1$: $t^{2}-t=t(t-1)\geqslant0$، أي $-t^{2}\leqslant-t$، والدالة $\exp$ متزايدة تماما، إذن \bx{e^{-t^{2}}\leqslant e^{-t}}.
-
-\pb حسب علاقة شال، من أجل $x\geqslant1$: $F(x)=F(1)+\displaystyle\int_1^xe^{-t^{2}}dt$. وبمكاملة المتباينة (أ) على $[1;x]$ (مع $1\leqslant x$):
-\[\int_1^xe^{-t^{2}}dt\leqslant\int_1^xe^{-t}dt=\Big[-e^{-t}\Big]_1^x=\frac1e-e^{-x}\]
-ومنه: \bx{F(x)\leqslant F(1)+\frac{1}{e}-e^{-x}}.
-
-\pc من أجل $t\in[0;1]$: $e^{-t^{2}}\leqslant1$، فبالمكاملة: $F(1)\leqslant\displaystyle\int_0^11\,dt=1$.
-\begin{itemize}
-\item إذا كان $x\geqslant1$: من (ب) و $e^{-x}>0$: $F(x)<F(1)+\dfrac1e\leqslant1+\dfrac1e$.
-\item إذا كان $0\leqslant x\leqslant1$: $F$ متزايدة إذن $F(x)\leqslant F(1)\leqslant1<1+\dfrac1e$.
-\end{itemize}
-إذن من أجل كل $x\geqslant0$: \bx{F(x)<1+\frac{1}{e}}.
-
-\pd $F$ متزايدة على $[0;+\infty[$ ومحدودة من الأعلى بـ $1+\frac1e$، إذن تقبل نهاية منتهية: $\lim\limits_{x\to+\infty}F(x)=\ell$ مع $0<\ell\leqslant1+\frac1e$.
-هندسيا: المستقيم ذو المعادلة $y=\ell$ مقارب أفقي لـ $(C_F)$ عند $+\infty$.
-وبما أن $F$ فردية: $\lim\limits_{x\to-\infty}F(x)=\lim\limits_{x\to+\infty}\big(-F(x)\big)=\bx{-\ell}$، والمستقيم $y=-\ell$ مقارب أفقي عند $-\infty$.
-
-\QQ{4}
-\pa $F(0)=0$ و $F'(0)=e^{0}=1$، إذن $(T):y=F'(0)(x-0)+F(0)$، أي \bx{(T):\ y=x}.
-
-\pb نضع $h(x)=x-F(x)$ على $[0;+\infty[$: $h'(x)=1-e^{-x^{2}}\geqslant0$ لأن $-x^{2}\leqslant0$ يعطي $e^{-x^{2}}\leqslant1$. إذن $h$ متزايدة على $[0;+\infty[$ و $h(0)=0$، ومنه $h(x)\geqslant0$ أي \bx{F(x)\leqslant x} من أجل $x\geqslant0$.
-
-بالفردية: من أجل $x\leqslant0$ لدينا $-x\geqslant0$ و $F(-x)\leqslant-x$، أي $-F(x)\leqslant-x$، ومنه $F(x)\geqslant x$.
-\begin{TAB}
-\tkzTabInit[lgt=3.4,espcl=3.4]{$x$/1,$F(x)-x$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$0$,$+\infty$}
-\tkzTabLine{,+,z,-,}
-\tkzTabLine{,\text{\ar{$(C_F)$ فوق $(T)$}},,\text{\ar{$(C_F)$ تحت $(T)$}},}
-\end{TAB}
-($(C_F)$ يخترق مماسه عند $O$: النقطة $O$ نقطة انعطاف.)
-
-\QQ{5} جدول التغيرات:
-\begin{TAB}
-\tkzTabInit[lgt=2.2,espcl=3.4]{$x$/1,$F'(x)$/1,$F(x)$/2}{$-\infty$,$0$,$+\infty$}
-\tkzTabLine{,+,t,+,}
-\tkzTabVar{-/$-\ell$,R/,+/$\ell$}
-\tkzTabIma{1}{3}{2}{$0$}
-\end{TAB}
-\begin{GR}{-3.2}{3.2}{-1.6}{1.6}{1.3}
-\Ticks{-3,-2,-1,1,2,3}{-1,1}
-\draw[cRem,dashed] (-3.2,0.886)--(3.2,0.886) (-3.2,-0.886)--(3.2,-0.886);
-\draw[cThm,thick,domain=-1.6:1.6] plot(\x,{\x});
-\draw[cDef,very thick,smooth] plot coordinates {(-3.2,-0.8862)(-3,-0.8862)(-2.5,-0.8859)(-2,-0.8821)(-1.5,-0.8562)(-1.25,-0.8179)(-1,-0.7468)(-0.75,-0.6302)(-0.5,-0.4613)(-0.25,-0.2449)(0,0)(0.25,0.2449)(0.5,0.4613)(0.75,0.6302)(1,0.7468)(1.25,0.8179)(1.5,0.8562)(2,0.8821)(2.5,0.8859)(3,0.8862)(3.2,0.8862)};
-\node[cRem,above] at (2.5,0.886){$y=\ell$};
-\node[cRem,below] at (-2.5,-0.886){$y=-\ell$};
-\node[cThm,right] at (1.2,1.4){$(T)$};
-\node[cDef,below] at (1.6,0.82){$(C_F)$};
-\end{GR}
-\begin{molahada}
-لا توجد عبارة لـ $F$ بالدوال المألوفة؛ دراستها تتم كليا عبر خواص التكامل. والقيمة الدقيقة (خارج البرنامج) هي $\ell=\dfrac{\sqrt{\pi}}{2}\approx0{,}886$، كما أن التمرين 7 يعطي $\dfrac23\leqslant F(1)\leqslant1$ وفعلا $F(1)\approx0{,}747$.
-\end{molahada}
-\end{hal}
-
-% ===================== 20 =====================
-\begin{tamrin}{مساحة بدلالة وسيط ونهايتها -- شعبة رياضيات}
+\begin{tamrin}{مساحة بدلالة وسيط ونهايتها}
 $f$ الدالة المعرفة على $\R$ بـ: $f(x)=x-1+\dfrac{2}{e^{x}+1}$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس حيث $\|\vec i\|=2\,\text{cm}$.
 \QQ{1} بيّن أن $f$ فردية، وأن $f$ متزايدة تماما على $\R$.
 \QQ{2} بيّن أن المستقيم $(\Delta):y=x-1$ مقارب مائل لـ $(C_f)$ عند $+\infty$، وأن $(\Delta'):y=x+1$ مقارب مائل عند $-\infty$، ثم أدرس الوضع النسبي لـ $(C_f)$ و $(\Delta)$.
@@ -1015,6 +878,68 @@ $1\,\mathrm{u.a}=2\times2=4\,\text{cm}^{2}$، ومنه:
 و $\left(\sqrt2-1\right)\left(\sqrt2+1\right)=1$، إذن $-\ln\left(\sqrt2-1\right)=\ln\left(\sqrt2+1\right)$:
 \[\bx{\lambda=\ln\left(\sqrt{2}+1\right)\approx0{,}88}\]
 (وهو موجب تماما فهو مقبول؛ عنده تساوي المساحة نصف المساحة الكلية $2\ln2$.)
+\end{hal}
+
+\section{المعادلات التفاضلية $y'=f(x)$ وحساب الحجوم}
+
+% ===================== 19 =====================
+\begin{tamrin}{المعادلات التفاضلية $y'=f(x)$}
+\QQ{1} حل على المجال $I$ كل معادلة تفاضلية مما يلي:
+\begin{sq}
+\qa $y'=4x^{3}-6x+1$ \quad ، \quad $I=\R$.
+\qb $y'=\dfrac{1}{2x+1}$ \quad ، \quad $I=\left]-\dfrac12;+\infty\right[$.
+\qc $y'=xe^{x^{2}}$ \quad ، \quad $I=\R$.
+\end{sq}
+\QQ{2} عيّن الحل $g$ للمعادلة التفاضلية $y'=\dfrac{\ln x}{x}$ على $]0;+\infty[$ الذي يحقق $g(e)=1$.
+\QQ{3} تتحرك نقطة على مستقيم، وموضعها $x(t)$ (بالمتر) عند اللحظة $t$ (بالثانية) يحقق $x'(t)=3t^{2}+2t$ و $x(0)=5$. عيّن $x(t)$ ثم أحسب موضع النقطة عند $t=2$.
+\end{tamrin}
+
+\begin{hal}
+\textbf{تذكير:} إذا كانت $F$ دالة أصلية لـ $f$ على $I$ فإن حلول $y'=f(x)$ هي $y=F(x)+c$ حيث $c\in\R$، ويعيّن شرط ابتدائي $y(x_0)=y_0$ حلا وحيدا.
+
+\QQ{1}
+\pa \bx{y=x^{4}-3x^{2}+x+c}، $c\in\R$.
+
+\pb $\dfrac{1}{2x+1}=\dfrac12\cdot\dfrac{2}{2x+1}$ من الشكل $\dfrac12\cdot\dfrac{u'}{u}$ مع $u(x)=2x+1>0$ على $I$، إذن \bx{y=\tfrac12\ln(2x+1)+c}، $c\in\R$.
+
+\pc $xe^{x^{2}}=\dfrac12\cdot2xe^{x^{2}}$ من الشكل $\dfrac12u'e^{u}$ مع $u(x)=x^{2}$، إذن \bx{y=\tfrac12e^{x^{2}}+c}، $c\in\R$.
+
+\QQ{2} $\dfrac{\ln x}{x}=u'u$ مع $u(x)=\ln x$، إذن الحلول $y=\dfrac12(\ln x)^{2}+c$.
+$g(e)=\dfrac12(\ln e)^{2}+c=\dfrac12+c=1$، ومنه $c=\dfrac12$:
+\[\bx{g(x)=\frac12(\ln x)^{2}+\frac12}\]
+تحقق: $g'(x)=\ln x\cdot\dfrac1x=\dfrac{\ln x}{x}$ \ok.
+
+\QQ{3} $x$ حل للمعادلة $y'=3t^{2}+2t$، إذن $x(t)=t^{3}+t^{2}+c$، و $x(0)=c=5$:
+\[\bx{x(t)=t^{3}+t^{2}+5}\qquad;\qquad x(2)=8+4+5=\bx{17\ \text{m}}\]
+\end{hal}
+
+% ===================== 20 =====================
+\begin{tamrin}{حجم مجسم دوراني}
+المستوي منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$. نذكّر أن دوران الحيز المحدد بـ $(C_f)$ ومحور الفواصل والمستقيمين $x=a$ و $x=b$ حول محور الفواصل يولّد مجسما حجمه $V=\pi\displaystyle\int_a^b\big[f(x)\big]^{2}dx$ (وحدة حجوم).
+\QQ{1} $f(x)=\dfrac{x}{2}$ على $[0;4]$. أحسب حجم المجسم المولَّد، وتعرّف على طبيعته، ثم تحقق بدستور حجمه.
+\QQ{2} $g(x)=e^{-x}$ على $[0;1]$. أحسب حجم المجسم المولَّد، وأعط قيمة مقربة إلى $10^{-2}$.
+\QQ{3} $r>0$ و $h(x)=\sqrt{r^{2}-x^{2}}$ على $[-r;r]$. ما هو المجسم المولَّد؟ أثبت أن حجمه $\dfrac43\pi r^{3}$.
+\end{tamrin}
+
+\begin{hal}
+\QQ{1} $V_1=\pi\displaystyle\int_0^4\frac{x^{2}}{4}\,dx=\frac{\pi}{4}\Big[\frac{x^{3}}{3}\Big]_0^4=\frac{\pi}{4}\cdot\frac{64}{3}$، إذن \bx{V_1=\frac{16\pi}{3}} وحدة حجوم.
+المجسم \bxt{مخروط دوراني} رأسه $O$، ارتفاعه $4$ ونصف قطر قاعدته $f(4)=2$: $\dfrac13\pi\times2^{2}\times4=\dfrac{16\pi}{3}$ \ok.
+
+\QQ{2} الحيز الذي يدور (مظلل) ونظيره بالنسبة إلى محور الفواصل (متقطع) يمثلان مقطع المجسم:
+\begin{GR}{-0.4}{1.6}{-1.3}{1.4}{2.2}
+\Ticks{1}{-1,1}
+\fill[cDef!25,domain=0:1,samples=60] (0,0) -- plot(\x,{exp(-\x)}) -- (1,0) -- cycle;
+\draw[cDef,very thick,domain=-0.2:1.5,samples=80] plot(\x,{exp(-\x)});
+\draw[cDef,dashed,domain=0:1,samples=60] plot(\x,{-exp(-\x)});
+\draw[dashed] (1,-0.37)--(1,0.37);
+\draw[cThm,dashed] (1,0) ellipse (0.08 and 0.368);
+\node[cDef] at (1.35,0.42){$(C_g)$};
+\end{GR}
+\[V_2=\pi\int_0^1e^{-2x}\,dx=\pi\Big[-\frac12e^{-2x}\Big]_0^1=\frac{\pi}{2}\big(1-e^{-2}\big)\]
+\[\bx{V_2=\frac{\pi}{2}\left(1-e^{-2}\right)\approx1{,}36}\ \text{وحدة حجوم}\]
+
+\QQ{3} $h(x)\ge0$ و $x^{2}+h(x)^{2}=r^{2}$: $(C_h)$ نصف دائرة مركزها $O$ ونصف قطرها $r$، ودورانه يولّد \bxt{كرة مركزها $O$ ونصف قطرها $r$}.
+\[V_3=\pi\int_{-r}^{r}\big(r^{2}-x^{2}\big)dx=\pi\Big[r^{2}x-\frac{x^{3}}{3}\Big]_{-r}^{r}=\pi\Big(\frac{2r^{3}}{3}+\frac{2r^{3}}{3}\Big)=\bx{\frac43\pi r^{3}}\]
 \end{hal}
 
 \end{document}
