@@ -698,6 +698,145 @@ $f'$ تنعدم مغيّرة إشارتها عند $0$ و $2$: \bx{f(0)=4} قي�
 
 \QQ{3} $V$ تبلغ قيمتها العظمى عند $x=2$: يكون الحجم أكبر ما يمكن لما \bx{x=2\,\text{cm}}، وهذا الحجم هو \bx{V_{\max}=128\,\text{cm}^{3}}
 \end{hal}
+\section{المشتقات المتتابعة، الدوال المثلثية، المعادلات التفاضلية وحل مشكلات}
+% ------------------------------------------------------------------
+\begin{tamrin}{المشتقات المتتابعة}
+\QQ{1} $f$ الدالة المعرفة على $\R-\{-1\}$ بـ: $f(x)=\dfrac{1}{x+1}$.
+\begin{sq}
+\qa احسب $f'(x)$ ، $f''(x)$ و $f^{(3)}(x)$.
+\qb خمّن عبارة $f^{(4)}(x)$ ثم تحقق منها.
+\end{sq}
+\QQ{2} $g$ الدالة المعرفة على $\R$ بـ: $g(x)=x\sin x$. احسب $g''(x)$، ثم بيّن أنه من أجل كل عدد حقيقي $x$: $g''(x)+g(x)=2\cos x$.
+\QQ{3} $h$ الدالة المعرفة على $\R$ بـ: $h(x)=3\cos\left(2x+\dfrac{\pi}{4}\right)$. بيّن أن $h''(x)+4h(x)=0$ من أجل كل $x\in\R$.
+\end{tamrin}
+\begin{hal}
+\QQ{1}\pa $f(x)=(x+1)^{-1}$، وبقاعدة $\left(\frac1v\right)'=-\frac{v'}{v^{2}}$ ثم $\left(\frac{1}{v^{n}}\right)'=-\frac{nv'}{v^{n+1}}$:
+\[ \bx{f'(x)=-\frac{1}{(x+1)^{2}}}\qquad \bx{f''(x)=\frac{2}{(x+1)^{3}}}\qquad \bx{f^{(3)}(x)=-\frac{2\times3}{(x+1)^{4}}=-\frac{6}{(x+1)^{4}}} \]
+\pb في كل مرة تتغير الإشارة ويضرب البسط في الأس الجديد ($1$، $2$، $6=1\times2\times3$)، فنخمّن: $f^{(4)}(x)=\dfrac{24}{(x+1)^{5}}$.\par
+تحقق: $f^{(4)}(x)=\left(-\dfrac{6}{(x+1)^{4}}\right)'=-6\times\left(-\dfrac{4}{(x+1)^{5}}\right)=\bx{\dfrac{24}{(x+1)^{5}}}$ \ok
+\QQ{2} $g'(x)=1\times\sin x+x\cos x=\sin x+x\cos x$.\par
+$g''(x)=\cos x+\left(1\times\cos x+x\times(-\sin x)\right)=\bx{2\cos x-x\sin x}$.\par
+ومنه $g''(x)+g(x)=2\cos x-x\sin x+x\sin x=\bx{2\cos x}$ \ok
+\QQ{3} $h'(x)=3\times\left(-2\sin\left(2x+\frac{\pi}{4}\right)\right)=-6\sin\left(2x+\frac{\pi}{4}\right)$.\par
+$h''(x)=-6\times2\cos\left(2x+\frac{\pi}{4}\right)=-12\cos\left(2x+\frac{\pi}{4}\right)=-4h(x)$، إذن \bx{h''(x)+4h(x)=0} \ok
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{دراسة دالة مثلثية $x\mapsto2\sin\left(2x-\frac{\pi}{6}\right)+1$}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=2\sin\left(2x-\dfrac{\pi}{6}\right)+1$، و $(C_f)$ تمثيلها البياني في معلم متعامد.
+\QQ{1} بيّن أن $f$ دورية ودورها $\pi$.
+\QQ{2} احسب $f'(x)$، ثم ادرس اتجاه تغير $f$ على المجال $[0;\pi]$ وشكّل جدول تغيراتها.
+\QQ{3} اكتب معادلة المماس $(T)$ لـ $(C_f)$ عند النقطة ذات الفاصلة $0$.
+\QQ{4} حل في $[0;\pi]$ المعادلة $f(x)=0$.
+\QQ{5} أنشئ $(T)$ و $(C_f)$ على المجال $[0;2\pi]$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} من أجل كل $x\in\R$: $x+\pi\in\R$ و
+\[ f(x+\pi)=2\sin\left(2x+2\pi-\frac{\pi}{6}\right)+1=2\sin\left(2x-\frac{\pi}{6}\right)+1=f(x) \]
+إذن $f$ \bxt{دورية ودورها $\pi$} (وهو $\frac{2\pi}{\omega}$ مع $\omega=2$).
+\QQ{2} $f'(x)=2\times2\cos\left(2x-\frac{\pi}{6}\right)=\bx{4\cos\left(2x-\frac{\pi}{6}\right)}$.\par
+نضع $X=2x-\frac{\pi}{6}$: لما $x\in[0;\pi]$ يكون $X\in\left[-\frac{\pi}{6};\frac{11\pi}{6}\right]$.
+\begin{itemize}
+\item $\cos X=0\iff X\in\left\{\frac{\pi}{2};\frac{3\pi}{2}\right\}\iff x\in\left\{\frac{\pi}{3};\frac{5\pi}{6}\right\}$.
+\item $\cos X>0$ لما $X\in\left[-\frac{\pi}{6};\frac{\pi}{2}\right[$ أو $X\in\left]\frac{3\pi}{2};\frac{11\pi}{6}\right]$، أي $x\in\left[0;\frac{\pi}{3}\right[$ أو $x\in\left]\frac{5\pi}{6};\pi\right]$.
+\item $\cos X<0$ لما $X\in\left]\frac{\pi}{2};\frac{3\pi}{2}\right[$، أي $x\in\left]\frac{\pi}{3};\frac{5\pi}{6}\right[$.
+\end{itemize}
+الصور: $f(0)=2\sin\left(-\frac{\pi}{6}\right)+1=0$ ، $f\left(\frac{\pi}{3}\right)=2\sin\frac{\pi}{2}+1=3$ ، $f\left(\frac{5\pi}{6}\right)=2\sin\frac{3\pi}{2}+1=-1$ ، $f(\pi)=2\sin\frac{11\pi}{6}+1=0$.
+\begin{TAB}
+\tkzTabInit[lgt=1.8,espcl=2.6]{$x$/1,$f'(x)$/1,$f(x)$/2}{$0$,$\frac{\pi}{3}$,$\frac{5\pi}{6}$,$\pi$}
+\tkzTabLine{,+,z,-,z,+,}
+\tkzTabVar{-/$0$,+/$3$,-/$-1$,+/$0$}
+\end{TAB}
+\QQ{3} $f(0)=0$ و $f'(0)=4\cos\left(-\frac{\pi}{6}\right)=4\times\frac{\sqrt3}{2}=2\sqrt3$، إذن \bx{(T):\ y=2\sqrt3\,x}.
+\QQ{4} $f(x)=0\iff\sin\left(2x-\frac{\pi}{6}\right)=-\frac12=\sin\left(-\frac{\pi}{6}\right)$، أي:
+\[ 2x-\frac{\pi}{6}=-\frac{\pi}{6}+2k\pi \]
+أو
+\[ 2x-\frac{\pi}{6}=\pi+\frac{\pi}{6}+2k\pi\qquad(k\in\Z) \]
+ومنه $x=k\pi$ أو $x=\frac{2\pi}{3}+k\pi$. في $[0;\pi]$: \bx{S=\left\{0;\frac{2\pi}{3};\pi\right\}}.
+\QQ{5} نرسم $(C_f)$ على $[0;\pi]$ ثم نكمله على $[\pi;2\pi]$ بالانسحاب الذي شعاعه $\pi\,\vec{i}$:
+\begin{GR}{-0.5}{6.6}{-1.6}{3.6}{0.9}
+\foreach \t/\l in {1.0472/\frac{\pi}{3},2.6180/\frac{5\pi}{6},3.1416/\pi,6.2832/2\pi}{\node[below,font=\scriptsize] at (\t,0){$\l$};}
+\foreach \t in {-1,1,2,3}{\node[left,font=\scriptsize] at (0,\t){$\t$};}
+\draw[cEx,thick,dashed,domain=-0.4:0.9] plot(\x,{3.4641*\x});
+\draw[cDef,very thick,domain=0:3.1416,samples=150] plot(\x,{2*sin((2*\x-0.5236) r)+1});
+\draw[cThm,very thick,dashed,domain=3.1416:6.2832,samples=150] plot(\x,{2*sin((2*\x-0.5236) r)+1});
+\draw[dotted] (1.0472,0)--(1.0472,3); \draw[dotted] (2.6180,0)--(2.6180,-1);
+\fill (2.0944,0) circle (1.5pt);
+\node[cEx] at (1.25,3.3){$(T)$};
+\node[cDef] at (4.6,3.3){$(C_f)$};
+\end{GR}
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{المعادلات التفاضلية من الشكل $y'=f$}
+\QQ{1} حل على $\R$ المعادلات التفاضلية الآتية:
+\begin{sq}
+\qa $y'=6x^{2}-2x+5$ \qb $y'=\cos3x-\sin x$ \qc $y'=\dfrac{2x}{\left(x^{2}+1\right)^{2}}$
+\end{sq}
+\QQ{2} عيّن الحل $g$ للمعادلة $y'=\dfrac{1}{\sqrt{2x+1}}$ على $\left]-\frac12;+\infty\right[$ الذي يحقق $g(0)=3$.
+\QQ{3} عيّن الدالة $f$ المعرفة على $\R$ حيث $f'(x)=2\cos2x$ ومنحناها يشمل النقطة $A\left(\frac{\pi}{2};1\right)$.
+\QQ{4} \textbf{مسألة:} تتحرك نقطة على مستقيم، وسرعتها في اللحظة $t$ (بالثانية) هي $v(t)=4-2t$ (بالمتر في الثانية). نعلم أن الموضع $x(t)$ يحقق $x'(t)=v(t)$ و $x(0)=1$. عيّن $x(t)$، ثم عيّن اللحظة التي يكون فيها الموضع أكبر ما يمكن.
+\end{tamrin}
+\begin{hal}
+\QQ{1}\pa $6x^{2}$ مشتقة $2x^{3}$ ، $-2x$ مشتقة $-x^{2}$ ، $5$ مشتقة $5x$: \bx{y=2x^{3}-x^{2}+5x+c} ($c\in\R$).
+\pb $\cos3x$ مشتقة $\frac13\sin3x$ ، و $-\sin x$ مشتقة $\cos x$: \bx{y=\frac13\sin3x+\cos x+c}.
+\pc مع $u(x)=x^{2}+1$: $\left(\dfrac1u\right)'=-\dfrac{u'}{u^{2}}=-\dfrac{2x}{\left(x^{2}+1\right)^{2}}$، إذن \bx{y=-\frac{1}{x^{2}+1}+c}.
+\QQ{2} مع $u(x)=2x+1>0$: $\left(\sqrt u\right)'=\dfrac{u'}{2\sqrt u}=\dfrac{2}{2\sqrt{2x+1}}=\dfrac{1}{\sqrt{2x+1}}$. الحلول: $g(x)=\sqrt{2x+1}+c$.\par
+$g(0)=3\iff1+c=3\iff c=2$، إذن \bx{g(x)=\sqrt{2x+1}+2}.
+\QQ{3} $f(x)=\sin2x+c$، و $f\left(\frac{\pi}{2}\right)=\sin\pi+c=c=1$، إذن \bx{f(x)=\sin2x+1}.
+\QQ{4} $x'(t)=4-2t$، ومنه $x(t)=4t-t^{2}+c$، و $x(0)=c=1$: \bx{x(t)=-t^{2}+4t+1}.\par
+$x'(t)=4-2t$ موجبة لما $t<2$ وسالبة لما $t>2$: الموضع أكبر ما يمكن في اللحظة \bx{t=2\,\text{s}}، وهو $x(2)=5\,\text{m}$.
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مسألة استمثال بدالة صمّاء: أكبر مستطيل داخل نصف دائرة}
+$(\mathcal{C})$ نصف دائرة مركزها $O$ ونصف قطرها $2$ (الجزء الواقع فوق محور الفواصل). نرسم مستطيلًا $ABCD$ رأساه $A$ و $B$ على محور الفواصل متناظران بالنسبة إلى $O$، ورأساه $C$ و $D$ على $(\mathcal{C})$. نضع $OB=x$.
+\QQ{1} عيّن مجال $x$، وبيّن أن مساحة المستطيل هي $S(x)=2x\sqrt{4-x^{2}}$.
+\QQ{2} بيّن أن $S'(x)=\dfrac{4\left(2-x^{2}\right)}{\sqrt{4-x^{2}}}$ على $]0;2[$.
+\QQ{3} استنتج أبعاد المستطيل الذي مساحته أكبر ما يمكن، وما هي هذه المساحة؟
+\end{tamrin}
+\begin{hal}
+\QQ{1} $B(x;0)$ مع \bx{0<x<2}، و $C$ على نصف الدائرة $x^{2}+y^{2}=4$ ($y>0$)، إذن $C\left(x;\sqrt{4-x^{2}}\right)$.\par
+الطول $AB=2x$ والعرض $BC=\sqrt{4-x^{2}}$، ومنه \bx{S(x)=2x\sqrt{4-x^{2}}}.
+\begin{GR}{-2.5}{2.5}{-0.4}{2.5}{0.9}
+\draw[cDef,very thick,domain=0:180,samples=100] plot({2*cos(\x)},{2*sin(\x)});
+\fill[cDef!20] (-1.414,0) rectangle (1.414,1.414);
+\draw[cThm,thick] (-1.414,0) rectangle (1.414,1.414);
+\node[below,font=\scriptsize] at (-1.414,0){$A$}; \node[below,font=\scriptsize] at (1.414,0){$B$};
+\node[above right,font=\scriptsize] at (1.414,1.414){$C$}; \node[above left,font=\scriptsize] at (-1.414,1.414){$D$};
+\node[below,font=\scriptsize] at (2,0){$2$};
+\end{GR}
+\QQ{2} على $]0;2[$: $\left(\sqrt{4-x^{2}}\right)'=\dfrac{-2x}{2\sqrt{4-x^{2}}}=\dfrac{-x}{\sqrt{4-x^{2}}}$، ومنه:
+\[ S'(x)=2\sqrt{4-x^{2}}+2x\times\frac{-x}{\sqrt{4-x^{2}}}=\frac{2\left(4-x^{2}\right)-2x^{2}}{\sqrt{4-x^{2}}}=\bx{\frac{4\left(2-x^{2}\right)}{\sqrt{4-x^{2}}}} \]
+\QQ{3} إشارة $S'(x)$ هي إشارة $2-x^{2}=\left(\sqrt2-x\right)\left(\sqrt2+x\right)$، أي إشارة $\sqrt2-x$ على $]0;2[$. \ $S\left(\sqrt2\right)=2\sqrt2\times\sqrt2=4$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.8]{$x$/1,$S'(x)$/1,$S(x)$/1.8}{$0$,$\sqrt2$,$2$}
+\tkzTabLine{,+,z,-,}
+\tkzTabVar{-/$0$,+/$4$,-/$0$}
+\end{TAB}
+المساحة أكبر ما يمكن لما $x=\sqrt2$: الطول \bx{AB=2\sqrt2} والعرض \bx{BC=\sqrt2}، والمساحة العظمى \bx{S_{\max}=4} (وحدة مساحة).
+\end{hal}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مسألة استمثال بدالة ناطقة: أقل كمية من المعدن لصندوق}
+نريد صنع صندوق بدون غطاء على شكل متوازي مستطيلات قاعدته مربع ضلعه $x$ وارتفاعه $h$ (بالديسيمتر)، وحجمه $32\,\text{dm}^{3}$.
+\QQ{1} عبّر عن $h$ بدلالة $x$، ثم بيّن أن مساحة المعدن المستعمل هي $S(x)=x^{2}+\dfrac{128}{x}$ ($x>0$).
+\QQ{2} بيّن أن $S'(x)=\dfrac{2(x-4)\left(x^{2}+4x+16\right)}{x^{2}}$.
+\QQ{3} عيّن أبعاد الصندوق التي تجعل مساحة المعدن أصغر ما يمكن.
+\end{tamrin}
+\begin{hal}
+\QQ{1} الحجم $x^{2}h=32$، إذن \bx{h=\dfrac{32}{x^{2}}}. المساحة: القاعدة $x^{2}$ والأوجه الجانبية الأربعة $4xh$:
+\[ S(x)=x^{2}+4x\times\frac{32}{x^{2}}=\bx{x^{2}+\frac{128}{x}} \]
+\QQ{2} $S'(x)=2x-\dfrac{128}{x^{2}}=\dfrac{2x^{3}-128}{x^{2}}=\dfrac{2\left(x^{3}-64\right)}{x^{2}}$، و $x^{3}-64=(x-4)\left(x^{2}+4x+16\right)$، إذن \bx{S'(x)=\frac{2(x-4)\left(x^{2}+4x+16\right)}{x^{2}}} \ok
+\QQ{3} $x^{2}+4x+16>0$ ($\Delta=-48<0$)، فإشارة $S'(x)$ هي إشارة $x-4$. \ $S(4)=16+32=48$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.8]{$x$/1,$S'(x)$/1,$S(x)$/1.8}{$0$,$4$,$+\infty$}
+\tkzTabLine{d,-,z,+,}
+\tkzTabVar{D+/$+\infty$,-/$48$,+/$+\infty$}
+\end{TAB}
+المساحة أصغر ما يمكن لما \bx{x=4\,\text{dm}} و \bx{h=\frac{32}{16}=2\,\text{dm}}، وتساوي \bx{S_{\min}=48\,\text{dm}^{2}}.
+\end{hal}
+
 \section{مسائل شاملة}
 % ------------------------------------------------------------------
 \begin{tamrin}{أكمل الفراغات}
@@ -1326,68 +1465,6 @@ $(C_2)$ هو المستقيم $y=x+1$ محروما من النقطة $(-1;0)$.
 \end{hal}
 
 % ------------------------------------------------------------------
-\begin{tamrin}{مناقشة بيانية بمستقيم دوّار حول مركز التناظر -- شعبة رياضيات}
-$f$ الدالة المعرفة على $\R-\{1\}$ بـ: $f(x)=\dfrac{x^{2}-2x+2}{x-1}$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس.
-\QQ{1} تحقق أن $f(x)=x-1+\dfrac{1}{x-1}$، ثم استنتج المستقيمين المقاربين لـ $(C_f)$.
-\QQ{2} ادرس تغيرات $f$ وشكّل جدول تغيراتها.
-\QQ{3} بيّن أن النقطة $\Omega(1;0)$ مركز تناظر لـ $(C_f)$، ثم أنشئ $(C_f)$.
-\QQ{4} من أجل كل عدد حقيقي $m$، نعتبر المستقيم $(D_m):\ y=m(x-1)$.
-\begin{sq}
-\qa تحقق أن جميع المستقيمات $(D_m)$ تشمل النقطة $\Omega$.
-\qb ناقش بيانيا، حسب قيم $m$، عدد حلول المعادلة: $(m-1)x^{2}-2(m-1)x+m-2=0$.
-\qc عيّن جبريا هذه الحلول، ثم ناقش إشارتها.
-\end{sq}
-\end{tamrin}
-\begin{hal}
-\QQ{1} $x-1+\dfrac{1}{x-1}=\dfrac{(x-1)^{2}+1}{x-1}=\dfrac{x^{2}-2x+2}{x-1}=f(x)$ \ok.
-\begin{itemize}
-\item $\lim\limits_{x\to1^{\pm}}\dfrac{1}{x-1}=\pm\infty$ و $x-1\to0$: $\lim\limits_{x\to1^{-}}f(x)=-\infty$ و $\lim\limits_{x\to1^{+}}f(x)=+\infty$: \bx{x=1} مقارب عمودي.
-\item $f(x)-(x-1)=\dfrac{1}{x-1}\xrightarrow[x\to\pm\infty]{}0$: \bx{y=x-1} مقارب مائل عند $\pm\infty$ (و $\lim\limits_{x\to\pm\infty}f(x)=\pm\infty$).
-\end{itemize}
-
-\QQ{2} $f'(x)=1-\dfrac{1}{(x-1)^{2}}=\dfrac{(x-1)^{2}-1}{(x-1)^{2}}=\dfrac{x(x-2)}{(x-1)^{2}}$. \ $f(0)=-2$ و $f(2)=2$.
-\begin{TAB}
-\tkzTabInit[lgt=1.6,espcl=2.2]{$x$ /0.8,$f'(x)$ /0.8,$f(x)$ /1.8}{$-\infty$,$0$,$1$,$2$,$+\infty$}
-\tkzTabLine{,+,z,-,d,-,z,+,}
-\tkzTabVar{-/$-\infty$,+/$-2$,-D+/$-\infty$/$+\infty$,-/$2$,+/$+\infty$}
-\end{TAB}
-
-\QQ{3} من أجل $x\neq1$: $2-x\neq1$ و $f(2-x)=(1-x)+\dfrac{1}{1-x}=-f(x)$، ومنه $f(2-x)+f(x)=0=2\times0$: \bxt{$\Omega(1;0)$ مركز تناظر لـ $(C_f)$}.
-\begin{GR}{-3}{5}{-6}{6}{0.55}
- \Ticks{-2,-1,1,2,3,4}{-5,-4,-3,-2,-1,1,2,3,4,5}
- \draw[cThm,thick,dashed] (1,-6)--(1,6);
- \draw[cEx,thick,dashed,domain=-3:5] plot (\x,{\x-1});
- \draw[cRem,thick,domain=-3:5] plot (\x,{2*(\x-1)});
- \draw[cMeth,thick,domain=-3:5] plot (\x,{1.5*(\x-1)});
- \draw[cDef,very thick,domain=-3:0.82,samples=200] plot (\x,{\x-1+1/(\x-1)});
- \draw[cDef,very thick,domain=1.18:5,samples=200] plot (\x,{\x-1+1/(\x-1)});
- \fill[cThm] (1,0) circle (2.2pt) node[below right]{$\Omega$};
- \fill[cDef] (0,-2) circle (2pt) (2,2) circle (2pt);
- \node[cEx] at (4.4,2.6){$y=x-1$};
- \node[cRem] at (3.0,5.4){$(D_2)$};
- \node[cMeth] at (4.6,5.4){$(D_{1{,}5})$};
- \node[cDef] at (-2.2,-5){$(C_f)$};
-\end{GR}
-
-\QQ{4}\pa من أجل $x=1$: $y=m(1-1)=0$، فكل المستقيمات $(D_m)$ تشمل $\Omega(1;0)$ \ok (مستقيم «دوّار» حول $\Omega$، معامل توجيهه $m$).
-
-\pb من أجل $x\neq1$:
-\[f(x)=m(x-1)\iff\frac{x^{2}-2x+2}{x-1}=m(x-1)\iff x^{2}-2x+2=m(x-1)^{2}\]
-أي $(m-1)(x-1)^{2}-1=0$، وبالنشر: $(m-1)x^{2}-2(m-1)x+m-2=0$. والعدد $1$ ليس حلا لها (يعطي $-1=0$).
-إذن حلول المعادلة هي فواصل نقط تقاطع $(C_f)$ مع $(D_m)$. المستقيم $(D_1)$ يوازي المقارب المائل:
-\begin{itemize}
-\item $m\le1$: $(D_m)$ لا يقطع $(C_f)$: \bxt{لا حلول}.
-\item $m>1$: $(D_m)$ يقطع كل فرع مرة واحدة: \bxt{حلان} متناظران بالنسبة إلى $1$.
-\end{itemize}
-
-\pc لما $m>1$: $(x-1)^{2}=\dfrac{1}{m-1}$، ومنه $x_1=1+\dfrac{1}{\sqrt{m-1}}$ و $x_2=1-\dfrac{1}{\sqrt{m-1}}$.
-\begin{itemize}
-\item $x_1>1>0$ دائما (موجب).
-\item $x_2<0\iff\sqrt{m-1}<1\iff1<m<2$؛ \ $x_2=0\iff m=2$ (المستقيم $(D_2)$ يشمل النقطة $(0;-2)$)؛ \ $x_2>0\iff m>2$.
-\end{itemize}
-\textbf{الخلاصة:} $m\le1$: لا حلول؛ $1<m<2$: حلان مختلفان في الإشارة؛ $m=2$: حل معدوم وحل موجب؛ $m>2$: حلان موجبان.
-\end{hal}
-
 % ------------------------------------------------------------------
 \begin{tamrin}{التمديد بالاستمرار وتعيين وسيطين للاستمرارية والاشتقاقية -- شعبة رياضيات}
 \QQ{1} في كل حالة، بيّن أن الدالة تقبل تمديدا بالاستمرار عند $x_0$ وعرّفه، أو بيّن أن ذلك غير ممكن:
