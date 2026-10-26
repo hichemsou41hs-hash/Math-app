@@ -1,0 +1,426 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\usepackage{longtable}
+\setlength{\LTpre}{4pt}\setlength{\LTpost}{0pt}
+\newcommand{\Phase}[1]{\textbf{#1}}
+\newcommand{\Fld}[2]{\textbf{#1:}\ #2}
+% رأس المذكرة على نمط النموذج: إطار بعنوان «مذكرة رقم»، معلومات الحصة، ثم إطار الكفاءات
+\newcommand{\ModhHead}[9]{%
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=4mm,boxrule=1pt,top=14pt,bottom=6pt,left=8pt,right=8pt,
+ overlay={\node[fill=cThm!85!black,text=white,rounded corners=3mm,inner xsep=14pt,inner ysep=4pt,font=\large\bfseries] at ([yshift=0pt]frame.north){\ar{مذكرة رقم #1}};},
+ before upper={\selectlanguage{arabic}}]
+\begin{tabular}{@{}p{0.4\linewidth}p{0.55\linewidth}@{}}
+\Fld{المستوى}{#2} & \Fld{الثانوية}{\dotfill}\\[3pt]
+\Fld{المادة}{رياضيات} & \Fld{ميدان التعلم}{#3}\\[3pt]
+\Fld{المدة}{#5} & \Fld{الوحدة التعلمية}{#4}\\[3pt]
+\Fld{الأستاذ}{\dotfill} & \Fld{المحتوى المعرفي}{#6}\\
+\end{tabular}
+\end{tcolorbox}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=3mm,boxrule=0.8pt,sidebyside,sidebyside align=top,lefthand ratio=0.5,
+ segmentation style={dashed,cThm!60},before upper={\selectlanguage{arabic}},before lower={\selectlanguage{arabic}}]
+\textbf{الكفاءات المستهدفة:}\par #8
+\tcblower
+\textbf{الكفاءات القبلية:}\par #7
+\end{tcolorbox}
+\end{LTR}
+\par\smallskip\textbf{الوسائل:} #9\par\smallskip}
+\newenvironment{Sayr}{%
+\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\hline\endfoot}{\end{longtable}\end{LTR}}
+% سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
+\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
+
+\newcommand{\Lab}[2]{\foreignlanguage{english}{\tcbox[on line,colback=#1,colframe=#1,boxrule=0pt,arc=2pt,boxsep=1pt,left=5pt,right=5pt,top=1pt,bottom=1pt]{\ar{\textcolor{white}{\textbf{#2}}}}}}
+\newcommand{\Num}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[fill=cDef,text=white,inner sep=2pt,font=\footnotesize\bfseries](c){#1};}}
+\newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
+\newenvironment{Kad}[1]{\par\smallskip\Lab{#1}}{\par}
+\SetHeader{\small\bfseries\color{cSec}مذكرات محور: الاحتمالات}{\small\color{cSec}السنة الثانية ثانوي -- علوم تجريبية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cThm!85!black,colframe=cThm!85!black,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries مذكرات محور: الاحتمالات}\\[8pt]
+{\color{white}\large السنة الثانية ثانوي -- علوم تجريبية (صالحة لشعبتي رياضيات وتقني رياضي)}\\[4pt]
+{\color{white}\large 7 مذكرات (14 ساعة) -- السنة الدراسية 2026-2027}
+\end{tcolorbox}
+\end{LTR}
+\begin{BOX}{cThm}{يتضمن هذا العمل}
+\begin{enumerate}[label=\textbf{مذكرة \arabic{enumi}:},leftmargin=6em,start=18]
+\item التجربة العشوائية ، التواترات والمحاكاة.
+\item لغة الحوادث: التقاطع ، الاتحاد ، الحادثة العكسية.
+\item قانون الاحتمال وتساوي الاحتمال.
+\item الأمل الرياضياتي والتباين والانحراف المعياري لقانون احتمال.
+\item أدوات العد: الجداول المزدوجة وشجرة الإمكانيات.
+\item خواص الاحتمال.
+\item المتغير العشوائي: قانونه ، أمله ، تباينه وانحرافه المعياري.
+\end{enumerate}
+مراجع النشاطات والتمارين: الكتاب المدرسي للسنة الثانية ثانوي (باب الاحتمالات). حسب منهاج السنة الثانية: شجرة الإمكانيات والجداول المزدوجة بدل شجرة الاحتمالات.
+\end{BOX}
+\newpage
+\ModhHead{18}{2 ع ت}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{التجربة العشوائية ، التواترات والمحاكاة}%
+{\begin{itemize}\item الإحصاء: التكرار والتواتر ، تذبذب العينات (1 ج م).\end{itemize}}%
+{\begin{itemize}\item التعرف على تجربة عشوائية ومخارجها.\item ملاحظة ميل التواترات نحو الاستقرار ومحاكاة تجربة.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة ، نرد وقطع نقدية. جدول Excel.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} هل يمكن أن نتنبأ بنتيجة رمي نرد؟ وماذا عن نسبة ظهور الرقم $6$ بعد آلاف الرميات؟}{10 د}{سؤال مثير.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{مناقشة نشاط 01 (أنشطة باب الاحتمالات)}\par\ck\ كل تلميذ يرمي النرد $30$ مرة ويحسب تواتر الرقم $6$ ؛ نجمع نتائج القسم: $n=30$ ، $60$ ، $90$ ، $\ldots$\par
+\ck\ نمثل النقط $(n;f_n)$: التواتر يقترب من $0{,}17\approx\frac16$.\par
+\ck\ نعيد التجربة بمجدول (الطلبية \texttt{=ENT(ALEA()*6+1)}) لـ $2500$ رمية.\par
+}{35 د}{تجربة جماعية بالنرد.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\par\ck\ \textbf{تجربة عشوائية}: نعرف كل نتائجها الممكنة ولا نستطيع التنبؤ بالنتيجة قبل إجرائها.\par
+\ck\ كل نتيجة ممكنة تسمى \textbf{مخرجاً} ، ومجموعة المخارج نرمز لها $\Omega$.\par
+\Lab{cEx}{مثال}\ رمي نرد: $\Omega=\{1;2;3;4;5;6\}$ ؛ رمي قطعة نقدية: $\Omega=\{F;P\}$.\par}{50 د}{نرسم سحابة النقط.}
+\Row{}{%
+\Lab{cThm}{ملاحظة تجريبية}\ لما يكبر عدد التكرارات يستقر تواتر كل مخرج حول عدد ثابت نسميه \textbf{احتماله}.\par\Lab{cDef}{المحاكاة}\ تعويض تجربة بتجربة أخرى (أو بأعداد عشوائية) لها نفس الخواص.\par}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ التواتر يتغير من سلسلة إلى أخرى ، أما الاحتمال فعدد ثابت.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par كيف نحاكي بقطعة نقدية اختيار تلميذ أو تلميذة بنفس الحظ؟ وبنرد اختيار لون من $3$ ألوان؟\par\textbf{الحل:} $F\to$ تلميذ ، $P\to$ تلميذة ؛ النرد: $\{1;2\}\to$ أحمر ، $\{3;4\}\to$ أخضر ، $\{5;6\}\to$ أزرق.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{19}{2 ع ت}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{لغة الحوادث: التقاطع ، الاتحاد ، الحادثة العكسية}%
+{\begin{itemize}\item التجربة العشوائية ، المجموعات.\end{itemize}}%
+{\begin{itemize}\item ترجمة حادثة بجملة وبمجموعة.\item تعيين تقاطع واتحاد حادثتين والحادثة العكسية.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة ، نرد وقطع نقدية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} نرمي نرداً: «الرقم زوجي» و«الرقم أكبر من $4$»: هل يمكن أن يتحققا معاً؟}{10 د}{سؤال شفهي.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\ نرمي نرداً: $A$: «الرقم زوجي» ، $B$: «الرقم أكبر من أو يساوي $4$».\par\ck\ $A=\{2;4;6\}$ ، $B=\{4;5;6\}$.\par
+\ck\ «$A$ و $B$» تتحقق بالمخرجين $4$ و $6$ ؛ «$A$ أو $B$» بالمخارج $2$ ، $4$ ، $5$ ، $6$.\par
+}{35 د}{عمل ثنائي.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\par\ck\ \textbf{الحادثة} جزء من $\Omega$ ؛ \textbf{الحادثة الأولية} تحوي مخرجاً واحداً ؛ $\Omega$ الحادثة الأكيدة ، $\varnothing$ الحادثة المستحيلة.\par
+\ck\ $A\cap B$: تتحقق إذا تحققت $A$ و $B$ معاً ؛ $A\cup B$: تتحقق إذا تحققت إحداهما على الأقل.\par
+\ck\ $\overline A$: الحادثة العكسية ، تتحقق إذا لم تتحقق $A$.\par
+\ck\ $A$ و $B$ \textbf{غير متلائمتين} إذا كان $A\cap B=\varnothing$.\par
+\Lab{cEx}{مثال}\ مع الوضعية: $A\cap B=\{4;6\}$ ، $A\cup B=\{2;4;5;6\}$ ، $\overline A=\{1;3;5\}$.\par}{50 د}{مخطط فن على السبورة.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ «غير متلائمتين» لا تعني «عكسيتين»: $\{1\}$ و $\{2\}$ غير متلائمتين لكنهما ليستا عكسيتين.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par نرمي نرداً. $C$: «الرقم أولي» ، $D$: «الرقم فردي». عيّن $C\cap D$ ، $C\cup D$ ، $\overline C$. هل $\overline C$ و $D$ غير متلائمتين؟\par\textbf{الحل:} $C=\{2;3;5\}$ ، $D=\{1;3;5\}$ ؛ $C\cap D=\{3;5\}$ ، $C\cup D=\{1;2;3;5\}$ ، $\overline C=\{1;4;6\}$ ؛ $\overline C\cap D=\{1\}\neq\varnothing$: لا.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{20}{2 ع ت}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{قانون الاحتمال وتساوي الاحتمال}%
+{\begin{itemize}\item لغة الحوادث ، التواترات.\end{itemize}}%
+{\begin{itemize}\item تعريف قانون احتمال على مجموعة منتهية.\item حساب احتمال حادثة في حالة تساوي الاحتمال.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة ، نرد وقطع نقدية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} ما حظ ظهور الرقم $6$ عند رمي نرد متوازن؟ وما حظ ظهور رقم زوجي؟}{10 د}{سؤال تمهيدي.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{مناقشة نشاط 02 (أنشطة باب الاحتمالات)}\par\ck\ نرد متوازن: كل رقم له حظ واحد من ستة ، فنعرّف قانون الاحتمال بجدول.\par
+\ck\ صندوق به $4$ كريات خضراء و $3$ حمراء: احتمال «الكرية حمراء» هو $\frac37$.\par
+}{35 د}{نشاط الكتاب.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $\Omega=\{x_1;\ldots;x_n\}$. \textbf{قانون احتمال} على $\Omega$: نرفق بكل مخرج $x_i$ عدداً $p_i$ حيث $0\leqslant p_i\leqslant1$ و $p_1+\cdots+p_n=1$. احتمال حادثة هو مجموع احتمالات مخارجها.\par\Lab{cEx}{قانون النرد المتوازن}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.5}\begin{tabular}{|c|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\\hline $P$ & $\frac16$ & $\frac16$ & $\frac16$ & $\frac16$ & $\frac16$ & $\frac16$\\\hline\end{tabular}}\end{LTR}\par }{50 د}{جدول القانون في الكراس.}
+\Row{}{%
+\Lab{cThm}{تساوي الاحتمال}\ إذا كانت كل المخارج لها نفس الاحتمال: $P(A)=\dfrac{\mathrm{card}\,A}{\mathrm{card}\,\Omega}$ (عدد مخارج $A$ على عدد مخارج $\Omega$).\par\Lab{cRem}{ملاحظات}\ عبارات «زهرة نرد متوازنة» ، «قطعة نقدية غير مزيفة» ، «نسحب عشوائياً» تعني تساوي الاحتمال.\par}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نرد مزيف: الاحتمالات غير متساوية ، فلا نستعمل القاعدة السابقة.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par نرد مزيف حيث $P(6)=\frac12$ والأرقام الأخرى لها نفس الاحتمال. احسب $p=P(1)$ ، ثم احتمال «الرقم زوجي».\par\textbf{الحل:} $5p+\frac12=1$ ، $p=\frac1{10}$ ؛ $P(\{2;4;6\})=\frac1{10}+\frac1{10}+\frac12=\frac7{10}$.\par\textbf{واجب منزلي:} تمارين 13 ، 18 ، 19 ، 30 من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{21}{2 ع ت}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{الأمل الرياضياتي والتباين والانحراف المعياري لقانون احتمال}%
+{\begin{itemize}\item قانون الاحتمال ، الوسط والتباين في الإحصاء (1 ج م).\end{itemize}}%
+{\begin{itemize}\item حساب الأمل الرياضياتي والتباين والانحراف المعياري لقانون احتمال وتفسيرها.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة ، نرد وقطع نقدية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} ما متوسط الأرقام التي نحصل عليها إذا رمينا نرداً آلاف المرات؟}{10 د}{سؤال تمهيدي.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ نستعمل نتائج المحاكاة (المذكرة 18): الوسط الحسابي للأرقام يقترب من $3{,}5$.\par
+\ck\ نحسب $\sum p_ix_i$ بقانون النرد: نجد $3{,}5$. الاحتمالات تلعب دور التواترات.\par
+}{35 د}{ربط بالإحصاء.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ قانون احتمال $(x_i;p_i)_{1\leqslant i\leqslant n}$ (المخارج أعداد):\par\ck\ \textbf{الأمل الرياضياتي}: $\mu=\sum p_ix_i$.\par
+\ck\ \textbf{التباين}: $V=\sum p_ix_i^2-\mu^2$ ؛ \textbf{الانحراف المعياري}: $\sigma=\sqrt V$.\par
+\Lab{cEx}{النرد المتوازن}\ $\mu=\dfrac{1+2+\cdots+6}6=3{,}5$ ؛ $V=\dfrac{91}6-3{,}5^2=\dfrac{35}{12}$ ؛ $\sigma\approx1{,}71$.\par}{50 د}{جدول بأعمدة $p_ix_i$ و $p_ix_i^2$.}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\ $\mu$ «القيمة المتوسطة» على عدد كبير من التكرارات ، و $\sigma$ يقيس التشتت حولها.\par\Lab{cThm!80!black}{حذار}\ نتحقق أولاً أن مجموع الاحتمالات يساوي $1$.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par قانون احتمال: $x_i$: $0$ ، $1$ ، $2$ باحتمالات $0{,}5$ ، $0{,}3$ ، $0{,}2$. احسب $\mu$ و $V$.\par\textbf{الحل:} $\mu=0{,}3+0{,}4=0{,}7$ ؛ $\sum p_ix_i^2=0{,}3+0{,}8=1{,}1$ ؛ $V=1{,}1-0{,}49=0{,}61$ ، $\sigma\approx0{,}78$.\par\textbf{واجب منزلي:} تمرينا 42 و 43 من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{22}{2 ع ت}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{أدوات العد: الجداول المزدوجة وشجرة الإمكانيات}%
+{\begin{itemize}\item تساوي الاحتمال.\end{itemize}}%
+{\begin{itemize}\item نمذجة تجربة بمرحلتين بجدول مزدوج الدخول حسب طريقة السحب.\item استعمال شجرة الإمكانيات لتجربة بثلاث مراحل.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة ، نرد وقطع نقدية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} نسحب كريتين من كيس به ثلاث كريات: كم نتيجة ممكنة؟ هل يتعلق ذلك بطريقة السحب؟}{10 د}{سؤال مفتوح.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\ كيس به $3$ كريات مرقمة $1$ ، $2$ ، $3$. نسحب كريتين ونهتم بمجموع الرقمين ، والحادثة $A$: «المجموع يساوي $4$».\par\ck\ ثلاثة أفواج: الأول يسحب بإرجاع ، الثاني على التوالي دون إرجاع ، الثالث في آن واحد ، وكل فوج يحصي النتائج.\par
+}{35 د}{ثلاثة أفواج ، ثلاث طرق سحب.}
+\Row{بناء المعارف}{%
+\Lab{cMeth}{الجدول المزدوج الدخول}\ نضع السحب الأول في العمود الأول والثاني في السطر الأول ، ونكتب في كل خانة المجموع ، ونلون خانات $A$:\par\smallskip\begin{LTR}\centering \begin{tabular}{ccc}{\footnotesize\renewcommand{\arraystretch}{1.3}\begin{tabular}{|c|c|c|c|}\hline\rowcolor{cSec!12}$+$ & $1$ & $2$ & $3$\\\hline
+\cellcolor{cSec!12}$1$ & $2$ & $3$ & \cellcolor{cDef!30}$\mathbf{4}$\\\hline
+\cellcolor{cSec!12}$2$ & $3$ & \cellcolor{cDef!30}$\mathbf{4}$ & $5$\\\hline
+\cellcolor{cSec!12}$3$ & \cellcolor{cDef!30}$\mathbf{4}$ & $5$ & $6$\\\hline\end{tabular}} & {\footnotesize\renewcommand{\arraystretch}{1.3}\begin{tabular}{|c|c|c|c|}\hline\rowcolor{cSec!12}$+$ & $1$ & $2$ & $3$\\\hline
+\cellcolor{cSec!12}$1$ & \cellcolor{gray!30}$\times$ & $3$ & \cellcolor{cDef!30}$\mathbf{4}$\\\hline
+\cellcolor{cSec!12}$2$ & $3$ & \cellcolor{gray!30}$\times$ & $5$\\\hline
+\cellcolor{cSec!12}$3$ & \cellcolor{cDef!30}$\mathbf{4}$ & $5$ & \cellcolor{gray!30}$\times$\\\hline\end{tabular}} & {\footnotesize\renewcommand{\arraystretch}{1.3}\begin{tabular}{|c|c|c|c|}\hline\rowcolor{cSec!12}$+$ & $1$ & $2$ & $3$\\\hline
+\cellcolor{cSec!12}$1$ & \cellcolor{gray!30} & $3$ & \cellcolor{cDef!30}$\mathbf{4}$\\\hline
+\cellcolor{cSec!12}$2$ & \cellcolor{gray!30} & \cellcolor{gray!30} & $5$\\\hline
+\cellcolor{cSec!12}$3$ & \cellcolor{gray!30} & \cellcolor{gray!30} & \cellcolor{gray!30}\\\hline\end{tabular}}\\[2pt]{\scriptsize\ar{بإرجاع: $9$ حالات}} & {\scriptsize\ar{دون إرجاع: $6$ حالات}} & {\scriptsize\ar{في آن واحد: $3$ حالات}}\end{tabular}\end{LTR}\par \ck\ بإرجاع: $n\times n=9$ ، $P(A)=\frac39=\frac13$.\par
+\ck\ على التوالي دون إرجاع: نشطب القطر ، $n(n-1)=6$ ، $P(A)=\frac26=\frac13$.\par
+\ck\ في آن واحد: نصف الجدول فوق القطر ، $\frac{n(n-1)}2=3$ ، $P(A)=\frac13$.\par
+\Lab{cMeth}{شجرة الإمكانيات (3 مراحل)}\ نرمي قطعة نقدية $3$ مرات: $2\times2\times2=8$ مخارج.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[font=\scriptsize,ev/.style={circle,fill=cDef!12,draw=cDef,inner sep=1pt,minimum size=4.5mm}]
+\fill[cDef] (0,0) circle (2pt);
+\node[ev] (nF) at (2.40,1.60){$F$};
+\draw[cDef!70,thick] (0,0)--(nF);
+\node[ev] (nP) at (2.40,-1.60){$P$};
+\draw[cDef!70,thick] (0,0)--(nP);
+\node[ev] (nFF) at (4.80,2.40){$F$};
+\draw[cDef!70,thick] (nF)--(nFF);
+\node[ev] (nFP) at (4.80,0.80){$P$};
+\draw[cDef!70,thick] (nF)--(nFP);
+\node[ev] (nPF) at (4.80,-0.80){$F$};
+\draw[cDef!70,thick] (nP)--(nPF);
+\node[ev] (nPP) at (4.80,-2.40){$P$};
+\draw[cDef!70,thick] (nP)--(nPP);
+\node[ev] (nFFF) at (7.20,2.80){$F$};
+\draw[cDef!70,thick] (nFF)--(nFFF);
+\node[fill=white,inner sep=1.5pt] at (8.50,2.80){$FFF$};
+\node[ev] (nFFP) at (7.20,2.00){$P$};
+\draw[cDef!70,thick] (nFF)--(nFFP);
+\node[fill=cDef!30,inner sep=1.5pt] at (8.50,2.00){$FFP$};
+\node[ev] (nFPF) at (7.20,1.20){$F$};
+\draw[cDef!70,thick] (nFP)--(nFPF);
+\node[fill=cDef!30,inner sep=1.5pt] at (8.50,1.20){$FPF$};
+\node[ev] (nFPP) at (7.20,0.40){$P$};
+\draw[cDef!70,thick] (nFP)--(nFPP);
+\node[fill=white,inner sep=1.5pt] at (8.50,0.40){$FPP$};
+\node[ev] (nPFF) at (7.20,-0.40){$F$};
+\draw[cDef!70,thick] (nPF)--(nPFF);
+\node[fill=cDef!30,inner sep=1.5pt] at (8.50,-0.40){$PFF$};
+\node[ev] (nPFP) at (7.20,-1.20){$P$};
+\draw[cDef!70,thick] (nPF)--(nPFP);
+\node[fill=white,inner sep=1.5pt] at (8.50,-1.20){$PFP$};
+\node[ev] (nPPF) at (7.20,-2.00){$F$};
+\draw[cDef!70,thick] (nPP)--(nPPF);
+\node[fill=white,inner sep=1.5pt] at (8.50,-2.00){$PPF$};
+\node[ev] (nPPP) at (7.20,-2.80){$P$};
+\draw[cDef!70,thick] (nPP)--(nPPP);
+\node[fill=white,inner sep=1.5pt] at (8.50,-2.80){$PPP$};
+\node[font=\scriptsize\bfseries] at (8.5,3.4){\ar{المخرج}};
+\end{tikzpicture}\end{LTR}\par «الحصول على وجهين بالضبط»: $FFP$ ، $FPF$ ، $PFF$ ، احتمالها $\frac38$.\par}{50 د}{نلون الخانات بالطباشير الملونة.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ في شجرة الإمكانيات لا نكتب احتمالات على الفروع ؛ نحصي المسارات فقط.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par نرمي نرداً رباعياً (أوجهه $1$ إلى $4$) مرتين. نمذج التجربة بجدول ، ثم احسب احتمال «الرقمان متساويان».\par\textbf{الحل:} جدول $4\times4$: $16$ حالة ؛ الخانات القطرية $4$ ، الاحتمال $\frac4{16}=\frac14$.\par\textbf{واجب منزلي:} تمارين 11 إلى 17 من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{23}{2 ع ت}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{خواص الاحتمال}%
+{\begin{itemize}\item لغة الحوادث ، قانون الاحتمال.\end{itemize}}%
+{\begin{itemize}\item استعمال خواص الاحتمال لحساب احتمال حوادث مركبة.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة ، نرد وقطع نقدية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} إذا كان احتمال نجاح تلميذ $0{,}8$ ، فما احتمال رسوبه؟}{10 د}{سؤال من الحياة.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\ نرمي نرداً متوازناً: $A$: «الرقم زوجي» ، $B$: «الرقم أكبر من أو يساوي $4$».\par\ck\ $P(A)=\frac36$ ، $P(B)=\frac36$ ، $P(A\cap B)=\frac26$ ، $P(A\cup B)=\frac46$.\par
+\ck\ نلاحظ: $P(A\cup B)\neq P(A)+P(B)$ ؛ الفرق هو $P(A\cap B)$ لأن $4$ و $6$ حُسبا مرتين.\par
+}{35 د}{نكشف العد المضاعف.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\par\ck\ $P(\varnothing)=0$ ، $P(\Omega)=1$ ، $0\leqslant P(A)\leqslant1$.\par
+\ck\ $P(\overline A)=1-P(A)$.\par
+\ck\ $P(A\cup B)=P(A)+P(B)-P(A\cap B)$.\par
+\ck\ إذا كانت $A$ و $B$ غير متلائمتين: $P(A\cup B)=P(A)+P(B)$.\par
+\Lab{cEx}{مثال}\ في قسم: $60\,\%$ يمارسون كرة القدم ، $30\,\%$ السباحة ، $20\,\%$ الاثنين. احتمال أن يمارس تلميذ رياضة واحدة على الأقل: $0{,}6+0{,}3-0{,}2=0{,}7$ ، وألا يمارس أياً منهما: $0{,}3$.\par}{50 د}{جدول مزدوج للرياضتين.}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\ «على الأقل» توحي غالباً بالحادثة العكسية.\par\Lab{cThm!80!black}{حذار}\ لا نجمع الاحتمالات إلا إذا كانت الحوادث غير متلائمة.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par $P(A)=0{,}5$ ، $P(B)=0{,}4$ ، $P(A\cup B)=0{,}7$. احسب $P(A\cap B)$ و $P(\overline B)$. هل $A$ و $B$ غير متلائمتين؟\par\textbf{الحل:} $P(A\cap B)=0{,}5+0{,}4-0{,}7=0{,}2$ ؛ $P(\overline B)=0{,}6$ ؛ $P(A\cap B)\neq0$ إذن ليستا غير متلائمتين.\par\textbf{واجب منزلي:} تمارين 22 إلى 30 من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{24}{2 ع ت}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{المتغير العشوائي: قانونه ، أمله ، تباينه وانحرافه المعياري}%
+{\begin{itemize}\item قانون الاحتمال ، الأمل والتباين ، الجداول المزدوجة.\end{itemize}}%
+{\begin{itemize}\item تعريف متغير عشوائي وتعيين قانون احتماله.\item حساب أمله وتباينه وانحرافه المعياري وتفسيرها (لعبة عادلة).\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة ، نرد وقطع نقدية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} لعبة في معرض: تدفع $20$ DA لتربح ربما $200$ DA. هل اللعبة في صالحك؟}{10 د}{وضعية لعب.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{مناقشة نشاط 03 (أنشطة باب الاحتمالات)}\par\ck\ قرص مرقم من $1$ إلى $15$: الربح $G$ يأخذ القيم $180$ (الرقم المختار) ، $10$ (رقم مجاور) ، $-20$ (غير ذلك).\par
+\ck\ قانون $G$:\par
+\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.5}\begin{tabular}{|c|c|c|c|}\hline\rowcolor{cSec!12}$g_i$ & $-20$ & $10$ & $180$\\\hline $P$ & $\frac{12}{15}$ & $\frac2{15}$ & $\frac1{15}$\\\hline\end{tabular}}\end{LTR}\par \ck\ $E(G)=\dfrac{180+20-240}{15}=-\dfrac83\approx-2{,}67$ DA: اللاعب يخسر في المتوسط.\par
+}{35 د}{عمل بالأفواج.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ \textbf{المتغير العشوائي} $X$ دالة ترفق بكل مخرج عدداً حقيقياً. \textbf{قانون احتماله}: القيم $x_i$ واحتمالات $P(X=x_i)$.\par\Lab{cThm}{خاصية}\ $E(X)=\sum x_iP(X=x_i)$ ، $V(X)=\sum x_i^2P(X=x_i)-E(X)^2$ ، $\sigma(X)=\sqrt{V(X)}$.\par}{50 د}{نبني القانون من الجدول المزدوج.}
+\Row{}{%
+\Lab{cEx}{بجدول مزدوج}\ نرمي نرداً رباعياً مرتين ، و $X$ مجموع الرقمين (جدول $4\times4$ ، $16$ حالة):\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.5}\begin{tabular}{|c|c|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$\\\hline $P$ & $\frac{1}{16}$ & $\frac{2}{16}$ & $\frac{3}{16}$ & $\frac{4}{16}$ & $\frac{3}{16}$ & $\frac{2}{16}$ & $\frac{1}{16}$\\\hline\end{tabular}}\end{LTR}\par $E(X)=5$ ، $V(X)=\dfrac{440}{16}-25=2{,}5$ ، $\sigma(X)\approx1{,}58$.\par\Lab{cRem}{ملاحظات}\ تكون اللعبة \textbf{عادلة} إذا كان $E(G)=0$.\par}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نتحقق أن مجموع $P(X=x_i)$ يساوي $1$.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par في اللعبة السابقة ، كم يجب أن يكون ثمن المشاركة لتكون اللعبة عادلة؟ (الجوائز $200$ و $30$ DA).\par\textbf{الحل:} متوسط الجائزة $\dfrac{200+2\times30}{15}=\dfrac{260}{15}\approx17{,}33$ DA ، فالثمن العادل $\dfrac{52}3$ DA.\par\textbf{واجب منزلي:} تمارين 45 إلى 47 ومسائل من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\end{Sayr}
+\end{document}
