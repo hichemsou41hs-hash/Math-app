@@ -1,0 +1,389 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\usepackage{longtable}
+\setlength{\LTpre}{4pt}\setlength{\LTpost}{0pt}
+\newcommand{\Phase}[1]{\textbf{#1}}
+\newcommand{\Fld}[2]{\textbf{#1:}\ #2}
+% رأس المذكرة على نمط النموذج: إطار بعنوان «مذكرة رقم»، معلومات الحصة، ثم إطار الكفاءات
+\newcommand{\ModhHead}[9]{%
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=4mm,boxrule=1pt,top=14pt,bottom=6pt,left=8pt,right=8pt,
+ overlay={\node[fill=cThm!85!black,text=white,rounded corners=3mm,inner xsep=14pt,inner ysep=4pt,font=\large\bfseries] at ([yshift=0pt]frame.north){\ar{مذكرة رقم #1}};},
+ before upper={\selectlanguage{arabic}}]
+\begin{tabular}{@{}p{0.4\linewidth}p{0.55\linewidth}@{}}
+\Fld{المستوى}{#2} & \Fld{الثانوية}{\dotfill}\\[3pt]
+\Fld{المادة}{رياضيات} & \Fld{ميدان التعلم}{#3}\\[3pt]
+\Fld{المدة}{#5} & \Fld{الوحدة التعلمية}{#4}\\[3pt]
+\Fld{الأستاذ}{\dotfill} & \Fld{المحتوى المعرفي}{#6}\\
+\end{tabular}
+\end{tcolorbox}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=3mm,boxrule=0.8pt,sidebyside,sidebyside align=top,lefthand ratio=0.5,
+ segmentation style={dashed,cThm!60},before upper={\selectlanguage{arabic}},before lower={\selectlanguage{arabic}}]
+\textbf{الكفاءات المستهدفة:}\par #8
+\tcblower
+\textbf{الكفاءات القبلية:}\par #7
+\end{tcolorbox}
+\end{LTR}
+\par\smallskip\textbf{الوسائل:} #9\par\smallskip}
+\newenvironment{Sayr}{%
+\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\hline\endfoot}{\end{longtable}\end{LTR}}
+% سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
+\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
+
+\newcommand{\Lab}[2]{\foreignlanguage{english}{\tcbox[on line,colback=#1,colframe=#1,boxrule=0pt,arc=2pt,boxsep=1pt,left=5pt,right=5pt,top=1pt,bottom=1pt]{\ar{\textcolor{white}{\textbf{#2}}}}}}
+\newcommand{\Num}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[fill=cDef,text=white,inner sep=2pt,font=\footnotesize\bfseries](c){#1};}}
+\newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
+\newenvironment{Kad}[1]{\par\smallskip\Lab{#1}}{\par}
+\SetHeader{\small\bfseries\color{cSec}مذكرات محور: الدالة الأسية}{\small\color{cSec}السنة الثالثة ثانوي -- تسيير واقتصاد}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cThm!85!black,colframe=cThm!85!black,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{24}{30}\selectfont\bfseries مذكرات محور: الدالة الأسية}\\[8pt]
+{\color{white}\large السنة الثالثة ثانوي -- تسيير واقتصاد}\\[4pt]
+{\color{white}\large 6 مذكرات (12 ساعة) -- السنة الدراسية 2026-2027}
+\end{tcolorbox}
+\end{LTR}
+\begin{BOX}{cThm}{يتضمن هذا العمل}
+\begin{enumerate}[label=\textbf{مذكرة \arabic{enumi}:},leftmargin=6em,start=34]
+\item الدالة الأسية النيبيرية: التعريف ، الخواص ، الدراسة.
+\item حل معادلات ومتراجحات تتضمن أسيات.
+\item النهايات الشهيرة والتزايد المقارن ، دوال من الشكل $e^u$.
+\item الدالة الأسية ذات الأساس $a$ ، الدوال القوى.
+\item حل مشكلات متعلقة بإيداع أو تسديد.
+\item حل مسائل حول دراسة دوال لوغاريتمية وأسية.
+\end{enumerate}
+وفق التدرج السنوي (الأسابيع 17--21): $e^x$ العدد الذي لوغاريتمه $x$ (يُبنى على محور الدالة اللوغاريتمية) ؛ النهايات الشهيرة تُقبل.
+\end{BOX}
+\newpage
+\ModhHead{34}{3 ت ا}{تحليل}{الدالة الأسية}{02 سا}{الدالة الأسية النيبيرية: التعريف ، الخواص ، الدراسة}%
+{\begin{itemize}\item الدالة $\ln$ ودراستها.\end{itemize}}%
+{\begin{itemize}\item تعريف الدالة الأسية ومعرفة خواصها المميزة ، مشتقتها ، تمثيلها البياني ، سلوكها التقاربي.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية والبيانية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} $\ln$ متزايدة تماماً من $-\infty$ إلى $+\infty$: هل لكل عدد $x$ عدد موجب $y$ يحقق $\ln y=x$ ؟}{10 د}{سؤال.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{مناقشة النشاط صفحة 150}\par\ck\ نقبل أنه يوجد عدد وحيد $y>0$ يحقق $\ln y=x$: نرمز له $e^x$ أو $\exp(x)$.\par
+\ck\ بالحاسبة: $e^1\approx2{,}718$ ، $e^0=1$ ، $e^{-1}\approx0{,}368$.\par
+}{35 د}{الحاسبة.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ من أجل كل عدد حقيقي $x$: $y=e^x$ تكافئ $\ln y=x$ مع $y>0$. إذن $e^x>0$ ، $\ln(e^x)=x$ ، و $e^{\ln x}=x$ ($x>0$).\par\Lab{cThm}{خاصية}\ $e^{a+b}=e^ae^b$ ؛ $e^{-a}=\dfrac1{e^a}$ ؛ $e^{a-b}=\dfrac{e^a}{e^b}$ ؛ $(e^a)^n=e^{na}$.\par}{50 د}{التناظر مع $\ln$.}
+\Row{}{%
+\Lab{cThm}{الدراسة}\par\ck\ $(e^x)^{\prime}=e^x>0$: متزايدة تماماً على $\mathbb R$.\par
+\ck\ $\lim\limits_{x\to +\infty}e^x=+\infty$ ؛ $\lim\limits_{x\to -\infty}e^x=0$: محور الفواصل مقارب بجوار $-\infty$.\par
+\ck\ المماس عند $0$: $y=x+1$ ؛ منحنيا $e^x$ و $\ln x$ متناظران بالنسبة إلى $y=x$.\par
+\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
+\draw (0,0) rectangle (6,-5); \draw (0,-1)--(6,-1); \draw (0,-2)--(6,-2); \draw (1.4,0)--(1.4,-5);
+\node at (0.7,-0.5){$x$}; \node at (0.7,-1.5){$(e^x)^{\prime}$}; \node at (0.7,-3.5){$e^x$};
+\node at (1.9,-0.5){$-\infty$}; \node at (5.4,-0.5){$+\infty$}; \node at (3.65,-1.5){$+$};
+\node (a) at (1.9,-4.5){$0$}; \node (c) at (5.4,-2.5){$+\infty$}; \draw[->,cDef,thick] (a)--(c);
+\end{tikzpicture}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.65cm,y=0.65cm,font=\scriptsize]
+\draw[->] (-4,0)--(5,0) node[right]{$x$}; \draw[->] (0,-3.5)--(0,5.4) node[above]{$y$};
+\draw[gray,densely dotted] (-3,-3)--(5,5) node[below right]{$y=x$};
+\draw[cDef,thick,domain=-4:1.65,samples=60] plot (\x,{exp(\x)}) node[left]{$y=e^x$};
+\draw[cRem!80!black,thick,domain=0.03:5,samples=80] plot (\x,{ln(\x)}) node[above]{$y=\ln x$};
+\draw[cThm,dashed] (-3.5,-2.5)--(2,3) node[right]{$y=x+1$};
+\node[left] at (0,1){$1$}; \node[below] at (1,0){$1$};
+\end{tikzpicture}\end{LTR}\par \Lab{cThm!80!black}{حذار}\ $e^{a+b}\neq e^a+e^b$.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par بسّط: $A=\dfrac{e^{3x}\times e^{-x}}{e^{x+1}}$ ؛ $B=e^{2\ln3}$. ثم احسب مشتقة $f(x)=xe^x$.\par\textbf{الحل:} $A=e^{x-1}$ ؛ $B=e^{\ln9}=9$ ؛ $f^{\prime}(x)=(x+1)e^x$.\par\textbf{واجب منزلي:} تمارين من باب الدالة الأسية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{35}{3 ت ا}{تحليل}{الدالة الأسية}{02 سا}{حل معادلات ومتراجحات تتضمن أسيات}%
+{\begin{itemize}\item خواص الدالة الأسية و $\ln$.\end{itemize}}%
+{\begin{itemize}\item حل معادلات ومتراجحات تتضمن $e^x$.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية والبيانية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} حل: $e^x=3$. وماذا عن $e^x=-1$ ؟}{10 د}{سؤال.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ $e^x=3$ تكافئ $x=\ln3$ ؛ $e^x=-1$ مستحيلة لأن $e^x>0$.\par
+}{35 د}{متغير مساعد.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\par\ck\ $e^a=e^b$ تكافئ $a=b$ ؛ $e^a<e^b$ تكافئ $a<b$.\par
+\ck\ من أجل $k>0$: $e^x=k$ تكافئ $x=\ln k$.\par
+\Lab{cEx}{مثال}\par\ck\ $e^{2x-1}=1$: $2x-1=0$ ، $x=\dfrac12$.\par
+\ck\ $e^{x+1}>e^{3-x}$: $x+1>3-x$ ، $x>1$.\par
+\ck\ $e^x<5$: $x<\ln5$.\par
+\ck\ $e^{2x}-3e^x+2=0$: نضع $X=e^x>0$: $X^2-3X+2=0$ ، $X=1$ أو $X=2$ ، إذن $x=0$ أو $x=\ln2$.\par
+}{50 د}{التحقق بالحاسبة.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ مع المتغير المساعد نرفض الحلول $X\leqslant0$.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par حل: $e^{2x}-e^x-6=0$ ؛ $e^{3x-2}\leqslant1$.\par\textbf{الحل:} $X=3$ أو $X=-2$ (مرفوض): $x=\ln3$ ؛ $3x-2\leqslant0$: $x\leqslant\dfrac23$.\par\textbf{واجب منزلي:} تمارين من باب الدالة الأسية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{36}{3 ت ا}{تحليل}{الدالة الأسية}{02 سا}{النهايات الشهيرة والتزايد المقارن ، دراسة دوال من الشكل $e^u$}%
+{\begin{itemize}\item دراسة الدالة الأسية ، النهايات الشهيرة لـ $\ln$.\end{itemize}}%
+{\begin{itemize}\item معرفة وتفسير النهايات $\lim\limits_{x\to +\infty}\frac{e^x}{x^n}=+\infty$ ، $\lim\limits_{x\to +\infty}x^ne^{-x}=0$ ، $\lim\limits_{x\to -\infty}xe^x=0$.\item دراسة دوال من الشكل $e^u$.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية والبيانية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} بالحاسبة البيانية: ارسم $\ln x$ ، $x^2$ ، $e^x$: كلها تؤول إلى $+\infty$ ، فأيها «أسرع»؟}{10 د}{الحاسبة البيانية.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ جدول قيم من أجل $x=10$: $\ln10\approx2{,}3$ ، $10^2=100$ ، $e^{10}\approx22026$.\par
+\ck\ التزايد المقارن: عند $+\infty$ الأسية تتفوق على «القوة» ، و«القوة» تتفوق على اللوغاريتم.\par
+}{35 د}{جدول قيم.}
+\Row{بناء المعارف}{%
+\Lab{cThm}{نهايات شهيرة (تُقبل)}\ ($n$ طبيعي غير معدوم) $\lim\limits_{x\to +\infty}\dfrac{e^x}{x^n}=+\infty$ ؛ $\lim\limits_{x\to +\infty}x^ne^{-x}=0$ ؛ $\lim\limits_{x\to -\infty}xe^x=0$.\par\Lab{cThm}{الدالة $e^u$}\ $(e^u)^{\prime}=u^{\prime}e^u$: لـ $e^u$ نفس اتجاه تغير $u$ ؛ دالة أصلية لـ $u^{\prime}e^u$ هي $e^u$.\par}{50 د}{جدول التغيرات.}
+\Row{}{%
+\Lab{cEx}{مثال}\ $\lim\limits_{x\to +\infty}(e^x-x)=\lim\limits_{x\to +\infty}x\left(\dfrac{e^x}x-1\right)=+\infty$ ؛ $\lim\limits_{x\to +\infty}(x^2+1)e^{-x}=0$.\par $f(x)=xe^{-x}$: $f^{\prime}(x)=(1-x)e^{-x}$ ؛ $\lim\limits_{x\to -\infty}f(x)=-\infty$ ، $\lim\limits_{x\to +\infty}f(x)=0$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
+\draw (0,0) rectangle (7,-5); \draw (0,-1)--(7,-1); \draw (0,-2)--(7,-2); \draw (1.4,0)--(1.4,-5);
+\node at (0.7,-0.5){$x$}; \node at (0.7,-1.5){$f^{\prime}(x)$}; \node at (0.7,-3.5){$f(x)$};
+\node at (1.9,-0.5){$-\infty$}; \node at (4,-0.5){$1$}; \node at (6.4,-0.5){$+\infty$};
+\node at (2.9,-1.5){$+$}; \node at (4,-1.5){$0$}; \node at (5.2,-1.5){$-$};
+\node (a) at (1.9,-4.5){$-\infty$}; \node (b) at (4,-2.5){$\frac1e$}; \node (c) at (6.4,-4.5){$0$};
+\draw[->,cDef,thick] (a)--(b); \draw[->,cDef,thick] (b)--(c);
+\end{tikzpicture}\end{LTR}\par \Lab{cThm!80!black}{حذار}\ $e^{-x}>0$: إشارة $f^{\prime}$ إشارة $1-x$.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par $g(x)=e^{-x^2+2x}$. احسب $g^{\prime}(x)$ ، النهايات عند $\pm\infty$ ، وشكل جدول التغيرات.\par\textbf{الحل:} $g^{\prime}(x)=(-2x+2)e^{-x^2+2x}$ ؛ $-x^2+2x\to-\infty$: $\lim\limits_{x\to \pm\infty}g(x)=0$ ؛ عظمى $g(1)=e$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
+\draw (0,0) rectangle (7,-5); \draw (0,-1)--(7,-1); \draw (0,-2)--(7,-2); \draw (1.4,0)--(1.4,-5);
+\node at (0.7,-0.5){$x$}; \node at (0.7,-1.5){$g^{\prime}(x)$}; \node at (0.7,-3.5){$g(x)$};
+\node at (1.9,-0.5){$-\infty$}; \node at (4,-0.5){$1$}; \node at (6.4,-0.5){$+\infty$};
+\node at (2.9,-1.5){$+$}; \node at (4,-1.5){$0$}; \node at (5.2,-1.5){$-$};
+\node (a) at (1.9,-4.5){$0$}; \node (b) at (4,-2.5){$e$}; \node (c) at (6.4,-4.5){$0$};
+\draw[->,cDef,thick] (a)--(b); \draw[->,cDef,thick] (b)--(c);
+\end{tikzpicture}\end{LTR}\par \par\textbf{واجب منزلي:} تمارين من باب الدالة الأسية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{37}{3 ت ا}{تحليل}{الدالة الأسية}{02 سا}{الدالة الأسية ذات الأساس $a$ ، الدوال القوى}%
+{\begin{itemize}\item الدالتان $\ln$ و $\exp$.\end{itemize}}%
+{\begin{itemize}\item تعريف $a^x=e^{x\ln a}$ ودراسة اتجاه تغيرها ، والدوال القوى $x^\alpha$.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية والبيانية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} آلة ثمنها $500000$ DA تفقد $20\%$ من قيمتها كل سنة: متى تصبح قيمتها أقل من $100000$ DA ؟}{10 د}{وضعية اقتصادية.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ القيمة بعد $t$ سنة: $V(t)=500000\times0{,}8^t$.\par
+\ck\ $0{,}8^t<0{,}2$: $t\ln0{,}8<\ln0{,}2$ ، $t>\dfrac{\ln0{,}2}{\ln0{,}8}\approx7{,}21$ ($\ln0{,}8<0$ يقلب الإشارة): بعد $8$ سنوات.\par
+}{35 د}{الحاسبة.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ من أجل $a>0$: $a^x=e^{x\ln a}$ ($x$ حقيقي). \textbf{الدالة القوة}: $x^\alpha=e^{\alpha\ln x}$ ($x>0$ ، $\alpha$ حقيقي).\par\Lab{cThm}{خاصية}\par\ck\ $(a^x)^{\prime}=\ln a\times a^x$: متزايدة تماماً إذا $a>1$ ، متناقصة تماماً إذا $0<a<1$.\par
+\ck\ $(x^\alpha)^{\prime}=\alpha x^{\alpha-1}$ ؛ $x^{\frac12}=\sqrt x$.\par
+\ck\ لـ $a^x$ نفس خواص $e^x$: $a^{x+y}=a^xa^y$ ...\par
+}{50 د}{المقارنة بين $a>1$ و $a<1$.}
+\Row{}{%
+\Lab{cEx}{مثال}\ $2^x=10$: $x=\dfrac{\ln10}{\ln2}\approx3{,}32$ ؛ $(2^x)^{\prime}=\ln2\times2^x$ ؛ $0{,}5^x$ متناقصة.\par\Lab{cThm!80!black}{حذار}\ القسمة على $\ln a<0$ (لما $0<a<1$) تقلب اتجاه المتراجحة.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par 1) حل $1{,}5^x\geqslant100$. 2) احسب مشتقة $f(x)=x^{1{,}5}$ على $]0;+\infty[$.\par\textbf{الحل:} 1) $x\geqslant\dfrac{\ln100}{\ln1{,}5}\approx11{,}36$. 2) $f^{\prime}(x)=1{,}5\,x^{0{,}5}=1{,}5\sqrt x$.\par\textbf{واجب منزلي:} تمارين من باب الدالة الأسية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{38}{3 ت ا}{تحليل}{الدالة الأسية}{02 سا}{حل مشكلات متعلقة بإيداع أو تسديد}%
+{\begin{itemize}\item المتتاليات الهندسية ، $\ln$ ، $a^x$.\end{itemize}}%
+{\begin{itemize}\item حل مشكلات إيداع وتسديد تتدخل فيها اللوغاريتمات أو الأسيات.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية والبيانية.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} مؤسسة تقترض $1000000$ DA بنسبة $5\%$ سنوياً وتسدد بأقساط سنوية ثابتة على $10$ سنوات: ما قيمة القسط؟}{10 د}{وضعية مالية.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة (إيداع)}\ إيداع $200000$ DA بفائدة مركبة $4\%$ سنوياً.\par\ck\ الرصيد بعد $n$ سنة: $C_n=200000\times1{,}04^n$ (متتالية هندسية).\par
+\ck\ يتضاعف الرصيد لما $1{,}04^n\geqslant2$: $n\geqslant\dfrac{\ln2}{\ln1{,}04}\approx17{,}67$: بعد $18$ سنة.\par
+}{35 د}{ربط بالمتتاليات.}
+\Row{بناء المعارف}{%
+\Lab{cMeth}{طريقة}\ نكتب الحد العام (هندسي غالباً) ، ثم نحل متراجحة أسية بتطبيق $\ln$.\par\Lab{cThm}{التسديد بأقساط ثابتة (تُقبل)}\ قرض $C$ بنسبة $t$ يُسدد بـ $n$ قسطاً سنوياً ثابتاً: $a=\dfrac{C\,t}{1-(1+t)^{-n}}$.\par}{50 د}{الحاسبة.}
+\Row{}{%
+\Lab{cEx}{مثال}\ $C=1000000$ ، $t=0{,}05$ ، $n=10$: $a=\dfrac{50000}{1-1{,}05^{-10}}\approx129505$ DA.\par\Lab{cThm!80!black}{حذار}\ $n$ عدد طبيعي: نأخذ أول عدد طبيعي يحقق المتراجحة.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par إيداع $150000$ DA بفائدة مركبة $3{,}5\%$ سنوياً. بعد كم سنة يتجاوز الرصيد $200000$ DA ؟\par\textbf{الحل:} $1{,}035^n\geqslant\dfrac43$: $n\geqslant\dfrac{\ln\frac43}{\ln1{,}035}\approx8{,}36$: بعد $9$ سنوات.\par\textbf{واجب منزلي:} مسائل من صفحة 143 إلى 147.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{39}{3 ت ا}{تحليل}{الدالة الأسية}{02 سا}{حل مسائل حول دراسة دوال لوغاريتمية وأسية}%
+{\begin{itemize}\item دراسة $\ln$ و $\exp$ ، النهايات الشهيرة.\end{itemize}}%
+{\begin{itemize}\item دراسة دالة لوغاريتمية أو أسية كاملة وتمثيلها البياني.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية والبيانية. ورق ميليمتري.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} ما خطوات دراسة دالة؟ وما الجديد مع $\ln$ و $\exp$ ؟}{10 د}{سؤال تلخيصي.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{مسألة}\ $f(x)=\dfrac{\ln x}x$ على $]0;+\infty[$.\par\ck\ النهايات: $\lim\limits_{x\to 0^{+}}f(x)=-\infty$ ($\ln x\to-\infty$ و $\frac1x\to+\infty$) ؛ $\lim\limits_{x\to +\infty}f(x)=0$ (نهاية شهيرة).\par
+\ck\ المقاربان: محور التراتيب ومحور الفواصل.\par
+}{35 د}{عمل بالأفواج.}
+\Row{بناء المعارف}{%
+\Lab{cEx}{الدراسة}\ $f^{\prime}(x)=\dfrac{1-\ln x}{x^2}$ ، إشارتها إشارة $1-\ln x$: موجبة لما $x<e$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
+\draw (0,0) rectangle (7,-5); \draw (0,-1)--(7,-1); \draw (0,-2)--(7,-2); \draw (1.4,0)--(1.4,-5);
+\node at (0.7,-0.5){$x$}; \node at (0.7,-1.5){$f^{\prime}(x)$}; \node at (0.7,-3.5){$f(x)$};
+\node at (1.9,-0.5){$0$}; \node at (4,-0.5){$e$}; \node at (6.4,-0.5){$+\infty$};
+\node at (2.9,-1.5){$+$}; \node at (4,-1.5){$0$}; \node at (5.2,-1.5){$-$};
+\node (a) at (1.9,-4.5){$-\infty$}; \node (b) at (4,-2.5){$\frac1e$}; \node (c) at (6.4,-4.5){$0$};
+\draw[->,cDef,thick] (a)--(b); \draw[->,cDef,thick] (b)--(c);
+\end{tikzpicture}\end{LTR}\par $f(1)=0$: $C_f$ يقطع محور الفواصل في $(1;0)$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.75cm,y=1.6cm,font=\scriptsize]
+\draw[->] (-0.4,0)--(10.5,0) node[right]{$x$}; \draw[->] (0,-1.6)--(0,0.9) node[above]{$y$};
+\draw[cDef,thick,domain=0.42:10.3,samples=100] plot (\x,{ln(\x)/\x}) node[above]{$C_f$};
+\draw[densely dotted] (2.718,0)--(2.718,0.368)--(0,0.368); \node[left] at (0,0.368){$\frac1e$}; \node[below] at (2.718,0){$e$}; \node[below] at (1,0){$1$};
+\end{tikzpicture}\end{LTR}\par \Lab{cThm!80!black}{حذار}\ إشارة $\ln x$: سالبة على $]0;1[$ ، موجبة على $]1;+\infty[$.}{50 د}{رسم بالحاسبة للتحقق.}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par $g(x)=(x-1)e^x$ على $\mathbb R$. احسب النهايات ، $g^{\prime}(x)$ ، وشكّل جدول التغيرات.\par\textbf{الحل:} $\lim\limits_{x\to -\infty}g(x)=\lim\limits_{x\to -\infty}(xe^x-e^x)=0$ ؛ $\lim\limits_{x\to +\infty}g(x)=+\infty$ ؛ $g^{\prime}(x)=xe^x$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
+\draw (0,0) rectangle (7,-5); \draw (0,-1)--(7,-1); \draw (0,-2)--(7,-2); \draw (1.4,0)--(1.4,-5);
+\node at (0.7,-0.5){$x$}; \node at (0.7,-1.5){$g^{\prime}(x)$}; \node at (0.7,-3.5){$g(x)$};
+\node at (1.9,-0.5){$-\infty$}; \node at (4,-0.5){$0$}; \node at (6.4,-0.5){$+\infty$};
+\node at (2.9,-1.5){$-$}; \node at (4,-1.5){$0$}; \node at (5.2,-1.5){$+$};
+\node (a) at (1.9,-2.5){$0$}; \node (b) at (4,-4.5){$-1$}; \node (c) at (6.4,-2.5){$+\infty$};
+\draw[->,cDef,thick] (a)--(b); \draw[->,cDef,thick] (b)--(c);
+\end{tikzpicture}\end{LTR}\par \par\textbf{واجب منزلي:} مسائل من صفحة 143 إلى 147.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو معالجة بيداغوجية.}
+\end{Sayr}
+\end{document}
