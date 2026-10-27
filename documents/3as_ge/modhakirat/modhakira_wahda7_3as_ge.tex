@@ -1,0 +1,325 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\usepackage{longtable}
+\setlength{\LTpre}{4pt}\setlength{\LTpost}{0pt}
+\newcommand{\Phase}[1]{\textbf{#1}}
+\newcommand{\Fld}[2]{\textbf{#1:}\ #2}
+% رأس المذكرة على نمط النموذج: إطار بعنوان «مذكرة رقم»، معلومات الحصة، ثم إطار الكفاءات
+\newcommand{\ModhHead}[9]{%
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=4mm,boxrule=1pt,top=14pt,bottom=6pt,left=8pt,right=8pt,
+ overlay={\node[fill=cThm!85!black,text=white,rounded corners=3mm,inner xsep=14pt,inner ysep=4pt,font=\large\bfseries] at ([yshift=0pt]frame.north){\ar{مذكرة رقم #1}};},
+ before upper={\selectlanguage{arabic}}]
+\begin{tabular}{@{}p{0.4\linewidth}p{0.55\linewidth}@{}}
+\Fld{المستوى}{#2} & \Fld{الثانوية}{\dotfill}\\[3pt]
+\Fld{المادة}{رياضيات} & \Fld{ميدان التعلم}{#3}\\[3pt]
+\Fld{المدة}{#5} & \Fld{الوحدة التعلمية}{#4}\\[3pt]
+\Fld{الأستاذ}{\dotfill} & \Fld{المحتوى المعرفي}{#6}\\
+\end{tabular}
+\end{tcolorbox}
+\begin{tcolorbox}[enhanced,colback=white,colframe=cThm!85!black,arc=3mm,boxrule=0.8pt,sidebyside,sidebyside align=top,lefthand ratio=0.5,
+ segmentation style={dashed,cThm!60},before upper={\selectlanguage{arabic}},before lower={\selectlanguage{arabic}}]
+\textbf{الكفاءات المستهدفة:}\par #8
+\tcblower
+\textbf{الكفاءات القبلية:}\par #7
+\end{tcolorbox}
+\end{LTR}
+\par\smallskip\textbf{الوسائل:} #9\par\smallskip}
+\newenvironment{Sayr}{%
+\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\hline\endfoot}{\end{longtable}\end{LTR}}
+% سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
+\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
+
+\newcommand{\Lab}[2]{\foreignlanguage{english}{\tcbox[on line,colback=#1,colframe=#1,boxrule=0pt,arc=2pt,boxsep=1pt,left=5pt,right=5pt,top=1pt,bottom=1pt]{\ar{\textcolor{white}{\textbf{#2}}}}}}
+\newcommand{\Num}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[fill=cDef,text=white,inner sep=2pt,font=\footnotesize\bfseries](c){#1};}}
+\newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
+\newenvironment{Kad}[1]{\par\smallskip\Lab{#1}}{\par}
+\SetHeader{\small\bfseries\color{cSec}مذكرات محور: الإحصاء}{\small\color{cSec}السنة الثالثة ثانوي -- تسيير واقتصاد}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cThm!85!black,colframe=cThm!85!black,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{24}{30}\selectfont\bfseries مذكرات محور: الإحصاء}\\[8pt]
+{\color{white}\large السنة الثالثة ثانوي -- تسيير واقتصاد}\\[4pt]
+{\color{white}\large 4 مذكرات (8 ساعات) -- السنة الدراسية 2026-2027}
+\end{tcolorbox}
+\end{LTR}
+\begin{BOX}{cThm}{يتضمن هذا العمل}
+\begin{enumerate}[label=\textbf{مذكرة \arabic{enumi}:},leftmargin=6em,start=40]
+\item السلاسل الإحصائية لمتغيرين عدديين ، سحابة النقط ، النقطة المتوسطة.
+\item التعديل الخطي: مستقيم الانحدار بالمربعات الدنيا.
+\item التقدير بالتعديل ، تعديل بتغيير المتغير $z=\ln y$.
+\item حل مسائل في الإحصاء.
+\end{enumerate}
+وفق التدرج السنوي (الأسبوع 22): مبدأ المربعات الدنيا يُشرح ووجود مستقيم الانحدار يُقبل ؛ المعاملات بالدساتير أو بالحاسبة ؛ استكمالات داخلية وخارجية.
+\end{BOX}
+\newpage
+\ModhHead{40}{3 ت ا}{إحصاء}{الإحصاء}{02 سا}{السلاسل الإحصائية لمتغيرين عدديين ، سحابة النقط ، النقطة المتوسطة}%
+{\begin{itemize}\item الوسط الحسابي ، المعلم.\end{itemize}}%
+{\begin{itemize}\item تعريف سلسلة إحصائية لمتغيرين عدديين وتمثيلها بسحابة نقط.\item تعيين إحداثيي النقطة المتوسطة.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية ، ورق ميليمتري.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} هل توجد علاقة بين سن العامل وأجرته؟ كيف نمثلها؟}{10 د}{أمثلة: القامة والوزن ، الأجرة والسن.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\ عدد زبائن متجر $y_i$ حسب رتبة الشهر $x_i$:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5\\\hline $y_i$ & 120 & 150 & 170 & 205 & 230\\\hline\end{tabular}}\end{LTR}\par \ck\ نمثل النقط $M_i(x_i;y_i)$ في معلم متعامد.\par
+\ck\ $\bar x=3$ ، $\bar y=\dfrac{875}5=175$: النقطة $G(3;175)$ «مركز» النقط.\par
+\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1cm,y=0.022cm,font=\scriptsize]
+\draw[->] (0,90)--(6.2,90) node[right]{$x$}; \draw[->] (0,90)--(0,255) node[above]{$y$};
+\draw (1,90) node[below]{$1$} -- ++(0,0.08/0.022);\draw (2,90) node[below]{$2$} -- ++(0,0.08/0.022);\draw (3,90) node[below]{$3$} -- ++(0,0.08/0.022);\draw (4,90) node[below]{$4$} -- ++(0,0.08/0.022);\draw (5,90) node[below]{$5$} -- ++(0,0.08/0.022);\draw (0,100) node[left]{$100$} -- ++(0.08/1,0);\draw (0,150) node[left]{$150$} -- ++(0.08/1,0);\draw (0,200) node[left]{$200$} -- ++(0.08/1,0);\draw (0,250) node[left]{$250$} -- ++(0.08/1,0);\fill[cDef] (1,120) circle (2.2pt);\fill[cDef] (2,150) circle (2.2pt);\fill[cDef] (3,170) circle (2.2pt);\fill[cDef] (4,205) circle (2.2pt);\fill[cDef] (5,230) circle (2.2pt);
+\fill[cEx] (3,175) circle (2.6pt) node[above left]{$G$};
+\end{tikzpicture}\end{LTR}\par }{35 د}{التمثيل على ورق ميليمتري.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\par\ck\ ندرس على مجتمع ميزتين كميتين $X$ و $Y$: الثنائيات $(x_i;y_i)$ تشكل \textbf{سلسلة إحصائية لمتغيرين}.\par
+\ck\ \textbf{سحابة النقط}: مجموعة النقط $M_i(x_i;y_i)$ في معلم متعامد.\par
+\ck\ \textbf{النقطة المتوسطة}: $G(\bar x;\bar y)$ حيث $\bar x=\dfrac{x_1+\dots+x_n}n$ و $\bar y=\dfrac{y_1+\dots+y_n}n$.\par
+\Lab{cEx}{مثال}\ سن العامل $x_i$ وأجرته $y_i$ (بآلاف DA):\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & 25 & 30 & 35 & 40 & 45 & 50\\\hline $y_i$ & 32 & 36 & 41 & 43 & 48 & 52\\\hline\end{tabular}}\end{LTR}\par $\bar x=37{,}5$ ، $\bar y=\dfrac{252}6=42$: $G(37{,}5;42)$.\par}{50 د}{الحاسبة لحساب الأوساط.}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\ تغيير المبدأ: إذا وضعنا $z_i=x_i-35$ فإن $\bar z=\bar x-35=2{,}5$ (خطية الوسط الحسابي).\par\Lab{cThm!80!black}{حذار}\ نختار وحدات ومبدأً مناسبين للمعلم حتى تظهر السحابة جيداً.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par إنتاج ورشة $y_i$ (بالأطنان) حسب رتبة السنة $x_i$:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & 6\\\hline $y_i$ & 12 & 15 & 19 & 22 & 26 & 32\\\hline\end{tabular}}\end{LTR}\par مثّل السحابة وعيّن $G$.\par\textbf{الحل:} $\bar x=3{,}5$ ، $\bar y=\dfrac{126}6=21$: $G(3{,}5;21)$.\par\textbf{واجب منزلي:} تمارين من باب الإحصاء.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{41}{3 ت ا}{إحصاء}{الإحصاء}{02 سا}{التعديل الخطي: مستقيم الانحدار بالمربعات الدنيا}%
+{\begin{itemize}\item سحابة النقط ، النقطة المتوسطة ، معادلة مستقيم.\end{itemize}}%
+{\begin{itemize}\item إنشاء مستقيم تعديل خطي بطريقة المربعات الدنيا.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية ، ورق ميليمتري.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} سحابة الزبائن «متطاولة»: هل يمكن رسم مستقيم تقع حوله نقطها؟ أي مستقيم هو «الأقرب»؟}{10 د}{نشاط بالمسطرة.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ كل تلميذ يرسم مستقيماً يمر بـ $G$ ويقيس المسافات الشاقولية $M_iP_i$.\par
+\ck\ نقارن المستقيمات بالمجموع $S=M_1P_1^2+M_2P_2^2+\dots+M_nP_n^2$: الأفضل هو الذي يجعل $S$ أصغر ما يمكن.\par
+}{35 د}{جدول الحساب.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ القيام بـ\textbf{تعديل خطي} لسحابة يعني إيجاد دالة تآلفية $y=ax+b$ تعبّر تقريبياً عن $y$ بدلالة $x$.\par\Lab{cThm}{المربعات الدنيا (تُقبل)}\ يوجد مستقيم وحيد يشمل $G$ ويجعل $S$ أصغرياً: \textbf{مستقيم الانحدار بالمربعات الدنيا} $y=ax+b$ حيث:\par $a=\dfrac{\frac1n\sum x_iy_i-\bar x\,\bar y}{\frac1n\sum(x_i-\bar x)^2}$ ، $b=\bar y-a\bar x$.\par}{50 د}{التحقق بالحاسبة.}
+\Row{}{%
+\Lab{cEx}{مثال}\ مع الوضعية: \par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & \ar{المجموع}\\\hline $y_i$ & 120 & 150 & 170 & 205 & 230 & 875\\\hline $x_iy_i$ & 120 & 300 & 510 & 820 & 1150 & 2900\\\hline $(x_i-\bar x)^2$ & 4 & 1 & 0 & 1 & 4 & 10\\\hline\end{tabular}}\end{LTR}\par $a=\dfrac{580-3\times175}{2}=\dfrac{55}2=27{,}5$ ؛ $b=175-27{,}5\times3=92{,}5$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1cm,y=0.022cm,font=\scriptsize]
+\draw[->] (0,90)--(6.2,90) node[right]{$x$}; \draw[->] (0,90)--(0,255) node[above]{$y$};
+\draw (1,90) node[below]{$1$} -- ++(0,0.08/0.022);\draw (2,90) node[below]{$2$} -- ++(0,0.08/0.022);\draw (3,90) node[below]{$3$} -- ++(0,0.08/0.022);\draw (4,90) node[below]{$4$} -- ++(0,0.08/0.022);\draw (5,90) node[below]{$5$} -- ++(0,0.08/0.022);\draw (0,100) node[left]{$100$} -- ++(0.08/1,0);\draw (0,150) node[left]{$150$} -- ++(0.08/1,0);\draw (0,200) node[left]{$200$} -- ++(0.08/1,0);\draw (0,250) node[left]{$250$} -- ++(0.08/1,0);\draw[cRem!80!black,thick,domain=0.4:5.6] plot (\x,{27.5*\x+92.5}) node[right]{$y=27{,}5x+92{,}5$};
+\fill[cDef] (1,120) circle (2.2pt);\fill[cDef] (2,150) circle (2.2pt);\fill[cDef] (3,170) circle (2.2pt);\fill[cDef] (4,205) circle (2.2pt);\fill[cDef] (5,230) circle (2.2pt);
+\fill[cEx] (3,175) circle (2.6pt) node[above left]{$G$};
+\end{tikzpicture}\end{LTR}\par \Lab{cRem}{ملاحظات}\ بالحاسبة: ندخل القيم في قائمتين ونستعمل وظيفة الانحدار الخطي ($\text{LinReg}$).\par}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ مستقيم الانحدار يشمل دائماً $G$: نتحقق بذلك.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par مبيعات مؤسسة $y_i$ (بملايين DA) حسب رتبة السنة $x_i$:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & 6\\\hline $y_i$ & 2,1 & 2,5 & 2,8 & 3,4 & 3,7 & 4,1\\\hline\end{tabular}}\end{LTR}\par عيّن معادلة مستقيم الانحدار (تدوَّر النتائج إلى $10^{-3}$).\par\textbf{الحل:} $\bar x=3{,}5$ ، $\bar y=3{,}1$ ، $\frac16\sum x_iy_i\approx12{,}033$ ، $\frac16\sum(x_i-\bar x)^2\approx2{,}917$: $a\approx0{,}406$ ، $b=1{,}68$.\par\textbf{واجب منزلي:} تمارين من باب الإحصاء.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{42}{3 ت ا}{إحصاء}{الإحصاء}{02 سا}{التقدير بالتعديل ، تعديل بتغيير المتغير $z=\ln y$}%
+{\begin{itemize}\item مستقيم الانحدار ، الدالتان $\ln$ و $\exp$.\end{itemize}}%
+{\begin{itemize}\item استغلال التعديل الخطي للقيام باستكمالات داخلية وخارجية.\item إجراء تعديل لسلسلة من الشكل $(x;\ln y)$ والمقارنة بين تعديلين.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية ، ورق ميليمتري.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} باستعمال $y=27{,}5x+92{,}5$: كم زبوناً نتوقع في الشهر السابع؟}{10 د}{سؤال تنبؤ.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{وضعية مقترحة}\par\ck\ $x=7$: $y=27{,}5\times7+92{,}5=285$ زبوناً: \textbf{استكمال خارجي} (خارج مجال المعطيات).\par
+\ck\ $x=2{,}5$ (منتصف الشهر الثالث تقريباً): $y=161{,}25$: \textbf{استكمال داخلي}.\par
+}{35 د}{مقارنة تعديلين.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ \textbf{الاستكمال الداخلي}: تقدير قيمة من أجل $x$ داخل مجال المعطيات ؛ \textbf{الاستكمال الخارجي}: خارجه (تقدير مستقبلي ، أقل دقة).\par\Lab{cMeth}{تعديل أسي}\ إذا كانت قيم $y$ تتضاعف بنسبة شبه ثابتة نضع $z=\ln y$ ، ونعدّل $(x;z)$ خطياً: $z=ax+b$ ، ثم $y=e^{ax+b}=e^b\,e^{ax}$.\par}{50 د}{الحاسبة.}
+\Row{}{%
+\Lab{cEx}{مثال}\ عدد مشتركي خدمة (بالمئات):\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & 6\\\hline $y_i$ & 50 & 62 & 77 & 95 & 118 & 146\\\hline $z_i=\ln y_i$ & 3,91 & 4,13 & 4,34 & 4,55 & 4,77 & 4,98\\\hline\end{tabular}}\end{LTR}\par \ck\ التعديل الخطي لـ $(x;y)$: $y\approx19{,}03x+24{,}73$.\par
+\ck\ التعديل الخطي لـ $(x;z)$: $z\approx0{,}214x+3{,}699$ ، إذن $y\approx40{,}4\,e^{0{,}214x}$.\par
+\ck\ تقدير $x=8$: الخطي $\approx177$ ، الأسي $e^{5{,}411}\approx224$.\par
+\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.9cm,y=0.025cm,font=\scriptsize]
+\draw[->] (0,0)--(8.2,0) node[right]{$x$}; \draw[->] (0,0)--(0,230) node[above]{$y$};
+\draw (1,0) node[below]{$1$} -- ++(0,0.08/0.025);\draw (2,0) node[below]{$2$} -- ++(0,0.08/0.025);\draw (3,0) node[below]{$3$} -- ++(0,0.08/0.025);\draw (4,0) node[below]{$4$} -- ++(0,0.08/0.025);\draw (5,0) node[below]{$5$} -- ++(0,0.08/0.025);\draw (6,0) node[below]{$6$} -- ++(0,0.08/0.025);\draw (7,0) node[below]{$7$} -- ++(0,0.08/0.025);\draw (0,50) node[left]{$50$} -- ++(0.08/0.9,0);\draw (0,100) node[left]{$100$} -- ++(0.08/0.9,0);\draw (0,150) node[left]{$150$} -- ++(0.08/0.9,0);\draw (0,200) node[left]{$200$} -- ++(0.08/0.9,0);\draw[cRem!80!black,thick,domain=0.5:7.3] plot (\x,{19.03*\x+24.73}) node[right]{\ar{تعديل خطي}};
+\draw[cThm,thick,densely dashed,domain=0.5:7.3,samples=50] plot (\x,{40.41*exp(0.214*\x)}) node[right]{\ar{تعديل أسي}};
+\fill[cDef] (1,50) circle (2.2pt);\fill[cDef] (2,62) circle (2.2pt);\fill[cDef] (3,77) circle (2.2pt);\fill[cDef] (4,95) circle (2.2pt);\fill[cDef] (5,118) circle (2.2pt);\fill[cDef] (6,146) circle (2.2pt);
+\end{tikzpicture}\end{LTR}\par النقط تتبع المنحني الأسي أحسن: التعديل الأسي أنسب هنا.\par\Lab{cThm!80!black}{حذار}\ الاستكمال الخارجي البعيد غير موثوق.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par بالمبيعات في الحصة السابقة ($y=0{,}406x+1{,}68$): قدّر مبيعات السنة الثامنة ، ثم السنة التي تتجاوز فيها المبيعات $5$ ملايين DA.\par\textbf{الحل:} $0{,}406\times8+1{,}68\approx4{,}93$ ؛ $0{,}406x+1{,}68>5$: $x>8{,}18$: السنة التاسعة.\par\textbf{واجب منزلي:} تمارين من باب الإحصاء.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{Sayr}
+\newpage
+\ModhHead{43}{3 ت ا}{إحصاء}{الإحصاء}{02 سا}{حل مسائل في الإحصاء}%
+{\begin{itemize}\item سحابة النقط ، النقطة المتوسطة ، التعديل الخطي ، التقدير.\end{itemize}}%
+{\begin{itemize}\item حل مسألة شاملة في السلاسل الإحصائية لمتغيرين.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية ، ورق ميليمتري.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} ما خطوات معالجة سلسلة إحصائية لمتغيرين؟}{10 د}{سؤال تلخيصي.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{مسألة}\ الكلفة الإجمالية $y_i$ (بآلاف DA) لإنتاج $x_i$ مئات وحدة:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & 6\\\hline $y_i$ & 52 & 57 & 64 & 70 & 77 & 82\\\hline\end{tabular}}\end{LTR}\par 1) مثّل السحابة وعيّن $G$. 2) عيّن مستقيم الانحدار (إلى $10^{-2}$). 3) قدّر كلفة $800$ وحدة. 4) ابتداءً من أي كمية تتجاوز الكلفة $100$ ألف DA ؟}{35 د}{عمل بالأفواج.}
+\Row{بناء المعارف}{%
+\Lab{cEx}{الحل}\par\ck\ $\bar x=3{,}5$ ، $\bar y=\dfrac{402}6=67$: $G(3{,}5;67)$.\par
+\ck\ $\frac16\sum x_iy_i=\dfrac{1515}6=252{,}5$ ؛ $\frac16\sum(x_i-\bar x)^2\approx2{,}917$: $a=\dfrac{252{,}5-234{,}5}{2{,}917}\approx6{,}17$ ؛ $b=67-6{,}17\times3{,}5\approx45{,}4$.\par
+\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.9cm,y=0.06cm,font=\scriptsize]
+\draw[->] (0,40)--(7.2,40) node[right]{$x$}; \draw[->] (0,40)--(0,95) node[above]{$y$};
+\draw (1,40) node[below]{$1$} -- ++(0,0.08/0.06);\draw (2,40) node[below]{$2$} -- ++(0,0.08/0.06);\draw (3,40) node[below]{$3$} -- ++(0,0.08/0.06);\draw (4,40) node[below]{$4$} -- ++(0,0.08/0.06);\draw (5,40) node[below]{$5$} -- ++(0,0.08/0.06);\draw (6,40) node[below]{$6$} -- ++(0,0.08/0.06);\draw (0,40) node[left]{$40$} -- ++(0.08/0.9,0);\draw (0,60) node[left]{$60$} -- ++(0.08/0.9,0);\draw (0,80) node[left]{$80$} -- ++(0.08/0.9,0);\draw[cRem!80!black,thick,domain=0.4:6.8] plot (\x,{6.17*\x+45.4}) node[right]{$y=6{,}17x+45{,}4$};
+\fill[cDef] (1,52) circle (2.2pt);\fill[cDef] (2,57) circle (2.2pt);\fill[cDef] (3,64) circle (2.2pt);\fill[cDef] (4,70) circle (2.2pt);\fill[cDef] (5,77) circle (2.2pt);\fill[cDef] (6,82) circle (2.2pt);
+\fill[cEx] (3.5,67) circle (2.6pt) node[above left]{$G$};
+\end{tikzpicture}\end{LTR}\par \ck\ $x=8$: $y\approx6{,}17\times8+45{,}4\approx94{,}8$ ألف DA.\par
+\ck\ $6{,}17x+45{,}4>100$: $x>8{,}85$: ابتداءً من حوالي $885$ وحدة.\par
+\Lab{cRem}{ملاحظات}\ الثابت $b\approx45{,}4$ يقارب الكلفة الثابتة ، والمعامل $a$ يقارب الكلفة الهامشية لمئة وحدة.\par}{50 د}{الحاسبة للتحقق.}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نحترم التدوير المطلوب ونذكر الوحدات.}{}{}
+\Row{التقويم}{%
+\Lab{cEx}{تطبيق}\par أعد السؤالين 1 و 2 للمعطيات: $x_i$: $1$ ، $2$ ، $3$ ، $4$ ، $5$ و $y_i$: $120$ ، $150$ ، $170$ ، $205$ ، $230$ ، ثم قدّر $y$ لما $x=6$.\par\textbf{الحل:} $G(3;175)$ ، $y=27{,}5x+92{,}5$ ، $y(6)=257{,}5$.\par\textbf{واجب منزلي:} تمارين البكالوريا من باب الإحصاء.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو معالجة بيداغوجية.}
+\end{Sayr}
+\end{document}
