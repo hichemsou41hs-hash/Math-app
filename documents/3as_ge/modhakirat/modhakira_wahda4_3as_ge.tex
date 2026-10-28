@@ -212,34 +212,31 @@
 \end{LTR}
 \begin{BOX}{cThm}{يتضمن هذا العمل}
 \begin{enumerate}[label=\textbf{مذكرة \arabic{enumi}:},leftmargin=6em,start=22]
-\item الدوال الأصلية لدالة على مجال ، حساب دوال أصلية لدوال بسيطة.
-\item دالة أصلية تحقق شرطاً معيّناً ، الكلفة الإجمالية والكلفة الهامشية.
-\item تكامل دالة: المساحة تحت منحنٍ ، الكتابة $\int_a^bf(t)\,dt$.
-\item خواص التكامل ، القيمة المتوسطة لدالة على مجال.
-\item حساب المساحات (1): الحيز بين منحنٍ ومحور الفواصل.
-\item حساب المساحات (2): الحيز بين منحنيين.
+\item الدوال الأصلية ، حساب دوال أصلية لدوال بسيطة.
+\item دالة أصلية تحقق شرطاً ، الكلفة الإجمالية والهامشية.
+\item تكامل دالة: المساحة تحت منحنٍ.
+\item خواص التكامل ، القيمة المتوسطة.
+\item حساب المساحات (1): منحنٍ ومحور الفواصل.
+\item حساب المساحات (2): بين منحنيين.
 \end{enumerate}
-وفق التدرج السنوي (الأسابيع 12--14): الكلفة الإجمالية دالة أصلية للكلفة الهامشية ؛ التكامل انطلاقاً من دالة تآلفية أو الدالة مربع. لا لوغاريتم ولا أسية (تأتيان في المحور الموالي). مراجع: الكتاب المدرسي للسنة الثالثة ثانوي تسيير واقتصاد (باب الدوال الأصلية والتكامل).
+الحلول مفصّلة: المعطيات بالأسود ، \T{العناوين} و\RR{النتائج} بلون مختلف ، وكل سؤال في سطر.
 \end{BOX}
 \newpage
 \ModhHead{22}{3 ت ا}{تحليل}{الدوال الأصلية والتكاملات}{02 سا}{الدوال الأصلية لدالة على مجال ، حساب دوال أصلية لدوال بسيطة}%
 {\begin{itemize}\item حساب المشتقات ، مشتقة مركب دالتين.\end{itemize}}%
 {\begin{itemize}\item تعريف دالة أصلية لدالة على مجال والربط بينها وبين المشتقة.\item حساب دوال أصلية لدوال بسيطة.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} ما الدالة التي مشتقتها $2x$ ؟ هل هي وحيدة؟}{10 د}{سؤال عكسي.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ $x^2$ ، $x^2+1$ ، $x^2-7$ كلها مشتقتها $2x$.\par
-\ck\ الفرق بين اثنتين منها ثابت: «نعكس» عملية الاشتقاق.\par
-}{35 د}{التحقق بالاشتقاق.}
-\Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $F$ \textbf{دالة أصلية} لـ $f$ على المجال $I$ إذا كانت $F$ قابلة للاشتقاق على $I$ و $F^{\prime}(x)=f(x)$.\par}{50 د}{جدول الدوال الأصلية في الكراس.}
+\Lab{cEx}{نشاط 01}\par\textbf{(1)} احسب مشتقات الدوال: $x^2$ ، $x^2+1$ ، $x^2-7$.\par\textbf{(2)} ماذا تلاحظ؟ وما الفرق بين اثنتين منها؟}{35 د}{التحقق بالاشتقاق.}
 \Row{}{%
-\Lab{cThm}{خاصية}\par\ck\ كل دالة مستمرة على مجال تقبل دوال أصلية عليه.\par
-\ck\ إذا كانت $F$ دالة أصلية لـ $f$ فالدوال الأصلية لـ $f$ هي $F+c$ ($c$ ثابت حقيقي).\par
-\ck\ دالة أصلية لـ $f+g$ هي $F+G$ ، ولـ $kf$ هي $kF$.\par
-}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $(x^2)^{\prime}=(x^2+1)^{\prime}=(x^2-7)^{\prime}=\RR{2x}$.\par\textbf{(2)} كلها مشتقتها $2x$ ، والفرق بين اثنتين منها \RR{عدد ثابت}: «نعكس» عملية الاشتقاق.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $F$ \textbf{دالة أصلية} لـ $f$ على المجال $I$ إذا كانت $F$ قابلة للاشتقاق على $I$ و $\RR{F^{\prime}(x)=f(x)}$.}{50 د}{جدول الدوال الأصلية.}
+\Row{}{%
+\Lab{cThm}{خاصية}\par\textbf{(1)} كل دالة مستمرة على مجال تقبل دوالاً أصلية عليه.\par\textbf{(2)} إذا كانت $F$ دالة أصلية لـ $f$ فإن الدوال الأصلية لـ $f$ هي $\RR{F+c}$ ($c$ ثابت حقيقي).\par\textbf{(3)} دالة أصلية لـ $f+g$ هي $F+G$ ، ولـ $kf$ هي $kF$.}{}{}
 \Row{}{%
 \Lab{cThm}{جدول الدوال الأصلية}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{2}\begin{tabular}{|c|c|}\hline
 \rowcolor{cSec!12}\ar{الدالة $f$} & \ar{دالة أصلية $F$}\\\hline
@@ -250,119 +247,118 @@ $u^{\prime}u^n$ & $\dfrac{u^{n+1}}{n+1}$\\\hline
 $\dfrac{u^{\prime}}{u^2}$ & $-\dfrac1u$\\\hline
 \end{tabular}}\end{LTR}\par }{}{}
 \Row{}{%
-\Lab{cEx}{مثال}\par\ck\ $f(x)=4x^3-6x+5$: $F(x)=x^4-3x^2+5x$.\par
-\ck\ $g(x)=(2x+1)(x^2+x)^2$ من الشكل $u^{\prime}u^2$ مع $u=x^2+x$: $G(x)=\dfrac{(x^2+x)^3}3$.\par
-}{}{}
+\Lab{cEx}{مثال 1}\ $f(x)=4x^3-6x+5$: نطبق القاعدة على كل حد: $F(x)=4\times\dfrac{x^4}4-6\times\dfrac{x^2}2+5x=\RR{x^4-3x^2+5x}$.}{}{}
+\Row{}{%
+\Lab{cEx}{مثال 2}\ $g(x)=(2x+1)(x^2+x)^2$: نضع $u(x)=x^2+x$ ، $u^{\prime}(x)=2x+1$: $g=u^{\prime}u^2$ ، إذن $G(x)=\RR{\dfrac{(x^2+x)^3}3}$.}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ نتحقق دائماً بالاشتقاق: $F^{\prime}=f$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par عيّن دالة أصلية لكل دالة: $f(x)=x^2-2x+3$ ؛ $g(x)=\dfrac2{x^2}$ على $]0;+\infty[$ ؛ $h(x)=\dfrac3{(3x-1)^2}$ على $\left]\frac13;+\infty\right[$.\par\textbf{الحل:} $\RR{F(x)=\dfrac{x^3}3-x^2+3x}$ \RR{؛} $\RR{G(x)=-\dfrac2x}$ \RR{؛} $\RR{H(x)=-\dfrac1{3x-1}}$ \RR{(من} \RR{الشكل} \RR{$\frac{u^{\prime}}{u^2}$).}\par\textbf{واجب منزلي:} تمارين من باب الدوال الأصلية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} عيّن دالة أصلية لـ $f(x)=x^2-2x+3$.\par\textbf{(2)} عيّن دالة أصلية لـ $g(x)=\dfrac2{x^2}$ على $]0;+\infty[$.\par\textbf{(3)} عيّن دالة أصلية لـ $h(x)=\dfrac3{(3x-1)^2}$ على $\left]\frac13;+\infty\right[$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $F(x)=\dfrac{x^3}3-2\times\dfrac{x^2}2+3x=\RR{\dfrac{x^3}3-x^2+3x}$.\par\textbf{(2)} $g(x)=2\times\dfrac1{x^2}$ ، إذن $G(x)=2\times\left(-\dfrac1x\right)=\RR{-\dfrac2x}$.\par\textbf{(3)} $u(x)=3x-1$ ، $u^{\prime}(x)=3$: $h=\dfrac{u^{\prime}}{u^2}$ ، إذن $H(x)=\RR{-\dfrac1{3x-1}}$.\par\textbf{واجب منزلي:} تمارين من باب الدوال الأصلية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{23}{3 ت ا}{تحليل}{الدوال الأصلية والتكاملات}{02 سا}{دالة أصلية تحقق شرطاً معيّناً ، الكلفة الإجمالية والكلفة الهامشية}%
 {\begin{itemize}\item الدوال الأصلية ، الكلفة الإجمالية والهامشية.\end{itemize}}%
 {\begin{itemize}\item تعيين الدالة الأصلية التي تأخذ قيمة معلومة عند عدد.\item استنتاج الكلفة الإجمالية من الكلفة الهامشية والكلفة الثابتة.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} نعرف الكلفة الهامشية لمؤسسة والكلفة الثابتة: هل نستطيع إيجاد الكلفة الإجمالية؟}{10 د}{وضعية اقتصادية.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ الدوال الأصلية لـ $f(x)=3x^2-2x+1$ هي $F(x)=x^3-x^2+x+c$.\par
-\ck\ نريد $F(1)=4$: $1+c=4$ ، إذن $c=3$: دالة أصلية \textbf{وحيدة} تحقق الشرط.\par
-}{35 د}{تعيين الثابت.}
+\Lab{cEx}{نشاط 02}\ $f(x)=3x^2-2x+1$.\par\textbf{(1)} عيّن الدوال الأصلية لـ $f$.\par\textbf{(2)} عيّن الدالة الأصلية $F$ التي تحقق $F(1)=4$.}{35 د}{تعيين الثابت.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $F(x)=x^3-x^2+x+c$ ($c$ ثابت).\par\textbf{(2)} $F(1)=1-1+1+c=1+c$ ، و $F(1)=4$ ومنه $c=3$: $\RR{F(x)=x^3-x^2+x+3}$ ، وهي \RR{وحيدة}.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cThm}{خاصية}\ من أجل $x_0$ من $I$ و $y_0$ عدد حقيقي ، توجد دالة أصلية \textbf{وحيدة} $F$ لـ $f$ على $I$ تحقق $F(x_0)=y_0$.\par}{50 د}{ربط بمحور الاشتقاقية.}
+\Lab{cThm}{خاصية}\ من أجل $x_0$ من $I$ و $y_0$ عدد حقيقي ، توجد دالة أصلية \textbf{وحيدة} $F$ لـ $f$ على $I$ تحقق $\RR{F(x_0)=y_0}$.}{50 د}{ربط بمحور الاشتقاقية.}
 \Row{}{%
-\Lab{cThm}{تطبيق اقتصادي}\ بما أن $C_m(q)=C^{\prime}(q)$ فإن \textbf{الكلفة الإجمالية دالة أصلية للكلفة الهامشية} ، والكلفة الثابتة $C(0)$ تعيّن الثابت.\par}{}{}
+\Lab{cThm}{تطبيق اقتصادي}\ $C_m(q)=C^{\prime}(q)$ ، إذن \RR{الكلفة الإجمالية دالة أصلية للكلفة الهامشية} ، والكلفة الثابتة $C(0)$ تعيّن الثابت.}{}{}
 \Row{}{%
-\Lab{cEx}{مثال}\ $C_m(q)=3q^2-12q+20$ والكلفة الثابتة $100$: $C(q)=q^3-6q^2+20q+c$ ، $C(0)=c=100$: $C(q)=q^3-6q^2+20q+100$.\par}{}{}
+\Lab{cEx}{مثال}\ $C_m(q)=3q^2-12q+20$ والكلفة الثابتة $100$:\par\textbf{(1)} $C(q)=q^3-6q^2+20q+c$.\par\textbf{(2)} $C(0)=c=100$ ، إذن $\RR{C(q)=q^3-6q^2+20q+100}$.}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ لا ننسى الثابت $c$ قبل استعمال الشرط.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par الكلفة الهامشية لمؤسسة $C_m(q)=q^2-8q+20$ والكلفة الثابتة $50$. \par\textbf{(1)} عيّن الكلفة الإجمالية $C(q)$. \par\textbf{(2)} ثمن بيع الوحدة $68$: اكتب الربح $B(q)$.\par\textbf{الحل:} \par\RR{\textbf{(1)}} $\RR{C(q)=\dfrac{q^3}3-4q^2+20q+50}$. \par\RR{\textbf{(2)}} $\RR{B(q)=68q-C(q)=-\dfrac{q^3}3+4q^2+48q-50}$.\par\textbf{واجب منزلي:} تمارين من باب الدوال الأصلية (تطبيقات اقتصادية).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par الكلفة الهامشية لمؤسسة $C_m(q)=q^2-8q+20$ والكلفة الثابتة $50$.\par\textbf{(1)} عيّن الكلفة الإجمالية $C(q)$.\par\textbf{(2)} ثمن بيع الوحدة $68$: اكتب الربح $B(q)$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $C(q)=\dfrac{q^3}3-4q^2+20q+c$ و $C(0)=c=50$: $\RR{C(q)=\dfrac{q^3}3-4q^2+20q+50}$.\par\textbf{(2)} $B(q)=68q-C(q)=\RR{-\dfrac{q^3}3+4q^2+48q-50}$.\par\textbf{واجب منزلي:} تمارين من باب الدوال الأصلية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{24}{3 ت ا}{تحليل}{الدوال الأصلية والتكاملات}{02 سا}{تكامل دالة: المساحة تحت منحنٍ ، الكتابة $\int_a^bf(t)\,dt$}%
 {\begin{itemize}\item الدوال الأصلية ، مساحة شبه منحرف.\end{itemize}}%
-{\begin{itemize}\item مقاربة التكامل بمساحة الحيز تحت منحنى دالة موجبة.\item حساب $\int_a^bf(t)\,dt$ بدالة أصلية.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+{\begin{itemize}\item مقاربة التكامل بالمساحة تحت منحنى دالة موجبة.\item حساب $\int_a^bf(t)\,dt$ بدالة أصلية.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} كيف نحسب مساحة حيز يحده مستقيم مائل ومحور الفواصل؟}{10 د}{وضعية هندسية.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ $f(t)=2t+1$ على $[1;3]$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1cm,y=0.4cm,font=\scriptsize]
+\Lab{cEx}{نشاط 03}\ $f(t)=2t+1$ على $[1;3]$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1cm,y=0.4cm,font=\scriptsize]
 \fill[cDef!25] (1,0) -- (1,3) -- (3,7) -- (3,0) -- cycle;
 \draw[->] (-0.4,0)--(3.8,0) node[right]{$t$}; \draw[->] (0,-0.5)--(0,8.5) node[above]{$y$};
 \draw[cDef,thick] (-0.3,0.4)--(3.4,7.8) node[right]{$y=2t+1$};
 \draw[densely dotted] (1,0)--(1,3) (3,0)--(3,7);
 \node[below] at (1,0){$1$}; \node[below] at (3,0){$3$}; \node at (2,2){$\mathcal A=10$};
-\end{tikzpicture}\end{LTR}\par \ck\ الحيز شبه منحرف: $\mathcal A=\dfrac{(3+7)\times2}2=10$.\par
-\ck\ $F(t)=t^2+t$ دالة أصلية لـ $f$: $F(3)-F(1)=12-2=10$ ، نفس النتيجة.\par
-}{35 د}{المقارنة بين الطريقتين.}
+\end{tikzpicture}\end{LTR}\par \par\textbf{(1)} احسب مساحة شبه المنحرف الملوّن.\par\textbf{(2)} $F(t)=t^2+t$: تحقق أنها دالة أصلية لـ $f$ واحسب $F(3)-F(1)$.}{35 د}{المقارنة بين الطريقتين.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} القاعدتان $f(1)=3$ و $f(3)=7$ والارتفاع $2$: $\mathcal A=\dfrac{(3+7)\times2}2=\RR{10}$.\par\textbf{(2)} $F^{\prime}(t)=2t+1=f(t)$ ؛ $F(3)-F(1)=12-2=\RR{10}$: نفس النتيجة.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $f$ مستمرة على $I$ و $F$ دالة أصلية لها ، $a$ و $b$ من $I$: $\displaystyle\int_a^bf(t)\,dt=\big[F(t)\big]_a^b=F(b)-F(a)$.\par}{50 د}{دور المتغير الصامت.}
+\Lab{cDef}{تعريف}\ $f$ مستمرة على $I$ و $F$ دالة أصلية لها: $\RR{\displaystyle\int_{a}^{b}f(t)\,dt=\big[F(t)\big]_a^b=F(b)-F(a)}$.}{50 د}{المتغير الصامت.}
 \Row{}{%
-\Lab{cThm}{التفسير البياني}\ إذا كانت $f$ مستمرة وموجبة على $[a;b]$ ($a<b$) فإن $\displaystyle\int_a^bf(t)\,dt$ هو مساحة الحيز المحدد بـ $C_f$ ومحور الفواصل والمستقيمين $x=a$ و $x=b$ (بوحدة المساحات).\par}{}{}
+\Lab{cThm}{التفسير البياني}\ إذا كانت $f$ مستمرة وموجبة على $[a;b]$ فإن $\displaystyle\int_{a}^{b}f(t)\,dt$ هو مساحة الحيز المحدد بـ $(C_f)$ ومحور الفواصل والمستقيمين $x=a$ و $x=b$.}{}{}
 \Row{}{%
-\Lab{cEx}{مثال}\ $\displaystyle\int_0^2t^2\,dt=\left[\dfrac{t^3}3\right]_0^2=\dfrac83$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.1cm,y=0.45cm,font=\scriptsize]
+\Lab{cEx}{مثال}\ $\displaystyle\int_{0}^{2}t^2\,dt=\left[\dfrac{t^3}3\right]_0^2=\dfrac83-0=\RR{\dfrac83}$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.1cm,y=0.45cm,font=\scriptsize]
 \fill[cDef!25] (0,0) -- plot[domain=0:2,samples=50] (\x,{\x*\x}) -- (2,0) -- cycle;
 \draw[->] (-0.4,0)--(2.7,0) node[right]{$t$}; \draw[->] (0,-0.4)--(0,5.2) node[above]{$y$};
 \draw[cDef,thick,domain=-0.3:2.2,samples=50] plot (\x,{\x*\x}) node[right]{$y=t^2$};
 \node[below] at (2,0){$2$}; \node at (1.45,1){$\mathcal A$};
 \end{tikzpicture}\end{LTR}\par }{}{}
 \Row{}{%
-\Lab{cRem}{ملاحظات}\ المتغير $t$ «صامت»: $\displaystyle\int_a^bf(t)\,dt=\int_a^bf(x)\,dx$.\par}{}{}
-\Row{}{%
-\Lab{cThm!80!black}{حذار}\ النتيجة لا تتعلق بالدالة الأصلية المختارة (الثابت يُختزل).}{}{}
+\Lab{cRem}{ملاحظات}\ المتغير $t$ «صامت»: $\displaystyle\int_{a}^{b}f(t)\,dt=\displaystyle\int_{a}^{b}f(x)\,dx$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par احسب: $\displaystyle\int_1^2(3t^2-1)\,dt$ ؛ $\displaystyle\int_{-1}^1(t^3+2t)\,dt$. ثم: الكلفة الهامشية $C_m(q)=2q+10$: احسب $\displaystyle\int_0^{10}C_m(q)\,dq$ وفسّر.\par\textbf{الحل:} $\RR{6}$ \RR{؛} $\RR{0}$ \RR{؛} $\RR{\big[q^2+10q\big]_0^{10}=200}$: \RR{هو} $\RR{C(10)-C(0)}$ \RR{،} \RR{أي} \RR{زيادة} \RR{الكلفة} \RR{الإجمالية} \RR{لما} \RR{ننتج} $\RR{10}$ \RR{وحدات.}\par\textbf{واجب منزلي:} تمارين من باب التكامل.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} احسب $\displaystyle\int_{1}^{2}(3t^2-1)\,dt$.\par\textbf{(2)} احسب $\displaystyle\int_{-1}^{1}(t^3+2t)\,dt$.\par\textbf{(3)} الكلفة الهامشية $C_m(q)=2q+10$: احسب $\displaystyle\int_{0}^{10}C_m(q)\,dq$ وفسّر.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $\big[t^3-t\big]_1^2=(8-2)-(1-1)=\RR{6}$.\par\textbf{(2)} $\left[\dfrac{t^4}4+t^2\right]_{-1}^1=\left(\dfrac14+1\right)-\left(\dfrac14+1\right)=\RR{0}$.\par\textbf{(3)} $\big[q^2+10q\big]_0^{10}=200-0=\RR{200}$: هو $C(10)-C(0)$ ، أي زيادة الكلفة الإجمالية لما ننتج $10$ وحدات.\par\textbf{واجب منزلي:} تمارين من باب التكامل.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{25}{3 ت ا}{تحليل}{الدوال الأصلية والتكاملات}{02 سا}{خواص التكامل ، القيمة المتوسطة لدالة على مجال}%
 {\begin{itemize}\item حساب التكامل.\end{itemize}}%
-{\begin{itemize}\item توظيف خواص التكامل: الخطية ، علاقة شال ، الترتيب.\item حساب القيمة المتوسطة لدالة على مجال وتفسيرها.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+{\begin{itemize}\item توظيف خواص التكامل.\item حساب القيمة المتوسطة لدالة وتفسيرها.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} كيف نحسب متوسط كلفة هامشية تتغير مع الكمية بين $q=10$ و $q=20$ ؟}{10 د}{وضعية اقتصادية.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ نحسب $\displaystyle\int_0^1x\,dx$ و $\displaystyle\int_0^1x^2\,dx$ ونقارن ، مع $x^2\leqslant x$ على $[0;1]$.\par
-\ck\ نحسب $\displaystyle\int_0^3|x-1|\,dx$ بتقسيم المجال عند $1$.\par
-}{35 د}{التحقق بالحساب.}
+\Lab{cEx}{نشاط 04}\par\textbf{(1)} احسب $\displaystyle\int_{0}^{1}x\,dx$ و $\displaystyle\int_{0}^{1}x^2\,dx$ وقارن ، مع $x^2\leqslant x$ على $[0;1]$.\par\textbf{(2)} احسب $\displaystyle\int_{0}^{3}|x-1|\,dx$ بتقسيم المجال عند $1$.}{35 د}{التحقق بالحساب.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $\displaystyle\int_{0}^{1}x\,dx=\left[\dfrac{x^2}2\right]_0^1=\RR{\dfrac12}$ ؛ $\displaystyle\int_{0}^{1}x^2\,dx=\RR{\dfrac13}$ ؛ و $\dfrac13\leqslant\dfrac12$ (الترتيب محفوظ).\par\textbf{(2)} على $[0;1]$: $|x-1|=1-x$ ، وعلى $[1;3]$: $|x-1|=x-1$:\par $\displaystyle\int_{0}^{1}(1-x)\,dx+\displaystyle\int_{1}^{3}(x-1)\,dx=\dfrac12+2=\RR{\dfrac52}$.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cThm}{خاصية}\par\ck\ $\displaystyle\int_a^af=0$ ؛ $\displaystyle\int_b^af=-\int_a^bf$.\par
-\ck\ \textbf{الخطية}: $\displaystyle\int_a^b(\alpha f+\beta g)=\alpha\int_a^bf+\beta\int_a^bg$.\par
-\ck\ \textbf{علاقة شال}: $\displaystyle\int_a^cf=\int_a^bf+\int_b^cf$.\par
-\ck\ \textbf{الترتيب}: إذا كان $a\leqslant b$ و $f\leqslant g$ على $[a;b]$ فإن $\displaystyle\int_a^bf\leqslant\int_a^bg$ ؛ وإذا كانت $f\geqslant0$ فإن $\displaystyle\int_a^bf\geqslant0$.\par
-}{50 د}{تفسير بياني بالمستطيل.}
+\Lab{cThm}{خاصية}\par\textbf{(1)} $\displaystyle\int_{a}^{a}f=0$ ؛ $\displaystyle\int_{b}^{a}f=-\displaystyle\int_{a}^{b}f$.\par\textbf{(2)} \textbf{الخطية}: $\RR{\displaystyle\int_{a}^{b}(\alpha f+\beta g)=\alpha\displaystyle\int_{a}^{b}f+\beta\displaystyle\int_{a}^{b}g}$.\par\textbf{(3)} \textbf{علاقة شال}: $\RR{\displaystyle\int_{a}^{c}f=\displaystyle\int_{a}^{b}f+\displaystyle\int_{b}^{c}f}$.\par\textbf{(4)} \textbf{الترتيب}: إذا كان $a\leqslant b$ و $f\leqslant g$ على $[a;b]$ فإن $\displaystyle\int_{a}^{b}f\leqslant\displaystyle\int_{a}^{b}g$.}{50 د}{تفسير بياني بالمستطيل.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $\dfrac13\leqslant\dfrac12$ ؛ $\displaystyle\int_0^3|x-1|\,dx=\int_0^1(1-x)\,dx+\int_1^3(x-1)\,dx=\dfrac12+2=\dfrac52$.\par}{}{}
+\Lab{cDef}{القيمة المتوسطة}\ $\RR{\mu=\dfrac1{b-a}\displaystyle\int_{a}^{b}f(x)\,dx}$.}{}{}
 \Row{}{%
-\Lab{cDef}{القيمة المتوسطة}\ $\mu=\dfrac1{b-a}\displaystyle\int_a^bf(x)\,dx$ ؛ بيانياً: مساحة المستطيل الذي ارتفاعه $\mu$ تساوي مساحة الحيز تحت $C_f$.\par}{}{}
-\Row{}{%
-\Lab{cEx}{مثال}\ $C_m(q)=2q+10$ على $[10;20]$: $\mu=\dfrac1{10}\big[q^2+10q\big]_{10}^{20}=\dfrac{600-200}{10}=40$: متوسط الكلفة الهامشية.\par}{}{}
+\Lab{cEx}{مثال}\ $C_m(q)=2q+10$ على $[10;20]$: $\mu=\dfrac1{10}\big[q^2+10q\big]_{10}^{20}=\dfrac{600-200}{10}=\RR{40}$: متوسط الكلفة الهامشية.}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ في الترتيب يجب $a\leqslant b$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $f(x)=3x^2-4x+1$. احسب $\displaystyle\int_0^2f(x)\,dx$ ثم القيمة المتوسطة لـ $f$ على $[0;2]$.\par\textbf{الحل:} $\RR{\big[x^3-2x^2+x\big]_0^2=2}$ \RR{؛} $\RR{\mu=\dfrac22=1}$.\par\textbf{واجب منزلي:} تمارين من باب التكامل (الخواص والقيمة المتوسطة).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par $f(x)=3x^2-4x+1$.\par\textbf{(1)} احسب $\displaystyle\int_{0}^{2}f(x)\,dx$.\par\textbf{(2)} احسب القيمة المتوسطة لـ $f$ على $[0;2]$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $\big[x^3-2x^2+x\big]_0^2=(8-8+2)-0=\RR{2}$.\par\textbf{(2)} $\mu=\dfrac1{2-0}\times2=\RR{1}$.\par\textbf{واجب منزلي:} تمارين من باب التكامل.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{26}{3 ت ا}{تحليل}{الدوال الأصلية والتكاملات}{02 سا}{حساب المساحات (1): الحيز بين منحنٍ ومحور الفواصل}%
 {\begin{itemize}\item التكامل وخواصه ، إشارة دالة.\end{itemize}}%
 {\begin{itemize}\item توظيف التكامل في حساب مساحة حيز محدد بمنحنٍ ومحور الفواصل.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية. ورق ميليمتري.}
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة. ورق ميليمتري.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} هل $\displaystyle\int_0^2(x^2-1)\,dx$ مساحة؟ احسبه وقارن بالرسم.}{10 د}{سؤال تحدٍّ.}
+\textbf{التهيئة النفسية:} هل $\displaystyle\int_{0}^{2}(x^2-1)\,dx$ مساحة؟}{10 د}{سؤال تحدٍّ.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ $f(x)=x^2-1$ على $[0;2]$: التكامل $\dfrac23$ ، لكن جزءاً من الحيز تحت محور الفواصل: التكامل «يطرح» ذلك الجزء.}{35 د}{جدول الإشارة قبل الحساب.}
-\Row{بناء المعارف}{%
-\Lab{cThm}{خاصية}\par\ck\ إذا كانت $f\geqslant0$ على $[a;b]$: $\mathcal A=\displaystyle\int_a^bf(x)\,dx$.\par
-\ck\ إذا كانت $f\leqslant0$: $\mathcal A=-\displaystyle\int_a^bf(x)\,dx$.\par
-\ck\ إذا تغيرت الإشارة نقسم المجال بعلاقة شال.\par
-}{50 د}{تلوين كل حيز بلون.}
+\Lab{cEx}{نشاط 05}\ $f(x)=x^2-1$ على $[0;2]$.\par\textbf{(1)} احسب $\displaystyle\int_{0}^{2}f(x)\,dx$.\par\textbf{(2)} ادرس إشارة $f(x)$ على $[0;2]$. هل التكامل يساوي المساحة؟}{35 د}{جدول الإشارة قبل الحساب.}
 \Row{}{%
-\Lab{cMeth}{طريقة}\ ندرس إشارة $f$ (الوضع النسبي لـ $C_f$ ومحور الفواصل) ، نرسم الحيز ، ثم نحسب. المساحة بوحدة المساحات $\text{u.a}$.\par}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $\left[\dfrac{x^3}3-x\right]_0^2=\dfrac83-2=\RR{\dfrac23}$.\par\textbf{(2)} $f(x)\leqslant0$ على $[0;1]$ و $f(x)\geqslant0$ على $[1;2]$: الجزء تحت محور الفواصل «يُطرح» ، فالتكامل \RR{ليس} المساحة.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\par\textbf{(1)} إذا كانت $f\geqslant0$ على $[a;b]$: $\RR{\mathcal A=\displaystyle\int_{a}^{b}f(x)\,dx}$.\par\textbf{(2)} إذا كانت $f\leqslant0$: $\RR{\mathcal A=-\displaystyle\int_{a}^{b}f(x)\,dx}$.\par\textbf{(3)} إذا تغيرت الإشارة نقسم المجال بعلاقة شال.}{50 د}{تلوين كل حيز.}
+\Row{}{%
+\Lab{cMeth}{طريقة}\ ندرس إشارة $f$ (الوضع النسبي) ، نرسم الحيز ، ثم نحسب بوحدة المساحات $\text{u.a}$.}{}{}
 \Row{}{%
 \Lab{cEx}{مثال}\ $f(x)=x^2-1$ على $[0;2]$:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|}\hline\rowcolor{cSec!12}$x$ & $0$ &  & $1$ &  & $2$\\\hline$f(x)=x^2-1$ &  & $-$ & $0$ & $+$ & \\\hline\ar{الوضع النسبي} &  & \ar{$C_f$ تحت $(xx^{\prime})$} &  & \ar{$C_f$ فوق $(xx^{\prime})$} & \\\hline\end{tabular}}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.4cm,y=0.6cm,font=\scriptsize]
 \fill[cDef!25] (0,0) -- plot[domain=0:1,samples=40] (\x,{\x*\x-1}) -- cycle;
@@ -371,33 +367,35 @@ $\dfrac{u^{\prime}}{u^2}$ & $-\dfrac1u$\\\hline
 \draw[cDef,thick,domain=-0.5:2.2,samples=50] plot (\x,{\x*\x-1}) node[right]{$C_f$};
 \draw[densely dotted] (2,0)--(2,3);
 \node[below right] at (1,0){$1$}; \node[below] at (2,0){$2$}; \node at (0.5,-0.4){$\mathcal A_1$}; \node at (1.7,0.8){$\mathcal A_2$};
-\end{tikzpicture}\end{LTR}\par $\mathcal A_1=-\displaystyle\int_0^1(x^2-1)\,dx=\dfrac23$ ، $\mathcal A_2=\displaystyle\int_1^2(x^2-1)\,dx=\dfrac43$ ، $\mathcal A=2\ \text{u.a}$.\par}{}{}
+\end{tikzpicture}\end{LTR}\par \par\textbf{(1)} $\mathcal A_1=-\displaystyle\int_{0}^{1}(x^2-1)\,dx=-\left[\dfrac{x^3}3-x\right]_0^1=-\left(\dfrac13-1\right)=\RR{\dfrac23}$.\par\textbf{(2)} $\mathcal A_2=\displaystyle\int_{1}^{2}(x^2-1)\,dx=\left(\dfrac83-2\right)-\left(\dfrac13-1\right)=\RR{\dfrac43}$.\par\textbf{(3)} $\mathcal A=\mathcal A_1+\mathcal A_2=\RR{2\ \text{u.a}}$.}{}{}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ إذا كانت الوحدة $\|\vec i\|=2\text{cm}$ و $\|\vec j\|=1\text{cm}$ فإن $1\ \text{u.a}=2\text{cm}^2$.}{}{}
+\Lab{cThm!80!black}{حذار}\ إذا كانت الوحدة $\|\vec i\|=2\,\text{cm}$ و $\|\vec j\|=1\,\text{cm}$ فإن $1\ \text{u.a}=2\,\text{cm}^2$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par احسب مساحة الحيز المحدد بمنحني $f(x)=-x^2+4x$ ومحور الفواصل والمستقيمين $x=0$ و $x=4$.\par\textbf{الحل:}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|}\hline\rowcolor{cSec!12}$x$ & $0$ &  & $4$\\\hline$f(x)=-x^2+4x$ & $0$ & $+$ & $0$\\\hline\ar{الوضع النسبي} &  & \ar{$C_f$ فوق $(xx^{\prime})$} & \\\hline\end{tabular}}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.8cm,y=0.5cm,font=\scriptsize]
+\Lab{cMeth}{تمرين تطبيقي}\par احسب مساحة الحيز المحدد بمنحنى $f(x)=-x^2+4x$ ومحور الفواصل والمستقيمين $x=0$ و $x=4$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} إشارة $f(x)=x(4-x)$:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|}\hline\rowcolor{cSec!12}$x$ & $0$ &  & $4$\\\hline$f(x)=-x^2+4x$ & $0$ & $+$ & $0$\\\hline\ar{الوضع النسبي} &  & \ar{$C_f$ فوق $(xx^{\prime})$} & \\\hline\end{tabular}}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.8cm,y=0.5cm,font=\scriptsize]
 \fill[cEx!30] (0,0) -- plot[domain=0:4,samples=50] (\x,{-\x*\x+4*\x}) -- (4,0) -- cycle;
 \draw[->] (-0.6,0)--(4.8,0) node[right]{$x$}; \draw[->] (0,-1)--(0,4.8) node[above]{$y$};
 \draw[cDef,thick,domain=-0.3:4.3,samples=50] plot (\x,{-\x*\x+4*\x}); \node[cDef] at (3.6,3.6){$C_f$};
 \node[below] at (4,0){$4$}; \node at (2,1.6){$\mathcal A$};
-\end{tikzpicture}\end{LTR}\par $\RR{\mathcal A=\displaystyle\int_0^4(-x^2+4x)\,dx=\left[-\dfrac{x^3}3+2x^2\right]_0^4=\dfrac{32}3\ \text{u.a}}$.\par\textbf{واجب منزلي:} تمارين من باب التكامل (حساب المساحات).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{tikzpicture}\end{LTR}\par \par\textbf{(2)} $\mathcal A=\displaystyle\int_{0}^{4}(-x^2+4x)\,dx=\left[-\dfrac{x^3}3+2x^2\right]_0^4=-\dfrac{64}3+32=\RR{\dfrac{32}3\ \text{u.a}}$.\par\textbf{واجب منزلي:} تمارين من باب التكامل.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{27}{3 ت ا}{تحليل}{الدوال الأصلية والتكاملات}{02 سا}{حساب المساحات (2): الحيز بين منحنيين}%
 {\begin{itemize}\item حساب المساحات ، الوضع النسبي لمنحنيين.\end{itemize}}%
 {\begin{itemize}\item حساب مساحة حيز محدد بمنحنيين.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية. ورق ميليمتري.}
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة. ورق ميليمتري.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} كيف نحسب مساحة الحيز المحصور بين قطع مكافئ ومستقيم؟}{10 د}{سؤال.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ $f(x)=-x^2+4x$ و $g(x)=x$.\par\ck\ نقط التقاطع: $-x^2+4x=x$ يعطي $x=0$ أو $x=3$.\par
-\ck\ المساحة بين المنحنيين = (المساحة تحت $C_f$) $-$ (المساحة تحت $C_g$).\par
-}{35 د}{نقط التقاطع.}
-\Row{بناء المعارف}{%
-\Lab{cThm}{خاصية}\ إذا كان $f\geqslant g$ على $[a;b]$ فإن مساحة الحيز المحدد بـ $C_f$ و $C_g$ والمستقيمين $x=a$ و $x=b$ هي $\mathcal A=\displaystyle\int_a^b\big(f(x)-g(x)\big)\,dx$.\par}{50 د}{جدول الوضع النسبي والرسم.}
+\Lab{cEx}{نشاط 06}\ $f(x)=-x^2+4x$ و $g(x)=x$.\par\textbf{(1)} عيّن فاصلتي نقطتي تقاطع $(C_f)$ و $(C_g)$.\par\textbf{(2)} ادرس إشارة $f(x)-g(x)$.}{35 د}{نقط التقاطع.}
 \Row{}{%
-\Lab{cMeth}{طريقة}\ نعيّن نقط التقاطع ، ندرس إشارة $f-g$ (الوضع النسبي) ، نرسم الحيز ثم نحسب.\par}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $-x^2+4x=x$ معناه $-x^2+3x=0$ أي $x(3-x)=0$: $\RR{x=0}$ أو $\RR{x=3}$.\par\textbf{(2)} $f(x)-g(x)=x(3-x)\geqslant0$ على $[0;3]$: $(C_f)$ \RR{فوق} $(C_g)$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\ إذا كان $f\geqslant g$ على $[a;b]$: $\RR{\mathcal A=\displaystyle\int_{a}^{b}\big(f(x)-g(x)\big)\,dx}$.}{50 د}{جدول الوضع النسبي والرسم.}
+\Row{}{%
+\Lab{cMeth}{طريقة}\ نعيّن نقط التقاطع ، ندرس إشارة $f-g$ ، نرسم الحيز ، ثم نحسب.}{}{}
 \Row{}{%
 \Lab{cEx}{مثال}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|}\hline\rowcolor{cSec!12}$x$ & $0$ &  & $3$\\\hline$f(x)-g(x)=-x^2+3x$ & $0$ & $+$ & $0$\\\hline\ar{الوضع النسبي} &  & \ar{$C_f$ فوق $C_g$} & \\\hline\end{tabular}}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.8cm,y=0.5cm,font=\scriptsize]
 \fill[cThm!25] plot[domain=0:3,samples=50] (\x,{-\x*\x+4*\x}) -- plot[domain=3:0,samples=10] (\x,\x) -- cycle;
@@ -405,16 +403,18 @@ $\dfrac{u^{\prime}}{u^2}$ & $-\dfrac1u$\\\hline
 \draw[cDef,thick,domain=-0.2:4.2,samples=50] plot (\x,{-\x*\x+4*\x}); \node[cDef] at (2,4.5){$C_f$};
 \draw[cRem!80!black,thick] (-0.5,-0.5)--(4.6,4.6) node[right]{$C_g:y=x$};
 \draw[densely dotted] (3,0)--(3,3); \node[below] at (3,0){$3$}; \node at (1.6,2.6){$\mathcal A$};
-\end{tikzpicture}\end{LTR}\par $\mathcal A=\displaystyle\int_0^3(-x^2+3x)\,dx=\left[-\dfrac{x^3}3+\dfrac32x^2\right]_0^3=\dfrac92\ \text{u.a}$.\par}{}{}
+\end{tikzpicture}\end{LTR}\par $\mathcal A=\displaystyle\int_{0}^{3}(-x^2+3x)\,dx=\left[-\dfrac{x^3}3+\dfrac32x^2\right]_0^3=-9+\dfrac{27}2=\RR{\dfrac92\ \text{u.a}}$.}{}{}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ نطرح دائماً المنحني الأسفل من الأعلى.}{}{}
+\Lab{cThm!80!black}{حذار}\ نطرح دائماً المنحنى الأسفل من الأعلى.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par احسب مساحة الحيز المحصور بين المنحني $y=x^2$ والمستقيم $y=2x$.\par\textbf{الحل:} \RR{التقاطع} \RR{عند} $\RR{x=0}$ \RR{و} $\RR{x=2}$.\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|}\hline\rowcolor{cSec!12}$x$ & $0$ &  & $2$\\\hline$2x-x^2$ & $0$ & $+$ & $0$\\\hline\ar{الوضع النسبي} &  & \ar{$y=2x$ \ar{فوق} $y=x^2$} & \\\hline\end{tabular}}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.2cm,y=0.55cm,font=\scriptsize]
+\Lab{cMeth}{تمرين تطبيقي}\par احسب مساحة الحيز المحصور بين المنحنى $y=x^2$ والمستقيم $y=2x$.}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} التقاطع: $x^2=2x$ معناه $x(x-2)=0$: $\RR{x=0}$ أو $\RR{x=2}$.\par\textbf{(2)} الوضع النسبي:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|}\hline\rowcolor{cSec!12}$x$ & $0$ &  & $2$\\\hline$2x-x^2$ & $0$ & $+$ & $0$\\\hline\ar{الوضع النسبي} &  & \ar{$y=2x$ \ar{فوق} $y=x^2$} & \\\hline\end{tabular}}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.2cm,y=0.55cm,font=\scriptsize]
 \fill[cEx!30] plot[domain=0:2,samples=10] (\x,{2*\x}) -- plot[domain=2:0,samples=40] (\x,{\x*\x}) -- cycle;
 \draw[->] (-0.5,0)--(2.8,0) node[right]{$x$}; \draw[->] (0,-0.6)--(0,5.4) node[above]{$y$};
 \draw[cRem!80!black,thick] (-0.25,-0.5)--(2.5,5) node[right]{$y=2x$};
 \draw[cDef,thick,domain=-0.4:2.25,samples=50] plot (\x,{\x*\x}) node[right]{$y=x^2$};
 \draw[densely dotted] (2,0)--(2,4); \node[below] at (2,0){$2$}; \node at (1.2,1.9){$\mathcal A$};
-\end{tikzpicture}\end{LTR}\par $\RR{\mathcal A=\displaystyle\int_0^2(2x-x^2)\,dx=\left[x^2-\dfrac{x^3}3\right]_0^2=\dfrac43\ \text{u.a}}$.\par\textbf{واجب منزلي:} تمارين من باب التكامل (حساب المساحات).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\end{tikzpicture}\end{LTR}\par \par\textbf{(3)} $\mathcal A=\displaystyle\int_{0}^{2}(2x-x^2)\,dx=\left[x^2-\dfrac{x^3}3\right]_0^2=4-\dfrac83=\RR{\dfrac43\ \text{u.a}}$.\par\textbf{واجب منزلي:} تمارين من باب التكامل.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \end{document}
