@@ -147,7 +147,7 @@
  \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
 {\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
 \newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
-\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\bx}[1]{\ensuremath{\setlength{\fboxsep}{2pt}\fcolorbox{cEx!85!black}{yellow!35}{$\displaystyle #1$}}}
 \newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
 \newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
 \newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
@@ -226,10 +226,10 @@ $f$ الدالة المعرّفة على $\R$ بـ: $f(x)=x^3-3x^2+4$ ، و $(C_
 \Needspace{12\baselineskip}\begin{BOX}{cSol}{حل التمرين 1}
 \QQ{1} $P(1)=1-2-5+6=\bx{0}$ ، إذن $1$ جذر لـ $P(x)$ ، و $P(x)$ يقبل القسمة على $(x-1)$.\hfill$\textcolor{cThm}{\mathbf{(0,5)}}$
 \QQ{2} جدول هورنر (المعاملات $1$ ، $-2$ ، $-5$ ، $6$ والجذر $1$):
-\begin{center}\begin{LTR}{\renewcommand{\arraystretch}{1.5}\begin{tabular}{|c|c|c|c|c|}\hline
-\rowcolor{cSec!12} & $1$ & $-2$ & $-5$ & $6$\\\hline
-$1$ & & $1$ & $-1$ & $-6$\\\hline
- & $1$ & $-1$ & $-6$ & $0$\\\hline
+\begin{center}\begin{LTR}{\renewcommand{\arraystretch}{1.5}\begin{tabular}{|C|c|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{\textbf{معاملات} $P(x)$} & $1$ & $-2$ & $-5$ & $6$\\\hline
+\ar{الجذر} $1$ & & $1$ & $-1$ & $-6$\\\hline
+\rowcolor{cEx!15}\ar{\textbf{معاملات} $Q(x)$ \textbf{والباقي}} & $1$ & $-1$ & $-6$ & $0$\\\hline
 \end{tabular}}\end{LTR}\end{center}
 إذن: \bx{Q(x)=x^2-x-6} و $P(x)=(x-1)\left(x^2-x-6\right)$.\hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \QQ{3} $x^2-x-6$: $\Delta=1+24=25$ ، $x_1=\dfrac{1-5}2=-2$ ، $x_2=\dfrac{1+5}2=3$ ، ومنه $x^2-x-6=(x+2)(x-3)$.
@@ -246,7 +246,7 @@ $1$ & & $1$ & $-1$ & $-6$\\\hline
 \QQ{5} المعادلة تكتب $P(x+1)=0$ ، أي $x+1\in\{-2;1;3\}$ ، ومنه $x\in\{-3;0;2\}$: \bx{S=\{-3;0;2\}}\hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \QQ{6} $P(x)-(x-1)(x+2)=(x-1)(x+2)(x-3)-(x-1)(x+2)=(x-1)(x+2)(x-4)$.
 \begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=1.5]{$x$/0.8,$(x-1)(x+2)(x-4)$/0.8}{$-\infty$,$-2$,$1$,$4$,$+\infty$}
+\tkzTabInit[lgt=4.6,espcl=1.5]{$x$/0.8,$(x-1)(x+2)(x-4)$/0.8}{$-\infty$,$-2$,$1$,$4$,$+\infty$}
 \tkzTabLine{,-,z,+,z,-,z,+,}
 \end{TAB}
 حلول المتراجحة: \bx{S=]-\infty;-2]\cup[1;4]} \hfill$\textcolor{cThm}{\mathbf{(1,5)}}$

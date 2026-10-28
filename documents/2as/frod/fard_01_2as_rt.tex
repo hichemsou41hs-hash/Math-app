@@ -147,7 +147,7 @@
  \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
 {\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
 \newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
-\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\bx}[1]{\ensuremath{\setlength{\fboxsep}{2pt}\fcolorbox{cEx!85!black}{yellow!35}{$\displaystyle #1$}}}
 \newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
 \newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
 \newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
@@ -272,11 +272,14 @@
 \tkzTabInit[lgt=1.6,espcl=1.8]{$x$/0.8,$k(x)$/1.6}{$-\infty$,$-2$,$0$,$2$,$+\infty$}
 \tkzTabVar{+/ ,-/$-1$,+/$3$,-/$-1$,+/ }
 \end{TAB}
-\begin{sq}
-\item $m<-1$: \bx{0} حل ؛ \quad $m=-1$: حلان ($x=\pm2$).
-\item $-1<m<3$: \bx{4} حلول ؛ \quad $m=3$: \bx{3} حلول ($x=0$ ، $x=\pm4$).
-\item $m>3$: حلان.
-\end{sq}\hfill$\textcolor{cThm}{\mathbf{(1)}}$
+\begin{center}\begin{LTR}{\renewcommand{\arraystretch}{1.7}\begin{tabular}{|C|C|}\hline
+\rowcolor{cSec!12}\ar{\textbf{عدد حلول المعادلة} $k(x)=m$} & \ar{\textbf{قيم} $m$}\\\hline
+\ar{لا توجد حلول: \bx{0}} & $m<-1$\\\hline
+\ar{حلان: $x=-2$ ، $x=2$} & $m=-1$\\\hline
+\ar{\bx{4} حلول} & $-1<m<3$\\\hline
+\ar{\bx{3} حلول: $x=-4$ ، $x=0$ ، $x=4$} & $m=3$\\\hline
+\ar{حلان} & $m>3$\\\hline
+\end{tabular}}\end{LTR}\end{center}\hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \par\medskip
 \textbf{II.}
 \QQ{1} $2+\dfrac1{x-3}=\dfrac{2(x-3)+1}{x-3}=\dfrac{2x-5}{x-3}=h(x)$.

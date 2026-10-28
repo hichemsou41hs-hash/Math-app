@@ -926,6 +926,16 @@ def postprocess(path, out, head, foot, figs):
                 rpr = OxmlElement("w:rPr"); r.insert(0, rpr)
             rpr.append(el("w:color", val="C00000")); rpr.append(OxmlElement("w:b"))
 
+    # --- 0b. boxed answers (\bx -> \boxed): yellow background inside the frame
+    for bb in list(body.iter(qn("m:borderBox"))):
+        for mr in bb.iter(qn("m:r")):
+            wr = mr.find(qn("w:rPr"))
+            if wr is None:
+                wr = OxmlElement("w:rPr")
+                mrp = mr.find(qn("m:rPr"))
+                (mrp.addnext(wr) if mrp is not None else mr.insert(0, wr))
+            wr.append(el("w:highlight", val="yellow"))
+
     # --- 1. figures: replace FIG markers by pictures
     for p in list(body.iter(qn("w:p"))):
         txt = para_text(p)
