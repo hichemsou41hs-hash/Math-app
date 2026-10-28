@@ -213,29 +213,29 @@
 \begin{BOX}{cThm}{يتضمن هذا العمل}
 \begin{enumerate}[label=\textbf{مذكرة \arabic{enumi}:},leftmargin=6em,start=15]
 \item النهايات المرجعية والعمليات على النهايات.
-\item نهاية دالة كثير حدود أو دالة ناطقة عند $\pm\infty$ ، إزالة عدم التعيين.
+\item نهاية كثير حدود أو دالة ناطقة عند $\pm\infty$ ، إزالة عدم التعيين.
 \item نهاية دالة مركبة ، النهاية بالمقارنة.
-\item المستقيمات المقاربة الموازية لمحوري الإحداثيات ، الوضع النسبي.
+\item المستقيمات المقاربة الموازية للمحورين ، الوضع النسبي.
 \item المستقيم المقارب المائل ، الوضع النسبي.
-\item حل مسائل: دراسة دالة ناطقة وتمثيلها البياني.
+\item حل مسائل: دراسة دالة ناطقة.
 \item حل مسائل: دراسة دالة الكلفة المتوسطة.
 \end{enumerate}
-وفق التدرج السنوي (الأسابيع 8--11): نهاية دالة مركبة والنهاية بالمقارنة تُقبلان وتُفسران بيانياً ؛ المقارب المائل لدالة من الشكل $f(x)=ax+b+\varphi(x)$. مراجع: الكتاب المدرسي للسنة الثالثة ثانوي تسيير واقتصاد (باب النهايات).
+الحلول مفصّلة: المعطيات بالأسود ، \T{العناوين} و\RR{النتائج} بلون مختلف ، وكل سؤال في سطر.
 \end{BOX}
 \newpage
 \ModhHead{15}{3 ت ا}{تحليل}{النهايات ودراسة الدوال}{02 سا}{النهايات المرجعية والعمليات على النهايات}%
 {\begin{itemize}\item النهايات (2 ت ا) ، الدوال المرجعية.\end{itemize}}%
 {\begin{itemize}\item حساب نهاية مجموع أو جداء أو حاصل قسمة دالتين.\item التعرف على حالات عدم التعيين.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة البيانية.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} إذا كان $f(x)\to+\infty$ و $g(x)\to+\infty$ ، فإلى أين يؤول $f(x)-g(x)$ ؟ جرّب $x^2-x$ و $x-x^2$.}{10 د}{تقويم تشخيصي.}
+\textbf{التهيئة النفسية:} إذا كان $f(x)\to+\infty$ و $g(x)\to+\infty$ ، فإلى أين يؤول $f(x)-g(x)$ ؟}{10 د}{تقويم تشخيصي.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ تذكير بالنهايات المرجعية بجداول قيم بالحاسبة.\par
-\ck\ $\lim\limits_{x\to +\infty}(x^2-x)=+\infty$ ، $\lim\limits_{x\to +\infty}(x-x^2)=-\infty$ ، $\lim\limits_{x\to +\infty}\big((x+1)-x\big)=1$: الشكل «$+\infty-\infty$» يعطي نتائج مختلفة.\par
-}{35 د}{أمثلة مضادة.}
+\Lab{cEx}{نشاط 01}\par\textbf{(1)} احسب $\lim\limits_{x\to +\infty}(x^2-x)$.\par\textbf{(2)} احسب $\lim\limits_{x\to +\infty}(x-x^2)$.\par\textbf{(3)} احسب $\lim\limits_{x\to +\infty}\big((x+1)-x\big)$. ماذا تستنتج؟}{35 د}{أمثلة مضادة.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $x^2-x=x(x-1)$: جداء $+\infty\times(+\infty)$ ، إذن $\RR{\lim\limits_{x\to +\infty}(x^2-x)=+\infty}$.\par\textbf{(2)} $x-x^2=x(1-x)$: جداء $+\infty\times(-\infty)$ ، إذن $\RR{\lim\limits_{x\to +\infty}(x-x^2)=-\infty}$.\par\textbf{(3)} $(x+1)-x=1$ ، إذن النهاية $\RR{1}$. الشكل «$+\infty-\infty$» أعطى ثلاث نتائج مختلفة: إنه \RR{حالة عدم تعيين}.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cThm}{نهايات مرجعية}\ $\lim\limits_{x\to +\infty}x^n=+\infty$ ؛ $\lim\limits_{x\to -\infty}x^n=+\infty$ ($n$ زوجي) و $-\infty$ ($n$ فردي) ؛ $\lim\limits_{x\to \pm\infty}\dfrac1{x^n}=0$ ؛ $\lim\limits_{x\to +\infty}\sqrt x=+\infty$ ؛ $\lim\limits_{x\to 0^{+}}\dfrac1x=+\infty$ ، $\lim\limits_{x\to 0^{-}}\dfrac1x=-\infty$.\par}{50 د}{الجداول تُنقل في الكراس.}
+\Lab{cThm}{نهايات مرجعية}\par\textbf{(1)} $\lim\limits_{x\to +\infty}x^n=+\infty$ ؛ $\lim\limits_{x\to -\infty}x^n=+\infty$ إذا كان $n$ زوجياً ، و $-\infty$ إذا كان فردياً.\par\textbf{(2)} $\lim\limits_{x\to \pm\infty}\dfrac1{x^n}=0$ ؛ $\lim\limits_{x\to +\infty}\sqrt x=+\infty$.\par\textbf{(3)} $\lim\limits_{x\to 0^{+}}\dfrac1x=+\infty$ ؛ $\lim\limits_{x\to 0^{-}}\dfrac1x=-\infty$.}{50 د}{الجداول في الكراس.}
 \Row{}{%
 \Lab{cThm}{نهاية المجموع}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|}\hline\rowcolor{cSec!12}$\lim f$ & $l$ & $l$ & $+\infty$ & $-\infty$ & $+\infty$\\\hline$\lim g$ & $l^{\prime}$ & $\pm\infty$ & $+\infty$ & $-\infty$ & $-\infty$\\\hline$\lim(f+g)$ & $l+l^{\prime}$ & $\pm\infty$ & $+\infty$ & $-\infty$ & \ar{ح ع ت}\\\hline\end{tabular}}\end{LTR}\par }{}{}
 \Row{}{%
@@ -243,133 +243,130 @@
 \Row{}{%
 \Lab{cThm}{نهاية حاصل القسمة}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|}\hline\rowcolor{cSec!12}$\lim f$ & $l$ & $l$ & $l\neq0$ & $\infty$ & $\infty$ & $0$\\\hline$\lim g$ & $l^{\prime}\neq0$ & $\infty$ & $0$ & $l^{\prime}$ & $\infty$ & $0$\\\hline$\lim\dfrac fg$ & $\dfrac l{l^{\prime}}$ & $0$ & $\infty$ & $\infty$ & \ar{ح ع ت} & \ar{ح ع ت}\\\hline\end{tabular}}\end{LTR}\par }{}{}
 \Row{}{%
-\Lab{cRem}{ملاحظات}\ حالات عدم التعيين: $\infty-\infty$ ، $0\times\infty$ ، $\dfrac\infty\infty$ ، $\dfrac00$.}{}{}
+\Lab{cRem}{ملاحظات}\ حالات عدم التعيين الأربع: $\infty-\infty$ ، $0\times\infty$ ، $\dfrac\infty\infty$ ، $\dfrac00$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par احسب: $\lim\limits_{x\to +\infty}(x+1)\sqrt x$ ؛ $\lim\limits_{x\to -\infty}\dfrac1{x^2+1}$ ؛ $\lim\limits_{x\to 2^{+}}\dfrac{x+1}{x-2}$.\par\textbf{الحل:} $\RR{+\infty}$ \RR{؛} $\RR{0}$ \RR{؛} $\RR{+\infty}$ \RR{(لأن} \RR{$\dfrac3{0^{+}}$).}\par\textbf{واجب منزلي:} تمارين من باب النهايات (العمليات).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} احسب $\lim\limits_{x\to +\infty}(x+1)\sqrt x$.\par\textbf{(2)} احسب $\lim\limits_{x\to -\infty}\dfrac1{x^2+1}$.\par\textbf{(3)} احسب $\lim\limits_{x\to 2^{+}}\dfrac{x+1}{x-2}$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $x+1\to+\infty$ و $\sqrt x\to+\infty$: الجداء $\RR{+\infty}$.\par\textbf{(2)} $x^2+1\to+\infty$ ، إذن مقلوبه يؤول إلى $\RR{0}$.\par\textbf{(3)} البسط يؤول إلى $3$ ، والمقام $x-2\to0^{+}$ (لأن $x>2$): $\dfrac3{0^{+}}=\RR{+\infty}$.\par\textbf{واجب منزلي:} تمارين من باب النهايات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{16}{3 ت ا}{تحليل}{النهايات ودراسة الدوال}{02 سا}{نهاية دالة كثير حدود أو دالة ناطقة عند $\pm\infty$ ، إزالة عدم التعيين}%
 {\begin{itemize}\item العمليات على النهايات ، التحليل.\end{itemize}}%
-{\begin{itemize}\item تطبيق قاعدة الحدود الأعلى درجة لحساب نهاية كثير حدود أو دالة ناطقة عند $\pm\infty$.\item إزالة حالة $\frac00$ بالتحليل والاختزال.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+{\begin{itemize}\item تطبيق قاعدة الحدود الأعلى درجة عند $\pm\infty$.\item إزالة حالة $\frac00$ بالتحليل والاختزال.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة البيانية.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} $\lim\limits_{x\to +\infty}(x^2-5x)$: لماذا لا نستطيع الحساب مباشرة؟}{10 د}{سؤال تشخيصي.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ $x^2-5x=x^2\left(1-\dfrac5x\right)$: الجداء $+\infty\times1$ ، النهاية $+\infty$.\par
-\ck\ $\dfrac{2x^2+x}{x^2-3}=\dfrac{x^2\left(2+\frac1x\right)}{x^2\left(1-\frac3{x^2}\right)}$ يؤول إلى $2$.\par
-\ck\ الحد الأعلى درجة هو الذي «يتحكم» عند المالانهاية.\par
-}{35 د}{التحليل بالعامل المشترك.}
+\Lab{cEx}{نشاط 02}\par\textbf{(1)} بيّن أن $x^2-5x=x^2\left(1-\dfrac5x\right)$ واستنتج $\lim\limits_{x\to +\infty}(x^2-5x)$.\par\textbf{(2)} بيّن أن $\dfrac{2x^2+x}{x^2-3}=\dfrac{2+\frac1x}{1-\frac3{x^2}}$ واستنتج نهايتها عند $+\infty$.}{35 د}{التحليل بالعامل المشترك.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} بالنشر: $x^2\left(1-\dfrac5x\right)=x^2-5x$. و $1-\dfrac5x\to1$ ، إذن الجداء $+\infty\times1=\RR{+\infty}$.\par\textbf{(2)} نقسم البسط والمقام على $x^2$: $\dfrac{2x^2+x}{x^2-3}=\dfrac{2+\frac1x}{1-\frac3{x^2}}\to\dfrac{2+0}{1-0}=\RR{2}$.}{}{}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\ الحد الأعلى درجة هو الذي «يتحكم» في النهاية عند المالانهاية.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cThm}{عند $\pm\infty$}\par\ck\ نهاية كثير حدود هي نهاية حده الأعلى درجة.\par
-\ck\ نهاية دالة ناطقة هي نهاية حاصل قسمة الحدين الأعليين درجة للبسط والمقام.\par
-}{50 د}{نقارن الطرق.}
+\Lab{cThm}{عند $\pm\infty$}\par\textbf{(1)} نهاية كثير حدود هي \RR{نهاية حده الأعلى درجة}.\par\textbf{(2)} نهاية دالة ناطقة هي \RR{نهاية حاصل قسمة الحدين الأعليين درجة}.}{50 د}{نقارن الطرق.}
 \Row{}{%
-\Lab{cEx}{مثال}\par\ck\ $\lim\limits_{x\to +\infty}(-2x^3+x-5)=\lim\limits_{x\to +\infty}(-2x^3)=-\infty$.\par
-\ck\ $\lim\limits_{x\to -\infty}\dfrac{x^2+1}{x-2}=\lim\limits_{x\to -\infty}x=-\infty$ ؛ $\lim\limits_{x\to +\infty}\dfrac{x+1}{x^2+3}=\lim\limits_{x\to +\infty}\dfrac1x=0$.\par
-}{}{}
+\Lab{cEx}{مثال 1}\ $\lim\limits_{x\to +\infty}(-2x^3+x-5)=\lim\limits_{x\to +\infty}(-2x^3)=\RR{-\infty}$.}{}{}
 \Row{}{%
-\Lab{cMeth}{حالة $\frac00$ عند عدد}\ نحلل البسط والمقام ونختزل: $\lim\limits_{x\to 2}\dfrac{x^2-5x+6}{x-2}=\lim\limits_{x\to 2}(x-3)=-1$.\par}{}{}
+\Lab{cEx}{مثال 2}\par\textbf{(1)} $\lim\limits_{x\to -\infty}\dfrac{x^2+1}{x-2}=\lim\limits_{x\to -\infty}\dfrac{x^2}x=\lim\limits_{x\to -\infty}x=\RR{-\infty}$.\par\textbf{(2)} $\lim\limits_{x\to +\infty}\dfrac{x+1}{x^2+3}=\lim\limits_{x\to +\infty}\dfrac x{x^2}=\lim\limits_{x\to +\infty}\dfrac1x=\RR{0}$.}{}{}
+\Row{}{%
+\Lab{cMeth}{حالة $\frac00$ عند عدد}\ نحلل البسط والمقام ونختزل:\par $\lim\limits_{x\to 2}\dfrac{x^2-5x+6}{x-2}=\lim\limits_{x\to 2}\dfrac{(x-2)(x-3)}{x-2}=\lim\limits_{x\to 2}(x-3)=\RR{-1}$.}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ قاعدة الحدود الأعلى درجة صالحة عند $\pm\infty$ فقط.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par احسب: $\lim\limits_{x\to -\infty}\dfrac{3x^2-x}{1-2x^2}$ ؛ $\lim\limits_{x\to +\infty}\dfrac{x^3-x}{2x^3+1}$ ؛ $\lim\limits_{x\to 3}\dfrac{x^2-9}{x-3}$.\par\textbf{الحل:} $\RR{-\dfrac32}$ \RR{؛} $\RR{\dfrac12}$ \RR{؛} $\RR{6}$.\par\textbf{واجب منزلي:} تمارين من باب النهايات (كثيرات الحدود والدوال الناطقة).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} احسب $\lim\limits_{x\to -\infty}\dfrac{3x^2-x}{1-2x^2}$.\par\textbf{(2)} احسب $\lim\limits_{x\to +\infty}\dfrac{x^3-x}{2x^3+1}$.\par\textbf{(3)} احسب $\lim\limits_{x\to 3}\dfrac{x^2-9}{x-3}$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $\lim\limits_{x\to -\infty}\dfrac{3x^2}{-2x^2}=\RR{-\dfrac32}$.\par\textbf{(2)} $\lim\limits_{x\to +\infty}\dfrac{x^3}{2x^3}=\RR{\dfrac12}$.\par\textbf{(3)} حالة $\frac00$: $\dfrac{(x-3)(x+3)}{x-3}=x+3$ ، والنهاية $3+3=\RR{6}$.\par\textbf{واجب منزلي:} تمارين من باب النهايات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{17}{3 ت ا}{تحليل}{النهايات ودراسة الدوال}{02 سا}{نهاية دالة مركبة ، النهاية بالمقارنة}%
 {\begin{itemize}\item مركب دالتين ، العمليات على النهايات.\end{itemize}}%
-{\begin{itemize}\item حساب نهاية دالة مركبة من دالتين بسيطتين.\item تعيين نهاية بالمقارنة وتفسيرها بيانياً.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+{\begin{itemize}\item حساب نهاية دالة مركبة.\item تعيين نهاية بالمقارنة وتفسيرها بيانياً.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة البيانية.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} إلى أين يؤول $\sqrt{\dfrac{4x+1}{x+2}}$ لما يكبر $x$ كثيراً؟}{10 د}{سؤال.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ نفكك: $u(x)=\dfrac{4x+1}{x+2}$ يؤول إلى $4$ ، ثم $\sqrt X$ يؤول إلى $2$ لما $X\to4$.\par
-\ck\ منحني دالة محصور بين منحنيين لهما نفس النهاية: ماذا نستنتج؟ (رسم بالحاسبة)\par
-}{35 د}{المخطط بالأسهم.}
+\Lab{cEx}{نشاط 03}\par\textbf{(1)} احسب $\lim\limits_{x\to +\infty}\dfrac{4x+1}{x+2}$.\par\textbf{(2)} استنتج $\lim\limits_{x\to +\infty}\sqrt{\dfrac{4x+1}{x+2}}$.}{35 د}{المخطط بالأسهم.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $\lim\limits_{x\to +\infty}\dfrac{4x}{x}=\RR{4}$.\par\textbf{(2)} نضع $X=\dfrac{4x+1}{x+2}$: $X\to4$ و $\lim\limits_{X\to4}\sqrt X=2$ ، إذن النهاية $\RR{2}$.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cThm}{نهاية دالة مركبة (نقبلها)}\ إذا كان $\lim\limits_{x\to a}u(x)=b$ و $\lim\limits_{X\to b}g(X)=c$ فإن $\lim\limits_{x\to a}g\big(u(x)\big)=c$ ($a$ ، $b$ ، $c$ أعداد أو $\pm\infty$).\par}{50 د}{رسم بالحاسبة البيانية.}
+\Lab{cThm}{نهاية دالة مركبة (تُقبل)}\ إذا كان $\lim\limits_{x\to a}u(x)=b$ و $\lim\limits_{X\to b}g(X)=c$ فإن $\RR{\lim\limits_{x\to a}g\big(u(x)\big)=c}$.}{50 د}{رسم بالحاسبة البيانية.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $\lim\limits_{x\to +\infty}\sqrt{\dfrac{4x+1}{x+2}}=\sqrt4=2$ ؛ $\lim\limits_{x\to -\infty}\left(\dfrac{2x-1}{x+3}\right)^2=2^2=4$ ؛ $\lim\limits_{x\to +\infty}\sqrt{x^2+1}=+\infty$.\par}{}{}
+\Lab{cEx}{مثال}\par\textbf{(1)} $\lim\limits_{x\to -\infty}\left(\dfrac{2x-1}{x+3}\right)^2$: $\dfrac{2x-1}{x+3}\to2$ ، إذن النهاية $2^2=\RR{4}$.\par\textbf{(2)} $\lim\limits_{x\to +\infty}\sqrt{x^2+1}$: $x^2+1\to+\infty$ ، إذن النهاية $\RR{+\infty}$.}{}{}
 \Row{}{%
-\Lab{cThm}{النهاية بالمقارنة (نقبلها)}\par\ck\ إذا كان $f(x)\geqslant g(x)$ بجوار $+\infty$ و $\lim\limits_{x\to +\infty}g(x)=+\infty$ فإن $\lim\limits_{x\to +\infty}f(x)=+\infty$.\par
-\ck\ إذا كان $f(x)\leqslant g(x)$ و $\lim\limits_{x\to +\infty}g(x)=-\infty$ فإن $\lim\limits_{x\to +\infty}f(x)=-\infty$.\par
-\ck\ إذا كان $g(x)\leqslant f(x)\leqslant h(x)$ و $\lim g=\lim h=l$ فإن $\lim f=l$.\par
-}{}{}
+\Lab{cThm}{النهاية بالمقارنة (تُقبل)}\par\textbf{(1)} إذا كان $f(x)\geqslant g(x)$ بجوار $+\infty$ و $g(x)\to+\infty$ فإن $\RR{f(x)\to+\infty}$.\par\textbf{(2)} إذا كان $f(x)\leqslant g(x)$ و $g(x)\to-\infty$ فإن $\RR{f(x)\to-\infty}$.\par\textbf{(3)} إذا كان $g(x)\leqslant f(x)\leqslant h(x)$ و $\lim g=\lim h=l$ فإن $\RR{\lim f=l}$.}{}{}
 \Row{}{%
-\Lab{cRem}{ملاحظات}\ بيانياً: منحني $f$ «فوق» منحنٍ يصعد بلا حدود ، أو «محصور» بين منحنيين يقتربان من نفس المستقيم $y=l$.\par}{}{}
-\Row{}{%
-\Lab{cThm!80!black}{حذار}\ نتحقق أن المتراجحة صحيحة بجوار القيمة المعتبرة.}{}{}
+\Lab{cRem}{ملاحظات}\ بيانياً: منحنى $f$ محصور بين منحنيين يقتربان من نفس المستقيم $y=l$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par \par\textbf{(1)} احسب $\lim\limits_{x\to +\infty}\dfrac1{(1-2x)^2}$. \par\textbf{(2)} دالة $f$ تحقق من أجل $x>0$: $2-\dfrac1x\leqslant f(x)\leqslant2+\dfrac1x$. احسب $\lim\limits_{x\to +\infty}f(x)$ وفسّر بيانياً.\par\textbf{الحل:} \par\RR{\textbf{(1)}} $\RR{(1-2x)^2\to+\infty}$ \RR{،} \RR{النهاية} $\RR{0}$. \par\RR{\textbf{(2)}} \RR{الحدان} \RR{يؤولان} \RR{إلى} $\RR{2}$: $\RR{\lim\limits_{x\to +\infty}f(x)=2}$ \RR{،} \RR{والمستقيم} $\RR{y=2}$ \RR{مقارب} \RR{لـ} $\RR{C_f}$.\par\textbf{واجب منزلي:} تمارين من باب النهايات (المركبة والمقارنة).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} احسب $\lim\limits_{x\to +\infty}\dfrac1{(1-2x)^2}$.\par\textbf{(2)} دالة $f$ تحقق من أجل $x>0$: $2-\dfrac1x\leqslant f(x)\leqslant2+\dfrac1x$. احسب $\lim\limits_{x\to +\infty}f(x)$ وفسّر بيانياً.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $(1-2x)^2\to+\infty$ ، إذن مقلوبه يؤول إلى $\RR{0}$.\par\textbf{(2)} $2-\dfrac1x\to2$ و $2+\dfrac1x\to2$ ، إذن حسب النهاية بالمقارنة $\RR{\lim\limits_{x\to +\infty}f(x)=2}$ ، والمستقيم $y=2$ مقارب أفقي لـ $(C_f)$.\par\textbf{واجب منزلي:} تمارين من باب النهايات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{18}{3 ت ا}{تحليل}{النهايات ودراسة الدوال}{02 سا}{المستقيمات المقاربة الموازية لمحوري الإحداثيات ، الوضع النسبي}%
 {\begin{itemize}\item النهايات عند $\pm\infty$ وعند عدد.\end{itemize}}%
-{\begin{itemize}\item تعيين المستقيمات المقاربة الموازية لمحوري الإحداثيات وتبرير وجودها.\item دراسة الوضع النسبي لمنحنٍ ومستقيم مقارب.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+{\begin{itemize}\item تعيين المستقيمات المقاربة الموازية للمحورين.\item دراسة الوضع النسبي لمنحنٍ ومستقيم مقارب.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة البيانية.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} كلفة متوسطة $C_M(q)=5+\dfrac{100}q$: ماذا يحدث لها لما تكبر الكمية المنتجة $q$ ؟}{10 د}{وضعية اقتصادية.}
+\textbf{التهيئة النفسية:} كلفة متوسطة $C_M(q)=5+\dfrac{100}q$: ماذا يحدث لها لما تكبر الكمية؟}{10 د}{وضعية اقتصادية.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ جدول قيم: $C_M(10)=15$ ، $C_M(100)=6$ ، $C_M(1000)=5{,}1$: تقترب من $5$ دون أن تبلغه.\par
-\ck\ $C_M(q)-5=\dfrac{100}q>0$: الكلفة المتوسطة تبقى أكبر من $5$ ، والمنحني فوق المستقيم $y=5$.\par
-}{35 د}{جداول قيم.}
+\Lab{cEx}{نشاط 04}\par\textbf{(1)} احسب $C_M(10)$ ، $C_M(100)$ ، $C_M(1000)$.\par\textbf{(2)} احسب $\lim\limits_{q\to+\infty}C_M(q)$.\par\textbf{(3)} ادرس إشارة $C_M(q)-5$.}{35 د}{جداول قيم.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $C_M(10)=5+10=\RR{15}$ ؛ $C_M(100)=5+1=\RR{6}$ ؛ $C_M(1000)=\RR{5{,}1}$.\par\textbf{(2)} $\dfrac{100}q\to0$ ، إذن $\RR{\lim C_M(q)=5}$: المستقيم $y=5$ مقارب أفقي.\par\textbf{(3)} $C_M(q)-5=\dfrac{100}q>0$: المنحنى \RR{فوق} المستقيم $y=5$.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\par\ck\ إذا كان $\lim\limits_{x\to \pm\infty}f(x)=l$ فإن المستقيم $y=l$ \textbf{مقارب أفقي} لـ $C_f$ بجوار $\pm\infty$.\par
-\ck\ إذا كان $\lim\limits_{x\to a}f(x)=\pm\infty$ (من اليمين أو من اليسار) فإن المستقيم $x=a$ \textbf{مقارب عمودي} لـ $C_f$.\par
-}{50 د}{نرسم المقارب بالمتقطع.}
+\Lab{cDef}{تعريف}\par\textbf{(1)} إذا كان $\lim\limits_{x\to \pm\infty}f(x)=l$ فإن المستقيم $\RR{y=l}$ \textbf{مقارب أفقي} لـ $(C_f)$.\par\textbf{(2)} إذا كان $\lim\limits_{x\to a}f(x)=\pm\infty$ فإن المستقيم $\RR{x=a}$ \textbf{مقارب عمودي} لـ $(C_f)$.}{50 د}{نرسم المقارب بالمتقطع.}
 \Row{}{%
-\Lab{cMeth}{الوضع النسبي}\ ندرس إشارة $f(x)-l$: موجبة يعني $C_f$ فوق المستقيم $y=l$ ، سالبة يعني تحته.\par}{}{}
+\Lab{cMeth}{الوضع النسبي}\ ندرس إشارة $f(x)-l$: موجبة يعني $(C_f)$ فوق $y=l$ ، سالبة يعني تحته.}{}{}
 \Row{}{%
-\Lab{cEx}{مثال}\ $f(x)=\dfrac{3x-1}{x+2}$ على $\mathbb R-\{-2\}$:\par\ck\ $\lim\limits_{x\to \pm\infty}f(x)=3$: $y=3$ مقارب أفقي.\par
-\ck\ $\lim\limits_{x\to -2^{+}}f(x)=-\infty$ و $\lim\limits_{x\to -2^{-}}f(x)=+\infty$ (البسط يؤول إلى $-7$): $x=-2$ مقارب عمودي.\par
-\ck\ $f(x)-3=\dfrac{-7}{x+2}$: $C_f$ فوق $y=3$ على $]-\infty;-2[$ وتحته على $]-2;+\infty[$.\par
-}{}{}
+\Lab{cEx}{مثال}\ $f(x)=\dfrac{3x-1}{x+2}$ على $\mathbb R-\{-2\}$:\par\textbf{(1)} $\lim\limits_{x\to \pm\infty}f(x)=\lim\limits_{x\to \pm\infty}\dfrac{3x}x=3$: \RR{$y=3$ مقارب أفقي}.\par\textbf{(2)} البسط يؤول إلى $-7$ لما $x\to-2$ ؛ $\lim\limits_{x\to -2^{+}}f(x)=\dfrac{-7}{0^{+}}=-\infty$ و $\lim\limits_{x\to -2^{-}}f(x)=\dfrac{-7}{0^{-}}=+\infty$: \RR{$x=-2$ مقارب عمودي}.\par\textbf{(3)} $f(x)-3=\dfrac{3x-1-3x-6}{x+2}=\dfrac{-7}{x+2}$:\par\smallskip\begin{LTR}\centering {\renewcommand{\arraystretch}{1.6}\setlength{\tabcolsep}{1pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.240\linewidth}|>{\centering\arraybackslash}p{0.144\linewidth}>{\centering\arraybackslash}p{0.144\linewidth}>{\centering\arraybackslash}p{0.144\linewidth}>{\centering\arraybackslash}p{0.144\linewidth}>{\centering\arraybackslash}p{0.144\linewidth}|}\hline\rowcolor{cSec!12}$x$ & $-\infty$ &  & $-2$ &  & $+\infty$\\\hline $f(x)-3$ &  & $+$ & $||$ & $-$ & \\\hline \ar{الوضع النسبي} &  & \ar{$(C_f)$ فوق} & $||$ & \ar{$(C_f)$ تحت} & \\\hline \end{tabular}}\end{LTR}\par }{}{}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ نحدد إشارة $0^{+}$ أو $0^{-}$ للمقام في جدول قبل الاستنتاج.}{}{}
+\Lab{cThm!80!black}{حذار}\ نحدد إشارة المقام $0^{+}$ أو $0^{-}$ قبل الاستنتاج.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $g(x)=1+\dfrac2{x-3}$. عيّن المستقيمات المقاربة لـ $C_g$ وادرس وضعيته بالنسبة إلى المقارب الأفقي.\par\textbf{الحل:} $\RR{\lim\limits_{x\to \pm\infty}g(x)=1}$: $\RR{y=1}$ \RR{؛} $\RR{\lim\limits_{x\to 3^{+}}g(x)=+\infty}$ \RR{،} $\RR{\lim\limits_{x\to 3^{-}}g(x)=-\infty}$: $\RR{x=3}$ \RR{؛} $\RR{g(x)-1=\dfrac2{x-3}}$: \RR{فوق} \RR{على} $\RR{]3;+\infty[}$ \RR{،} \RR{تحت} \RR{على} $\RR{]-\infty;3[}$.\par\textbf{واجب منزلي:} تمارين من باب النهايات (المستقيمات المقاربة).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par $g(x)=1+\dfrac2{x-3}$.\par\textbf{(1)} عيّن المستقيمات المقاربة لـ $(C_g)$.\par\textbf{(2)} ادرس وضعية $(C_g)$ بالنسبة إلى المقارب الأفقي.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $\lim\limits_{x\to \pm\infty}g(x)=1$: \RR{$y=1$}. $\lim\limits_{x\to 3^{+}}g(x)=+\infty$ و $\lim\limits_{x\to 3^{-}}g(x)=-\infty$: \RR{$x=3$}.\par\textbf{(2)} $g(x)-1=\dfrac2{x-3}$: موجبة على $]3;+\infty[$ ($(C_g)$ \RR{فوق}) وسالبة على $]-\infty;3[$ ($(C_g)$ \RR{تحت}).\par\textbf{واجب منزلي:} تمارين من باب النهايات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{19}{3 ت ا}{تحليل}{النهايات ودراسة الدوال}{02 سا}{المستقيم المقارب المائل ، الوضع النسبي}%
 {\begin{itemize}\item النهايات عند $\pm\infty$ ، الوضع النسبي.\end{itemize}}%
-{\begin{itemize}\item إثبات وجود مستقيم مقارب مائل لمنحني دالة من الشكل $f(x)=ax+b+\varphi(x)$ وتعيين معادلة له.\item تحديد الوضع النسبي للمنحني والمقارب المائل.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+{\begin{itemize}\item إثبات وجود مستقيم مقارب مائل لـ $f(x)=ax+b+\varphi(x)$ وتعيين معادلة له.\item الوضع النسبي للمنحنى والمقارب المائل.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة البيانية.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} منحني $f(x)=x+\dfrac1x$ بالحاسبة البيانية: إلى أي مستقيم «يلتصق» لما يكبر $x$ ؟}{10 د}{الحاسبة البيانية.}
+\textbf{التهيئة النفسية:} منحنى $x+\dfrac1x$ بالحاسبة البيانية: إلى أي مستقيم «يلتصق»؟}{10 د}{الحاسبة البيانية.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ $f(x)=\dfrac{2x^2-3x+3}{x-1}$ على $\mathbb R-\{1\}$.\par\ck\ عيّن $a$ ، $b$ ، $c$ بحيث $f(x)=ax+b+\dfrac c{x-1}$: بالمطابقة $a=2$ ، $b=-1$ ، $c=2$.\par
-\ck\ $f(x)-(2x-1)=\dfrac2{x-1}$ يؤول إلى $0$ لما $x\to\pm\infty$: المسافة الشاقولية بين $C_f$ و $(\Delta):y=2x-1$ تنعدم.\par
-}{35 د}{المطابقة خطوة خطوة.}
+\Lab{cEx}{نشاط 05}\ $f(x)=\dfrac{2x^2-3x+3}{x-1}$ على $\mathbb R-\{1\}$.\par\textbf{(1)} عيّن $a$ ، $b$ ، $c$ بحيث $f(x)=ax+b+\dfrac c{x-1}$.\par\textbf{(2)} احسب $\lim\limits_{x\to \pm\infty}\big[f(x)-(2x-1)\big]$.}{35 د}{المطابقة خطوة خطوة.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $ax+b+\dfrac c{x-1}=\dfrac{ax^2+(b-a)x-b+c}{x-1}$. بالمطابقة: $a=2$ ؛ $b-a=-3$ ومنه $b=-1$ ؛ $-b+c=3$ ومنه $c=2$: $\RR{f(x)=2x-1+\dfrac2{x-1}}$.\par\textbf{(2)} $f(x)-(2x-1)=\dfrac2{x-1}\to\RR{0}$: المسافة الشاقولية بين $(C_f)$ والمستقيم $y=2x-1$ تنعدم.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ المستقيم $(\Delta):y=ax+b$ ($a\neq0$) \textbf{مقارب مائل} لـ $C_f$ بجوار $+\infty$ إذا كان $\lim\limits_{x\to +\infty}\big[f(x)-(ax+b)\big]=0$ (وبالمثل عند $-\infty$).\par}{50 د}{جدول الإشارة للوضع النسبي.}
+\Lab{cDef}{تعريف}\ المستقيم $y=ax+b$ \textbf{مقارب مائل} لـ $(C_f)$ بجوار $+\infty$ إذا كان $\RR{\lim\limits_{x\to +\infty}\big[f(x)-(ax+b)\big]=0}$ (وبالمثل عند $-\infty$).}{50 د}{جدول الإشارة.}
 \Row{}{%
-\Lab{cThm}{خاصية}\ إذا كتبنا $f(x)=ax+b+\varphi(x)$ مع $\lim\limits_{x\to \pm\infty}\varphi(x)=0$ فإن $y=ax+b$ مقارب مائل لـ $C_f$.\par}{}{}
+\Lab{cThm}{خاصية}\ إذا كان $f(x)=ax+b+\varphi(x)$ مع $\varphi(x)\to0$ فإن $\RR{y=ax+b}$ مقارب مائل.}{}{}
 \Row{}{%
-\Lab{cMeth}{الوضع النسبي}\ ندرس إشارة $f(x)-(ax+b)=\varphi(x)$ في جدول:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|}\hline\rowcolor{cSec!12}$x$ & $-\infty$ & $1$ & $+\infty$\\\hline$\frac2{x-1}$ & $-$ & $\big\|$ & $+$\\\hline\ar{الوضع النسبي} & \ar{$C_f$ تحت $(\Delta)$} & $\big\|$ & \ar{$C_f$ فوق $(\Delta)$}\\\hline\end{tabular}}\end{LTR}\par }{}{}
+\Lab{cMeth}{الوضع النسبي}\ ندرس إشارة $f(x)-(ax+b)=\varphi(x)$:\par\smallskip\begin{LTR}\centering {\renewcommand{\arraystretch}{1.6}\setlength{\tabcolsep}{1pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.240\linewidth}|>{\centering\arraybackslash}p{0.144\linewidth}>{\centering\arraybackslash}p{0.144\linewidth}>{\centering\arraybackslash}p{0.144\linewidth}>{\centering\arraybackslash}p{0.144\linewidth}>{\centering\arraybackslash}p{0.144\linewidth}|}\hline\rowcolor{cSec!12}$x$ & $-\infty$ &  & $1$ &  & $+\infty$\\\hline $\frac2{x-1}$ &  & $-$ & $||$ & $+$ & \\\hline \ar{الوضع النسبي} &  & \ar{$(C_f)$ تحت $(\Delta)$} & $||$ & \ar{$(C_f)$ فوق $(\Delta)$} & \\\hline \end{tabular}}\end{LTR}\par }{}{}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ نتأكد بالنشر أن الكتابة $ax+b+\varphi(x)$ تساوي العبارة الأصلية.}{}{}
+\Lab{cThm!80!black}{حذار}\ نتأكد بالنشر أن الكتابة الجديدة تساوي العبارة الأصلية.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $g(x)=\dfrac{x^2+x+2}{x+1}$ على $\mathbb R-\{-1\}$. \par\textbf{(1)} بيّن أن $g(x)=x+\dfrac2{x+1}$. \par\textbf{(2)} استنتج مقارباً مائلاً وادرس الوضع النسبي.\par\textbf{الحل:} \par\RR{\textbf{(1)}} $\RR{x(x+1)+2=x^2+x+2}$. \par\RR{\textbf{(2)}} $\RR{\dfrac2{x+1}\to0}$: $\RR{y=x}$ \RR{مقارب} \RR{مائل} \RR{؛} $\RR{C_g}$ \RR{فوقه} \RR{على} $\RR{]-1;+\infty[}$ \RR{وتحته} \RR{على} $\RR{]-\infty;-1[}$.\par\textbf{واجب منزلي:} تمارين من باب النهايات (المقارب المائل).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par $g(x)=\dfrac{x^2+x+2}{x+1}$ على $\mathbb R-\{-1\}$.\par\textbf{(1)} بيّن أن $g(x)=x+\dfrac2{x+1}$.\par\textbf{(2)} استنتج مقارباً مائلاً لـ $(C_g)$ وادرس الوضع النسبي.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $x+\dfrac2{x+1}=\dfrac{x(x+1)+2}{x+1}=\RR{\dfrac{x^2+x+2}{x+1}=g(x)}$.\par\textbf{(2)} $\dfrac2{x+1}\to0$ عند $\pm\infty$: \RR{$y=x$ مقارب مائل}. الفرق $\dfrac2{x+1}$ موجب على $]-1;+\infty[$ ($(C_g)$ \RR{فوق}) وسالب على $]-\infty;-1[$ ($(C_g)$ \RR{تحت}).\par\textbf{واجب منزلي:} تمارين من باب النهايات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{20}{3 ت ا}{تحليل}{النهايات ودراسة الدوال}{02 سا}{حل مسائل: دراسة دالة ناطقة وتمثيلها البياني}%
 {\begin{itemize}\item المشتقات ، النهايات ، المقاربات.\end{itemize}}%
 {\begin{itemize}\item دراسة دالة ناطقة كاملة وتمثيلها بيانياً.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية. ورق ميليمتري.}
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة البيانية. ورق ميليمتري.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} ما الخطوات التي نتبعها لرسم منحني دالة بدقة؟}{10 د}{سؤال تلخيصي.}
+\textbf{التهيئة النفسية:} ما الخطوات التي نتبعها لرسم منحنى دالة بدقة؟}{10 د}{سؤال تلخيصي.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ $f(x)=\dfrac{x^2+x-1}{x-1}$ على $\mathbb R-\{1\}$.\par\ck\ التحقق أن $f(x)=x+2+\dfrac1{x-1}$.\par
-\ck\ النهايات: $\lim\limits_{x\to -\infty}f(x)=-\infty$ ، $\lim\limits_{x\to +\infty}f(x)=+\infty$ ، $\lim\limits_{x\to 1^{+}}f(x)=+\infty$ ، $\lim\limits_{x\to 1^{-}}f(x)=-\infty$.\par
-}{35 د}{عمل بالأفواج.}
-\Row{بناء المعارف}{%
-\Lab{cMeth}{مخطط دراسة دالة}\ مجموعة التعريف ، النهايات والمقاربات ، المشتقة وإشارتها ، جدول التغيرات ، الوضع النسبي ، نقط خاصة ، الرسم.\par}{50 د}{رسم بالحاسبة للتحقق.}
+\Lab{cEx}{مسألة}\ $f(x)=\dfrac{x^2+x-1}{x-1}$ على $\mathbb R-\{1\}$.\par\textbf{(1)} تحقق أن $f(x)=x+2+\dfrac1{x-1}$.\par\textbf{(2)} احسب النهايات عند أطراف مجموعة التعريف واستنتج المقاربات.\par\textbf{(3)} احسب $f^{\prime}(x)$ وشكّل جدول التغيرات.\par\textbf{(4)} ادرس الوضع النسبي وارسم $(C_f)$.}{35 د}{عمل بالأفواج.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $f^{\prime}(x)=1-\dfrac1{(x-1)^2}=\dfrac{x(x-2)}{(x-1)^2}$ ؛ $f(0)=1$ ، $f(2)=5$.\par\smallskip\begin{LTR}\centering \resizebox{0.92\linewidth}{!}{\begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $x+2+\dfrac1{x-1}=\dfrac{(x+2)(x-1)+1}{x-1}=\dfrac{x^2+x-2+1}{x-1}=\RR{f(x)}$.\par\textbf{(2)} $\lim\limits_{x\to -\infty}f(x)=\RR{-\infty}$ ، $\lim\limits_{x\to +\infty}f(x)=\RR{+\infty}$ ؛ $\lim\limits_{x\to 1^{+}}f(x)=\RR{+\infty}$ ، $\lim\limits_{x\to 1^{-}}f(x)=\RR{-\infty}$: \RR{$x=1$ مقارب عمودي} ، و $\dfrac1{x-1}\to0$: \RR{$y=x+2$ مقارب مائل}.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cEx}{الدراسة}\par\textbf{(3)} $f^{\prime}(x)=1-\dfrac1{(x-1)^2}=\dfrac{(x-1)^2-1}{(x-1)^2}=\RR{\dfrac{x(x-2)}{(x-1)^2}}$ ؛ $f(0)=1$ ، $f(2)=5$.\par\smallskip\begin{LTR}\centering \resizebox{0.92\linewidth}{!}{\begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
 \draw (0,0) rectangle (10,-5); \draw (0,-1)--(10,-1); \draw (0,-2)--(10,-2); \draw (1.2,0)--(1.2,-5);
 \draw (5.45,-1)--(5.45,-5); \draw (5.55,-1)--(5.55,-5);
 \node at (0.6,-0.5){$x$}; \node at (0.6,-1.5){$f^{\prime}(x)$}; \node at (0.6,-3.5){$f(x)$};
@@ -378,51 +375,53 @@
 \node (m) at (1.7,-4.5){$-\infty$}; \node (a) at (3.5,-2.5){$1$}; \node (b) at (4.75,-4.5){$-\infty$};
 \node (c) at (6.2,-2.5){$+\infty$}; \node (d) at (7.5,-4.5){$5$}; \node (p) at (9.4,-2.5){$+\infty$};
 \draw[->,cDef,thick] (m)--(a); \draw[->,cDef,thick] (a)--(b); \draw[->,cDef,thick] (c)--(d); \draw[->,cDef,thick] (d)--(p);
-\end{tikzpicture}}\end{LTR}\par المقاربان: $x=1$ و $y=x+2$ ؛ $C_f$ فوق $y=x+2$ على $]1;+\infty[$ وتحته على $]-\infty;1[$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.45cm,y=0.3cm,font=\scriptsize]
+\end{tikzpicture}}\end{LTR}\par \par\textbf{(4)} $f(x)-(x+2)=\dfrac1{x-1}$: $(C_f)$ \RR{فوق} المقارب على $]1;+\infty[$ و\RR{تحته} على $]-\infty;1[$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.45cm,y=0.3cm,font=\scriptsize]
 \draw[->] (-5,0)--(6,0) node[right]{$x$}; \draw[->] (0,-8)--(0,12) node[above]{$y$};
 \draw[cThm,dashed] (1,-8)--(1,12) node[right]{$x=1$};
 \draw[cRem,dashed,domain=-5:6] plot (\x,{\x+2}); \node[cRem] at (5.2,9.3){$y=x+2$};
 \draw[cDef,thick,domain=-5:0.85,samples=60] plot (\x,{\x+2+1/(\x-1)});
 \draw[cDef,thick,domain=1.1:5.6,samples=60] plot (\x,{\x+2+1/(\x-1)}); \node[cDef] at (3.6,8){$C_f$};
-\end{tikzpicture}\end{LTR}\par }{}{}
+\end{tikzpicture}\end{LTR}\par }{50 د}{رسم بالحاسبة للتحقق.}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ نرسم المقاربات أولاً ثم المنحني.}{}{}
+\Lab{cThm!80!black}{حذار}\ نرسم المقاربات أولاً ثم المنحنى.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par ادرس الدالة $g(x)=\dfrac{2x+1}{x-1}$: النهايات ، المقاربات ، اتجاه التغير.\par\textbf{الحل:} $\RR{g(x)=2+\dfrac3{x-1}}$ \RR{؛} $\RR{y=2}$ \RR{و} $\RR{x=1}$ \RR{مقاربان} \RR{؛} $\RR{g^{\prime}(x)=\dfrac{-3}{(x-1)^2}<0}$: $\RR{g}$ \RR{متناقصة} \RR{تماماً} \RR{على} \RR{كل} \RR{من} \RR{المجالين.}\par\textbf{واجب منزلي:} مسائل من باب النهايات (دراسة دوال).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par $g(x)=\dfrac{2x+1}{x-1}$.\par\textbf{(1)} بيّن أن $g(x)=2+\dfrac3{x-1}$ واستنتج المقاربات.\par\textbf{(2)} ادرس اتجاه تغير $g$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $2+\dfrac3{x-1}=\dfrac{2x-2+3}{x-1}=g(x)$ ؛ \RR{$y=2$} مقارب أفقي و\RR{$x=1$} مقارب عمودي.\par\textbf{(2)} $g^{\prime}(x)=\dfrac{-3}{(x-1)^2}<0$: $g$ \RR{متناقصة تماماً} على كل من $]-\infty;1[$ و $]1;+\infty[$.\par\textbf{واجب منزلي:} مسائل من باب النهايات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{21}{3 ت ا}{تحليل}{النهايات ودراسة الدوال}{02 سا}{حل مسائل: دراسة دالة الكلفة المتوسطة}%
 {\begin{itemize}\item المشتقات ، النهايات ، المقاربات ، المصطلحات الاقتصادية.\end{itemize}}%
-{\begin{itemize}\item دراسة دالة في وضعية اقتصادية وتفسير النتائج (المقاربات ، أصغر كلفة متوسطة).\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية. ورق ميليمتري.}
+{\begin{itemize}\item دراسة دالة في وضعية اقتصادية وتفسير النتائج.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة البيانية. ورق ميليمتري.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} لماذا تكون الكلفة المتوسطة كبيرة جداً لما تكون الكمية المنتجة صغيرة؟}{10 د}{وضعية اقتصادية.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ الكلفة الإجمالية $C(q)=q^2+10q+400$ (بآلاف الدنانير) ، $q>0$ ، والكلفة المتوسطة $C_M(q)=\dfrac{C(q)}q=q+10+\dfrac{400}q$.\par\ck\ $\lim\limits_{x\to 0^{+}}C_M(q)=+\infty$ (الكلفة الثابتة $400$ موزعة على عدد قليل من الوحدات): محور التراتيب مقارب عمودي.\par
-\ck\ $\lim\limits_{x\to +\infty}C_M(q)=+\infty$ و $C_M(q)-(q+10)=\dfrac{400}q\to0$: المستقيم $y=q+10$ مقارب مائل ، و $C_M$ فوقه.\par
-}{35 د}{عمل بالأفواج.}
+\Lab{cEx}{مسألة}\ الكلفة الإجمالية $C(q)=q^2+10q+400$ (بآلاف الدنانير) ، $q>0$.\par\textbf{(1)} اكتب الكلفة المتوسطة $C_M(q)$.\par\textbf{(2)} احسب نهايتي $C_M$ عند $0^{+}$ و $+\infty$ ، واستنتج المقاربات.\par\textbf{(3)} ادرس اتجاه تغير $C_M$ وعيّن أصغر كلفة متوسطة.\par\textbf{(4)} قارن الكلفة الهامشية والكلفة المتوسطة عند هذه الكمية.}{35 د}{عمل بالأفواج.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $C_M(q)=\dfrac{C(q)}q=\RR{q+10+\dfrac{400}q}$.\par\textbf{(2)} $\lim\limits_{q\to0^{+}}C_M(q)=\RR{+\infty}$ (الكلفة الثابتة $400$ موزّعة على عدد قليل من الوحدات): محور التراتيب مقارب عمودي. $\lim\limits_{q\to+\infty}C_M(q)=\RR{+\infty}$ و $C_M(q)-(q+10)=\dfrac{400}q\to0$: \RR{$y=q+10$ مقارب مائل} و $C_M$ فوقه.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cEx}{الدراسة}\ $C_M^{\prime}(q)=1-\dfrac{400}{q^2}=\dfrac{(q-20)(q+20)}{q^2}$ ، إشارتها إشارة $q-20$.\par\smallskip\begin{LTR}\centering \resizebox{0.92\linewidth}{!}{\begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
+\Lab{cEx}{الدراسة}\par\textbf{(3)} $C_M^{\prime}(q)=1-\dfrac{400}{q^2}=\RR{\dfrac{(q-20)(q+20)}{q^2}}$ ، إشارتها من إشارة $q-20$:\par\smallskip\begin{LTR}\centering \resizebox{0.92\linewidth}{!}{\begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
 \draw (0,0) rectangle (7,-5); \draw (0,-1)--(7,-1); \draw (0,-2)--(7,-2); \draw (1.4,0)--(1.4,-5);
 \node at (0.7,-0.5){$q$}; \node at (0.7,-1.5){$C_M^{\prime}(q)$}; \node at (0.7,-3.5){$C_M(q)$};
 \node at (1.8,-0.5){$0$}; \node at (4,-0.5){$20$}; \node at (6.4,-0.5){$+\infty$};
 \node at (2.9,-1.5){$-$}; \node at (4,-1.5){$0$}; \node at (5.2,-1.5){$+$};
 \node (a) at (2,-2.5){$+\infty$}; \node (b) at (4,-4.5){$50$}; \node (c) at (6.4,-2.5){$+\infty$};
 \draw[->,cDef,thick] (a)--(b); \draw[->,cDef,thick] (b)--(c);
-\end{tikzpicture}}\end{LTR}\par أصغر كلفة متوسطة $C_M(20)=50$ ، و $C_m(20)=C^{\prime}(20)=50$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.11cm,y=0.045cm,font=\scriptsize]
+\end{tikzpicture}}\end{LTR}\par أصغر كلفة متوسطة $C_M(20)=\RR{50}$ ألف دينار.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.11cm,y=0.045cm,font=\scriptsize]
 \draw[->] (0,0)--(64,0) node[right]{$q$}; \draw[->] (0,0)--(0,125) node[above]{$y$};
 \foreach \t in {10,20,30,40,50,60} \draw (\t,1.5)--(\t,-1.5) node[below]{$\t$};
 \foreach \t in {25,50,75,100} \draw (1,\t)--(-1,\t) node[left]{$\t$};
 \draw[cRem,dashed,domain=0:60] plot (\x,{\x+10}); \node[cRem,right] at (60,70){$y=q+10$};
 \draw[cDef,thick,domain=3.7:60,samples=80] plot (\x,{\x+10+400/\x}); \node[cDef] at (8,118){$C_M$};
 \draw[cThm,densely dotted] (20,0)--(20,50)--(0,50); \fill[cThm] (20,50) circle (1.2pt);
-\end{tikzpicture}\end{LTR}\par }{50 د}{التفسير الاقتصادي للنتائج.}
+\end{tikzpicture}\end{LTR}\par \par\textbf{(4)} $C_m(20)=C^{\prime}(20)=2\times20+10=\RR{50}=C_M(20)$.}{50 د}{التفسير الاقتصادي.}
 \Row{}{%
-\Lab{cRem}{ملاحظات}\ عند أصغر كلفة متوسطة تتساوى الكلفة الهامشية والكلفة المتوسطة.\par}{}{}
-\Row{}{%
-\Lab{cThm!80!black}{حذار}\ نحترم مجال المتغير الاقتصادي $q>0$ والوحدات في التفسير.}{}{}
+\Lab{cRem}{ملاحظات}\ عند أصغر كلفة متوسطة تتساوى الكلفة الهامشية والكلفة المتوسطة.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par الكلفة الإجمالية $C(q)=2q^2+8q+50$ ، $q>0$. \par\textbf{(1)} اكتب $C_M(q)$ واستنتج مقاربيْ منحنيها. \par\textbf{(2)} عيّن الكمية التي تجعل الكلفة المتوسطة أصغر ما يمكن ، وقارنها بالكلفة الهامشية.\par\textbf{الحل:} \par\RR{\textbf{(1)}} $\RR{C_M(q)=2q+8+\dfrac{50}q}$: $\RR{q=0}$ \RR{و} $\RR{y=2q+8}$. \par\RR{\textbf{(2)}} $\RR{C_M^{\prime}(q)=\dfrac{2(q-5)(q+5)}{q^2}}$: \RR{الأصغر} $\RR{C_M(5)=28}$ \RR{،} \RR{و} $\RR{C_m(5)=4\times5+8=28}$.\par\textbf{واجب منزلي:} مسائل اقتصادية من باب النهايات (دراسة دوال).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو معالجة بيداغوجية.}
+\Lab{cMeth}{تمرين تطبيقي}\par الكلفة الإجمالية $C(q)=2q^2+8q+50$ ، $q>0$.\par\textbf{(1)} اكتب $C_M(q)$ واستنتج مقاربي منحناها.\par\textbf{(2)} عيّن الكمية التي تجعل الكلفة المتوسطة أصغر ما يمكن ، وقارنها بالكلفة الهامشية.}{25 د}{نهاية المحور: فرض أو معالجة بيداغوجية.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $C_M(q)=\RR{2q+8+\dfrac{50}q}$: المقاربان \RR{$q=0$} و\RR{$y=2q+8$}.\par\textbf{(2)} $C_M^{\prime}(q)=2-\dfrac{50}{q^2}=\dfrac{2(q-5)(q+5)}{q^2}$: الأصغر عند $q=5$: $C_M(5)=10+8+10=\RR{28}$ ؛ و $C_m(5)=4\times5+8=\RR{28}$.\par\textbf{واجب منزلي:} مسائل اقتصادية من باب النهايات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \end{document}
