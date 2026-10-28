@@ -199,6 +199,8 @@
 \newcommand{\Num}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[fill=cDef,text=white,inner sep=2pt,font=\footnotesize\bfseries](c){#1};}}
 \newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
 \newenvironment{Kad}[1]{\par\smallskip\Lab{#1}}{\par}
+\newcommand{\RR}[1]{\ifmmode{\color{cThm}#1}\else$\mbox{\color{cThm}#1}$\fi}
+\newcommand{\T}[1]{$\mbox{\color{cDef}\bfseries #1}$}
 \SetHeader{\small\bfseries\color{cSec}مذكرات محور: الإحصاء}{\small\color{cSec}السنة الثالثة ثانوي -- تسيير واقتصاد}
 \begin{document}
 \begin{LTR}
@@ -226,7 +228,7 @@
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} هل توجد علاقة بين سن العامل وأجرته؟ كيف نمثلها؟}{10 د}{أمثلة: القامة والوزن ، الأجرة والسن.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ عدد زبائن متجر $y_i$ حسب رتبة الشهر $x_i$:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5\\\hline $y_i$ & 120 & 150 & 170 & 205 & 230\\\hline\end{tabular}}\end{LTR}\par \ck\ نمثل النقط $M_i(x_i;y_i)$ في معلم متعامد.\par
+\Lab{cEx}{وضعية مقترحة}\ عدد زبائن متجر $y_i$ حسب رتبة الشهر $x_i$:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5\\\hline $y_i$ & 120 & 150 & 170 & 205 & 230\\\hline\end{tabular}}\end{LTR}\par \ck\ نمثل النقط $M_i(x_i;y_i)$ في معلم متعامد.\par
 \ck\ $\bar x=3$ ، $\bar y=\dfrac{875}5=175$: النقطة $G(3;175)$ «مركز» النقط.\par
 \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1cm,y=0.022cm,font=\scriptsize]
 \draw[->] (0,90)--(6.2,90) node[right]{$x$}; \draw[->] (0,90)--(0,255) node[above]{$y$};
@@ -237,11 +239,15 @@
 \Lab{cDef}{تعريف}\par\ck\ ندرس على مجتمع ميزتين كميتين $X$ و $Y$: الثنائيات $(x_i;y_i)$ تشكل \textbf{سلسلة إحصائية لمتغيرين}.\par
 \ck\ \textbf{سحابة النقط}: مجموعة النقط $M_i(x_i;y_i)$ في معلم متعامد.\par
 \ck\ \textbf{النقطة المتوسطة}: $G(\bar x;\bar y)$ حيث $\bar x=\dfrac{x_1+\dots+x_n}n$ و $\bar y=\dfrac{y_1+\dots+y_n}n$.\par
-\Lab{cEx}{مثال}\ سن العامل $x_i$ وأجرته $y_i$ (بآلاف DA):\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & 25 & 30 & 35 & 40 & 45 & 50\\\hline $y_i$ & 32 & 36 & 41 & 43 & 48 & 52\\\hline\end{tabular}}\end{LTR}\par $\bar x=37{,}5$ ، $\bar y=\dfrac{252}6=42$: $G(37{,}5;42)$.\par}{50 د}{الحاسبة لحساب الأوساط.}
+}{50 د}{الحاسبة لحساب الأوساط.}
 \Row{}{%
-\Lab{cRem}{ملاحظات}\ تغيير المبدأ: إذا وضعنا $z_i=x_i-35$ فإن $\bar z=\bar x-35=2{,}5$ (خطية الوسط الحسابي).\par\Lab{cThm!80!black}{حذار}\ نختار وحدات ومبدأً مناسبين للمعلم حتى تظهر السحابة جيداً.}{}{}
+\Lab{cEx}{مثال}\ سن العامل $x_i$ وأجرته $y_i$ (بآلاف DA):\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|}\hline\rowcolor{cSec!12}$x_i$ & 25 & 30 & 35 & 40 & 45 & 50\\\hline $y_i$ & 32 & 36 & 41 & 43 & 48 & 52\\\hline\end{tabular}}\end{LTR}\par $\bar x=37{,}5$ ، $\bar y=\dfrac{252}6=42$: $G(37{,}5;42)$.\par}{}{}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\ تغيير المبدأ: إذا وضعنا $z_i=x_i-35$ فإن $\bar z=\bar x-35=2{,}5$ (خطية الوسط الحسابي).\par}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نختار وحدات ومبدأً مناسبين للمعلم حتى تظهر السحابة جيداً.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par إنتاج ورشة $y_i$ (بالأطنان) حسب رتبة السنة $x_i$:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & 6\\\hline $y_i$ & 12 & 15 & 19 & 22 & 26 & 32\\\hline\end{tabular}}\end{LTR}\par مثّل السحابة وعيّن $G$.\par\textbf{الحل:} $\bar x=3{,}5$ ، $\bar y=\dfrac{126}6=21$: $G(3{,}5;21)$.\par\textbf{واجب منزلي:} تمارين من باب الإحصاء.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{تطبيق}\par إنتاج ورشة $y_i$ (بالأطنان) حسب رتبة السنة $x_i$:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & 6\\\hline $y_i$ & 12 & 15 & 19 & 22 & 26 & 32\\\hline\end{tabular}}\end{LTR}\par مثّل السحابة وعيّن $G$.\par\textbf{الحل:} $\RR{\bar x=3{,}5}$ \RR{،} $\RR{\bar y=\dfrac{126}6=21}$: $\RR{G(3{,}5;21)}$.\par\textbf{واجب منزلي:} تمارين من باب الإحصاء.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
 \ModhHead{41}{3 ت ا}{إحصاء}{الإحصاء}{02 سا}{التعديل الخطي: مستقيم الانحدار بالمربعات الدنيا}%
@@ -256,18 +262,22 @@
 \ck\ نقارن المستقيمات بالمجموع $S=M_1P_1^2+M_2P_2^2+\dots+M_nP_n^2$: الأفضل هو الذي يجعل $S$ أصغر ما يمكن.\par
 }{35 د}{جدول الحساب.}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ القيام بـ\textbf{تعديل خطي} لسحابة يعني إيجاد دالة تآلفية $y=ax+b$ تعبّر تقريبياً عن $y$ بدلالة $x$.\par\Lab{cThm}{المربعات الدنيا (تُقبل)}\ يوجد مستقيم وحيد يشمل $G$ ويجعل $S$ أصغرياً: \textbf{مستقيم الانحدار بالمربعات الدنيا} $y=ax+b$ حيث:\par $a=\dfrac{\frac1n\sum x_iy_i-\bar x\,\bar y}{\frac1n\sum(x_i-\bar x)^2}$ ، $b=\bar y-a\bar x$.\par}{50 د}{التحقق بالحاسبة.}
+\Lab{cDef}{تعريف}\ القيام بـ\textbf{تعديل خطي} لسحابة يعني إيجاد دالة تآلفية $y=ax+b$ تعبّر تقريبياً عن $y$ بدلالة $x$.\par}{50 د}{التحقق بالحاسبة.}
 \Row{}{%
-\Lab{cEx}{مثال}\ مع الوضعية: \par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & \ar{المجموع}\\\hline $y_i$ & 120 & 150 & 170 & 205 & 230 & 875\\\hline $x_iy_i$ & 120 & 300 & 510 & 820 & 1150 & 2900\\\hline $(x_i-\bar x)^2$ & 4 & 1 & 0 & 1 & 4 & 10\\\hline\end{tabular}}\end{LTR}\par $a=\dfrac{580-3\times175}{2}=\dfrac{55}2=27{,}5$ ؛ $b=175-27{,}5\times3=92{,}5$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1cm,y=0.022cm,font=\scriptsize]
+\Lab{cThm}{المربعات الدنيا (تُقبل)}\ يوجد مستقيم وحيد يشمل $G$ ويجعل $S$ أصغرياً: \textbf{مستقيم الانحدار بالمربعات الدنيا} $y=ax+b$ حيث:\par $a=\dfrac{\frac1n\sum x_iy_i-\bar x\,\bar y}{\frac1n\sum(x_i-\bar x)^2}$ ، $b=\bar y-a\bar x$.\par}{}{}
+\Row{}{%
+\Lab{cEx}{مثال}\ مع الوضعية: \par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & \ar{المجموع}\\\hline $y_i$ & 120 & 150 & 170 & 205 & 230 & 875\\\hline $x_iy_i$ & 120 & 300 & 510 & 820 & 1150 & 2900\\\hline $(x_i-\bar x)^2$ & 4 & 1 & 0 & 1 & 4 & 10\\\hline\end{tabular}}\end{LTR}\par $a=\dfrac{580-3\times175}{2}=\dfrac{55}2=27{,}5$ ؛ $b=175-27{,}5\times3=92{,}5$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1cm,y=0.022cm,font=\scriptsize]
 \draw[->] (0,90)--(6.2,90) node[right]{$x$}; \draw[->] (0,90)--(0,255) node[above]{$y$};
 \draw (1,90) node[below]{$1$} -- ++(0,0.08/0.022);\draw (2,90) node[below]{$2$} -- ++(0,0.08/0.022);\draw (3,90) node[below]{$3$} -- ++(0,0.08/0.022);\draw (4,90) node[below]{$4$} -- ++(0,0.08/0.022);\draw (5,90) node[below]{$5$} -- ++(0,0.08/0.022);\draw (0,100) node[left]{$100$} -- ++(0.08/1,0);\draw (0,150) node[left]{$150$} -- ++(0.08/1,0);\draw (0,200) node[left]{$200$} -- ++(0.08/1,0);\draw (0,250) node[left]{$250$} -- ++(0.08/1,0);\draw[cRem!80!black,thick,domain=0.4:5.6] plot (\x,{27.5*\x+92.5}) node[right]{$y=27{,}5x+92{,}5$};
 \fill[cDef] (1,120) circle (2.2pt);\fill[cDef] (2,150) circle (2.2pt);\fill[cDef] (3,170) circle (2.2pt);\fill[cDef] (4,205) circle (2.2pt);\fill[cDef] (5,230) circle (2.2pt);
 \fill[cEx] (3,175) circle (2.6pt) node[above left]{$G$};
-\end{tikzpicture}\end{LTR}\par \Lab{cRem}{ملاحظات}\ بالحاسبة: ندخل القيم في قائمتين ونستعمل وظيفة الانحدار الخطي ($\text{LinReg}$).\par}{}{}
+\end{tikzpicture}\end{LTR}\par }{}{}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\ بالحاسبة: ندخل القيم في قائمتين ونستعمل وظيفة الانحدار الخطي ($\text{LinReg}$).\par}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ مستقيم الانحدار يشمل دائماً $G$: نتحقق بذلك.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par مبيعات مؤسسة $y_i$ (بملايين DA) حسب رتبة السنة $x_i$:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & 6\\\hline $y_i$ & 2,1 & 2,5 & 2,8 & 3,4 & 3,7 & 4,1\\\hline\end{tabular}}\end{LTR}\par عيّن معادلة مستقيم الانحدار (تدوَّر النتائج إلى $10^{-3}$).\par\textbf{الحل:} $\bar x=3{,}5$ ، $\bar y=3{,}1$ ، $\frac16\sum x_iy_i\approx12{,}033$ ، $\frac16\sum(x_i-\bar x)^2\approx2{,}917$: $a\approx0{,}406$ ، $b=1{,}68$.\par\textbf{واجب منزلي:} تمارين من باب الإحصاء.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{تطبيق}\par مبيعات مؤسسة $y_i$ (بملايين DA) حسب رتبة السنة $x_i$:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & 6\\\hline $y_i$ & 2,1 & 2,5 & 2,8 & 3,4 & 3,7 & 4,1\\\hline\end{tabular}}\end{LTR}\par عيّن معادلة مستقيم الانحدار (تدوَّر النتائج إلى $10^{-3}$).\par\textbf{الحل:} $\RR{\bar x=3{,}5}$ \RR{،} $\RR{\bar y=3{,}1}$ \RR{،} $\RR{\frac16\sum x_iy_i\approx12{,}033}$ \RR{،} $\RR{\frac16\sum(x_i-\bar x)^2\approx2{,}917}$: $\RR{a\approx0{,}406}$ \RR{،} $\RR{b=1{,}68}$.\par\textbf{واجب منزلي:} تمارين من باب الإحصاء.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
 \ModhHead{42}{3 ت ا}{إحصاء}{الإحصاء}{02 سا}{التقدير بالتعديل ، تعديل بتغيير المتغير $z=\ln y$}%
@@ -282,9 +292,11 @@
 \ck\ $x=2{,}5$ (منتصف الشهر الثالث تقريباً): $y=161{,}25$: \textbf{استكمال داخلي}.\par
 }{35 د}{مقارنة تعديلين.}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ \textbf{الاستكمال الداخلي}: تقدير قيمة من أجل $x$ داخل مجال المعطيات ؛ \textbf{الاستكمال الخارجي}: خارجه (تقدير مستقبلي ، أقل دقة).\par\Lab{cMeth}{تعديل أسي}\ إذا كانت قيم $y$ تتضاعف بنسبة شبه ثابتة نضع $z=\ln y$ ، ونعدّل $(x;z)$ خطياً: $z=ax+b$ ، ثم $y=e^{ax+b}=e^b\,e^{ax}$.\par}{50 د}{الحاسبة.}
+\Lab{cDef}{تعريف}\ \textbf{الاستكمال الداخلي}: تقدير قيمة من أجل $x$ داخل مجال المعطيات ؛ \textbf{الاستكمال الخارجي}: خارجه (تقدير مستقبلي ، أقل دقة).\par}{50 د}{الحاسبة.}
 \Row{}{%
-\Lab{cEx}{مثال}\ عدد مشتركي خدمة (بالمئات):\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & 6\\\hline $y_i$ & 50 & 62 & 77 & 95 & 118 & 146\\\hline $z_i=\ln y_i$ & 3,91 & 4,13 & 4,34 & 4,55 & 4,77 & 4,98\\\hline\end{tabular}}\end{LTR}\par \ck\ التعديل الخطي لـ $(x;y)$: $y\approx19{,}03x+24{,}73$.\par
+\Lab{cMeth}{تعديل أسي}\ إذا كانت قيم $y$ تتضاعف بنسبة شبه ثابتة نضع $z=\ln y$ ، ونعدّل $(x;z)$ خطياً: $z=ax+b$ ، ثم $y=e^{ax+b}=e^b\,e^{ax}$.\par}{}{}
+\Row{}{%
+\Lab{cEx}{مثال}\ عدد مشتركي خدمة (بالمئات):\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & 6\\\hline $y_i$ & 50 & 62 & 77 & 95 & 118 & 146\\\hline $z_i=\ln y_i$ & 3,91 & 4,13 & 4,34 & 4,55 & 4,77 & 4,98\\\hline\end{tabular}}\end{LTR}\par \ck\ التعديل الخطي لـ $(x;y)$: $y\approx19{,}03x+24{,}73$.\par
 \ck\ التعديل الخطي لـ $(x;z)$: $z\approx0{,}214x+3{,}699$ ، إذن $y\approx40{,}4\,e^{0{,}214x}$.\par
 \ck\ تقدير $x=8$: الخطي $\approx177$ ، الأسي $e^{5{,}411}\approx224$.\par
 \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.9cm,y=0.025cm,font=\scriptsize]
@@ -292,9 +304,11 @@
 \draw (1,0) node[below]{$1$} -- ++(0,0.08/0.025);\draw (2,0) node[below]{$2$} -- ++(0,0.08/0.025);\draw (3,0) node[below]{$3$} -- ++(0,0.08/0.025);\draw (4,0) node[below]{$4$} -- ++(0,0.08/0.025);\draw (5,0) node[below]{$5$} -- ++(0,0.08/0.025);\draw (6,0) node[below]{$6$} -- ++(0,0.08/0.025);\draw (7,0) node[below]{$7$} -- ++(0,0.08/0.025);\draw (0,50) node[left]{$50$} -- ++(0.08/0.9,0);\draw (0,100) node[left]{$100$} -- ++(0.08/0.9,0);\draw (0,150) node[left]{$150$} -- ++(0.08/0.9,0);\draw (0,200) node[left]{$200$} -- ++(0.08/0.9,0);\draw[cRem!80!black,thick,domain=0.5:7.3] plot (\x,{19.03*\x+24.73}) node[right]{\ar{تعديل خطي}};
 \draw[cThm,thick,densely dashed,domain=0.5:7.3,samples=50] plot (\x,{40.41*exp(0.214*\x)}) node[right]{\ar{تعديل أسي}};
 \fill[cDef] (1,50) circle (2.2pt);\fill[cDef] (2,62) circle (2.2pt);\fill[cDef] (3,77) circle (2.2pt);\fill[cDef] (4,95) circle (2.2pt);\fill[cDef] (5,118) circle (2.2pt);\fill[cDef] (6,146) circle (2.2pt);
-\end{tikzpicture}\end{LTR}\par النقط تتبع المنحني الأسي أحسن: التعديل الأسي أنسب هنا.\par\Lab{cThm!80!black}{حذار}\ الاستكمال الخارجي البعيد غير موثوق.}{}{}
+\end{tikzpicture}\end{LTR}\par النقط تتبع المنحني الأسي أحسن: التعديل الأسي أنسب هنا.\par}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ الاستكمال الخارجي البعيد غير موثوق.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par بالمبيعات في الحصة السابقة ($y=0{,}406x+1{,}68$): قدّر مبيعات السنة الثامنة ، ثم السنة التي تتجاوز فيها المبيعات $5$ ملايين DA.\par\textbf{الحل:} $0{,}406\times8+1{,}68\approx4{,}93$ ؛ $0{,}406x+1{,}68>5$: $x>8{,}18$: السنة التاسعة.\par\textbf{واجب منزلي:} تمارين من باب الإحصاء.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{تطبيق}\par بالمبيعات في الحصة السابقة ($y=0{,}406x+1{,}68$): قدّر مبيعات السنة الثامنة ، ثم السنة التي تتجاوز فيها المبيعات $5$ ملايين DA.\par\textbf{الحل:} $\RR{0{,}406\times8+1{,}68\approx4{,}93}$ \RR{؛} $\RR{0{,}406x+1{,}68>5}$: $\RR{x>8{,}18}$: \RR{السنة} \RR{التاسعة.}\par\textbf{واجب منزلي:} تمارين من باب الإحصاء.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
 \ModhHead{43}{3 ت ا}{إحصاء}{الإحصاء}{02 سا}{حل مسائل في الإحصاء}%
@@ -305,7 +319,7 @@
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} ما خطوات معالجة سلسلة إحصائية لمتغيرين؟}{10 د}{سؤال تلخيصي.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مسألة}\ الكلفة الإجمالية $y_i$ (بآلاف DA) لإنتاج $x_i$ مئات وحدة:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & 6\\\hline $y_i$ & 52 & 57 & 64 & 70 & 77 & 82\\\hline\end{tabular}}\end{LTR}\par 1) مثّل السحابة وعيّن $G$. 2) عيّن مستقيم الانحدار (إلى $10^{-2}$). 3) قدّر كلفة $800$ وحدة. 4) ابتداءً من أي كمية تتجاوز الكلفة $100$ ألف DA ؟}{35 د}{عمل بالأفواج.}
+\Lab{cEx}{مسألة}\ الكلفة الإجمالية $y_i$ (بآلاف DA) لإنتاج $x_i$ مئات وحدة:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|}\hline\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & 6\\\hline $y_i$ & 52 & 57 & 64 & 70 & 77 & 82\\\hline\end{tabular}}\end{LTR}\par 1) مثّل السحابة وعيّن $G$. \par\textbf{(2)} عيّن مستقيم الانحدار (إلى $10^{-2}$). \par\textbf{(3)} قدّر كلفة $800$ وحدة. \par\textbf{(4)} ابتداءً من أي كمية تتجاوز الكلفة $100$ ألف DA ؟}{35 د}{عمل بالأفواج.}
 \Row{بناء المعارف}{%
 \Lab{cEx}{الحل}\par\ck\ $\bar x=3{,}5$ ، $\bar y=\dfrac{402}6=67$: $G(3{,}5;67)$.\par
 \ck\ $\frac16\sum x_iy_i=\dfrac{1515}6=252{,}5$ ؛ $\frac16\sum(x_i-\bar x)^2\approx2{,}917$: $a=\dfrac{252{,}5-234{,}5}{2{,}917}\approx6{,}17$ ؛ $b=67-6{,}17\times3{,}5\approx45{,}4$.\par
@@ -316,10 +330,12 @@
 \fill[cEx] (3.5,67) circle (2.6pt) node[above left]{$G$};
 \end{tikzpicture}\end{LTR}\par \ck\ $x=8$: $y\approx6{,}17\times8+45{,}4\approx94{,}8$ ألف DA.\par
 \ck\ $6{,}17x+45{,}4>100$: $x>8{,}85$: ابتداءً من حوالي $885$ وحدة.\par
-\Lab{cRem}{ملاحظات}\ الثابت $b\approx45{,}4$ يقارب الكلفة الثابتة ، والمعامل $a$ يقارب الكلفة الهامشية لمئة وحدة.\par}{50 د}{الحاسبة للتحقق.}
+}{50 د}{الحاسبة للتحقق.}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\ الثابت $b\approx45{,}4$ يقارب الكلفة الثابتة ، والمعامل $a$ يقارب الكلفة الهامشية لمئة وحدة.\par}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ نحترم التدوير المطلوب ونذكر الوحدات.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par أعد السؤالين 1 و 2 للمعطيات: $x_i$: $1$ ، $2$ ، $3$ ، $4$ ، $5$ و $y_i$: $120$ ، $150$ ، $170$ ، $205$ ، $230$ ، ثم قدّر $y$ لما $x=6$.\par\textbf{الحل:} $G(3;175)$ ، $y=27{,}5x+92{,}5$ ، $y(6)=257{,}5$.\par\textbf{واجب منزلي:} تمارين البكالوريا من باب الإحصاء.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو معالجة بيداغوجية.}
+\Lab{cEx}{تطبيق}\par أعد السؤالين 1 و 2 للمعطيات: $x_i$: $1$ ، $2$ ، $3$ ، $4$ ، $5$ و $y_i$: $120$ ، $150$ ، $170$ ، $205$ ، $230$ ، ثم قدّر $y$ لما $x=6$.\par\textbf{الحل:} $\RR{G(3;175)}$ \RR{،} $\RR{y=27{,}5x+92{,}5}$ \RR{،} $\RR{y(6)=257{,}5}$.\par\textbf{واجب منزلي:} تمارين البكالوريا من باب الإحصاء.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو معالجة بيداغوجية.}
 \end{Sayr}
 \end{document}

@@ -199,6 +199,8 @@
 \newcommand{\Num}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[fill=cDef,text=white,inner sep=2pt,font=\footnotesize\bfseries](c){#1};}}
 \newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
 \newenvironment{Kad}[1]{\par\smallskip\Lab{#1}}{\par}
+\newcommand{\RR}[1]{\ifmmode{\color{cThm}#1}\else$\mbox{\color{cThm}#1}$\fi}
+\newcommand{\T}[1]{$\mbox{\color{cDef}\bfseries #1}$}
 \SetHeader{\small\bfseries\color{cSec}مذكرات محور: الاحتمالات}{\small\color{cSec}السنة الثالثة ثانوي -- تسيير واقتصاد}
 \begin{document}
 \begin{LTR}
@@ -236,11 +238,15 @@
 \Lab{cDef}{تعريف}\par\ck\ $\Omega=\{e_1;\dots;e_n\}$ مجموعة الإمكانيات. \textbf{قانون الاحتمال}: إرفاق كل $e_i$ بعدد $p_i\geqslant0$ مع $p_1+\dots+p_n=1$.\par
 \ck\ احتمال حادثة $A$: مجموع احتمالات الإمكانيات التي تحققها.\par
 \ck\ \textbf{تساوي الاحتمال}: $P(A)=\dfrac{\text{card}\,A}{\text{card}\,\Omega}$.\par
-\Lab{cThm}{خاصية}\ $P(\overline A)=1-P(A)$ ؛ $P(A\cup B)=P(A)+P(B)-P(A\cap B)$.\par}{50 د}{التحقق من المجموع.}
+}{50 د}{التحقق من المجموع.}
 \Row{}{%
-\Lab{cEx}{مثال}\ قانون الوضعية:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.5}\begin{tabular}{|c|c|c|c|c|}\hline\rowcolor{cSec!12}\ar{الرقم} $x_i$ & $1$ & $2$ & $5$ & \ar{المجموع}\\\hline $P(x_i)$ & $0{,}5$ & $0{,}3$ & $0{,}2$ & $1$\\\hline\end{tabular}}\end{LTR}\par احتمال «رقم أكبر من $1$» $=0{,}3+0{,}2=0{,}5$.\par\Lab{cThm!80!black}{حذار}\ نتحقق دائماً أن مجموع الاحتمالات يساوي $1$.}{}{}
+\Lab{cThm}{خاصية}\ $P(\overline A)=1-P(A)$ ؛ $P(A\cup B)=P(A)+P(B)-P(A\cap B)$.\par}{}{}
+\Row{}{%
+\Lab{cEx}{مثال}\ قانون الوضعية:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.5}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|}\hline\rowcolor{cSec!12}\ar{الرقم} $x_i$ & $1$ & $2$ & $5$ & \ar{المجموع}\\\hline $P(x_i)$ & $0{,}5$ & $0{,}3$ & $0{,}2$ & $1$\\\hline\end{tabular}}\end{LTR}\par احتمال «رقم أكبر من $1$» $=0{,}3+0{,}2=0{,}5$.\par}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نتحقق دائماً أن مجموع الاحتمالات يساوي $1$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par حجر نرد مزيف: احتمال كل وجه زوجي ضعف احتمال كل وجه فردي. عيّن قانون الاحتمال ، ثم احتمال ظهور رقم زوجي.\par\textbf{الحل:} $3p+3\times2p=1$: $p=\frac19$ ؛ الفردي $\frac19$ والزوجي $\frac29$ ؛ $P=\frac69=\frac23$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{تطبيق}\par حجر نرد مزيف: احتمال كل وجه زوجي ضعف احتمال كل وجه فردي. عيّن قانون الاحتمال ، ثم احتمال ظهور رقم زوجي.\par\textbf{الحل:} $\RR{3p+3\times2p=1}$: $\RR{p=\frac19}$ \RR{؛} \RR{الفردي} $\RR{\frac19}$ \RR{والزوجي} $\RR{\frac29}$ \RR{؛} $\RR{P=\frac69=\frac23}$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
 \ModhHead{45}{3 ت ا}{احتمالات}{الاحتمالات}{02 سا}{أنواع السحب: في آن واحد ، على التوالي بإرجاع أو دون إرجاع}%
@@ -255,11 +261,15 @@
 \ck\ نعدّ الإمكانيات في كل نوع من السحب بجدول ذي مدخلين (السطر: السحب الأول ، العمود: الثاني).\par
 }{35 د}{الجداول على السبورة.}
 \Row{بناء المعارف}{%
-\Lab{cThm}{على التوالي دون إرجاع}\ (الترتيب مهم ، لا تكرار): $5\times4=20$ إمكانية. «لونان مختلفان» (الملوَّن): $P=\frac{12}{20}=\frac35$.\par\smallskip\begin{LTR}\centering {\scriptsize\setlength{\tabcolsep}{3.5pt}\renewcommand{\arraystretch}{1.45}\begin{tabular}{|c|c|c|c|c|c|}\hline\rowcolor{cSec!12} & $R_1$ & $R_2$ & $R_3$ & $B_1$ & $B_2$\\\hline $R_1$ & $\times$ & $R_1R_2$ & $R_1R_3$ & \cellcolor{cEx!30}$R_1B_1$ & \cellcolor{cEx!30}$R_1B_2$\\\hline $R_2$ & $R_2R_1$ & $\times$ & $R_2R_3$ & \cellcolor{cEx!30}$R_2B_1$ & \cellcolor{cEx!30}$R_2B_2$\\\hline $R_3$ & $R_3R_1$ & $R_3R_2$ & $\times$ & \cellcolor{cEx!30}$R_3B_1$ & \cellcolor{cEx!30}$R_3B_2$\\\hline $B_1$ & \cellcolor{cEx!30}$B_1R_1$ & \cellcolor{cEx!30}$B_1R_2$ & \cellcolor{cEx!30}$B_1R_3$ & $\times$ & $B_1B_2$\\\hline $B_2$ & \cellcolor{cEx!30}$B_2R_1$ & \cellcolor{cEx!30}$B_2R_2$ & \cellcolor{cEx!30}$B_2R_3$ & $B_2B_1$ & $\times$\\\hline\end{tabular}}\end{LTR}\par \Lab{cThm}{على التوالي مع الإرجاع}\ (الترتيب مهم ، التكرار ممكن): $5\times5=25$. «نفس اللون» (الملوَّن): $P=\frac{9+4}{25}=\frac{13}{25}$.\par\smallskip\begin{LTR}\centering {\scriptsize\setlength{\tabcolsep}{3.5pt}\renewcommand{\arraystretch}{1.45}\begin{tabular}{|c|c|c|c|c|c|}\hline\rowcolor{cSec!12} & $R_1$ & $R_2$ & $R_3$ & $B_1$ & $B_2$\\\hline $R_1$ & \cellcolor{cEx!30}$R_1R_1$ & \cellcolor{cEx!30}$R_1R_2$ & \cellcolor{cEx!30}$R_1R_3$ & $R_1B_1$ & $R_1B_2$\\\hline $R_2$ & \cellcolor{cEx!30}$R_2R_1$ & \cellcolor{cEx!30}$R_2R_2$ & \cellcolor{cEx!30}$R_2R_3$ & $R_2B_1$ & $R_2B_2$\\\hline $R_3$ & \cellcolor{cEx!30}$R_3R_1$ & \cellcolor{cEx!30}$R_3R_2$ & \cellcolor{cEx!30}$R_3R_3$ & $R_3B_1$ & $R_3B_2$\\\hline $B_1$ & $B_1R_1$ & $B_1R_2$ & $B_1R_3$ & \cellcolor{cEx!30}$B_1B_1$ & \cellcolor{cEx!30}$B_1B_2$\\\hline $B_2$ & $B_2R_1$ & $B_2R_2$ & $B_2R_3$ & \cellcolor{cEx!30}$B_2B_1$ & \cellcolor{cEx!30}$B_2B_2$\\\hline\end{tabular}}\end{LTR}\par }{50 د}{تلوين خانات الحادثة.}
+\Lab{cThm}{على التوالي دون إرجاع}\ (الترتيب مهم ، لا تكرار): $5\times4=20$ إمكانية. «لونان مختلفان» (الملوَّن): $P=\frac{12}{20}=\frac35$.\par\smallskip\begin{LTR}\centering {\scriptsize\setlength{\tabcolsep}{3.5pt}\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|}\hline\rowcolor{cSec!12} & $R_1$ & $R_2$ & $R_3$ & $B_1$ & $B_2$\\\hline $R_1$ & $\times$ & $R_1R_2$ & $R_1R_3$ & \cellcolor{cEx!30}$R_1B_1$ & \cellcolor{cEx!30}$R_1B_2$\\\hline $R_2$ & $R_2R_1$ & $\times$ & $R_2R_3$ & \cellcolor{cEx!30}$R_2B_1$ & \cellcolor{cEx!30}$R_2B_2$\\\hline $R_3$ & $R_3R_1$ & $R_3R_2$ & $\times$ & \cellcolor{cEx!30}$R_3B_1$ & \cellcolor{cEx!30}$R_3B_2$\\\hline $B_1$ & \cellcolor{cEx!30}$B_1R_1$ & \cellcolor{cEx!30}$B_1R_2$ & \cellcolor{cEx!30}$B_1R_3$ & $\times$ & $B_1B_2$\\\hline $B_2$ & \cellcolor{cEx!30}$B_2R_1$ & \cellcolor{cEx!30}$B_2R_2$ & \cellcolor{cEx!30}$B_2R_3$ & $B_2B_1$ & $\times$\\\hline\end{tabular}}\end{LTR}\par }{50 د}{تلوين خانات الحادثة.}
 \Row{}{%
-\Lab{cThm}{في آن واحد}\ (الترتيب غير مهم ، لا تكرار): نصف الجدول دون القطر: $\frac{5\times4}2=10$. «لونان مختلفان»: $P=\frac6{10}=\frac35$.\par\smallskip\begin{LTR}\centering {\scriptsize\setlength{\tabcolsep}{3.5pt}\renewcommand{\arraystretch}{1.45}\begin{tabular}{|c|c|c|c|c|c|}\hline\rowcolor{cSec!12} & $R_1$ & $R_2$ & $R_3$ & $B_1$ & $B_2$\\\hline $R_1$ &  & $\{R_1;R_2\}$ & $\{R_1;R_3\}$ & \cellcolor{cEx!30}$\{R_1;B_1\}$ & \cellcolor{cEx!30}$\{R_1;B_2\}$\\\hline $R_2$ &  &  & $\{R_2;R_3\}$ & \cellcolor{cEx!30}$\{R_2;B_1\}$ & \cellcolor{cEx!30}$\{R_2;B_2\}$\\\hline $R_3$ &  &  &  & \cellcolor{cEx!30}$\{R_3;B_1\}$ & \cellcolor{cEx!30}$\{R_3;B_2\}$\\\hline $B_1$ &  &  &  &  & $\{B_1;B_2\}$\\\hline $B_2$ &  &  &  &  & \\\hline\end{tabular}}\end{LTR}\par \Lab{cThm!80!black}{حذار}\ نحدد نوع السحب من نص التمرين قبل العدّ.}{}{}
+\Lab{cThm}{على التوالي مع الإرجاع}\ (الترتيب مهم ، التكرار ممكن): $5\times5=25$. «نفس اللون» (الملوَّن): $P=\frac{9+4}{25}=\frac{13}{25}$.\par\smallskip\begin{LTR}\centering {\scriptsize\setlength{\tabcolsep}{3.5pt}\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|}\hline\rowcolor{cSec!12} & $R_1$ & $R_2$ & $R_3$ & $B_1$ & $B_2$\\\hline $R_1$ & \cellcolor{cEx!30}$R_1R_1$ & \cellcolor{cEx!30}$R_1R_2$ & \cellcolor{cEx!30}$R_1R_3$ & $R_1B_1$ & $R_1B_2$\\\hline $R_2$ & \cellcolor{cEx!30}$R_2R_1$ & \cellcolor{cEx!30}$R_2R_2$ & \cellcolor{cEx!30}$R_2R_3$ & $R_2B_1$ & $R_2B_2$\\\hline $R_3$ & \cellcolor{cEx!30}$R_3R_1$ & \cellcolor{cEx!30}$R_3R_2$ & \cellcolor{cEx!30}$R_3R_3$ & $R_3B_1$ & $R_3B_2$\\\hline $B_1$ & $B_1R_1$ & $B_1R_2$ & $B_1R_3$ & \cellcolor{cEx!30}$B_1B_1$ & \cellcolor{cEx!30}$B_1B_2$\\\hline $B_2$ & $B_2R_1$ & $B_2R_2$ & $B_2R_3$ & \cellcolor{cEx!30}$B_2B_1$ & \cellcolor{cEx!30}$B_2B_2$\\\hline\end{tabular}}\end{LTR}\par }{}{}
+\Row{}{%
+\Lab{cThm}{في آن واحد}\ (الترتيب غير مهم ، لا تكرار): نصف الجدول دون القطر: $\frac{5\times4}2=10$. «لونان مختلفان»: $P=\frac6{10}=\frac35$.\par\smallskip\begin{LTR}\centering {\scriptsize\setlength{\tabcolsep}{3.5pt}\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|}\hline\rowcolor{cSec!12} & $R_1$ & $R_2$ & $R_3$ & $B_1$ & $B_2$\\\hline $R_1$ &  & $\{R_1;R_2\}$ & $\{R_1;R_3\}$ & \cellcolor{cEx!30}$\{R_1;B_1\}$ & \cellcolor{cEx!30}$\{R_1;B_2\}$\\\hline $R_2$ &  &  & $\{R_2;R_3\}$ & \cellcolor{cEx!30}$\{R_2;B_1\}$ & \cellcolor{cEx!30}$\{R_2;B_2\}$\\\hline $R_3$ &  &  &  & \cellcolor{cEx!30}$\{R_3;B_1\}$ & \cellcolor{cEx!30}$\{R_3;B_2\}$\\\hline $B_1$ &  &  &  &  & $\{B_1;B_2\}$\\\hline $B_2$ &  &  &  &  & \\\hline\end{tabular}}\end{LTR}\par }{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نحدد نوع السحب من نص التمرين قبل العدّ.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par مع نفس الكيس ، احسب احتمال «سحب كرتين حمراوين» في الأنواع الثلاثة.\par\textbf{الحل:} دون إرجاع $\frac6{20}=\frac3{10}$ ؛ مع الإرجاع $\frac9{25}$ ؛ في آن واحد $\frac3{10}$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{تطبيق}\par مع نفس الكيس ، احسب احتمال «سحب كرتين حمراوين» في الأنواع الثلاثة.\par\textbf{الحل:} \RR{دون} \RR{إرجاع} $\RR{\frac6{20}=\frac3{10}}$ \RR{؛} \RR{مع} \RR{الإرجاع} $\RR{\frac9{25}}$ \RR{؛} \RR{في} \RR{آن} \RR{واحد} $\RR{\frac3{10}}$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
 \ModhHead{46}{3 ت ا}{احتمالات}{الاحتمالات}{02 سا}{الأمل الرياضياتي والتباين والانحراف المعياري لقانون احتمال عددي}%
@@ -275,11 +285,15 @@
 \Row{بناء المعارف}{%
 \Lab{cDef}{تعريف}\ $X$ يأخذ القيم $x_i$ باحتمالات $p_i$:\par\ck\ \textbf{الأمل الرياضياتي}: $E(X)=\sum x_ip_i$.\par
 \ck\ \textbf{التباين}: $V(X)=\sum x_i^2p_i-\big(E(X)\big)^2$ ؛ \textbf{الانحراف المعياري}: $\sigma(X)=\sqrt{V(X)}$.\par
-\Lab{cEx}{مثال}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.5}\begin{tabular}{|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & $-2$ & $1$ & $5$ & \ar{المجموع}\\\hline $p_i$ & $0{,}5$ & $0{,}3$ & $0{,}2$ & $1$\\\hline $x_ip_i$ & $-1$ & $0{,}3$ & $1$ & $0{,}3$\\\hline $x_i^2p_i$ & $2$ & $0{,}3$ & $5$ & $7{,}3$\\\hline\end{tabular}}\end{LTR}\par $E(X)=0{,}3$: اللعبة مربحة للاعب ($0{,}3$ DA في المتوسط لكل دور) ؛ $V(X)=7{,}3-0{,}09=7{,}21$ ؛ $\sigma\approx2{,}69$.\par}{50 د}{ربط بالإحصاء.}
+}{50 د}{ربط بالإحصاء.}
 \Row{}{%
-\Lab{cRem}{ملاحظات}\ اللعبة «عادلة» إذا كان $E(X)=0$ ؛ $\sigma$ يقيس تشتت القيم حول $E(X)$.\par\Lab{cThm!80!black}{حذار}\ $V(X)\geqslant0$ دائماً: نتحقق من الحساب.}{}{}
+\Lab{cEx}{مثال}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.5}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|}\hline\rowcolor{cSec!12}$x_i$ & $-2$ & $1$ & $5$ & \ar{المجموع}\\\hline $p_i$ & $0{,}5$ & $0{,}3$ & $0{,}2$ & $1$\\\hline $x_ip_i$ & $-1$ & $0{,}3$ & $1$ & $0{,}3$\\\hline $x_i^2p_i$ & $2$ & $0{,}3$ & $5$ & $7{,}3$\\\hline\end{tabular}}\end{LTR}\par $E(X)=0{,}3$: اللعبة مربحة للاعب ($0{,}3$ DA في المتوسط لكل دور) ؛ $V(X)=7{,}3-0{,}09=7{,}21$ ؛ $\sigma\approx2{,}69$.\par}{}{}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\ اللعبة «عادلة» إذا كان $E(X)=0$ ؛ $\sigma$ يقيس تشتت القيم حول $E(X)$.\par}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ $V(X)\geqslant0$ دائماً: نتحقق من الحساب.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par نسحب في آن واحد كرتين من الكيس ($3$ حمراء ، $2$ بيضاء). $X$ عدد الكريات الحمراء المسحوبة. عيّن قانون $X$ ، ثم $E(X)$ و $\sigma(X)$.\par\textbf{الحل:}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.5}\begin{tabular}{|c|c|c|c|c|}\hline\rowcolor{cSec!12}$x_i$ & $0$ & $1$ & $2$ & \ar{المجموع}\\\hline $P(X=x_i)$ & $\frac1{10}$ & $\frac6{10}$ & $\frac3{10}$ & $1$\\\hline\end{tabular}}\end{LTR}\par $E(X)=1{,}2$ ؛ $V(X)=1{,}8-1{,}44=0{,}36$ ؛ $\sigma(X)=0{,}6$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{تطبيق}\par نسحب في آن واحد كرتين من الكيس ($3$ حمراء ، $2$ بيضاء). $X$ عدد الكريات الحمراء المسحوبة. عيّن قانون $X$ ، ثم $E(X)$ و $\sigma(X)$.\par\textbf{الحل:}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.5}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|}\hline\rowcolor{cSec!12}$x_i$ & $0$ & $1$ & $2$ & \ar{المجموع}\\\hline $P(X=x_i)$ & $\frac1{10}$ & $\frac6{10}$ & $\frac3{10}$ & $1$\\\hline\end{tabular}}\end{LTR}\par $\RR{E(X)=1{,}2}$ \RR{؛} $\RR{V(X)=1{,}8-1{,}44=0{,}36}$ \RR{؛} $\RR{\sigma(X)=0{,}6}$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
 \ModhHead{47}{3 ت ا}{احتمالات}{الاحتمالات}{02 سا}{الاحتمال الشرطي}%
@@ -290,11 +304,13 @@
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} من بين زبائن بنك لهم دفتر توفير ، ما نسبة من لديهم قرض؟}{10 د}{وضعية اقتصادية.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ $200$ زبون لبنك: $E$ «له دفتر توفير» ، $C$ «له قرض».\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.5}\begin{tabular}{|c|c|c|c|}\hline\rowcolor{cSec!12} & $C$ & $\overline C$ & \ar{المجموع}\\\hline $E$ & $36$ & $84$ & $120$\\\hline $\overline E$ & $40$ & $40$ & $80$\\\hline \ar{المجموع} & $76$ & $124$ & $200$\\\hline\end{tabular}}\end{LTR}\par \ck\ نختار زبوناً عشوائياً من بين أصحاب الدفاتر: احتمال أن يكون له قرض $\frac{36}{120}=0{,}3$.\par
+\Lab{cEx}{وضعية مقترحة}\ $200$ زبون لبنك: $E$ «له دفتر توفير» ، $C$ «له قرض».\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.5}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|}\hline\rowcolor{cSec!12} & $C$ & $\overline C$ & \ar{المجموع}\\\hline $E$ & $36$ & $84$ & $120$\\\hline $\overline E$ & $40$ & $40$ & $80$\\\hline \ar{المجموع} & $76$ & $124$ & $200$\\\hline\end{tabular}}\end{LTR}\par \ck\ نختار زبوناً عشوائياً من بين أصحاب الدفاتر: احتمال أن يكون له قرض $\frac{36}{120}=0{,}3$.\par
 \ck\ نلاحظ: $\dfrac{P(E\cap C)}{P(E)}=\dfrac{36/200}{120/200}=0{,}3$.\par
 }{35 د}{قراءة الجدول.}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $P(A)\neq0$: \textbf{احتمال $B$ علماً أن $A$ محققة} هو $P_A(B)=\dfrac{P(A\cap B)}{P(A)}$.\par\Lab{cThm}{خاصية}\ $P(A\cap B)=P(A)\times P_A(B)$ ؛ $P_A(B)+P_A(\overline B)=1$.\par}{50 د}{من الجدول إلى الشجرة.}
+\Lab{cDef}{تعريف}\ $P(A)\neq0$: \textbf{احتمال $B$ علماً أن $A$ محققة} هو $P_A(B)=\dfrac{P(A\cap B)}{P(A)}$.\par}{50 د}{من الجدول إلى الشجرة.}
+\Row{}{%
+\Lab{cThm}{خاصية}\ $P(A\cap B)=P(A)\times P_A(B)$ ؛ $P_A(B)+P_A(\overline B)=1$.\par}{}{}
 \Row{}{%
 \Lab{cEx}{مثال}\ $P_E(C)=0{,}3$ ، $P_{\overline E}(C)=\frac{40}{80}=0{,}5$ ، $P(E\cap C)=0{,}6\times0{,}3=0{,}18$. نلخص بشجرة:\par\smallskip\begin{LTR}\centering \resizebox{\linewidth}{!}{\begin{tikzpicture}[font=\scriptsize,ev/.style={circle,fill=cDef!12,draw=cDef,inner sep=1pt,minimum size=6mm},br/.style={draw=cDef!70,thick}]
 \coordinate (O) at (0,0); \fill[cDef] (O) circle (1.8pt);
@@ -304,9 +320,11 @@
 \node[ev] (F1) at (3.2,-1.4){$\overline E$}; \draw[br] (O)--(F1) node[midway,below,sloped]{$0{,}4$};
 \node[ev] (L10) at (6.4,-0.7000000000000002){$C$}; \draw[br] (F1)--(L10) node[midway,above,sloped]{$0{,}5$};\node[anchor=west] at (7.1,-0.7000000000000002){$0{,}2$};
 \node[ev] (L11) at (6.4,-2.0999999999999996){$\overline C$}; \draw[br] (F1)--(L11) node[midway,below,sloped]{$0{,}5$};\node[anchor=west] at (7.1,-2.0999999999999996){$0{,}2$};
-\node[font=\scriptsize\bfseries,anchor=west] at (7.1,2.9999999999999996){\ar{الاحتمال}};\end{tikzpicture}}\end{LTR}\par \Lab{cThm!80!black}{حذار}\ $P_A(B)$ يختلف عن $P_B(A)$ وعن $P(A\cap B)$.}{}{}
+\node[font=\scriptsize\bfseries,anchor=west] at (7.1,2.9999999999999996){\ar{الاحتمال}};\end{tikzpicture}}\end{LTR}\par }{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ $P_A(B)$ يختلف عن $P_B(A)$ وعن $P(A\cap B)$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par من الجدول: احسب $P_C(E)$ و $P_C(\overline E)$ وفسّر.\par\textbf{الحل:} $P_C(E)=\frac{36}{76}=\frac9{19}$ ؛ $P_C(\overline E)=\frac{10}{19}$: من بين أصحاب القروض ، حوالي $47\%$ لهم دفتر توفير.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{تطبيق}\par من الجدول: احسب $P_C(E)$ و $P_C(\overline E)$ وفسّر.\par\textbf{الحل:} $\RR{P_C(E)=\frac{36}{76}=\frac9{19}}$ \RR{؛} $\RR{P_C(\overline E)=\frac{10}{19}}$: \RR{من} \RR{بين} \RR{أصحاب} \RR{القروض} \RR{،} \RR{حوالي} $\RR{47\%}$ \RR{لهم} \RR{دفتر} \RR{توفير.}\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
 \ModhHead{48}{3 ت ا}{احتمالات}{الاحتمالات}{02 سا}{الشجرة المتوازنة ، دستور الاحتمالات الكلية}%
@@ -330,9 +348,13 @@
 \node[ev] (F1) at (3.2,-1.4){$M_2$}; \draw[br] (O)--(F1) node[midway,below,sloped]{$0{,}4$};
 \node[ev] (L10) at (6.4,-0.7000000000000002){$D$}; \draw[br] (F1)--(L10) node[midway,above,sloped]{$0{,}05$};\node[anchor=west] at (7.1,-0.7000000000000002){$0{,}02$};
 \node[ev] (L11) at (6.4,-2.0999999999999996){$\overline D$}; \draw[br] (F1)--(L11) node[midway,below,sloped]{$0{,}95$};\node[anchor=west] at (7.1,-2.0999999999999996){$0{,}38$};
-\node[font=\scriptsize\bfseries,anchor=west] at (7.1,2.9999999999999996){\ar{الاحتمال}};\end{tikzpicture}}\end{LTR}\par \Lab{cThm}{دستور الاحتمالات الكلية}\ إذا كانت $A_1$ ، $A_2$ ، $\dots$ ، $A_n$ تجزئة لـ $\Omega$: $P(D)=P(A_1)P_{A_1}(D)+\dots+P(A_n)P_{A_n}(D)$.\par}{50 د}{مقارنة بالجدول.}
+\node[font=\scriptsize\bfseries,anchor=west] at (7.1,2.9999999999999996){\ar{الاحتمال}};\end{tikzpicture}}\end{LTR}\par }{50 د}{مقارنة بالجدول.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $P(D)=0{,}018+0{,}02=0{,}038$ ؛ $P_D(M_1)=\dfrac{0{,}018}{0{,}038}=\dfrac9{19}\approx0{,}47$.\par\Lab{cThm!80!black}{حذار}\ مجموع عمود «الاحتمال» يساوي $1$.}{}{}
+\Lab{cThm}{دستور الاحتمالات الكلية}\ إذا كانت $A_1$ ، $A_2$ ، $\dots$ ، $A_n$ تجزئة لـ $\Omega$: $P(D)=P(A_1)P_{A_1}(D)+\dots+P(A_n)P_{A_n}(D)$.\par}{}{}
+\Row{}{%
+\Lab{cEx}{مثال}\ $P(D)=0{,}018+0{,}02=0{,}038$ ؛ $P_D(M_1)=\dfrac{0{,}018}{0{,}038}=\dfrac9{19}\approx0{,}47$.\par}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ مجموع عمود «الاحتمال» يساوي $1$.}{}{}
 \Row{التقويم}{%
 \Lab{cEx}{تطبيق}\par كيس فيه $3$ كريات حمراء و $2$ بيضاوان. نسحب كرتين على التوالي دون إرجاع. أنشئ الشجرة واحسب احتمال «كرتان من نفس اللون».\par\textbf{الحل:}\par\smallskip\begin{LTR}\centering \resizebox{\linewidth}{!}{\begin{tikzpicture}[font=\scriptsize,ev/.style={circle,fill=cDef!12,draw=cDef,inner sep=1pt,minimum size=6mm},br/.style={draw=cDef!70,thick}]
 \coordinate (O) at (0,0); \fill[cDef] (O) circle (1.8pt);
@@ -342,7 +364,7 @@
 \node[ev] (F1) at (3.2,-1.4){$B$}; \draw[br] (O)--(F1) node[midway,below,sloped]{$\frac25$};
 \node[ev] (L10) at (6.4,-0.7000000000000002){$R$}; \draw[br] (F1)--(L10) node[midway,above,sloped]{$\frac34$};\node[anchor=west] at (7.1,-0.7000000000000002){$\frac25\times\frac34=\frac6{20}$};
 \node[ev] (L11) at (6.4,-2.0999999999999996){$B$}; \draw[br] (F1)--(L11) node[midway,below,sloped]{$\frac14$};\node[anchor=west] at (7.1,-2.0999999999999996){$\frac25\times\frac14=\frac2{20}$};
-\node[font=\scriptsize\bfseries,anchor=west] at (7.1,2.9999999999999996){\ar{الاحتمال}};\end{tikzpicture}}\end{LTR}\par $P=\frac6{20}+\frac2{20}=\frac25$ (نفس نتيجة الجدول: $\frac{8}{20}$).\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\node[font=\scriptsize\bfseries,anchor=west] at (7.1,2.9999999999999996){\ar{الاحتمال}};\end{tikzpicture}}\end{LTR}\par $\RR{P=\frac6{20}+\frac2{20}=\frac25}$ \RR{(نفس} \RR{نتيجة} \RR{الجدول:} \RR{$\frac{8}{20}$).}\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
 \ModhHead{49}{3 ت ا}{احتمالات}{الاحتمالات}{02 سا}{حل مشكلات بالأشجار المتوازنة ودستور الاحتمالات الكلية}%
@@ -369,11 +391,13 @@
 \node[font=\scriptsize\bfseries,anchor=west] at (7.1,4.4){\ar{الاحتمال}};\end{tikzpicture}}\end{LTR}\par \ck\ $P(D)=0{,}01+0{,}012+0{,}01=0{,}032$.\par
 \ck\ $P_D(A)=\dfrac{0{,}01}{0{,}032}\approx0{,}31$ ، $P_D(B)=\dfrac{0{,}012}{0{,}032}=0{,}375$ ، $P_D(C)\approx0{,}31$: أغلب المعيبة من $B$.\par
 \ck\ $P(\overline D)=1-0{,}032=0{,}968$.\par
-\Lab{cRem}{ملاحظات}\ رغم أن $C$ أكثر عيوباً ($5\%$) ، فإن $B$ يعطي أكبر نسبة من المعيبة لأنه يموّن أكثر.\par}{50 د}{التفسير.}
+}{50 د}{التفسير.}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\ رغم أن $C$ أكثر عيوباً ($5\%$) ، فإن $B$ يعطي أكبر نسبة من المعيبة لأنه يموّن أكثر.\par}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ نعرّف الحوادث بالرموز قبل بناء الشجرة.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $70\%$ من زبائن متجر يدفعون نقداً و $30\%$ ببطاقة. $10\%$ ممن يدفعون نقداً و $40\%$ ممن يدفعون ببطاقة يشترون بأكثر من $5000$ DA ($G$). احسب $P(G)$ ثم احتمال أن يكون مشترٍ بأكثر من $5000$ DA قد دفع ببطاقة.\par\textbf{الحل:} $P(G)=0{,}07+0{,}12=0{,}19$ ؛ $P_G(\text{\ar{بطاقة}})=\dfrac{0{,}12}{0{,}19}=\dfrac{12}{19}\approx0{,}63$.\par\textbf{واجب منزلي:} تمارين البكالوريا من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{تطبيق}\par $70\%$ من زبائن متجر يدفعون نقداً و $30\%$ ببطاقة. $10\%$ ممن يدفعون نقداً و $40\%$ ممن يدفعون ببطاقة يشترون بأكثر من $5000$ DA ($G$). احسب $P(G)$ ثم احتمال أن يكون مشترٍ بأكثر من $5000$ DA قد دفع ببطاقة.\par\textbf{الحل:} $\RR{P(G)=0{,}07+0{,}12=0{,}19}$ \RR{؛} $\RR{P_G(\text{\ar{بطاقة}})=\dfrac{0{,}12}{0{,}19}=\dfrac{12}{19}\approx0{,}63}$.\par\textbf{واجب منزلي:} تمارين البكالوريا من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
 \ModhHead{50}{3 ت ا}{احتمالات}{الاحتمالات}{02 سا}{استقلال حادثتين ، المبدأ الضربي}%
@@ -388,7 +412,9 @@
 \ck\ معرفة نتيجة النرد لا تغيّر احتمال الوجه: $P_A(B)=P(B)$.\par
 }{35 د}{الشجرة.}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $A$ و $B$ \textbf{مستقلتان} إذا كان $P(A\cap B)=P(A)\times P(B)$ ، أي (لما $P(A)\neq0$) $P_A(B)=P(B)$.\par\Lab{cThm}{المبدأ الضربي}\ في تجارب مستقلة ، احتمال قائمة نتائج هو جداء احتمالات كل نتيجة.\par}{50 د}{المقارنة بالاحتمال الشرطي.}
+\Lab{cDef}{تعريف}\ $A$ و $B$ \textbf{مستقلتان} إذا كان $P(A\cap B)=P(A)\times P(B)$ ، أي (لما $P(A)\neq0$) $P_A(B)=P(B)$.\par}{50 د}{المقارنة بالاحتمال الشرطي.}
+\Row{}{%
+\Lab{cThm}{المبدأ الضربي}\ في تجارب مستقلة ، احتمال قائمة نتائج هو جداء احتمالات كل نتيجة.\par}{}{}
 \Row{}{%
 \Lab{cEx}{مثال}\ آلتان تتعطلان باستقلال: $P(F_1)=0{,}1$ ، $P(F_2)=0{,}05$.\par\smallskip\begin{LTR}\centering \resizebox{\linewidth}{!}{\begin{tikzpicture}[font=\scriptsize,ev/.style={circle,fill=cDef!12,draw=cDef,inner sep=1pt,minimum size=6mm},br/.style={draw=cDef!70,thick}]
 \coordinate (O) at (0,0); \fill[cDef] (O) circle (1.8pt);
@@ -398,10 +424,12 @@
 \node[ev] (F1) at (3.2,-1.4){$\overline{F_1}$}; \draw[br] (O)--(F1) node[midway,below,sloped]{$0{,}9$};
 \node[ev] (L10) at (6.4,-0.7000000000000002){$F_2$}; \draw[br] (F1)--(L10) node[midway,above,sloped]{$0{,}05$};\node[anchor=west] at (7.1,-0.7000000000000002){$0{,}045$};
 \node[ev] (L11) at (6.4,-2.0999999999999996){$\overline{F_2}$}; \draw[br] (F1)--(L11) node[midway,below,sloped]{$0{,}95$};\node[anchor=west] at (7.1,-2.0999999999999996){$0{,}855$};
-\node[font=\scriptsize\bfseries,anchor=west] at (7.1,2.9999999999999996){\ar{الاحتمال}};\end{tikzpicture}}\end{LTR}\par $P(F_1\cap F_2)=0{,}005$ ؛ تعطل واحدة على الأقل: $1-0{,}9\times0{,}95=0{,}145$.\par\Lab{cRem}{ملاحظات}\ في جدول الوضعية 47: $P(C)=0{,}38\neq P_E(C)=0{,}3$: $E$ و $C$ غير مستقلتين.\par}{}{}
+\node[font=\scriptsize\bfseries,anchor=west] at (7.1,2.9999999999999996){\ar{الاحتمال}};\end{tikzpicture}}\end{LTR}\par $P(F_1\cap F_2)=0{,}005$ ؛ تعطل واحدة على الأقل: $1-0{,}9\times0{,}95=0{,}145$.\par}{}{}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\ في جدول الوضعية 47: $P(C)=0{,}38\neq P_E(C)=0{,}3$: $E$ و $C$ غير مستقلتين.\par}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ لا نخلط بين «مستقلتين» و«غير متلائمتين» ($A\cap B=\varnothing$).}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par رامٍ يصيب الهدف باحتمال $0{,}7$ ، والرميات مستقلة. يرمي $3$ مرات: احسب احتمال إصابة الهدف $3$ مرات ، ثم مرة على الأقل.\par\textbf{الحل:} $0{,}7^3=0{,}343$ ؛ $1-0{,}3^3=0{,}973$.\par\textbf{واجب منزلي:} تمارين البكالوريا من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو معالجة بيداغوجية.}
+\Lab{cEx}{تطبيق}\par رامٍ يصيب الهدف باحتمال $0{,}7$ ، والرميات مستقلة. يرمي $3$ مرات: احسب احتمال إصابة الهدف $3$ مرات ، ثم مرة على الأقل.\par\textbf{الحل:} $\RR{0{,}7^3=0{,}343}$ \RR{؛} $\RR{1-0{,}3^3=0{,}973}$.\par\textbf{واجب منزلي:} تمارين البكالوريا من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو معالجة بيداغوجية.}
 \end{Sayr}
 \end{document}

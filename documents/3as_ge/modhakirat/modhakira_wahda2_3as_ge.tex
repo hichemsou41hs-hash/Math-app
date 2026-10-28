@@ -199,6 +199,8 @@
 \newcommand{\Num}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[fill=cDef,text=white,inner sep=2pt,font=\footnotesize\bfseries](c){#1};}}
 \newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
 \newenvironment{Kad}[1]{\par\smallskip\Lab{#1}}{\par}
+\newcommand{\RR}[1]{\ifmmode{\color{cThm}#1}\else$\mbox{\color{cThm}#1}$\fi}
+\newcommand{\T}[1]{$\mbox{\color{cDef}\bfseries #1}$}
 \SetHeader{\small\bfseries\color{cSec}مذكرات محور: الاشتقاقية والاستمرارية}{\small\color{cSec}السنة الثالثة ثانوي -- تسيير واقتصاد}
 \begin{document}
 \begin{LTR}
@@ -232,11 +234,15 @@
 \ck\ حساب عدد مشتق بنسبة التزايد.\par
 }{35 د}{قراءة بيانية.}
 \Row{بناء المعارف}{%
-\Lab{cThm}{تذكير}\ $f^{\prime}(a)=\lim\limits_{h\to0}\dfrac{f(a+h)-f(a)}h$ ؛ المماس عند $A(a;f(a))$: $y=f^{\prime}(a)(x-a)+f(a)$.\par\Lab{cEx}{مثال}\ $f(x)=x^2-3x+1$ عند $2$: $f(2)=-1$ ، $f^{\prime}(2)=1$: المماس $y=x-3$.\par}{50 د}{المعادلة خطوة خطوة.}
+\Lab{cThm}{تذكير}\ $f^{\prime}(a)=\lim\limits_{h\to0}\dfrac{f(a+h)-f(a)}h$ ؛ المماس عند $A(a;f(a))$: $y=f^{\prime}(a)(x-a)+f(a)$.\par}{50 د}{المعادلة خطوة خطوة.}
 \Row{}{%
-\Lab{cRem}{ملاحظات}\ بيانياً: $f^{\prime}(a)$ معامل توجيه المماس عند النقطة ذات الفاصلة $a$.\par\Lab{cThm!80!black}{حذار}\ المماس الأفقي يوافق $f^{\prime}(a)=0$.}{}{}
+\Lab{cEx}{مثال}\ $f(x)=x^2-3x+1$ عند $2$: $f(2)=-1$ ، $f^{\prime}(2)=1$: المماس $y=x-3$.\par}{}{}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\ بيانياً: $f^{\prime}(a)$ معامل توجيه المماس عند النقطة ذات الفاصلة $a$.\par}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ المماس الأفقي يوافق $f^{\prime}(a)=0$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par اكتب معادلة مماس منحني $f(x)=\dfrac1x$ عند النقطة ذات الفاصلة $1$.\par\textbf{الحل:} $f(1)=1$ ، $f^{\prime}(1)=-1$: $y=-x+2$.\par\textbf{واجب منزلي:} تمارين من باب الاشتقاقية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{تطبيق}\par اكتب معادلة مماس منحني $f(x)=\dfrac1x$ عند النقطة ذات الفاصلة $1$.\par\textbf{الحل:} $\RR{f(1)=1}$ \RR{،} $\RR{f^{\prime}(1)=-1}$: $\RR{y=-x+2}$.\par\textbf{واجب منزلي:} تمارين من باب الاشتقاقية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
 \ModhHead{10}{3 ت ا}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{الدوال المشتقة للدوال المرجعية ، العمليات على المشتقات}%
@@ -252,11 +258,13 @@
 \Row{بناء المعارف}{%
 \Lab{cThm}{خاصية}\par\ck\ $(x^n)^{\prime}=nx^{n-1}$ ($n$ صحيح) ؛ $\left(\dfrac1x\right)^{\prime}=-\dfrac1{x^2}$ ؛ $(\sqrt x)^{\prime}=\dfrac1{2\sqrt x}$.\par
 \ck\ $(u+v)^{\prime}=u^{\prime}+v^{\prime}$ ؛ $(uv)^{\prime}=u^{\prime}v+uv^{\prime}$ ؛ $\left(\dfrac uv\right)^{\prime}=\dfrac{u^{\prime}v-uv^{\prime}}{v^2}$.\par
-\Lab{cEx}{مثال}\ $f(x)=\dfrac{2x+1}{x-3}$: $f^{\prime}(x)=\dfrac{2(x-3)-(2x+1)}{(x-3)^2}=\dfrac{-7}{(x-3)^2}$.\par}{50 د}{جدول القواعد.}
+}{50 د}{جدول القواعد.}
+\Row{}{%
+\Lab{cEx}{مثال}\ $f(x)=\dfrac{2x+1}{x-3}$: $f^{\prime}(x)=\dfrac{2(x-3)-(2x+1)}{(x-3)^2}=\dfrac{-7}{(x-3)^2}$.\par}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ $(uv)^{\prime}\neq u^{\prime}v^{\prime}$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par احسب مشتقة $g(x)=x^3-6x^2+9x$.\par\textbf{الحل:} $g^{\prime}(x)=3x^2-12x+9$.\par\textbf{واجب منزلي:} تمارين من باب الاشتقاقية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{تطبيق}\par احسب مشتقة $g(x)=x^3-6x^2+9x$.\par\textbf{الحل:} $\RR{g^{\prime}(x)=3x^2-12x+9}$.\par\textbf{واجب منزلي:} تمارين من باب الاشتقاقية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
 \ModhHead{11}{3 ت ا}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{المشتقات واتجاه التغير ، القيم الحدية المحلية}%
@@ -272,18 +280,20 @@
 \Row{بناء المعارف}{%
 \Lab{cThm}{خاصية}\par\ck\ $f^{\prime}>0$ على مجال: $f$ متزايدة تماماً ؛ $f^{\prime}<0$: متناقصة تماماً.\par
 \ck\ إذا انعدمت $f^{\prime}$ عند $a$ مغيرة إشارتها فـ $f(a)$ قيمة حدية محلية.\par
-\Lab{cEx}{مثال}\ $g(x)=x^3-6x^2+9x$: $g^{\prime}(x)=3(x-1)(x-3)$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
+}{50 د}{جدول التغيرات.}
+\Row{}{%
+\Lab{cEx}{مثال}\ $g(x)=x^3-6x^2+9x$: $g^{\prime}(x)=3(x-1)(x-3)$.\par\smallskip\begin{LTR}\centering \resizebox{0.92\linewidth}{!}{\begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
 \draw (0,0) rectangle (8,-5); \draw (0,-1)--(8,-1); \draw (0,-2)--(8,-2); \draw (1.2,0)--(1.2,-5);
 \node at (0.6,-0.5){$x$}; \node at (0.6,-1.5){$g^{\prime}(x)$}; \node at (0.6,-3.5){$g(x)$};
 \node at (1.7,-0.5){$-\infty$}; \node at (3,-0.5){$1$}; \node at (5,-0.5){$3$}; \node at (7.4,-0.5){$+\infty$};
 \node at (2.1,-1.5){$+$}; \node at (3,-1.5){$0$}; \node at (4,-1.5){$-$}; \node at (5,-1.5){$0$}; \node at (6.2,-1.5){$+$};
 \node (a) at (3,-2.5){$4$}; \node (b) at (5,-4.5){$0$};
 \draw[->,cDef,thick] (1.5,-4.5)--(a); \draw[->,cDef,thick] (a)--(b); \draw[->,cDef,thick] (b)--(7.4,-2.5);
-\end{tikzpicture}\end{LTR}\par عظمى محلية $g(1)=4$ ، صغرى محلية $g(3)=0$.\par}{50 د}{جدول التغيرات.}
+\end{tikzpicture}}\end{LTR}\par عظمى محلية $g(1)=4$ ، صغرى محلية $g(3)=0$.\par}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ ندرس إشارة $f^{\prime}$ في جدول قبل الاستنتاج.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $f(x)=x+\dfrac4x$ على $]0;+\infty[$: عيّن قيمتها الحدية.\par\textbf{الحل:} $f^{\prime}(x)=\dfrac{x^2-4}{x^2}$: صغرى $f(2)=4$.\par\textbf{واجب منزلي:} تمارين من باب الاشتقاقية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{تطبيق}\par $f(x)=x+\dfrac4x$ على $]0;+\infty[$: عيّن قيمتها الحدية.\par\textbf{الحل:} $\RR{f^{\prime}(x)=\dfrac{x^2-4}{x^2}}$: \RR{صغرى} $\RR{f(2)=4}$.\par\textbf{واجب منزلي:} تمارين من باب الاشتقاقية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
 \ModhHead{12}{3 ت ا}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{تطبيقات اقتصادية: الكلفة الإجمالية ، الكلفة الهامشية ، الكلفة المتوسطة ، الربح}%
@@ -301,14 +311,16 @@
 \ck\ \textbf{الكلفة الهامشية}: تزايد الكلفة الناتج عن صنع وحدة إضافية $C(q+1)-C(q)$ ، ونضع في الاقتصاد $C_m(q)=C^{\prime}(q)$.\par
 \ck\ \textbf{الكلفة المتوسطة}: $C_M(q)=\dfrac{C(q)}q$.\par
 \ck\ \textbf{الربح}: $B(q)=p\,q-C(q)$ حيث $p$ ثمن بيع الوحدة.\par
+}{50 د}{تفسير اقتصادي.}
+\Row{}{%
 \Lab{cEx}{مثال}\par\ck\ $C_M^{\prime}(q)=1-\dfrac{400}{q^2}$: أصغر كلفة متوسطة عند $q=20$ ، $C_M(20)=50$.\par
 \ck\ $C_m(20)=C^{\prime}(20)=2\times20+10=50=C_M(20)$: عند أصغر كلفة متوسطة تتساوى الكلفة الهامشية والكلفة المتوسطة.\par
 \ck\ ثمن بيع الوحدة $70$: $B(q)=-q^2+60q-400$ ، $B^{\prime}(q)=-2q+60$: أكبر ربح $B(30)=500$.\par
-}{50 د}{تفسير اقتصادي.}
+}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ نحترم مجال المتغير الاقتصادي ($q>0$) والوحدات.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par الكلفة الإجمالية $C(q)=\frac13q^3-4q^2+20q+50$ ($0\leqslant q\leqslant20$) وثمن بيع الوحدة $68$ DA. عيّن الكلفة الهامشية ، ثم الكمية التي تكون من أجلها الكلفة الهامشية مساوية لثمن بيع الوحدة.\par\textbf{الحل:} $C_m(q)=q^2-8q+20$ ؛ $q^2-8q+20=68$ يعطي $q^2-8q-48=0$: $q=12$ (والحل $-4$ مرفوض).\par\textbf{واجب منزلي:} تمارين من باب الاشتقاقية (تطبيقات اقتصادية).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{تطبيق}\par الكلفة الإجمالية $C(q)=\frac13q^3-4q^2+20q+50$ ($0\leqslant q\leqslant20$) وثمن بيع الوحدة $68$ DA. عيّن الكلفة الهامشية ، ثم الكمية التي تكون من أجلها الكلفة الهامشية مساوية لثمن بيع الوحدة.\par\textbf{الحل:} $\RR{C_m(q)=q^2-8q+20}$ \RR{؛} $\RR{q^2-8q+20=68}$ \RR{يعطي} $\RR{q^2-8q-48=0}$: $\RR{q=12}$ \RR{(والحل} $\RR{-4}$ \RR{مرفوض).}\par\textbf{واجب منزلي:} تمارين من باب الاشتقاقية (تطبيقات اقتصادية).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
 \ModhHead{13}{3 ت ا}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{مركب دالتين: التعرف ، النهاية ، الاشتقاق}%
@@ -322,13 +334,17 @@
 \Lab{cEx}{وضعية مقترحة}\par\ck\ $x\mapsto3x-1\mapsto(3x-1)^4$: مركب دالتين $g\circ u$.\par
 }{35 د}{المخطط بالأسهم.}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $(g\circ u)(x)=g\big(u(x)\big)$.\par\Lab{cThm}{خاصية}\par\ck\ $(g\circ u)^{\prime}(x)=u^{\prime}(x)\times g^{\prime}\big(u(x)\big)$ ؛ خاصة: $(u^n)^{\prime}=nu^{\prime}u^{n-1}$ ، $(\sqrt u)^{\prime}=\dfrac{u^{\prime}}{2\sqrt u}$.\par
-\ck\ إذا كان $\lim u=b$ و $\lim\limits_{X\to b}g(X)=c$ فإن $\lim g\circ u=c$.\par
-}{50 د}{جدول القواعد.}
+\Lab{cDef}{تعريف}\ $(g\circ u)(x)=g\big(u(x)\big)$.\par}{50 د}{جدول القواعد.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $(3x-1)^4$: مشتقتها $12(3x-1)^3$ ؛ $\sqrt{x^2+1}$: مشتقتها $\dfrac x{\sqrt{x^2+1}}$ ؛ $\lim\limits_{x\to+\infty}\sqrt{4+\frac1x}=2$.\par\Lab{cThm!80!black}{حذار}\ لا ننسى ضرب $u^{\prime}$.}{}{}
+\Lab{cThm}{خاصية}\par\ck\ $(g\circ u)^{\prime}(x)=u^{\prime}(x)\times g^{\prime}\big(u(x)\big)$ ؛ خاصة: $(u^n)^{\prime}=nu^{\prime}u^{n-1}$ ، $(\sqrt u)^{\prime}=\dfrac{u^{\prime}}{2\sqrt u}$.\par
+\ck\ إذا كان $\lim u=b$ و $\lim\limits_{X\to b}g(X)=c$ فإن $\lim g\circ u=c$.\par
+}{}{}
+\Row{}{%
+\Lab{cEx}{مثال}\ $(3x-1)^4$: مشتقتها $12(3x-1)^3$ ؛ $\sqrt{x^2+1}$: مشتقتها $\dfrac x{\sqrt{x^2+1}}$ ؛ $\lim\limits_{x\to+\infty}\sqrt{4+\frac1x}=2$.\par}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ لا ننسى ضرب $u^{\prime}$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par احسب مشتقة $h(x)=(x^2-1)^3$ ، وفكّك $k(x)=\dfrac1{2x+5}$.\par\textbf{الحل:} $6x(x^2-1)^2$ ؛ $k=g\circ u$ مع $u(x)=2x+5$ و $g(X)=\dfrac1X$.\par\textbf{واجب منزلي:} تمارين من باب الاشتقاقية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{تطبيق}\par احسب مشتقة $h(x)=(x^2-1)^3$ ، وفكّك $k(x)=\dfrac1{2x+5}$.\par\textbf{الحل:} $\RR{6x(x^2-1)^2}$ \RR{؛} $\RR{k=g\circ u}$ \RR{مع} $\RR{u(x)=2x+5}$ \RR{و} $\RR{g(X)=\dfrac1X}$.\par\textbf{واجب منزلي:} تمارين من باب الاشتقاقية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
 \ModhHead{14}{3 ت ا}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{الاستمرارية ، مبرهنة القيم المتوسطة}%
@@ -344,10 +360,12 @@
 \Row{بناء المعارف}{%
 \Lab{cThm}{خاصية}\par\ck\ كثيرات الحدود والدوال الناطقة مستمرة على كل مجال من مجموعة تعريفها.\par
 \ck\ إذا كانت $f$ مستمرة على $[a;b]$ و $k$ محصوراً بين $f(a)$ و $f(b)$ فالمعادلة $f(x)=k$ تقبل حلاً على الأقل في $[a;b]$ ، وحلاً وحيداً إذا كانت $f$ رتيبة تماماً.\par
-\Lab{cEx}{مثال}\ $f(x)=x^3+x-3$ على $[1;2]$: متزايدة ، $f(1)=-1$ ، $f(2)=7$: حل وحيد $\alpha$ ؛ $f(1{,}2)<0<f(1{,}3)$: $1{,}2<\alpha<1{,}3$.\par}{50 د}{جدول قيم بالحاسبة.}
+}{50 د}{جدول قيم بالحاسبة.}
+\Row{}{%
+\Lab{cEx}{مثال}\ $f(x)=x^3+x-3$ على $[1;2]$: متزايدة ، $f(1)=-1$ ، $f(2)=7$: حل وحيد $\alpha$ ؛ $f(1{,}2)<0<f(1{,}3)$: $1{,}2<\alpha<1{,}3$.\par}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ المبرهنة تضمن الوجود ، والحصر بالحاسبة.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par بيّن أن الكمية $q_0$ التي ينعدم من أجلها الربح وحيدة في $[0;30]$ ، واحصرها بسعة $1$.\par\textbf{الحل:} $B$ متزايدة على $[0;30]$ ($B^{\prime}>0$) ؛ $B(7)=-29$ ، $B(8)=16$: $7<q_0<8$.\par\textbf{واجب منزلي:} تمارين من باب الاشتقاقية والاستمرارية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\Lab{cEx}{تطبيق}\par بيّن أن الكمية $q_0$ التي ينعدم من أجلها الربح وحيدة في $[0;30]$ ، واحصرها بسعة $1$.\par\textbf{الحل:} $\RR{B}$ \RR{متزايدة} \RR{على} $\RR{[0;30]}$ \RR{($B^{\prime}>0$)} \RR{؛} $\RR{B(7)=-29}$ \RR{،} $\RR{B(8)=16}$: $\RR{7<q_0<8}$.\par\textbf{واجب منزلي:} تمارين من باب الاشتقاقية والاستمرارية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو مراجعة.}
 \end{Sayr}
 \end{document}
