@@ -184,6 +184,7 @@
 \QQ{3} حلّل $P(x)$ إلى جداء عوامل من الدرجة الأولى ، ثم حُلّ في $\R$ المعادلة: $P(x)=0$.
 \QQ{4} ادرس إشارة $P(x)$ ، ثم استنتج حلول المتراجحة: $P(x)>0$.
 \QQ{5} استنتج في $\R$ حلول المعادلة: $(x+1)^3-2(x+1)^2-5(x+1)+6=0$.
+\QQ{6} \textbf{(سؤال تميّز)} حُلّ في $\R$ المتراجحة: $P(x)\leqslant(x-1)(x+2)$.
 \end{tamrin}
 
 \begin{tamrin}{الاشتقاقية (07 نقاط)}
@@ -194,6 +195,7 @@ $f$ الدالة المعرّفة على $\R$ بـ: $f(x)=x^3-3x^2+4$ ، و $(C_
 \QQ{4} تحقّق أنه من أجل كل عدد حقيقي $x$: $f(x)=(x-2)^2(x+1)$ ، ثم ادرس وضعية $(C_f)$ بالنسبة إلى محور الفواصل.
 \QQ{5} بيّن أنه من أجل كل عدد حقيقي $x$: $f(x)-(-3x+5)=(x-1)^3$ ، ثم ادرس وضعية $(C_f)$ بالنسبة إلى المماس $(T)$.
 \QQ{6} عيّن فواصل النقط من $(C_f)$ التي يكون فيها المماس موازياً للمستقيم ذي المعادلة $y=9x$.
+\QQ{7} \textbf{(سؤال تميّز)} بيّن أن النقطة $\Omega(1;2)$ مركز تناظر للمنحنى $(C_f)$.
 \end{tamrin}
 
 \begin{tamrin}{الاحتمالات (07 نقاط)}
@@ -211,6 +213,7 @@ $f$ الدالة المعرّفة على $\R$ بـ: $f(x)=x^3-3x^2+4$ ، و $(C_
 \qa عيّن القيم الممكنة للمتغير العشوائي $X$ ، ثم عرّف قانون احتماله.
 \qb احسب الأمل الرياضياتي $E(X)$ ، والتباين $V(X)$ ، والانحراف المعياري $\sigma(X)$.
 \end{sq}
+\QQ{4} \textbf{(سؤال تميّز)} نضيف إلى الصندوق $n$ قريصة خضراء تحمل الرقم $0$ ($n$ عدد طبيعي) ، ثم نسحب في آن واحد قريصتين. عيّن $n$ بحيث يكون احتمال سحب قريصتين حمراوين يساوي $\dfrac17$.
 \end{tamrin}
 \begin{center}\textbf{\color{cSec}بالتوفيق}\end{center}
 
@@ -228,9 +231,9 @@ $f$ الدالة المعرّفة على $\R$ بـ: $f(x)=x^3-3x^2+4$ ، و $(C_
 $1$ & & $1$ & $-1$ & $-6$\\\hline
  & $1$ & $-1$ & $-6$ & $0$\\\hline
 \end{tabular}}\end{LTR}\end{center}
-إذن: \bx{Q(x)=x^2-x-6} و $P(x)=(x-1)\left(x^2-x-6\right)$.\hfill$\textcolor{cThm}{\mathbf{(1,5)}}$
+إذن: \bx{Q(x)=x^2-x-6} و $P(x)=(x-1)\left(x^2-x-6\right)$.\hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \QQ{3} $x^2-x-6$: $\Delta=1+24=25$ ، $x_1=\dfrac{1-5}2=-2$ ، $x_2=\dfrac{1+5}2=3$ ، ومنه $x^2-x-6=(x+2)(x-3)$.
-\par \bx{P(x)=(x-1)(x+2)(x-3)} ، ومجموعة حلول $P(x)=0$: \bx{S=\{-2;1;3\}}\hfill$\textcolor{cThm}{\mathbf{(1,5)}}$
+\par \bx{P(x)=(x-1)(x+2)(x-3)} ، ومجموعة حلول $P(x)=0$: \bx{S=\{-2;1;3\}}\hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \QQ{4} جدول الإشارة:
 \begin{TAB}
 \tkzTabInit[lgt=2.2,espcl=1.6]{$x$/0.8,$x+2$/0.7,$x-1$/0.7,$x-3$/0.7,$P(x)$/0.8}{$-\infty$,$-2$,$1$,$3$,$+\infty$}
@@ -239,13 +242,19 @@ $1$ & & $1$ & $-1$ & $-6$\\\hline
 \tkzTabLine{,-,t,-,t,-,z,+,}
 \tkzTabLine{,-,z,+,z,-,z,+,}
 \end{TAB}
-حلول المتراجحة $P(x)>0$: \bx{S=]-2;1[\cup]3;+\infty[}\hfill$\textcolor{cThm}{\mathbf{(1,5)}}$
+حلول المتراجحة $P(x)>0$: \bx{S=]-2;1[\cup]3;+\infty[}\hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \QQ{5} المعادلة تكتب $P(x+1)=0$ ، أي $x+1\in\{-2;1;3\}$ ، ومنه $x\in\{-3;0;2\}$: \bx{S=\{-3;0;2\}}\hfill$\textcolor{cThm}{\mathbf{(1)}}$
+\QQ{6} $P(x)-(x-1)(x+2)=(x-1)(x+2)(x-3)-(x-1)(x+2)=(x-1)(x+2)(x-4)$.
+\begin{TAB}
+\tkzTabInit[lgt=3.2,espcl=1.5]{$x$/0.8,$(x-1)(x+2)(x-4)$/0.8}{$-\infty$,$-2$,$1$,$4$,$+\infty$}
+\tkzTabLine{,-,z,+,z,-,z,+,}
+\end{TAB}
+حلول المتراجحة: \bx{S=]-\infty;-2]\cup[1;4]} \hfill$\textcolor{cThm}{\mathbf{(1,5)}}$
 \end{BOX}
 
 \Needspace{12\baselineskip}\begin{BOX}{cSol}{حل التمرين 2}
 \QQ{1} $f(1)=2$. من أجل $h\neq0$: $f(1+h)=1+3h+3h^2+h^3-3-6h-3h^2+4=2-3h+h^3$.
-\par $\dfrac{f(1+h)-f(1)}h=\dfrac{-3h+h^3}h=-3+h^2$ ، و $\lim\limits_{h\to0}\left(-3+h^2\right)=-3$ ، إذن $f$ قابلة للاشتقاق عند $1$ و \bx{f^{\prime}(1)=-3}\hfill$\textcolor{cThm}{\mathbf{(1,5)}}$
+\par $\dfrac{f(1+h)-f(1)}h=\dfrac{-3h+h^3}h=-3+h^2$ ، و $\lim\limits_{h\to0}\left(-3+h^2\right)=-3$ ، إذن $f$ قابلة للاشتقاق عند $1$ و \bx{f^{\prime}(1)=-3}\hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \QQ{2} $(T):y=f^{\prime}(1)(x-1)+f(1)=-3(x-1)+2$ ، أي \bx{(T):y=-3x+5}
 \par التقريب التآلفي: $f(1{,}002)\approx-3(1{,}002)+5=\bx{1{,}994}$\hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \QQ{3} \bx{f^{\prime}(x)=3x^2-6x=3x(x-2)} ؛ $f(0)=4$ ، $f(2)=8-12+4=0$.
@@ -254,7 +263,7 @@ $1$ & & $1$ & $-1$ & $-6$\\\hline
 \tkzTabLine{,+,z,-,z,+,}
 \tkzTabVar{-/ ,+/$4$,-/$0$,+/ }
 \end{TAB}
-$f$ متزايدة تماماً على $]-\infty;0]$ و $[2;+\infty[$ ، ومتناقصة تماماً على $[0;2]$. قيمة عظمى محلية \bx{f(0)=4} ، وقيمة صغرى محلية \bx{f(2)=0}\hfill$\textcolor{cThm}{\mathbf{(1,5)}}$
+$f$ متزايدة تماماً على $]-\infty;0]$ و $[2;+\infty[$ ، ومتناقصة تماماً على $[0;2]$. قيمة عظمى محلية \bx{f(0)=4} ، وقيمة صغرى محلية \bx{f(2)=0}\hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \QQ{4} $(x-2)^2(x+1)=\left(x^2-4x+4\right)(x+1)=x^3-3x^2+4=f(x)$.
 \par $(x-2)^2\geqslant0$ ، فإشارة $f(x)$ من إشارة $x+1$:
 \begin{sq}
@@ -265,6 +274,8 @@ $f$ متزايدة تماماً على $]-\infty;0]$ و $[2;+\infty[$ ، ومت�
 \QQ{5} $f(x)-(-3x+5)=x^3-3x^2+3x-1=\bx{(x-1)^3}$
 \par $x<1$: $(x-1)^3<0$ و $(C_f)$ \textbf{تحت} $(T)$ ؛ $x>1$: $(C_f)$ \textbf{فوق} $(T)$ ؛ و $(C_f)$ يقطع $(T)$ في النقطة $(1;2)$.\hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \QQ{6} $f^{\prime}(x)=9$ معناه $3x^2-6x-9=0$ أي $x^2-2x-3=0$ ، أي $(x-3)(x+1)=0$: الفاصلتان \bx{x=-1} و \bx{x=3}\hfill$\textcolor{cThm}{\mathbf{(1)}}$
+\QQ{7} من أجل كل $x\in\R$: $(2-x)\in\R$ و $f(2-x)=(2-x)^3-3(2-x)^2+4=8-12x+6x^2-x^3-12+12x-3x^2+4=-x^3+3x^2$.
+\par ومنه $f(2-x)+f(x)=-x^3+3x^2+x^3-3x^2+4=4$ ، أي \bx{f(2\times1-x)+f(x)=2\times2} ، والنقطة $\Omega(1;2)$ مركز تناظر لـ $(C_f)$. \hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \end{BOX}
 
 \Needspace{12\baselineskip}\begin{BOX}{cSol}{حل التمرين 3}
@@ -277,12 +288,12 @@ $R_3$ & \cellcolor{gray!25} & \cellcolor{gray!25} & \cellcolor{gray!25} & $4$ & 
 $V_1$ & \cellcolor{gray!25} & \cellcolor{gray!25} & \cellcolor{gray!25} & \cellcolor{gray!25} & \cellcolor{cEx!35}$3$\\\hline
 $V_2$ & \cellcolor{gray!25} & \cellcolor{gray!25} & \cellcolor{gray!25} & \cellcolor{gray!25} & \cellcolor{gray!25}\\\hline
 \end{tabular}}\end{LTR}\end{center}
-عدد الإمكانيات: \bx{\dfrac{5\times4}2=10} ، وهي متساوية الاحتمال. (البرتقالي: الحادثة $A$.)\hfill$\textcolor{cThm}{\mathbf{(1,5)}}$
+عدد الإمكانيات: \bx{\dfrac{5\times4}2=10} ، وهي متساوية الاحتمال. (البرتقالي: الحادثة $A$.)\hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \QQ{2}
 \pa $A$: $\{R_1;R_2\}$ ، $\{R_1;R_3\}$ ، $\{R_2;R_3\}$ ، $\{V_1;V_2\}$: \bx{P(A)=\tfrac4{10}=\tfrac25}\hfill$\textcolor{cThm}{\mathbf{(0,5)}}$
 \pb $B$: الخانات التي فيها $3$: $\{R_1;R_2\}$ ، $\{R_1;V_2\}$ ، $\{R_2;V_1\}$ ، $\{V_1;V_2\}$: \bx{P(B)=\tfrac4{10}=\tfrac25}\hfill$\textcolor{cThm}{\mathbf{(0,5)}}$
 \pc $\overline C$: «القريصتان حمراوان» ، $P\left(\overline C\right)=\frac3{10}$ ، إذن \bx{P(C)=1-\tfrac3{10}=\tfrac7{10}}\hfill$\textcolor{cThm}{\mathbf{(0,5)}}$
-\pd $A\cap B=\left\{\{R_1;R_2\};\{V_1;V_2\}\right\}$ ، $P(A\cap B)=\frac2{10}$: $P(A\cup B)=\dfrac4{10}+\dfrac4{10}-\dfrac2{10}=\bx{\tfrac6{10}=\tfrac35}$\hfill$\textcolor{cThm}{\mathbf{(1)}}$
+\pd $A\cap B=\left\{\{R_1;R_2\};\{V_1;V_2\}\right\}$ ، $P(A\cap B)=\frac2{10}$: $P(A\cup B)=\dfrac4{10}+\dfrac4{10}-\dfrac2{10}=\bx{\tfrac6{10}=\tfrac35}$\hfill$\textcolor{cThm}{\mathbf{(0,5)}}$
 \QQ{3}
 \pa $X\in\{2;3;4;5\}$. بعدّ الخانات:
 \begin{center}\begin{LTR}{\renewcommand{\arraystretch}{1.6}\begin{tabular}{|C|c|c|c|c|C|}\hline
@@ -292,15 +303,17 @@ $P(X=x_i)$ & $\frac1{10}$ & $\frac4{10}$ & $\frac3{10}$ & $\frac2{10}$ & $1$\\\h
 \hfill$\textcolor{cThm}{\mathbf{(1,5)}}$
 \pb $E(X)=\dfrac{2+12+12+10}{10}=\bx{\tfrac{18}5=3{,}6}$\hfill$\textcolor{cThm}{\mathbf{(0,5)}}$
 \par $V(X)=\dfrac{4+36+48+50}{10}-(3{,}6)^2=13{,}8-12{,}96=\bx{0{,}84}$ ؛ $\sigma(X)=\sqrt{0{,}84}\approx\bx{0{,}92}$\hfill$\textcolor{cThm}{\mathbf{(1)}}$
+\QQ{4} يصبح في الصندوق $n+5$ قريصة ، وعدد السحبات في آن واحد هو $\dfrac{(n+5)(n+4)}2$ (نصف الجدول) ، منها $3$ سحبات لقريصتين حمراوين.
+\par $\dfrac{3}{\frac{(n+5)(n+4)}2}=\dfrac17$ معناه $(n+5)(n+4)=42=7\times6$ ، ومنه \bx{n=2} (لأن $n$ عدد طبيعي). \hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \end{BOX}
 
 \begin{BOX}{cSec}{سلم التنقيط}
-\begin{center}\begin{LTR}{\renewcommand{\arraystretch}{1.5}\begin{tabular}{|C|c|c|c|c|c|c|C|}\hline
-\rowcolor{cSec!12}التمرين & \ar{س1} & \ar{س2} & \ar{س3} & \ar{س4} & \ar{س5} & \ar{س6} & المجموع\\\hline
-الأول & $0{,}5$ & $1{,}5$ & $1{,}5$ & $1{,}5$ & $1$ & -- & $06$\\\hline
-الثاني & $1{,}5$ & $1$ & $1{,}5$ & $1$ & $1$ & $1$ & $07$\\\hline
-الثالث & $1{,}5$ & $2{,}5$ & $3$ & -- & -- & -- & $07$\\\hline
-\rowcolor{cSec!12}المجموع & \multicolumn{6}{c|}{} & $20$\\\hline
+\begin{center}\begin{LTR}{\renewcommand{\arraystretch}{1.5}\begin{tabular}{|C|c|c|c|c|c|c|c|C|}\hline
+\rowcolor{cSec!12}التمرين & \ar{س1} & \ar{س2} & \ar{س3} & \ar{س4} & \ar{س5} & \ar{س6} & \ar{س7} & المجموع\\\hline
+الأول & $0{,}5$ & $1$ & $1$ & $1$ & $1$ & $1{,}5$ & -- & $06$\\\hline
+الثاني & $1$ & $1$ & $1$ & $1$ & $1$ & $1$ & $1$ & $07$\\\hline
+الثالث & $1$ & $2$ & $3$ & $1$ & -- & -- & -- & $07$\\\hline
+\rowcolor{cSec!12}المجموع & \multicolumn{7}{c|}{} & $20$\\\hline
 \end{tabular}}\end{LTR}\end{center}
 \end{BOX}
 \end{document}
