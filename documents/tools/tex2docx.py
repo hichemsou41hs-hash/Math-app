@@ -32,6 +32,13 @@ from docx.shared import Pt, Cm, RGBColor
 
 DPI = 200
 FONT = "Amiri"
+SAYR_W = 0.66   # share of the text width given to «سير الحصة» in Word
+# colour markers (lesson plans): result \RR, title \T, label \Lab{colour}{text}
+RES_O, RES_C = "\u2997", "\u2998"
+TTL_O, TTL_C = "\u298B", "\u298C"
+LAB_O, LAB_M, LAB_C = "\u2993", "\u2994", "\u2995"
+TEX_COLOURS = {"cDef": "1F4E9C", "cThm": "B3261E", "cRem": "2E7D32", "cEx": "C76B00", "cMeth": "6A1B9A",
+               "cSol": "00695C", "cSec": "1F3A68"}
 FOOTER = "الأستاذ سوايسية هشام للرياضيات"
 M_OPEN, M_CLOSE = "\u27e6", "\u27e7"          # ⟦ ⟧
 MK = re.compile(M_OPEN + r"([^" + M_CLOSE + r"]*)" + M_CLOSE)
@@ -210,7 +217,13 @@ class Figures:
     def add(self, src, inline):
         key = hashlib.sha1((self.preamble + "\0" + src).encode()).hexdigest()[:16]
         self.items.append((key, src, inline))
+        self.tables = getattr(self, "tables", set())
+        if "\\begin{tabular}" in src and "tikzpicture" not in src:
+            self.tables.add(key)
         return mk("FIG|%s|%d" % (key, inline))
+
+    def is_table(self, key):
+        return key in getattr(self, "tables", set())
 
     def png(self, key):
         return os.path.join(self.cache, key + ".png")
@@ -327,7 +340,9 @@ def sayr_nested_tables(body, figs):
                 out.append(s[pos:])
                 return "".join(out)
             _, after = find_env_end(s, "tabular", i + len(b))
-            out.append(s[pos:i] + "\\par " + figs.add(s[i:after], False) + "\\par ")
+            # typeset at the width of the Word cell, so the picture keeps the body text size
+            out.append(s[pos:i] + "\\par " + figs.add("\\begin{minipage}{%s\\textwidth}\\centering\\large " % SAYR_W
+                                                     + s[i:after] + "\\end{minipage}", False) + "\\par ")
             pos = after
     return re.sub(r"(\\begin\{Sayr\})(.*?)(\\end\{Sayr\})",
                   lambda m: m.group(1) + inner(m.group(2)) + m.group(3), body, flags=re.S)
@@ -347,16 +362,16 @@ def modhakira(body):
         return ("\n\n" + mk("B+|cThm") + " مذكرة رقم " + n + "\n\n" + info + "\n\n" + mk("B-") + "\n\n"
                 + comp + "\n\n\\textbf{الوسائل:} " + tools + "\n\n")
     # {\footnotesize ... \begin{tabular}...\end{tabular}} inside a Row cell: pandoc chokes on the group
-    body = re.sub(r"\{\\(?:footnotesize|scriptsize|small)\s*(?:\\renewcommand\{\\arraystretch\}\{[^}]*\})?\s*"
+    body = re.sub(r"\{\\(?:footnotesize|scriptsize|small)\s*(?:\\(?:renewcommand\{\\arraystretch\}|setlength\{\\tabcolsep\})\{[^}]*\}\s*)*"
                   r"(\\begin\{tabular\}.*?\\end\{tabular\})\}", r"\1", body, flags=re.S)
     body = replace_macro(body, "ModhHead", 0, 9, head)
     body = body.replace("\\begin{Sayr}",
-                        "\\begin{tabular}{p{0.11\\linewidth}p{0.06\\linewidth}p{0.71\\linewidth}p{0.12\\linewidth}}\n"
+                        ("\\begin{tabular}{p{0.13\\linewidth}p{0.07\\linewidth}p{%s\\linewidth}p{0.14\\linewidth}}\n" % SAYR_W) +
                         "\\rowcolor{cThm!12}\\textbf{توجيهات وتعاليق} & \\textbf{المدة} & \\textbf{سير الحصة} & \\textbf{مراحل الحصة}\\\\\n")
     body = body.replace("\\end{Sayr}", "\\end{tabular}")
     body = replace_macro(body, "Row", 0, 4,
                          lambda o, r: "%s & %s & %s & \\cellcolor{cThm!8}\\textbf{%s}\\\\\n" % (r[3], r[2], r[1], r[0]))
-    body = replace_macro(body, "Lab", 0, 2, lambda o, r: "\\textbf{[%s]}" % r[1])
+    body = replace_macro(body, "Lab", 0, 2, lambda o, r: "\\textbf{" + LAB_O + r[0].split("!")[0] + LAB_M + " " + r[1] + " " + LAB_C + "}")
     body = replace_macro(body, "Num", 0, 1, lambda o, r: chr(0x2460 + int(r[0]) - 1)
                          if r[0].strip().isdigit() and 1 <= int(r[0]) <= 20 else "(%s)" % r[0])
     body = re.sub(r"\\ck(?![A-Za-z])", "✓", body)
@@ -430,8 +445,8 @@ def rewrite_body(body, meta):
     body = replace_macro(body, "bxt", 0, 1, lambda o, r: "\\textsc{%s}" % r[0])
     # result / title colour macros of the 3AS GE lesson plans (\RR in text or math, \T in text)
     for _ in range(2):   # twice: a \RR may sit inside a \T
-        body = replace_macro(body, "RR", 0, 1, lambda o, r: "{\\textcolor{cThm}{%s}}" % r[0])
-        body = replace_macro(body, "T", 0, 1, lambda o, r: "\\textbf{%s}" % r[0])
+        body = replace_macro(body, "RR", 0, 1, lambda o, r: RES_O + r[0] + RES_C)
+        body = replace_macro(body, "T", 0, 1, lambda o, r: "\\textbf{" + TTL_O + r[0] + TTL_C + "}")
     # numbered badge (\tikz node in the source) -> circled digit ① ... ⑳
     body = replace_macro(body, "circled", 0, 1, lambda o, r: chr(0x2460 + int(r[0]) - 1)
                          if r[0].strip().isdigit() and 1 <= int(r[0]) <= 20 else "(%s)" % r[0])
@@ -747,9 +762,9 @@ def make_reference(path):
                 del fonts.attrib[qn(a)]
     byname = {x.name: x for x in st}
     normal = byname["Normal"]
-    normal.font.size = Pt(13)
+    normal.font.size = Pt(14)
     rpr = normal.element.get_or_add_rPr()
-    for tag, val in (("w:szCs", "26"),):
+    for tag, val in (("w:szCs", "28"),):
         e = OxmlElement(tag); e.set(qn("w:val"), val); rpr.append(e)
     lang = OxmlElement("w:lang"); lang.set(qn("w:val"), "fr-FR"); lang.set(qn("w:bidi"), "ar-DZ"); rpr.append(lang)
     ppr = normal.element.get_or_add_pPr()
@@ -914,7 +929,129 @@ def cell_width_cm(p):
         return TEXT_W
     total = sum(int(c.get(qn("w:w"))) for c in cols) or 1
     w = int(cols[i].get(qn("w:w")))
+    if len(cols) == 4 and "سير الحصة" in "".join(x.text or "" for x in tbl.find(qn("w:tr")).iter(qn("w:t"))):
+        return TEXT_W * w / total   # lesson-plan table: widened to the full text width later (step 4)
     return min(TEXT_W * w / total, w / 1440 * 2.54)
+
+
+def colour_runs(body):
+    """Split runs at the colour markers and style each piece: results red, titles blue bold,
+    labels white bold on their colour. A marked span may cross text and math runs."""
+    marks = RES_O + RES_C + TTL_O + TTL_C + LAB_O + LAB_M + LAB_C
+    stack, reading = [], None
+    for r in [e for e in body.iter() if e.tag in (qn("w:r"), qn("m:r"))]:
+        ttag = qn("w:t") if r.tag == qn("w:r") else qn("m:t")
+        tt = r.find(ttag)
+        if tt is None or not tt.text:
+            continue
+        if not stack and reading is None and not any(c in tt.text for c in marks):
+            continue
+        segs, cur = [], ""
+        for ch in tt.text:
+            if reading is not None:
+                if ch == LAB_M:
+                    stack.append(("lab", TEX_COLOURS.get(reading.strip(), "1F3A68"))); reading = None
+                else:
+                    reading += ch
+                continue
+            if ch in (RES_O, TTL_O, LAB_O):
+                if cur:
+                    segs.append((cur, stack[-1] if stack else None)); cur = ""
+                if ch == LAB_O:
+                    reading = ""
+                else:
+                    stack.append(("res",) if ch == RES_O else ("ttl",))
+            elif ch in (RES_C, TTL_C, LAB_C):
+                if cur:
+                    segs.append((cur, stack[-1] if stack else None)); cur = ""
+                if stack:
+                    stack.pop()
+            else:
+                cur += ch
+        if cur:
+            segs.append((cur, stack[-1] if stack else None))
+        base = deepcopy(r)
+        prev = None
+        for i, (txt, st) in enumerate(segs):
+            nr = r if i == 0 else deepcopy(base)
+            nt = nr.find(ttag)
+            nt.text = txt
+            if ttag == qn("w:t"):
+                nt.set(qn("xml:space"), "preserve")
+            if st:
+                rpr = nr.find(qn("w:rPr"))
+                if rpr is None:
+                    rpr = OxmlElement("w:rPr")
+                    mrp = nr.find(qn("m:rPr"))
+                    (mrp.addnext(rpr) if mrp is not None else nr.insert(0, rpr))
+                if st[0] == "res":
+                    rpr.append(el("w:color", val=TEX_COLOURS["cThm"]))
+                elif st[0] == "ttl":
+                    rpr.append(OxmlElement("w:b")); rpr.append(OxmlElement("w:bCs"))
+                    rpr.append(el("w:color", val=TEX_COLOURS["cDef"]))
+                else:
+                    rpr.append(OxmlElement("w:b")); rpr.append(OxmlElement("w:bCs"))
+                    rpr.append(el("w:color", val="FFFFFF"))
+                    rpr.append(el("w:shd", val="clear", color="auto", fill=st[1]))
+            if prev is not None:
+                prev.addnext(nr)
+            prev = nr
+        if not segs:
+            r.getparent().remove(r)
+
+
+def embed_font(path, family=FONT):
+    """Embed the TTF files of `family` (obfuscated, as Word does) so the document keeps its font
+    on a computer where it is not installed."""
+    import uuid, zipfile
+    files = {}
+    for style, tag in (("Regular", "embedRegular"), ("Bold", "embedBold")):
+        out = subprocess.run(["fc-match", "-f", "%{file}", "%s:style=%s" % (family, style)],
+                             capture_output=True, text=True).stdout.strip()
+        if out.lower().endswith(".ttf") and family.lower() in os.path.basename(out).lower():
+            files[tag] = out
+    if not files:
+        return
+    zin = zipfile.ZipFile(path)
+    items = {n: zin.read(n) for n in zin.namelist()}
+    zin.close()
+    ft = items["word/fontTable.xml"].decode()
+    rels, embeds = [], []
+    for k, (tag, f) in enumerate(files.items()):
+        guid = "{%s}" % str(uuid.uuid4()).upper()
+        key = bytes.fromhex(guid.strip("{}").replace("-", ""))[::-1]
+        data = bytearray(open(f, "rb").read())
+        for i in range(32):
+            data[i] ^= key[i % 16]
+        name = "word/fonts/font%d.odttf" % (k + 1)
+        items[name] = bytes(data)
+        rels.append('<Relationship Id="rFnt%d" Type="http://schemas.openxmlformats.org/officeDocument/2006/'
+                    'relationships/font" Target="fonts/font%d.odttf"/>' % (k + 1, k + 1))
+        embeds.append('<w:%s r:id="rFnt%d" w:fontKey="%s"/>' % (tag, k + 1, guid))
+    m = re.search(r'<w:font w:name="%s"(?: [^>]*)?>(.*?)</w:font>' % re.escape(family), ft, re.S)
+    if m:
+        ft = ft[:m.end(1)] + "".join(embeds) + ft[m.end(1):]
+    else:
+        ft = ft.replace("</w:fonts>", '<w:font w:name="%s">%s</w:font></w:fonts>' % (family, "".join(embeds)))
+    if 'xmlns:r=' not in ft[:2000]:
+        ft = ft.replace("<w:fonts ", '<w:fonts xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ', 1)
+    items["word/fontTable.xml"] = ft.encode()
+    items["word/_rels/fontTable.xml.rels"] = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        + "".join(rels) + "</Relationships>").encode()
+    ct = items["[Content_Types].xml"].decode()
+    if 'Extension="odttf"' not in ct:
+        ct = ct.replace("<Types ", "<Types ", 1).replace(
+            "</Types>", '<Default Extension="odttf" ContentType="application/vnd.openxmlformats-officedocument.obfuscatedFont"/></Types>')
+    items["[Content_Types].xml"] = ct.encode()
+    st = items["word/settings.xml"].decode()
+    if "embedTrueTypeFonts" not in st:
+        st = re.sub(r"(<w:settings[^>]*>)", r"\1<w:embedTrueTypeFonts/><w:saveSubsetFonts/>", st, 1)
+    items["word/settings.xml"] = st.encode()
+    zout = zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED)
+    for n, b in items.items():
+        zout.writestr(n, b)
+    zout.close()
 
 
 def postprocess(path, out, head, foot, figs):
@@ -929,6 +1066,9 @@ def postprocess(path, out, head, foot, figs):
             if rpr is None:
                 rpr = OxmlElement("w:rPr"); r.insert(0, rpr)
             rpr.append(el("w:color", val="C00000")); rpr.append(OxmlElement("w:b"))
+
+    # --- 0a. colour markers -> coloured runs (text and math), markers removed
+    colour_runs(body)
 
     # --- 0b. boxed answers (\bx -> \boxed): yellow background inside the frame
     for bb in list(body.iter(qn("m:borderBox"))):
@@ -973,6 +1113,9 @@ def postprocess(path, out, head, foot, figs):
                     maxw = min(TEXT_W - 0.6, cell_width_cm(p) - 0.4)
                     if w > maxw:
                         h, w = h * maxw / w, maxw
+                    elif figs.is_table(key) and maxw < TEXT_W - 0.6:   # data table in a lesson-plan cell
+                        f_ = min(1.5, 0.95 * maxw / w)
+                        h, w = h * f_, w * f_
                     tmp_run = P.add_run()
                     tmp_run.add_picture(figs.png(key), width=Cm(w))
                     nr = tmp_run._r
@@ -1253,6 +1396,7 @@ def postprocess(path, out, head, foot, figs):
     if pgmar is not None and pgmar.get(qn("w:gutter")) is None:
         pgmar.set(qn("w:gutter"), "0")
     d.save(out)
+    embed_font(out)
 
 
 def fit_figure_columns(group, ws):
