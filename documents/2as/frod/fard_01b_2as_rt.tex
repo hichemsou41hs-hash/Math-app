@@ -235,15 +235,14 @@ $(C_g)$ التمثيل البياني لدالة $g$ معرّفة وقابلة �
 {\color{white}\Large\bfseries الحل النموذجي وسلم التنقيط}
 \end{tcolorbox}
 \end{LTR}
-\setcounter{exo}{1}
-\begin{hal}
+\Needspace{12\baselineskip}\begin{BOX}{cSol}{حل التمرين 1}
 \QQ{1} $f(0)=4$. من أجل $h\neq0$ و $h\neq-1$:
 \par $\dfrac{f(h)-f(0)}h=\dfrac1h\left(\dfrac{h^2+h+4}{h+1}-4\right)=\dfrac1h\times\dfrac{h^2-3h}{h+1}=\dfrac{h-3}{h+1}$.
-\par $\lim\limits_{h\to0}\dfrac{h-3}{h+1}=-3$ (عدد حقيقي) ، إذن $f$ قابلة للاشتقاق عند $0$ و \bx{f^{\prime}(0)=-3} \nt{1,5}
-\QQ{2} $(T):y=f^{\prime}(0)(x-0)+f(0)$ ، أي \bx{(T):y=-3x+4} \nt{0,5}
-\par التقريب التآلفي: $f(0{,}01)\approx-3(0{,}01)+4=\bx{3{,}97}$ \nt{0,5}
+\par $\lim\limits_{h\to0}\dfrac{h-3}{h+1}=-3$ (عدد حقيقي) ، إذن $f$ قابلة للاشتقاق عند $0$ و \bx{f^{\prime}(0)=-3} \hfill$\textcolor{cThm}{\mathbf{(1,5)}}$
+\QQ{2} $(T):y=f^{\prime}(0)(x-0)+f(0)$ ، أي \bx{(T):y=-3x+4} \hfill$\textcolor{cThm}{\mathbf{(0,5)}}$
+\par التقريب التآلفي: $f(0{,}01)\approx-3(0{,}01)+4=\bx{3{,}97}$ \hfill$\textcolor{cThm}{\mathbf{(0,5)}}$
 \QQ{3} $f=\dfrac uv$ مع $u(x)=x^2+x+4$ ، $u^{\prime}(x)=2x+1$ ، $v(x)=x+1$ ، $v^{\prime}(x)=1$:
-\par $f^{\prime}(x)=\dfrac{(2x+1)(x+1)-\left(x^2+x+4\right)}{(x+1)^2}=\dfrac{x^2+2x-3}{(x+1)^2}=\bx{\dfrac{(x-1)(x+3)}{(x+1)^2}}$ \nt{1}
+\par $f^{\prime}(x)=\dfrac{(2x+1)(x+1)-\left(x^2+x+4\right)}{(x+1)^2}=\dfrac{x^2+2x-3}{(x+1)^2}=\bx{\dfrac{(x-1)(x+3)}{(x+1)^2}}$ \hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \QQ{4} $(x+1)^2>0$ ، فإشارة $f^{\prime}(x)$ من إشارة $(x-1)(x+3)$: $f(-3)=\dfrac{9-3+4}{-2}=-5$ ، $f(1)=\dfrac{6}{2}=3$.
 \begin{TAB}
 \tkzTabInit[lgt=1.6,espcl=1.9]{$x$/0.8,$f^{\prime}(x)$/0.8,$f(x)$/1.6}{$-\infty$,$-3$,$-1$,$1$,$+\infty$}
@@ -251,30 +250,28 @@ $(C_g)$ التمثيل البياني لدالة $g$ معرّفة وقابلة �
 \tkzTabVar{-/ ,+/$-5$,-D+/ / ,-/$3$,+/ }
 \end{TAB}
 $f$ متزايدة تماماً على $]-\infty;-3]$ و $[1;+\infty[$ ، ومتناقصة تماماً على $[-3;-1[$ و $]-1;1]$.
-\par قيمة حدية عظمى محلية \bx{f(-3)=-5} ، وقيمة حدية صغرى محلية \bx{f(1)=3} \nt{2}
+\par قيمة حدية عظمى محلية \bx{f(-3)=-5} ، وقيمة حدية صغرى محلية \bx{f(1)=3} \hfill$\textcolor{cThm}{\mathbf{(2)}}$
 \QQ{5} $x+\dfrac4{x+1}=\dfrac{x(x+1)+4}{x+1}=\dfrac{x^2+x+4}{x+1}=f(x)$.
 \par المماس يوازي $(T)$ معناه $f^{\prime}(x)=-3$: $\dfrac{x^2+2x-3}{(x+1)^2}=-3$ ، أي $x^2+2x-3=-3x^2-6x-3$ ، أي $4x^2+8x=0$ ، أي $4x(x+2)=0$.
-\par الفاصلتان: \bx{x=0} (النقطة $A$ نفسها) و \bx{x=-2} \nt{1,5}
-\end{hal}
+\par الفاصلتان: \bx{x=0} (النقطة $A$ نفسها) و \bx{x=-2} \hfill$\textcolor{cThm}{\mathbf{(1,5)}}$
+\end{BOX}
 
-\stepcounter{exo}
-\begin{hal}
-\QQ{1} \bx{g(-1)=3} ، \bx{g(0)=1} ، \bx{g(1)=-1} ؛ المماسان أفقيان: \bx{g^{\prime}(-1)=0} و \bx{g^{\prime}(1)=0} \nt{1,5}
-\QQ{2} $g^{\prime}(0)$ معامل توجيه $(T)$ المار بـ $A(0;1)$ و $B(1;-2)$: $g^{\prime}(0)=\dfrac{-2-1}{1-0}=\bx{-3}$ ، و \bx{(T):y=-3x+1} \nt{1}
+\Needspace{12\baselineskip}\begin{BOX}{cSol}{حل التمرين 2}
+\QQ{1} \bx{g(-1)=3} ، \bx{g(0)=1} ، \bx{g(1)=-1} ؛ المماسان أفقيان: \bx{g^{\prime}(-1)=0} و \bx{g^{\prime}(1)=0} \hfill$\textcolor{cThm}{\mathbf{(1,5)}}$
+\QQ{2} $g^{\prime}(0)$ معامل توجيه $(T)$ المار بـ $A(0;1)$ و $B(1;-2)$: $g^{\prime}(0)=\dfrac{-2-1}{1-0}=\bx{-3}$ ، و \bx{(T):y=-3x+1} \hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \QQ{3} من المنحنى: $g(-2)=-1$ و $g(2)=3$:
 \begin{TAB}
 \tkzTabInit[lgt=1.6,espcl=2]{$x$/0.8,$g^{\prime}(x)$/0.8,$g(x)$/1.6}{$-2$,$-1$,$1$,$2$}
 \tkzTabLine{,+,z,-,z,+,}
 \tkzTabVar{-/$-1$,+/$3$,-/$-1$,+/$3$}
 \end{TAB}
-$g^{\prime}(x)\geqslant0$ على $[-2;-1]$ و $[1;2]$ ، و $g^{\prime}(x)\leqslant0$ على $[-1;1]$. \nt{1}
-\QQ{4} $g(0)=b=1$ ، و $g^{\prime}(x)=3x^2+a$ ومنه $g^{\prime}(0)=a=-3$. إذن \bx{a=-3} و \bx{b=1} ، أي $g(x)=x^3-3x+1$. \nt{1}
+$g^{\prime}(x)\geqslant0$ على $[-2;-1]$ و $[1;2]$ ، و $g^{\prime}(x)\leqslant0$ على $[-1;1]$. \hfill$\textcolor{cThm}{\mathbf{(1)}}$
+\QQ{4} $g(0)=b=1$ ، و $g^{\prime}(x)=3x^2+a$ ومنه $g^{\prime}(0)=a=-3$. إذن \bx{a=-3} و \bx{b=1} ، أي $g(x)=x^3-3x+1$. \hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \par (تحقق: $g(1)=1-3+1=-1$ و $g^{\prime}(1)=3-3=0$.)
-\QQ{5} المنحنى $(C_g)$ يقطع محور الفواصل في \bx{3} نقط على $[-2;2]$ ، إذن للمعادلة $g(x)=0$ ثلاثة حلول. \nt{0,5}
-\end{hal}
+\QQ{5} المنحنى $(C_g)$ يقطع محور الفواصل في \bx{3} نقط على $[-2;2]$ ، إذن للمعادلة $g(x)=0$ ثلاثة حلول. \hfill$\textcolor{cThm}{\mathbf{(0,5)}}$
+\end{BOX}
 
-\stepcounter{exo}
-\begin{hal}
+\Needspace{12\baselineskip}\begin{BOX}{cSol}{حل التمرين 3}
 \QQ{1} الرميتان مستقلتان والتكرار ممكن: جدول كامل $4\times4$. في كل خانة نكتب قيمة $X$ (أكبر الرقمين):
 \begin{center}\begin{LTR}{\renewcommand{\arraystretch}{1.5}\begin{tabular}{|c|c|c|c|c|}\hline
 \rowcolor{cSec!12}$\text{I}\backslash\text{II}$ & $1$ & $2$ & $3$ & $4$\\\hline
@@ -283,23 +280,23 @@ $2$ & $2$ & \cellcolor{cEx!35}$2$ & $3$ & \cellcolor{cRem!25}$4$\\\hline
 $3$ & $3$ & $3$ & \cellcolor{cEx!35}$3$ & \cellcolor{cRem!25}$4$\\\hline
 $4$ & \cellcolor{cRem!25}$4$ & \cellcolor{cRem!25}$4$ & \cellcolor{cRem!25}$4$ & \cellcolor{cEx!35}$4$\\\hline
 \end{tabular}}\end{LTR}\end{center}
-عدد الإمكانيات: \bx{4\times4=16} ، وهي متساوية الاحتمال. (البرتقالي: الحادثة $A$ ؛ الأخضر والخانة $(4;4)$: الحادثة $C$.) \nt{1,5}
+عدد الإمكانيات: \bx{4\times4=16} ، وهي متساوية الاحتمال. (البرتقالي: الحادثة $A$ ؛ الأخضر والخانة $(4;4)$: الحادثة $C$.) \hfill$\textcolor{cThm}{\mathbf{(1,5)}}$
 \QQ{2}
-\pa $A$: القطر ، $4$ خانات: \bx{P(A)=\tfrac4{16}=\tfrac14} \nt{0,5}
-\pb $B$: $(1;4)$ ، $(2;3)$ ، $(3;2)$ ، $(4;1)$: \bx{P(B)=\tfrac4{16}=\tfrac14} \nt{0,5}
-\pc $C$: السطر والعمود الأخيران: $7$ خانات: \bx{P(C)=\tfrac7{16}} \nt{0,5}
-\pd $A\cap C=\{(4;4)\}$ ، $P(A\cap C)=\frac1{16}$: $P(A\cup C)=\dfrac4{16}+\dfrac7{16}-\dfrac1{16}=\bx{\tfrac{10}{16}=\tfrac58}$ \nt{1}
+\pa $A$: القطر ، $4$ خانات: \bx{P(A)=\tfrac4{16}=\tfrac14} \hfill$\textcolor{cThm}{\mathbf{(0,5)}}$
+\pb $B$: $(1;4)$ ، $(2;3)$ ، $(3;2)$ ، $(4;1)$: \bx{P(B)=\tfrac4{16}=\tfrac14} \hfill$\textcolor{cThm}{\mathbf{(0,5)}}$
+\pc $C$: السطر والعمود الأخيران: $7$ خانات: \bx{P(C)=\tfrac7{16}} \hfill$\textcolor{cThm}{\mathbf{(0,5)}}$
+\pd $A\cap C=\{(4;4)\}$ ، $P(A\cap C)=\frac1{16}$: $P(A\cup C)=\dfrac4{16}+\dfrac7{16}-\dfrac1{16}=\bx{\tfrac{10}{16}=\tfrac58}$ \hfill$\textcolor{cThm}{\mathbf{(1)}}$
 \QQ{3}
 \pa $X\in\{1;2;3;4\}$. بعدّ الخانات:
 \begin{center}\begin{LTR}{\renewcommand{\arraystretch}{1.6}\begin{tabular}{|C|c|c|c|c|C|}\hline
 \rowcolor{cSec!12}$x_i$ & $1$ & $2$ & $3$ & $4$ & المجموع\\\hline
 $P(X=x_i)$ & $\frac1{16}$ & $\frac3{16}$ & $\frac5{16}$ & $\frac7{16}$ & $1$\\\hline
 \end{tabular}}\end{LTR}\end{center}
-\nt{1,5}
-\pb $E(X)=\dfrac{1+6+15+28}{16}=\dfrac{50}{16}=\bx{\tfrac{25}8=3{,}125}$ \nt{0,5}
-\par $V(X)=\dfrac{1+12+45+112}{16}-\left(\dfrac{25}8\right)^2=\dfrac{85}8-\dfrac{625}{64}=\bx{\tfrac{55}{64}}$ ؛ $\sigma(X)=\bx{\tfrac{\sqrt{55}}8\approx0{,}93}$ \nt{1}
-\QQ{4} الربح الجبري $G=8X-m$ ، $E(G)=8E(X)-m=8\times\dfrac{25}8-m=25-m$. اللعبة عادلة معناه $E(G)=0$ ، أي \bx{m=25} دينار. \nt{1}
-\end{hal}
+\hfill$\textcolor{cThm}{\mathbf{(1,5)}}$
+\pb $E(X)=\dfrac{1+6+15+28}{16}=\dfrac{50}{16}=\bx{\tfrac{25}8=3{,}125}$ \hfill$\textcolor{cThm}{\mathbf{(0,5)}}$
+\par $V(X)=\dfrac{1+12+45+112}{16}-\left(\dfrac{25}8\right)^2=\dfrac{85}8-\dfrac{625}{64}=\bx{\tfrac{55}{64}}$ ؛ $\sigma(X)=\bx{\tfrac{\sqrt{55}}8\approx0{,}93}$ \hfill$\textcolor{cThm}{\mathbf{(1)}}$
+\QQ{4} الربح الجبري $G=8X-m$ ، $E(G)=8E(X)-m=8\times\dfrac{25}8-m=25-m$. اللعبة عادلة معناه $E(G)=0$ ، أي \bx{m=25} دينار. \hfill$\textcolor{cThm}{\mathbf{(1)}}$
+\end{BOX}
 
 \begin{BOX}{cSec}{سلم التنقيط}
 \begin{center}\begin{LTR}{\renewcommand{\arraystretch}{1.5}\begin{tabular}{|C|c|c|c|c|c|C|}\hline

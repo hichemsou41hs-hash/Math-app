@@ -1371,6 +1371,8 @@ def make_title(marker_p, inner):
 def convert(tex_path, out_path, cache, keep=False, log=print):
     t0 = time.time()
     tex = strip_comments(open(tex_path, encoding="utf-8").read())
+    # pandoc cannot read \textcolor inside math (e.g. marks "(0,5)" of a test scale): keep the content
+    tex = re.sub(r"\$[^$]*\$", lambda m: re.sub(r"\\textcolor\{[^{}]*\}\{", "{", m.group(0)), tex)
     preamble, body = split_document(tex)
     body, hoisted = hoist_definitions(body)
     if hoisted:
