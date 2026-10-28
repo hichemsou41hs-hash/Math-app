@@ -351,7 +351,7 @@ def modhakira(body):
                   r"(\\begin\{tabular\}.*?\\end\{tabular\})\}", r"\1", body, flags=re.S)
     body = replace_macro(body, "ModhHead", 0, 9, head)
     body = body.replace("\\begin{Sayr}",
-                        "\\begin{tabular}{p{0.15\\linewidth}p{0.09\\linewidth}p{0.58\\linewidth}p{0.15\\linewidth}}\n"
+                        "\\begin{tabular}{p{0.11\\linewidth}p{0.06\\linewidth}p{0.71\\linewidth}p{0.12\\linewidth}}\n"
                         "\\rowcolor{cThm!12}\\textbf{توجيهات وتعاليق} & \\textbf{المدة} & \\textbf{سير الحصة} & \\textbf{مراحل الحصة}\\\\\n")
     body = body.replace("\\end{Sayr}", "\\end{tabular}")
     body = replace_macro(body, "Row", 0, 4,
@@ -428,6 +428,10 @@ def rewrite_body(body, meta):
 
     # highlights
     body = replace_macro(body, "bxt", 0, 1, lambda o, r: "\\textsc{%s}" % r[0])
+    # result / title colour macros of the 3AS GE lesson plans (\RR in text or math, \T in text)
+    for _ in range(2):   # twice: a \RR may sit inside a \T
+        body = replace_macro(body, "RR", 0, 1, lambda o, r: "{\\textcolor{cThm}{%s}}" % r[0])
+        body = replace_macro(body, "T", 0, 1, lambda o, r: "\\textbf{%s}" % r[0])
     # numbered badge (\tikz node in the source) -> circled digit ① ... ⑳
     body = replace_macro(body, "circled", 0, 1, lambda o, r: chr(0x2460 + int(r[0]) - 1)
                          if r[0].strip().isdigit() and 1 <= int(r[0]) <= 20 else "(%s)" % r[0])
@@ -1186,6 +1190,9 @@ def postprocess(path, out, head, foot, figs):
                 continue
             tot = sum(int(c.get(qn("w:w"))) for c in cols) or 1
             f = min(1.0, avail / tot)
+            # lesson-plan table: use the full text width so formulas stay on one line
+            if len(cols) == 4 and "سير الحصة" in "".join(x.text or "" for x in tbl.find(qn("w:tr")).iter(qn("w:t"))):
+                f = avail / tot
             for c in cols:
                 c.set(qn("w:w"), str(int(int(c.get(qn("w:w"))) * f)))
             for o in pr.findall(qn("w:tblW")):

@@ -3,7 +3,7 @@
 %  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
 % ============================================================
 \documentclass[12pt,a4paper]{article}
-\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage[a4paper,margin=1.2cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{icomma}
 \usepackage[english,bidi=default,layout=lists]{babel}
@@ -188,9 +188,9 @@
 \end{LTR}
 \par\smallskip\textbf{الوسائل:} #9\par\smallskip}
 \newenvironment{Sayr}{%
-\begin{LTR}\renewcommand{\arraystretch}{1.25}
-\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
-\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\begin{LTR}\renewcommand{\arraystretch}{1.25}\setlength{\tabcolsep}{4pt}\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\begin{longtable}{|p{0.09\textwidth}|>{\centering\arraybackslash}p{0.05\textwidth}|p{0.71\textwidth}|>{\centering\arraybackslash}p{0.09\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\footnotesize\textbf{توجيهات وتعاليق}} & \ar{\footnotesize\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\footnotesize\textbf{مراحل الحصة}}\\\hline\endhead
 \hline\endfoot}{\end{longtable}\end{LTR}}
 % سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
 \newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
@@ -427,6 +427,6 @@
 \Row{التقويم}{%
 \Lab{cMeth}{تمرين تطبيقي}\par مدينة سكانها $20000$ نسمة ، يغادرها $2\%$ من سكانها كل سنة ويصلها $300$ ساكن جديد. $P_n$ عدد السكان بعد $n$ سنة.\par\textbf{(1)} بيّن أن $P_{n+1}=0{,}98P_n+300$.\par\textbf{(2)} عيّن $l$ حيث $l=0{,}98l+300$ ، ثم بيّن أن $Q_n=P_n-l$ هندسية.\par\textbf{(3)} اكتب $P_n$ بدلالة $n$ واحسب نهايتها وفسّر.}{25 د}{نهاية المحور: فرض أو مراجعة.}
 \Row{}{%
-\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} يبقى $98\%$ من السكان ثم يُضاف $300$: $\RR{P_{n+1}=0{,}98P_n+300}$.\par\textbf{(2)} $0{,}02l=300$: $\RR{l=15000}$ ؛ $Q_{n+1}=0{,}98P_n+300-15000=0{,}98(P_n-15000)=\RR{0{,}98\,Q_n}$ ، و $Q_0=5000$.\par\textbf{(3)} $\RR{P_n=15000+5000\times0{,}98^n}$ ؛ $0{,}98^n\to0$ ، إذن $\RR{\lim P_n=15000}$: عدد السكان يستقر حول $15000$ نسمة.\par\textbf{واجب منزلي:} مسائل من باب المتتاليات (بكالوريا).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} يبقى $98\%$ من السكان ثم يُضاف $300$: $\RR{P_{n+1}=0{,}98P_n+300}$.\par\textbf{(2)} $0{,}02l=300$: $\RR{l=15000}$ ؛\par $Q_{n+1}=0{,}98P_n+300-15000=0{,}98(P_n-15000)=\RR{0{,}98\,Q_n}$ ، و $Q_0=5000$.\par\textbf{(3)} $\RR{P_n=15000+5000\times0{,}98^n}$ ؛ $0{,}98^n\to0$ ، إذن $\RR{\lim P_n=15000}$: عدد السكان يستقر حول $15000$ نسمة.\par\textbf{واجب منزلي:} مسائل من باب المتتاليات (بكالوريا).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \end{document}

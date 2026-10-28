@@ -3,7 +3,7 @@
 %  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
 % ============================================================
 \documentclass[12pt,a4paper]{article}
-\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage[a4paper,margin=1.2cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{icomma}
 \usepackage[english,bidi=default,layout=lists]{babel}
@@ -188,9 +188,9 @@
 \end{LTR}
 \par\smallskip\textbf{الوسائل:} #9\par\smallskip}
 \newenvironment{Sayr}{%
-\begin{LTR}\renewcommand{\arraystretch}{1.25}
-\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
-\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\begin{LTR}\renewcommand{\arraystretch}{1.25}\setlength{\tabcolsep}{4pt}\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\begin{longtable}{|p{0.09\textwidth}|>{\centering\arraybackslash}p{0.05\textwidth}|p{0.71\textwidth}|>{\centering\arraybackslash}p{0.09\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\footnotesize\textbf{توجيهات وتعاليق}} & \ar{\footnotesize\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\footnotesize\textbf{مراحل الحصة}}\\\hline\endhead
 \hline\endfoot}{\end{longtable}\end{LTR}}
 % سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
 \newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
@@ -323,7 +323,7 @@
 \tkzTabVar{D+/ ,-/$50$,+/ }
 \end{tikzpicture}\end{LTR}\par أصغر كلفة متوسطة $C_M(20)=20+10+20=\RR{50}$. و $C_m(20)=C^{\prime}(20)=2\times20+10=\RR{50}$: عند أصغر كلفة متوسطة تتساوى الكلفة الهامشية والكلفة المتوسطة.}{}{}
 \Row{}{%
-\Lab{cEx}{مثال 2: أكبر ربح}\ ثمن بيع الوحدة $70$: $B(q)=70q-\left(q^2+10q+400\right)=\RR{-q^2+60q-400}$.\par $B^{\prime}(q)=-2q+60$ ينعدم عند $q=30$ ، موجب قبلها وسالب بعدها: أكبر ربح $B(30)=-900+1800-400=\RR{500}$.}{}{}
+\Lab{cEx}{مثال 2: أكبر ربح}\ ثمن بيع الوحدة $70$:\par $B(q)=70q-\left(q^2+10q+400\right)=\RR{-q^2+60q-400}$.\par $B^{\prime}(q)=-2q+60$ ينعدم عند $q=30$ ، موجب قبلها وسالب بعدها: أكبر ربح $B(30)=-900+1800-400=\RR{500}$.}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ نحترم مجال المتغير الاقتصادي ($q>0$) والوحدات.}{}{}
 \Row{التقويم}{%
