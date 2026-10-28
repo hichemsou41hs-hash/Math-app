@@ -1211,7 +1211,8 @@ def postprocess(path, out, head, foot, figs):
     para_rule(hp._p, "bottom")
     fp = sect.footer.paragraphs[0]
     fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r = fp.add_run(FOOTER + "   |   prof_hicham_math   |   "); r.bold = True
+    if foot:  # administrative documents carry no social-media row
+        r = fp.add_run(foot + "   |   prof_hicham_math   |   "); r.bold = True
     add_page_field(fp)
     para_rule(fp._p, "top")
     for p in list(sect.header.paragraphs) + list(sect.footer.paragraphs):
@@ -1398,7 +1399,8 @@ def convert(tex_path, out_path, cache, keep=False, log=print):
     skipped = sorted(set(re.findall(r"Skipped '([^']*)'", r.stderr)))
     if skipped:
         log("pandoc skipped: " + ", ".join(s[:40] for s in skipped))
-    postprocess(raw, out_path, header_text(preamble), FOOTER, figs)
+    social = bool(re.search(r"\\fancyfoot\[C\]\{[^\n]*\\SocialRow", tex))
+    postprocess(raw, out_path, header_text(preamble), FOOTER if social else None, figs)
     if keep:
         log("work dir: " + work)
     else:
