@@ -917,6 +917,15 @@ def postprocess(path, out, head, foot, figs):
     d = docx.Document(path)
     body = d.element.body
 
+    # --- 0. red marks of a test scale: runs holding \u2983...\u2984
+    for t in list(body.iter(qn("w:t"))):
+        if t.text and "\u2983" in t.text:
+            t.text = t.text.replace("\u2983", "").replace("\u2984", "")
+            r = t.getparent(); rpr = r.find(qn("w:rPr"))
+            if rpr is None:
+                rpr = OxmlElement("w:rPr"); r.insert(0, rpr)
+            rpr.append(el("w:color", val="C00000")); rpr.append(OxmlElement("w:b"))
+
     # --- 1. figures: replace FIG markers by pictures
     for p in list(body.iter(qn("w:p"))):
         txt = para_text(p)
@@ -1371,7 +1380,9 @@ def make_title(marker_p, inner):
 def convert(tex_path, out_path, cache, keep=False, log=print):
     t0 = time.time()
     tex = strip_comments(open(tex_path, encoding="utf-8").read())
-    # pandoc cannot read \textcolor inside math (e.g. marks "(0,5)" of a test scale): keep the content
+    # test-scale marks $\textcolor{cThm}{\mathbf{(0,5)}}$ -> bold text wrapped in RED markers (coloured later)
+    tex = re.sub(r"\$\\textcolor\{cThm\}\{\\mathbf\{\(([^()$]*)\)\}\}\$", lambda m: "\\textbf{\u2983(" + m.group(1) + ")\u2984}", tex)
+    # pandoc cannot read \textcolor inside math: keep the content
     tex = re.sub(r"\$[^$]*\$", lambda m: re.sub(r"\\textcolor\{[^{}]*\}\{", "{", m.group(0)), tex)
     preamble, body = split_document(tex)
     body, hoisted = hoist_definitions(body)
