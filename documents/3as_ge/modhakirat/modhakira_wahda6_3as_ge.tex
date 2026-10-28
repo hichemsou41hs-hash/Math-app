@@ -212,41 +212,41 @@
 \end{LTR}
 \begin{BOX}{cThm}{يتضمن هذا العمل}
 \begin{enumerate}[label=\textbf{مذكرة \arabic{enumi}:},leftmargin=6em,start=34]
-\item الدالة الأسية النيبيرية: التعريف ، الخواص ، الدراسة.
-\item حل معادلات ومتراجحات تتضمن أسيات.
-\item النهايات الشهيرة والتزايد المقارن ، دوال من الشكل $e^u$.
+\item الدالة الأسية: التعريف ، الخواص ، الدراسة.
+\item معادلات ومتراجحات تتضمن أسيات.
+\item النهايات الشهيرة والتزايد المقارن ، دوال $e^u$.
 \item الدالة الأسية ذات الأساس $a$ ، الدوال القوى.
-\item حل مشكلات متعلقة بإيداع أو تسديد.
-\item حل مسائل حول دراسة دوال لوغاريتمية وأسية.
+\item مشكلات إيداع وتسديد.
+\item مسائل حول دراسة دوال لوغاريتمية وأسية.
 \end{enumerate}
-وفق التدرج السنوي (الأسابيع 17--21): $e^x$ العدد الذي لوغاريتمه $x$ (يُبنى على محور الدالة اللوغاريتمية) ؛ النهايات الشهيرة تُقبل.
+الحلول مفصّلة: المعطيات بالأسود ، \T{العناوين} و\RR{النتائج} بلون مختلف ، وكل سؤال في سطر.
 \end{BOX}
 \newpage
 \ModhHead{34}{3 ت ا}{تحليل}{الدالة الأسية}{02 سا}{الدالة الأسية النيبيرية: التعريف ، الخواص ، الدراسة}%
 {\begin{itemize}\item الدالة $\ln$ ودراستها.\end{itemize}}%
-{\begin{itemize}\item تعريف الدالة الأسية ومعرفة خواصها المميزة ، مشتقتها ، تمثيلها البياني ، سلوكها التقاربي.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية والبيانية.}
+{\begin{itemize}\item تعريف الدالة الأسية ومعرفة خواصها ، مشتقتها ، تمثيلها البياني وسلوكها التقاربي.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة العلمية والبيانية.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} $\ln$ متزايدة تماماً من $-\infty$ إلى $+\infty$: هل لكل عدد $x$ عدد موجب $y$ يحقق $\ln y=x$ ؟}{10 د}{سؤال.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مناقشة النشاط صفحة 150}\par\ck\ نقبل أنه يوجد عدد وحيد $y>0$ يحقق $\ln y=x$: نرمز له $e^x$ أو $\exp(x)$.\par
-\ck\ بالحاسبة: $e^1\approx2{,}718$ ، $e^0=1$ ، $e^{-1}\approx0{,}368$.\par
-}{35 د}{الحاسبة.}
+\Lab{cEx}{مناقشة النشاط صفحة 150}\par\textbf{(1)} باستعمال جدول تغيرات $\ln$ ، بيّن أن المعادلة $\ln y=x$ تقبل حلاً وحيداً $y>0$ من أجل كل عدد حقيقي $x$.\par\textbf{(2)} احسب بالآلة الحاسبة الحلول من أجل $x=1$ ، $x=0$ ، $x=-1$.}{35 د}{الآلة الحاسبة.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $\ln$ مستمرة ومتزايدة تماماً على $]0;+\infty[$ ، وتأخذ كل القيم من $-\infty$ إلى $+\infty$: حسب مبرهنة القيم المتوسطة للمعادلة \RR{حل} \RR{وحيد} ، نرمز له بـ $e^x$.\par\textbf{(2)} $e^1\approx\RR{2{,}718}$ ؛ $e^0=\RR{1}$ ؛ $e^{-1}\approx\RR{0{,}368}$.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ من أجل كل عدد حقيقي $x$: $y=e^x$ تكافئ $\ln y=x$ مع $y>0$. إذن $e^x>0$ ، $\ln(e^x)=x$ ، و $e^{\ln x}=x$ ($x>0$).\par}{50 د}{التناظر مع $\ln$.}
+\Lab{cDef}{تعريف}\ من أجل كل عدد حقيقي $x$: $\RR{y=e^x}$ تكافئ $\RR{\ln y=x}$ مع $y>0$. ومنه: $e^x>0$ ، $\ln\left(e^x\right)=x$ ، و $e^{\ln x}=x$ من أجل $x>0$.}{50 د}{التناظر مع $\ln$.}
 \Row{}{%
-\Lab{cThm}{خاصية}\ $e^{a+b}=e^ae^b$ ؛ $e^{-a}=\dfrac1{e^a}$ ؛ $e^{a-b}=\dfrac{e^a}{e^b}$ ؛ $(e^a)^n=e^{na}$.\par}{}{}
+\Lab{cThm}{خاصية}\par\textbf{(1)} $\RR{e^{a+b}=e^ae^b}$ ؛ $\RR{e^{-a}=\dfrac1{e^a}}$ ؛ $\RR{e^{a-b}=\dfrac{e^a}{e^b}}$ ؛ $\RR{\left(e^a\right)^n=e^{na}}$.}{}{}
 \Row{}{%
-\Lab{cThm}{الدراسة}\par\ck\ $(e^x)^{\prime}=e^x>0$: متزايدة تماماً على $\mathbb R$.\par
-\ck\ $\lim\limits_{x\to +\infty}e^x=+\infty$ ؛ $\lim\limits_{x\to -\infty}e^x=0$: محور الفواصل مقارب بجوار $-\infty$.\par
-\ck\ المماس عند $0$: $y=x+1$ ؛ منحنيا $e^x$ و $\ln x$ متناظران بالنسبة إلى $y=x$.\par
-\par\smallskip\begin{LTR}\centering \resizebox{0.92\linewidth}{!}{\begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
-\draw (0,0) rectangle (6,-5); \draw (0,-1)--(6,-1); \draw (0,-2)--(6,-2); \draw (1.4,0)--(1.4,-5);
+\Lab{cMeth}{البرهان}\ (الأولى) $\ln\left(e^ae^b\right)=\ln e^a+\ln e^b=a+b=\ln\left(e^{a+b}\right)$ ، و $\ln$ متباينة ، إذن $e^ae^b=e^{a+b}$.}{}{}
+\Row{}{%
+\Lab{cThm}{الدراسة}\par\textbf{(1)} $\RR{\left(e^x\right)^{\prime}=e^x>0}$: الدالة \RR{متزايدة} \RR{تماماً} على $\mathbb R$.\par\textbf{(2)} $\RR{\lim\limits_{x\to +\infty}e^x=+\infty}$ ؛ $\RR{\lim\limits_{x\to -\infty}e^x=0}$: محور الفواصل مقارب أفقي بجوار $-\infty$.\par\textbf{(3)} المماس عند $0$: $y=e^0(x-0)+e^0=\RR{x+1}$ ؛ منحنيا $e^x$ و $\ln x$ \RR{متناظران} بالنسبة إلى المستقيم $y=x$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.22cm,y=0.55cm,font=\small]
+\fill[cSec!12] (0,0) rectangle (7,-1);
+\draw (0,0) rectangle (7,-5); \draw (0,-1)--(7,-1); \draw (0,-2)--(7,-2); \draw (1.4,0)--(1.4,-5);
 \node at (0.7,-0.5){$x$}; \node at (0.7,-1.5){$(e^x)^{\prime}$}; \node at (0.7,-3.5){$e^x$};
-\node at (1.9,-0.5){$-\infty$}; \node at (5.4,-0.5){$+\infty$}; \node at (3.65,-1.5){$+$};
-\node (a) at (1.9,-4.5){$0$}; \node (c) at (5.4,-2.5){$+\infty$}; \draw[->,cDef,thick] (a)--(c);
-\end{tikzpicture}}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.65cm,y=0.65cm,font=\scriptsize]
+\node at (1.9,-0.5){$-\infty$}; \node at (6.4,-0.5){$+\infty$}; \node at (4.15,-1.5){$+$};
+\node (a) at (1.9,-4.5){$0$}; \node (c) at (6.4,-2.5){$+\infty$}; \draw[->,cDef,thick] (a)--(c);
+\end{tikzpicture}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.85cm,y=0.85cm,font=\scriptsize]
 \draw[->] (-4,0)--(5,0) node[right]{$x$}; \draw[->] (0,-3.5)--(0,5.4) node[above]{$y$};
 \draw[gray,densely dotted] (-3,-3)--(5,5) node[below right]{$y=x$};
 \draw[cDef,thick,domain=-4:1.65,samples=60] plot (\x,{exp(\x)}) node[left]{$y=e^x$};
@@ -257,141 +257,152 @@
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ $e^{a+b}\neq e^a+e^b$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par بسّط: $A=\dfrac{e^{3x}\times e^{-x}}{e^{x+1}}$ ؛ $B=e^{2\ln3}$. ثم احسب مشتقة $f(x)=xe^x$.\par\textbf{الحل:} $\RR{A=e^{x-1}}$ \RR{؛} $\RR{B=e^{\ln9}=9}$ \RR{؛} $\RR{f^{\prime}(x)=(x+1)e^x}$.\par\textbf{واجب منزلي:} تمارين من باب الدالة الأسية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} بسّط: $A=\dfrac{e^{3x}\times e^{-x}}{e^{x+1}}$.\par\textbf{(2)} احسب: $B=e^{2\ln3}$.\par\textbf{(3)} احسب مشتقة $f(x)=xe^x$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $A=\dfrac{e^{3x-x}}{e^{x+1}}=e^{2x-(x+1)}=\RR{e^{x-1}}$.\par\textbf{(2)} $B=e^{\ln(3^2)}=e^{\ln9}=\RR{9}$.\par\textbf{(3)} $f^{\prime}(x)=1\times e^x+x\times e^x=\RR{(x+1)e^x}$.\par\textbf{واجب منزلي:} تمارين من باب الدالة الأسية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{35}{3 ت ا}{تحليل}{الدالة الأسية}{02 سا}{حل معادلات ومتراجحات تتضمن أسيات}%
 {\begin{itemize}\item خواص الدالة الأسية و $\ln$.\end{itemize}}%
 {\begin{itemize}\item حل معادلات ومتراجحات تتضمن $e^x$.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية والبيانية.}
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة العلمية والبيانية.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} حل: $e^x=3$. وماذا عن $e^x=-1$ ؟}{10 د}{سؤال.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ $e^x=3$ تكافئ $x=\ln3$ ؛ $e^x=-1$ مستحيلة لأن $e^x>0$.\par
-}{35 د}{متغير مساعد.}
-\Row{بناء المعارف}{%
-\Lab{cThm}{خاصية}\par\ck\ $e^a=e^b$ تكافئ $a=b$ ؛ $e^a<e^b$ تكافئ $a<b$.\par
-\ck\ من أجل $k>0$: $e^x=k$ تكافئ $x=\ln k$.\par
-}{50 د}{التحقق بالحاسبة.}
+\Lab{cEx}{نشاط 02}\par\textbf{(1)} حل في $\mathbb R$ المعادلة $e^x=3$.\par\textbf{(2)} هل للمعادلة $e^x=-1$ حلول؟}{35 د}{متغير مساعد.}
 \Row{}{%
-\Lab{cEx}{مثال}\par\ck\ $e^{2x-1}=1$: $2x-1=0$ ، $x=\dfrac12$.\par
-\ck\ $e^{x+1}>e^{3-x}$: $x+1>3-x$ ، $x>1$.\par
-\ck\ $e^x<5$: $x<\ln5$.\par
-\ck\ $e^{2x}-3e^x+2=0$: نضع $X=e^x>0$: $X^2-3X+2=0$ ، $X=1$ أو $X=2$ ، إذن $x=0$ أو $x=\ln2$.\par
-}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $e^x=3$ تكافئ $x=\ln3$: $\RR{S=\{\ln3\}}$.\par\textbf{(2)} $e^x>0$ دائماً ، إذن المعادلة \RR{مستحيلة}: $S=\varnothing$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\par\textbf{(1)} $e^a=e^b$ تكافئ $\RR{a=b}$ ؛ $e^a<e^b$ تكافئ $\RR{a<b}$.\par\textbf{(2)} من أجل $k>0$: $e^x=k$ تكافئ $\RR{x=\ln k}$.}{50 د}{التحقق بالآلة الحاسبة.}
+\Row{}{%
+\Lab{cEx}{مثال 1}\ $e^{2x-1}=1$ تكافئ $e^{2x-1}=e^0$ ، أي $2x-1=0$: $\RR{x=\dfrac12}$.}{}{}
+\Row{}{%
+\Lab{cEx}{مثال 2}\ $e^{x+1}>e^{3-x}$ تكافئ $x+1>3-x$ ، أي $2x>2$: $\RR{S=]1;+\infty[}$.}{}{}
+\Row{}{%
+\Lab{cEx}{مثال 3}\ $e^{2x}-3e^x+2=0$: نضع $X=e^x>0$: $X^2-3X+2=0$ ، $(X-1)(X-2)=0$ ، $X=1$ أو $X=2$.\par $e^x=1$ معناه $x=0$ ؛ $e^x=2$ معناه $x=\ln2$: $\RR{S=\{0;\ln2\}}$.}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ مع المتغير المساعد نرفض الحلول $X\leqslant0$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par حل: $e^{2x}-e^x-6=0$ ؛ $e^{3x-2}\leqslant1$.\par\textbf{الحل:} $\RR{X=3}$ \RR{أو} $\RR{X=-2}$ \RR{(مرفوض):} $\RR{x=\ln3}$ \RR{؛} $\RR{3x-2\leqslant0}$: $\RR{x\leqslant\dfrac23}$.\par\textbf{واجب منزلي:} تمارين من باب الدالة الأسية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} حل في $\mathbb R$: $e^{2x}-e^x-6=0$.\par\textbf{(2)} حل في $\mathbb R$: $e^{3x-2}\leqslant1$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $X=e^x>0$: $X^2-X-6=0$ ، $(X-3)(X+2)=0$ ، $X=3$ أو $X=-2$ (مرفوض). $e^x=3$: $\RR{S=\{\ln3\}}$.\par\textbf{(2)} $e^{3x-2}\leqslant e^0$ تكافئ $3x-2\leqslant0$: $\RR{S=\left]-\infty;\tfrac23\right]}$.\par\textbf{واجب منزلي:} تمارين من باب الدالة الأسية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
-\ModhHead{36}{3 ت ا}{تحليل}{الدالة الأسية}{02 سا}{النهايات الشهيرة والتزايد المقارن ، دراسة دوال من الشكل $e^u$}%
-{\begin{itemize}\item دراسة الدالة الأسية ، النهايات الشهيرة لـ $\ln$.\end{itemize}}%
-{\begin{itemize}\item معرفة وتفسير النهايات $\lim\limits_{x\to +\infty}\frac{e^x}{x^n}=+\infty$ ، $\lim\limits_{x\to +\infty}x^ne^{-x}=0$ ، $\lim\limits_{x\to -\infty}xe^x=0$.\item دراسة دوال من الشكل $e^u$.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية والبيانية.}
+\ModhHead{36}{3 ت ا}{تحليل}{الدالة الأسية}{02 سا}{النهايات الشهيرة والتزايد المقارن ، دوال من الشكل $e^u$}%
+{\begin{itemize}\item دراسة الدالة الأسية.\end{itemize}}%
+{\begin{itemize}\item معرفة النهايات الشهيرة والتزايد المقارن.\item دراسة دوال من الشكل $e^u$.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة العلمية والبيانية.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} بالحاسبة البيانية: ارسم $\ln x$ ، $x^2$ ، $e^x$: كلها تؤول إلى $+\infty$ ، فأيها «أسرع»؟}{10 د}{الحاسبة البيانية.}
+\textbf{التهيئة النفسية:} أيها «أسرع» عند $+\infty$: $\ln x$ ، $x^2$ أم $e^x$ ؟}{10 د}{الحاسبة البيانية.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ جدول قيم من أجل $x=10$: $\ln10\approx2{,}3$ ، $10^2=100$ ، $e^{10}\approx22026$.\par
-\ck\ التزايد المقارن: عند $+\infty$ الأسية تتفوق على «القوة» ، و«القوة» تتفوق على اللوغاريتم.\par
-}{35 د}{جدول قيم.}
+\Lab{cEx}{نشاط 03}\par\textbf{(1)} احسب بالآلة الحاسبة $\ln10$ ، $10^2$ ، $e^{10}$.\par\textbf{(2)} رتّب الدوال حسب سرعة تزايدها.}{35 د}{جدول قيم.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $\ln10\approx2{,}3$ ؛ $10^2=100$ ؛ $e^{10}\approx22026$.\par\textbf{(2)} عند $+\infty$: \RR{الأسية} \RR{تتفوق} \RR{على} \RR{«القوة»} \RR{،} \RR{و«القوة»} \RR{تتفوق} \RR{على} \RR{اللوغاريتم}.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cThm}{نهايات شهيرة (تُقبل)}\ ($n$ طبيعي غير معدوم) $\lim\limits_{x\to +\infty}\dfrac{e^x}{x^n}=+\infty$ ؛ $\lim\limits_{x\to +\infty}x^ne^{-x}=0$ ؛ $\lim\limits_{x\to -\infty}xe^x=0$.\par}{50 د}{جدول التغيرات.}
+\Lab{cThm}{نهايات شهيرة (تُقبل)}\ ($n$ طبيعي غير معدوم):\par\textbf{(1)} $\RR{\lim\limits_{x\to +\infty}\dfrac{e^x}{x^n}=+\infty}$.\par\textbf{(2)} $\RR{\lim\limits_{x\to +\infty}x^ne^{-x}=0}$.\par\textbf{(3)} $\RR{\lim\limits_{x\to -\infty}xe^x=0}$.}{50 د}{جدول التغيرات.}
 \Row{}{%
-\Lab{cThm}{الدالة $e^u$}\ $(e^u)^{\prime}=u^{\prime}e^u$: لـ $e^u$ نفس اتجاه تغير $u$ ؛ دالة أصلية لـ $u^{\prime}e^u$ هي $e^u$.\par}{}{}
+\Lab{cThm}{الدالة $e^u$}\ $\RR{\left(e^u\right)^{\prime}=u^{\prime}e^u}$: لـ $e^u$ نفس اتجاه تغير $u$ ؛ ودالة أصلية لـ $u^{\prime}e^u$ هي $e^u$.}{}{}
 \Row{}{%
-\Lab{cEx}{مثال}\ $\lim\limits_{x\to +\infty}(e^x-x)=\lim\limits_{x\to +\infty}x\left(\dfrac{e^x}x-1\right)=+\infty$ ؛ $\lim\limits_{x\to +\infty}(x^2+1)e^{-x}=0$.\par $f(x)=xe^{-x}$: $f^{\prime}(x)=(1-x)e^{-x}$ ؛ $\lim\limits_{x\to -\infty}f(x)=-\infty$ ، $\lim\limits_{x\to +\infty}f(x)=0$.\par\smallskip\begin{LTR}\centering \resizebox{0.92\linewidth}{!}{\begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
+\Lab{cEx}{مثال 1}\ $\lim\limits_{x\to +\infty}(e^x-x)=\lim\limits_{x\to +\infty}x\left(\dfrac{e^x}x-1\right)=+\infty\times(+\infty)=\RR{+\infty}$.}{}{}
+\Row{}{%
+\Lab{cEx}{مثال 2}\ $f(x)=xe^{-x}$:\par\textbf{(1)} $f^{\prime}(x)=e^{-x}+x\times(-e^{-x})=\RR{(1-x)e^{-x}}$ ، إشارتها من إشارة $1-x$.\par\textbf{(2)} $\lim\limits_{x\to -\infty}f(x)=-\infty\times(+\infty)=\RR{-\infty}$ ؛ $\lim\limits_{x\to +\infty}f(x)=\RR{0}$ (نهاية شهيرة).\par\textbf{(3)} $f(1)=e^{-1}=\dfrac1e$:\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.22cm,y=0.55cm,font=\small]
 \draw (0,0) rectangle (7,-5); \draw (0,-1)--(7,-1); \draw (0,-2)--(7,-2); \draw (1.4,0)--(1.4,-5);
+\fill[cSec!12] (0,0) rectangle (7,-1); \draw (0,0) rectangle (7,-5); \draw (1.4,0)--(1.4,-5);
 \node at (0.7,-0.5){$x$}; \node at (0.7,-1.5){$f^{\prime}(x)$}; \node at (0.7,-3.5){$f(x)$};
 \node at (1.9,-0.5){$-\infty$}; \node at (4,-0.5){$1$}; \node at (6.4,-0.5){$+\infty$};
 \node at (2.9,-1.5){$+$}; \node at (4,-1.5){$0$}; \node at (5.2,-1.5){$-$};
 \node (a) at (1.9,-4.5){$-\infty$}; \node (b) at (4,-2.5){$\frac1e$}; \node (c) at (6.4,-4.5){$0$};
 \draw[->,cDef,thick] (a)--(b); \draw[->,cDef,thick] (b)--(c);
-\end{tikzpicture}}\end{LTR}\par }{}{}
+\end{tikzpicture}\end{LTR}\par }{}{}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ $e^{-x}>0$: إشارة $f^{\prime}$ إشارة $1-x$.}{}{}
+\Lab{cThm!80!black}{حذار}\ $e^{-x}>0$: إشارة $f^{\prime}$ هي إشارة العامل الآخر.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $g(x)=e^{-x^2+2x}$. احسب $g^{\prime}(x)$ ، النهايات عند $\pm\infty$ ، وشكل جدول التغيرات.\par\textbf{الحل:} $\RR{g^{\prime}(x)=(-2x+2)e^{-x^2+2x}}$ \RR{؛} $\RR{-x^2+2x\to-\infty}$: $\RR{\lim\limits_{x\to \pm\infty}g(x)=0}$ \RR{؛} \RR{عظمى} $\RR{g(1)=e}$.\par\smallskip\begin{LTR}\centering \resizebox{0.92\linewidth}{!}{\begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
+\Lab{cMeth}{تمرين تطبيقي}\par $g(x)=e^{-x^2+2x}$.\par\textbf{(1)} احسب $g^{\prime}(x)$.\par\textbf{(2)} احسب نهايتي $g$ عند $\pm\infty$.\par\textbf{(3)} شكّل جدول تغيرات $g$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $u(x)=-x^2+2x$ ، $u^{\prime}(x)=-2x+2$: $\RR{g^{\prime}(x)=(-2x+2)e^{-x^2+2x}}$.\par\textbf{(2)} $-x^2+2x\to-\infty$ عند $\pm\infty$ ، و $\lim\limits_{X\to-\infty}e^X=0$: $\RR{\lim\limits_{x\to \pm\infty}g(x)=0}$.\par\textbf{(3)} $g(1)=e^{1}=e$:\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.22cm,y=0.55cm,font=\small]
 \draw (0,0) rectangle (7,-5); \draw (0,-1)--(7,-1); \draw (0,-2)--(7,-2); \draw (1.4,0)--(1.4,-5);
+\fill[cSec!12] (0,0) rectangle (7,-1); \draw (0,0) rectangle (7,-5); \draw (1.4,0)--(1.4,-5);
 \node at (0.7,-0.5){$x$}; \node at (0.7,-1.5){$g^{\prime}(x)$}; \node at (0.7,-3.5){$g(x)$};
 \node at (1.9,-0.5){$-\infty$}; \node at (4,-0.5){$1$}; \node at (6.4,-0.5){$+\infty$};
 \node at (2.9,-1.5){$+$}; \node at (4,-1.5){$0$}; \node at (5.2,-1.5){$-$};
 \node (a) at (1.9,-4.5){$0$}; \node (b) at (4,-2.5){$e$}; \node (c) at (6.4,-4.5){$0$};
 \draw[->,cDef,thick] (a)--(b); \draw[->,cDef,thick] (b)--(c);
-\end{tikzpicture}}\end{LTR}\par \par\textbf{واجب منزلي:} تمارين من باب الدالة الأسية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\end{tikzpicture}\end{LTR}\par \par\textbf{واجب منزلي:} تمارين من باب الدالة الأسية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{37}{3 ت ا}{تحليل}{الدالة الأسية}{02 سا}{الدالة الأسية ذات الأساس $a$ ، الدوال القوى}%
 {\begin{itemize}\item الدالتان $\ln$ و $\exp$.\end{itemize}}%
-{\begin{itemize}\item تعريف $a^x=e^{x\ln a}$ ودراسة اتجاه تغيرها ، والدوال القوى $x^\alpha$.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية والبيانية.}
+{\begin{itemize}\item تعريف $a^x=e^{x\ln a}$ ودراسة اتجاه تغيرها ، والدوال القوى.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة العلمية والبيانية.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} آلة ثمنها $500000$ DA تفقد $20\%$ من قيمتها كل سنة: متى تصبح قيمتها أقل من $100000$ DA ؟}{10 د}{وضعية اقتصادية.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ القيمة بعد $t$ سنة: $V(t)=500000\times0{,}8^t$.\par
-\ck\ $0{,}8^t<0{,}2$: $t\ln0{,}8<\ln0{,}2$ ، $t>\dfrac{\ln0{,}2}{\ln0{,}8}\approx7{,}21$ ($\ln0{,}8<0$ يقلب الإشارة): بعد $8$ سنوات.\par
-}{35 د}{الحاسبة.}
+\Lab{cEx}{نشاط 04}\par\textbf{(1)} عبّر عن قيمة الآلة $V(t)$ بعد $t$ سنة.\par\textbf{(2)} حل المتراجحة $V(t)<100000$.}{35 د}{الآلة الحاسبة.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} نقصان $20\%$ يعني الضرب في $0{,}8$: $\RR{V(t)=500000\times0{,}8^t}$.\par\textbf{(2)} $0{,}8^t<0{,}2$ ، نطبق $\ln$: $t\ln0{,}8<\ln0{,}2$ ، و $\ln0{,}8<0$ فيتغير اتجاه المتراجحة: $t>\dfrac{\ln0{,}2}{\ln0{,}8}\approx7{,}21$: \RR{بعد} \RR{$8$} \RR{سنوات}.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ من أجل $a>0$: $a^x=e^{x\ln a}$ ($x$ حقيقي). \textbf{الدالة القوة}: $x^\alpha=e^{\alpha\ln x}$ ($x>0$ ، $\alpha$ حقيقي).\par}{50 د}{المقارنة بين $a>1$ و $a<1$.}
+\Lab{cDef}{تعريف}\ من أجل $a>0$: $\RR{a^x=e^{x\ln a}}$ ($x$ حقيقي). \textbf{الدالة القوة}: $\RR{x^\alpha=e^{\alpha\ln x}}$ ($x>0$).}{50 د}{المقارنة بين $a>1$ و $a<1$.}
 \Row{}{%
-\Lab{cThm}{خاصية}\par\ck\ $(a^x)^{\prime}=\ln a\times a^x$: متزايدة تماماً إذا $a>1$ ، متناقصة تماماً إذا $0<a<1$.\par
-\ck\ $(x^\alpha)^{\prime}=\alpha x^{\alpha-1}$ ؛ $x^{\frac12}=\sqrt x$.\par
-\ck\ لـ $a^x$ نفس خواص $e^x$: $a^{x+y}=a^xa^y$ ...\par
-}{}{}
+\Lab{cThm}{خاصية}\par\textbf{(1)} $\RR{\left(a^x\right)^{\prime}=\ln a\times a^x}$: متزايدة تماماً إذا $a>1$ ، متناقصة تماماً إذا $0<a<1$.\par\textbf{(2)} $\RR{\left(x^\alpha\right)^{\prime}=\alpha x^{\alpha-1}}$ ؛ $x^{\frac12}=\sqrt x$.}{}{}
 \Row{}{%
-\Lab{cEx}{مثال}\ $2^x=10$: $x=\dfrac{\ln10}{\ln2}\approx3{,}32$ ؛ $(2^x)^{\prime}=\ln2\times2^x$ ؛ $0{,}5^x$ متناقصة.\par}{}{}
+\Lab{cEx}{مثال}\par\textbf{(1)} $2^x=10$ تكافئ $x\ln2=\ln10$: $x=\dfrac{\ln10}{\ln2}\approx\RR{3{,}32}$.\par\textbf{(2)} $\left(2^x\right)^{\prime}=\RR{\ln2\times2^x}$.\par\textbf{(3)} $0<0{,}5<1$: $0{,}5^x$ \RR{متناقصة} \RR{تماماً}.}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ القسمة على $\ln a<0$ (لما $0<a<1$) تقلب اتجاه المتراجحة.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par \par\textbf{(1)} حل $1{,}5^x\geqslant100$. \par\textbf{(2)} احسب مشتقة $f(x)=x^{1{,}5}$ على $]0;+\infty[$.\par\textbf{الحل:} \par\RR{\textbf{(1)}} $\RR{x\geqslant\dfrac{\ln100}{\ln1{,}5}\approx11{,}36}$. \par\RR{\textbf{(2)}} $\RR{f^{\prime}(x)=1{,}5\,x^{0{,}5}=1{,}5\sqrt x}$.\par\textbf{واجب منزلي:} تمارين من باب الدالة الأسية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} حل في $\mathbb R$: $1{,}5^x\geqslant100$.\par\textbf{(2)} احسب مشتقة $f(x)=x^{1{,}5}$ على $]0;+\infty[$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $x\ln1{,}5\geqslant\ln100$ ، و $\ln1{,}5>0$: $x\geqslant\dfrac{\ln100}{\ln1{,}5}\approx\RR{11{,}36}$.\par\textbf{(2)} $f^{\prime}(x)=1{,}5\,x^{0{,}5}=\RR{1{,}5\sqrt x}$.\par\textbf{واجب منزلي:} تمارين من باب الدالة الأسية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{38}{3 ت ا}{تحليل}{الدالة الأسية}{02 سا}{حل مشكلات متعلقة بإيداع أو تسديد}%
 {\begin{itemize}\item المتتاليات الهندسية ، $\ln$ ، $a^x$.\end{itemize}}%
 {\begin{itemize}\item حل مشكلات إيداع وتسديد تتدخل فيها اللوغاريتمات أو الأسيات.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية والبيانية.}
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة العلمية والبيانية.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} مؤسسة تقترض $1000000$ DA بنسبة $5\%$ سنوياً وتسدد بأقساط سنوية ثابتة على $10$ سنوات: ما قيمة القسط؟}{10 د}{وضعية مالية.}
+\textbf{التهيئة النفسية:} مؤسسة تقترض $1000000$ DA بنسبة $5\%$ وتسدد بأقساط سنوية ثابتة على $10$ سنوات: ما قيمة القسط؟}{10 د}{وضعية مالية.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة (إيداع)}\ إيداع $200000$ DA بفائدة مركبة $4\%$ سنوياً.\par\ck\ الرصيد بعد $n$ سنة: $C_n=200000\times1{,}04^n$ (متتالية هندسية).\par
-\ck\ يتضاعف الرصيد لما $1{,}04^n\geqslant2$: $n\geqslant\dfrac{\ln2}{\ln1{,}04}\approx17{,}67$: بعد $18$ سنة.\par
-}{35 د}{ربط بالمتتاليات.}
+\Lab{cEx}{مشكلة (إيداع)}\ إيداع $200000$ DA بفائدة مركبة $4\%$ سنوياً.\par\textbf{(1)} عبّر عن الرصيد $C_n$ بعد $n$ سنة.\par\textbf{(2)} بعد كم سنة يتضاعف الرصيد؟}{35 د}{ربط بالمتتاليات.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} متتالية هندسية أساسها $1{,}04$: $\RR{C_n=200000\times1{,}04^n}$.\par\textbf{(2)} $1{,}04^n\geqslant2$ ، $n\ln1{,}04\geqslant\ln2$ ، $n\geqslant\dfrac{\ln2}{\ln1{,}04}\approx17{,}67$: \RR{بعد} \RR{$18$} \RR{سنة}.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cMeth}{طريقة}\ نكتب الحد العام (هندسي غالباً) ، ثم نحل متراجحة أسية بتطبيق $\ln$.\par}{50 د}{الحاسبة.}
+\Lab{cMeth}{طريقة}\ نكتب الحد العام (هندسي غالباً) ، ثم نحل متراجحة أسية بتطبيق $\ln$.}{50 د}{الآلة الحاسبة.}
 \Row{}{%
-\Lab{cThm}{التسديد بأقساط ثابتة (تُقبل)}\ قرض $C$ بنسبة $t$ يُسدد بـ $n$ قسطاً سنوياً ثابتاً: $a=\dfrac{C\,t}{1-(1+t)^{-n}}$.\par}{}{}
+\Lab{cThm}{التسديد بأقساط ثابتة (تُقبل)}\ قرض $C$ بنسبة $t$ يُسدد بـ $n$ قسطاً سنوياً ثابتاً: $\RR{a=\dfrac{C\,t}{1-(1+t)^{-n}}}$.}{}{}
 \Row{}{%
-\Lab{cEx}{مثال}\ $C=1000000$ ، $t=0{,}05$ ، $n=10$: $a=\dfrac{50000}{1-1{,}05^{-10}}\approx129505$ DA.\par}{}{}
+\Lab{cEx}{مثال}\ $C=1000000$ ، $t=0{,}05$ ، $n=10$: $a=\dfrac{1000000\times0{,}05}{1-1{,}05^{-10}}=\dfrac{50000}{1-0{,}6139}\approx\RR{129505}$ DA.}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ $n$ عدد طبيعي: نأخذ أول عدد طبيعي يحقق المتراجحة.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par إيداع $150000$ DA بفائدة مركبة $3{,}5\%$ سنوياً. بعد كم سنة يتجاوز الرصيد $200000$ DA ؟\par\textbf{الحل:} $\RR{1{,}035^n\geqslant\dfrac43}$: $\RR{n\geqslant\dfrac{\ln\frac43}{\ln1{,}035}\approx8{,}36}$: \RR{بعد} $\RR{9}$ \RR{سنوات.}\par\textbf{واجب منزلي:} مسائل من صفحة 143 إلى 147.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par إيداع $150000$ DA بفائدة مركبة $3{,}5\%$ سنوياً.\par\textbf{(1)} عبّر عن الرصيد بعد $n$ سنة.\par\textbf{(2)} بعد كم سنة يتجاوز الرصيد $200000$ DA ؟}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $\RR{C_n=150000\times1{,}035^n}$.\par\textbf{(2)} $1{,}035^n\geqslant\dfrac{200000}{150000}=\dfrac43$ ، $n\geqslant\dfrac{\ln\frac43}{\ln1{,}035}\approx8{,}36$: \RR{بعد} \RR{$9$} \RR{سنوات}.\par\textbf{واجب منزلي:} مسائل من صفحة 143 إلى 147.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{39}{3 ت ا}{تحليل}{الدالة الأسية}{02 سا}{حل مسائل حول دراسة دوال لوغاريتمية وأسية}%
 {\begin{itemize}\item دراسة $\ln$ و $\exp$ ، النهايات الشهيرة.\end{itemize}}%
 {\begin{itemize}\item دراسة دالة لوغاريتمية أو أسية كاملة وتمثيلها البياني.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة العلمية والبيانية. ورق ميليمتري.}
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة العلمية والبيانية. ورق ميليمتري.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} ما خطوات دراسة دالة؟ وما الجديد مع $\ln$ و $\exp$ ؟}{10 د}{سؤال تلخيصي.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مسألة}\ $f(x)=\dfrac{\ln x}x$ على $]0;+\infty[$.\par\ck\ النهايات: $\lim\limits_{x\to 0^{+}}f(x)=-\infty$ ($\ln x\to-\infty$ و $\frac1x\to+\infty$) ؛ $\lim\limits_{x\to +\infty}f(x)=0$ (نهاية شهيرة).\par
-\ck\ المقاربان: محور التراتيب ومحور الفواصل.\par
-}{35 د}{عمل بالأفواج.}
+\Lab{cEx}{مسألة}\ $f(x)=\dfrac{\ln x}x$ على $]0;+\infty[$.\par\textbf{(1)} احسب نهايتي $f$ عند $0^{+}$ و $+\infty$ ، واستنتج المقاربات.\par\textbf{(2)} بيّن أن $f^{\prime}(x)=\dfrac{1-\ln x}{x^2}$ ، وشكّل جدول التغيرات.\par\textbf{(3)} عيّن نقطة تقاطع $(C_f)$ مع محور الفواصل وارسم $(C_f)$.}{35 د}{عمل بالأفواج.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $\ln x\to-\infty$ و $\dfrac1x\to+\infty$: $\RR{\lim\limits_{x\to 0^{+}}f(x)=-\infty}$ (محور التراتيب مقارب) ؛ $\RR{\lim\limits_{x\to +\infty}f(x)=0}$ (نهاية شهيرة ، محور الفواصل مقارب).}{}{}
 \Row{بناء المعارف}{%
-\Lab{cEx}{الدراسة}\ $f^{\prime}(x)=\dfrac{1-\ln x}{x^2}$ ، إشارتها إشارة $1-\ln x$: موجبة لما $x<e$.\par\smallskip\begin{LTR}\centering \resizebox{0.92\linewidth}{!}{\begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
+\Lab{cEx}{الدراسة}\par\textbf{(2)} $f^{\prime}(x)=\dfrac{\frac1x\times x-\ln x\times1}{x^2}=\RR{\dfrac{1-\ln x}{x^2}}$ ، إشارتها من إشارة $1-\ln x$: موجبة لما $x<e$. و $f(e)=\dfrac1e$:\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.22cm,y=0.55cm,font=\small]
 \draw (0,0) rectangle (7,-5); \draw (0,-1)--(7,-1); \draw (0,-2)--(7,-2); \draw (1.4,0)--(1.4,-5);
+\fill[cSec!12] (0,0) rectangle (7,-1); \draw (0,0) rectangle (7,-5); \draw (1.4,0)--(1.4,-5);
 \node at (0.7,-0.5){$x$}; \node at (0.7,-1.5){$f^{\prime}(x)$}; \node at (0.7,-3.5){$f(x)$};
 \node at (1.9,-0.5){$0$}; \node at (4,-0.5){$e$}; \node at (6.4,-0.5){$+\infty$};
 \node at (2.9,-1.5){$+$}; \node at (4,-1.5){$0$}; \node at (5.2,-1.5){$-$};
 \node (a) at (1.9,-4.5){$-\infty$}; \node (b) at (4,-2.5){$\frac1e$}; \node (c) at (6.4,-4.5){$0$};
 \draw[->,cDef,thick] (a)--(b); \draw[->,cDef,thick] (b)--(c);
-\end{tikzpicture}}\end{LTR}\par $f(1)=0$: $C_f$ يقطع محور الفواصل في $(1;0)$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.75cm,y=1.6cm,font=\scriptsize]
+\end{tikzpicture}\end{LTR}\par \par\textbf{(3)} $f(x)=0$ معناه $\ln x=0$ أي $x=1$: النقطة $\RR{(1;0)}$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.75cm,y=1.6cm,font=\scriptsize]
 \draw[->] (-0.4,0)--(10.5,0) node[right]{$x$}; \draw[->] (0,-1.6)--(0,0.9) node[above]{$y$};
 \draw[cDef,thick,domain=0.42:10.3,samples=100] plot (\x,{ln(\x)/\x}) node[above]{$C_f$};
 \draw[densely dotted] (2.718,0)--(2.718,0.368)--(0,0.368); \node[left] at (0,0.368){$\frac1e$}; \node[below] at (2.718,0){$e$}; \node[below] at (1,0){$1$};
@@ -399,13 +410,16 @@
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ إشارة $\ln x$: سالبة على $]0;1[$ ، موجبة على $]1;+\infty[$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $g(x)=(x-1)e^x$ على $\mathbb R$. احسب النهايات ، $g^{\prime}(x)$ ، وشكّل جدول التغيرات.\par\textbf{الحل:} $\RR{\lim\limits_{x\to -\infty}g(x)=\lim\limits_{x\to -\infty}(xe^x-e^x)=0}$ \RR{؛} $\RR{\lim\limits_{x\to +\infty}g(x)=+\infty}$ \RR{؛} $\RR{g^{\prime}(x)=xe^x}$.\par\smallskip\begin{LTR}\centering \resizebox{0.92\linewidth}{!}{\begin{tikzpicture}[x=0.85cm,y=0.5cm,font=\footnotesize]
+\Lab{cMeth}{تمرين تطبيقي}\par $g(x)=(x-1)e^x$ على $\mathbb R$.\par\textbf{(1)} احسب نهايتي $g$ عند $\pm\infty$.\par\textbf{(2)} احسب $g^{\prime}(x)$ وشكّل جدول التغيرات.}{25 د}{نهاية المحور: فرض أو معالجة بيداغوجية.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $\lim\limits_{x\to -\infty}g(x)=\lim\limits_{x\to -\infty}\left(xe^x-e^x\right)=0-0=\RR{0}$ ؛ $\lim\limits_{x\to +\infty}g(x)=\RR{+\infty}$.\par\textbf{(2)} $g^{\prime}(x)=e^x+(x-1)e^x=\RR{xe^x}$ ، إشارتها من إشارة $x$ ؛ $g(0)=-1$:\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.22cm,y=0.55cm,font=\small]
 \draw (0,0) rectangle (7,-5); \draw (0,-1)--(7,-1); \draw (0,-2)--(7,-2); \draw (1.4,0)--(1.4,-5);
+\fill[cSec!12] (0,0) rectangle (7,-1); \draw (0,0) rectangle (7,-5); \draw (1.4,0)--(1.4,-5);
 \node at (0.7,-0.5){$x$}; \node at (0.7,-1.5){$g^{\prime}(x)$}; \node at (0.7,-3.5){$g(x)$};
 \node at (1.9,-0.5){$-\infty$}; \node at (4,-0.5){$0$}; \node at (6.4,-0.5){$+\infty$};
 \node at (2.9,-1.5){$-$}; \node at (4,-1.5){$0$}; \node at (5.2,-1.5){$+$};
 \node (a) at (1.9,-2.5){$0$}; \node (b) at (4,-4.5){$-1$}; \node (c) at (6.4,-2.5){$+\infty$};
 \draw[->,cDef,thick] (a)--(b); \draw[->,cDef,thick] (b)--(c);
-\end{tikzpicture}}\end{LTR}\par \par\textbf{واجب منزلي:} مسائل من صفحة 143 إلى 147.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو معالجة بيداغوجية.}
+\end{tikzpicture}\end{LTR}\par \par\textbf{واجب منزلي:} مسائل من صفحة 143 إلى 147.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \end{document}
