@@ -16,7 +16,7 @@ def parse(s):
     X = [x for x, _ in xs_pos]
     near = lambda x: min(range(len(X)), key=lambda i: abs(X[i] - x))
     zeros = {}
-    for x, c, mt, o, pt in re.findall(r'inner sep=0pt\] at \(([\d.]+),[-\d.]+\)\{\\ar\{\$(.*?)\$ (\S+?)\}\\\\ \$(.*?)\$\\\\ \\ar\{في النقطة\}\\\\ \$(.*?)\$\};', s):
+    for x, c, mt, o, pt in re.findall(r'inner sep=0pt\] at \(([\d.]+),[-\d.]+\)\{\\ar\{\$(.*?)\$ (\S+?)\}\\\\ \$(.*?)\$\\\\ \\ar\{(?:في النقطة|عند)\}\\\\ \$(.*?)\$\};', s):
         zeros[near(float(x))] = pt if mt == 'يقطع' else (pt, mt)
     bars = tuple(near(float(x)) for x in re.findall(r'\\draw\[double,thick\] \(([\d.]+),', s))
     return dict(xs=[b for _, b in xs_pos], diff=diff, zeros=zeros, between=between, curve=curve,

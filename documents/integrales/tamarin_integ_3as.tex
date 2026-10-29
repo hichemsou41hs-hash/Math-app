@@ -163,6 +163,7 @@
 \newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
 \newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
 \SetHeader{\small\bfseries\color{cSec}تمارين تجريبية: الدوال الأصلية والحساب التكاملي}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
 \begin{document}
 \begin{LTR}
 \begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
@@ -582,11 +583,33 @@ $f$ الدالة المعرفة على $\R$ بـ: $f(x)=x^{2}-2x$، و $(C_f)$ �
 
 \begin{hal}
 \QQ{1} $f(x)=x(x-2)$ ينعدم عند $0$ و $2$، وهو كثير حدود من الدرجة الثانية معامله الرئيسي موجب، فهو سالب بين الجذرين وموجب خارجهما:
-\begin{TAB}
-\tkzTabInit[lgt=3.4,espcl=3.2]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$0$,$2$,$3$}
-\tkzTabLine{z,-,z,+,}
-\tkzTabLine{,\text{\ar{$(C_f)$ تحت $(xx')$}},,\text{\ar{$(C_f)$ فوق $(xx')$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$0$};
+\node at (10.6065,-0.45){$2$};
+\node at (14.8,-0.45){$3$};
+\node at (7.70323,-1.35){$-$};
+\node[align=center,font=\small] at (7.70323,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (13.4532,-1.35){$+$};
+\node[align=center,font=\small] at (13.4532,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $O(0;0)$};
+\node at (10.6065,-1.35){$0$};
+\draw[densely dotted] (10.6065,-0.9)--(10.6065,-1.13) (10.6065,-1.57)--(10.6065,-1.8);
+\draw (9.10645,-4.6) .. controls (9.18145,-3.06) and (10.1565,-2.136) .. (10.6065,-1.8) .. controls (11.0565,-2.136) and (12.0315,-3.06) .. (12.1065,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (10.6065,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $A(2;0)$};
+\end{tikzpicture}
+\end{FIG}
 
 \QQ{2} \textbf{التمثيل البياني:} الحيز مكوّن من جزأين: $\mathcal{A}_1$ (تحت محور الفواصل على $[0;2]$) و $\mathcal{A}_2$ (فوقه على $[2;3]$).
 \begin{GR}{-0.8}{3.5}{-1.5}{3.5}{1.1}
@@ -630,11 +653,36 @@ $f$ و $g$ الدالتان المعرفتان على $\R$ بـ: $f(x)=x^{2}$ و
 إذن فاصلتا نقطتي التقاطع: \bx{x=-1} و \bx{x=2}.
 
 ندرس إشارة الفرق $g(x)-f(x)=-x^{2}+x+2=-(x+1)(x-2)$ (معامله الرئيسي سالب: موجب بين الجذرين):
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=3.3]{$x$/1,$g(x)-f(x)$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$-1$,$2$,$+\infty$}
-\tkzTabLine{,-,z,+,z,-,}
-\tkzTabLine{,\text{\ar{$(C_g)$ تحت $(C_f)$}},,\text{\ar{$(C_g)$ فوق $(C_f)$}},,\text{\ar{$(C_g)$ تحت $(C_f)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$g(x)-f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (6.69773,-0.45){$-1$};
+\node at (11.4023,-0.45){$2$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (4.37386,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (4.37386,-3.2){$(C_g)$\\ \ar{تحت}\\ $(C_f)$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (9.05,-3.2){$(C_g)$\\ \ar{فوق}\\ $(C_f)$};
+\node at (13.7261,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (13.7261,-3.2){$(C_g)$\\ \ar{تحت}\\ $(C_f)$};
+\node at (6.69773,-1.35){$0$};
+\draw[densely dotted] (6.69773,-0.9)--(6.69773,-1.13) (6.69773,-1.57)--(6.69773,-1.8);
+\draw (5.44773,-4.6) .. controls (5.51023,-3.06) and (6.32273,-2.136) .. (6.69773,-1.8) .. controls (7.07273,-2.136) and (7.88523,-3.06) .. (7.94773,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (6.69773,-3.65){\ar{$(C_g)$ يقطع}\\ $(C_f)$\\ \ar{في النقطة}\\ $A(-1;1)$};
+\node at (11.4023,-1.35){$0$};
+\draw[densely dotted] (11.4023,-0.9)--(11.4023,-1.13) (11.4023,-1.57)--(11.4023,-1.8);
+\draw (10.1523,-4.6) .. controls (10.2148,-3.06) and (11.0273,-2.136) .. (11.4023,-1.8) .. controls (11.7773,-2.136) and (12.5898,-3.06) .. (12.6523,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (11.4023,-3.65){\ar{$(C_g)$ يقطع}\\ $(C_f)$\\ \ar{في النقطة}\\ $B(2;4)$};
+\end{tikzpicture}
+\end{FIG}
 
 \QQ{2} الحيز المحصور بين المنحنيين هو المحدد بالمستقيمين $x=-1$ و $x=2$، وفيه $(C_g)$ فوق $(C_f)$:
 \begin{GR}{-2}{3}{-0.6}{5}{0.9}
@@ -663,11 +711,30 @@ $f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=x-1+\dfrac{\ln 
 \QQ{1} $f(x)-(x-1)=\dfrac{\ln x}{x}$، و $\lim\limits_{x\to+\infty}\dfrac{\ln x}{x}=0$ (نهاية مرجعية)، إذن $\lim\limits_{x\to+\infty}\big[f(x)-(x-1)\big]=0$: المستقيم $(\Delta):y=x-1$ \bxt{مقارب مائل لـ $(C_f)$ عند $+\infty$}.
 
 إشارة $f(x)-(x-1)=\dfrac{\ln x}{x}$ هي إشارة $\ln x$ (لأن $x>0$):
-\begin{TAB}
-\tkzTabInit[lgt=3.8,espcl=3.4]{$x$/1,$f(x)-(x-1)$/1,\ar{الوضع النسبي}/1.2}{$0$,$1$,$+\infty$}
-\tkzTabLine{d,-,z,+,}
-\tkzTabLine{,\text{\ar{$(C_f)$ تحت $(\Delta)$}},,\text{\ar{$(C_f)$ فوق $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x-1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $A(1;0)$};
+\end{tikzpicture}
+\end{FIG}
 و $(C_f)$ يقطع $(\Delta)$ في النقطة $A(1;0)$.
 
 \QQ{2} على $[1;e]$ المنحنى $(C_f)$ فوق $(\Delta)$:
@@ -699,11 +766,29 @@ $f$ الدالة المعرفة على $\R$ بـ: $f(x)=(x-1)e^{x}$، و $(C_f)$
 
 \begin{hal}
 \QQ{1} $e^{x}>0$ من أجل كل $x$، فإشارة $f(x)$ هي إشارة $x-1$:
-\begin{TAB}
-\tkzTabInit[lgt=3.4,espcl=3.4]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$1$,$+\infty$}
-\tkzTabLine{,-,z,+,}
-\tkzTabLine{,\text{\ar{$(C_f)$ تحت $(xx')$}},,\text{\ar{$(C_f)$ فوق $(xx')$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $A(1;0)$};
+\end{tikzpicture}
+\end{FIG}
 
 \QQ{2} $F(x)=\displaystyle\int_0^x(t-1)e^{t}\,dt$. نضع
 $\begin{cases}u(t)=t-1\\ v'(t)=e^{t}\end{cases}$ \ إذن \ $\begin{cases}u'(t)=1\\ v(t)=e^{t}\end{cases}$:
@@ -838,11 +923,22 @@ $f$ قابلة للاشتقاق على $\R$، و $\left(\dfrac{2}{e^{x}+1}\right
 $f(x)-(x+1)=\dfrac{2}{e^{x}+1}-2$ و $\lim\limits_{x\to-\infty}e^{x}=0$، إذن $\lim\limits_{x\to-\infty}\big[f(x)-(x+1)\big]=2-2=0$: $(\Delta')$ مقارب مائل عند $-\infty$.
 
 الوضع النسبي: $f(x)-(x-1)=\dfrac{2}{e^{x}+1}>0$ من أجل كل $x$:
-\begin{TAB}
-\tkzTabInit[lgt=3.6,espcl=5]{$x$/1,$f(x)-(x-1)$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$+\infty$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\text{\ar{$(C_f)$ فوق $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x-1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\end{tikzpicture}
+\end{FIG}
 
 \QQ{3} بضرب البسط والمقام في $e^{-x}\neq0$: $\dfrac{2}{e^{x}+1}=\dfrac{2e^{-x}}{e^{-x}\left(e^{x}+1\right)}=\dfrac{2e^{-x}}{1+e^{-x}}$ \ok.
 

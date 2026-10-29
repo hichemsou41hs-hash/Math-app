@@ -163,6 +163,7 @@
 \newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
 \newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
 \SetHeader{\small\bfseries\color{cSec}تمارين البكالوريا: الدوال الأصلية والحساب التكاملي}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
 \begin{document}
 \begin{LTR}
 \begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
@@ -196,11 +197,22 @@ $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى 
 
 $\varphi'(x)=1-\dfrac4x=\dfrac{x-4}{x}$، ومن أجل $x\in[1;e]$ لدينا $x\le e<4$ إذن $\varphi'(x)<0$، أي $\varphi$ متناقصة تماما على $[1;e]$، ومنه من أجل كل $x\in[1;e]$:
 $\varphi(x)\ge\varphi(e)=e+2-4=e-2>0$. وبما أن $x>0$ فإن $f(x)>0$ على $[1;e]$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$f(x)$ /0.8,\ar{الوضع النسبي} /1}{$1$,$e$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$1$};
+\node at (14.8,-0.45){$e$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\end{tikzpicture}
+\end{FIG}
 \textbf{حساب المساحة:} بما أن $f(x)\ge 0$ على $[1;e]$ فإن $|f(x)|=f(x)$، وباستعمال خطية التكامل والسؤال (أ):
 \[\mathcal{A}=\int_1^e|f(x)|\,dx=\int_1^e(x^2+2x)\,dx-4\int_1^e x\ln x\,dx=\Big[\frac{x^3}{3}+x^2\Big]_1^e-4\cdot\frac{e^2+1}{4}\]
 \[=\Big(\frac{e^3}{3}+e^2\Big)-\Big(\frac13+1\Big)-e^2-1=\frac{e^3}{3}-\frac73\]
@@ -239,11 +251,22 @@ $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى 
 
 \pb \textbf{الوضع النسبي على $[\lambda;-\ln2]$:} من أجل $x\le-\ln2$: $0<e^x\le\frac12$، إذن:
 $e^x>0$، و $4-5e^x\ge4-\frac52=\frac32>0$، و $1-e^{2x}>0$. ومنه $f(x)-(-4)=\dfrac{e^x(4-5e^x)}{1-e^{2x}}>0$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$f(x)-(-4)$ /0.8,\ar{الوضع النسبي} /1}{$\lambda$,$-\ln2$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ فوق المستقيم $y=-4$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(-4)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$\lambda$};
+\node at (14.8,-0.45){$-\ln2$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(y=-4)$};
+\end{tikzpicture}
+\end{FIG}
 إذن: $A(\lambda)=\displaystyle\int_\lambda^{-\ln2}|f(x)+4|\,dx=\int_\lambda^{-\ln2}\big(f(x)+4\big)\,dx=\frac12\int_\lambda^{-\ln2}\Big(9\cdot\frac{e^x}{1+e^x}-\frac{e^x}{1-e^x}\Big)dx$.
 
 \textbf{الدوال الأصلية:} $\dfrac{e^x}{1+e^x}$ من الشكل $\dfrac{u'}{u}$ مع $u(x)=1+e^x>0$، فدالة أصلية لها $\ln(1+e^x)$.
@@ -281,11 +304,29 @@ $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى 
 \begin{hal}
 \QQ{1} من أجل كل $x\in\R$: $f(x)-(-x-2)=e^{2x}-e^x=e^x(e^x-1)$.
 بما أن $e^x>0$ فإن الإشارة هي إشارة $e^x-1$: $e^x-1<0\Leftrightarrow x<0$ و $e^x-1>0\Leftrightarrow x>0$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=4]{$x$ /0.8,$f(x)-(-x-2)$ /0.8,\ar{الوضع النسبي} /1}{$-\infty$,$0$,$+\infty$}
-\tkzTabLine{,-,z,+,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ تحت $(\Delta)$}},t,\hbox{\ar{\footnotesize $(C_f)$ فوق $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(-x-2)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(0;-2)$};
+\end{tikzpicture}
+\end{FIG}
 \bxt{$(C_f)$ تحت $(\Delta)$ على $]-\infty;0[$، فوقه على $]0;+\infty[$، ويقطعه في $(0;-2)$}
 
 \QQ{2} على $[-1;0]$: $(C_f)$ تحت $(\Delta)$ (حسب الجدول)، إذن $|f(x)-(-x-2)|=(-x-2)-f(x)=e^x-e^{2x}$:
@@ -322,11 +363,26 @@ $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى 
 \pa من أجل كل $x\in]-4;+\infty[$:
 \[h(x)-f(x)=\frac{(x^2+1)\ln(x+4)-x^2\ln(x+4)}{x+4}=\frac{\ln(x+4)}{x+4}\]
 من أجل $x\in[-3;0]$: $1\le x+4\le4$، إذن $x+4>0$ و $\ln(x+4)\ge\ln1=0$، ومنه \bx{h(x)-f(x)\ge0}.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$h(x)-f(x)$ /0.8,\ar{الوضع النسبي} /1}{$-3$,$0$}
-\tkzTabLine{z,+,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_h)$ فوق $(C_f)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$h(x)-f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$-3$};
+\node at (14.8,-0.45){$0$};
+\node at (10.55,-1.35){$+$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_h)$\\ \ar{فوق}\\ $(C_f)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_h)$ يقطع}\\ $(C_f)$\\ \ar{عند}\\ $x=-3$};
+\end{tikzpicture}
+\end{FIG}
 \pb بما أن $h(x)-f(x)\ge0$ على $[-3;0]$ فإن $|h(x)-f(x)|=h(x)-f(x)$:
 \[A=\int_{-3}^{0}\frac{\ln(x+4)}{x+4}\,dx\]
 الدالة $x\mapsto\dfrac{\ln(x+4)}{x+4}$ من الشكل $u'u$ مع $u(x)=\ln(x+4)$ و $u'(x)=\dfrac1{x+4}$، ودالة أصلية لها $\dfrac{u^2}{2}$:
@@ -358,11 +414,29 @@ $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى 
 
 \begin{hal}
 \QQ{1} من أجل كل $x\in\R$: $f(x)-(-2x+3)=-xe^{-x+1}$، وبما أن $e^{-x+1}>0$ فالإشارة هي إشارة $-x$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=4]{$x$ /0.8,$f(x)-y$ /0.8,\ar{الوضع النسبي} /1}{$-\infty$,$0$,$+\infty$}
-\tkzTabLine{,+,z,-,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ فوق $(\Delta)$}},t,\hbox{\ar{\footnotesize $(C_f)$ تحت $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-y$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(0;3)$};
+\end{tikzpicture}
+\end{FIG}
 $(C_f)$ يقطع $(\Delta)$ في النقطة $(0;3)$.
 
 \QQ{2}
@@ -402,11 +476,30 @@ $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى 
 
 \begin{hal}
 \QQ{1} من أجل كل $x>0$: $f(x)-(-x)=-\dfrac{\ln x}{x^2}$، وبما أن $x^2>0$ فالإشارة هي إشارة $-\ln x$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=4]{$x$ /0.8,$f(x)-(-x)$ /0.8,\ar{الوضع النسبي} /1}{$0$,$1$,$+\infty$}
-\tkzTabLine{d,+,z,-,}
-\tkzTabLine{d,\hbox{\ar{\footnotesize $(C_f)$ فوق $(\Delta)$}},t,\hbox{\ar{\footnotesize $(C_f)$ تحت $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(-x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(1;-1)$};
+\end{tikzpicture}
+\end{FIG}
 $(C_f)$ يقطع $(\Delta)$ في النقطة $(1;-1)$.
 
 \QQ{2}
@@ -449,11 +542,29 @@ $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى 
 \QQ{1} من أجل كل $x\in\R$:
 \[f(x)-(-x+1)=(x-1)(e^{2x}-1)+(x-1)=(x-1)\big(e^{2x}-1+1\big)=(x-1)e^{2x}\]
 وبما أن $e^{2x}>0$ فالإشارة هي إشارة $x-1$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=4]{$x$ /0.8,$f(x)-y$ /0.8,\ar{الوضع النسبي} /1}{$-\infty$,$1$,$+\infty$}
-\tkzTabLine{,-,z,+,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ تحت $(\Delta)$}},t,\hbox{\ar{\footnotesize $(C_f)$ فوق $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-y$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(1;0)$};
+\end{tikzpicture}
+\end{FIG}
 $(C_f)$ يقطع $(\Delta)$ في النقطة $(1;0)$.
 
 \QQ{2}
@@ -511,11 +622,26 @@ $\ln x=0\Leftrightarrow x=1$ ؛ $\ln x=\sqrt3\Leftrightarrow x=e^{\sqrt3}$ ؛ $\
 إذن \bxt{$F$ دالة أصلية للدالة $f$ على $]0;+\infty[$}.
 
 \pb $[1;e]\subset[1;e^{\sqrt3}]$ (لأن $e^{\sqrt3}\approx5{,}65$)، إذن حسب السؤال 1: $f(x)\le0$ على $[1;e]$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$f(x)$ /0.8,\ar{الوضع النسبي} /1}{$1$,$e$}
-\tkzTabLine{z,-,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ تحت محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$1$};
+\node at (14.8,-0.45){$e$};
+\node at (10.55,-1.35){$-$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(1;0)$};
+\end{tikzpicture}
+\end{FIG}
 ومنه $|f(x)|=-f(x)$:
 \[\mathcal{A}=\int_1^e-f(x)\,dx=-\big[F(x)\big]_1^e=F(1)-F(e)\]
 $F(e)=e(1-3+3-3)=-2e$ و $F(1)=1\times(0-0+0-3)=-3$، إذن:
@@ -552,11 +678,22 @@ $F(e)=e(1-3+3-3)=-2e$ و $F(1)=1\times(0-0+0-3)=-3$، إذن:
 \[S(\lambda)=\big[F(x)\big]_\lambda^{\frac12}=F\Big(\frac12\Big)-F(\lambda)=e^{-\frac12}\Big(2+\ln\frac12\Big)-e^{-\lambda}(2+\ln\lambda)\]
 \[\bx{S(\lambda)=e^{-\frac12}(2-\ln2)-e^{-\lambda}(2+\ln\lambda)}\]
 \textbf{التفسير البياني:} ندرس إشارة $f$ على $\big]0;\frac12\big]$. نضع $\varphi(x)=\frac1x-2-\ln x$، لدينا $\varphi'(x)=-\frac1{x^2}-\frac1x<0$، إذن $\varphi$ متناقصة تماما، ومن أجل $0<x\le\frac12$: $\varphi(x)\ge\varphi\big(\frac12\big)=2-2+\ln2=\ln2>0$. وبما أن $e^{-x}>0$ فإن $f(x)>0$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$f(x)$ /0.8,\ar{الوضع النسبي} /1}{$\lambda$,$\frac12$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$\lambda$};
+\node at (14.8,-0.45){$\frac12$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\end{tikzpicture}
+\end{FIG}
 إذن $S(\lambda)=\displaystyle\int_\lambda^{\frac12}|f(x)|\,dx$، ومنه:
 
 \bxt{$S(\lambda)$ هي مساحة الحيز المحدد بـ $(C_f)$ ومحور الفواصل والمستقيمين $x=\lambda$ و $x=\frac12$}
@@ -588,11 +725,22 @@ $f$ الدالة العددية المعرفة على المجال $]0;2[\cup]2;
 \[H(x)=\big[t\ln t\big]_3^x-\int_3^x t\cdot\frac1t\,dt=x\ln x-3\ln3-\big[t\big]_3^x=x\ln x-3\ln3-(x-3)\]
 \[\bx{H(x)=x\ln x-x-3\ln3+3}\]
 \pb على $[3;4]$: $x-2>0$ إذن $\dfrac1{x-2}>0$، و $x>1$ إذن $\ln x>0$؛ ومنه $f(x)>0$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$f(x)$ /0.8,\ar{الوضع النسبي} /1}{$3$,$4$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$3$};
+\node at (14.8,-0.45){$4$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\end{tikzpicture}
+\end{FIG}
 \[A=\int_3^4|f(x)|\,dx=\int_3^4\frac{dx}{x-2}+\int_3^4\ln x\,dx=\big[\ln(x-2)\big]_3^4+H(4)\]
 (دالة أصلية لـ $\frac1{x-2}$ هي $\ln(x-2)$ لأن $x-2>0$.)
 \[A=\ln2-\ln1+(4\ln4-4-3\ln3+3)=\ln2+8\ln2-3\ln3-1\]
@@ -622,11 +770,36 @@ $(C_f)$ و $(C_g)$ التمثيلان البيانيان للدالتين $f$ و
 \QQ{1} من أجل كل $x\in\R$:
 \[f(x)-g(x)=-\frac e2x^2+ex=\frac e2\,x(2-x)\]
 وهي كثير حدود من الدرجة الثانية جذراه $0$ و $2$، إشارته عكس إشارة معامل $x^2$ (أي موجبة) بين الجذرين.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.2]{$x$ /0.8,$f(x)-g(x)$ /0.8,\ar{الوضع النسبي} /1}{$-\infty$,$0$,$2$,$+\infty$}
-\tkzTabLine{,-,z,+,z,-,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ تحت $(C_g)$}},t,\hbox{\ar{\footnotesize $(C_f)$ فوق $(C_g)$}},t,\hbox{\ar{\footnotesize $(C_f)$ تحت $(C_g)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-g(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (6.69773,-0.45){$0$};
+\node at (11.4023,-0.45){$2$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (4.37386,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (4.37386,-3.2){$(C_f)$\\ \ar{تحت}\\ $(C_g)$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(C_g)$};
+\node at (13.7261,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (13.7261,-3.2){$(C_f)$\\ \ar{تحت}\\ $(C_g)$};
+\node at (6.69773,-1.35){$0$};
+\draw[densely dotted] (6.69773,-0.9)--(6.69773,-1.13) (6.69773,-1.57)--(6.69773,-1.8);
+\draw (5.44773,-4.6) .. controls (5.51023,-3.06) and (6.32273,-2.136) .. (6.69773,-1.8) .. controls (7.07273,-2.136) and (7.88523,-3.06) .. (7.94773,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (6.69773,-3.65){\ar{$(C_f)$ يقطع}\\ $(C_g)$\\ \ar{في النقطة}\\ $(0;1)$};
+\node at (11.4023,-1.35){$0$};
+\draw[densely dotted] (11.4023,-0.9)--(11.4023,-1.13) (11.4023,-1.57)--(11.4023,-1.8);
+\draw (10.1523,-4.6) .. controls (10.2148,-3.06) and (11.0273,-2.136) .. (11.4023,-1.8) .. controls (11.7773,-2.136) and (12.5898,-3.06) .. (12.6523,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (11.4023,-3.65){\ar{$(C_f)$ يقطع}\\ $(C_g)$\\ \ar{في النقطة}\\ $(2;e^2-2e)$};
+\end{tikzpicture}
+\end{FIG}
 المنحنيان يتقاطعان في النقطتين ذواتي الفاصلتين $0$ و $2$: $(0;1)$ و $(2;e^2-2e)$.
 
 \QQ{2} الحيز المحدد بالمنحنيين محصور بين نقطتي التقاطع، أي $x\in[0;2]$، وعليه $(C_f)$ فوق $(C_g)$:
@@ -659,11 +832,22 @@ $f$ الدالة المعرفة على $\R$ بـ: $f(x)=2x+1-xe^{-x}$، و $(C_f
 تحقق: $G(1)=-\frac2e+\frac2e=0$ \ok.
 
 \QQ{2} من أجل كل $x$: $f(x)-(2x+1)=-xe^{-x}$، وعلى $[1;3]$: $x>0$ إذن $-xe^{-x}<0$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$f(x)-(2x+1)$ /0.8,\ar{الوضع النسبي} /1}{$1$,$3$}
-\tkzTabLine{,-,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ تحت المستقيم $y=2x+1$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(2x+1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$1$};
+\node at (14.8,-0.45){$3$};
+\node at (9.05,-1.35){$-$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(y=2x+1)$};
+\end{tikzpicture}
+\end{FIG}
 \[A=\int_1^3\big|f(x)-(2x+1)\big|\,dx=\int_1^3xe^{-x}\,dx=G(3)-G(1)=-4e^{-3}+\frac2e\]
 \[\bx{A=\Big(\frac2e-\frac4{e^3}\Big)\ \text{u.a}\approx0{,}54\ \text{u.a}}\]
 \begin{GR}{-1}{4}{-1}{8}{0.7}
@@ -688,11 +872,22 @@ $n$ عدد طبيعي حيث $n>1$، $I_n$ مساحة الحيز من المست
 
 \begin{hal}
 \QQ{1} \textbf{إشارة $f$ على $[1;n]$:} من أجل $x\ge1$: $\ln x\ge0$، إذن $1+\ln x\ge1>0$ و $1+x\ln x\ge1>0$، ومنه $f(x)>0$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$f(x)$ /0.8,\ar{الوضع النسبي} /1}{$1$,$n$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$1$};
+\node at (14.8,-0.45){$n$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\end{tikzpicture}
+\end{FIG}
 إذن $I_n=\displaystyle\int_1^n|f(x)|\,dx=\int_1^nf(x)\,dx$.
 نضع $u(x)=1+x\ln x$، فـ $u'(x)=\ln x+x\cdot\frac1x=1+\ln x$، و $u(x)>0$ على $[1;n]$؛ إذن $f=\dfrac{u'}{u}$ ودالة أصلية لها $\ln u$:
 \[I_n=\big[\ln(1+x\ln x)\big]_1^n=\ln(1+n\ln n)-\ln(1+0)\]
@@ -724,11 +919,22 @@ $(\gamma)$ المنحنى الذي معادلته: $y=e^{-x}-2$.
 \begin{hal}
 \QQ{1} \textbf{الوضع النسبي:} من أجل كل $x\in\R^*$: $f(x)-(e^{-x}-2)=-\dfrac ex$.
 لدينا $-e^{n+1}<-e^n<0$، إذن على المجال $[-e^{n+1};-e^n]$: $x<0$ ومنه $-\dfrac ex>0$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$f(x)-y_{\gamma}$ /0.8,\ar{الوضع النسبي} /1}{$-e^{n+1}$,$-e^n$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ فوق $(\gamma)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-y_{\gamma}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-e^{n+1}$};
+\node at (14.8,-0.45){$-e^n$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\gamma)$};
+\end{tikzpicture}
+\end{FIG}
 \textbf{حساب $A(n)$:} دالة أصلية لـ $x\mapsto\frac1x$ على $]-\infty;0[$ هي $x\mapsto\ln(-x)=\ln|x|$، إذن:
 \[A(n)=\int_{-e^{n+1}}^{-e^n}\Big(-\frac ex\Big)dx=-e\big[\ln(-x)\big]_{-e^{n+1}}^{-e^n}=-e\big(\ln e^n-\ln e^{n+1}\big)=-e\big(n-(n+1)\big)\]
 \[\bx{A(n)=e\ \text{u.a}}\]
@@ -769,11 +975,22 @@ $f$ الدالة العددية المعرفة على $\R$ بـ: $f(x)=2-x^2e^{1
 إذن \bxt{$F$ دالة أصلية للدالة $f$ على $\R$}.
 
 \textbf{إشارة $f$ على $[0;1]$:} نضع $\psi(x)=x^2e^{1-x}$، $\psi'(x)=(2x-x^2)e^{1-x}=x(2-x)e^{1-x}\ge0$ على $[0;1]$، إذن $\psi$ متزايدة على $[0;1]$ ومنه $\psi(x)\le\psi(1)=1$، وبالتالي $f(x)=2-\psi(x)\ge2-1=1>0$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$f(x)$ /0.8,\ar{الوضع النسبي} /1}{$0$,$1$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (14.8,-0.45){$1$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\end{tikzpicture}
+\end{FIG}
 \[\mathcal{A}=\int_0^1|f(x)|\,dx=\big[F(x)\big]_0^1=F(1)-F(0)=(2+5e^0)-(0+2e)\]
 \[\bx{\mathcal{A}=(7-2e)\ \text{u.a}\approx1{,}56\ \text{u.a}}\]
 \begin{GR}{-1}{5}{-1}{3}{1}
@@ -799,11 +1016,22 @@ $f$ الدالة المعرفة على المجال $]-1;+\infty[$ بـ: $f(x)=\
 إذن \bxt{$G$ دالة أصلية للدالة $x\mapsto\frac{\ln(x+1)}{(x+1)^2}$ على $]-1;+\infty[$}.
 
 \QQ{2} على $[0;1]$: $x+1>0$، و $x+1\ge1$ إذن $\ln(x+1)\ge0$؛ ومنه $f(x)>0$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$f(x)$ /0.8,\ar{الوضع النسبي} /1}{$0$,$1$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (14.8,-0.45){$1$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\end{tikzpicture}
+\end{FIG}
 دالة أصلية لـ $\frac{e}{x+1}$ هي $e\ln(x+1)$، إذن:
 \[\mathcal{A}=\int_0^1f(x)\,dx=\big[e\ln(x+1)\big]_0^1+\big[G(x)\big]_0^1=e\ln2+\Big(-\frac{1+\ln2}{2}+1\Big)\]
 \[\bx{\mathcal{A}=\Big(e\ln2+\frac{1-\ln2}{2}\Big)\ \text{u.a}\approx2{,}04\ \text{u.a}}\]
@@ -835,11 +1063,26 @@ $f$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=\d
 \bx{x\mapsto\frac{(\ln x)^2}{2}}.
 
 \pb من أجل $x>0$: $f(x)-(x-1)=\dfrac{\ln x}{x}$، وعلى $[1;n]$: $\ln x\ge0$ و $x>0$ إذن $\dfrac{\ln x}{x}\ge0$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$f(x)-(x-1)$ /0.8,\ar{الوضع النسبي} /1}{$1$,$n$}
-\tkzTabLine{z,+,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ فوق $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x-1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$1$};
+\node at (14.8,-0.45){$n$};
+\node at (10.55,-1.35){$+$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(1;0)$};
+\end{tikzpicture}
+\end{FIG}
 \[I_n=\int_1^n\big|f(x)-(x-1)\big|\,dx=\int_1^n\frac{\ln x}{x}\,dx=\Big[\frac{(\ln x)^2}{2}\Big]_1^n\qquad\Rightarrow\qquad\bx{I_n=\frac{(\ln n)^2}{2}\ \text{u.a}}\]
 \pc $I_n>2\Leftrightarrow(\ln n)^2>4\Leftrightarrow\ln n>2$ (لأن $n>1$ إذن $\ln n>0$) $\Leftrightarrow n>e^2\approx7{,}39$.
 بما أن $n$ عدد طبيعي: $I_n>2\Leftrightarrow n\ge8\Leftrightarrow n>7$.
@@ -880,11 +1123,22 @@ $H$ دالة أصلية لـ $h$ يعني $H'(x)=h(x)$ من أجل كل $x$، و
 \pa
 \[A(\lambda)=\big[H(x)\big]_0^\lambda=(-\lambda^2-5\lambda-7)e^{-\lambda}-(-7)\qquad\Rightarrow\qquad\bx{A(\lambda)=7-(\lambda^2+5\lambda+7)e^{-\lambda}}\]
 \textbf{التفسير الهندسي:} $h(x)=f(x)-(-x)$، ومن أجل $x\ge0$: $x^2+3x+2=(x+1)(x+2)>0$ و $e^{-x}>0$، إذن $h(x)>0$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$f(x)-(-x)$ /0.8,\ar{الوضع النسبي} /1}{$0$,$\lambda$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ فوق المستقيم $y=-x$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(-x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (14.8,-0.45){$\lambda$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(y=-x)$};
+\end{tikzpicture}
+\end{FIG}
 إذن $A(\lambda)=\displaystyle\int_0^\lambda|f(x)-(-x)|\,dx$، ومنه:
 
 \bxt{$A(\lambda)$ مساحة الحيز المحدد بـ $(C_f)$ والمستقيمات $y=-x$، $x=0$، $x=\lambda$ (بـ u.a)}
@@ -1030,11 +1284,30 @@ $f$ الدالة المعرفة على $\R$ بـ: $f(x)=e^x-ex-1$، و $(C_f)$ �
 \item على $[0;1]$: $f$ متناقصة، إذن $f(x)\le f(0)=0$.
 \item على $[1;\alpha]$: $f$ متزايدة، إذن $f(x)\le f(\alpha)=0$.
 \end{itemize}
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$f(x)$ /0.8,\ar{الوضع النسبي} /1}{$0$,$\alpha$}
-\tkzTabLine{z,-,z}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ تحت محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$0$};
+\node at (13.3,-0.45){$\alpha$};
+\node at (9.05,-1.35){$-$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(0;0)$};
+\node at (13.3,-1.35){$0$};
+\draw[densely dotted] (13.3,-0.9)--(13.3,-1.13) (13.3,-1.57)--(13.3,-1.8);
+\draw (11.8,-4.6) .. controls (11.875,-3.06) and (12.85,-2.136) .. (13.3,-1.8) .. controls (13.75,-2.136) and (14.725,-3.06) .. (14.8,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (13.3,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(\alpha;0)$};
+\end{tikzpicture}
+\end{FIG}
 إذن $|f(x)|=-f(x)$ على $[0;\alpha]$:
 \[A(\alpha)=-\int_0^\alpha\big(e^x-ex-1\big)\,dx=-\Big[e^x-\frac e2x^2-x\Big]_0^\alpha=-\Big(e^\alpha-\frac e2\alpha^2-\alpha-1\Big)\]
 \[\bx{A(\alpha)=-e^\alpha+\frac e2\alpha^2+\alpha+1\ \text{u.a}}\]
@@ -1058,11 +1331,22 @@ $k$ الدالة المعرفة على $\R-\{-1\}$ كما يلي: $k(x)=|x|+\dfr
 
 \begin{hal}
 \QQ{1} على $\big[-\frac12;\frac12\big]$: $|x|\ge0$ و $x+1\ge\frac12>0$ إذن $k(x)>0$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$k(x)$ /0.8,\ar{الوضع النسبي} /1}{$-\frac12$,$\frac12$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_k)$ فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$k(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\frac12$};
+\node at (14.8,-0.45){$\frac12$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_k)$\\ \ar{فوق}\\ $(xx')$};
+\end{tikzpicture}
+\end{FIG}
 بسبب القيمة المطلقة نستعمل علاقة شال: $|x|=-x$ على $\big[-\frac12;0\big]$ و $|x|=x$ على $\big[0;\frac12\big]$:
 \[\mathcal{A}=\int_{-\frac12}^{0}\Big(-x+\frac4{x+1}\Big)dx+\int_0^{\frac12}\Big(x+\frac4{x+1}\Big)dx\]
 \[=\Big[-\frac{x^2}{2}+4\ln(x+1)\Big]_{-\frac12}^{0}+\Big[\frac{x^2}{2}+4\ln(x+1)\Big]_0^{\frac12}=\Big(\frac18-4\ln\frac12\Big)+\Big(\frac18+4\ln\frac32\Big)\]
@@ -1087,11 +1371,26 @@ $f$ الدالة العددية المعرفة على $]-1;+\infty[$ كما يل
 
 \begin{hal}
 \QQ{1} $f(x)-(x-1)=-\dfrac{\ln(x+1)}{x+1}$. على $[0;1]$: $x+1\ge1$ إذن $\ln(x+1)\ge0$، و $x+1>0$؛ ومنه $f(x)-(x-1)\le0$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=5]{$x$ /0.8,$f(x)-(x-1)$ /0.8,\ar{الوضع النسبي} /1}{$0$,$1$}
-\tkzTabLine{z,-,}
-\tkzTabLine{,\hbox{\ar{\footnotesize $(C_f)$ تحت المستقيم $y=x-1$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x-1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$0$};
+\node at (14.8,-0.45){$1$};
+\node at (10.55,-1.35){$-$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_f)$\\ \ar{تحت}\\ $(y=x-1)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(y=x-1)$\\ \ar{في النقطة}\\ $(0;-1)$};
+\end{tikzpicture}
+\end{FIG}
 $\dfrac{\ln(x+1)}{x+1}$ من الشكل $u'u$ مع $u(x)=\ln(x+1)$:
 \[\mathcal{A}=\int_0^1\big|f(x)-(x-1)\big|\,dx=\int_0^1\frac{\ln(x+1)}{x+1}\,dx=\Big[\frac{(\ln(x+1))^2}{2}\Big]_0^1\]
 \[\bx{\mathcal{A}=\frac{(\ln2)^2}{2}\ \text{u.a}\approx0{,}24\ \text{u.a}}\]
@@ -1177,11 +1476,29 @@ H'(x)&=(2x+3)e^{-x}+\left(x^{2}+3x+2\right)\left(-e^{-x}\right)\\
 \pb \textbf{إشارة $f(x)$ على $[\alpha;0]$:} لدينا $f(x)=1+h(x)$، ومنه $f'(x)=h'(x)$، مع:
 \[f'(x)=(-1-2x)e^{-x}-\left(1-x-x^{2}\right)e^{-x}=\left(x^{2}-x-2\right)e^{-x}=(x+1)(x-2)e^{-x}.\]
 على $[\alpha;-1]$: $f'(x)\ge 0$، وعلى $[-1;0]$: $f'(x)\le 0$. ومنه $f$ متزايدة على $[\alpha;-1]$ من $f(\alpha)=0$ إلى $f(-1)=1+e$، ثم متناقصة على $[-1;0]$ من $1+e$ إلى $f(0)=2>0$. إذن $f(x)\ge 0$ من أجل كل $x\in[\alpha;0]$:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=3.2]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$\alpha$,$-1$,$0$}
-\tkzTabLine{z,+,t,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(x'x)$}},t,\mbox{\ar{$(C_f)$ فوق $(x'x)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$\alpha$};
+\node at (10.9905,-0.45){$-1$};
+\node at (14.8,-0.45){$0$};
+\node at (8.64524,-1.35){$+$};
+\node[align=center,font=\small] at (8.64524,-3.2){$(C_f)$\\ \ar{فوق}\\ $(x'x)$};
+\node at (12.8952,-1.35){$+$};
+\node[align=center,font=\small] at (12.8952,-3.2){$(C_f)$\\ \ar{فوق}\\ $(x'x)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(x'x)$\\ \ar{في النقطة}\\ $(\alpha;0)$};
+\end{tikzpicture}
+\end{FIG}
 بما أن $(C_f)$ يقع فوق محور الفواصل على $[\alpha;0]$ و $\alpha<0$:
 \[A(\alpha)=\int_{\alpha}^{0}\left|f(x)\right|dx=\int_{\alpha}^{0}f(x)\,dx \ \text{u.a}\]
 
@@ -1226,11 +1543,30 @@ $f$ الدالة المعرفة على $]0;e[\,\cup\,]e;+\infty[$ بـ: $f(x)=x+
 \[f(x)-x=\frac{1}{x-x\ln x}=\frac{1}{x(1-\ln x)}.\]
 بما أن $x>0$، فإشارة $f(x)-x$ هي إشارة $1-\ln x$: $1-\ln x>0 \iff \ln x<1\iff x<e$.
 \begin{TAB}
-\tkzTabInit[lgt=3,espcl=3.6]{$x$/1,$1-\ln x$/1,$f(x)-x$/1,\ar{الوضع النسبي}/1.2}{$0$,$e$,$+\infty$}
+\tkzTabInit[lgt=3,espcl=3.6]{$x$/1,$1-\ln x$/1}{$0$,$e$,$+\infty$}
 \tkzTabLine{d,+,z,-,}
-\tkzTabLine{d,+,d,-,}
-\tkzTabLine{d,\mbox{\ar{$(C_f)$ فوق $(\Delta)$}},d,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},}
 \end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$e$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (6.175,-1.35){$+$};
+\node[align=center,font=\small] at (6.175,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (11.925,-1.35){$-$};
+\node[align=center,font=\small] at (11.925,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\draw[double,thick] (9.05,-0.9)--(9.05,-4.6);
+\end{tikzpicture}
+\end{FIG}
 \begin{itemize}
 \item على $]0;e[$: \bxt{$(C_f)$ يقع فوق $(\Delta)$}.
 \item على $]e;+\infty[$: \bxt{$(C_f)$ يقع تحت $(\Delta)$}.
@@ -1239,11 +1575,22 @@ $f$ الدالة المعرفة على $]0;e[\,\cup\,]e;+\infty[$ بـ: $f(x)=x+
 \QQ{2} \textbf{حساب $h'(x)$:} من أجل $x\in]0;e[$ لدينا $1-\ln x>0$، و $h=\ln u$ مع $u(x)=1-\ln x$ و $u'(x)=-\dfrac1x$، إذن $h'=\dfrac{u'}{u}$:
 \[\bx{h'(x)=\frac{-\frac{1}{x}}{1-\ln x}=-\frac{1}{x(1-\ln x)}}\]
 \textbf{الوضع النسبي على $\left[\frac1e;1\right]$:} بما أن $\left[\frac1e;1\right]\subset]0;e[$، فحسب السؤال 1: $f(x)-x>0$، أي $(C_f)$ فوق $(\Delta)$:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)-x$/1,\ar{الوضع النسبي}/1.2}{$\frac{1}{e}$,$1$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$\frac{1}{e}$};
+\node at (14.8,-0.45){$1$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-0.5}{5.5}{-1.5}{6}{0.9}
  \Ticks{1,2,3,4,5}{-1,1,2,3,4,5}
  \fill[cDef!25,domain=0.3679:1,samples=100] plot(\x,{\x+1/(\x*(1-ln(\x)))}) -- (1,1) -- (0.3679,0.3679) -- cycle;
@@ -1286,11 +1633,22 @@ $h$ أصلية لـ $k$ على $\R$ يعني $h'(x)=k(x)$ لكل $x$، أي $x^{
 \[\bx{a=-2,\quad b=-3,\qquad h(x)=\left(-x^{2}-2x-3\right)e^{-x}}\]
 
 \pb \textbf{الوضع النسبي:} $f(x)-x=\left(x^{2}+1\right)e^{-x}>0$ لكل $x\in\R$ (لأن $x^{2}+1>0$ و $e^{-x}>0$):
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)-x$/1,\ar{الوضع النسبي}/1.2}{$0$,$1$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(\Delta):y=x$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (14.8,-0.45){$1$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta):y=x$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-1.3}{4.5}{-1.3}{4.5}{1}
  \Ticks{-1,1,2,3,4}{-1,1,2,3,4}
  \fill[cDef!25,domain=0:1,samples=100] plot(\x,{\x+((\x)^2+1)*exp(-\x)}) -- (1,1) -- (0,0) -- cycle;
@@ -1318,11 +1676,30 @@ $f$ الدالة المعرفة على $]-1;+\infty[$ بـ: $f(x)=x+\dfrac{1+2\l
 \begin{hal}
 \QQ{1} من أجل كل $x>-1$: $f(x)-x=\dfrac{1+2\ln(x+1)}{x+1}$، و $x+1>0$، فإشارة $f(x)-x$ هي إشارة $1+2\ln(x+1)$:
 \[1+2\ln(x+1)>0\iff \ln(x+1)>-\tfrac12\iff x+1>e^{-\frac12}\iff x>e^{-\frac12}-1\ (\approx-0{,}39).\]
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=3.8]{$x$/1,$f(x)-x$/1,\ar{الوضع النسبي}/1.2}{$-1$,$e^{-\frac12}-1$,$+\infty$}
-\tkzTabLine{d,-,z,+,}
-\tkzTabLine{d,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},z,\mbox{\ar{$(C_f)$ فوق $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-1$};
+\node at (9.05,-0.45){$e^{-\frac12}-1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(e^{-\frac12}-1;-1 + e^{- \frac{1}{2}})$};
+\end{tikzpicture}
+\end{FIG}
 \begin{itemize}
 \item على $\left]-1;e^{-\frac12}-1\right[$: \bxt{$(C_f)$ تحت $(\Delta)$}.
 \item على $\left]e^{-\frac12}-1;+\infty\right[$: \bxt{$(C_f)$ فوق $(\Delta)$}.
@@ -1330,11 +1707,22 @@ $f$ الدالة المعرفة على $]-1;+\infty[$ بـ: $f(x)=x+\dfrac{1+2\l
 \end{itemize}
 
 \QQ{2} بما أن $0>e^{-\frac12}-1$، فعلى $[0;e-1]$: $f(x)-x\ge 0$ ($(C_f)$ فوق $(\Delta)$):
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)-x$/1,\ar{الوضع النسبي}/1.2}{$0$,$e-1$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (14.8,-0.45){$e-1$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-1.5}{4.5}{-3}{5}{0.85}
  \Ticks{-1,1,2,3,4}{-2,-1,1,2,3,4}
  \fill[cDef!25,domain=0:1.71828,samples=100] plot(\x,{\x+(1+2*ln(\x+1))/(\x+1)}) -- (1.71828,1.71828) -- (0,0) -- cycle;
@@ -1367,11 +1755,29 @@ $f$ الدالة العددية المعرفة على $\R$ بـ: $f(x)=-x+(x+1)e
 
 \begin{hal}
 \QQ{1} $f(x)-(-x)=(x+1)e^{x}$، و $e^{x}>0$، فالإشارة هي إشارة $x+1$:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=3.8]{$x$/1,$f(x)+x$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$-1$,$+\infty$}
-\tkzTabLine{,-,z,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},z,\mbox{\ar{$(C_f)$ فوق $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)+x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$-1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(-1;1)$};
+\end{tikzpicture}
+\end{FIG}
 \bxt{على $]-\infty;-1[$: $(C_f)$ تحت $(\Delta)$، وعلى $]-1;+\infty[$: $(C_f)$ فوق $(\Delta)$}، ويتقاطعان في النقطة $(-1;1)$.
 
 \QQ{2}
@@ -1383,11 +1789,26 @@ $f$ الدالة العددية المعرفة على $\R$ بـ: $f(x)=-x+(x+1)e
 \[\bx{\int_{-1}^{0}xe^{x}dx=\frac{2}{e}-1}\]
 
 \pb على $[-1;0]$: $f(x)+x=(x+1)e^{x}\ge 0$ (حسب السؤال 1):
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)+x$/1,\ar{الوضع النسبي}/1.2}{$-1$,$0$}
-\tkzTabLine{z,+,}
-\tkzTabLine{z,\mbox{\ar{$(C_f)$ فوق $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)+x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$-1$};
+\node at (14.8,-0.45){$0$};
+\node at (10.55,-1.35){$+$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(-1;1)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-4}{1.5}{-1}{4.5}{1}
  \Ticks{-3,-2,-1,1}{1,2,3,4}
  \fill[cDef!25,domain=-1:0,samples=100] plot(\x,{-\x+(\x+1)*exp(\x)}) -- (0,0) -- (-1,1) -- cycle;
@@ -1420,21 +1841,55 @@ $f$ الدالة المعرفة على $]-2;+\infty[$ بـ: $f(x)=\left(\dfrac{x
 \QQ{1} من أجل كل $x>-2$:
 \[f(x)-h(x)=\left(-1+\ln(x+2)\right)\left(\frac{x+1}{x+2}-1\right)=\left(-1+\ln(x+2)\right)\cdot\frac{-1}{x+2}=\frac{1-\ln(x+2)}{x+2}.\]
 $x+2>0$، فالإشارة هي إشارة $1-\ln(x+2)$: $1-\ln(x+2)>0\iff x+2<e\iff x<e-2$.
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=3.8]{$x$/1,$f(x)-h(x)$/1,\ar{الوضع النسبي}/1.2}{$-2$,$e-2$,$+\infty$}
-\tkzTabLine{d,+,z,-,}
-\tkzTabLine{d,\mbox{\ar{$(C_f)$ فوق $(C_h)$}},z,\mbox{\ar{$(C_f)$ تحت $(C_h)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-h(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-2$};
+\node at (9.05,-0.45){$e-2$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(C_h)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(C_h)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(C_h)$\\ \ar{في النقطة}\\ $(e-2;0)$};
+\end{tikzpicture}
+\end{FIG}
 \bxt{$(C_f)$ فوق $(C_h)$ على $]-2;e-2[$، وتحته على $]e-2;+\infty[$}، ويتقاطعان في النقطة $(e-2;0)$.
 
 \QQ{2} \textbf{التكامل:} نضع $u(x)=\ln(x+2)$، $u'(x)=\dfrac{1}{x+2}$؛ الدالة $\dfrac{\ln(x+2)}{x+2}=u'u$ أصليتها $\dfrac{u^{2}}{2}$:
 \[\int_{-1}^{e-2}\frac{\ln(x+2)}{x+2}dx=\left[\frac{\left(\ln(x+2)\right)^{2}}{2}\right]_{-1}^{e-2}=\frac{(\ln e)^2}{2}-\frac{(\ln 1)^2}{2}=\bx{\frac12}\]
 \textbf{المساحة:} على $[-1;e-2]$: $f(x)-h(x)\ge 0$:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)-h(x)$/1,\ar{الوضع النسبي}/1.2}{$-1$,$e-2$}
-\tkzTabLine{,+,z}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(C_h)$}},z}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-h(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-1$};
+\node at (13.3,-0.45){$e-2$};
+\node at (7.55,-1.35){$+$};
+\node[align=center,font=\small] at (7.55,-3.2){$(C_f)$\\ \ar{فوق}\\ $(C_h)$};
+\node at (13.3,-1.35){$0$};
+\draw[densely dotted] (13.3,-0.9)--(13.3,-1.13) (13.3,-1.57)--(13.3,-1.8);
+\draw (11.8,-4.6) .. controls (11.875,-3.06) and (12.85,-2.136) .. (13.3,-1.8) .. controls (13.75,-2.136) and (14.725,-3.06) .. (14.8,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (13.3,-3.65){\ar{$(C_f)$ يقطع}\\ $(C_h)$\\ \ar{في النقطة}\\ $(e-2;0)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-2.3}{4}{-3}{3}{0.95}
  \Ticks{-1,1,2,3}{-2,-1,1,2}
  \fill[cDef!25,domain=-1:0.71828,samples=100] plot(\x,{(\x+1)/(\x+2)*(-1+ln(\x+2))}) -- plot[domain=0.71828:-1](\x,{-1+ln(\x+2)}) -- cycle;
@@ -1483,11 +1938,25 @@ F'(x)&=(2x+3)\ln(x+1)+\left(x^{2}+3x+2\right)\cdot\frac{1}{x+1}-4x-2.
 
 $g'(x)=\dfrac{2}{x+1}-\dfrac{1}{(x+1)^{2}}=\dfrac{2x+1}{(x+1)^{2}}$: $g$ متناقصة على $\left]-1;-\frac12\right]$ ومتزايدة على $\left[-\frac12;+\infty\right[$، و $g(\alpha)=0$، $g(0)=0$؛ إذن $g(x)\le0$ على $[\alpha;0]$، أي $f$ متناقصة على $[\alpha;0]$، ومنه $f(x)\ge f(0)=0$:
 \begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f'(x)=g(x)$/1,$f(x)$/1.6,\ar{الوضع النسبي}/1.2}{$\alpha$,$0$}
+\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f'(x)=g(x)$/1}{$\alpha$,$0$}
 \tkzTabLine{z,-,z}
-\tkzTabVar{+/$f(\alpha)$,-/$0$}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(x'x)$}},z}
 \end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$\alpha$};
+\node at (14.8,-0.45){$0$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(x'x)$};
+\end{tikzpicture}
+\end{FIG}
 \[A=\int_{\alpha}^{0}\left|f(x)\right|dx=\int_{\alpha}^{0}f(x)dx=F(0)-F(\alpha)\ \text{u.a}.\]
 \begin{GR}{-1}{1.2}{-0.6}{0.8}{3.6}
  \foreach \t/\l in {-0.5/{-0{,}5},0.5/{0{,}5},1/1} \node[below,font=\scriptsize] at (\t,0){$\l$};
@@ -1525,22 +1994,51 @@ $f$ الدالة المعرفة على $\R$ بـ: $f(x)=-x+4+(2x-3)e^{x}$، و $
 
 \begin{hal}
 \QQ{1} $f(x)-(-x+4)=(2x-3)e^{x}$، و $e^{x}>0$، فالإشارة هي إشارة $2x-3$:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=3.8]{$x$/1,$f(x)-y_{\Delta}$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$\frac32$,$+\infty$}
-\tkzTabLine{,-,z,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},z,\mbox{\ar{$(C_f)$ فوق $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node[font=\footnotesize] at (1.3,-1.35){$f(x)-y_{\Delta}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$\frac32$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(\frac32;\frac52)$};
+\end{tikzpicture}
+\end{FIG}
 \bxt{$(C_f)$ تحت $(\Delta)$ على $\left]-\infty;\frac32\right[$، وفوقه على $\left]\frac32;+\infty\right[$}، ويتقاطعان في النقطة $\left(\frac32;\frac52\right)$.
 
 \QQ{2}
 \pa $F'(x)=-2e^{x}+(-2x+5)e^{x}=(-2x+3)e^{x}$. إذن \bxt{$F$ أصلية للدالة $x\mapsto(-2x+3)e^{x}$ على $\R$}.
 
 \pb على $[-1;0]\subset\left]-\infty;\frac32\right[$: $(C_f)$ تحت $(\Delta)$:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)-y_{\Delta}$/1,\ar{الوضع النسبي}/1.2}{$-1$,$0$}
-\tkzTabLine{,-,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node[font=\footnotesize] at (1.3,-1.35){$f(x)-y_{\Delta}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-1$};
+\node at (14.8,-0.45){$0$};
+\node at (9.05,-1.35){$-$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-3}{2}{-1}{7}{0.75}
  \Ticks{-2,-1,1}{1,2,3,4,5,6}
  \fill[cDef!25,domain=-1:0,samples=100] plot(\x,{-\x+4}) -- plot[domain=0:-1](\x,{-\x+4+(2*\x-3)*exp(\x)}) -- cycle;
@@ -1578,12 +2076,41 @@ $f$ الدالة العددية المعرفة على المجال $]0;+\infty[$
 
 \pb $x-1=0\iff x=1$، و $-1+\ln x=0\iff x=e$:
 \begin{TAB}
-\tkzTabInit[lgt=3,espcl=3]{$x$/1,$x-1$/1,$-1+\ln x$/1,$f(x)-x$/1,\ar{الوضع النسبي}/1.2}{$0$,$1$,$e$,$+\infty$}
+\tkzTabInit[lgt=3,espcl=3]{$x$/1,$x-1$/1,$-1+\ln x$/1}{$0$,$1$,$e$,$+\infty$}
 \tkzTabLine{d,-,z,+,t,+,}
 \tkzTabLine{d,-,t,-,z,+,}
-\tkzTabLine{d,+,z,-,z,+,}
-\tkzTabLine{d,\mbox{\ar{فوق}},z,\mbox{\ar{تحت}},z,\mbox{\ar{فوق}},}
 \end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (6.69773,-0.45){$1$};
+\node at (11.4023,-0.45){$e$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (4.37386,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (4.37386,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (9.05,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (9.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (13.7261,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (13.7261,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (6.69773,-1.35){$0$};
+\draw[densely dotted] (6.69773,-0.9)--(6.69773,-1.13) (6.69773,-1.57)--(6.69773,-1.8);
+\draw (5.44773,-4.6) .. controls (5.51023,-3.06) and (6.32273,-2.136) .. (6.69773,-1.8) .. controls (7.07273,-2.136) and (7.88523,-3.06) .. (7.94773,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (6.69773,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(1;1)$};
+\node at (11.4023,-1.35){$0$};
+\draw[densely dotted] (11.4023,-0.9)--(11.4023,-1.13) (11.4023,-1.57)--(11.4023,-1.8);
+\draw (10.1523,-4.6) .. controls (10.2148,-3.06) and (11.0273,-2.136) .. (11.4023,-1.8) .. controls (11.7773,-2.136) and (12.5898,-3.06) .. (12.6523,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (11.4023,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(e;e)$};
+\end{tikzpicture}
+\end{FIG}
 \bxt{$f(x)-x>0$ على $]0;1[\,\cup\,]e;+\infty[$، و $f(x)-x<0$ على $]1;e[$، وتنعدم عند $1$ و $e$}.
 
 (أي $(C_f)$ فوق المستقيم $y=x$ على $]0;1[$ و $]e;+\infty[$، وتحته على $]1;e[$.)
@@ -1594,11 +2121,30 @@ $f$ الدالة العددية المعرفة على المجال $]0;+\infty[$
 \[K'(x)=-x+1+(x-1)\ln x=f(x)-x.\qquad\textcolor{cRem}{\checkmark}\]
 
 \pb على $[1;e]$: $f(x)-x\le0$، أي $(C_f)$ تحت المستقيم $(\Delta):y=x$:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)-x$/1,\ar{الوضع النسبي}/1.2}{$1$,$e$}
-\tkzTabLine{z,-,z}
-\tkzTabLine{z,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},z}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$1$};
+\node at (13.3,-0.45){$e$};
+\node at (9.05,-1.35){$-$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(1;1)$};
+\node at (13.3,-1.35){$0$};
+\draw[densely dotted] (13.3,-0.9)--(13.3,-1.13) (13.3,-1.57)--(13.3,-1.8);
+\draw (11.8,-4.6) .. controls (11.875,-3.06) and (12.85,-2.136) .. (13.3,-1.8) .. controls (13.75,-2.136) and (14.725,-3.06) .. (14.8,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (13.3,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(e;e)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-0.3}{4}{-0.5}{4.5}{1}
  \Ticks{1,2,3}{1,2,3,4}
  \fill[cDef!25,domain=1:2.71828,samples=100] plot(\x,{\x}) -- plot[domain=2.71828:1](\x,{1+(\x-1)*ln(\x)}) -- cycle;
@@ -1641,11 +2187,26 @@ $\dfrac{1}{1-x}=-\dfrac{(1-x)'}{1-x}$ و $1-x>0$، إذن:
 \pb $\dfrac{x}{x^{2}+1}=\dfrac12\cdot\dfrac{2x}{x^{2}+1}=\dfrac12\cdot\dfrac{u'}{u}$ مع $u(x)=x^{2}+1>0$:
 \[J=\frac12\Big[\ln\left(x^{2}+1\right)\Big]_{-1}^{0}=\frac12(\ln1-\ln2)\qquad\bx{J=-\frac12\ln2}\]
 \textbf{الوضع النسبي لـ $(C_f)$ و $(\Gamma)$ على $[-1;0]$:} $f(x)-e^{-x}=-\dfrac{x+1}{x^{2}+1}$؛ على $[-1;0]$: $x+1\ge0$، إذن $f(x)-e^{-x}\le0$:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)-e^{-x}$/1,\ar{الوضع النسبي}/1.2}{$-1$,$0$}
-\tkzTabLine{z,-,}
-\tkzTabLine{z,\mbox{\ar{$(C_f)$ تحت $(\Gamma)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-e^{-x}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$-1$};
+\node at (14.8,-0.45){$0$};
+\node at (10.55,-1.35){$-$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Gamma)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Gamma)$\\ \ar{في النقطة}\\ $(-1;e)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-2}{3}{-1.5}{4}{1}
  \Ticks{-1,1,2}{-1,1,2,3}
  \fill[cDef!25,domain=-1:0,samples=100] plot(\x,{exp(-\x)}) -- plot[domain=0:-1](\x,{exp(-\x)-(\x+1)/((\x)^2+1)}) -- cycle;
@@ -1712,11 +2273,22 @@ $f$ الدالة العددية المعرفة على المجال $]0;+\infty[$
 \pb نضع $G(x)=(x+1)\ln(x+1)-x$: $G'(x)=\ln(x+1)+(x+1)\cdot\dfrac{1}{x+1}-1=\ln(x+1)$. إذن \bxt{$G$ أصلية للدالة $x\mapsto\ln(x+1)$}.
 
 \pc $[e-1;e^{2}-1]\subset]1;+\infty[$ (لأن $e-1\approx1{,}72$)، وحسب (أ): $f(x)>\ln2>0$، أي $(C_f)$ فوق محور الفواصل:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$e-1$,$e^{2}-1$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(x'x)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$e-1$};
+\node at (14.8,-0.45){$e^{2}-1$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(x'x)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-0.3}{7}{-2}{5}{0.85}
  \Ticks{1,2,3,4,5,6}{-1,1,2,3,4}
  \fill[cDef!25,domain=1.71828:6.38906,samples=100] (1.71828,0) -- plot(\x,{ln(\x+1)+2.71828*ln(\x)/(\x+1)}) -- (6.38906,0) -- cycle;
@@ -1762,11 +2334,26 @@ $f$ الدالة العددية المعرفة على المجال $]-\infty;1[$
 \pb $1+\dfrac{1}{x-1}=\dfrac{x-1+1}{x-1}=\dfrac{x}{x-1}$. \ok
 
 \textbf{إشارة $f$ على $[-1;0]$:} من (أ): $f(x)\ge\dfrac{x}{x-1}\ge0$، فالتكامل يمثل مساحة الحيز تحت $(C_f)$:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$-1$,$0$}
-\tkzTabLine{,+,z}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(x'x)$}},z}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-1$};
+\node at (13.3,-0.45){$0$};
+\node at (7.55,-1.35){$+$};
+\node[align=center,font=\small] at (7.55,-3.2){$(C_f)$\\ \ar{فوق}\\ $(x'x)$};
+\node at (13.3,-1.35){$0$};
+\draw[densely dotted] (13.3,-0.9)--(13.3,-1.13) (13.3,-1.57)--(13.3,-1.8);
+\draw (11.8,-4.6) .. controls (11.875,-3.06) and (12.85,-2.136) .. (13.3,-1.8) .. controls (13.75,-2.136) and (14.725,-3.06) .. (14.8,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (13.3,-3.65){\ar{$(C_f)$ يقطع}\\ $(x'x)$\\ \ar{في النقطة}\\ $(0;0)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-2}{1}{-1.5}{4}{1.5}
  \Ticks{-1}{-1,1,2,3}
  \fill[cDef!25,domain=-1:0,samples=100] (-1,0) -- plot(\x,{\x/(\x-1)*exp(-\x)}) -- (0,0) -- cycle;
@@ -1804,11 +2391,22 @@ $f$ الدالة العددية المعرفة على المجال $]-\infty;1[$
 \begin{hal}
 \QQ{1}
 \pa $f(x)-\left(-\frac12x+2\right)=\dfrac{\ln x-1}{x}$. على $[1;\lambda]\subset[1;e]$: $x>0$ و $\ln x\le1$، إذن $f(x)-y_{\Delta}\le0$:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)-y_{\Delta}$/1,\ar{الوضع النسبي}/1.2}{$1$,$\lambda$}
-\tkzTabLine{,-,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node[font=\footnotesize] at (1.3,-1.35){$f(x)-y_{\Delta}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$1$};
+\node at (14.8,-0.45){$\lambda$};
+\node at (9.05,-1.35){$-$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-0.3}{5.5}{-2}{3}{1}
  \Ticks{1,2,3,4,5}{-1,1,2}
  \fill[cDef!25,domain=1:2.71828,samples=100] plot(\x,{-\x/2+2}) -- plot[domain=2.71828:1](\x,{-\x/2+2+(ln(\x)-1)/\x}) -- cycle;
@@ -1840,11 +2438,26 @@ $\dfrac1x\ln x=u'u$ مع $u=\ln x$، أصليتها $\dfrac{(\ln x)^{2}}{2}$:
 
 \begin{hal}
 \textbf{الوضع النسبي:} $f(x)-(x+1)=2(x+1)e^{-x}$، إشارتها إشارة $x+1$؛ على $[-1;\alpha]$: $x+1\ge0$:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)-(x+1)$/1,\ar{الوضع النسبي}/1.2}{$-1$,$\alpha$}
-\tkzTabLine{z,+,}
-\tkzTabLine{z,\mbox{\ar{$(C_f)$ فوق $y=x+1$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x+1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$-1$};
+\node at (14.8,-0.45){$\alpha$};
+\node at (10.55,-1.35){$+$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_f)$\\ \ar{فوق}\\ $(y=x+1)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(y=x+1)$\\ \ar{في النقطة}\\ $(-1;0)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-2}{4.5}{-2}{5.5}{0.9}
  \Ticks{-1,1,2,3,4}{-1,1,2,3,4,5}
  \fill[cDef!25,domain=-1:3,samples=100] plot(\x,{(\x+1)*(1+2*exp(-\x))}) -- plot[domain=3:-1](\x,{\x+1}) -- cycle;
@@ -1881,11 +2494,23 @@ $f$ الدالة العددية المعرفة على $D_f$ حيث $D_f=]-\infty
 إذن \bxt{$h$ أصلية للدالة $x\mapsto\ln\frac{x-1}{x-2}$ على $]2;+\infty[$}.
 
 \textbf{الوضع النسبي:} $f(x)-(-2x+3)=2\ln\dfrac{x-1}{x-2}$، و $\dfrac{x-1}{x-2}=1+\dfrac{1}{x-2}>1$ على $]2;+\infty[$، إذن $f(x)-(-2x+3)>0$:
-\begin{TAB}
-\tkzTabInit[lgt=3.6,espcl=4]{$x$/1,$f(x)-(-2x+3)$/1,\ar{الوضع النسبي}/1.2}{$2$,$+\infty$}
-\tkzTabLine{d,+,}
-\tkzTabLine{d,\mbox{\ar{$(C_f)$ فوق $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node[font=\footnotesize] at (1.3,-1.35){$f(x)-(-2x+3)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$2$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-1.5}{5.5}{-6}{6}{0.62}
  \Ticks{-1,1,2,3,4,5}{-5,-4,-3,-2,-1,1,2,3,4,5}
  \fill[cDef!25,domain=3:4.5,samples=100] plot(\x,{-2*\x+3+2*ln((\x-1)/(\x-2))}) -- plot[domain=4.5:3](\x,{-2*\x+3}) -- cycle;
@@ -1928,11 +2553,25 @@ $f$ الدالة العددية المعرفة على $D_f$ حيث $D_f=]-\infty
 \[\bx{-3\le f(x)\le f(\alpha)=\frac32\alpha}\]
 \textbf{الوضع النسبي:} $f(\alpha)=\frac32\alpha<0$، إذن $f(x)<0$ على $[\alpha;0]$، أي $(C_f)$ تحت محور الفواصل:
 \begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f'(x)$/1,$f(x)$/1.6,\ar{الوضع النسبي}/1.2}{$\alpha$,$0$}
+\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f'(x)$/1}{$\alpha$,$0$}
 \tkzTabLine{z,-,z}
-\tkzTabVar{+/$\frac32\alpha$,-/$-3$}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ تحت $(x'x)$}},}
 \end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$\alpha$};
+\node at (14.8,-0.45){$0$};
+\node at (9.05,-1.35){$-$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(x'x)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-3}{3}{-4}{2.5}{0.9}
  \Ticks{-2,-1,1,2}{-3,-2,-1,1,2}
  \fill[cDef!25,domain=-1.4703:0,samples=100] (-1.4703,0) -- plot(\x,{((\x)^3-6)/((\x)^2+2)}) -- (0,0) -- cycle;
@@ -1971,11 +2610,22 @@ $f$ الدالة المعرفة على المجال $]-1;+\infty[$ كما يلي
 إذن \bxt{$H$ أصلية للدالة $x\mapsto(x-1)\ln(x+1)$ على $]-1;+\infty[$}.
 
 \pb على $[1;2]$: $x-1\ge0$ و $\ln(x+1)\ge\ln2>0$، إذن $f(x)\ge1>0$:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$1$,$2$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(x'x)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$1$};
+\node at (14.8,-0.45){$2$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(x'x)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-1.3}{3.5}{-0.5}{4}{1}
  \Ticks{1,2,3}{1,2,3}
  \fill[cDef!25,domain=1:2,samples=100] (1,0) -- plot(\x,{1+(\x-1)*ln(\x+1)}) -- (2,0) -- cycle;
@@ -1999,11 +2649,26 @@ $f$ الدالة المعرفة على المجال $]-2;+\infty[$ كما يلي
 
 \begin{hal}
 \textbf{إشارة $f$ على $[-1;1]$:} $x+1\ge0$، و $x+2\ge1$ إذن $\ln(x+2)\ge0$، و $\dfrac{2}{x+2}>0$؛ إذن $f(x)\ge0$ (وتنعدم عند $-1$):
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$-1$,$1$}
-\tkzTabLine{z,+,}
-\tkzTabLine{z,\mbox{\ar{$(C_f)$ فوق $(x'x)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$-1$};
+\node at (14.8,-0.45){$1$};
+\node at (10.55,-1.35){$+$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_f)$\\ \ar{فوق}\\ $(x'x)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(x'x)$\\ \ar{في النقطة}\\ $(-1;0)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-2.3}{3}{-3}{4.5}{0.9}
  \Ticks{-1,1,2}{-2,-1,1,2,3,4}
  \fill[cDef!25,domain=-1:1,samples=100] (-1,0) -- plot(\x,{\x+1+2*ln(\x+2)/(\x+2)}) -- (1,0) -- cycle;
@@ -2039,11 +2704,22 @@ $f$ الدالة المعرفة على المجال $]-2;+\infty[$ كما يلي
 إذن \bxt{$x\mapsto xe^{x}$ هي الأصلية المطلوبة}.
 
 \pb $f(x)-(2x+3)=-(x+1)e^{x}$؛ على $[0;\alpha]$: $x+1>0$، إذن $f(x)-(2x+3)<0$:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)-(2x+3)$/1,\ar{الوضع النسبي}/1.2}{$0$,$\alpha$}
-\tkzTabLine{,-,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(2x+3)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (14.8,-0.45){$\alpha$};
+\node at (9.05,-1.35){$-$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-4}{1.6}{-3}{5}{0.85}
  \Ticks{-3,-2,-1,1}{-2,-1,1,2,3,4}
  \fill[cDef!25,domain=0:0.9241,samples=100] plot(\x,{2*\x+3}) -- plot[domain=0.9241:0](\x,{2*\x+3-(\x+1)*exp(\x)}) -- cycle;
@@ -2099,11 +2775,22 @@ $g$ الدالة العددية المعرفة على المجال $]0;+\infty[$
 \QQ{1} بضرب البسط والمقام في $e^{-x}\neq0$: $\dfrac{2}{e^{x}+1}=\dfrac{2e^{-x}}{e^{x}e^{-x}+e^{-x}}=\dfrac{2e^{-x}}{1+e^{-x}}$. إذن \bx{f(x)=x+\dfrac{2e^{-x}}{e^{-x}+1}}.
 
 \QQ{2} \textbf{الوضع النسبي:} $f(x)-(x+2)=\dfrac{2}{e^{x}+1}-2=\dfrac{2-2e^{x}-2}{e^{x}+1}=-\dfrac{2e^{x}}{e^{x}+1}<0$ لكل $x$:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=4]{$x$/1,$f(x)-(x+2)$/1,\ar{الوضع النسبي}/1.2}{$\alpha$,$0$}
-\tkzTabLine{,-,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ تحت $y=x+2$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x+2)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$\alpha$};
+\node at (14.8,-0.45){$0$};
+\node at (9.05,-1.35){$-$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(y=x+2)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-3.5}{2.5}{-2}{4}{0.95}
  \Ticks{-3,-2,-1,1,2}{-1,1,2,3}
  \fill[cDef!25,domain=-1.6879:0,samples=100] plot(\x,{\x+2}) -- plot[domain=0:-1.6879](\x,{\x+2/(exp(\x)+1)}) -- cycle;
@@ -2148,12 +2835,44 @@ $f$ الدالة المعرفة على $\R-\{1\}$ بـ: $f(x)=x-2-\dfrac{2+\ln\b
 
 بضرب الإشارات (مع الإشارة $-$ أمام الكسر) نحصل على الجدول ($1-\frac1e\approx 0{,}63$ و $1+\frac1e\approx 1{,}37$):
 \begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=2.6]{$x$/1,$1+\ln|x-1|$/1,$x-1$/1,$f(x)-(x-2)$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$1-\frac1e$,$1$,$1+\frac1e$,$+\infty$}
+\tkzTabInit[lgt=3.2,espcl=2.6]{$x$/1,$1+\ln|x-1|$/1,$x-1$/1}{$-\infty$,$1-\frac1e$,$1$,$1+\frac1e$,$+\infty$}
 \tkzTabLine{,+,z,-,t,-,z,+,}
 \tkzTabLine{,-,t,-,z,+,t,+,}
-\tkzTabLine{,+,z,-,d,+,z,-,}
-\tkzTabLine{,\mbox{\ar{فوق}},t,\mbox{\ar{تحت}},d,\mbox{\ar{فوق}},t,\mbox{\ar{تحت}},}
 \end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x-2)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (6.175,-0.45){$1-\frac1e$};
+\node at (9.05,-0.45){$1$};
+\node at (11.925,-0.45){$1+\frac1e$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (4.2125,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (4.2125,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (8.1375,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (8.1375,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (9.9625,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (9.9625,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (13.8875,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (13.8875,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\draw[double,thick] (9.05,-0.9)--(9.05,-4.6);
+\node at (6.175,-1.35){$0$};
+\draw[densely dotted] (6.175,-0.9)--(6.175,-1.13) (6.175,-1.57)--(6.175,-1.8);
+\draw (5.125,-4.6) .. controls (5.1775,-3.06) and (5.86,-2.136) .. (6.175,-1.8) .. controls (6.49,-2.136) and (7.1725,-3.06) .. (7.225,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (6.175,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(1-\frac1e;-1 - e^{-1})$};
+\node at (11.925,-1.35){$0$};
+\draw[densely dotted] (11.925,-0.9)--(11.925,-1.13) (11.925,-1.57)--(11.925,-1.8);
+\draw (10.875,-4.6) .. controls (10.9275,-3.06) and (11.61,-2.136) .. (11.925,-1.8) .. controls (12.24,-2.136) and (12.9225,-3.06) .. (12.975,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (11.925,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(1+\frac1e;-1 + e^{-1})$};
+\end{tikzpicture}
+\end{FIG}
 \begin{itemize}
 \item على $\left]-\infty;1-\frac1e\right[$ وعلى $\left]1;1+\frac1e\right[$: $(C_f)$ \textbf{فوق} $(\Delta)$.
 \item على $\left]1-\frac1e;1\right[$ وعلى $\left]1+\frac1e;+\infty\right[$: $(C_f)$ \textbf{تحت} $(\Delta)$.
@@ -2175,11 +2894,22 @@ $f$ الدالة المعرفة على $\R-\{1\}$ بـ: $f(x)=x-2-\dfrac{2+\ln\b
  \node[cDef] at (2.3,-2.8){$(C_f)$};
 \end{GR}
 \textbf{الوضع النسبي على المجال $[2;\lambda]$:} لدينا $2>1+\frac1e$، إذن حسب جدول السؤال 1:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.6]{$x$/1,$f(x)-(x-2)$/1,\ar{الوضع النسبي}/1.2}{$2$,$\lambda$}
-\tkzTabLine{,-,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x-2)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$2$};
+\node at (14.8,-0.45){$\lambda$};
+\node at (9.05,-1.35){$-$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\end{tikzpicture}
+\end{FIG}
 إذن $|f(x)-(x-2)|=(x-2)-f(x)$ على $[2;\lambda]$، ومنه:
 \[A(\lambda)=\int_2^{\lambda}\big|f(x)-(x-2)\big|\,dx=\int_2^{\lambda}\big[(x-2)-f(x)\big]dx=\int_2^{\lambda}\frac{2+2\ln(x-1)}{x-1}\,dx\]
 (على $[2;\lambda]$ لدينا $x-1>0$ إذن $|x-1|=x-1$).
@@ -2225,11 +2955,26 @@ $(u_n)$ المتتالية العددية المعرفة بـ: $u_0=\displaystyl
 \pc \textbf{التفسير الهندسي:} $u_2=\displaystyle\int_0^1\frac{x^2e^x}{e^x+1}\,dx=\int_0^1f(x)\,dx$.
 
 \textbf{إشارة $f$ على $[0;1]$:}
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.6]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$0$,$1$}
-\tkzTabLine{z,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$0$};
+\node at (14.8,-0.45){$1$};
+\node at (10.55,-1.35){$+$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(0;0)$};
+\end{tikzpicture}
+\end{FIG}
 بما أن $f(x)\ge0$ على $[0;1]$ فإن $u_2=\displaystyle\int_0^1|f(x)|\,dx$ هو:\par\centerline{\bxt{مساحة الحيّز المحدد بـ $(C_f)$ ومحور الفواصل والمستقيمين $x=0$ و $x=1$}}
 \begin{GR}{-2.5}{2}{-0.5}{3}{1.6}
  \Ticks{-2,-1,1}{1,2}
@@ -2260,11 +3005,29 @@ $f$ الدالة المعرفة على $\R$ بـ: $f(x)=2x+\dfrac{2-2e^x}{1+xe^x
 \QQ{1} من أجل كل $x\in\R$:
 \[f(x)-(2x+2)=\frac{2-2e^x}{1+xe^x}-2=\frac{2-2e^x-2-2xe^x}{1+xe^x}=\frac{-2e^x(x+1)}{1+xe^x}\]
 بما أن $2e^x>0$ و $1+xe^x>0$ فإن إشارة الفرق هي إشارة $-(x+1)$:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3]{$x$/1,$f(x)-(2x+2)$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$-1$,$+\infty$}
-\tkzTabLine{,+,z,-,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(\Delta)$}},t,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(2x+2)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$-1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(-1;0)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{itemize}
 \item على $]-\infty;-1[$: $(C_f)$ \textbf{فوق} $(\Delta)$؛ على $]-1;+\infty[$: $(C_f)$ \textbf{تحت} $(\Delta)$.
 \item $(C_f)$ يقطع $(\Delta)$ في النقطة $(-1;0)$ (لأن $2(-1)+2=0$).
@@ -2285,11 +3048,22 @@ $f$ الدالة المعرفة على $\R$ بـ: $f(x)=2x+\dfrac{2-2e^x}{1+xe^x
  \node[cDef] at (2.1,2.3){$(C_f)$};
 \end{GR}
 \textbf{الوضع النسبي على $[0;1]$:} $[0;1]\subset]-1;+\infty[$، إذن:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.6]{$x$/1,$f(x)-(2x+2)$/1,\ar{الوضع النسبي}/1.2}{$0$,$1$}
-\tkzTabLine{,-,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(2x+2)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (14.8,-0.45){$1$};
+\node at (9.05,-1.35){$-$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\end{tikzpicture}
+\end{FIG}
 ومنه $\big|f(x)-(2x+2)\big|=(2x+2)-f(x)$، وحسب (أ):
 \[(2x+2)-f(x)=2-\frac{2-2e^x}{1+xe^x}=2\Big[1-\frac{1-e^x}{1+xe^x}\Big]=\frac{2(x+1)e^x}{1+xe^x}\]
 بوضع $u(x)=1+xe^x$ ($u>0$) يكون $u'(x)=(x+1)e^x$، فالمكامَل من الشكل $2\dfrac{u'}{u}$:
@@ -2318,11 +3092,26 @@ $f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=(-x+2\ln x)\ln 
 \[\bx{\int_1^ex\ln x\,dx=\frac{e^2+1}{4}}\]
 
 \pc \textbf{تبرير الإشارة المقبولة:} على $[1;e]$: $\ln x\ge0$؛ و $-x+2\ln x<0$ لأن الدالة $x\mapsto 2\ln x-x$ (مشتقتها $\frac{2-x}{x}$) تبلغ قيمتها الكبرى عند $x=2$: $2\ln2-2<0$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.6]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$1$,$e$}
-\tkzTabLine{z,-,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ تحت محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$1$};
+\node at (14.8,-0.45){$e$};
+\node at (10.55,-1.35){$-$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(1;0)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-0.2}{4.5}{-1.5}{1}{1.6}
  \Ticks{1,2,3,4}{-1}
  \fill[cDef!25,domain=1:2.718,samples=100] (1,0) -- plot (\x,{(-\x+2*ln(\x))*ln(\x)}) -- (2.718,0) -- cycle;
@@ -2353,11 +3142,29 @@ $f$ الدالة المعرفة على $\R$ بـ: $f(x)=\dfrac{e^x+4x}{e^x+4}$،
 \QQ{1} من أجل كل $x\in\R$:
 \[f(x)-x=\frac{e^x+4x-x(e^x+4)}{e^x+4}=\frac{e^x-xe^x}{e^x+4}=\frac{(1-x)e^x}{e^x+4}\]
 بما أن $e^x>0$ و $e^x+4>0$ فإن إشارة الفرق هي إشارة $1-x$:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3]{$x$/1,$f(x)-x$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$1$,$+\infty$}
-\tkzTabLine{,+,z,-,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(\Delta)$}},t,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(1;1)$};
+\end{tikzpicture}
+\end{FIG}
 $(C_f)$ فوق $(\Delta)$ على $]-\infty;1[$، تحته على $]1;+\infty[$، ويقطعه في النقطة $(1;1)$.
 
 \QQ{2}
@@ -2369,11 +3176,22 @@ $(C_f)$ فوق $(\Delta)$ على $]-\infty;1[$، تحته على $]1;+\infty[$،
 ومنه: \bx{\frac{e^x}{e^x+4}\le f(x)\le x} من أجل كل $x\in[1;+\infty[$.
 
 \pb \textbf{الإشارة:} من (أ)، على $[1;2]$: $f(x)\ge\dfrac{e^x}{e^x+4}>0$:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.6]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$1$,$2$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$1$};
+\node at (14.8,-0.45){$2$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-2.5}{3.5}{-1}{3.5}{1.1}
  \Ticks{-2,-1,1,2,3}{1,2,3}
  \fill[cDef!25,domain=1:2,samples=100] (1,0) -- plot (\x,{(exp(\x)+4*\x)/(exp(\x)+4)}) -- (2,0) -- cycle;
@@ -2411,11 +3229,22 @@ $f$ الدالة المعرفة على $[0;+\infty[$ بـ: $f(0)=0$ ومن أج�
 ومنه: \bx{\frac{x}{x^2+1}\le f(x)\le1} من أجل كل $x\in[1;e]$.
 
 \pb \textbf{الإشارة:} من (أ)، $f(x)\ge\dfrac{x}{x^2+1}>0$ على $[1;e]$:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.6]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$1$,$e$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$1$};
+\node at (14.8,-0.45){$e$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-0.2}{4.5}{-0.4}{1.6}{1.8}
  \Ticks{1,2,3,4}{1}
  \fill[cDef!25,domain=1:2.718,samples=100] (1,0) -- plot (\x,{\x/(1+\x*\x*ln(\x))}) -- (2.718,0) -- cycle;
@@ -2450,11 +3279,29 @@ $f$ الدالة المعرفة على $\R$ بـ: $f(x)=x+1-3xe^{2x}$، و $(C_f
 
 \begin{hal}
 \QQ{1} من أجل كل $x\in\R$: $f(x)-(x+1)=-3xe^{2x}$. بما أن $3e^{2x}>0$ فإن إشارة الفرق هي إشارة $-x$:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3]{$x$/1,$f(x)-(x+1)$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$0$,$+\infty$}
-\tkzTabLine{,+,z,-,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(\Delta)$}},t,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x+1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(0;1)$};
+\end{tikzpicture}
+\end{FIG}
 $(C_f)$ فوق $(\Delta)$ على $]-\infty;0[$، تحته على $]0;+\infty[$، ويقطعه في النقطة $(0;1)$.
 
 \QQ{2}
@@ -2474,11 +3321,26 @@ $(C_f)$ فوق $(\Delta)$ على $]-\infty;0[$، تحته على $]0;+\infty[$،
  \node[cDef] at (-2,0.2){$(C_f)$};
 \end{GR}
 \textbf{الوضع النسبي على $[-\alpha;0]$:} $[-\alpha;0]\subset]-\infty;0]$، إذن:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.6]{$x$/1,$f(x)-(x+1)$/1,\ar{الوضع النسبي}/1.2}{$-\alpha$,$0$}
-\tkzTabLine{,+,z}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x+1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\alpha$};
+\node at (13.3,-0.45){$0$};
+\node at (7.55,-1.35){$+$};
+\node[align=center,font=\small] at (7.55,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (13.3,-1.35){$0$};
+\draw[densely dotted] (13.3,-0.9)--(13.3,-1.13) (13.3,-1.57)--(13.3,-1.8);
+\draw (11.8,-4.6) .. controls (11.875,-3.06) and (12.85,-2.136) .. (13.3,-1.8) .. controls (13.75,-2.136) and (14.725,-3.06) .. (14.8,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (13.3,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(0;1)$};
+\end{tikzpicture}
+\end{FIG}
 \[A=\int_{-\alpha}^0\big|f(x)-(x+1)\big|\,dx=\int_{-\alpha}^0(-3xe^{2x})\,dx=-3\int_{-\alpha}^0xe^{2x}\,dx=\frac34\Big[1-(2\alpha+1)e^{-2\alpha}\Big]\ \text{u.a}\]
 الوحدة $2\,\text{cm}$ إذن $1\,\text{u.a}=4\,\text{cm}^2$:
 \[\bx{A=3\Big[1-(2\alpha+1)e^{-2\alpha}\Big]\ \text{cm}^2}\]
@@ -2508,11 +3370,26 @@ F'(x)&=(x+3)\ln x+\Big(\frac12x^2+3x\Big)\frac1x-\frac32\Big[(\ln x)^2+x\cdot\fr
 و $f(x)=x\ln x-\frac32(\ln x)^2$، إذن \bxt{$F'(x)=f(x)$؛ $F$ أصلية للدالة $f$ على $]0;+\infty[$}.
 
 \pb \textbf{إشارة $f$ على $[1;e]$:} $\ln x\ge0$؛ و $\varphi(x)=x-\frac32\ln x$ مشتقتها $1-\frac{3}{2x}=\frac{2x-3}{2x}$، إذن $\varphi$ تبلغ قيمتها الصغرى عند $\frac32$: $\varphi\big(\frac32\big)=\frac32\big(1-\ln\frac32\big)>0$ (لأن $\ln\frac32<1$). إذن $\varphi(x)>0$ و $f(x)\ge0$:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.6]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$1$,$e$}
-\tkzTabLine{z,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$1$};
+\node at (14.8,-0.45){$e$};
+\node at (10.55,-1.35){$+$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(1;0)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-0.2}{4.5}{-0.5}{2.5}{1.5}
  \Ticks{1,2,3,4}{1,2}
  \fill[cDef!25,domain=1:2.718,samples=100] (1,0) -- plot (\x,{(\x-1.5*ln(\x))*ln(\x)}) -- (2.718,0) -- cycle;
@@ -2553,11 +3430,30 @@ $(C)$ يمر بـ $O$: $f(0)=0+\ln b=0$ أي $b=1$ \ok.
 
 \QQ{3}
 \textbf{إشارة $f$:} $f'(x)=-\dfrac{1}{(x+1)^2}+\dfrac{1}{x+1}=\dfrac{x}{(x+1)^2}$، إذن $f$ متناقصة على $]-1;0]$ ومتزايدة على $[0;+\infty[$، وقيمتها الصغرى $f(0)=0$:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$-1$,$0$,$+\infty$}
-\tkzTabLine{d,+,z,+,}
-\tkzTabLine{,\mbox{\ar{فوق محور الفواصل}},t,\mbox{\ar{فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-1$};
+\node at (9.05,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يمس}\\ $(xx')$\\ \ar{في النقطة}\\ $(0;0)$};
+\end{tikzpicture}
+\end{FIG}
 \pa $u_{2022}=F(2022)-F(2021)=-4044+2024\ln2023+4042-2023\ln2022$:
 \[\bx{u_{2022}=-2+2024\ln2023-2023\ln2022}\approx6{,}61\]
 \textbf{التفسير:} بما أن $f(x)\ge0$ على $[2021;2022]$ فإن $u_{2022}$ هو (بوحدة المساحة):\par\centerline{\bxt{مساحة الحيّز المحدد بـ $(C)$ ومحور الفواصل والمستقيمين $x=2021$ و $x=2022$}}
@@ -2600,11 +3496,33 @@ $\lambda$ عدد حقيقي حيث $0<\lambda<1$، نعتبر: $A(\lambda)=\disp
 \pb $\displaystyle\lim_{\lambda\to0^+}\lambda^3\ln\lambda=\lim_{\lambda\to0^+}\lambda^2(\lambda\ln\lambda)=0\times0=0$ و $\displaystyle\lim_{\lambda\to0^+}\lambda^3=0$، إذن \bx{\lim_{\lambda\to0^+}A(\lambda)=\frac19}.
 
 \textbf{التفسير:} $-x^2\ln x=f(x)-x$، أي فرق بين $(C_f)$ والمستقيم $(\Delta):y=x$:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3]{$x$/1,$f(x)-x=-x^2\ln x$/1,\ar{الوضع النسبي}/1.2}{$0$,$1$,$+\infty$}
-\tkzTabLine{z,+,z,-,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(\Delta)$}},t,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node[font=\footnotesize] at (1.3,-1.35){$f(x)-x=-x^2\ln x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$0$};
+\node at (10.6065,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (7.70323,-1.35){$+$};
+\node[align=center,font=\small] at (7.70323,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (13.4532,-1.35){$-$};
+\node[align=center,font=\small] at (13.4532,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{عند}\\ $x=0$};
+\node at (10.6065,-1.35){$0$};
+\draw[densely dotted] (10.6065,-0.9)--(10.6065,-1.13) (10.6065,-1.57)--(10.6065,-1.8);
+\draw (9.10645,-4.6) .. controls (9.18145,-3.06) and (10.1565,-2.136) .. (10.6065,-1.8) .. controls (11.0565,-2.136) and (12.0315,-3.06) .. (12.1065,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (10.6065,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{عند}\\ $x=1$};
+\end{tikzpicture}
+\end{FIG}
 على $[\lambda;1]$: $f(x)-x\ge0$، إذن $A(\lambda)=\displaystyle\int_\lambda^1|f(x)-x|\,dx$ هو مساحة الحيّز المحدد بـ $(C_f)$ و $(\Delta)$ والمستقيمين $x=\lambda$ و $x=1$.
 \begin{GR}{-0.2}{1.8}{-0.3}{1.8}{3}
  \Ticks{1}{1}
@@ -2639,11 +3557,26 @@ $g$ الدالة المعرفة على $\R$ بـ: $g(x)=(x+1)e^{-2x}$.
 \[G(x)=\frac12\Big(-\frac12e^{-2x}-(x+1)e^{-2x}\Big)\qquad\Rightarrow\qquad\bx{G(x)=-\frac{2x+3}{4}e^{-2x}}\]
 
 \pb \textbf{الإشارة:} $f(x)=(x+1)^2e^{-2x}\ge0$ وتنعدم عند $-1$ فقط:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.6]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$-1$,$0$}
-\tkzTabLine{z,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$-1$};
+\node at (14.8,-0.45){$0$};
+\node at (10.55,-1.35){$+$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(-1;0)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-2}{2.5}{-0.4}{2}{1.6}
  \Ticks{-1,1,2}{1}
  \fill[cDef!25,domain=-1:0,samples=80] (-1,0) -- plot (\x,{(\x+1)^2*exp(-2*\x)}) -- (0,0) -- cycle;
@@ -2687,11 +3620,30 @@ $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى 
 ومنه: \bx{x-\frac{1}{x\ln x}<f(x)<x+1} من أجل كل $x>1$.
 
 \QQ{2} \textbf{إشارة $f$:} على $]1;+\infty[$: $f'(x)=1+\dfrac{1}{x(\ln x)^2}>0$، إذن $f$ متزايدة تماما، و $f(\alpha)=0$:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$1$,$\alpha$,$e$}
-\tkzTabLine{d,-,z,+,}
-\tkzTabLine{,\mbox{\ar{تحت محور الفواصل}},t,\mbox{\ar{فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$1$};
+\node at (9.05,-0.45){$\alpha$};
+\node at (14.8,-0.45){$e$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(\alpha;0)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-0.3}{3.5}{-2}{4.5}{1.3}
  \Ticks{1,2,3}{-1,1,2,3,4}
  \fill[cDef!25,domain=1.4934:2.718,samples=100] (1.4934,0) -- plot (\x,{\x+1-1/ln(\x)}) -- (2.718,0) -- cycle;
@@ -2731,20 +3683,67 @@ $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى 
 \[f(x)-\Big(-\frac12x+\frac e2\Big)=-\frac{\ln(x^2)}{2x}=-\frac{2\ln|x|}{2x}=-\frac{\ln|x|}{x}\]
 $\ln|x|=0\iff x=-1$ أو $x=1$؛ $\ln|x|>0\iff|x|>1$. إشارة $x$: سالبة قبل $0$ وموجبة بعده:
 \begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=2.6]{$x$/1,$\ln|x|$/1,$x$/1,$f(x)-y_{\Delta}$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$-1$,$0$,$1$,$+\infty$}
+\tkzTabInit[lgt=3.2,espcl=2.6]{$x$/1,$\ln|x|$/1,$x$/1}{$-\infty$,$-1$,$0$,$1$,$+\infty$}
 \tkzTabLine{,+,z,-,d,-,z,+,}
 \tkzTabLine{,-,t,-,z,+,t,+,}
-\tkzTabLine{,+,z,-,d,+,z,-,}
-\tkzTabLine{,\mbox{\ar{فوق}},t,\mbox{\ar{تحت}},d,\mbox{\ar{فوق}},t,\mbox{\ar{تحت}},}
 \end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node[font=\footnotesize] at (1.3,-1.35){$f(x)-y_{\Delta}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (6.175,-0.45){$-1$};
+\node at (9.05,-0.45){$0$};
+\node at (11.925,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (4.2125,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (4.2125,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (8.1375,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (8.1375,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (9.9625,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (9.9625,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (13.8875,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (13.8875,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\draw[double,thick] (9.05,-0.9)--(9.05,-4.6);
+\node at (6.175,-1.35){$0$};
+\draw[densely dotted] (6.175,-0.9)--(6.175,-1.13) (6.175,-1.57)--(6.175,-1.8);
+\draw (5.125,-4.6) .. controls (5.1775,-3.06) and (5.86,-2.136) .. (6.175,-1.8) .. controls (6.49,-2.136) and (7.1725,-3.06) .. (7.225,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (6.175,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{عند}\\ $x=-1$};
+\node at (11.925,-1.35){$0$};
+\draw[densely dotted] (11.925,-0.9)--(11.925,-1.13) (11.925,-1.57)--(11.925,-1.8);
+\draw (10.875,-4.6) .. controls (10.9275,-3.06) and (11.61,-2.136) .. (11.925,-1.8) .. controls (12.24,-2.136) and (12.9225,-3.06) .. (12.975,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (11.925,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{عند}\\ $x=1$};
+\end{tikzpicture}
+\end{FIG}
 $(C_f)$ فوق $(\Delta)$ على $]-\infty;-1[$ و $]0;1[$، تحته على $]-1;0[$ و $]1;+\infty[$، ويقطعه في النقطتين ذواتي الفاصلتين $-1$ و $1$.
 
 \QQ{2} المستقيم $x+2y=e$ هو $y=-\frac12x+\frac e2$ أي $(\Delta)$. \textbf{الوضع النسبي على $[1;\alpha]$} (من الجدول السابق):
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.6]{$x$/1,$f(x)-y_{\Delta}$/1,\ar{الوضع النسبي}/1.2}{$1$,$\alpha$}
-\tkzTabLine{z,-,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node[font=\footnotesize] at (1.3,-1.35){$f(x)-y_{\Delta}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$1$};
+\node at (14.8,-0.45){$\alpha$};
+\node at (10.55,-1.35){$-$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{عند}\\ $x=1$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-3}{4}{-2}{4}{1}
  \Ticks{-2,-1,1,2,3}{-1,1,2,3}
  \fill[cDef!25,domain=1:2.0219,samples=80] plot (\x,{-\x/2+1.35914}) -- plot[domain=2.0219:1] (\x,{0.5*(-\x+2.71828-ln(\x*\x)/\x)}) -- cycle;
@@ -2776,24 +3775,75 @@ $(C_f)$ فوق $(\Delta)$ على $]-\infty;-1[$ و $]0;1[$، تحته على $]-
 بما أن $e^{-x}>0$، الإشارة هي إشارة $(2-m)x$. المنحنيان يتقاطعان في النقطة $(0;1)$ دوما.
 
 \textbf{الحالة $m<2$} ($2-m>0$):
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3]{$x$/1,$f(x)-f_m(x)$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$0$,$+\infty$}
-\tkzTabLine{,-,z,+,}
-\tkzTabLine{,\mbox{\ar{$(C)$ تحت $(C_m)$}},t,\mbox{\ar{$(C)$ فوق $(C_m)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-f_m(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C)$\\ \ar{تحت}\\ $(C_m)$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C)$\\ \ar{فوق}\\ $(C_m)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C)$ يقطع}\\ $(C_m)$\\ \ar{في النقطة}\\ $(0;1)$};
+\end{tikzpicture}
+\end{FIG}
 \textbf{الحالة $m>2$} ($2-m<0$):
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3]{$x$/1,$f(x)-f_m(x)$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$0$,$+\infty$}
-\tkzTabLine{,+,z,-,}
-\tkzTabLine{,\mbox{\ar{$(C)$ فوق $(C_m)$}},t,\mbox{\ar{$(C)$ تحت $(C_m)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-f_m(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C)$\\ \ar{فوق}\\ $(C_m)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C)$\\ \ar{تحت}\\ $(C_m)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C)$ يقطع}\\ $(C_m)$\\ \ar{عند}\\ $x=0$};
+\end{tikzpicture}
+\end{FIG}
 
 \QQ{2} من أجل $m=3>2$: $f(x)-f_3(x)=-xe^{-x}$. \textbf{الوضع النسبي على $[0;\alpha]$:}
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.6]{$x$/1,$f(x)-f_3(x)$/1,\ar{الوضع النسبي}/1.2}{$0$,$\alpha$}
-\tkzTabLine{z,-,}
-\tkzTabLine{,\mbox{\ar{$(C)$ تحت $(C_3)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-f_3(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$0$};
+\node at (14.8,-0.45){$\alpha$};
+\node at (10.55,-1.35){$-$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C)$\\ \ar{تحت}\\ $(C_3)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C)$ يقطع}\\ $(C_3)$\\ \ar{عند}\\ $x=0$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-2}{6}{-1}{3}{1}
  \Ticks{-1,1,2,3,4,5}{1,2}
  \fill[cDef!25,domain=0:3,samples=100] plot (\x,{(\x*\x+3*\x+1)*exp(-\x)}) -- plot[domain=3:0] (\x,{(\x+1)^2*exp(-\x)}) -- cycle;
@@ -2843,11 +3893,22 @@ $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى 
 ومنه: \bx{1+\frac1x\le f(x)\le f(\alpha)} من أجل كل $x\ge1$.
 
 \pb \textbf{الإشارة:} على $[1;e]$: $f(x)\ge1+\frac1x>0$:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.6]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$1$,$e$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$1$};
+\node at (14.8,-0.45){$e$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\end{tikzpicture}
+\end{FIG}
 إذن $F(e)=\int_1^e f(t)\,dt$ هو (بـ u.a):\par\centerline{\bxt{مساحة الحيّز المحدد بـ $(C_f)$ ومحور الفواصل والمستقيمين $x=1$ و $x=e$}}
 \begin{GR}{-0.3}{5}{-0.4}{3}{1.3}
  \Ticks{1,2,3,4}{1,2}
@@ -2882,11 +3943,22 @@ $f$ الدالة العددية المعرفة على المجال $]0;+\infty[$
 بما أن $e^n<e^{n+1}$ فحسب موجبية التكامل (والدالة مستمرة غير معدومة): \bx{u_n>0}.
 
 \QQ{2} $f(x)+x=f(x)-(-x)$: الفرق بين $(C_f)$ والمستقيم $(\Delta):y=-x$. على $[1;e]$ (أي $n=0$):
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.6]{$x$/1,$f(x)-(-x)$/1,\ar{الوضع النسبي}/1.2}{$1$,$e$}
-\tkzTabLine{,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(-x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$1$};
+\node at (14.8,-0.45){$e$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-0.3}{4.5}{-4.5}{2.5}{1}
  \Ticks{1,2,3,4}{-4,-3,-2,-1,1,2}
  \fill[cDef!25,domain=1:2.718,samples=100] plot (\x,{-\x+(3+2*ln(\x))/\x}) -- plot[domain=2.718:1] (\x,{-\x}) -- cycle;
@@ -2929,11 +4001,26 @@ $(C_f)$ و $(C_g)$ تمثيلاهما البيانيان في المستوي ا�
 
 نضع $\varphi(x)=x^2-x+1-e^{x-1}$: $\varphi'(x)=2x-1-e^{x-1}$، $\varphi''(x)=2-e^{x-1}$.
 $\varphi''>0$ على $[1;1+\ln2[$ و $<0$ على $]1+\ln2;2]$، إذن $\varphi'$ متزايدة ثم متناقصة، مع $\varphi'(1)=0$ و $\varphi'(2)=3-e>0$، ومنه $\varphi'(x)>0$ على $]1;2]$؛ فـ $\varphi$ متزايدة و $\varphi(1)=0$، إذن $\varphi(x)\ge0$ أي $x^2-x+1\ge e^{x-1}$، وبالمقلوب: $e^{1-x}\ge\dfrac{1}{x^2-x+1}$. إذن $f(x)-g(x)\ge0$:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.6]{$x$/1,$f(x)-g(x)$/1,\ar{الوضع النسبي}/1.2}{$1$,$2$}
-\tkzTabLine{z,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(C_g)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-g(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$1$};
+\node at (14.8,-0.45){$2$};
+\node at (10.55,-1.35){$+$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_f)$\\ \ar{فوق}\\ $(C_g)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(C_g)$\\ \ar{عند}\\ $x=1$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-1}{4.5}{-2}{2.5}{1.3}
  \Ticks{1,2,3,4}{-1,1,2}
  \fill[cDef!25,domain=1:2,samples=100] plot (\x,{(2*\x-1)*exp(1-\x)}) -- plot[domain=2:1] (\x,{(2*\x-1)/(\x*\x-\x+1)}) -- cycle;
@@ -2988,11 +4075,33 @@ $F(t)=\dfrac{2\alpha}{3}+\dfrac{\alpha^3}{9}-t+\dfrac{t^3\ln t}{3}-\dfrac{t^3}{9
 \[\bx{\lim_{t\to0^+}F(t)=\frac{\alpha^3+6\alpha}{9}}\approx1{,}42\]
 
 \QQ{3} \textbf{إشارة $g$ على $[-\alpha;\alpha]$:} $f'(x)=-2x\ln x-x=-x(2\ln x+1)$: $f$ متزايدة على $]0;e^{-1/2}]$ ومتناقصة على $[e^{-1/2};+\infty[$؛ $f(0)=1>0$ و $f(\alpha)=0$، إذن $f(x)>0$ على $[0;\alpha[$. و $g$ زوجية ($g(-x)=f(|x|)=g(x)$):
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3]{$x$/1,$g(x)$/1,\ar{الوضع النسبي}/1.2}{$-\alpha$,$0$,$\alpha$}
-\tkzTabLine{z,+,t,+,z}
-\tkzTabLine{,\mbox{\ar{فوق محور الفواصل}},t,\mbox{\ar{فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$g(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$-\alpha$};
+\node at (9.05,-0.45){$0$};
+\node at (13.3,-0.45){$\alpha$};
+\node at (7.675,-1.35){$+$};
+\node[align=center,font=\small] at (7.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (10.425,-1.35){$+$};
+\node[align=center,font=\small] at (10.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(-\alpha;0)$};
+\node at (13.3,-1.35){$0$};
+\draw[densely dotted] (13.3,-0.9)--(13.3,-1.13) (13.3,-1.57)--(13.3,-1.8);
+\draw (11.8,-4.6) .. controls (11.875,-3.06) and (12.85,-2.136) .. (13.3,-1.8) .. controls (13.75,-2.136) and (14.725,-3.06) .. (14.8,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (13.3,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(\alpha;0)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-2.5}{2.5}{-1.6}{1.8}{1.6}
  \Ticks{-2,-1,1,2}{-1,1}
  \fill[cDef!25,domain=-1.5316:1.5316,samples=151] (-1.5316,0) -- plot (\x,{1-\x*\x*ln(abs(\x)+0.00001)}) -- (1.5316,0) -- cycle;
@@ -3027,11 +4136,29 @@ $\lambda$ عدد حقيقي أكبر من أو يساوي $1$.
 \textbf{تمهيد:} $e^x\ge x+1>x$ من أجل كل $x\in\R$، إذن $e^x-x>0$ و $f$ معرفة على $\R$.
 \[f(x)-1=\frac{e^x-1-e^x+x}{e^x-x}=\frac{x-1}{e^x-x}\]
 \textbf{الوضع النسبي لـ $(C_f)$ والمستقيم $(D):y=1$:} إشارة $f(x)-1$ هي إشارة $x-1$:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3]{$x$/1,$f(x)-1$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$1$,$+\infty$}
-\tkzTabLine{,-,z,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ تحت $(D)$}},t,\mbox{\ar{$(C_f)$ فوق $(D)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-1$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(D)$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(D)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(D)$\\ \ar{في النقطة}\\ $(1;1)$};
+\end{tikzpicture}
+\end{FIG}
 إذن على $[1;\lambda]$: $f(x)-1\ge0$، و $A(\lambda)$ هو مساحة الحيّز المحدد بـ $(C_f)$ والمستقيمات $y=1$، $x=1$، $x=\lambda$:
 \begin{GR}{-2}{6}{-1}{2}{1.1}
  \Ticks{-1,1,2,3,4,5}{-1,1}
@@ -3067,12 +4194,41 @@ $g$ الدالة العددية المعرفة على المجال $]0;+\infty[$
 \[f(x)-g(x)=2(\ln x)^2-\ln x-1-1+\ln x=2(\ln x)^2-2=2(\ln x-1)(\ln x+1)\]
 $\ln x-1=0\iff x=e$؛ $\ln x+1=0\iff x=\frac1e$:
 \begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=2.6]{$x$/1,$\ln x+1$/1,$\ln x-1$/1,$f(x)-g(x)$/1,\ar{الوضع النسبي}/1.2}{$0$,$\frac1e$,$e$,$+\infty$}
+\tkzTabInit[lgt=3.2,espcl=2.6]{$x$/1,$\ln x+1$/1,$\ln x-1$/1}{$0$,$\frac1e$,$e$,$+\infty$}
 \tkzTabLine{d,-,z,+,t,+,}
 \tkzTabLine{d,-,t,-,z,+,}
-\tkzTabLine{d,+,z,-,z,+,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق}},t,\mbox{\ar{$(C_f)$ تحت}},t,\mbox{\ar{$(C_f)$ فوق}},}
 \end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-g(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (6.69773,-0.45){$\frac1e$};
+\node at (11.4023,-0.45){$e$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (4.37386,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (4.37386,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (9.05,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (9.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (13.7261,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (13.7261,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (6.69773,-1.35){$0$};
+\draw[densely dotted] (6.69773,-0.9)--(6.69773,-1.13) (6.69773,-1.57)--(6.69773,-1.8);
+\draw (5.44773,-4.6) .. controls (5.51023,-3.06) and (6.32273,-2.136) .. (6.69773,-1.8) .. controls (7.07273,-2.136) and (7.88523,-3.06) .. (7.94773,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (6.69773,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(\frac1e;2)$};
+\node at (11.4023,-1.35){$0$};
+\draw[densely dotted] (11.4023,-0.9)--(11.4023,-1.13) (11.4023,-1.57)--(11.4023,-1.8);
+\draw (10.1523,-4.6) .. controls (10.2148,-3.06) and (11.0273,-2.136) .. (11.4023,-1.8) .. controls (11.7773,-2.136) and (12.5898,-3.06) .. (12.6523,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (11.4023,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(e;0)$};
+\end{tikzpicture}
+\end{FIG}
 $(C_f)$ فوق $(C_g)$ على $\left]0;\frac1e\right[$ و $]e;+\infty[$، تحته على $\left]\frac1e;e\right[$، ويتقاطعان في $\left(\frac1e;2\right)$ و $(e;0)$.
 
 \QQ{2}
@@ -3107,11 +4263,29 @@ $f$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=e^
 النص يعطي سؤال المساحة فقط؛ أضفنا المعطى «$f$ متزايدة تماما على $]0;+\infty[$» (من دراسة تغيرات الدالة في التمرين الأصلي) لتبرير الإشارة.
 \end{molahada}
 \textbf{إشارة $f$:} $f(1)=e-e+0=0$، و $f$ متزايدة تماما:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$\frac12$,$1$,$2$}
-\tkzTabLine{,-,z,+,}
-\tkzTabLine{,\mbox{\ar{تحت محور الفواصل}},t,\mbox{\ar{فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$\frac12$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$2$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(1;0)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-0.3}{2.5}{-2}{3}{1.4}
  \Ticks{1,2}{-1,1,2}
  \fill[cThm!20,domain=0.5:1,samples=80] (0.5,0) -- plot (\x,{exp(\x)-2.71828*\x+ln(\x)/\x}) -- (1,0) -- cycle;
@@ -3147,11 +4321,26 @@ $f$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=e^
 \pa $H'(x)=(-2x-4)e^{-x}-(-x^2-4x-5)e^{-x}=(x^2+2x+1)e^{-x}=(x+1)^2e^{-x}$، إذن \bxt{$H$ أصلية لـ $x\mapsto(x+1)^2e^{-x}$ على $\R$}.
 
 \pb $f(x)-x=-(x+1)^2e^{-x}\le0$، وتنعدم عند $-1$:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3.6]{$x$/1,$f(x)-x$/1,\ar{الوضع النسبي}/1.2}{$-1$,$0$}
-\tkzTabLine{z,-,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ تحت $(\Delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$-1$};
+\node at (14.8,-0.45){$0$};
+\node at (10.55,-1.35){$-$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(-1;-1)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-2}{2.5}{-2.5}{2}{1.4}
  \Ticks{-1,1,2}{-2,-1,1}
  \fill[cDef!25,domain=-1:0,samples=80] plot (\x,{\x}) -- plot[domain=0:-1] (\x,{\x-(\x+1)^2*exp(-\x)}) -- cycle;
@@ -3183,11 +4372,29 @@ $f$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=e^
 (تحقق: $F'(x)=3e^x+(3x+1)e^x=(3x+4)e^x$ \ok.)
 
 \pb \textbf{إشارة $f$:} $e^x>0$ فالإشارة إشارة $3x+4$:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3]{$x$/1,$f(x)$/1,\ar{الوضع النسبي}/1.2}{$-\infty$,$-\frac43$,$0$}
-\tkzTabLine{,-,z,+,}
-\tkzTabLine{,\mbox{\ar{تحت محور الفواصل}},t,\mbox{\ar{فوق محور الفواصل}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$-\frac43$};
+\node at (14.8,-0.45){$0$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(-\frac43;0)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-5.5}{0.5}{-1}{2}{1.6}
  \Ticks{-5,-4,-3,-2,-1}{-1,1}
  \fill[cDef!25,domain=-5:-1.3333,samples=100] (-5,0) -- plot (\x,{(3*\x+4)*exp(\x)}) -- (-1.3333,0) -- cycle;
@@ -3224,11 +4431,30 @@ $(\delta)$ المنحنى الممثل للدالة $x\mapsto\ln x$ على ال�
 \[\bx{G(x)=x\ln x-x+\frac{1+\ln x}{x}}\]
 
 \pb $f(x)-\ln x=-\dfrac{\ln x}{x^2}$، إشارته عكس إشارة $\ln x$:
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=3]{$x$/1,$f(x)-\ln x$/1,\ar{الوضع النسبي}/1.2}{$0$,$1$,$+\infty$}
-\tkzTabLine{d,+,z,-,}
-\tkzTabLine{,\mbox{\ar{$(C_f)$ فوق $(\delta)$}},t,\mbox{\ar{$(C_f)$ تحت $(\delta)$}},}
-\end{TAB}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-\ln x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\delta)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\delta)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\delta)$\\ \ar{في النقطة}\\ $(1;0)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-0.3}{5.5}{-1.5}{2}{1.2}
  \Ticks{1,2,3,4,5}{-1,1}
  \fill[cDef!25,domain=1:4,samples=100] plot (\x,{ln(\x)}) -- plot[domain=4:1] (\x,{(1-1/(\x*\x))*ln(\x)}) -- cycle;

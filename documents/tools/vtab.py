@@ -54,7 +54,10 @@ def vtab(xs, diff, zeros, between, curve, other, W=15.5, meet='يقطع', bars=(
         s.append(r'\draw (%g,%g) .. controls (%g,%g) and (%g,%g) .. (%g,%g) .. controls (%g,%g) and (%g,%g) .. (%g,%g);'
                  % (x - w, yb, x - 0.95 * w, yb + 0.55 * h3, x - 0.3 * w, y2 - 0.12 * h3, x, y2,
                     x + 0.3 * w, y2 - 0.12 * h3, x + 0.95 * w, yb + 0.55 * h3, x + w, yb))
-        s.append(r'\node[align=center,font=%s,inner sep=0pt] at (%g,%g){\ar{$%s$ %s}\\ $%s$\\ \ar{في النقطة}\\ $%s$};'
-                 % (bfont, x, yb + 0.95, curve, mt, other, pt))
+        at_ = 'في النقطة'
+        if pt.startswith('x='):   # only the abscissa is known
+            at_ = 'عند'
+        s.append(r'\node[align=center,font=%s,inner sep=0pt] at (%g,%g){\ar{$%s$ %s}\\ $%s$\\ \ar{%s}\\ $%s$};'
+                 % (bfont, x, yb + 0.95, curve, mt, other, at_, pt))
     s.append(r'\end{tikzpicture}')
     return r'\begin{FIG}' + '\n' + '\n'.join(s) + '\n' + r'\end{FIG}'
