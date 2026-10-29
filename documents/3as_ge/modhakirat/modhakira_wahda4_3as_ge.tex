@@ -360,7 +360,27 @@ $\dfrac{u^{\prime}}{u^2}$ & $-\dfrac1u$\\\hline
 \Row{}{%
 \Lab{cMeth}{طريقة}\ ندرس إشارة $f$ (الوضع النسبي) ، نرسم الحيز ، ثم نحسب بوحدة المساحات $\text{u.a}$.}{}{}
 \Row{}{%
-\Lab{cEx}{مثال}\ $f(x)=x^2-1$ على $[0;2]$:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|}\hline\rowcolor{cSec!12}$x$ & $0$ &  & $1$ &  & $2$\\\hline$f(x)=x^2-1$ &  & $-$ & $0$ & $+$ & \\\hline\ar{الوضع النسبي} &  & \ar{$C_f$ تحت $(xx^{\prime})$} &  & \ar{$C_f$ فوق $(xx^{\prime})$} & \\\hline\end{tabular}}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.4cm,y=0.6cm,font=\scriptsize]
+\Lab{cEx}{مثال}\ $f(x)=x^2-1$ على $[0;2]$:\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (12.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (12.5,-4.6);
+\draw[thick] (0,0) rectangle (12.5,-4.6); \draw (0,-0.9)--(12.5,-0.9) (0,-1.8)--(12.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)=x^2-1$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (7.55,-0.45){$1$};
+\node at (11.8,-0.45){$2$};
+\node at (4.675,-1.35){$-$};
+\node[align=center,font=\small] at (4.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (10.425,-1.35){$+$};
+\node[align=center,font=\small] at (10.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (7.55,-1.35){$0$};
+\draw[densely dotted] (7.55,-0.9)--(7.55,-1.13) (7.55,-1.57)--(7.55,-1.8);
+\draw (6.05,-4.6) .. controls (6.125,-3.06) and (7.1,-2.136) .. (7.55,-1.8) .. controls (8,-2.136) and (8.975,-3.06) .. (9.05,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (7.55,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $A(1;0)$};
+\end{tikzpicture}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.4cm,y=0.6cm,font=\scriptsize]
 \fill[cDef!25] (0,0) -- plot[domain=0:1,samples=40] (\x,{\x*\x-1}) -- cycle;
 \fill[cEx!30] (1,0) -- plot[domain=1:2,samples=40] (\x,{\x*\x-1}) -- (2,0) -- cycle;
 \draw[->] (-0.6,0)--(2.6,0) node[right]{$x$}; \draw[->] (0,-1.6)--(0,3.8) node[above]{$y$};
@@ -373,7 +393,28 @@ $\dfrac{u^{\prime}}{u^2}$ & $-\dfrac1u$\\\hline
 \Row{التقويم}{%
 \Lab{cMeth}{تمرين تطبيقي}\par احسب مساحة الحيز المحدد بمنحنى $f(x)=-x^2+4x$ ومحور الفواصل والمستقيمين $x=0$ و $x=4$.}{25 د}{تقويم فردي.}
 \Row{}{%
-\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} إشارة $f(x)=x(4-x)$:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|}\hline\rowcolor{cSec!12}$x$ & $0$ &  & $4$\\\hline$f(x)=-x^2+4x$ & $0$ & $+$ & $0$\\\hline\ar{الوضع النسبي} &  & \ar{$C_f$ فوق $(xx^{\prime})$} & \\\hline\end{tabular}}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.8cm,y=0.5cm,font=\scriptsize]
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} إشارة $f(x)=x(4-x)$:\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (12.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (12.5,-4.6);
+\draw[thick] (0,0) rectangle (12.5,-4.6); \draw (0,-0.9)--(12.5,-0.9) (0,-1.8)--(12.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$0$};
+\node at (10.3,-0.45){$4$};
+\node at (7.55,-1.35){$+$};
+\node[align=center,font=\small] at (7.55,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $O(0;0)$};
+\node at (10.3,-1.35){$0$};
+\draw[densely dotted] (10.3,-0.9)--(10.3,-1.13) (10.3,-1.57)--(10.3,-1.8);
+\draw (8.8,-4.6) .. controls (8.875,-3.06) and (9.85,-2.136) .. (10.3,-1.8) .. controls (10.75,-2.136) and (11.725,-3.06) .. (11.8,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (10.3,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $A(4;0)$};
+\end{tikzpicture}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.8cm,y=0.5cm,font=\scriptsize]
 \fill[cEx!30] (0,0) -- plot[domain=0:4,samples=50] (\x,{-\x*\x+4*\x}) -- (4,0) -- cycle;
 \draw[->] (-0.6,0)--(4.8,0) node[right]{$x$}; \draw[->] (0,-1)--(0,4.8) node[above]{$y$};
 \draw[cDef,thick,domain=-0.3:4.3,samples=50] plot (\x,{-\x*\x+4*\x}); \node[cDef] at (3.6,3.6){$C_f$};
@@ -397,7 +438,28 @@ $\dfrac{u^{\prime}}{u^2}$ & $-\dfrac1u$\\\hline
 \Row{}{%
 \Lab{cMeth}{طريقة}\ نعيّن نقط التقاطع ، ندرس إشارة $f-g$ ، نرسم الحيز ، ثم نحسب.}{}{}
 \Row{}{%
-\Lab{cEx}{مثال}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|}\hline\rowcolor{cSec!12}$x$ & $0$ &  & $3$\\\hline$f(x)-g(x)=-x^2+3x$ & $0$ & $+$ & $0$\\\hline\ar{الوضع النسبي} &  & \ar{$C_f$ فوق $C_g$} & \\\hline\end{tabular}}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.8cm,y=0.5cm,font=\scriptsize]
+\Lab{cEx}{مثال}\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (12.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (12.5,-4.6);
+\draw[thick] (0,0) rectangle (12.5,-4.6); \draw (0,-0.9)--(12.5,-0.9) (0,-1.8)--(12.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-g(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$0$};
+\node at (10.3,-0.45){$3$};
+\node at (7.55,-1.35){$+$};
+\node[align=center,font=\small] at (7.55,-3.2){$(C_f)$\\ \ar{فوق}\\ $(C_g)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(C_g)$\\ \ar{في النقطة}\\ $O(0;0)$};
+\node at (10.3,-1.35){$0$};
+\draw[densely dotted] (10.3,-0.9)--(10.3,-1.13) (10.3,-1.57)--(10.3,-1.8);
+\draw (8.8,-4.6) .. controls (8.875,-3.06) and (9.85,-2.136) .. (10.3,-1.8) .. controls (10.75,-2.136) and (11.725,-3.06) .. (11.8,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (10.3,-3.65){\ar{$(C_f)$ يقطع}\\ $(C_g)$\\ \ar{في النقطة}\\ $A(3;3)$};
+\end{tikzpicture}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.8cm,y=0.5cm,font=\scriptsize]
 \fill[cThm!25] plot[domain=0:3,samples=50] (\x,{-\x*\x+4*\x}) -- plot[domain=3:0,samples=10] (\x,\x) -- cycle;
 \draw[->] (-0.6,0)--(4.8,0) node[right]{$x$}; \draw[->] (0,-1)--(0,4.8) node[above]{$y$};
 \draw[cDef,thick,domain=-0.2:4.2,samples=50] plot (\x,{-\x*\x+4*\x}); \node[cDef] at (2,4.5){$C_f$};
@@ -409,11 +471,32 @@ $\dfrac{u^{\prime}}{u^2}$ & $-\dfrac1u$\\\hline
 \Row{التقويم}{%
 \Lab{cMeth}{تمرين تطبيقي}\par احسب مساحة الحيز المحصور بين المنحنى $y=x^2$ والمستقيم $y=2x$.}{25 د}{نهاية المحور: فرض أو مراجعة.}
 \Row{}{%
-\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} التقاطع: $x^2=2x$ معناه $x(x-2)=0$: $\RR{x=0}$ أو $\RR{x=2}$.\par\textbf{(2)} الوضع النسبي:\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|}\hline\rowcolor{cSec!12}$x$ & $0$ &  & $2$\\\hline$2x-x^2$ & $0$ & $+$ & $0$\\\hline\ar{الوضع النسبي} &  & \ar{$y=2x$ \ar{فوق} $y=x^2$} & \\\hline\end{tabular}}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.2cm,y=0.55cm,font=\scriptsize]
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} التقاطع: $x^2=2x$ معناه $x(x-2)=0$: $\RR{x=0}$ أو $\RR{x=2}$.\par\textbf{(2)} الوضع النسبي:نسمي $(\Delta)$ المستقيم $y=2x$ و$(C)$ المنحنى $y=x^2$:\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (12.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (12.5,-4.6);
+\draw[thick] (0,0) rectangle (12.5,-4.6); \draw (0,-0.9)--(12.5,-0.9) (0,-1.8)--(12.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$2x-x^2$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$0$};
+\node at (10.3,-0.45){$2$};
+\node at (7.55,-1.35){$+$};
+\node[align=center,font=\small] at (7.55,-3.2){$(\Delta)$\\ \ar{فوق}\\ $(C)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(\Delta)$ يقطع}\\ $(C)$\\ \ar{في النقطة}\\ $O(0;0)$};
+\node at (10.3,-1.35){$0$};
+\draw[densely dotted] (10.3,-0.9)--(10.3,-1.13) (10.3,-1.57)--(10.3,-1.8);
+\draw (8.8,-4.6) .. controls (8.875,-3.06) and (9.85,-2.136) .. (10.3,-1.8) .. controls (10.75,-2.136) and (11.725,-3.06) .. (11.8,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (10.3,-3.65){\ar{$(\Delta)$ يقطع}\\ $(C)$\\ \ar{في النقطة}\\ $A(2;4)$};
+\end{tikzpicture}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.2cm,y=0.55cm,font=\scriptsize]
 \fill[cEx!30] plot[domain=0:2,samples=10] (\x,{2*\x}) -- plot[domain=2:0,samples=40] (\x,{\x*\x}) -- cycle;
 \draw[->] (-0.5,0)--(2.8,0) node[right]{$x$}; \draw[->] (0,-0.6)--(0,5.4) node[above]{$y$};
-\draw[cRem!80!black,thick] (-0.25,-0.5)--(2.5,5) node[right]{$y=2x$};
-\draw[cDef,thick,domain=-0.4:2.25,samples=50] plot (\x,{\x*\x}) node[right]{$y=x^2$};
+\draw[cRem!80!black,thick] (-0.25,-0.5)--(2.5,5) node[pos=0.55,above left]{$(\Delta):y=2x$};
+\draw[cDef,thick,domain=-0.4:2.25,samples=50] plot (\x,{\x*\x}) node[right]{$(C):y=x^2$};
 \draw[densely dotted] (2,0)--(2,4); \node[below] at (2,0){$2$}; \node at (1.2,1.9){$\mathcal A$};
 \end{tikzpicture}\end{LTR}\par \par\textbf{(3)} $\mathcal A=\displaystyle\int_{0}^{2}(2x-x^2)\,dx=\left[x^2-\dfrac{x^3}3\right]_0^2=4-\dfrac83=\RR{\dfrac43\ \text{u.a}}$.\par\textbf{واجب منزلي:} تمارين من باب التكامل.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
