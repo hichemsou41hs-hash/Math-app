@@ -174,6 +174,7 @@
 \newcommand{\Pt}[1]{\fill[cThm] #1 circle (2.2pt);}
 \newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
 \renewcommand{\arraystretch}{1.25}
+\newcommand{\yq}[2]{{\small\renewcommand{\arraystretch}{1}\begin{tabular}{@{}c@{}}\ar{$#1$ يقطع}\\$#2$\end{tabular}}}
 \begin{document}
 \begin{LTR}
 \begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
@@ -199,7 +200,7 @@
 \section{الدالة الأصلية لدالة على مجال}
 \begin{tarif}
 $f$ دالة معرفة على مجال $I$. نسمي \textbf{دالة أصلية} للدالة $f$ على $I$ كل دالة $F$ قابلة للاشتقاق على $I$ وتحقق:
-\[\bx{F'(x)=f(x)\quad\text{من أجل كل } x \text{ من } I}\]
+\begin{center}\bx{F'(x)=f(x)} \ من أجل كل $x$ من $I$\end{center}
 البحث عن دالة أصلية هو «عكس» عملية الاشتقاق.
 \end{tarif}
 
@@ -211,7 +212,7 @@ $f$ دالة معرفة على مجال $I$. نسمي \textbf{دالة أصلي�
 \begin{enumerate}[label=\textbf{\arabic*.}]
 \item كل دالة \textbf{مستمرة} على مجال $I$ تقبل دوالًا أصلية على $I$.
 \item إذا كانت $F$ دالة أصلية لـ $f$ على $I$ فإن كل الدوال الأصلية لـ $f$ على $I$ هي الدوال \bx{x\mapsto F(x)+c} حيث $c$ عدد حقيقي ثابت.
-\item إذا كانت $F$ و$G$ دالتين أصليتين لـ $f$ و$g$ على $I$ فإن $F+G$ دالة أصلية لـ $f+g$، و$kF$ دالة أصلية لـ $kf$ ($k$ عدد حقيقي).
+\item إذا كانت $F$ و$G$ دالتين أصليتين لـ $f$ و$g$ على $I$ فإن $F+G$ دالة أصلية لـ $f+g$، و$kF$ دالة أصلية لـ $kf$ حيث $k$ عدد حقيقي.
 \end{enumerate}
 \end{khassia}
 
@@ -228,11 +229,11 @@ $F'(x)=3x^2-4x+0=f(x)$ \ok.
 \begin{khassia}[جدول الدوال الأصلية ($c$ عدد حقيقي كيفي)]
 \begin{center}
 \renewcommand{\arraystretch}{2}
-\begin{tabular}{|C|c|c|}\hline
+\begin{tabular}{|C|C|C|}\hline
 \rowcolor{cSec!12} المجال $I$ & الدوال الأصلية $F(x)$ & الدالة $f(x)$\\\hline
 $\mathbb R$ & $ax+c$ & $a$ \ ($a$ عدد حقيقي)\\\hline
 $\mathbb R$ & $\dfrac12x^2+c$ & $x$\\\hline
-$\mathbb R$ & $\dfrac{1}{n+1}x^{n+1}+c$ & $x^n$ \ ($n\in\mathbb N^*$)\\\hline
+$\mathbb R$ & $\dfrac{1}{n+1}x^{n+1}+c$ & $x^n\ \ (n\in\mathbb N^*)$\\\hline
 $]-\infty;0[$ أو $]0;+\infty[$ & $-\dfrac1x+c$ & $\dfrac1{x^2}$\\\hline
 $]-\infty;0[$ أو $]0;+\infty[$ & $-\dfrac{1}{(n-1)x^{n-1}}+c$ & $\dfrac1{x^n}$ \ ($n\in\mathbb N$ و$n\ge2$)\\\hline
 $]0;+\infty[$ & $2\sqrt x+c$ & $\dfrac1{\sqrt x}$\\\hline
@@ -253,12 +254,12 @@ $]0;+\infty[$ & $2\sqrt x+c$ & $\dfrac1{\sqrt x}$\\\hline
 \begin{khassia}[$u$ دالة قابلة للاشتقاق على مجال $I$]
 \begin{center}
 \renewcommand{\arraystretch}{2.1}
-\begin{tabular}{|C|c|c|}\hline
+\begin{tabular}{|C|C|C|}\hline
 \rowcolor{cSec!12} شروط على $u$ & الدوال الأصلية & الدالة $f$\\\hline
 -- & $\dfrac12u^2+c$ & $u'u$\\\hline
--- & $\dfrac{1}{n+1}u^{n+1}+c$ & $u'u^n$ \ ($n\in\mathbb N^*$)\\\hline
+-- & $\dfrac{1}{n+1}u^{n+1}+c$ & $u'u^n\ \ (n\in\mathbb N^*)$\\\hline
 $u(x)\neq0$ على $I$ & $-\dfrac1u+c$ & $\dfrac{u'}{u^2}$\\\hline
-$u(x)\neq0$ على $I$ & $-\dfrac{1}{(n-1)u^{n-1}}+c$ & $\dfrac{u'}{u^n}$ \ ($n\ge2$)\\\hline
+$u(x)\neq0$ على $I$ & $-\dfrac{1}{(n-1)u^{n-1}}+c$ & $\dfrac{u'}{u^n}\ \ (n\ge2)$\\\hline
 $u(x)>0$ على $I$ & $2\sqrt u+c$ & $\dfrac{u'}{\sqrt u}$\\\hline
 \end{tabular}
 \end{center}
@@ -466,10 +467,10 @@ $f(x)=x^2-1$. \ احسب مساحة الحيز المحدد بـ $(C_f)$ ومح�
 
 \textbf{الوضع النسبي:} $f(x)=(x-1)(x+1)$:
 \begin{center}
-\begin{tabular}{|C|c|c|c|c|c|}\hline
+\begin{tabular}{|C|C|C|C|C|C|}\hline
 \rowcolor{cSec!12} $x$ & $0$ & & $1$ & & $2$\\\hline
 إشارة $f(x)$ & & $-$ & $0$ & $+$ & \\\hline
-الوضع النسبي & & \ar{$(C_f)$ تحت $(xx')$} & & \ar{$(C_f)$ فوق $(xx')$} & \\\hline
+الوضع النسبي & & $(C_f)$ تحت $(xx')$ & \yq{(C_f)}{(xx')} & $(C_f)$ فوق $(xx')$ & \\\hline
 \end{tabular}
 \end{center}
 \begin{FIG}
@@ -495,10 +496,10 @@ $f(x)=-x^2+4x$ و$g(x)=x$. \ احسب مساحة الحيز المحصور بي�
 
 \textbf{التقاطع:} $-x^2+4x=x$ معناه $x(3-x)=0$: \ $x=0$ أو $x=3$. \quad \textbf{الوضع النسبي:} $f(x)-g(x)=x(3-x)$:
 \begin{center}
-\begin{tabular}{|C|c|c|c|}\hline
+\begin{tabular}{|C|C|C|C|}\hline
 \rowcolor{cSec!12} $x$ & $0$ & & $3$\\\hline
 إشارة $f(x)-g(x)$ & $0$ & $+$ & $0$\\\hline
-الوضع النسبي & & \ar{$(C_f)$ فوق $(C_g)$} & \\\hline
+الوضع النسبي & \yq{(C_f)}{(C_g)} & $(C_f)$ فوق $(C_g)$ & \yq{(C_f)}{(C_g)}\\\hline
 \end{tabular}
 \end{center}
 \begin{FIG}
@@ -559,10 +560,10 @@ $f(x)=x^2-4x+3$ و$g(x)=x-1$ ، $(C_f)$ و$(C_g)$ تمثيلاهما في معل
 \begin{hal}
 \QQ{1} $f(x)=(x-1)(x-3)$:
 \begin{center}
-\begin{tabular}{|C|c|c|c|c|c|}\hline
+\begin{tabular}{|C|C|C|C|C|C|}\hline
 \rowcolor{cSec!12} $x$ & $0$ & & $1$ & & $3$\\\hline
 إشارة $f(x)$ & & $+$ & $0$ & $-$ & $0$\\\hline
-الوضع النسبي & & \ar{$(C_f)$ فوق $(xx')$} & & \ar{$(C_f)$ تحت $(xx')$} & \\\hline
+الوضع النسبي & & $(C_f)$ فوق $(xx')$ & \yq{(C_f)}{(xx')} & $(C_f)$ تحت $(xx')$ & \yq{(C_f)}{(xx')}\\\hline
 \end{tabular}
 \end{center}
 \[\mathcal A_1=\int_0^1f(x)\,dx=\left[\frac{x^3}{3}-2x^2+3x\right]_0^1=\frac13-2+3=\frac43\]
@@ -571,10 +572,10 @@ $f(x)=x^2-4x+3$ و$g(x)=x-1$ ، $(C_f)$ و$(C_g)$ تمثيلاهما في معل
 
 $f(x)-g(x)=(x-1)(x-4)$:
 \begin{center}
-\begin{tabular}{|C|c|c|c|c|c|c|c|}\hline
+\small\setlength{\tabcolsep}{3pt}\begin{tabular}{|C|C|C|C|C|C|C|C|}\hline
 \rowcolor{cSec!12} $x$ & $-\infty$ & & $1$ & & $4$ & & $+\infty$\\\hline
 إشارة $f(x)-g(x)$ & & $+$ & $0$ & $-$ & $0$ & $+$ & \\\hline
-الوضع النسبي & & \ar{$(C_f)$ فوق $(C_g)$} & & \ar{$(C_f)$ تحت $(C_g)$} & & \ar{$(C_f)$ فوق $(C_g)$} & \\\hline
+الوضع النسبي & & $(C_f)$ فوق $(C_g)$ & \yq{(C_f)}{(C_g)} & $(C_f)$ تحت $(C_g)$ & \yq{(C_f)}{(C_g)} & $(C_f)$ فوق $(C_g)$ & \\\hline
 \end{tabular}
 \end{center}
 \QQ{3} على $[1;4]$: $(C_g)$ فوق $(C_f)$:
@@ -611,7 +612,7 @@ $f(x)-g(x)=(x-1)(x-4)$:
 \end{enumerate}
 \end{BOX}
 
-\section{خلاصة الطرائق}
+\origNeedspace{22\baselineskip}\section{خلاصة الطرائق}
 \begin{BOX}{cMeth}{الطريقة حسب المطلوب}
 \begin{center}
 \renewcommand{\arraystretch}{1.35}
