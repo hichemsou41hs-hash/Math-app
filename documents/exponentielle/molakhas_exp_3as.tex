@@ -165,6 +165,7 @@
 \SetHeader{\small\bfseries\color{cSec}ملخص: الدالة الأسية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
 \let\origNeedspace\Needspace
 \renewcommand{\Needspace}[1]{\origNeedspace{14\baselineskip}}
+\newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
 \begin{document}
 \begin{LTR}
 \begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
@@ -307,7 +308,30 @@ $e^{x}=1\iff x=0$ \qquad $e^{x}>1\iff x>0$ \qquad $0<e^{x}<1\iff x<0$
 معادلة المماس $(T)$ عند النقطة ذات الفاصلة $0$: \ $y=e^{0}(x-0)+e^{0}$ أي \bx{y=x+1}.\par
 نضع $\varphi(x)=e^{x}-x-1$، فيكون $\varphi'(x)=e^{x}-1$: سالبة على $]-\infty;0]$ وموجبة على $[0;+\infty[$؛ إذن $\varphi$ تقبل قيمة حدية صغرى $\varphi(0)=0$، ومنه:
 \[ \text{من أجل كل } x\in\R:\qquad \bx{e^{x}\geqslant x+1} \]
-أي أن المنحنى يقع \textbf{فوق} مماسه $(T)$ ويمسه في النقطة $A(0;1)$.
+أي أن المنحنى يقع \textbf{فوق} مماسه $(T)$ ويمسه في النقطة $A(0;1)$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$e^{x}-(x+1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C)$\\ \ar{فوق}\\ $(T)$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C)$\\ \ar{فوق}\\ $(T)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C)$ يمس}\\ $(T)$\\ \ar{في النقطة}\\ $A(0;1)$};
+\end{tikzpicture}
+\end{FIG}
 \end{khassia}
 
 \begin{GR}{-4}{4}{-2}{5}{0.85}
@@ -688,9 +712,29 @@ $\lim\limits_{x\to+\infty}f(x)=\bx{-\infty}$ لأن $(3-x)e^{x}\to-\infty$ و $-
 \end{TAB}
 \pc $f(x)-(-x)=(3-x)e^{x}=3e^{x}-xe^{x}$ و $\lim\limits_{x\to-\infty}\left(3e^{x}-xe^{x}\right)=0$، إذن \bx{y=-x} معادلة مقارب مائل لـ $(C_f)$ بجوار $-\infty$.\par
 إشارة $f(x)+x=(3-x)e^{x}$ هي إشارة $3-x$:
-\begin{itemize}
-\item على $]-\infty;3[$: $(C_f)$ فوق $(\Delta)$؛ \ على $]3;+\infty[$: $(C_f)$ تحت $(\Delta)$؛ \ ويتقاطعان في النقطة $(3;-3)$.
-\end{itemize}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)+x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$3$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $A(3;-3)$};
+\end{tikzpicture}
+\end{FIG}
 \pd $f(0)=3$ و $f'(0)=g(0)=1$، إذن $(T):y=1\times(x-0)+3$ أي \bx{y=x+3}.
 \begin{GR}{-5}{3.5}{-3.5}{6.5}{0.75}
 \Ticks{-4,-3,-2,1}{-3,-2,-1,1,2,3,4,5,6}
@@ -759,7 +803,30 @@ $\lim\limits_{x\to+\infty}f(x)=\lim\limits_{x\to+\infty}\left(xe^{-x}-e^{-x}+x+1
 \tkzTabVar{-/$-\infty$,+/$+\infty$}
 \end{TAB}
 \pc $f(x)-(x+1)=(x-1)e^{-x}=xe^{-x}-e^{-x}$ و $\lim\limits_{x\to+\infty}\left(xe^{-x}-e^{-x}\right)=0$، إذن \bxt{$(\Delta):y=x+1$ مقارب مائل لـ $(C_f)$ بجوار $+\infty$}.\par
-إشارة الفرق هي إشارة $x-1$ (لأن $e^{-x}>0$): على $]-\infty;1[$: $(C_f)$ تحت $(\Delta)$؛ على $]1;+\infty[$: $(C_f)$ فوق $(\Delta)$؛ ويتقاطعان في $A(1;2)$.
+إشارة الفرق هي إشارة $x-1$ (لأن $e^{-x}>0$):
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x+1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $A(1;2)$};
+\end{tikzpicture}
+\end{FIG}
 \pd $f''(x)=-e^{-x}-(2-x)e^{-x}=(x-3)e^{-x}$: تنعدم عند $3$ مغيرة إشارتها (سالبة ثم موجبة)، إذن \bx{\omega\left(3;\,4+2e^{-3}\right)} نقطة انعطاف ($f(3)\approx4{,}10$).
 \pe $(T_k)$ معامل توجيهه $1$، فهو مماس عند نقطة فاصلتها $x_0$ تحقق $f'(x_0)=1$:
 \[ (2-x_0)e^{-x_0}+1=1\iff(2-x_0)e^{-x_0}=0\iff x_0=2 \]
@@ -831,7 +898,30 @@ $\lim\limits_{x\to-\infty}f(x)=\bx{-\infty}$ (لأن $x\to-\infty$ و $e^{x}+1\t
 \tkzTabVar{-/$-\infty$,+/$f(\alpha)$,-/$2$}
 \end{TAB}
 \pc $f(x)-(x+2)=\dfrac{x}{e^{x}+1}-x=\dfrac{-xe^{x}}{e^{x}+1}$ و $\lim\limits_{x\to-\infty}\dfrac{-xe^{x}}{e^{x}+1}=\dfrac{0}{1}=0$ (لأن $xe^{x}\to0$)، إذن \bxt{$(d):y=x+2$ مقارب مائل بجوار $-\infty$}.\par
-إشارة الفرق هي إشارة $-x$: $(C_f)$ فوق $(d)$ على $]-\infty;0[$، وتحته على $]0;+\infty[$، ويقطعه في $(0;2)$.
+إشارة الفرق هي إشارة $-x$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x+2)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(d)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(d)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(d)$\\ \ar{في النقطة}\\ $A(0;2)$};
+\end{tikzpicture}
+\end{FIG}
 \pd $g(\alpha)=0$ يعني $(1-\alpha)e^{\alpha}=-1$ أي $e^{\alpha}=\dfrac{1}{\alpha-1}$، ومنه $e^{\alpha}+1=\dfrac{\alpha}{\alpha-1}$ و:
 \[ f(\alpha)=\alpha\times\frac{\alpha-1}{\alpha}+2=\bx{\alpha+1} \]
 ومن $1{,}27<\alpha<1{,}28$: \ \bx{2{,}27<f(\alpha)<2{,}28}.
@@ -903,11 +993,37 @@ $2{,}1<\alpha+1<2{,}2$، إذن $\frac{1}{2{,}2}<f(\alpha)<\frac{1}{2{,}1}$ أي
 f(x)-x&=\frac{e^{x}-1-x^{2}e^{x}-x}{xe^{x}+1}=\frac{\left(1-x^{2}\right)e^{x}-(1+x)}{xe^{x}+1}\\
 &=\frac{(1+x)\left[(1-x)e^{x}-1\right]}{xe^{x}+1}=\bx{\frac{(1+x)K(x)}{xe^{x}+1}}
 \end{align*}
-بما أن $xe^{x}+1>0$ و $K(x)<0$ من أجل $x\neq0$، فإشارة الفرق عكس إشارة $1+x$:
-\begin{itemize}
-\item على $]-\infty;-1[$: $(C_f)$ فوق $(T)$؛ \ على $]-1;0[\cup]0;+\infty[$: $(C_f)$ تحت $(T)$؛
-\item يتقاطعان في النقطتين $(-1;-1)$ و $O(0;0)$.
-\end{itemize}
+بما أن $xe^{x}+1>0$ و $K(x)<0$ من أجل $x\neq0$ و $K(0)=0$، فإشارة الفرق عكس إشارة $1+x$ وتنعدم عند $-1$ و $0$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (6.69773,-0.45){$-1$};
+\node at (11.4023,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (4.24886,-1.35){$+$};
+\node[align=center,font=\small] at (4.24886,-3.2){$(C_f)$\\ \ar{فوق}\\ $(T)$};
+\node at (9.05,-1.35){$-$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(T)$};
+\node at (13.8511,-1.35){$-$};
+\node[align=center,font=\small] at (13.8511,-3.2){$(C_f)$\\ \ar{تحت}\\ $(T)$};
+\node at (6.69773,-1.35){$0$};
+\draw[densely dotted] (6.69773,-0.9)--(6.69773,-1.13) (6.69773,-1.57)--(6.69773,-1.8);
+\draw (5.19773,-4.6) .. controls (5.27273,-3.06) and (6.24773,-2.136) .. (6.69773,-1.8) .. controls (7.14773,-2.136) and (8.12273,-3.06) .. (8.19773,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (6.69773,-3.65){\ar{$(C_f)$ يقطع}\\ $(T)$\\ \ar{في النقطة}\\ $B(-1;-1)$};
+\node at (11.4023,-1.35){$0$};
+\draw[densely dotted] (11.4023,-0.9)--(11.4023,-1.13) (11.4023,-1.57)--(11.4023,-1.8);
+\draw (9.90227,-4.6) .. controls (9.97727,-3.06) and (10.9523,-2.136) .. (11.4023,-1.8) .. controls (11.8523,-2.136) and (12.8273,-3.06) .. (12.9023,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (11.4023,-3.65){\ar{$(C_f)$ يمس}\\ $(T)$\\ \ar{في النقطة}\\ $O(0;0)$};
+\end{tikzpicture}
+\end{FIG}
 \begin{GR}{-5}{5}{-1.5}{1.5}{0.95}
 \Ticks{-4,-3,-2,-1,1,2,3,4}{-1,1}
 \draw[cRem,thick,dashed] (-5,-1)--(5,-1);
@@ -951,7 +1067,47 @@ $\lim\limits_{x\to0^{+}}f(x)=\bx{-\infty}$ (لأن $e^{x}-1\to0^{+}$)؛ \ $\lim\
 \end{TAB}
 \pc $f(x)-x=\dfrac{-4}{3\left(e^{x}-1\right)}\xrightarrow[x\to+\infty]{}0$: \ $(\Delta):y=x$ مقارب مائل بجوار $+\infty$.\par
 $f(x)-\left(x+\frac{4}{3}\right)=\dfrac{-4-4\left(e^{x}-1\right)}{3\left(e^{x}-1\right)}=\dfrac{-4e^{x}}{3\left(e^{x}-1\right)}\xrightarrow[x\to-\infty]{}0$: \ $(\Delta'):y=x+\frac{4}{3}$ مقارب مائل بجوار $-\infty$.\par
-إشارة الفرقين عكس إشارة $e^{x}-1$: \ $(C_f)$ فوق $(\Delta)$ وفوق $(\Delta')$ على $]-\infty;0[$، وتحتهما على $]0;+\infty[$.
+إشارة الفرقين عكس إشارة $e^{x}-1$ (و $0$ قيمة ممنوعة):
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (6.175,-1.35){$+$};
+\node[align=center,font=\small] at (6.175,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (11.925,-1.35){$-$};
+\node[align=center,font=\small] at (11.925,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\draw[double,thick] (9.05,-0.9)--(9.05,-4.6);
+\end{tikzpicture}
+\end{FIG}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-\left(x+\frac43\right)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (6.175,-1.35){$+$};
+\node[align=center,font=\small] at (6.175,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta')$};
+\node at (11.925,-1.35){$-$};
+\node[align=center,font=\small] at (11.925,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta')$};
+\draw[double,thick] (9.05,-0.9)--(9.05,-4.6);
+\end{tikzpicture}
+\end{FIG}
 \pd على $]0;+\infty[$: $f$ مستمرة ومتزايدة تمامًا من $-\infty$ إلى $+\infty$: حل وحيد $\alpha$؛ \ $f(0{,}9)\approx-0{,}013<0$ و $f(1)\approx0{,}224>0$، إذن \bx{0{,}9<\alpha<1}.\par
 على $]-\infty;0[$: بنفس الطريقة حل وحيد $\beta$؛ \ $f(-1{,}7)\approx-0{,}069<0$ و $f(-1{,}6)\approx0{,}071>0$، إذن \bx{-1{,}7<\beta<-1{,}6}.
 \begin{TAB}
@@ -1012,7 +1168,30 @@ $f(x)-\left(x+\frac{4}{3}\right)=\dfrac{-4-4\left(e^{x}-1\right)}{3\left(e^{x}-1
 \tkzTabIma{1}{3}{2}{$3$}
 \end{TAB}
 \pc $\lim\limits_{x\to+\infty}\left[f(x)-x+1\right]=\lim\limits_{x\to+\infty}e^{2}\,xe^{-x}=\bx{0}$: \bxt{$(\Delta):y=x-1$ مقارب مائل بجوار $+\infty$}.\par
-إشارة الفرق $xe^{2-x}$ هي إشارة $x$: $(C_f)$ تحت $(\Delta)$ على $]-\infty;0[$، وفوقه على $]0;+\infty[$، ويقطعه في $(0;-1)$.
+إشارة الفرق $xe^{2-x}$ هي إشارة $x$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x-1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $A(0;-1)$};
+\end{tikzpicture}
+\end{FIG}
 \pd $f''(x)=-e^{2-x}-(1-x)e^{2-x}=(x-2)e^{2-x}$: تنعدم عند $2$ مغيرة إشارتها، إذن \bx{\Omega(2;3)} نقطة انعطاف (والمماس فيها أفقي لأن $f'(2)=0$).
 \pe $f'(x_0)=1\iff(1-x_0)e^{2-x_0}=0\iff x_0=1$ (حل وحيد)؛ $f(1)=e$، إذن \bx{(T):y=x-1+e}.
 \begin{GR}{-1}{5.5}{-3}{5.5}{0.85}
@@ -1064,7 +1243,30 @@ $g(x)<0$ على $]-\infty;\alpha[$ ، $g(x)>0$ على $]\alpha;+\infty[$.
 من $0{,}94<\alpha<0{,}95$: $3{,}1<5-2\alpha<3{,}12$ أي $9{,}61<(2\alpha-5)^{2}<9{,}7344$، و $5{,}1<7-2\alpha<5{,}12$.\par
 ومنه $\frac{9{,}61}{5{,}12}<-f(\alpha)<\frac{9{,}7344}{5{,}1}$ أي $1{,}87<-f(\alpha)<1{,}91$، إذن \bx{-1{,}91<f(\alpha)<-1{,}87}.
 \pd $f(x)-(2x-5)=-(2x-5)e^{-x}=-2xe^{-x}+5e^{-x}\xrightarrow[x\to+\infty]{}0$: \bxt{$(\Delta)$ مقارب مائل بجوار $+\infty$}.\par
-إشارة الفرق عكس إشارة $2x-5$: $(C_f)$ فوق $(\Delta)$ على $\left]-\infty;\frac{5}{2}\right[$، وتحته على $\left]\frac{5}{2};+\infty\right[$، ويقطعه في $A\left(\frac{5}{2};0\right)$.
+إشارة الفرق عكس إشارة $2x-5$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(2x-5)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$\frac52$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $A\left(\frac52;0\right)$};
+\end{tikzpicture}
+\end{FIG}
 \pe $f(x)=0\iff x=\frac{5}{2}$ أو $e^{-x}=1$ أي $x=0$:
 \begin{TAB}
 \tkzTabInit[lgt=2.6,espcl=2.2]{$x$/1,$2x-5$/1,$1-e^{-x}$/1,$f(x)$/1}{$-\infty$,$0$,$\frac{5}{2}$,$+\infty$}

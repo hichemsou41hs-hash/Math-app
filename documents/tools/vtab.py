@@ -1,6 +1,6 @@
 # Relative-position table in TikZ (teacher's model): label column left, dotted line at each zero,
 # a bell-shaped cell under each zero holding the intersection.
-def vtab(xs, diff, zeros, between, curve, other, W=15.5, meet='يقطع'):
+def vtab(xs, diff, zeros, between, curve, other, W=15.5, meet='يقطع', bars=()):
     """xs: x labels; diff: label of the difference row; zeros: {index: point text} for the zeros;
     between: list of 'فوق'/'تحت' per interval; curve/other: e.g. '(C_f)', "(xx')"."""
     L, h1, h2, h3 = 2.6, 0.9, 0.9, 2.8
@@ -30,8 +30,13 @@ def vtab(xs, diff, zeros, between, curve, other, W=15.5, meet='يقطع'):
         sg = '+' if pos == 'فوق' else '-'
         s.append(r'\node at (%g,%g){$%s$};' % (xm, (y1 + y2) / 2, sg))
         s.append(r'\node[align=center,font=\small] at (%g,%g){$%s$\\ \ar{%s}\\ $%s$};' % (xm, (y2 + yb) / 2, curve, pos, other))
+    for i in bars:   # value excluded from the domain: double bar
+        s.append(r'\draw[double,thick] (%g,%g)--(%g,%g);' % (X[i], y1, X[i], yb))
     for i, pt in zeros.items():
         x = X[i]
+        mt = meet
+        if isinstance(pt, tuple):   # (point, word) e.g. ('O(0;0)', 'يمس')
+            pt, mt = pt
         s.append(r'\node at (%g,%g){$0$};' % (x, (y1 + y2) / 2))
         ym = (y1 + y2) / 2
         s.append(r'\draw[densely dotted] (%g,%g)--(%g,%g) (%g,%g)--(%g,%g);' % (x, y1, x, ym + 0.22, x, ym - 0.22, x, y2))
@@ -39,6 +44,6 @@ def vtab(xs, diff, zeros, between, curve, other, W=15.5, meet='يقطع'):
                  % (x - w, yb, x - 0.95 * w, yb + 0.55 * h3, x - 0.3 * w, y2 - 0.12 * h3, x, y2,
                     x + 0.3 * w, y2 - 0.12 * h3, x + 0.95 * w, yb + 0.55 * h3, x + w, yb))
         s.append(r'\node[align=center,font=\footnotesize,inner sep=0pt] at (%g,%g){\ar{$%s$ %s}\\ $%s$\\ \ar{في النقطة}\\ $%s$};'
-                 % (x, yb + 0.95, curve, meet, other, pt))
+                 % (x, yb + 0.95, curve, mt, other, pt))
     s.append(r'\end{tikzpicture}')
     return r'\begin{FIG}' + '\n' + '\n'.join(s) + '\n' + r'\end{FIG}'
