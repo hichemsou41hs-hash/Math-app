@@ -12,7 +12,7 @@ def parse(s):
     diff = re.search(r'\\node(?:\[font=\\[a-z]+\])? at \([\d.]+,-1\.35\)\{\$(.*?)\$\};', s).group(1)
     iv = re.findall(r'\\node\[align=center,font=\\(?:small|footnotesize)\] at \(([\d.]+),[-\d.]+\)\{\$(.*?)\$\\\\ \\ar\{(.*?)\}\\\\ \$(.*?)\$\};', s)
     between = [p for _, _, p, _ in sorted(iv, key=lambda r: float(r[0]))]
-    curve, other = iv[0][1], iv[0][3]
+    curve, other = next((c, o) for _, c, p, o in iv if p)
     X = [x for x, _ in xs_pos]
     near = lambda x: min(range(len(X)), key=lambda i: abs(X[i] - x))
     zeros = {}

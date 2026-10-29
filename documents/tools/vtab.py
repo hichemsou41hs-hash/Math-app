@@ -34,6 +34,10 @@ def vtab(xs, diff, zeros, between, curve, other, W=15.5, meet='يقطع', bars=(
         s.append(r'\node at (%g,%g){$%s$};' % (X[i], y1 / 2, x))
     for i, pos in enumerate(between):
         xm = (X[i] + (w if i in zeros else 0) + X[i + 1] - (w if i + 1 in zeros else 0)) / 2
+        if not pos:   # interval outside the domain: hatched, no sign
+            s.append(r'\fill[pattern=north east lines,pattern color=gray!55] (%g,%g) rectangle (%g,%g);' % (X[i], y1, X[i + 1], yb))
+            s.append(r'\node[align=center,font=\small] at (%g,%g){$$\\ \ar{}\\ $$};' % (xm, (y2 + yb) / 2))
+            continue
         sg = '+' if pos == 'فوق' else '-'
         s.append(r'\node at (%g,%g){$%s$};' % (xm, (y1 + y2) / 2, sg))
         s.append(r'\node[align=center,font=%s] at (%g,%g){$%s$\\ \ar{%s}\\ $%s$};' % ('\\small' if room > 2 else '\\footnotesize', xm, (y2 + yb) / 2, curve, pos, other))
