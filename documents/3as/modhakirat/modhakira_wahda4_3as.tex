@@ -3,7 +3,7 @@
 %  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
 % ============================================================
 \documentclass[12pt,a4paper]{article}
-\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage[a4paper,margin=1.2cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{icomma}
 \usepackage[english,bidi=default,layout=lists]{babel}
@@ -188,159 +188,273 @@
 \end{LTR}
 \par\smallskip\textbf{الوسائل:} #9\par\smallskip}
 \newenvironment{Sayr}{%
-\begin{LTR}\renewcommand{\arraystretch}{1.25}
-\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
-\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\begin{LTR}\renewcommand{\arraystretch}{1.25}\setlength{\tabcolsep}{4pt}\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\begin{longtable}{|p{0.09\textwidth}|>{\centering\arraybackslash}p{0.05\textwidth}|p{0.71\textwidth}|>{\centering\arraybackslash}p{0.09\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\footnotesize\textbf{توجيهات وتعاليق}} & \ar{\footnotesize\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\footnotesize\textbf{مراحل الحصة}}\\\hline\endhead
 \hline\endfoot}{\end{longtable}\end{LTR}}
 % سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
-\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
+\newcommand{\RaggedEnd}{\leftskip=0pt plus 1fil\relax}
+\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{\RaggedEnd #2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
 
 \newcommand{\Lab}[2]{\foreignlanguage{english}{\tcbox[on line,colback=#1,colframe=#1,boxrule=0pt,arc=2pt,boxsep=1pt,left=5pt,right=5pt,top=1pt,bottom=1pt]{\ar{\textcolor{white}{\textbf{#2}}}}}}
 \newcommand{\Num}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[fill=cDef,text=white,inner sep=2pt,font=\footnotesize\bfseries](c){#1};}}
 \newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
 \newenvironment{Kad}[1]{\par\smallskip\Lab{#1}}{\par}
+\newcommand{\RR}[1]{\ifmmode{\color{cThm}#1}\else$\mbox{\color{cThm}#1}$\fi}
+\newcommand{\T}[1]{$\mbox{\color{cDef}\bfseries #1}$}
 \SetHeader{\small\bfseries\color{cSec}مذكرات محور: التزايد المقارن ودراسة الدوال}{\small\color{cSec}السنة الثالثة ثانوي -- علوم تجريبية}
 \begin{document}
 \begin{LTR}
 \begin{tcolorbox}[enhanced,colback=cThm!85!black,colframe=cThm!85!black,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
 {\color{white}\fontsize{24}{30}\selectfont\bfseries مذكرات محور: التزايد المقارن ودراسة الدوال}\\[8pt]
-{\color{white}\large السنة الثالثة ثانوي -- علوم تجريبية (صالحة لشعبتي رياضيات وتقني رياضي)}\\[4pt]
+{\color{white}\large السنة الثالثة ثانوي -- علوم تجريبية}\\[4pt]
 {\color{white}\large 6 مذكرات (12 ساعة) -- السنة الدراسية 2026-2027}
 \end{tcolorbox}
 \end{LTR}
 \begin{BOX}{cThm}{يتضمن هذا العمل}
 \begin{enumerate}[label=\textbf{مذكرة \arabic{enumi}:},leftmargin=6em,start=23]
-\item قوى عدد حقيقي موجب تماماً ، الدالة $x\mapsto a^x$.
+\item قوى عدد حقيقي موجب تمامًا ، الدالة $x\mapsto a^x$.
 \item الجذر النوني ، دوال القوى.
-\item التزايد المقارن.
-\item تطبيقات على النهايات الأسية واللوغاريتمية.
+\item التزايد المقارن: الأسية ودوال القوى.
+\item التزايد المقارن: اللوغاريتمية ودوال القوى ، نهايات بالعدد المشتق.
 \item دراسة دوال أسية.
 \item دراسة دوال لوغاريتمية ، حل مشكلات.
 \end{enumerate}
-مراجع النشاطات والتمارين: الكتاب المدرسي للسنة الثالثة ثانوي ، الجزء الأول (باب الدوال الأسية واللوغاريتمية ودوال القوى: نشاطا ص 120 ، تمارين ص 137--141).
+الحلول مفصّلة: المعطيات بالأسود ، \T{العناوين} و\RR{النتائج} بلون مختلف ، وكل سؤال في سطر.
 \end{BOX}
 \newpage
-\ModhHead{23}{3 ع ت}{تحليل}{التزايد المقارن ودراسة الدوال}{02 سا}{قوى عدد حقيقي موجب تماماً ، الدالة $x\mapsto a^x$}%
-{\begin{itemize}\item الدالتان الأسية واللوغاريتمية.\end{itemize}}%
-{\begin{itemize}\item تعريف $a^x$ واستعمال خواصه ، ودراسة الدالة $x\mapsto a^x$.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+\ModhHead{23}{3 ع ت}{تحليل}{التزايد المقارن ودراسة الدوال}{02 سا}{قوى عدد حقيقي موجب تمامًا ، الدالة $x\mapsto a^x$}%
+{\begin{itemize}\item الدالتان الأسية واللوغاريتمية وخواصهما.\end{itemize}}%
+{\begin{itemize}\item تعريف $a^x$ واستعمال خواصه.\item دراسة الدالة $x\mapsto a^x$ وحل معادلات ومتراجحات.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة العلمية ، برمجية Geogebra.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} نعرف $2^3$ و $2^{-1}$ و $2^{\frac12}$: فما معنى $2^{\sqrt2}$ ؟}{10 د}{سؤال تحفيزي.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مناقشة نشاط 01 صفحة 120}\par\ck\ من أجل $n$ صحيح: $a^n=e^{n\ln a}$ ؛ نمدد هذا الدستور إلى كل عدد حقيقي $x$.\par
-}{35 د}{نشاط الكتاب.}
+\Lab{cEx}{نشاط رقم 01}\ (نشاط 01 صفحة 120) $a$ عدد حقيقي موجب تمامًا و $n$ عدد صحيح.\par\textbf{(1)} بيّن أن $a^n=e^{n\ln a}$.\par\textbf{(2)} احسب بهذه الكتابة $2^3$ و $2^{-1}$.\par\textbf{(3)} اقترح تعريفًا للعدد $2^{\sqrt2}$ واحسب قيمة تقريبية له.}{35 د}{مناقشة النشاط.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $a=e^{\ln a}$ ، إذن $a^n=\left(e^{\ln a}\right)^n=\RR{e^{n\ln a}}$.\par\textbf{(2)} $2^3=e^{3\ln2}=\RR{8}$ ؛ $2^{-1}=e^{-\ln2}=\RR{\dfrac12}$.\par\textbf{(3)} نمدد الكتابة: $2^{\sqrt2}=e^{\sqrt2\ln2}\approx\RR{2{,}665}$.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ من أجل $a>0$ و $x$ حقيقي: $a^x=e^{x\ln a}$.\par\Lab{cThm}{خاصية}\ $a^{x+y}=a^xa^y$ ؛ $(a^x)^y=a^{xy}$ ؛ $(ab)^x=a^xb^x$ ؛ $\ln(a^x)=x\ln a$.\par}{50 د}{جدول الخواص.}
+\Lab{cDef}{تعريف}\ من أجل كل عدد حقيقي $a>0$ ومن أجل كل عدد حقيقي $x$: $\RR{a^x=e^{x\ln a}}$.}{50 د}{الخواص تُبرهن.}
 \Row{}{%
-\Lab{cThm}{الدالة $x\mapsto a^x$}\ مشتقتها $(\ln a)\,a^x$: متزايدة تماماً إذا كان $a>1$ ، ومتناقصة تماماً إذا كان $0<a<1$.\par\Lab{cEx}{مثال}\ $2^x=8\Leftrightarrow x=3$ ؛ $3^{2x}=5\Leftrightarrow2x\ln3=\ln5\Leftrightarrow x=\dfrac{\ln5}{2\ln3}$.\par}{}{}
+\Lab{cThm}{قواعد الحساب}\ من أجل $a>0$ ، $b>0$ و $x$ ، $y$ حقيقيين:\par\textbf{(1)} $\RR{a^{x+y}=a^x\times a^y}$ ؛ $\RR{a^{-x}=\dfrac1{a^x}}$ ؛ $\RR{a^{x-y}=\dfrac{a^x}{a^y}}$.\par\textbf{(2)} $\RR{\left(a^x\right)^y=a^{xy}}$ ؛ $\RR{(ab)^x=a^x\,b^x}$.\par\textbf{(3)} $\RR{\ln\left(a^x\right)=x\ln a}$.}{}{}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ $a^x$ معرف من أجل $a>0$ فقط.}{}{}
+\Lab{cMeth}{البرهان}\ $a^{x+y}=e^{(x+y)\ln a}=e^{x\ln a}\times e^{y\ln a}=a^x\times a^y$ (بنفس الطريقة للبقية).}{}{}
+\Row{}{%
+\Lab{cThm}{الدالة $x\mapsto a^x$}\par\textbf{(1)} مشتقتها: $\left(a^x\right)^{\prime}=\left(e^{x\ln a}\right)^{\prime}=\RR{(\ln a)\,a^x}$.\par\textbf{(2)} إذا كان $a>1$: $\ln a>0$ ، \RR{متزايدة} \RR{تمامًا} ، $\lim\limits_{x\to+\infty}a^x=+\infty$ و $\lim\limits_{x\to-\infty}a^x=0$.\par\textbf{(3)} إذا كان $0<a<1$: $\ln a<0$ ، \RR{متناقصة} \RR{تمامًا} ، $\lim\limits_{x\to+\infty}a^x=0$ و $\lim\limits_{x\to-\infty}a^x=+\infty$.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $2^x=8$: $2^x=2^3$ ، إذن $\RR{x=3}$.\par\textbf{(2)} $3^{2x}=5$: $2x\ln3=\ln5$ ، إذن $\RR{x=\dfrac{\ln5}{2\ln3}}\approx0{,}73$.\par\textbf{(3)} $4^x-3\times2^x+2=0$: نضع $X=2^x>0$ ، $4^x=X^2$: $X^2-3X+2=0$ ، $X=1$ أو $X=2$:\par $2^x=1$ يعطي $x=0$ ، و $2^x=2$ يعطي $x=1$: $\RR{S=\{0;1\}}$.\par\textbf{(4)} $\left(\frac12\right)^x\geqslant\frac18$: $\left(\frac12\right)^x\geqslant\left(\frac12\right)^3$ ، والدالة متناقصة تمامًا ($a=\frac12<1$) ، إذن $\RR{x\leqslant3}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ $a^x$ معرف من أجل $a>0$ فقط ، و $(-2)^x$ غير معرف عمومًا.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par حل في $\mathbb R$: $\left(\frac12\right)^x\geqslant\frac18$.\par\textbf{الحل:} $\left(\frac12\right)^x\geqslant\left(\frac12\right)^3$ والدالة متناقصة: $x\leqslant3$.\par\textbf{واجب منزلي:} تمارين من باب التزايد المقارن.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\par\textbf{(1)} حل في $\mathbb R$: $2^{x+1}=3^x$.\par\textbf{(2)} احسب مشتقة $f(x)=3^x$ وادرس اتجاه تغيرها.\par\textbf{(3)} احسب $\lim\limits_{x\to+\infty}\left(\frac23\right)^x$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} نأخذ $\ln$ للطرفين: $(x+1)\ln2=x\ln3$ ، أي $x(\ln3-\ln2)=\ln2$:\par $\RR{x=\dfrac{\ln2}{\ln\frac32}}\approx1{,}71$.\par\textbf{(2)} $f^{\prime}(x)=\RR{(\ln3)\,3^x}>0$ لأن $\ln3>0$: \RR{$f$} \RR{متزايدة} \RR{تمامًا} \RR{على} \RR{$\mathbb R$}.\par\textbf{(3)} $0<\frac23<1$ ، إذن $\RR{\lim\limits_{x\to+\infty}\left(\frac23\right)^x=0}$ (لأن $x\ln\frac23\to-\infty$).\par\textbf{واجب منزلي:} تمارين من باب التزايد المقارن.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
-\ModhHead{24}{3 ع ت}{تحليل}{التزايد المقارن ودراسة الدوال}{02 سا}{الجذر النوني ، دوال القوى}%
+\ModhHead{24}{3 ع ت}{تحليل}{التزايد المقارن ودراسة الدوال}{02 سا}{الجذر النوني ، دوال القوى $x\mapsto x^\alpha$}%
 {\begin{itemize}\item قوى عدد حقيقي ، مبرهنة القيم المتوسطة.\end{itemize}}%
-{\begin{itemize}\item تعريف الجذر النوني لعدد موجب ، ودراسة الدوال $x\mapsto x^\alpha$.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+{\begin{itemize}\item تعريف الجذر النوني لعدد موجب.\item دراسة الدوال $x\mapsto x^\alpha$.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة العلمية ، برمجية Geogebra.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} ما العدد الموجب الذي مكعبه $27$ ؟ والذي مكعبه $2$ ؟}{10 د}{سؤال.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مناقشة نشاط 02 صفحة 120}\par\ck\ الدالة $x\mapsto x^3$ مستمرة ومتزايدة تماماً على $[0;+\infty[$: لكل $a\geqslant0$ عدد وحيد $b\geqslant0$ حيث $b^3=a$.\par
-}{35 د}{نشاط الكتاب.}
-\Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ من أجل $a\geqslant0$ و $n\geqslant2$: $\sqrt[n]a$ هو العدد الموجب الوحيد $b$ حيث $b^n=a$ ، ومن أجل $a>0$: $\sqrt[n]a=a^{\frac1n}$.\par\Lab{cThm}{دوال القوى}\ $x\mapsto x^\alpha=e^{\alpha\ln x}$ على $]0;+\infty[$: مشتقتها $\alpha x^{\alpha-1}$ ؛ متزايدة إذا $\alpha>0$ ، متناقصة إذا $\alpha<0$.\par}{50 د}{الحاسبة.}
+\Lab{cEx}{نشاط رقم 02}\ (نشاط 02 صفحة 120) نعتبر $g(x)=x^3$ على $[0;+\infty[$.\par\textbf{(1)} ادرس اتجاه تغير $g$ ونهايتها عند $+\infty$.\par\textbf{(2)} بيّن أنه من أجل كل $a\geqslant0$ يوجد عدد وحيد $b\geqslant0$ حيث $b^3=a$.\par\textbf{(3)} عيّن $b$ لما $a=27$ ، ثم قيمة تقريبية لما $a=2$.}{35 د}{مناقشة النشاط.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $\sqrt[3]{27}=3$ ، $\sqrt[4]{16}=2$ ، $\sqrt[3]2\approx1{,}26$ ؛ $\sqrt[3]{8^2}=8^{\frac23}=4$.\par\Lab{cThm!80!black}{حذار}\ في هذا المستوى نعرف $\sqrt[n]a$ من أجل $a\geqslant0$.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $g^{\prime}(x)=3x^2\geqslant0$: $g$ \RR{مستمرة} \RR{ومتزايدة} \RR{تمامًا} ، و $\lim\limits_{x\to+\infty}x^3=+\infty$.\par\textbf{(2)} $g$ تقابل من $[0;+\infty[$ نحو $[0;+\infty[$ (مبرهنة القيم المتوسطة): للمعادلة $b^3=a$ \RR{حل} \RR{وحيد}.\par\textbf{(3)} $b=\RR{3}$ ؛ $b=2^{\frac13}=e^{\frac13\ln2}\approx\RR{1{,}26}$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $n$ عدد طبيعي ($n\geqslant2$) و $a\geqslant0$: \textbf{الجذر النوني} $\sqrt[n]a$ هو العدد الموجب الوحيد $b$ حيث $b^n=a$.\par ومن أجل $a>0$: $\RR{\sqrt[n]a=a^{\frac1n}=e^{\frac1n\ln a}}$.}{50 د}{الحاسبة.}
+\Row{}{%
+\Lab{cEx}{أمثلة}\par\textbf{(1)} $\sqrt[3]{27}=\RR{3}$ ؛ $\sqrt[4]{16}=\RR{2}$ ؛ $\sqrt[3]{8^2}=8^{\frac23}=\left(8^{\frac13}\right)^2=\RR{4}$.\par\textbf{(2)} $x^3=5$ على $[0;+\infty[$: $x=\sqrt[3]5=5^{\frac13}\approx\RR{1{,}71}$.}{}{}
+\Row{}{%
+\Lab{cThm}{دوال القوى}\ $\alpha$ عدد حقيقي و $x>0$: $x^\alpha=e^{\alpha\ln x}$.\par\textbf{(1)} المشتقة: $\left(x^\alpha\right)^{\prime}=\dfrac\alpha x\,e^{\alpha\ln x}=\RR{\alpha\,x^{\alpha-1}}$.\par\textbf{(2)} إذا كان $\alpha>0$: \RR{متزايدة} \RR{تمامًا} ، $\lim\limits_{x\to0^+}x^\alpha=0$ و $\lim\limits_{x\to+\infty}x^\alpha=+\infty$.\par\textbf{(3)} إذا كان $\alpha<0$: \RR{متناقصة} \RR{تمامًا} ، $\lim\limits_{x\to0^+}x^\alpha=+\infty$ و $\lim\limits_{x\to+\infty}x^\alpha=0$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نعرف $\sqrt[n]a$ في هذا المستوى من أجل $a\geqslant0$ فقط.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par حل في $]0;+\infty[$: $x^3=5$ ، ثم احسب مشتقة $f(x)=x^{\frac32}$.\par\textbf{الحل:} $x=5^{\frac13}\approx1{,}71$ ؛ $f^{\prime}(x)=\frac32x^{\frac12}=\frac32\sqrt x$.\par\textbf{واجب منزلي:} تمارين من باب التزايد المقارن.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\par\textbf{(1)} احسب $f^{\prime}(x)$ حيث $f(x)=x^{\frac32}$ على $]0;+\infty[$.\par\textbf{(2)} بسّط $A=\dfrac{\sqrt[3]{4}\times\sqrt[3]{2}}{\sqrt[4]{16}}$.\par\textbf{(3)} احسب $\lim\limits_{x\to+\infty}x^{-\frac12}$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $f^{\prime}(x)=\dfrac32x^{\frac12}=\RR{\dfrac32\sqrt x}$.\par\textbf{(2)} $\sqrt[3]4\times\sqrt[3]2=\sqrt[3]8=2$ و $\sqrt[4]{16}=2$ ، إذن $\RR{A=1}$.\par\textbf{(3)} $\alpha=-\frac12<0$ ، إذن $\RR{\lim\limits_{x\to+\infty}x^{-\frac12}=0}$.\par\textbf{واجب منزلي:} تمارين من باب التزايد المقارن.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
-\ModhHead{25}{3 ع ت}{تحليل}{التزايد المقارن ودراسة الدوال}{02 سا}{التزايد المقارن}%
-{\begin{itemize}\item نهايات $e^x$ و $\ln x$ ، الحصر.\end{itemize}}%
-{\begin{itemize}\item معرفة النهايات المرجعية للتزايد المقارن وتوظيفها في رفع حالات عدم التعيين.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+\ModhHead{25}{3 ع ت}{تحليل}{التزايد المقارن ودراسة الدوال}{02 سا}{التزايد المقارن للدوال $x\mapsto e^x$ و $x\mapsto x^n$}%
+{\begin{itemize}\item نهايات الدالة الأسية ، الاشتقاق ، اتجاه التغير.\end{itemize}}%
+{\begin{itemize}\item معرفة وتوظيف النهايات المرجعية للتزايد المقارن بين الدالة الأسية ودوال القوى.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة العلمية ، برمجية Geogebra.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} من «يكبر أسرع» لما $x\to+\infty$: $e^x$ أم $x^{10}$ ؟ جرب $x=10$ ، $50$ ، $100$.}{10 د}{تحدٍّ بالحاسبة.}
+\textbf{التهيئة النفسية:} من يكبر أسرع لما $x\to+\infty$: $e^x$ أم $x^{10}$ ؟ (نجرب بالحاسبة $x=10$ ، $50$).}{10 د}{تحدٍّ بالحاسبة.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ جدول قيم بالحاسبة: في البداية $x^{10}$ أكبر ، ثم $e^x$ يتجاوزه نهائياً.\par
-\ck\ $g(x)=e^x-\frac{x^2}2$: $g^{\prime\prime}(x)=e^x-1$ ، ونستنتج $e^x>\frac{x^2}2$ لما $x>0$ ، إذن $\dfrac{e^x}x>\dfrac x2$.\par
-}{35 د}{برهان مقارنة.}
-\Row{بناء المعارف}{%
-\Lab{cThm}{النهايات المرجعية}\par\ck\ $\lim\limits_{x\to +\infty}\dfrac{e^x}x=+\infty$ ؛ $\lim\limits_{x\to -\infty}xe^x=0$.\par
-\ck\ $\lim\limits_{x\to +\infty}\dfrac{\ln x}x=0$ ؛ $\lim\limits_{x\to 0^+}x\ln x=0$.\par
-\ck\ ومن أجل $n\geqslant1$: $\lim\limits_{x\to +\infty}\dfrac{e^x}{x^n}=+\infty$ ، $\lim\limits_{x\to +\infty}\dfrac{\ln x}{x^n}=0$.\par
-\Lab{cEx}{مثال}\ $\lim\limits_{x\to +\infty}(e^x-x)=\lim\limits_{x\to +\infty}x\left(\dfrac{e^x}x-1\right)=+\infty$ ؛ $\lim\limits_{x\to +\infty}(x-\ln x)=\lim\limits_{x\to +\infty}x\left(1-\dfrac{\ln x}x\right)=+\infty$.\par}{50 د}{جدول النهايات يُحفظ.}
+\Lab{cEx}{نشاط رقم 03}\ $f$ الدالة المعرفة على $[0;+\infty[$ بـ: $f(x)=e^x-\dfrac{x^2}2$.\par\textbf{(1)} ادرس اتجاه تغير $f^{\prime}$ على $[0;+\infty[$.\par\textbf{(2)} استنتج إشارة $f^{\prime}(x)$ ، ثم اتجاه تغير $f$.\par\textbf{(3)} استنتج إشارة $f(x)$ ، ثم أن $e^x>\dfrac{x^2}2$.\par\textbf{(4)} احسب $\lim\limits_{x\to+\infty}\dfrac{e^x}x$ ، ثم استنتج $\lim\limits_{x\to-\infty}xe^x$.}{35 د}{مناقشة النشاط من طرف التلاميذ.}
 \Row{}{%
-\Lab{cRem}{ملاحظات}\ «الأسية تتغلب على القوى ، والقوى تتغلب على اللوغاريتم».\par\Lab{cThm!80!black}{حذار}\ نحلل أولاً لإظهار إحدى النهايات المرجعية.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $f^{\prime}(x)=e^x-x$ ، $f^{\prime\prime}(x)=e^x-1\geqslant0$ على $[0;+\infty[$: \RR{$f^{\prime}$} \RR{متزايدة}.\par\textbf{(2)} $f^{\prime}(x)\geqslant f^{\prime}(0)=1>0$: \RR{$f$} \RR{متزايدة} \RR{تمامًا} \RR{على} \RR{$[0;+\infty[$}.\par\textbf{(3)} $f(x)\geqslant f(0)=1>0$ ، إذن $\RR{e^x>\dfrac{x^2}2}$.\par\textbf{(4)} من أجل $x>0$: $\dfrac{e^x}x>\dfrac x2$ و $\dfrac x2\to+\infty$ ، إذن $\RR{\lim\limits_{x\to+\infty}\dfrac{e^x}x=+\infty}$ (المقارنة).\par نضع $t=-x\to+\infty$: $xe^x=-\dfrac t{e^t}=-\dfrac1{\frac{e^t}t}\to\RR{0}$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خواص}\par\textbf{(1)} $\RR{\lim\limits_{x\to+\infty}\dfrac{e^x}x=+\infty}$ و $\RR{\lim\limits_{x\to-\infty}xe^x=0}$.\par\textbf{(2)} من أجل كل عدد طبيعي $n\neq0$: $\RR{\lim\limits_{x\to+\infty}\dfrac{e^x}{x^n}=+\infty}$ و $\RR{\lim\limits_{x\to-\infty}x^ne^x=0}$.}{50 د}{جدول النهايات يُحفظ.}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\ عند اللانهاية \RR{تتفوق} \RR{الدالة} \RR{الأسية} \RR{على} \RR{الدالة} \RR{قوة}.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $\lim\limits_{x\to+\infty}\dfrac{e^{x^3}}{x^3}$: نضع $X=x^3\to+\infty$: $\dfrac{e^X}X\to\RR{+\infty}$.\par\textbf{(2)} $\lim\limits_{x\to+\infty}\dfrac{e^{x^2}}x=\lim\limits_{x\to+\infty}x\times\dfrac{e^{x^2}}{x^2}=(+\infty)\times(+\infty)=\RR{+\infty}$.\par\textbf{(3)} $\lim\limits_{x\to+\infty}\dfrac{e^{2x-1}}x=\lim\limits_{x\to+\infty}\dfrac2e\times\dfrac{e^{2x}}{2x}=\RR{+\infty}$ (نضع $X=2x$).\par\textbf{(4)} $\lim\limits_{x\to+\infty}\left(x^5+3-e^x\right)=\lim\limits_{x\to+\infty}e^x\left(\dfrac{x^5}{e^x}+\dfrac3{e^x}-1\right)=(+\infty)\times(0+0-1)=\RR{-\infty}$.\par\textbf{(5)} $\lim\limits_{x\to+\infty}\dfrac{e^x-x}x=\lim\limits_{x\to+\infty}\left(\dfrac{e^x}x-1\right)=\RR{+\infty}$.\par\textbf{(6)} $\lim\limits_{x\to-\infty}\left(x^2-3\right)e^x=\lim\limits_{x\to-\infty}\left(x^2e^x-3e^x\right)=0-0=\RR{0}$.\par\textbf{(7)} $\lim\limits_{x\to-\infty}xe^{3x-1}=\lim\limits_{x\to-\infty}\dfrac1{3e}\times(3x)e^{3x}=\RR{0}$ (نضع $X=3x\to-\infty$).}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نحلل العبارة أولًا لإظهار إحدى النهايات المرجعية.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par احسب: $\lim\limits_{x\to +\infty}x^2e^{-x}$ ؛ $\lim\limits_{x\to +\infty}\dfrac{\ln x}{\sqrt x}$.\par\textbf{الحل:} $\dfrac{x^2}{e^x}\to0$ ؛ نضع $X=\sqrt x$: $\dfrac{2\ln X}X\to0$.\par\textbf{واجب منزلي:} تمرين 39 صفحة 137.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par احسب:\par\textbf{(1)} $\lim\limits_{x\to+\infty}x^2e^{-x}$.\par\textbf{(2)} $\lim\limits_{x\to+\infty}\left(e^{2x}-x^3\right)$.\par\textbf{(3)} $\lim\limits_{x\to-\infty}\left(x+1\right)e^{x}$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $x^2e^{-x}=\dfrac{x^2}{e^x}=\dfrac1{\frac{e^x}{x^2}}\to\RR{0}$.\par\textbf{(2)} $e^{2x}-x^3=e^{2x}\left(1-\dfrac{x^3}{e^{2x}}\right)$ ، و $\dfrac{x^3}{e^{2x}}=\dfrac18\times\dfrac{(2x)^3}{e^{2x}}\to0$ ، إذن النهاية $\RR{+\infty}$.\par\textbf{(3)} $(x+1)e^x=xe^x+e^x\to0+0=\RR{0}$.\par\textbf{واجب منزلي:} التمرينان 40 و 41 صفحة 136.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
-\ModhHead{26}{3 ع ت}{تحليل}{التزايد المقارن ودراسة الدوال}{02 سا}{تطبيقات على النهايات الأسية واللوغاريتمية}%
-{\begin{itemize}\item التزايد المقارن ، العدد المشتق.\end{itemize}}%
-{\begin{itemize}\item حساب نهايات أسية ولوغاريتمية باستعمال تغيير المتغير والعدد المشتق.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+\ModhHead{26}{3 ع ت}{تحليل}{التزايد المقارن ودراسة الدوال}{02 سا}{التزايد المقارن للدوال $x\mapsto\ln x$ و $x\mapsto x^n$ ، نهايات بالعدد المشتق}%
+{\begin{itemize}\item التزايد المقارن للدالة الأسية ، العدد المشتق.\end{itemize}}%
+{\begin{itemize}\item معرفة وتوظيف النهايات المرجعية للتزايد المقارن بين الدالة اللوغاريتمية ودوال القوى.\item حساب نهايات بالتعرف على عدد مشتق.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة العلمية ، برمجية Geogebra.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} ما نهاية $\dfrac{e^x-1}x$ عند $0$ ؟ و $\dfrac{\ln(1+x)}x$ ؟}{10 د}{سؤال.}
+\textbf{التهيئة النفسية:} التذكير بأن $\lim\limits_{t\to+\infty}\dfrac t{e^t}=0$.}{10 د}{تذكير.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ $\lim\limits_{x\to +\infty}x\left(e^{\frac1x}-1\right)$: نضع $h=\frac1x\to0^+$: $\dfrac{e^h-1}h\to1$.\par
-}{35 د}{تغيير المتغير.}
-\Row{بناء المعارف}{%
-\Lab{cMeth}{طريقة}\par\ck\ التعرف على عدد مشتق: $\lim\limits_{x\to 0}\dfrac{e^x-1}x=1$ ، $\lim\limits_{x\to 0}\dfrac{\ln(1+x)}x=1$.\par
-\ck\ تغيير المتغير ثم نهاية دالة مركبة.\par
-\ck\ استعمال خواص $\ln$ و $\exp$ لكتابة العبارة بشكل آخر.\par
-\Lab{cEx}{مثال}\ $\lim\limits_{x\to +\infty}\big(\ln(x+1)-\ln x\big)=\lim\limits_{x\to +\infty}\ln\left(1+\dfrac1x\right)=0$.\par}{50 د}{نقارن الطرق.}
+\Lab{cEx}{نشاط رقم 04}\par\textbf{(1)} من أجل $x>0$ نضع $t=\ln x$. احسب $\lim\limits_{x\to+\infty}\dfrac{\ln x}x$.\par\textbf{(2)} نضع $u=\dfrac1x$. بيّن أن $x\ln x=-\dfrac{\ln u}u$ ، ثم استنتج $\lim\limits_{x\to0^+}x\ln x$.}{35 د}{مناقشة النشاط من طرف التلاميذ.}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ نتحقق أن المتغير الجديد يؤول إلى القيمة المناسبة.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $x=e^t$ و $t\to+\infty$ لما $x\to+\infty$: $\dfrac{\ln x}x=\dfrac t{e^t}\to\RR{0}$.\par\textbf{(2)} $x\ln x=\dfrac1u\ln\dfrac1u=-\dfrac{\ln u}u$ ، و $u\to+\infty$ لما $x\to0^+$: $\RR{\lim\limits_{x\to0^+}x\ln x=0}$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خواص}\par\textbf{(1)} $\RR{\lim\limits_{x\to+\infty}\dfrac{\ln x}x=0}$ و $\RR{\lim\limits_{x\to0^+}x\ln x=0}$.\par\textbf{(2)} من أجل كل عدد طبيعي $n\neq0$: $\RR{\lim\limits_{x\to+\infty}\dfrac{\ln x}{x^n}=0}$ و $\RR{\lim\limits_{x\to0^+}x^n\ln x=0}$.}{50 د}{نقارن الطرق.}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\ عند اللانهاية \RR{تتفوق} \RR{الدالة} \RR{قوة} \RR{على} \RR{الدالة} \RR{اللوغاريتمية}.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $\lim\limits_{x\to+\infty}(x-\ln x)=\lim\limits_{x\to+\infty}x\left(1-\dfrac{\ln x}x\right)=(+\infty)\times1=\RR{+\infty}$.\par\textbf{(2)} $\lim\limits_{x\to0^+}(1-x)\ln x$: $1-x\to1$ و $\ln x\to-\infty$: النهاية $\RR{-\infty}$.\par\textbf{(3)} $\lim\limits_{x\to+\infty}\dfrac{\ln x}{4x^3-x^2+3}=\lim\limits_{x\to+\infty}\dfrac{\ln x}{x^3}\times\dfrac1{4-\frac1x+\frac3{x^3}}=0\times\dfrac14=\RR{0}$.\par\textbf{(4)} $\lim\limits_{x\to+\infty}\left(x^2+2x-\ln x\right)=\lim\limits_{x\to+\infty}x\left(x+2-\dfrac{\ln x}x\right)=\RR{+\infty}$.\par\textbf{(5)} $\lim\limits_{x\to0^+}\left(x^3-x\right)\ln x=\lim\limits_{x\to0^+}\left(x^2\times x\ln x-x\ln x\right)=0-0=\RR{0}$.}{}{}
+\Row{}{%
+\Lab{cMeth}{نهايات بالتعرف على عدد مشتق}\par\textbf{(1)} $\lim\limits_{x\to0}\dfrac{e^x-1}x=\exp^{\prime}(0)=\RR{1}$.\par\textbf{(2)} $\lim\limits_{x\to0}\dfrac{\ln(1+x)}x=\RR{1}$ (العدد المشتق لـ $x\mapsto\ln(1+x)$ عند $0$).\par\textbf{(3)} مثال: $\lim\limits_{x\to+\infty}x\left(e^{\frac1x}-1\right)$: نضع $h=\frac1x\to0^+$: $\dfrac{e^h-1}h\to\RR{1}$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par احسب: $\lim\limits_{x\to 0}\dfrac{e^{2x}-1}x$ ؛ $\lim\limits_{x\to +\infty}x\ln\left(1+\frac1x\right)$.\par\textbf{الحل:} $2\times\dfrac{e^{2x}-1}{2x}\to2$ ؛ $h=\frac1x$: $\dfrac{\ln(1+h)}h\to1$.\par\textbf{واجب منزلي:} تمرينا 67 صفحة 140 و 96 صفحة 141.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par احسب:\par\textbf{(1)} $\lim\limits_{x\to+\infty}\dfrac{\ln x}{\sqrt x}$.\par\textbf{(2)} $\lim\limits_{x\to0}\dfrac{e^{2x}-1}x$.\par\textbf{(3)} $\lim\limits_{x\to+\infty}x\ln\left(1+\dfrac1x\right)$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} نضع $X=\sqrt x$: $\ln x=2\ln X$ ، إذن $\dfrac{\ln x}{\sqrt x}=2\times\dfrac{\ln X}X\to\RR{0}$.\par\textbf{(2)} $\dfrac{e^{2x}-1}x=2\times\dfrac{e^{2x}-1}{2x}\to2\times1=\RR{2}$.\par\textbf{(3)} نضع $h=\frac1x\to0^+$: $\dfrac{\ln(1+h)}h\to\RR{1}$.\par\textbf{واجب منزلي:} التمرينان 42 و 45 صفحة 136 ، والتمرين 67 صفحة 140.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{27}{3 ع ت}{تحليل}{التزايد المقارن ودراسة الدوال}{02 سا}{دراسة دوال أسية}%
-{\begin{itemize}\item المشتقات ، التزايد المقارن.\end{itemize}}%
-{\begin{itemize}\item دراسة دالة أسية كاملة وتمثيلها.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية. ورق ميليمتري.}
+{\begin{itemize}\item المشتقات ، التزايد المقارن ، المستقيم المقارب.\end{itemize}}%
+{\begin{itemize}\item دراسة دالة أسية كاملة وتمثيلها البياني.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة العلمية ، برمجية Geogebra.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} ما خطوات دراسة دالة؟}{10 د}{سؤال تلخيصي.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ $f(x)=(x+1)e^{-x}$.\par\ck\ $\lim\limits_{x\to -\infty}f(x)=-\infty$ ؛ $\lim\limits_{x\to +\infty}f(x)=\lim\limits_{x\to +\infty}\left(\dfrac x{e^x}+\dfrac1{e^x}\right)=0$: $y=0$ مقارب.\par
-}{35 د}{عمل بالأفواج.}
-\Row{بناء المعارف}{%
-\Lab{cEx}{الدراسة}\par\ck\ $f^{\prime}(x)=e^{-x}-(x+1)e^{-x}=-xe^{-x}$: موجبة على $]-\infty;0]$ ، سالبة على $[0;+\infty[$.\par
-\ck\ قيمة حدية عظمى $f(0)=1$ ؛ تقاطع مع محور الفواصل في $(-1;0)$.\par
-\Lab{cMeth}{طريقة}\ مجموعة التعريف ، النهايات (التزايد المقارن) ، المشتقة ، جدول التغيرات ، نقط خاصة ، الرسم.\par}{50 د}{الحاسبة للتحقق.}
+\Lab{cEx}{نشاط رقم 05}\ $f(x)=(x+1)e^{-x}$ على $\mathbb R$.\par\textbf{(1)} احسب نهايتي $f$ عند $-\infty$ و $+\infty$.\par\textbf{(2)} احسب $f^{\prime}(x)$ وادرس إشارتها.\par\textbf{(3)} شكّل جدول التغيرات.}{35 د}{عمل بالأفواج.}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ إشارة $u\,e^{v}$ هي إشارة $u$.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} عند $-\infty$: $x+1\to-\infty$ و $e^{-x}\to+\infty$: $\RR{\lim\limits_{x\to-\infty}f(x)=-\infty}$.\par عند $+\infty$: $f(x)=\dfrac x{e^x}+\dfrac1{e^x}\to0+0$: $\RR{\lim\limits_{x\to+\infty}f(x)=0}$ ، والمستقيم $y=0$ مقارب أفقي.\par\textbf{(2)} $f^{\prime}(x)=e^{-x}-(x+1)e^{-x}=\RR{-xe^{-x}}$ ، وإشارتها إشارة $-x$.\par\textbf{(3)} جدول التغيرات:\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.4,-0.85); \fill[green!18] (2.4,0) rectangle (12.5,-0.85);
+\fill[orange!45] (0,-0.85) rectangle (2.4,-3.8); \fill[cyan!15] (2.4,-0.85) rectangle (12.5,-3.8);
+\draw[thick] (0,0) rectangle (12.5,-3.8); \draw (0,-0.85)--(12.5,-0.85) (0,-1.7)--(12.5,-1.7) (2.4,0)--(2.4,-3.8);
+\node at (1.2,-0.425){$x$}; \node at (1.2,-1.275){$f^{\prime}(x)$}; \node at (1.2,-2.75){$f(x)$};
+\node at (3.3,-0.425){$-\infty$};
+\node at (7.45,-0.425){$0$};
+\node at (11.6,-0.425){$+\infty$};
+\node at (5.375,-1.275){$+$};
+\node at (7.45,-1.275){$0$};
+\node at (9.525,-1.275){$-$};
+\node[inner sep=2pt] (v0) at (3.3,-3.4){$-\infty$};
+\node[inner sep=2pt] (v1) at (7.45,-2.1){$1$};
+\node[inner sep=2pt] (v2) at (11.6,-3.4){$0$};
+\draw[->,cDef,thick,shorten <=3pt,shorten >=3pt] (v0)--(v1);
+\draw[->,cDef,thick,shorten <=3pt,shorten >=3pt] (v1)--(v2);
+\end{tikzpicture}\end{LTR}\par }{}{}
+\Row{بناء المعارف}{%
+\Lab{cMeth}{خطوات دراسة دالة}\par\textbf{(1)} مجموعة التعريف والنهايات (التزايد المقارن) والمستقيمات المقاربة.\par\textbf{(2)} المشتقة وإشارتها ، ثم جدول التغيرات.\par\textbf{(3)} نقط خاصة (تقاطع مع المحورين ، مماسات) ، ثم الرسم.}{50 د}{الحاسبة للتحقق.}
+\Row{}{%
+\Lab{cEx}{تكملة الدراسة}\par\textbf{(1)} تقاطع مع محور الفواصل: $f(x)=0\iff x=-1$: النقطة $\RR{(-1;0)}$.\par\textbf{(2)} المماس عند $-1$: $f^{\prime}(-1)=e$ ، إذن $\RR{(T):\ y=e(x+1)}$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1cm,y=1.1cm,font=\footnotesize]\draw[gray!25,step=0.5] (-2.2,-3.2) grid (6.3,1.8);\draw[->,thick] (-2.2,0)--(6.3,0) node[right]{$x$}; \draw[->,thick] (0,-3.2)--(0,1.8) node[above]{$y$};\draw (-1,0.08)--(-1,-0.08) node[below]{$-1$};\draw (1,0.08)--(1,-0.08) node[below]{$1$};\draw (2,0.08)--(2,-0.08) node[below]{$2$};\draw (3,0.08)--(3,-0.08) node[below]{$3$};\draw (4,0.08)--(4,-0.08) node[below]{$4$};\draw (5,0.08)--(5,-0.08) node[below]{$5$};\draw (0.08,-2)--(-0.08,-2) node[left]{$-2$};\draw (0.08,-1)--(-0.08,-1) node[left]{$-1$};\node[below left] at (0,0){$O$};\draw[cDef,very thick,domain=-1.6:6,samples=100] plot (\x,{(\x+1)*exp(-\x)}) node[above]{$(C_f)$};
+\draw[cRem!80!black,thick,dashed,domain=-1.6:-0.2] plot (\x,{2.718*(\x+1)}) node[above]{$(T)$};
+\fill[cThm] (0,1) circle (2pt) node[above right]{$(0;1)$}; \fill[cThm] (-1,0) circle (2pt) node[below left]{$(-1;0)$};\end{tikzpicture}\end{LTR}\par }{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ إشارة $u(x)\,e^{v(x)}$ هي إشارة $u(x)$ لأن $e^{v(x)}>0$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par ادرس الدالة $g(x)=x-1+e^{-x}$: النهايتان والمشتقة والقيمة الحدية.\par\textbf{الحل:} $g^{\prime}(x)=1-e^{-x}$ ؛ قيمة صغرى $g(0)=0$ ؛ $\lim\limits_{x\to \pm\infty}g(x)=+\infty$ ؛ $y=x-1$ مقارب مائل بجوار $+\infty$.\par\textbf{واجب منزلي:} تمارين من باب التزايد المقارن.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par $g(x)=x-1+e^{-x}$ على $\mathbb R$.\par\textbf{(1)} احسب نهايتي $g$ عند $\pm\infty$.\par\textbf{(2)} ادرس اتجاه تغير $g$.\par\textbf{(3)} بيّن أن $(\Delta):y=x-1$ مقارب مائل ، وادرس الوضع النسبي.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} عند $+\infty$: $e^{-x}\to0$ ، إذن $\RR{\lim\limits_{x\to+\infty}g(x)=+\infty}$.\par عند $-\infty$: $g(x)=e^{-x}\left(xe^x-e^x+1\right)$ و $xe^x\to0$ ، إذن $\RR{\lim\limits_{x\to-\infty}g(x)=+\infty}$.\par\textbf{(2)} $g^{\prime}(x)=1-e^{-x}$ ، موجبة إذا كان $e^{-x}<1$ أي $x>0$:\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.4,-0.85); \fill[green!18] (2.4,0) rectangle (12.5,-0.85);
+\fill[orange!45] (0,-0.85) rectangle (2.4,-3.8); \fill[cyan!15] (2.4,-0.85) rectangle (12.5,-3.8);
+\draw[thick] (0,0) rectangle (12.5,-3.8); \draw (0,-0.85)--(12.5,-0.85) (0,-1.7)--(12.5,-1.7) (2.4,0)--(2.4,-3.8);
+\node at (1.2,-0.425){$x$}; \node at (1.2,-1.275){$g^{\prime}(x)$}; \node at (1.2,-2.75){$g(x)$};
+\node at (3.3,-0.425){$-\infty$};
+\node at (7.45,-0.425){$0$};
+\node at (11.6,-0.425){$+\infty$};
+\node at (5.375,-1.275){$-$};
+\node at (7.45,-1.275){$0$};
+\node at (9.525,-1.275){$+$};
+\node[inner sep=2pt] (v0) at (3.3,-2.1){$+\infty$};
+\node[inner sep=2pt] (v1) at (7.45,-3.4){$0$};
+\node[inner sep=2pt] (v2) at (11.6,-2.1){$+\infty$};
+\draw[->,cDef,thick,shorten <=3pt,shorten >=3pt] (v0)--(v1);
+\draw[->,cDef,thick,shorten <=3pt,shorten >=3pt] (v1)--(v2);
+\end{tikzpicture}\end{LTR}\par \par\textbf{(3)} $g(x)-(x-1)=e^{-x}\xrightarrow[x\to+\infty]{}0$: $(\Delta)$ مقارب مائل بجوار $+\infty$ ، و $e^{-x}>0$:\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (12.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (12.5,-4.6);
+\draw[thick] (0,0) rectangle (12.5,-4.6); \draw (0,-0.9)--(12.5,-0.9) (0,-1.8)--(12.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$g(x)-(x-1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (11.8,-0.45){$+\infty$};
+\node at (7.55,-1.35){$+$};
+\node[align=center,font=\small] at (7.55,-3.2){$(C_g)$\\ \ar{فوق}\\ $(\Delta)$};
+\end{tikzpicture}\end{LTR}\par \par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1cm,y=0.85cm,font=\footnotesize]\draw[gray!25,step=0.5] (-2,-2.2) grid (4.8,4);\draw[->,thick] (-2,0)--(4.8,0) node[right]{$x$}; \draw[->,thick] (0,-2.2)--(0,4) node[above]{$y$};\draw (-1,0.08)--(-1,-0.08) node[below]{$-1$};\draw (1,0.08)--(1,-0.08) node[below]{$1$};\draw (2,0.08)--(2,-0.08) node[below]{$2$};\draw (3,0.08)--(3,-0.08) node[below]{$3$};\draw (0.08,-1)--(-0.08,-1) node[left]{$-1$};\draw (0.08,1)--(-0.08,1) node[left]{$1$};\draw (0.08,2)--(-0.08,2) node[left]{$2$};\draw (0.08,3)--(-0.08,3) node[left]{$3$};\node[below left] at (0,0){$O$};\draw[cRem!80!black,thick,dashed,domain=-1:4.5] plot (\x,{\x-1}) node[right]{$(\Delta)$};
+\draw[cDef,very thick,domain=-1.6:4.5,samples=100] plot (\x,{\x-1+exp(-\x)}) node[above]{$(C_g)$};
+\fill[cThm] (0,0) circle (2pt);\end{tikzpicture}\end{LTR}\par \par\textbf{واجب منزلي:} تمارين من باب التزايد المقارن.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{28}{3 ع ت}{تحليل}{التزايد المقارن ودراسة الدوال}{02 سا}{دراسة دوال لوغاريتمية ، حل مشكلات}%
 {\begin{itemize}\item دراسة دالة ، التزايد المقارن.\end{itemize}}%
 {\begin{itemize}\item دراسة دالة لوغاريتمية وتوظيفها في حل مشكلات.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+{المنهاج ، الكتاب المدرسي ، الآلة الحاسبة العلمية ، برمجية Geogebra.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} أيهما أكبر: $e^\pi$ أم $\pi^e$ ؟}{10 د}{لغز.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ $f(x)=\dfrac{\ln x}x$ على $]0;+\infty[$.\par\ck\ $f^{\prime}(x)=\dfrac{1-\ln x}{x^2}$: متزايدة على $]0;e]$ ، متناقصة على $[e;+\infty[$.\par
-\ck\ $\lim\limits_{x\to 0^+}f(x)=-\infty$ ، $\lim\limits_{x\to +\infty}f(x)=0$ ، القيمة العظمى $f(e)=\frac1e$.\par
-}{35 د}{دراسة كاملة.}
-\Row{بناء المعارف}{%
-\Lab{cEx}{المنحني}\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.9cm,y=2.2cm,font=\scriptsize]
-\draw[->] (-0.3,0)--(8.3,0) node[right]{$x$}; \draw[->] (0,-1.3)--(0,0.7) node[above]{$y$};
-\draw[cDef,thick,domain=0.55:8,samples=80] plot (\x,{ln(\x)/\x}); \node[cDef] at (6.5,0.45){$y=\dfrac{\ln x}x$};
-\draw[dashed] (2.718,0)--(2.718,0.368)--(0,0.368); \node[below] at (2.718,0){$e$}; \node[left] at (0,0.368){$\frac1e$};
-\end{tikzpicture}\end{LTR}\par \Lab{cEx}{حل المشكلة}\ $\pi>e$ إذن $f(\pi)<f(e)$: $\dfrac{\ln\pi}\pi<\dfrac1e$ ، أي $e\ln\pi<\pi$ ، ومنه $\pi^e<e^\pi$.\par}{50 د}{رسم المنحني.}
+\Lab{cEx}{نشاط رقم 06}\ $f(x)=\dfrac{\ln x}x$ على $]0;+\infty[$.\par\textbf{(1)} احسب نهايتي $f$ عند $0^+$ و $+\infty$.\par\textbf{(2)} احسب $f^{\prime}(x)$ وشكّل جدول التغيرات.}{35 د}{دراسة كاملة.}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ لا ننسى مجموعة التعريف $]0;+\infty[$.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} عند $0^+$: $\ln x\to-\infty$ و $\dfrac1x\to+\infty$: $\RR{\lim\limits_{x\to0^+}f(x)=-\infty}$ (مقارب عمودي $x=0$).\par عند $+\infty$: $\RR{\lim\limits_{x\to+\infty}\dfrac{\ln x}x=0}$ (مقارب أفقي $y=0$).\par\textbf{(2)} $f^{\prime}(x)=\dfrac{\frac1x\times x-\ln x}{x^2}=\RR{\dfrac{1-\ln x}{x^2}}$ ، موجبة إذا كان $x<e$:\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.4,-0.85); \fill[green!18] (2.4,0) rectangle (12.5,-0.85);
+\fill[orange!45] (0,-0.85) rectangle (2.4,-3.8); \fill[cyan!15] (2.4,-0.85) rectangle (12.5,-3.8);
+\draw[thick] (0,0) rectangle (12.5,-3.8); \draw (0,-0.85)--(12.5,-0.85) (0,-1.7)--(12.5,-1.7) (2.4,0)--(2.4,-3.8);
+\node at (1.2,-0.425){$x$}; \node at (1.2,-1.275){$f^{\prime}(x)$}; \node at (1.2,-2.75){$f(x)$};
+\node at (3.3,-0.425){$0$};
+\node at (7.45,-0.425){$e$};
+\node at (11.6,-0.425){$+\infty$};
+\draw[double,thick] (3.3,-0.85)--(3.3,-3.8);
+\node at (5.375,-1.275){$+$};
+\node at (7.45,-1.275){$0$};
+\node at (9.525,-1.275){$-$};
+\node[inner sep=2pt] (v0) at (3.3,-3.4){$-\infty$};
+\node[inner sep=2pt] (v1) at (7.45,-2.1){$\frac1e$};
+\node[inner sep=2pt] (v2) at (11.6,-3.4){$0$};
+\draw[->,cDef,thick,shorten <=3pt,shorten >=3pt] (v0)--(v1);
+\draw[->,cDef,thick,shorten <=3pt,shorten >=3pt] (v1)--(v2);
+\end{tikzpicture}\end{LTR}\par }{}{}
+\Row{بناء المعارف}{%
+\Lab{cEx}{المنحنى}\ القيمة الحدية العظمى $f(e)=\dfrac1e$ ، والتقاطع مع محور الفواصل في $(1;0)$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.85cm,y=2.6cm,font=\footnotesize]\draw[gray!25,step=0.5] (-0.4,-1.4) grid (8.3,0.8);\draw[->,thick] (-0.4,0)--(8.3,0) node[right]{$x$}; \draw[->,thick] (0,-1.4)--(0,0.8) node[above]{$y$};\draw (1,0.08)--(1,-0.08) node[below]{$1$};\draw (2,0.08)--(2,-0.08) node[below]{$2$};\draw (3,0.08)--(3,-0.08) node[below]{$3$};\draw (4,0.08)--(4,-0.08) node[below]{$4$};\draw (5,0.08)--(5,-0.08) node[below]{$5$};\draw (6,0.08)--(6,-0.08) node[below]{$6$};\draw (7,0.08)--(7,-0.08) node[below]{$7$};\node[below left] at (0,0){$O$};\draw[cDef,very thick,domain=0.55:8,samples=120] plot (\x,{ln(\x)/\x}) node[above]{$(C_f)$};
+\draw[densely dotted] (2.718,0)--(2.718,0.368)--(0,0.368); \node[below] at (2.718,0){$e$}; \node[left] at (0,0.368){$\frac1e$};
+\fill[cThm] (1,0) circle (2pt) node[below right]{$(1;0)$};\end{tikzpicture}\end{LTR}\par }{50 د}{رسم المنحنى.}
+\Row{}{%
+\Lab{cEx}{حل المشكلة}\par\textbf{(1)} $\pi>e$ و $f$ متناقصة تمامًا على $[e;+\infty[$ ، إذن $f(\pi)<f(e)$: $\dfrac{\ln\pi}\pi<\dfrac1e$.\par\textbf{(2)} أي $e\ln\pi<\pi$ ، أي $\ln\left(\pi^e\right)<\ln\left(e^\pi\right)$ ، ومنه $\RR{\pi^e<e^\pi}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ لا ننسى مجموعة التعريف $]0;+\infty[$ عند دراسة دالة لوغاريتمية.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par ادرس $g(x)=x\ln x-x$ على $]0;+\infty[$.\par\textbf{الحل:} $g^{\prime}(x)=\ln x$ ؛ قيمة صغرى $g(1)=-1$ ؛ $\lim\limits_{x\to 0^+}g(x)=0$ ، $\lim\limits_{x\to +\infty}g(x)=+\infty$.\par\textbf{واجب منزلي:} تمارين من باب التزايد المقارن (مسائل).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\Lab{cMeth}{تمرين تطبيقي}\par $g(x)=x\ln x-x$ على $]0;+\infty[$.\par\textbf{(1)} احسب نهايتي $g$ عند $0^+$ و $+\infty$.\par\textbf{(2)} ادرس اتجاه تغير $g$.\par\textbf{(3)} حل المعادلة $g(x)=0$.}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} عند $0^+$: $x\ln x\to0$ و $x\to0$: $\RR{\lim\limits_{x\to0^+}g(x)=0}$.\par عند $+\infty$: $g(x)=x(\ln x-1)\to\RR{+\infty}$.\par\textbf{(2)} $g^{\prime}(x)=\ln x+x\times\dfrac1x-1=\RR{\ln x}$ ، موجبة إذا كان $x>1$:\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.4,-0.85); \fill[green!18] (2.4,0) rectangle (12.5,-0.85);
+\fill[orange!45] (0,-0.85) rectangle (2.4,-3.8); \fill[cyan!15] (2.4,-0.85) rectangle (12.5,-3.8);
+\draw[thick] (0,0) rectangle (12.5,-3.8); \draw (0,-0.85)--(12.5,-0.85) (0,-1.7)--(12.5,-1.7) (2.4,0)--(2.4,-3.8);
+\node at (1.2,-0.425){$x$}; \node at (1.2,-1.275){$g^{\prime}(x)$}; \node at (1.2,-2.75){$g(x)$};
+\node at (3.3,-0.425){$0$};
+\node at (7.45,-0.425){$1$};
+\node at (11.6,-0.425){$+\infty$};
+\draw[double,thick] (3.3,-0.85)--(3.3,-3.8);
+\node at (5.375,-1.275){$-$};
+\node at (7.45,-1.275){$0$};
+\node at (9.525,-1.275){$+$};
+\node[inner sep=2pt] (v0) at (3.3,-2.1){$0$};
+\node[inner sep=2pt] (v1) at (7.45,-3.4){$-1$};
+\node[inner sep=2pt] (v2) at (11.6,-2.1){$+\infty$};
+\draw[->,cDef,thick,shorten <=3pt,shorten >=3pt] (v0)--(v1);
+\draw[->,cDef,thick,shorten <=3pt,shorten >=3pt] (v1)--(v2);
+\end{tikzpicture}\end{LTR}\par \par\textbf{(3)} $x(\ln x-1)=0$ و $x>0$ ، إذن $\ln x=1$: $\RR{S=\{e\}}$.\par\textbf{واجب منزلي:} مسائل من باب التزايد المقارن.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \end{document}
