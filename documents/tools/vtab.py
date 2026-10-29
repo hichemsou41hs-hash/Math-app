@@ -1,6 +1,6 @@
 # Relative-position table in TikZ (teacher's model): label column left, dotted line at each zero,
 # a bell-shaped cell under each zero holding the intersection.
-def vtab(xs, diff, zeros, between, curve, other, W=15.5):
+def vtab(xs, diff, zeros, between, curve, other, W=15.5, meet='يقطع'):
     """xs: x labels; diff: label of the difference row; zeros: {index: point text} for the zeros;
     between: list of 'فوق'/'تحت' per interval; curve/other: e.g. '(C_f)', "(xx')"."""
     L, h1, h2, h3 = 2.6, 0.9, 0.9, 2.8
@@ -38,7 +38,7 @@ def vtab(xs, diff, zeros, between, curve, other, W=15.5):
         s.append(r'\draw (%g,%g) .. controls (%g,%g) and (%g,%g) .. (%g,%g) .. controls (%g,%g) and (%g,%g) .. (%g,%g);'
                  % (x - w, yb, x - 0.95 * w, yb + 0.55 * h3, x - 0.3 * w, y2 - 0.12 * h3, x, y2,
                     x + 0.3 * w, y2 - 0.12 * h3, x + 0.95 * w, yb + 0.55 * h3, x + w, yb))
-        s.append(r'\node[align=center,font=\footnotesize,inner sep=0pt] at (%g,%g){\ar{$%s$ يقطع}\\ $%s$\\ \ar{في النقطة}\\ $%s$};'
-                 % (x, yb + 0.95, curve, other, pt))
+        s.append(r'\node[align=center,font=\footnotesize,inner sep=0pt] at (%g,%g){\ar{$%s$ %s}\\ $%s$\\ \ar{في النقطة}\\ $%s$};'
+                 % (x, yb + 0.95, curve, meet, other, pt))
     s.append(r'\end{tikzpicture}')
     return r'\begin{FIG}' + '\n' + '\n'.join(s) + '\n' + r'\end{FIG}'
