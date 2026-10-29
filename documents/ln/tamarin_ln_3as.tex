@@ -163,6 +163,7 @@
 \newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
 \newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
 \SetHeader{\small\bfseries\color{cSec}تمارين تجريبية: الدالة اللوغاريتمية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
 \begin{document}
 \begin{LTR}
 \begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
@@ -647,15 +648,30 @@ $x\ln x-x=x\left(\ln x-1\right)$، و $\displaystyle\lim_{x\to+\infty}x=+\infty$
 إذن \bx{\lim_{x\to+\infty}\big[h(x)-(x-1)\big]=0}، ومنه المستقيم $(\Delta):\ y=x-1$ مستقيم مقارب مائل لـ $(C_h)$ بجوار $+\infty$.
 
 \QQ{4} ندرس إشارة الفرق $h(x)-(x-1)=\dfrac{\ln x}{x}$: بما أن $x>0$ فإشارته هي إشارة $\ln x$.
-\begin{TAB}
-\tkzTabInit[lgt=3.2,espcl=2.4]{$x$/0.8,$h(x)-(x-1)$/0.9}{$0$,$1$,$+\infty$}
-\tkzTabLine{d,-,z,+,}
-\end{TAB}
-\begin{itemize}
-\item على $\left]0;1\right[$: $(C_h)$ يقع \textbf{تحت} $(\Delta)$.
-\item على $\left]1;+\infty\right[$: $(C_h)$ يقع \textbf{فوق} $(\Delta)$.
-\item $(C_h)$ و $(\Delta)$ يتقاطعان في النقطة \bx{A(1;0)} لأن $h(1)=0$.
-\end{itemize}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$h(x)-(x-1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_h)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_h)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_h)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $A(1;0)$};
+\end{tikzpicture}
+\end{FIG}
 \textbf{للتوضيح:} رسم $(C_h)$ ومستقيميه المقاربين:
 \begin{GR}{-1}{5}{-3}{4}{1}
  \Ticks{1,2,3,4}{-2,-1,1,2,3}
@@ -844,6 +860,30 @@ $\displaystyle\lim_{x\to-\infty}f(x)=+\infty$ و $\displaystyle\lim_{x\to+\infty
 \pb من جدول التغيرات، $0$ هي القيمة الحدية العظمى للدالة $g$، إذن من أجل كل $x>0$: $g(x)\leqslant0$ أي $\ln x-x+1\leqslant0$ ومنه:
 \[\bx{\ln x\leqslant x-1}\]
 \pc مماس منحنى الدالة $\ln$ في النقطة ذات الفاصلة $1$ معادلته $y=\ln'(1)(x-1)+\ln1$ أي $y=x-1$. النتيجة تعني أن منحنى الدالة $\ln$ يقع \textbf{تحت} مماسه في النقطة $(1;0)$ ويلتقي به في هذه النقطة فقط.
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\ln x-(x-1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_{\ln})$\\ \ar{تحت}\\ $(T)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_{\ln})$\\ \ar{تحت}\\ $(T)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_{\ln})$ يمس}\\ $(T)$\\ \ar{في النقطة}\\ $A(1;0)$};
+\end{tikzpicture}
+\end{FIG}
 
 \QQ{2} إذا كان $x>0$ فإن $\dfrac1x>0$، وبتطبيق المتباينة السابقة على $\dfrac1x$:
 \[\ln\frac1x\leqslant\frac1x-1\iff-\ln x\leqslant\frac1x-1\iff\bx{1-\frac1x\leqslant\ln x}\]
@@ -933,15 +973,30 @@ $\displaystyle\lim_{x\to-\infty}f(x)=+\infty$ و $\displaystyle\lim_{x\to+\infty
 \QQ{3}
 \pa $f(x)-(x+1)=-\dfrac{\ln x}{x}$ و $\displaystyle\lim_{x\to+\infty}\left(-\frac{\ln x}{x}\right)=0$، إذن $\displaystyle\lim_{x\to+\infty}\left[f(x)-(x+1)\right]=0$، ومنه المستقيم $(\Delta):\ \bx{y=x+1}$ مقارب مائل لـ $(C_f)$ بجوار $+\infty$.
 \pb ندرس إشارة الفرق $f(x)-(x+1)=\dfrac{-\ln x}{x}$؛ بما أن $x>0$ فإشارته عكس إشارة $\ln x$:
-\begin{TAB}
-\tkzTabInit[lgt=3,espcl=3]{$x$/1,$f(x)-(x+1)$/1}{$0$,$1$,$+\infty$}
-\tkzTabLine{d,+,z,-,}
-\end{TAB}
-\begin{itemize}
-\item على $]0;1[$: $(C_f)$ يقع \textbf{فوق} $(\Delta)$؛
-\item على $]1;+\infty[$: $(C_f)$ يقع \textbf{تحت} $(\Delta)$؛
-\item $(C_f)$ و $(\Delta)$ يتقاطعان في النقطة $\bx{A(1;2)}$.
-\end{itemize}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x+1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $A(1;2)$};
+\end{tikzpicture}
+\end{FIG}
 
 \QQ{4} المماس عند النقطة ذات الفاصلة $a$ يوازي $(\Delta)$ إذا وفقط إذا كان $f'(a)=1$:
 \[1-\frac{1-\ln a}{a^2}=1\iff1-\ln a=0\iff\ln a=1\iff a=e\]
@@ -1039,15 +1094,30 @@ $g$ قابلة للاشتقاق على $]0;+\infty[$ و $g'(x)=2x+\dfrac1x>0$ ل
 \pa $f(x)-x=-\dfrac{2+\ln x}{x}$ و $\displaystyle\lim_{x\to+\infty}\frac{2+\ln x}{x}=0$، إذن $\displaystyle\lim_{x\to+\infty}\left[f(x)-x\right]=0$: المستقيم $(\Delta):\ \bx{y=x}$ مقارب مائل لـ $(C_f)$ بجوار $+\infty$.
 \pb إشارة $f(x)-x=\dfrac{-(2+\ln x)}{x}$ هي عكس إشارة $2+\ln x$، و:
 \[2+\ln x>0\iff\ln x>-2\iff x>e^{-2}\]
-\begin{TAB}
-\tkzTabInit[lgt=2.6,espcl=3]{$x$/1,$f(x)-x$/1}{$0$,$e^{-2}$,$+\infty$}
-\tkzTabLine{d,+,z,-,}
-\end{TAB}
-\begin{itemize}
-\item على $\left]0;e^{-2}\right[$: $(C_f)$ \textbf{فوق} $(\Delta)$؛
-\item على $\left]e^{-2};+\infty\right[$: $(C_f)$ \textbf{تحت} $(\Delta)$؛
-\item يتقاطعان في النقطة $\bx{B\left(e^{-2};e^{-2}\right)}$ \quad ($e^{-2}\approx0{,}14$).
-\end{itemize}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$e^{-2}$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $B\left(e^{-2};e^{-2}\right)$};
+\end{tikzpicture}
+\end{FIG}
 
 \QQ{5} \textbf{على المجال $]0;\alpha]$:} $f$ مستمرة ومتناقصة تمامًا، و $[0{,}1;0{,}2]\subset]0;\alpha]$ لأن $\alpha>0{,}32$، ولدينا:
 \[f(0{,}1)\approx3{,}13>0\qquad f(0{,}2)\approx-1{,}75<0\]
@@ -1132,11 +1202,30 @@ $g$ قابلة للاشتقاق على $]0;+\infty[$ و $g'(x)=2x+\dfrac1x>0$ ل
 \[\lim_{x\to+\infty}\left[f(x)-\ln x\right]=\bx{0}\]
 التفسير البياني: المنحنيان $(C_f)$ و $(\Gamma)$ \textbf{متقاربان} بجوار $+\infty$.
 \pb إشارة $f(x)-\ln x=\dfrac{-\ln x}{x+1}$ هي عكس إشارة $\ln x$ (لأن $x+1>0$):
-\begin{itemize}
-\item على $]0;1[$: $\ln x<0$ إذن $(C_f)$ \textbf{فوق} $(\Gamma)$؛
-\item على $]1;+\infty[$: $\ln x>0$ إذن $(C_f)$ \textbf{تحت} $(\Gamma)$؛
-\item يتقاطعان في النقطة $\bx{(1;0)}$.
-\end{itemize}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-\ln x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Gamma)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Gamma)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Gamma)$\\ \ar{في النقطة}\\ $A(1;0)$};
+\end{tikzpicture}
+\end{FIG}
 
 \QQ{5} $f(1)=0$ و $f'(1)=\dfrac{g(1)}{4}=\dfrac{2}{4}=\dfrac12$، إذن $y=\dfrac12(x-1)+0$ أي:
 \[(T):\ \bx{y=\frac12x-\frac12}\]
@@ -1539,6 +1628,30 @@ $f'(x)=0\iff \ln x=-1\iff x=e^{-1}=\dfrac1e$، و $f'(x)>0\iff \ln x>-1\iff x>\d
 $h'(x)<0$ على $]0;1[$ و $h'(x)>0$ على $]1;+\infty[$، إذن $h$ تقبل قيمة حدية صغرى عند $1$ هي $h(1)=0$.
 ومنه من أجل كل $x>0$: $\bx{h(x)\geqslant 0}$، والمساواة فقط من أجل $x=1$.
 بما أن $f(x)-(x-1)=h(x)\geqslant0$: المنحنى $(C_f)$ يقع \textbf{فوق} المماس $(T)$ على $]0;+\infty[$، ويتقاطعان فقط في النقطة $A(1;0)$.
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x-1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(T)$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(T)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يمس}\\ $(T)$\\ \ar{في النقطة}\\ $A(1;0)$};
+\end{tikzpicture}
+\end{FIG}
 
 \QQ{4} نقاط مساعدة: $f(e)=e\approx2{,}72$؛ تقاطع $(C_f)$ مع محور الفواصل: $x\ln x=0\iff x=1$؛ وبجوار $0$ يقترب $(C_f)$ من النقطة $O$ (غير المنتمية إليه).
 
@@ -1735,11 +1848,30 @@ $f(\alpha)$ هي القيمة الحدية الصغرى للدالة $f$ على 
 وحسب الجزء I هذه المعادلة تقبل حلا وحيدا هو $\alpha$. إذن $\bx{\varphi(\alpha)=\alpha}$ و $\alpha$ هو النقطة الصامدة الوحيدة للدالة $\varphi$.
 
 \QQ{2} من أجل $x>0$: $\varphi(x)-x=2-\ln x-x=-g(x)$. إذن:
-\begin{itemize}
-\item على $]0;\alpha[$: $g(x)<0$ ومنه $\varphi(x)-x>0$: $(C_\varphi)$ \textbf{فوق} $(\Delta)$.
-\item على $]\alpha;+\infty[$: $g(x)>0$ ومنه $\varphi(x)-x<0$: $(C_\varphi)$ \textbf{تحت} $(\Delta)$.
-\item $(C_\varphi)$ و $(\Delta)$ يتقاطعان في النقطة $\bx{B(\alpha;\alpha)}$.
-\end{itemize}
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\varphi(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$\alpha$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_\varphi)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_\varphi)$\\ \ar{تحت}\\ $(\Delta)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_\varphi)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $B(\alpha;\alpha)$};
+\end{tikzpicture}
+\end{FIG}
 
 \QQ{3}
 \pa $\varphi'(x)=-\dfrac1x<0$، إذن $\varphi$ متناقصة تماما على $[1{,}5;1{,}6]$. فإذا كان $1{,}5\leqslant x\leqslant1{,}6$ فإن $\varphi(1{,}6)\leqslant\varphi(x)\leqslant\varphi(1{,}5)$.
