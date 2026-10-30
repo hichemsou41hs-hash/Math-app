@@ -32,7 +32,7 @@ cover=r'''\begin{LTR}
 الحلول مفصّلة: المعطيات بالأسود ، \T{العناوين} و\RR{النتائج} بلون مختلف ، وكل سؤال في سطر.
 \end{BOX}
 '''
-hdr=EXTRA+r'\SetHeader{\small\bfseries\color{cSec}مذكرات محور: '+TITLE+r'}{\small\color{cSec}السنة الثالثة ثانوي -- علوم تجريبية}'+'\n'+r'\begin{document}'+'\n'
+hdr=EXTRA+r'\providecommand{\LW}[1]{{\color{cDef}#1}}'+'\n'+r'\SetHeader{\small\bfseries\color{cSec}مذكرات محور: '+TITLE+r'}{\small\color{cSec}السنة الثالثة ثانوي -- علوم تجريبية}'+'\n'+r'\begin{document}'+'\n'
 body=re.sub(r'\\par(?=[\u0600-\u06FF(])',r'\\par ',hdr+cover+boxify(boxify(''.join(S),'RR'),'T'))
 body=gf.widen_tables(body)
 P=pre

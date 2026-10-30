@@ -35,6 +35,7 @@ FONT = "Amiri"
 SAYR_W = 0.66   # share of the text width given to «سير الحصة» in Word
 # colour markers (lesson plans): result \RR, title \T, label \Lab{colour}{text}
 RES_O, RES_C = "\u2997", "\u2998"
+LAW_O, LAW_C = "\u2991", "\u2992"   # law / formula colour (\LW)
 TTL_O, TTL_C = "\u298B", "\u298C"
 LAB_O, LAB_M, LAB_C = "\u2993", "\u2994", "\u2995"
 TEX_COLOURS = {"cDef": "1F4E9C", "cThm": "B3261E", "cRem": "2E7D32", "cEx": "C76B00", "cMeth": "6A1B9A",
@@ -446,6 +447,7 @@ def rewrite_body(body, meta):
     # result / title colour macros of the 3AS GE lesson plans (\RR in text or math, \T in text)
     for _ in range(2):   # twice: a \RR may sit inside a \T
         body = replace_macro(body, "RR", 0, 1, lambda o, r: RES_O + r[0] + RES_C)
+        body = replace_macro(body, "LW", 0, 1, lambda o, r: LAW_O + r[0] + LAW_C)
         body = replace_macro(body, "T", 0, 1, lambda o, r: "\\textbf{" + TTL_O + r[0] + TTL_C + "}")
     # numbered badge (\tikz node in the source) -> circled digit ① ... ⑳
     body = replace_macro(body, "circled", 0, 1, lambda o, r: chr(0x2460 + int(r[0]) - 1)
@@ -937,7 +939,7 @@ def cell_width_cm(p):
 def colour_runs(body):
     """Split runs at the colour markers and style each piece: results red, titles blue bold,
     labels white bold on their colour. A marked span may cross text and math runs."""
-    marks = RES_O + RES_C + TTL_O + TTL_C + LAB_O + LAB_M + LAB_C
+    marks = RES_O + RES_C + TTL_O + TTL_C + LAB_O + LAB_M + LAB_C + LAW_O + LAW_C
     stack, reading = [], None
     for r in [e for e in body.iter() if e.tag in (qn("w:r"), qn("m:r"))]:
         ttag = qn("w:t") if r.tag == qn("w:r") else qn("m:t")
@@ -954,14 +956,14 @@ def colour_runs(body):
                 else:
                     reading += ch
                 continue
-            if ch in (RES_O, TTL_O, LAB_O):
+            if ch in (RES_O, TTL_O, LAB_O, LAW_O):
                 if cur:
                     segs.append((cur, stack[-1] if stack else None)); cur = ""
                 if ch == LAB_O:
                     reading = ""
                 else:
-                    stack.append(("res",) if ch == RES_O else ("ttl",))
-            elif ch in (RES_C, TTL_C, LAB_C):
+                    stack.append(("res",) if ch == RES_O else ("law",) if ch == LAW_O else ("ttl",))
+            elif ch in (RES_C, TTL_C, LAB_C, LAW_C):
                 if cur:
                     segs.append((cur, stack[-1] if stack else None)); cur = ""
                 if stack:
@@ -986,6 +988,8 @@ def colour_runs(body):
                     (mrp.addnext(rpr) if mrp is not None else nr.insert(0, rpr))
                 if st[0] == "res":
                     rpr.append(el("w:color", val=TEX_COLOURS["cThm"]))
+                elif st[0] == "law":
+                    rpr.append(el("w:color", val=TEX_COLOURS["cDef"]))
                 elif st[0] == "ttl":
                     rpr.append(OxmlElement("w:b")); rpr.append(OxmlElement("w:bCs"))
                     rpr.append(el("w:color", val=TEX_COLOURS["cDef"]))
@@ -1079,6 +1083,8 @@ def postprocess(path, out, head, foot, figs):
                 mrp = mr.find(qn("m:rPr"))
                 (mrp.addnext(wr) if mrp is not None else mr.insert(0, wr))
             wr.append(el("w:highlight", val="yellow"))
+            if wr.find(qn("w:color")) is None:
+                wr.append(el("w:color", val=TEX_COLOURS["cThm"]))
 
     # --- 1. figures: replace FIG markers by pictures
     for p in list(body.iter(qn("w:p"))):

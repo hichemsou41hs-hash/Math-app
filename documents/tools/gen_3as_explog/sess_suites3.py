@@ -200,3 +200,12 @@ TT()+r'\par مريض يأخذ $2$ mg من دواء يوميًا ، ويطرح ج
 # same rule for every paragraph (warnings, definitions...)
 S=[re.sub(r'\\par(?![a-zA-Z])',chr(0),s) for s in S]
 S=[r'\par'.join(p if 'tikzpicture' in p else brk(p) for p in s.split(chr(0))) for s in S]
+# laws and formulas (definitions, properties, methods, reminders) in colour; results stay red (\RR)
+LAWS=('تعريف','خاصية','طريقة','مبدأ','تذكير','نهاية','المقارنة','التقارب','المتتالية','دراسة','تمثيل','حل مشكلة','توليد','متتالية محدودة','متتالية رتيبة')
+def _law(seg):
+    m=re.match(r'\\Lab\{[^{}]*\}\{((?:[^{}]|\{[^{}]*\})*)\}',seg)
+    if not m or not any(m.group(1).startswith(k) or k in m.group(1)[:12] for k in LAWS): return seg
+    head,rest=seg[:m.end()],seg[m.end():]
+    if 'tikzpicture' in rest: return seg
+    return head+re.sub(r'(?<!\\)\$([^$]+)\$',lambda q:'$'+r'\LW{'+q.group(1)+'}$',rest)
+S=[r'\Lab{'.join(_law(r'\Lab{'+x)[5:] if i else x for i,x in enumerate(s.split(r'\Lab{'))) for s in S]

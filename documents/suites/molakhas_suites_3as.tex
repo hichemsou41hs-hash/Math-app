@@ -147,7 +147,8 @@
  \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
 {\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
 \newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
-\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\newcommand{\LW}[1]{{\color{cDef}#1}}  % law / formula colour
 \newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
 \newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
 \newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
@@ -194,10 +195,10 @@
 % =====================================================
 \section{توليد متتالية وتمثيلها البياني}
 \begin{tarif}
-\textbf{المتتالية العددية} $(u_n)$ هي دالة ترفق بكل عدد طبيعي $n$ (ابتداءً من رتبة $n_0$) عددًا حقيقيًا $u_n$ يسمى \textbf{الحد العام} أو الحد ذا الدليل $n$.
+\textbf{المتتالية العددية} $\LW{(u_n)}$ هي دالة ترفق بكل عدد طبيعي $\LW{n}$ (ابتداءً من رتبة $\LW{n_0}$) عددًا حقيقيًا $\LW{u_n}$ يسمى \textbf{الحد العام} أو الحد ذا الدليل $\LW{n}$.
 \begin{itemize}
-\item \textbf{التوليد الصريح:} $u_n=f(n)$؛ نحسب أي حد مباشرة بدلالة $n$.
-\item \textbf{التوليد بعلاقة تراجعية:} نعطي الحد الأول $u_0$ وعلاقة $u_{n+1}=f(u_n)$؛ نحسب الحدود واحدًا بعد الآخر.
+\item \textbf{التوليد الصريح:} $\LW{u_n=f(n)}$؛ نحسب أي حد مباشرة بدلالة $\LW{n}$.
+\item \textbf{التوليد بعلاقة تراجعية:} نعطي الحد الأول $\LW{u_0}$ وعلاقة $\LW{u_{n+1}=f(u_n)}$؛ نحسب الحدود واحدًا بعد الآخر.
 \end{itemize}
 \end{tarif}
 
@@ -217,10 +218,10 @@
 
 \begin{tariqa}[تمثيل الحدود الأولى لمتتالية $u_{n+1}=f(u_n)$]
 \begin{enumerate}
-\item نرسم المنحنى $(C_f)$ والمستقيم $(\Delta): y=x$.
-\item نعلّم $u_0$ على محور الفواصل، ونصعد شاقوليًا إلى $(C_f)$: ترتيب النقطة هو $u_1=f(u_0)$.
-\item ننتقل أفقيًا إلى $(\Delta)$، ثم ننزل شاقوليًا إلى محور الفواصل فنحصل على $u_1$ عليه.
-\item نكرر العملية للحصول على $u_2$ ، $u_3$ ، $\ldots$
+\item نرسم المنحنى $\LW{(C_f)}$ والمستقيم $\LW{(\Delta): y=x}$.
+\item نعلّم $\LW{u_0}$ على محور الفواصل، ونصعد شاقوليًا إلى $\LW{(C_f)}$: ترتيب النقطة هو $\LW{u_1=f(u_0)}$.
+\item ننتقل أفقيًا إلى $\LW{(\Delta)}$، ثم ننزل شاقوليًا إلى محور الفواصل فنحصل على $\LW{u_1}$ عليه.
+\item نكرر العملية للحصول على $\LW{u_2}$ ، $\LW{u_3}$ ، $\LW{\ldots}$
 \end{enumerate}
 \end{tariqa}
 
@@ -251,21 +252,21 @@
 % =====================================================
 \section{اتجاه تغير متتالية}
 \begin{tarif}
-نقول إن المتتالية $(u_n)$:
+نقول إن المتتالية $\LW{(u_n)}$:
 \begin{itemize}
-\item \textbf{متزايدة تمامًا} إذا كان من أجل كل عدد طبيعي $n$: $u_{n+1}>u_n$.
-\item \textbf{متناقصة تمامًا} إذا كان من أجل كل عدد طبيعي $n$: $u_{n+1}<u_n$.
-\item \textbf{ثابتة} إذا كان من أجل كل عدد طبيعي $n$: $u_{n+1}=u_n$.
+\item \textbf{متزايدة تمامًا} إذا كان من أجل كل عدد طبيعي $\LW{n}$: $\LW{u_{n+1}>u_n}$.
+\item \textbf{متناقصة تمامًا} إذا كان من أجل كل عدد طبيعي $\LW{n}$: $\LW{u_{n+1}<u_n}$.
+\item \textbf{ثابتة} إذا كان من أجل كل عدد طبيعي $\LW{n}$: $\LW{u_{n+1}=u_n}$.
 \end{itemize}
 المتتالية \textbf{رتيبة} إذا كانت متزايدة أو متناقصة.
 \end{tarif}
 
 \begin{tariqa}[دراسة اتجاه التغير]
 \begin{enumerate}
-\item \textbf{إشارة الفرق:} ندرس إشارة $u_{n+1}-u_n$.
-\item \textbf{النسبة} (إذا كانت جميع الحدود موجبة تمامًا): نقارن $\dfrac{u_{n+1}}{u_n}$ بالعدد $1$.
-\item \textbf{الدالة المرفقة} (توليد صريح $u_n=f(n)$): إذا كانت $f$ متزايدة (متناقصة) على $[0;+\infty[$ فإن $(u_n)$ متزايدة (متناقصة).
-\item \textbf{التراجع} (توليد تراجعي): نبرهن مثلًا أن $u_n\leqslant u_{n+1}$ من أجل كل $n$ (انظر الفقرة 4).
+\item \textbf{إشارة الفرق:} ندرس إشارة $\LW{u_{n+1}-u_n}$.
+\item \textbf{النسبة} (إذا كانت جميع الحدود موجبة تمامًا): نقارن $\LW{\dfrac{u_{n+1}}{u_n}}$ بالعدد $\LW{1}$.
+\item \textbf{الدالة المرفقة} (توليد صريح $\LW{u_n=f(n)}$): إذا كانت $\LW{f}$ متزايدة (متناقصة) على $\LW{[0;+\infty[}$ فإن $\LW{(u_n)}$ متزايدة (متناقصة).
+\item \textbf{التراجع} (توليد تراجعي): نبرهن مثلًا أن $\LW{u_n\leqslant u_{n+1}}$ من أجل كل $\LW{n}$ (انظر الفقرة 4).
 \end{enumerate}
 \end{tariqa}
 
@@ -290,12 +291,12 @@ $u_0=2$ و $u_{n+1}=u_n-u_n^{2}$: \quad $u_{n+1}-u_n=-u_n^{2}\leqslant0$، إذ�
 \end{mithal}
 
 \begin{khassia}[حالة $u_{n+1}=f(u_n)$ مع $f$ متزايدة]
-إذا كانت $f$ \textbf{متزايدة} على مجال $I$ بحيث $f(I)\subset I$ وكل الحدود من $I$، فإن:
+إذا كانت $\LW{f}$ \textbf{متزايدة} على مجال $\LW{I}$ بحيث $\LW{f(I)\subset I}$ وكل الحدود من $\LW{I}$، فإن:
 \begin{itemize}
-\item إذا كان $u_0\leqslant u_1$ فإن $(u_n)$ متزايدة؛
-\item إذا كان $u_0\geqslant u_1$ فإن $(u_n)$ متناقصة.
+\item إذا كان $\LW{u_0\leqslant u_1}$ فإن $\LW{(u_n)}$ متزايدة؛
+\item إذا كان $\LW{u_0\geqslant u_1}$ فإن $\LW{(u_n)}$ متناقصة.
 \end{itemize}
-(البرهان بالتراجع: من $u_n\leqslant u_{n+1}$ وتزايد $f$ نجد $f(u_n)\leqslant f(u_{n+1})$ أي $u_{n+1}\leqslant u_{n+2}$.) يكفي إذن مقارنة الحدين الأولين.
+(البرهان بالتراجع: من $\LW{u_n\leqslant u_{n+1}}$ وتزايد $\LW{f}$ نجد $\LW{f(u_n)\leqslant f(u_{n+1})}$ أي $\LW{u_{n+1}\leqslant u_{n+2}}$.) يكفي إذن مقارنة الحدين الأولين.
 \end{khassia}
 
 \begin{molahada}
@@ -306,9 +307,9 @@ $u_0=2$ و $u_{n+1}=u_n-u_n^{2}$: \quad $u_{n+1}-u_n=-u_n^{2}\leqslant0$، إذ�
 \section{المتتاليات المحدودة}
 \begin{tarif}
 \begin{itemize}
-\item $(u_n)$ \textbf{محدودة من الأعلى} إذا وجد عدد حقيقي $M$ بحيث من أجل كل عدد طبيعي $n$: $u_n\leqslant M$.
-\item $(u_n)$ \textbf{محدودة من الأسفل} إذا وجد عدد حقيقي $m$ بحيث من أجل كل عدد طبيعي $n$: $u_n\geqslant m$.
-\item $(u_n)$ \textbf{محدودة} إذا كانت محدودة من الأعلى ومن الأسفل: $m\leqslant u_n\leqslant M$.
+\item $\LW{(u_n)}$ \textbf{محدودة من الأعلى} إذا وجد عدد حقيقي $\LW{M}$ بحيث من أجل كل عدد طبيعي $\LW{n}$: $\LW{u_n\leqslant M}$.
+\item $\LW{(u_n)}$ \textbf{محدودة من الأسفل} إذا وجد عدد حقيقي $\LW{m}$ بحيث من أجل كل عدد طبيعي $\LW{n}$: $\LW{u_n\geqslant m}$.
+\item $\LW{(u_n)}$ \textbf{محدودة} إذا كانت محدودة من الأعلى ومن الأسفل: $\LW{m\leqslant u_n\leqslant M}$.
 \end{itemize}
 \end{tarif}
 
@@ -329,25 +330,25 @@ $u_0=2$ و $u_{n+1}=u_n-u_n^{2}$: \quad $u_{n+1}-u_n=-u_n^{2}\leqslant0$، إذ�
 
 \begin{tariqa}[إثبات أن $(u_n)$ محدودة من الأعلى بـ $M$ (أو من الأسفل بـ $m$)]
 \begin{enumerate}
-\item \textbf{الفرق:} ندرس إشارة $u_n-M$ (أو $u_n-m$) ونبين أنها سالبة (أو موجبة).
-\item \textbf{الدالة المرفقة:} إذا كان $u_n=f(n)$ ندرس تغيرات $f$ على $[0;+\infty[$ ونستعمل قيمها الحدية.
-\item \textbf{التراجع:} خاصة إذا كانت $u_{n+1}=f(u_n)$ (انظر الفقرة 4).
+\item \textbf{الفرق:} ندرس إشارة $\LW{u_n-M}$ (أو $\LW{u_n-m}$) ونبين أنها سالبة (أو موجبة).
+\item \textbf{الدالة المرفقة:} إذا كان $\LW{u_n=f(n)}$ ندرس تغيرات $\LW{f}$ على $\LW{[0;+\infty[}$ ونستعمل قيمها الحدية.
+\item \textbf{التراجع:} خاصة إذا كانت $\LW{u_{n+1}=f(u_n)}$ (انظر الفقرة 4).
 \end{enumerate}
 \end{tariqa}
 
 % =====================================================
 \section{الاستدلال بالتراجع}
 \begin{khassia}[مبدأ الاستدلال بالتراجع]
-لتكن $P(n)$ خاصية متعلقة بعدد طبيعي $n$، و $n_0$ عددًا طبيعيًا. إذا كان:
+لتكن $\LW{P(n)}$ خاصية متعلقة بعدد طبيعي $\LW{n}$، و $\LW{n_0}$ عددًا طبيعيًا. إذا كان:
 \begin{enumerate}
-\item \textbf{التحقق:} $P(n_0)$ صحيحة؛
-\item \textbf{الوراثة:} من أجل كل عدد طبيعي $n\geqslant n_0$، إذا كانت $P(n)$ صحيحة فإن $P(n+1)$ صحيحة؛
+\item \textbf{التحقق:} $\LW{P(n_0)}$ صحيحة؛
+\item \textbf{الوراثة:} من أجل كل عدد طبيعي $\LW{n\geqslant n_0}$، إذا كانت $\LW{P(n)}$ صحيحة فإن $\LW{P(n+1)}$ صحيحة؛
 \end{enumerate}
-فإن $P(n)$ صحيحة من أجل كل عدد طبيعي $n\geqslant n_0$.
+فإن $\LW{P(n)}$ صحيحة من أجل كل عدد طبيعي $\LW{n\geqslant n_0}$.
 \end{khassia}
 
 \begin{tariqa}[تحرير برهان بالتراجع]
-نكتب الخاصية $P(n)$ بوضوح، نتحقق من $P(n_0)$، ثم \textbf{نفرض} أن $P(n)$ صحيحة (فرضية التراجع) و\textbf{نبرهن} صحة $P(n+1)$ باستعمالها، ثم نستنتج.
+نكتب الخاصية $\LW{P(n)}$ بوضوح، نتحقق من $\LW{P(n_0)}$، ثم \textbf{نفرض} أن $\LW{P(n)}$ صحيحة (فرضية التراجع) و\textbf{نبرهن} صحة $\LW{P(n+1)}$ باستعمالها، ثم نستنتج.
 \end{tariqa}
 
 \begin{mithal}[مساواة]
@@ -387,18 +388,18 @@ $u_0=1$ و $u_{n+1}=\frac{1}{2}u_n+2$. نبرهن أن من أجل كل عدد �
 % =====================================================
 \section{المتتاليات الحسابية}
 \begin{tarif}
-$(u_n)$ \textbf{حسابية} إذا وجد عدد حقيقي $r$ (يسمى \textbf{الأساس}) بحيث من أجل كل عدد طبيعي $n$: $u_{n+1}=u_n+r$.\par
-لإثبات ذلك نبين أن الفرق $u_{n+1}-u_n$ ثابت (لا يتعلق بـ $n$).
+$\LW{(u_n)}$ \textbf{حسابية} إذا وجد عدد حقيقي $\LW{r}$ (يسمى \textbf{الأساس}) بحيث من أجل كل عدد طبيعي $\LW{n}$: $\LW{u_{n+1}=u_n+r}$.\par
+لإثبات ذلك نبين أن الفرق $\LW{u_{n+1}-u_n}$ ثابت (لا يتعلق بـ $\LW{n}$).
 \end{tarif}
 
 \begin{khassia}
-إذا كانت $(u_n)$ حسابية أساسها $r$:
+إذا كانت $\LW{(u_n)}$ حسابية أساسها $\LW{r}$:
 \begin{itemize}
-\item \textbf{الحد العام:} $u_n=u_0+nr$، وعمومًا $u_n=u_p+(n-p)r$.
-\item \textbf{الوسط الحسابي:} $a$ ، $b$ ، $c$ حدود متتابعة من متتالية حسابية $\iff 2b=a+c$.
-\item \textbf{المجموع:} \bx{S=N\times\dfrac{P+L}{2}} حيث $N$ عدد الحدود، $P$ الحد الأول، $L$ الحد الأخير.\par
-مثلًا: $u_0+u_1+\cdots+u_n=(n+1)\dfrac{u_0+u_n}{2}$.
-\item \textbf{اتجاه التغير:} متزايدة تمامًا إذا كان $r>0$، متناقصة تمامًا إذا كان $r<0$، ثابتة إذا كان $r=0$.
+\item \textbf{الحد العام:} $\LW{u_n=u_0+nr}$، وعمومًا $\LW{u_n=u_p+(n-p)r}$.
+\item \textbf{الوسط الحسابي:} $\LW{a}$ ، $\LW{b}$ ، $\LW{c}$ حدود متتابعة من متتالية حسابية $\LW{\iff 2b=a+c}$.
+\item \textbf{المجموع:} \bx{S=N\times\dfrac{P+L}{2}} حيث $\LW{N}$ عدد الحدود، $\LW{P}$ الحد الأول، $\LW{L}$ الحد الأخير.\par
+مثلًا: $\LW{u_0+u_1+\cdots+u_n=(n+1)\dfrac{u_0+u_n}{2}}$.
+\item \textbf{اتجاه التغير:} متزايدة تمامًا إذا كان $\LW{r>0}$، متناقصة تمامًا إذا كان $\LW{r<0}$، ثابتة إذا كان $\LW{r=0}$.
 \end{itemize}
 \end{khassia}
 
@@ -419,9 +420,9 @@ $(u_n)$ \textbf{حسابية} إذا وجد عدد حقيقي $r$ (يسمى \tex
 \end{mithal}
 
 \begin{tariqa}[متتالية الفروق $v_n=u_{n+1}-u_n$]
-إذا كانت $u_{n+1}=u_n+v_n$ حيث $(v_n)$ حسابية (أو هندسية)، فإن الحدود تختزل:
-\[u_n=u_0+\left(v_0+v_1+\cdots+v_{n-1}\right)\]
-والمجموع بين القوسين يضم $n$ حدًّا.
+إذا كانت $\LW{u_{n+1}=u_n+v_n}$ حيث $\LW{(v_n)}$ حسابية (أو هندسية)، فإن الحدود تختزل:
+\[\LW{u_n=u_0+\left(v_0+v_1+\cdots+v_{n-1}\right)}\]
+والمجموع بين القوسين يضم $\LW{n}$ حدًّا.
 \end{tariqa}
 
 \begin{mithal}
@@ -434,27 +435,27 @@ $u_0=2$ و $u_{n+1}=u_n+2n+3$: \quad $v_n=u_{n+1}-u_n=2n+3$ حسابية أسا�
 % =====================================================
 \section{المتتاليات الهندسية}
 \begin{tarif}
-$(u_n)$ \textbf{هندسية} إذا وجد عدد حقيقي $q$ (يسمى \textbf{الأساس}) بحيث من أجل كل عدد طبيعي $n$: $u_{n+1}=q\,u_n$.\par
-لإثبات ذلك نكتب $u_{n+1}$ على الشكل $q\times u_n$ (أو نبين أن $\frac{u_{n+1}}{u_n}$ ثابت إذا كانت الحدود غير معدومة).
+$\LW{(u_n)}$ \textbf{هندسية} إذا وجد عدد حقيقي $\LW{q}$ (يسمى \textbf{الأساس}) بحيث من أجل كل عدد طبيعي $\LW{n}$: $\LW{u_{n+1}=q\,u_n}$.\par
+لإثبات ذلك نكتب $\LW{u_{n+1}}$ على الشكل $\LW{q\times u_n}$ (أو نبين أن $\LW{\frac{u_{n+1}}{u_n}}$ ثابت إذا كانت الحدود غير معدومة).
 \end{tarif}
 
 \begin{khassia}
-إذا كانت $(u_n)$ هندسية أساسها $q$:
+إذا كانت $\LW{(u_n)}$ هندسية أساسها $\LW{q}$:
 \begin{itemize}
-\item \textbf{الحد العام:} $u_n=u_0\,q^{n}$، وعمومًا $u_n=u_p\,q^{\,n-p}$.
-\item \textbf{الوسط الهندسي:} $a$ ، $b$ ، $c$ حدود متتابعة من متتالية هندسية $\iff b^{2}=ac$.
-\item \textbf{المجموع} ($q\neq1$): \bx{S=P\times\dfrac{1-q^{N}}{1-q}} حيث $P$ الحد الأول و $N$ عدد الحدود.\par
-مثلًا: $u_0+u_1+\cdots+u_n=u_0\dfrac{1-q^{n+1}}{1-q}$.
-\item إذا كان $q=1$ فإن المتتالية ثابتة والمجموع يساوي $N\times u_0$.
+\item \textbf{الحد العام:} $\LW{u_n=u_0\,q^{n}}$، وعمومًا $\LW{u_n=u_p\,q^{\,n-p}}$.
+\item \textbf{الوسط الهندسي:} $\LW{a}$ ، $\LW{b}$ ، $\LW{c}$ حدود متتابعة من متتالية هندسية $\LW{\iff b^{2}=ac}$.
+\item \textbf{المجموع} ($\LW{q\neq1}$): \bx{S=P\times\dfrac{1-q^{N}}{1-q}} حيث $\LW{P}$ الحد الأول و $\LW{N}$ عدد الحدود.\par
+مثلًا: $\LW{u_0+u_1+\cdots+u_n=u_0\dfrac{1-q^{n+1}}{1-q}}$.
+\item إذا كان $\LW{q=1}$ فإن المتتالية ثابتة والمجموع يساوي $\LW{N\times u_0}$.
 \end{itemize}
 \end{khassia}
 
 \begin{khassia}[اتجاه التغير والنهاية لـ $u_n=u_0q^{n}$ ($u_0\neq0$)]
 \begin{itemize}
-\item $q>1$: إذا كان $u_0>0$ فهي متزايدة تمامًا ونهايتها $+\infty$؛ وإذا كان $u_0<0$ فهي متناقصة تمامًا ونهايتها $-\infty$.
-\item $0<q<1$: إذا كان $u_0>0$ فهي متناقصة تمامًا؛ وإذا كان $u_0<0$ فهي متزايدة تمامًا؛ وفي الحالتين نهايتها $0$.
-\item $q=1$: المتتالية ثابتة.
-\item $q<0$: غير رتيبة (إشارات متناوبة)؛ نهايتها $0$ إذا كان $-1<q<0$، وليس لها نهاية إذا كان $q\leqslant-1$.
+\item $\LW{q>1}$: إذا كان $\LW{u_0>0}$ فهي متزايدة تمامًا ونهايتها $\LW{+\infty}$؛ وإذا كان $\LW{u_0<0}$ فهي متناقصة تمامًا ونهايتها $\LW{-\infty}$.
+\item $\LW{0<q<1}$: إذا كان $\LW{u_0>0}$ فهي متناقصة تمامًا؛ وإذا كان $\LW{u_0<0}$ فهي متزايدة تمامًا؛ وفي الحالتين نهايتها $\LW{0}$.
+\item $\LW{q=1}$: المتتالية ثابتة.
+\item $\LW{q<0}$: غير رتيبة (إشارات متناوبة)؛ نهايتها $\LW{0}$ إذا كان $\LW{-1<q<0}$، وليس لها نهاية إذا كان $\LW{q\leqslant-1}$.
 \end{itemize}
 \end{khassia}
 
@@ -507,21 +508,21 @@ $(u_n)$ \textbf{هندسية} إذا وجد عدد حقيقي $q$ (يسمى \tex
 \section{المجاميع والجداءات}
 \begin{khassia}[مجاميع وجداءات مرجعية]
 \begin{itemize}
-\item $0+1+2+\cdots+n=\dfrac{n(n+1)}{2}$ \quad و \quad $1+a+a^{2}+\cdots+a^{n}=\dfrac{a^{n+1}-1}{a-1}$ \ ($a\neq1$).
-\item مجموع $N$ حدًّا كلها تساوي $a$ هو $N\times a$.
-\item $a^{0}\times a^{1}\times a^{2}\times\cdots\times a^{n}=a^{0+1+\cdots+n}=a^{\frac{n(n+1)}{2}}$.
-\item إذا كانت $(v_n)$ هندسية: $v_0\times v_1\times\cdots\times v_n=v_0^{\,n+1}\times q^{\frac{n(n+1)}{2}}$.
-\item إذا كانت الحدود موجبة تمامًا: $\ln v_0+\ln v_1+\cdots+\ln v_n=\ln\left(v_0\times v_1\times\cdots\times v_n\right)$.
+\item $\LW{0+1+2+\cdots+n=\dfrac{n(n+1)}{2}}$ \quad و \quad $\LW{1+a+a^{2}+\cdots+a^{n}=\dfrac{a^{n+1}-1}{a-1}}$ \ ($\LW{a\neq1}$).
+\item مجموع $\LW{N}$ حدًّا كلها تساوي $\LW{a}$ هو $\LW{N\times a}$.
+\item $\LW{a^{0}\times a^{1}\times a^{2}\times\cdots\times a^{n}=a^{0+1+\cdots+n}=a^{\frac{n(n+1)}{2}}}$.
+\item إذا كانت $\LW{(v_n)}$ هندسية: $\LW{v_0\times v_1\times\cdots\times v_n=v_0^{\,n+1}\times q^{\frac{n(n+1)}{2}}}$.
+\item إذا كانت الحدود موجبة تمامًا: $\LW{\ln v_0+\ln v_1+\cdots+\ln v_n=\ln\left(v_0\times v_1\times\cdots\times v_n\right)}$.
 \end{itemize}
 \end{khassia}
 
 \Needspace{14\baselineskip}
 \begin{tariqa}[مجموع مشتق من متتالية هندسية $(v_n)$ أساسها $q$]
-نضع $w_n$ مساويًا للحد العام للمجموع، ونبين أن $\dfrac{w_{n+1}}{w_n}$ ثابت، ثم نطبق دستور المجموع الهندسي:
+نضع $\LW{w_n}$ مساويًا للحد العام للمجموع، ونبين أن $\LW{\dfrac{w_{n+1}}{w_n}}$ ثابت، ثم نطبق دستور المجموع الهندسي:
 \begin{itemize}
-\item $w_n=v_n^{2}$: هندسية أساسها $q^{2}$. \quad $w_n=\dfrac{1}{v_n}$: هندسية أساسها $\dfrac{1}{q}$.
-\item $w_n=k^{n}v_n$: هندسية أساسها $kq$. \quad $w_n=\dfrac{v_n}{k^{n}}$: هندسية أساسها $\dfrac{q}{k}$.
-\item إذا كان الأساس الجديد يساوي $1$ فإن $(w_n)$ ثابتة والمجموع يساوي عدد الحدود مضروبًا في $w_0$.
+\item $\LW{w_n=v_n^{2}}$: هندسية أساسها $\LW{q^{2}}$. \quad $\LW{w_n=\dfrac{1}{v_n}}$: هندسية أساسها $\LW{\dfrac{1}{q}}$.
+\item $\LW{w_n=k^{n}v_n}$: هندسية أساسها $\LW{kq}$. \quad $\LW{w_n=\dfrac{v_n}{k^{n}}}$: هندسية أساسها $\LW{\dfrac{q}{k}}$.
+\item إذا كان الأساس الجديد يساوي $\LW{1}$ فإن $\LW{(w_n)}$ ثابتة والمجموع يساوي عدد الحدود مضروبًا في $\LW{w_0}$.
 \end{itemize}
 \end{tariqa}
 
@@ -544,16 +545,16 @@ $(u_n)$ \textbf{هندسية} إذا وجد عدد حقيقي $q$ (يسمى \tex
 \section{تقارب متتالية والنهايات}
 \begin{tarif}
 \begin{itemize}
-\item نقول إن $(u_n)$ \textbf{متقاربة} نحو العدد الحقيقي $\ell$ إذا كان كل مجال مفتوح يشمل $\ell$ يشمل جميع الحدود ابتداءً من رتبة معينة، ونكتب $\limn u_n=\ell$.
-\item إذا لم تكن متقاربة (نهايتها $\pm\infty$ أو ليس لها نهاية) نقول إنها \textbf{متباعدة}.
-\item إذا كان $u_n=f(n)$ و $\displaystyle\lim_{x\to+\infty}f(x)=\ell$ فإن $\limn u_n=\ell$ (نفس قواعد نهايات الدوال).
+\item نقول إن $\LW{(u_n)}$ \textbf{متقاربة} نحو العدد الحقيقي $\LW{\ell}$ إذا كان كل مجال مفتوح يشمل $\LW{\ell}$ يشمل جميع الحدود ابتداءً من رتبة معينة، ونكتب $\LW{\limn u_n=\ell}$.
+\item إذا لم تكن متقاربة (نهايتها $\LW{\pm\infty}$ أو ليس لها نهاية) نقول إنها \textbf{متباعدة}.
+\item إذا كان $\LW{u_n=f(n)}$ و $\LW{\displaystyle\lim_{x\to+\infty}f(x)=\ell}$ فإن $\LW{\limn u_n=\ell}$ (نفس قواعد نهايات الدوال).
 \end{itemize}
 \end{tarif}
 
 \begin{khassia}[نهاية $q^{n}$]
 \begin{itemize}
-\item إذا كان $q>1$: $\limn q^{n}=+\infty$.\qquad إذا كان $q=1$: $\limn q^{n}=1$.
-\item إذا كان $-1<q<1$: $\limn q^{n}=0$.\qquad إذا كان $q\leqslant-1$: ليس لـ $(q^{n})$ نهاية.
+\item إذا كان $\LW{q>1}$: $\LW{\limn q^{n}=+\infty}$.\qquad إذا كان $\LW{q=1}$: $\LW{\limn q^{n}=1}$.
+\item إذا كان $\LW{-1<q<1}$: $\LW{\limn q^{n}=0}$.\qquad إذا كان $\LW{q\leqslant-1}$: ليس لـ $\LW{(q^{n})}$ نهاية.
 \end{itemize}
 \end{khassia}
 
@@ -567,10 +568,10 @@ $(u_n)$ \textbf{هندسية} إذا وجد عدد حقيقي $q$ (يسمى \tex
 
 \begin{khassia}[مبرهنات المقارنة]
 \begin{enumerate}
-\item إذا كان $u_n\geqslant v_n$ ابتداءً من رتبة معينة و $\limn v_n=+\infty$ فإن $\limn u_n=+\infty$.
-\item إذا كان $u_n\leqslant v_n$ ابتداءً من رتبة معينة و $\limn v_n=-\infty$ فإن $\limn u_n=-\infty$.
-\item \textbf{(الحصر)} إذا كان $v_n\leqslant u_n\leqslant w_n$ ابتداءً من رتبة معينة و $\limn v_n=\limn w_n=\ell$ فإن $\limn u_n=\ell$.
-\item إذا كان $|u_n-\ell|\leqslant v_n$ و $\limn v_n=0$ فإن $\limn u_n=\ell$.
+\item إذا كان $\LW{u_n\geqslant v_n}$ ابتداءً من رتبة معينة و $\LW{\limn v_n=+\infty}$ فإن $\LW{\limn u_n=+\infty}$.
+\item إذا كان $\LW{u_n\leqslant v_n}$ ابتداءً من رتبة معينة و $\LW{\limn v_n=-\infty}$ فإن $\LW{\limn u_n=-\infty}$.
+\item \textbf{(الحصر)} إذا كان $\LW{v_n\leqslant u_n\leqslant w_n}$ ابتداءً من رتبة معينة و $\LW{\limn v_n=\limn w_n=\ell}$ فإن $\LW{\limn u_n=\ell}$.
+\item إذا كان $\LW{|u_n-\ell|\leqslant v_n}$ و $\LW{\limn v_n=0}$ فإن $\LW{\limn u_n=\ell}$.
 \end{enumerate}
 \end{khassia}
 
@@ -585,7 +586,7 @@ $(u_n)$ \textbf{هندسية} إذا وجد عدد حقيقي $q$ (يسمى \tex
 \begin{khassia}[المتتاليات الرتيبة]
 \begin{itemize}
 \item كل متتالية \textbf{متزايدة ومحدودة من الأعلى} متقاربة، وكل متتالية \textbf{متناقصة ومحدودة من الأسفل} متقاربة.
-\item كل متتالية متزايدة وغير محدودة من الأعلى نهايتها $+\infty$.
+\item كل متتالية متزايدة وغير محدودة من الأعلى نهايتها $\LW{+\infty}$.
 \end{itemize}
 \end{khassia}
 
@@ -594,7 +595,7 @@ $(u_n)$ \textbf{هندسية} إذا وجد عدد حقيقي $q$ (يسمى \tex
 \end{molahada}
 
 \begin{khassia}[نهاية متتالية $u_{n+1}=f(u_n)$]
-إذا كانت $(u_n)$ متقاربة نحو $\ell$، وكانت $f$ مستمرة عند $\ell$ (و $\ell$ من مجال يحوي الحدود)، فإن $\ell$ حل للمعادلة \bx{f(\ell)=\ell}؛ أي فاصلة نقطة تقاطع $(C_f)$ مع المستقيم $y=x$.
+إذا كانت $\LW{(u_n)}$ متقاربة نحو $\LW{\ell}$، وكانت $\LW{f}$ مستمرة عند $\LW{\ell}$ (و $\LW{\ell}$ من مجال يحوي الحدود)، فإن $\LW{\ell}$ حل للمعادلة \bx{f(\ell)=\ell}؛ أي فاصلة نقطة تقاطع $\LW{(C_f)}$ مع المستقيم $\LW{y=x}$.
 \end{khassia}
 
 \begin{molahada}
@@ -629,16 +630,16 @@ $\ell=-1$ مرفوض، إذن \bx{\limn u_n=3}.
 % =====================================================
 \section{المتتاليتان المتجاورتان}
 \begin{tarif}
-نقول إن المتتاليتين $(u_n)$ و $(v_n)$ \textbf{متجاورتان} إذا كانت:
+نقول إن المتتاليتين $\LW{(u_n)}$ و $\LW{(v_n)}$ \textbf{متجاورتان} إذا كانت:
 \begin{itemize}
 \item إحداهما متزايدة والأخرى متناقصة؛
-\item و $\limn\left(v_n-u_n\right)=0$.
+\item و $\LW{\limn\left(v_n-u_n\right)=0}$.
 \end{itemize}
 \end{tarif}
 
 \begin{khassia}
-إذا كانت $(u_n)$ متزايدة و $(v_n)$ متناقصة ومتجاورتين، فإنهما \textbf{متقاربتان نحو نفس النهاية} $\ell$، ومن أجل كل عدد طبيعي $n$:
-\[\bx{u_n\leqslant\ell\leqslant v_n}\]
+إذا كانت $\LW{(u_n)}$ متزايدة و $\LW{(v_n)}$ متناقصة ومتجاورتين، فإنهما \textbf{متقاربتان نحو نفس النهاية} $\LW{\ell}$، ومن أجل كل عدد طبيعي $\LW{n}$:
+\[\LW{\bx{u_n\leqslant\ell\leqslant v_n}}\]
 \end{khassia}
 
 \begin{mithal}
@@ -658,11 +659,11 @@ $\ell=-1$ مرفوض، إذن \bx{\limn u_n=3}.
 % =====================================================
 \section{المتتاليات من الشكل $u_{n+1}=au_n+b$}
 \begin{tariqa}[المتتالية المساعدة]
-لتكن $u_{n+1}=au_n+b$ حيث $a\neq1$ و $a\neq0$.
+لتكن $\LW{u_{n+1}=au_n+b}$ حيث $\LW{a\neq1}$ و $\LW{a\neq0}$.
 \begin{enumerate}
-\item نحل $\alpha=a\alpha+b$ فنجد $\alpha=\dfrac{b}{1-a}$ (النقطة الصامدة).
-\item نضع $v_n=u_n-\alpha$؛ عندئذ $v_{n+1}=au_n+b-\alpha=a(u_n-\alpha)=a\,v_n$: إذن $(v_n)$ \textbf{هندسية أساسها $a$}.
-\item $v_n=v_0\,a^{n}$ ومنه $u_n=\alpha+(u_0-\alpha)a^{n}$، ثم النهاية والمجاميع.
+\item نحل $\LW{\alpha=a\alpha+b}$ فنجد $\LW{\alpha=\dfrac{b}{1-a}}$ (النقطة الصامدة).
+\item نضع $\LW{v_n=u_n-\alpha}$؛ عندئذ $\LW{v_{n+1}=au_n+b-\alpha=a(u_n-\alpha)=a\,v_n}$: إذن $\LW{(v_n)}$ \textbf{هندسية أساسها $\LW{a}$}.
+\item $\LW{v_n=v_0\,a^{n}}$ ومنه $\LW{u_n=\alpha+(u_0-\alpha)a^{n}}$، ثم النهاية والمجاميع.
 \end{enumerate}
 \end{tariqa}
 
@@ -685,8 +686,8 @@ $u_0=1$ و $u_{n+1}=\frac{1}{2}u_n+2$.
 
 \begin{tariqa}[أشكال أخرى شائعة للمتتالية المساعدة]
 \begin{itemize}
-\item $u_{n+1}=\dfrac{au_n+b}{cu_n+d}$ وللمعادلة $f(x)=x$ \textbf{حل مضاعف} $\alpha$: نضع $v_n=\dfrac{1}{u_n-\alpha}$ فتكون \textbf{حسابية}.
-\item $u_{n+1}-a=\sqrt{u_n-a}$ (أو قوة أخرى): نضع $v_n=\ln(u_n-a)$ فتكون \textbf{هندسية} أساسها $\frac{1}{2}$.
+\item $\LW{u_{n+1}=\dfrac{au_n+b}{cu_n+d}}$ وللمعادلة $\LW{f(x)=x}$ \textbf{حل مضاعف} $\LW{\alpha}$: نضع $\LW{v_n=\dfrac{1}{u_n-\alpha}}$ فتكون \textbf{حسابية}.
+\item $\LW{u_{n+1}-a=\sqrt{u_n-a}}$ (أو قوة أخرى): نضع $\LW{v_n=\ln(u_n-a)}$ فتكون \textbf{هندسية} أساسها $\LW{\frac{1}{2}}$.
 \end{itemize}
 \end{tariqa}
 
