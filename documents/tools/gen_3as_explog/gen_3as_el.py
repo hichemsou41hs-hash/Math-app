@@ -2,7 +2,7 @@ import sys, re
 D0='/tmp/claude-0/-home-user-Math-app/edf6d12c-f942-5224-90ee-6cbaa794c825/scratchpad/p2/'
 which=sys.argv[1]
 exec(open(D0+'hdr_ln.py').read()); exec(open(D0+'explog_helpers.py').read())
-exec(open({'exp':D0+'sess_exp3.py','ln':D0+'sess_ln3.py','cg':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_cg3.py','int':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_int3.py','suites':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_suites3.py','arith':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_arith3.py','proba':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_proba3.py','cplx':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_cplx3.py'}[which]).read())
+exec(open({'exp':D0+'sess_exp3.py','ln':D0+'sess_ln3.py','cg':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_cg3.py','int':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_int3.py','suites':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_suites3.py','arith':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_arith3.py','proba':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_proba3.py','cplx':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_cplx3.py','space':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_space3.py'}[which]).read())
 import importlib.util; spec=importlib.util.spec_from_file_location('gf',D0+'ge_format.py'); gf=importlib.util.module_from_spec(spec); spec.loader.exec_module(gf)
 STREAM='علوم تجريبية'
 if which=='exp':
@@ -20,6 +20,9 @@ elif which=='proba':
 elif which=='cplx':
     TITLE='الأعداد المركبة والتحويلات النقطية'; OUT='modhakira_wahda9_3as'; START=67; CNT='12 مذكرة (24 ساعة)'; STREAM='علوم تجريبية ، رياضيات ، تقني رياضي'
     items=['مجموعة الأعداد المركبة: الشكل الجبري ، التمثيل ، العمليات.','مرافق عدد مركب وخواصه.','طويلة عدد مركب وتفسيرها الهندسي.',r'المعادلات من الدرجة الثانية في $\mathbb C$ ، الجذران التربيعيان \textbf{(علوم تجريبية)}.','عمدة عدد مركب ، الشكل المثلثي.','الشكل الأسي ، ترميز أولر ، دستور موافر.','توظيف الطويلة والعمدة في الهندسة.','الكتابة المركبة للتحويلات: الانسحاب ، التحاكي ، الدوران.','حل مسائل هندسية بالتحويلات والأعداد المركبة.','التشابه المباشر: تعريف ، كتابته المركبة ، عناصره.','التحليل القانوني لتشابه مباشر ، مركب تشابهين.','خواص التشابه المباشر وحل مسائل.']
+elif which=='space':
+    TITLE='الهندسة في الفضاء'; OUT='modhakira_wahda10_3as'; START=79; CNT='10 مذكرات (20 ساعة)'; STREAM='علوم تجريبية ، رياضيات ، تقني رياضي'
+    items=['الأشعة في الفضاء: الارتباط الخطي ، أشعة من نفس المستوي.','المعلم في الفضاء ، المسافة ، المرجح.',r'سطح الكرة ، الأسطوانة ، المخروط \textbf{(رياضيات وتقني رياضي)}.','التمثيل الوسيطي لمستقيم ، الوضع النسبي لمستقيمين.','الجداء السلمي في الفضاء ، التعامد.','معادلة مستو.','المسافة بين نقطة ومستو ، مجموعات نقط.','الأوضاع النسبية لمستقيم ومستو ، ولمستويين.','تقاطع ثلاثة مستويات ، الانتقال بين التمثيلات.','حل مسائل في الهندسة الفضائية.']
 elif which=='suites':
     TITLE='المتتاليات العددية'; OUT='modhakira_wahda5_3as'; START=29; CNT='7 مذكرات (14 ساعة)'
     items=['توليد متتالية ، التمثيل البياني وتخمين السلوك.','التذكير بالمتتاليات الحسابية والهندسية ، المتتالية المساعدة.','الاستدلال بالتراجع.','خواص المتتاليات: المحدودة والرتيبة.','خواص المتتاليات: التقارب والنهاية.','المتتاليتان المتجاورتان.','حل مشكلات توظف المتتاليات والبرهان بالتراجع.']
