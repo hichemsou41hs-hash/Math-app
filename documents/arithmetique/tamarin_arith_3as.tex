@@ -147,7 +147,8 @@
  \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
 {\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
 \newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
-\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\newcommand{\LW}[1]{{\color{cDef}#1}}  % law / formula colour
 \newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
 \newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
 \newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
@@ -160,9 +161,10 @@
 \newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
 \newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
 \pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
-\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newtcbox{\bxtbox}{on line,coltext=cThm,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
 \newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
 \SetHeader{\small\bfseries\color{cSec}تمارين تجريبية: الأعداد والحساب}{\small\color{cSec}السنة الثالثة ثانوي -- رياضيات وتقني رياضي}
+\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
 \begin{document}
 \begin{LTR}
 \begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
@@ -405,7 +407,9 @@ $n=$ & $5k$ & $5k+1$ & $5k+2$ & $5k+3$ & $5k+4$\\\hline
 \QQ{2}
 \begin{itemize}
 \item $2027=5\times 405+2$ إذن \bx{3^{2027}\equiv 9\,[11]}.
-\item $245=11\times 22+3$ إذن $245\equiv 3\,[11]$، و $2026=5\times 405+1$، ومنه $245^{2026}\equiv 3^{2026}\equiv 3\,[11]$: الباقي \bx{3}.
+\item $245=11\times 22+3$ إذن $245\equiv 3\,[11]$، و $2026=5\times 405+1$، ومنه 
+\[ 245^{2026}\equiv 3^{2026}\equiv 3\,[11] \]
+الباقي \bx{3}.
 \end{itemize}
 
 \QQ{3} $3^n+7\equiv 0\,[11]$ معناه $3^n\equiv -7\equiv 4\,[11]$، ومن الجدول هذا يحدث إذا وفقط إذا كان $n=5k+4$.
@@ -444,7 +448,9 @@ $n=$ & $6k$ & $6k+1$ & $6k+2$ & $6k+3$ & $6k+4$ & $6k+5$\\\hline
 \end{center}
 مع $k\in\N$؛ الدور \bx{6}.
 
-\QQ{2} العدد يوافق مجموع أرقامه بترديد $9$: $1+4+4+2=11\equiv 2\,[9]$، إذن $1442\equiv 2\,[9]$ (تحقق: $1442=9\times 160+2$).
+\QQ{2} العدد يوافق مجموع أرقامه بترديد $9$: 
+\[ 1+4+4+2=11\equiv 2\,[9] \]
+إذن $1442\equiv 2\,[9]$ (تحقق: $1442=9\times 160+2$).
 و $2026=6\times 337+4$ إذن $1442^{2026}\equiv 2^{2026}\equiv 2^4\equiv 7\,[9]$. الباقي \bx{7}.
 
 \QQ{3} $6n+3$ من الشكل $6k+3$، إذن $2^{6n+3}\equiv 8\,[9]$، ومنه $2^{6n+3}+1\equiv 8+1=9\equiv 0\,[9]$ \ok.
@@ -485,7 +491,9 @@ $4^n+2^n\equiv\ \ldots\ [9]$ & $2$ & $6$ & $2$ & $0$ & $2$ & $3$\\\hline
 \QQ{3} عيّن العدد الطبيعي $b$ (حيث $b\ge 6$) بحيث: $\overline{235}^{\,b}=124$.
 \end{tamrin}
 \begin{hal}
-\textbf{تذكير:} $\overline{a_p a_{p-1}\ldots a_1a_0}^{\,b}=a_pb^p+\cdots+a_1b+a_0$ حيث $0\le a_i<b$. للكتابة في الأساس $b$ نُجري قسمات متتالية على $b$ ونقرأ البواقي من الأخير إلى الأول.
+\textbf{تذكير:} 
+\[ \overline{a_p a_{p-1}\ldots a_1a_0}^{\,b}=a_pb^p+\cdots+a_1b+a_0 \]
+ حيث $0\le a_i<b$. للكتابة في الأساس $b$ نُجري قسمات متتالية على $b$ ونقرأ البواقي من الأخير إلى الأول.
 
 \QQ{1}
 \textbf{الأساس 2:}
@@ -716,7 +724,9 @@ $n$ عدد طبيعي. نضع: $a=2n+3$ و $b=5n+2$، و $d=\pgcd(a;b)$.
 \QQ{2} \textbf{حل خاص:} $7x\equiv 2\,[11]$. لدينا $7\times 8=56=5\times 11+1\equiv 1\,[11]$، نضرب في $8$: $x\equiv 16\equiv 5\,[11]$.
 نأخذ $x_0=5$: $35-11y_0=2$ أي $y_0=3$. إذن $(5;3)$ حل خاص.
 
-\textbf{الحل العام:} $7(x-5)=11(y-3)$؛ $11$ يقسم $7(x-5)$ و $\pgcd(11;7)=1$، إذن (غوص) $x-5=11k$، ثم $y-3=7k$. والعكس صحيح بالتعويض: $7(11k+5)-11(7k+3)=35-33=2$ \ok.
+\textbf{الحل العام:} $7(x-5)=11(y-3)$؛ $11$ يقسم $7(x-5)$ و $\pgcd(11;7)=1$، إذن (غوص) $x-5=11k$، ثم $y-3=7k$. والعكس صحيح بالتعويض: 
+\[ 7(11k+5)-11(7k+3)=35-33=2 \]
+ \ok.
 \[\bx{S=\{(11k+5\,;\,7k+3)\ /\ k\in\Z\}}\]
 
 \QQ{3} $N=7x+3=7(11k+5)+3=77k+38$، إذن \bx{N\equiv 38\,[77]}.
@@ -899,53 +909,12 @@ $20^2=400\le 409<441=21^2$، إذن نختبر الأعداد الأولية $2;
 \QQ{6} \bxt{صحيح}: $n^2+n=n(n+1)$ جداء عددين متتابعين أحدهما زوجي.
 \end{hal}
 
-\section{تمارين شعبة رياضيات}
+\section{تمارين شاملة}
 
 % ------------------------------------------------------------------
-\begin{tamrin}{مبرهنة فيرما الصغرى -- شعبة رياضيات}
-\textbf{مبرهنة فيرما الصغرى:} إذا كان $p$ عددا أوليا و $a$ عددا صحيحا لا يقبل القسمة على $p$ فإن: $a^{p-1}\equiv 1\,[p]$.
-\QQ{1} استنتج أنه من أجل كل عدد صحيح $a$ وكل عدد أولي $p$: $a^p\equiv a\,[p]$.
-\QQ{2} عيّن باقي قسمة كل من $3^{2026}$ و $2^{2026}$ على $13$.
-\QQ{3} بيّن أنه من أجل كل عدد صحيح $n$: العدد $n^{13}-n$ يقبل القسمة على كل من $2$، $3$، $5$، $7$ و $13$، ثم استنتج أنه يقبل القسمة على $2730$.
-\QQ{4} عيّن الأعداد الأولية $p$ التي تقسم $2^p+1$.
-\end{tamrin}
-\begin{hal}
-\QQ{1} حالتان:
-\begin{itemize}
-\item إذا كان $p$ لا يقسم $a$: حسب فيرما $a^{p-1}\equiv 1\,[p]$، نضرب في $a$: $a^p\equiv a\,[p]$.
-\item إذا كان $p$ يقسم $a$: $a\equiv 0\,[p]$ و $a^p\equiv 0\,[p]$، إذن $a^p\equiv a\,[p]$.
-\end{itemize}
-إذن \bx{a^p\equiv a\,[p]} في كل الحالات.
-
-\QQ{2} $13$ أولي، و $13$ لا يقسم $3$ ولا $2$، إذن حسب فيرما: $3^{12}\equiv 1$ و $2^{12}\equiv 1\,[13]$.
-لدينا $2026=12\times 168+10$:
-\begin{itemize}
-\item $3^{2026}=(3^{12})^{168}\times 3^{10}\equiv 3^{10}\,[13]$. و $3^3=27=2\times 13+1\equiv 1\,[13]$، إذن $3^{10}=(3^3)^3\times 3\equiv 3\,[13]$. الباقي \bx{3}.
-\item $2^{2026}\equiv 2^{10}=1024\,[13]$، و $1024=13\times 78+10$. الباقي \bx{10}.
-\end{itemize}
-
-\QQ{3} ليكن $p\in\{2;3;5;7;13\}$. نلاحظ أن $p-1\in\{1;2;4;6;12\}$ يقسم $12$؛ نكتب $12=(p-1)m$ مع $m\in\N^*$.
-\begin{itemize}
-\item إذا كان $p$ لا يقسم $n$: $n^{p-1}\equiv 1\,[p]$ ومنه $n^{12}=(n^{p-1})^m\equiv 1\,[p]$، إذن $n^{13}\equiv n\,[p]$.
-\item إذا كان $p$ يقسم $n$: $n^{13}\equiv 0\equiv n\,[p]$.
-\end{itemize}
-إذن \bxt{كل من $2$، $3$، $5$، $7$، $13$ يقسم $n^{13}-n$}.
-
-هذه الأعداد أولية ومتمايزة، فهي أولية فيما بينها مثنى مثنى. باستعمال نتيجة مبرهنة غوص بالتتابع (إذا قسم عددان أوليان فيما بينهما عددا فإن جداءهما يقسمه): جداؤها يقسم $n^{13}-n$، و:
-\[2\times 3\times 5\times 7\times 13=\bx{2730}\]
-(تحقق: $n=2$: $8190=2730\times 3$ \ok.)
-
-\QQ{4} ليكن $p$ أوليا يقسم $2^p+1$.
-\begin{itemize}
-\item $p\neq 2$ لأن $2^2+1=5$ فردي.
-\item حسب السؤال 1: $2^p\equiv 2\,[p]$، إذن $2^p+1\equiv 3\,[p]$. وبما أن $p$ يقسم $2^p+1$ فإن $3\equiv 0\,[p]$، أي $p$ يقسم $3$، ومنه $p=3$.
-\item العكس: $2^3+1=9=3\times 3$ \ok.
-\end{itemize}
-إذن \bx{p=3}.
-\end{hal}
 
 % ------------------------------------------------------------------
-\begin{tamrin}{الموافقات والمتتاليات -- شعبة رياضيات}
+\begin{tamrin}{الموافقات والمتتاليات}
 $(u_n)$ المتتالية المعرفة بـ: $u_0=1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=5u_n+4$.
 \QQ{1} نضع $v_n=u_n+1$. بيّن أن $(v_n)$ متتالية هندسية، ثم اكتب $u_n$ بدلالة $n$.
 \QQ{2} احسب بدلالة $n$ المجموع $S_n=u_0+u_1+\cdots+u_n$.
@@ -989,7 +958,7 @@ $n=$ & $6k$ & $6k+1$ & $6k+2$ & $6k+3$ & $6k+4$ & $6k+5$\\\hline
 \end{hal}
 
 % ------------------------------------------------------------------
-\begin{tamrin}{القاسم المشترك الأكبر لعبارتين من الدرجة الثانية -- شعبة رياضيات}
+\begin{tamrin}{القاسم المشترك الأكبر لعبارتين من الدرجة الثانية}
 $n$ عدد طبيعي. نضع: $A=n^2+5n+4$ و $B=n^2+3n+2$.
 \QQ{1} حلّل كلا من $A$ و $B$ إلى جداء عاملين من الدرجة الأولى.
 \QQ{2} بيّن أن $\pgcd(n+4;n+2)=\pgcd(n+2;2)$، واستنتج قيمته حسب زوجية $n$.
@@ -1042,6 +1011,78 @@ $\pgcd(n+4;n+2)$ & $2$ & $1$\\\hline
 
 
 تحقق: $n=19$: $\ppcm(460;420)=9660=20\times 21\times 23$ \ok.
+\end{hal}
+
+
+%=====================================================
+\section{تمارين من نمط البكالوريا (بالحل)}
+
+\begin{tamrin}{بكالوريا تجريبية: بواقي القوى}
+\QQ{1} ادرس، حسب قيم العدد الطبيعي $n$، بواقي القسمة الإقليدية للعدد $4^n$ على $7$.
+\QQ{2} عيّن باقي القسمة الإقليدية للعدد $1432^{2026}$ على $7$.
+\QQ{3} عيّن الأعداد الطبيعية $n$ التي من أجلها يكون: $4^n+4^{2n}+1\equiv0\,[7]$.
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\[4^0\equiv1\,[7]\qquad 4^1\equiv4\,[7]\qquad 4^2=16\equiv2\,[7]\qquad 4^3=64\equiv1\,[7]\]
+بما أن $4^3\equiv1\,[7]$ فإن $4^{3k+r}=(4^3)^k\times4^r\equiv4^r\,[7]$: البواقي دورية دورها \bx{3}.
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|C|c|c|c|}\hline
+\rowcolor{cSec!12}$n=$ & $3k$ & $3k+1$ & $3k+2$\\\hline
+باقي قسمة $4^n$ على $7$ & $1$ & $4$ & $2$\\\hline
+\end{tabular}
+\end{center}
+\QQ{2} $1432=7\times204+4$، إذن $1432\equiv4\,[7]$:
+\[2026=3\times675+1\ \Rightarrow\ 1432^{2026}\equiv4^{2026}\equiv4^{1}\,[7]\]
+الباقي \bx{4}.
+\QQ{3} نناقش حسب باقي $n$ على $3$ (و $2n$ يأخذ الباقي المقابل):
+\begin{itemize}
+\item $n=3k$: \quad $4^n+4^{2n}+1\equiv1+1+1=3\,[7]$: مرفوض.
+\item $n=3k+1$: \quad $2n=6k+2$، إذن $4^n+4^{2n}+1\equiv4+2+1=7\equiv0\,[7]$ \ok.
+\item $n=3k+2$: \quad $2n=6k+4=3(2k+1)+1$، إذن $4^n+4^{2n}+1\equiv2+4+1=7\equiv0\,[7]$ \ok.
+\end{itemize}
+إذن \bxt{$n$ ليس مضاعفًا لـ $3$}، أي $n=3k+1$ أو $n=3k+2$ ($k\in\N$).
+\end{hal}
+
+\begin{tamrin}{بكالوريا تجريبية: معادلة ديوفانتية و PGCD}
+نعتبر في $\Z^2$ المعادلة $(E)$: $11x-7y=2$.
+\QQ{1} تحقق أن $(4;6)$ حل للمعادلة $(E)$، ثم حلها في $\Z^2$.
+\QQ{2} $(x;y)$ حل للمعادلة $(E)$ و $d=\pgcd(x;y)$. بيّن أن $d\in\{1;2\}$ ، ثم عيّن الحلول التي من أجلها $d=2$.
+\QQ{3} عيّن الحلول $(x;y)$ حيث $0<x<50$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $11\times4-7\times6=44-42=2$ \ok. بالطرح:
+\[11x-7y=11\times4-7\times6\ \Rightarrow\ 11(x-4)=7(y-6)\]
+$7$ يقسم $11(x-4)$ و $\pgcd(7;11)=1$، إذن حسب غوص $7\mid x-4$: $x=7k+4$ ($k\in\Z$).\par
+بالتعويض: $11\times7k=7(y-6)$ ومنه $y=11k+6$:
+\[\bx{S=\{(7k+4\,;\,11k+6)\ /\ k\in\Z\}}\]
+\QQ{2} $d$ يقسم $x$ و $y$، إذن يقسم $11x-7y=2$: \bx{d\in\{1;2\}}.\par
+$d=2$ يعني $x$ و $y$ زوجيان: $x=7k+4$ زوجي $\iff$ $k$ زوجي، و $y=11k+6$ زوجي $\iff$ $k$ زوجي.\par
+إذن \bxt{$d=2$ إذا وفقط إذا كان $k$ زوجيًا}: $(x;y)=(14m+4\,;\,22m+6)$ ، $m\in\Z$.
+\QQ{3}
+\[0<7k+4<50\ \Rightarrow\ -\frac47<k<\frac{46}{7}\ \Rightarrow\ k\in\{0;1;2;3;4;5;6\}\]
+\[\bx{(4;6)\ ;\ (11;17)\ ;\ (18;28)\ ;\ (25;39)\ ;\ (32;50)\ ;\ (39;61)\ ;\ (46;72)}\]
+\end{hal}
+
+\begin{tamrin}{بكالوريا تجريبية: عدد مكتوب في نظامين}
+عدد طبيعي $N$ يكتب $\overline{xyz}^{(7)}$ في النظام ذي الأساس $7$ ، ويكتب $\overline{zyx}^{(11)}$ في النظام ذي الأساس $11$ ($x\neq0$ و $z\neq0$).
+\QQ{1} بيّن أن $y=12x-30z$ ، واستنتج أن $y$ مضاعف لـ $6$.
+\QQ{2} عيّن $x$ ، $y$ ، $z$ ثم $N$ في النظام العشري.
+\end{tamrin}
+\begin{hal}
+\QQ{1} الأرقام أصغر من $7$: $1\leqslant x\leqslant6$ ، $0\leqslant y\leqslant6$ ، $1\leqslant z\leqslant6$.
+\[N=49x+7y+z=121z+11y+x\ \Rightarrow\ 48x-4y-120z=0\ \Rightarrow\ \bx{y=12x-30z}\]
+$y=6(2x-5z)$: إذن $y$ مضاعف لـ $6$ ، ومع $0\leqslant y\leqslant6$: $y=0$ أو $y=6$.
+\QQ{2}
+\begin{itemize}
+\item $y=0$: $2x=5z$ ، و $5\mid2x$ مع $\pgcd(5;2)=1$ ، إذن $5\mid x$: $x=5$ و $z=2$:
+\[N=49\times5+0+2=\bx{247}\]
+تحقق: $2\times121+0\times11+5=247$ \ok
+\item $y=6$: $2x-5z=1$ ، $z$ فردي: $z=1$ يعطي $x=3$ ($z=3$ يعطي $x=8>6$ مرفوض):
+\[N=49\times3+7\times6+1=\bx{190}\]
+تحقق: $1\times121+6\times11+3=190$ \ok
+\end{itemize}
 \end{hal}
 
 \end{document}
