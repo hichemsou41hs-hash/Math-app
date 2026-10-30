@@ -3,7 +3,7 @@
 %  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
 % ============================================================
 \documentclass[12pt,a4paper]{article}
-\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage[a4paper,margin=1.2cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{icomma}
 \usepackage[english,bidi=default,layout=lists]{babel}
@@ -188,22 +188,26 @@
 \end{LTR}
 \par\smallskip\textbf{الوسائل:} #9\par\smallskip}
 \newenvironment{Sayr}{%
-\begin{LTR}\renewcommand{\arraystretch}{1.25}
-\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
-\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\begin{LTR}\renewcommand{\arraystretch}{1.25}\setlength{\tabcolsep}{4pt}\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\begin{longtable}{|p{0.09\textwidth}|>{\centering\arraybackslash}p{0.05\textwidth}|p{0.71\textwidth}|>{\centering\arraybackslash}p{0.09\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\footnotesize\textbf{توجيهات وتعاليق}} & \ar{\footnotesize\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\footnotesize\textbf{مراحل الحصة}}\\\hline\endhead
 \hline\endfoot}{\end{longtable}\end{LTR}}
 % سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
-\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
+\newcommand{\RaggedEnd}{\leftskip=0pt plus 1fil\relax}
+\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{\RaggedEnd #2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
 
 \newcommand{\Lab}[2]{\foreignlanguage{english}{\tcbox[on line,colback=#1,colframe=#1,boxrule=0pt,arc=2pt,boxsep=1pt,left=5pt,right=5pt,top=1pt,bottom=1pt]{\ar{\textcolor{white}{\textbf{#2}}}}}}
 \newcommand{\Num}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[fill=cDef,text=white,inner sep=2pt,font=\footnotesize\bfseries](c){#1};}}
 \newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
 \newenvironment{Kad}[1]{\par\smallskip\Lab{#1}}{\par}
-\SetHeader{\small\bfseries\color{cSec}مذكرات محور: الاحتمالات}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\newcommand{\RR}[1]{\ifmmode{\color{cThm}#1}\else$\mbox{\color{cThm}#1}$\fi}
+\newcommand{\T}[1]{$\mbox{\color{cDef}\bfseries #1}$}
+\providecommand{\LW}[1]{{\color{cDef}#1}}
+\SetHeader{\small\bfseries\color{cSec}مذكرات محور: الاحتمالات}{\small\color{cSec}السنة الثالثة ثانوي -- علوم تجريبية ، رياضيات ، تقني رياضي}
 \begin{document}
 \begin{LTR}
 \begin{tcolorbox}[enhanced,colback=cThm!85!black,colframe=cThm!85!black,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
-{\color{white}\fontsize{26}{32}\selectfont\bfseries مذكرات محور: الاحتمالات}\\[8pt]
+{\color{white}\fontsize{24}{30}\selectfont\bfseries مذكرات محور: الاحتمالات}\\[8pt]
 {\color{white}\large السنة الثالثة ثانوي -- علوم تجريبية ، رياضيات ، تقني رياضي}\\[4pt]
 {\color{white}\large 11 مذكرة (22 ساعة) -- السنة الدراسية 2026-2027}
 \end{tcolorbox}
@@ -214,7 +218,7 @@
 \item المتغير العشوائي: قانونه ، أمله ، تباينه ، انحرافه المعياري.
 \item المبدأ الأساسي للعد.
 \item القوائم والترتيبات.
-\item التبديلات واختيار أداة العد.
+\item التبديلات.
 \item التوفيقات وتطبيقاتها في الاحتمالات.
 \item دستور ثنائي الحد.
 \item الاحتمالات الشرطية \textbf{(علوم تجريبية ورياضيات)}.
@@ -222,236 +226,277 @@
 \item الحوادث المستقلة \textbf{(علوم تجريبية ورياضيات)}.
 \item النمذجة والمحاكاة: تلاؤم معطيات مع نموذج.
 \end{enumerate}
-مراجع النشاطات والتمارين: الكتاب المدرسي للسنة الثالثة ثانوي ، الجزء الثاني (باب الاحتمالات: نشاط ص 201 ، تمارين ص 219--224). القوائم والترتيبات والتوفيقات لكل الشعب العلمية. المذكرات 53 و 54 و 55 (الاحتمالات الشرطية ، شجرة الاحتمالات ، الاستقلال) لا تدرسها شعبة تقني رياضي.
+الحلول مفصّلة: المعطيات بالأسود ، \T{العناوين} و\RR{النتائج} بلون مختلف ، وكل سؤال في سطر.
 \end{BOX}
 \newpage
 \ModhHead{46}{3 ع ت / 3 ر / 3 ت ر}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{الاحتمالات المتساوية على مجموعة منتهية}%
-{\begin{itemize}\item الاحتمالات (2 ع ت).\end{itemize}}%
+{\begin{itemize}\item الاحتمالات (السنة الثانية) ، المجموعات.\end{itemize}}%
 {\begin{itemize}\item حساب احتمال حادثة في حالة تساوي الاحتمال ، واستعمال خواص الاحتمال.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} ذكّر بقانون احتمال وبخواص الاحتمال.}{10 د}{تذكير.}
+\textbf{التهيئة النفسية:} ذكّر بمعنى «تجربة عشوائية» و«مخرج» و«حادثة». ما احتمال ظهور وجه زوجي عند رمي نرد متوازن؟}{10 د}{تذكير.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ كيس به $3$ كريات حمراء و $2$ خضراوان ، نسحب كرية عشوائياً.\par\ck\ $\Omega$ به $5$ مخارج متساوية الاحتمال: $P(R)=\frac35$.\par
-}{35 د}{جدول مزدوج للنردين.}
-\Row{بناء المعارف}{%
-\Lab{cThm}{تذكير}\par\ck\ تساوي الاحتمال: $P(A)=\dfrac{\mathrm{card}\,A}{\mathrm{card}\,\Omega}$.\par
-\ck\ $P(\overline A)=1-P(A)$ ؛ $P(A\cup B)=P(A)+P(B)-P(A\cap B)$.\par
-\Lab{cEx}{مثال}\ نرمي نرداً متوازناً مرتين: $36$ حالة ؛ «المجموع $7$»: $6$ حالات ، احتمالها $\frac16$.\par}{50 د}{الحادثة العكسية.}
+\Lab{cEx}{نشاط رقم 01}\par\textbf{(1)} كيس به $3$ كريات حمراء و $2$ خضراوان لا نفرق بينها باللمس. نسحب كرية عشوائيًا: عيّن $\Omega$ ثم احسب $P(R)$ و $P(V)$.\par\textbf{(2)} نرمي نردين متوازنين ونسجل مجموع الرقمين: كوّن جدولًا مزدوجًا للمخارج.\par\textbf{(3)} احسب احتمال الحادثة $A$: «المجموع يساوي $7$».}{35 د}{جدول مزدوج للنردين.}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ نتحقق من فرضية تساوي الاحتمال (نرد متوازن ، سحب عشوائي).}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} نرقم الكريات: $\Omega=\{R_1;R_2;R_3;V_1;V_2\}$ ، $\mathrm{card}\,\Omega=5$ مخارج متساوية الاحتمال.\par\textbf{(2)} $P(R)=\RR{\dfrac35}$ \quad و \quad $P(V)=\RR{\dfrac25}$.\par\textbf{(3)} جدول المجاميع ($36$ مخرجًا متساوية الاحتمال) ، وخانات الحادثة $A$ ملونة:\par\smallskip\begin{LTR}\centering{\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|}\hline\rowcolor{cSec!12}\ar{الأول $\backslash$ الثاني} & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\\hline $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & \cellcolor{cEx!30}$7$\\\hline $2$ & $3$ & $4$ & $5$ & $6$ & \cellcolor{cEx!30}$7$ & $8$\\\hline $3$ & $4$ & $5$ & $6$ & \cellcolor{cEx!30}$7$ & $8$ & $9$\\\hline $4$ & $5$ & $6$ & \cellcolor{cEx!30}$7$ & $8$ & $9$ & $10$\\\hline $5$ & $6$ & \cellcolor{cEx!30}$7$ & $8$ & $9$ & $10$ & $11$\\\hline $6$ & \cellcolor{cEx!30}$7$ & $8$ & $9$ & $10$ & $11$ & $12$\\\hline \end{tabular}}\end{LTR}\par \par\textbf{(3)} $\mathrm{card}\,A=6$ ، إذن $P(A)=\dfrac6{36}=\RR{\dfrac16}$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cThm}{تذكير}\par\textbf{(1)} قانون احتمال على $\LW{\Omega=\{e_1;\ldots;e_n\}}$: أعداد $\LW{p_i\geqslant0}$ مجموعها $\LW{1}$ ؛ $\LW{P(A)}$ مجموع احتمالات مخارجها.\par\textbf{(2)} تساوي الاحتمال: $\LW{\RR{P(A)=\dfrac{\mathrm{card}\,A}{\mathrm{card}\,\Omega}}}$.\par\textbf{(3)} $\LW{P(\varnothing)=0}$ ، $\LW{P(\Omega)=1}$ ، $\LW{\RR{P(\overline A)=1-P(A)}}$.\par\textbf{(4)} $\LW{\RR{P(A\cup B)=P(A)+P(B)-P(A\cap B)}}$ ؛ وإذا كانت $\LW{A}$ و $\LW{B}$ غير متلائمتين: \par $\LW{P(A\cup B)=P(A)+P(B)}$.}{50 د}{الحادثة العكسية.}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة (من الجدول)}\par\textbf{(1)} $B$: «المجموع أكبر من أو يساوي $10$»: $3+2+1=6$ خانات ، $P(B)=\dfrac6{36}=\RR{\dfrac16}$.\par\textbf{(2)} $D$: «رقمان متساويان»: $6$ خانات ، $P(D)=\RR{\dfrac16}$.\par\textbf{(3)} $A$ و $D$ غير متلائمتين (مجموع رقمين متساويين زوجي): \par $P(A\cup D)=\dfrac16+\dfrac16=\RR{\dfrac13}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نتحقق من فرضية تساوي الاحتمال (نرد متوازن ، سحب عشوائي) قبل استعمال دستور تساوي الاحتمال.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par نرمي نرداً مرتين. احسب احتمال «الحصول على $6$ مرة واحدة على الأقل».\par\textbf{الحل:} الحادثة العكسية «لا $6$»: $\frac{25}{36}$ ؛ الاحتمال $\frac{11}{36}$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par نرمي نردين متوازنين.\par\textbf{(1)} احسب احتمال «الحصول على $6$ مرة واحدة على الأقل».\par\textbf{(2)} احسب احتمال «جداء الرقمين زوجي».}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} العكسية «لا $6$»: $5\times5=25$ مخرجًا ، $P=1-\dfrac{25}{36}=\RR{\dfrac{11}{36}}$.\par\textbf{(2)} العكسية «الجداء فردي» (الرقمان فرديان): $3\times3=9$ مخارج ، $P=1-\dfrac9{36}=\RR{\dfrac34}$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{47}{3 ع ت / 3 ر / 3 ت ر}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{المتغير العشوائي: قانونه ، أمله ، تباينه ، انحرافه المعياري}%
 {\begin{itemize}\item الاحتمالات المتساوية.\end{itemize}}%
-{\begin{itemize}\item تعيين قانون احتمال متغير عشوائي وحساب أمله وتباينه وانحرافه المعياري.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{\begin{itemize}\item تعيين قانون احتمال متغير عشوائي وحساب أمله الرياضياتي وتباينه وانحرافه المعياري.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} لعبة: هل هي مربحة للاعب؟ كيف نقرر؟}{10 د}{وضعية لعب.}
+\textbf{التهيئة النفسية:} لعبة بالنرد: هل هي مربحة للاعب؟ كيف نقرر؟}{10 د}{وضعية لعب.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ نرمي نرداً: يربح اللاعب $10$ DA إذا ظهر $6$ ، و $2$ DA إذا ظهر $4$ أو $5$ ، ويخسر $3$ DA في الحالات الأخرى. $X$ الربح.\par\ck\ قيم $X$: $-3$ ، $2$ ، $10$.\par
-}{35 د}{جدول القانون.}
-\Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $E(X)=\sum x_iP(X=x_i)$ ؛ $V(X)=\sum x_i^2P(X=x_i)-E(X)^2$ ؛ $\sigma(X)=\sqrt{V(X)}$.\par\Lab{cEx}{قانون $X$}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.5}\begin{tabular}{|c|c|c|c|c|}\hline
-\rowcolor{cSec!12}$x_i$ & $-3$ & $2$ & $10$ & \ar{المجموع}\\\hline
-$P(X=x_i)$ & $\frac12$ & $\frac13$ & $\frac16$ & $1$\\\hline
-$x_iP(X=x_i)$ & $-\frac32$ & $\frac23$ & $\frac53$ & $\frac56$\\\hline
-\end{tabular}}\end{LTR}\par $E(X)=\frac56\approx0{,}83$ DA: اللعبة في صالح اللاعب ؛ $V(X)=\frac{135}6-\frac{25}{36}=\frac{785}{36}$ ، $\sigma(X)\approx4{,}67$.\par}{50 د}{عمود المجموع للتحقق.}
+\Lab{cEx}{نشاط رقم 02}\ نرمي نردًا متوازنًا: يربح اللاعب $10$ DA إذا ظهر $6$ ، و $2$ DA إذا ظهر $4$ أو $5$ ، ويخسر $3$ DA في الحالات الأخرى. $X$ الربح الجبري.\par\textbf{(1)} ما القيم الممكنة لـ $X$ ؟\par\textbf{(2)} عيّن قانون احتمال $X$.\par\textbf{(3)} احسب «متوسط الربح» في رمية واحدة.}{35 د}{جدول القانون.}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ مجموع الاحتمالات يساوي $1$ (عمود المجموع).}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $X\in\{\RR{-3;2;10}\}$.\par\textbf{(2)} $P(X=-3)=\dfrac36=\RR{\dfrac12}$ (الأرقام $1$ ، $2$ ، $3$).\par\textbf{(3)} $P(X=2)=\dfrac26=\RR{\dfrac13}$ (الرقمان $4$ ، $5$) ؛ \quad $P(X=10)=\RR{\dfrac16}$.\par\textbf{(4)} الجدول (عمود المجموع للتحقق):\par\smallskip\begin{LTR}\centering{\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|}\hline\rowcolor{cSec!12}$x_i$ & $-3$ & $2$ & $10$ & \ar{المجموع}\\\hline $P(X=x_i)$ & $\frac12$ & $\frac13$ & $\frac16$ & $1$\\\hline $x_iP(X=x_i)$ & $-\frac32$ & $\frac23$ & $\frac53$ & \textcolor{cThm}{$\frac56$}\\\hline $x_i^2P(X=x_i)$ & $\frac92$ & $\frac43$ & $\frac{50}3$ & \textcolor{cThm}{$\frac{45}2$}\\\hline \end{tabular}}\end{LTR}\par \par\textbf{(5)} $E(X)=-\dfrac32+\dfrac23+\dfrac53=\RR{\dfrac56}\approx0{,}83$ DA $>0$: اللعبة \RR{في} \RR{صالح} \RR{اللاعب}.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\par\textbf{(1)} قانون احتمال $\LW{X}$: القيم $\LW{x_i}$ مع الاحتمالات $\LW{p_i=P(X=x_i)}$.\par\textbf{(2)} الأمل الرياضياتي: $\LW{\RR{E(X)=\sum x_ip_i}}$.\par\textbf{(3)} التباين: $\LW{\RR{V(X)=\sum x_i^2p_i-E(X)^2}}$ ؛ الانحراف المعياري: $\LW{\RR{\sigma(X)=\sqrt{V(X)}}}$.}{50 د}{عمود المجموع للتحقق.}
+\Row{}{%
+\Lab{cEx}{حساب التباين (النشاط)}\par\textbf{(1)} $\sum x_i^2p_i=\dfrac92+\dfrac43+\dfrac{50}3=\dfrac{45}2$.\par\textbf{(2)} $V(X)=\dfrac{45}2-\dfrac{25}{36}=\RR{\dfrac{785}{36}}$ ؛ \quad $\sigma(X)=\sqrt{\dfrac{785}{36}}\approx\RR{4{,}67}$.}{}{}
+\Row{}{%
+\Lab{cEx}{مثال: قطعتان نقديتان}\ $X$ عدد مرات ظهور الوجه $F$:\par\smallskip\begin{LTR}\centering{\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|}\hline\rowcolor{cSec!12}$x_i$ & $0$ & $1$ & $2$ & \ar{المجموع}\\\hline $P(X=x_i)$ & $\frac14$ & $\frac12$ & $\frac14$ & $1$\\\hline \end{tabular}}\end{LTR}\par \par\textbf{(1)} $E(X)=0\times\dfrac14+1\times\dfrac12+2\times\dfrac14=\RR{1}$.\par\textbf{(2)} $V(X)=\left(0+\dfrac12+1\right)-1^2=\RR{\dfrac12}$ ؛ \quad $\sigma(X)=\RR{\dfrac{\sqrt2}2}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ مجموع الاحتمالات في القانون يساوي $1$ (عمود المجموع) ، و $V(X)\geqslant0$ دائمًا.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par ما الربح عند ظهور $6$ لتكون اللعبة عادلة؟\par\textbf{الحل:} $\frac a6+\frac23-\frac32=0$ ، $a=5$ DA.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} ما الربح $a$ عند ظهور $6$ لتكون لعبة النشاط عادلة ($E(X)=0$) ؟}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $E(X)=\dfrac a6+\dfrac23-\dfrac32=\dfrac a6-\dfrac56=0\ \Rightarrow\ \RR{a=5}$ DA.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات (متغير عشوائي).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{48}{3 ع ت / 3 ر / 3 ت ر}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{المبدأ الأساسي للعد}%
 {\begin{itemize}\item المجموعات ، الجداول المزدوجة.\end{itemize}}%
-{\begin{itemize}\item استعمال مبدأي الجمع والجداء ، وتنظيم المعطيات للعد.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{\begin{itemize}\item استعمال مبدأي الجمع والجداء ، وتنظيم المعطيات للعد (جدول ، شجرة إمكانيات).\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} مطعم يقدم $3$ مقبلات و $4$ أطباق رئيسية: كم وجبة مختلفة؟}{10 د}{وضعية يومية.}
+\textbf{التهيئة النفسية:} مطعم يقدم $3$ مقبلات و $4$ أطباق رئيسية: كم وجبة مختلفة (مقبل وطبق) ؟}{10 د}{وضعية يومية.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ جدول مزدوج $3\times4$: $12$ وجبة.\par
-\ck\ رمز من $3$ أرقام: $10\times10\times10=1000$.\par
-}{35 د}{جدول وشجرة إمكانيات.}
-\Row{بناء المعارف}{%
-\Lab{cThm}{مبدأ الجداء}\ إذا تمت تجربة على $k$ مراحل وكانت المرحلة $i$ لها $n_i$ إمكانية: العدد الكلي $n_1\times n_2\times\cdots\times n_k$.\par\Lab{cThm}{مبدأ الجمع}\ إذا كانت الحالات منفصلة (غير متلائمة): نجمع أعدادها.\par}{50 د}{«و» / «أو».}
+\Lab{cEx}{نشاط رقم 03}\par\textbf{(1)} نظّم الوجبات الممكنة في جدول مزدوج واحسب عددها.\par\textbf{(2)} رمز من حرف ($A$ أو $B$) يليه رقم ($1$ ، $2$ أو $3$): مثّل الرموز بشجرة إمكانيات.\par\textbf{(3)} نختار تحلية من $5$ \textbf{أو} مشروبًا من $4$: كم اختيارًا؟}{35 د}{جدول وشجرة إمكانيات.}
 \Row{}{%
-\Lab{cEx}{مثال}\ لوحة سيارة: حرفان ثم $3$ أرقام: $26^2\times10^3=676000$.\par\Lab{cThm!80!black}{حذار}\ «و» تعني الجداء ، «أو» (حالات منفصلة) تعني الجمع.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} جدول $3\times4$:\par\smallskip\begin{LTR}\centering{\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|>{\centering\arraybackslash}p{0.150\linewidth}|}\hline\rowcolor{cSec!12}\ar{مقبلات $\backslash$ أطباق} & $P_1$ & $P_2$ & $P_3$ & $P_4$\\\hline $E_1$ & $(E_1;P_1)$ & $(E_1;P_2)$ & $(E_1;P_3)$ & $(E_1;P_4)$\\\hline $E_2$ & $(E_2;P_1)$ & $(E_2;P_2)$ & $(E_2;P_3)$ & $(E_2;P_4)$\\\hline $E_3$ & $(E_3;P_1)$ & $(E_3;P_2)$ & $(E_3;P_3)$ & $(E_3;P_4)$\\\hline \end{tabular}}\end{LTR}\par \par\textbf{(1)} عدد الوجبات $3\times4=\RR{12}$.\par\textbf{(2)} شجرة الإمكانيات (دون احتمالات): $2\times3=\RR{6}$ رموز.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[font=\small,ev/.style={rounded corners=2pt,fill=cDef!12,draw=cDef,inner sep=2pt,minimum size=6mm},br/.style={draw=cDef!70,thick}]\coordinate (O) at (0,0); \fill[cDef] (O) circle (1.8pt);\node[ev] (F0) at (2.6,2.1){$A$};\draw[br] (O)--(F0);\node[ev] (L00) at (5.2,3.5){$1$};\draw[br] (F0)--(L00);\node[anchor=west] at (5.8,3.5){$A1$};\node[ev] (L01) at (5.2,2.1){$2$};\draw[br] (F0)--(L01);\node[anchor=west] at (5.8,2.1){$A2$};\node[ev] (L02) at (5.2,0.7){$3$};\draw[br] (F0)--(L02);\node[anchor=west] at (5.8,0.7){$A3$};\node[ev] (F1) at (2.6,-2.1){$B$};\draw[br] (O)--(F1);\node[ev] (L10) at (5.2,-0.7){$1$};\draw[br] (F1)--(L10);\node[anchor=west] at (5.8,-0.7){$B1$};\node[ev] (L11) at (5.2,-2.1){$2$};\draw[br] (F1)--(L11);\node[anchor=west] at (5.8,-2.1){$B2$};\node[ev] (L12) at (5.2,-3.5){$3$};\draw[br] (F1)--(L12);\node[anchor=west] at (5.8,-3.5){$B3$};\node[anchor=west,font=\small\bfseries] at (5.8,4.4){\ar{الاحتمال}};\end{tikzpicture}\end{LTR}\par \par\textbf{(3)} الاختياران منفصلان: $5+4=\RR{9}$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cThm}{مبدأ الجداء}\ تجربة على $\LW{k}$ مراحل ، للمرحلة $\LW{i}$ عدد $\LW{n_i}$ من الإمكانيات: العدد الكلي $\LW{\RR{n_1\times n_2\times\cdots\times n_k}}$.}{50 د}{«و» / «أو».}
+\Row{}{%
+\Lab{cThm}{مبدأ الجمع}\ إذا كانت الحالات منفصلة (غير متلائمة): نجمع أعدادها.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} لوحة سيارة: حرفان ثم $3$ أرقام: $26^2\times10^3=\RR{676000}$.\par\textbf{(2)} أعداد من $3$ أرقام (الأول غير معدوم): $9\times10\times10=\RR{900}$.\par\textbf{(3)} أعداد من رقمين أو ثلاثة بالأرقام $1;2;3$: $3^2+3^3=9+27=\RR{36}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ «و» (مراحل متتابعة) تعني الجداء ، «أو» (حالات منفصلة) تعني الجمع.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par كم عدداً من $3$ أرقام مختلفة يمكن تكوينه بالأرقام $1$ إلى $5$ ؟\par\textbf{الحل:} $5\times4\times3=60$.\par\textbf{واجب منزلي:} تمرين 16 صفحة 219.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} كم عددًا من $3$ أرقام مختلفة نكوّن بالأرقام $1$ إلى $5$ ؟\par\textbf{(2)} كم منها زوجي؟}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $5\times4\times3=\RR{60}$.\par\textbf{(2)} رقم الآحاد $2$ أو $4$ (إمكانيتان) ثم $4\times3$: $2\times4\times3=\RR{24}$.\par\textbf{واجب منزلي:} تمرين 16 صفحة 219.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{49}{3 ع ت / 3 ر / 3 ت ر}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{القوائم والترتيبات}%
 {\begin{itemize}\item المبدأ الأساسي للعد.\end{itemize}}%
 {\begin{itemize}\item عدّ القوائم والترتيبات ، وتوظيفها في السحب على التوالي بإرجاع ودون إرجاع.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} كم كلمة من $3$ حروف (لها معنى أو لا) يمكن كتابتها بالحروف اللاتينية؟ وكم منصة تتويج ممكنة في سباق من $8$ عدائين؟}{10 د}{وضعيتان يوميتان.}
+\textbf{التهيئة النفسية:} كم كلمة من $3$ حروف (لها معنى أو لا) نكتب بالحروف اللاتينية؟ وكم منصة تتويج ممكنة في سباق من $8$ عدائين؟}{10 د}{وضعيتان يوميتان.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ الكلمة: الترتيب مهم والتكرار ممكن: $26\times26\times26=26^3$.\par
-\ck\ المنصة: الترتيب مهم ولا تكرار: $8\times7\times6=336$.\par
-}{35 د}{التمييز مرتب / غير مرتب.}
-\Row{بناء المعارف}{%
-\Lab{cDef}{القائمة}\ قائمة ذات $p$ عنصراً من مجموعة ذات $n$ عنصراً: عددها $n^p$ (مرتبة ، بتكرار).\par\Lab{cDef}{الترتيبة}\ ترتيبة ذات $p$ عنصراً ($p\leqslant n$): عددها $A_n^p=n(n-1)\cdots(n-p+1)=\dfrac{n!}{(n-p)!}$ (مرتبة ، دون تكرار).\par}{50 د}{الحاسبة (nPr).}
+\Lab{cEx}{نشاط رقم 04}\par\textbf{(1)} الكلمة: هل الترتيب مهم؟ هل التكرار ممكن؟ احسب العدد.\par\textbf{(2)} المنصة: نفس الأسئلة.}{35 د}{مرتب / بتكرار.}
 \Row{}{%
-\Lab{cEx}{مثال}\ كيس به $5$ حمراء و $3$ خضراء ، نسحب كريتين على التوالي:\par\ck\ بإرجاع: $P(\text{RR})=\dfrac{5^2}{8^2}=\dfrac{25}{64}$.\par
-\ck\ دون إرجاع: $P(\text{RR})=\dfrac{A_5^2}{A_8^2}=\dfrac{20}{56}=\dfrac5{14}$.\par
-\Lab{cThm!80!black}{حذار}\ نحدد أولاً: هل الترتيب مهم؟ هل التكرار ممكن؟}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} الترتيب مهم والتكرار ممكن: $26\times26\times26=26^3=\RR{17576}$.\par\textbf{(2)} الترتيب مهم ولا تكرار: $8\times7\times6=\RR{336}$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{القائمة}\ قائمة ذات $\LW{p}$ عنصرًا من مجموعة ذات $\LW{n}$ عنصرًا (مرتبة ، بتكرار): عددها $\LW{\RR{n^p}}$.}{50 د}{الحاسبة (nPr).}
+\Row{}{%
+\Lab{cDef}{الترتيبة}\ ترتيبة ذات $\LW{p}$ عنصرًا ($\LW{p\leqslant n}$) (مرتبة ، دون تكرار): عددها \par $\LW{\RR{A_n^p=n(n-1)\cdots(n-p+1)=\dfrac{n!}{(n-p)!}}}$ ، حيث $\LW{n!=n\times(n-1)\times\cdots\times1}$ و $\LW{0!=1}$.}{}{}
+\Row{}{%
+\Lab{cEx}{سحب على التوالي}\ كيس به $5$ حمراء و $3$ خضراء ، نسحب كريتين على التوالي.\par\textbf{(1)} \textbf{بإرجاع} (قوائم): $\mathrm{card}\,\Omega=8^2=64$.\par\textbf{(2)} $P(RR)=\dfrac{5^2}{64}=\RR{\dfrac{25}{64}}$ ؛ \quad لونان مختلفان: $\dfrac{2\times5\times3}{64}=\RR{\dfrac{15}{32}}$.\par\textbf{(3)} \textbf{دون إرجاع} (ترتيبات): $\mathrm{card}\,\Omega=A_8^2=8\times7=56$.\par\textbf{(4)} $P(RR)=\dfrac{A_5^2}{56}=\dfrac{20}{56}=\RR{\dfrac5{14}}$ ؛ \quad لونان مختلفان: $\dfrac{2\times5\times3}{56}=\RR{\dfrac{15}{28}}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نحدد أولًا: هل الترتيب مهم؟ هل التكرار ممكن؟ و«لونان مختلفان» يحسب الترتيبين $RV$ و $VR$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par رمز سري من $4$ أرقام مختلفة. كم رمزاً ممكناً؟ وما احتمال أن يبدأ بالرقم $1$ ؟\par\textbf{الحل:} $A_{10}^4=5040$ ؛ $\dfrac{A_9^3}{A_{10}^4}=\dfrac{504}{5040}=\dfrac1{10}$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات (العد).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} رمز سري من $4$ أرقام مختلفة: كم رمزًا ممكنًا؟\par\textbf{(2)} ما احتمال أن يبدأ الرمز بالرقم $1$ ؟}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $A_{10}^4=10\times9\times8\times7=\RR{5040}$.\par\textbf{(2)} $\dfrac{A_9^3}{A_{10}^4}=\dfrac{504}{5040}=\RR{\dfrac1{10}}$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات (العد).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
-\ModhHead{50}{3 ع ت / 3 ر / 3 ت ر}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{التبديلات واختيار أداة العد}%
-{\begin{itemize}\item القوائم والترتيبات ، التوفيقات.\end{itemize}}%
-{\begin{itemize}\item حساب عدد التبديلات ، واختيار أداة العد المناسبة لحل مسائل.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\ModhHead{50}{3 ع ت / 3 ر / 3 ت ر}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{التبديلات}%
+{\begin{itemize}\item القوائم والترتيبات.\end{itemize}}%
+{\begin{itemize}\item حساب عدد التبديلات وتوظيفه في مسائل العد.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} بكم طريقة نرتب $5$ كتب على رف؟}{10 د}{سؤال.}
+\textbf{التهيئة النفسية:} بكم طريقة نرتب $5$ كتب مختلفة على رف؟}{10 د}{سؤال.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ $5\times4\times3\times2\times1=120$: ترتيبة لكل العناصر.\par
-}{35 د}{جدول الأدوات.}
-\Row{بناء المعارف}{%
-\Lab{cDef}{التبديلة}\ تبديلة لـ $n$ عنصراً هي ترتيبة لـ $n$ عنصراً من بين $n$: عددها $n!$ (مع $0!=1$).\par\Lab{cMeth}{اختيار أداة العد}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.5}\begin{tabular}{|c|c|c|}\hline
-\rowcolor{cSec!12}\ar{نوع السحب} & \ar{الترتيب والتكرار} & \ar{العدد}\\\hline
-\ar{على التوالي بإرجاع} & \ar{مرتب ، بتكرار} & $n^p$\\\hline
-\ar{على التوالي دون إرجاع} & \ar{مرتب ، دون تكرار} & $A_n^p$\\\hline
-\ar{في آن واحد} & \ar{غير مرتب ، دون تكرار} & $\binom np$\\\hline
-\end{tabular}}\end{LTR}\par }{50 د}{نعتبر المتجاورين «كتلة».}
+\Lab{cEx}{نشاط رقم 05}\par\textbf{(1)} احسب عدد طرق ترتيب $5$ كتب على رف.\par\textbf{(2)} من بينها كتابا رياضيات يجب أن يكونا متجاورين: كم ترتيبًا؟}{35 د}{طريقة الكتلة.}
 \Row{}{%
-\Lab{cEx}{مثال}\par\ck\ عدد الكلمات المختلفة بحروف «AAB»: $\dfrac{3!}{2!}=3$.\par
-\ck\ $4$ بنين و $3$ بنات في صف ، والبنات متجاورات: $5!\times3!=720$.\par
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $5\times4\times3\times2\times1=5!=\RR{120}$.\par\textbf{(2)} نعتبر الكتابين «كتلة»: $4!$ ترتيبًا للكتل ، و $2!$ داخل الكتلة: $4!\times2!=\RR{48}$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{التبديلة}\ تبديلة لـ $\LW{n}$ عنصرًا هي ترتيبة لـ $\LW{n}$ عنصرًا من بين $\LW{n}$: عددها $\LW{\RR{A_n^n=n!}}$.}{50 د}{الحاسبة (!).}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} كلمات مختلفة بحروف «AAB»: $\dfrac{3!}{2!}=\RR{3}$ ($AAB$ ، $ABA$ ، $BAA$).\par\textbf{(2)} كلمات بحروف «MAMA»: $\dfrac{4!}{2!\times2!}=\RR{6}$.\par\textbf{(3)} $4$ بنين و $3$ بنات في صف والبنات متجاورات: $5!\times3!=\RR{720}$.}{}{}
+\Row{}{%
 \Lab{cThm!80!black}{حذار}\ عند تكرار عناصر متماثلة نقسم على تبديلاتها.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $5$ أشخاص يجلسون عشوائياً في صف. ما احتمال أن يجلس شخصان معينان متجاورين؟\par\textbf{الحل:} $\dfrac{2\times4!}{5!}=\dfrac25$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات (العد).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par $5$ أشخاص يجلسون عشوائيًا في صف.\par\textbf{(1)} كم جلسة ممكنة؟\par\textbf{(2)} ما احتمال أن يجلس شخصان معينان متجاورين؟}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $5!=\RR{120}$.\par\textbf{(2)} $\dfrac{4!\times2!}{5!}=\dfrac{48}{120}=\RR{\dfrac25}$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات (العد).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{51}{3 ع ت / 3 ر / 3 ت ر}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{التوفيقات وتطبيقاتها في الاحتمالات}%
-{\begin{itemize}\item المبدأ الأساسي للعد.\end{itemize}}%
-{\begin{itemize}\item حساب التوفيقات وتوظيفها في السحب في آن واحد.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{\begin{itemize}\item المبدأ الأساسي للعد ، الترتيبات ، التبديلات.\end{itemize}}%
+{\begin{itemize}\item حساب التوفيقات واختيار أداة العد المناسبة ، وتوظيفها في السحب في آن واحد.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} بكم طريقة نختار $3$ تلاميذ من $10$ لتمثيل القسم؟}{10 د}{وضعية القسم.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ الترتيب لا يهم: نختار مجموعة جزئية من $3$ عناصر.\par
-}{35 د}{مثلث باسكال.}
-\Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ عدد المجموعات الجزئية ذات $p$ عنصراً من مجموعة ذات $n$ عنصراً: $\binom np=\dfrac{n!}{p!\,(n-p)!}$.\par\Lab{cThm}{خاصية}\ $\binom n0=\binom nn=1$ ؛ $\binom np=\binom n{n-p}$ ؛ $\binom np+\binom n{p+1}=\binom{n+1}{p+1}$ (مثلث باسكال).\par}{50 د}{الحاسبة (nCr).}
+\Lab{cEx}{نشاط رقم 06}\par\textbf{(1)} كم ترتيبة لـ $3$ تلاميذ من $10$ ؟\par\textbf{(2)} كل مجموعة من $3$ تلاميذ تظهر كم مرة بين الترتيبات؟\par\textbf{(3)} استنتج عدد المجموعات.}{35 د}{من الترتيبات إلى التوفيقات.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $\binom{10}3=120$ ؛ كيس به $5$ حمراء و $3$ خضراء ، نسحب كريتين في آن واحد: $P(\text{RR})=\dfrac{\binom52}{\binom82}=\dfrac{10}{28}=\dfrac5{14}$.\par\Lab{cThm!80!black}{حذار}\ السحب في آن واحد ↔ توفيقات.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $A_{10}^3=10\times9\times8=\RR{720}$.\par\textbf{(2)} كل مجموعة تظهر $3!=6$ مرات (ترتيب عناصرها).\par\textbf{(3)} $\dfrac{720}{6}=\RR{120}$ مجموعة.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ عدد المجموعات الجزئية ذات $\LW{p}$ عنصرًا من مجموعة ذات $\LW{n}$ عنصرًا: \par $\LW{\RR{\binom np=\dfrac{A_n^p}{p!}=\dfrac{n!}{p!\,(n-p)!}}}$.}{50 د}{الحاسبة (nCr).}
+\Row{}{%
+\Lab{cThm}{خاصية}\par\textbf{(1)} $\binom n0=\binom nn=1$ ؛ \quad $\binom np=\binom n{n-p}$.\par\textbf{(2)} $\binom np+\binom n{p+1}=\binom{n+1}{p+1}$ (مثلث باسكال):\par\smallskip\begin{LTR}\centering{\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|>{\centering\arraybackslash}p{0.100\linewidth}|}\hline\rowcolor{cSec!12}$n\ \backslash\ p$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$\\\hline $0$ & $1$ &  &  &  &  & \\\hline $1$ & $1$ & $1$ &  &  &  & \\\hline $2$ & $1$ & $2$ & $1$ &  &  & \\\hline $3$ & $1$ & $3$ & $3$ & $1$ &  & \\\hline $4$ & $1$ & $4$ & $6$ & $4$ & $1$ & \\\hline $5$ & $1$ & $5$ & $10$ & $10$ & $5$ & $1$\\\hline \end{tabular}}\end{LTR}\par }{}{}
+\Row{}{%
+\Lab{cMeth}{اختيار أداة العد}\par\smallskip\begin{LTR}\centering{\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.300\linewidth}|>{\centering\arraybackslash}p{0.300\linewidth}|}\hline\rowcolor{cSec!12}\ar{العدد} & \ar{الترتيب والتكرار} & \ar{نوع السحب}\\\hline $n^p$ & \ar{مرتب ، بتكرار} & \ar{على التوالي بإرجاع}\\\hline $A_n^p$ & \ar{مرتب ، دون تكرار} & \ar{على التوالي دون إرجاع}\\\hline $\binom np$ & \ar{غير مرتب ، دون تكرار} & \ar{في آن واحد}\\\hline \end{tabular}}\end{LTR}\par }{}{}
+\Row{}{%
+\Lab{cEx}{سحب في آن واحد}\ كيس به $5$ حمراء و $3$ خضراء ، نسحب كريتين في آن واحد: \par $\mathrm{card}\,\Omega=\binom{8}{2}=28$.\par\textbf{(1)} $P(RR)=\dfrac{\binom{5}{2}}{28}=\dfrac{10}{28}=\RR{\dfrac5{14}}$.\par\textbf{(2)} لونان مختلفان: $\dfrac{\binom{5}{1}\binom{3}{1}}{28}=\RR{\dfrac{15}{28}}$.\par\textbf{(3)} كرية خضراء على الأقل: $1-\dfrac{10}{28}=\RR{\dfrac9{14}}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ السحب في آن واحد $\leftrightarrow$ توفيقات (الترتيب لا يهم).}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par لجنة من $3$ تلاميذ من $6$ بنين و $4$ بنات. احسب احتمال «بنتان بالضبط».\par\textbf{الحل:} $\dfrac{\binom42\binom61}{\binom{10}3}=\dfrac{36}{120}=\dfrac3{10}$.\par\textbf{واجب منزلي:} تمرين 32 صفحة 221.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par لجنة من $3$ تلاميذ نختارها من $6$ بنين و $4$ بنات.\par\textbf{(1)} احسب احتمال «بنتان بالضبط».\par\textbf{(2)} احسب احتمال «بنت واحدة على الأقل».}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $\mathrm{card}\,\Omega=\binom{10}{3}=120$ ؛ \quad $\dfrac{\binom{4}{2}\binom{6}{1}}{120}=\dfrac{36}{120}=\RR{\dfrac3{10}}$.\par\textbf{(2)} العكسية «ثلاثة بنين»: $1-\dfrac{\binom{6}{3}}{120}=1-\dfrac{20}{120}=\RR{\dfrac56}$.\par\textbf{واجب منزلي:} تمرين 32 صفحة 221.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{52}{3 ع ت / 3 ر / 3 ت ر}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{دستور ثنائي الحد}%
 {\begin{itemize}\item التوفيقات ، المتطابقات الشهيرة.\end{itemize}}%
 {\begin{itemize}\item استعمال دستور ثنائي الحد لنشر $(a+b)^n$.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} انشر $(a+b)^2$ و $(a+b)^3$. هل تلاحظ علاقة مع مثلث باسكال؟}{10 د}{نشر مألوف.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ معاملات $(a+b)^3$: $1$ ، $3$ ، $3$ ، $1$ = السطر الثالث من مثلث باسكال.\par
-}{35 د}{مثلث باسكال.}
-\Row{بناء المعارف}{%
-\Lab{cThm}{خاصية}\ $(a+b)^n=\displaystyle\sum_{k=0}^n\binom nk a^{n-k}b^k$.\par\Lab{cEx}{مثال}\ $(x+2)^4=x^4+8x^3+24x^2+32x+16$.\par}{50 د}{الدستور يُحفظ.}
+\Lab{cEx}{نشاط رقم 07}\par\textbf{(1)} انشر $(a+b)^3=(a+b)^2(a+b)$.\par\textbf{(2)} قارن المعاملات بالسطر $n=3$ من مثلث باسكال.}{35 د}{مثلث باسكال.}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ في $(a-b)^n$ تتناوب الإشارات.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $(a+b)^3=a^3+3a^2b+3ab^2+b^3$.\par\textbf{(2)} المعاملات $1;3;3;1$ هي $\binom30;\binom31;\binom32;\binom33$: \RR{السطر} \RR{$3$} \RR{من} \RR{مثلث} \RR{باسكال}.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cThm}{دستور ثنائي الحد}\ \par $\LW{\RR{(a+b)^n=\displaystyle\sum_{k=0}^n\binom nk a^{n-k}b^k}}$.}{50 د}{الدستور يُحفظ.}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $(x+2)^4=x^4+4\times2x^3+6\times4x^2+4\times8x+16=\RR{x^4+8x^3+24x^2+32x+16}$.\par\textbf{(2)} $a=b=1$: $\displaystyle\sum_{k=0}^n\binom nk=\RR{2^n}$.\par\textbf{(3)} $(1-x)^3=1-3x+3x^2-x^3$ (الإشارات تتناوب).}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ في $(a-b)^n$ نكتب $(a+(-b))^n$: تتناوب الإشارات.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par عيّن معامل $x^3$ في نشر $(2x-1)^5$.\par\textbf{الحل:} الحد $\binom52(2x)^3(-1)^2=80x^3$: المعامل $80$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} عيّن معامل $x^3$ في نشر $(2x-1)^5$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} الحد العام $\binom5k(2x)^{5-k}(-1)^k$ ، و $5-k=3$ يعطي $k=2$:\par\textbf{(2)} $\binom52\times2^3\times(-1)^2=10\times8=\RR{80}$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{53}{3 ع ت / 3 ر}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{الاحتمالات الشرطية (علوم تجريبية ورياضيات)}%
 {\begin{itemize}\item الاحتمالات ، الجداول المزدوجة.\end{itemize}}%
 {\begin{itemize}\item حساب احتمال شرطي ، واستعمال دستور الاحتمالات المركبة.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} إذا علمنا أن التلميذ المختار بنت ، هل يتغير احتمال أن يحب الرياضيات؟}{10 د}{سؤال.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ قسم من $30$ تلميذاً ، $M$: «يحب الرياضيات».\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.5}\begin{tabular}{|c|c|c|c|}\hline
-\rowcolor{cSec!12} & $M$ & $\overline M$ & \ar{المجموع}\\\hline
-\ar{بنات} $F$ & $12$ & $6$ & $18$\\\hline
-\ar{بنون} $G$ & $4$ & $8$ & $12$\\\hline
-\ar{المجموع} & $16$ & $14$ & $30$\\\hline
-\end{tabular}}\end{LTR}\par \ck\ $P(M)=\frac{16}{30}=\frac8{15}$ ؛ بين البنات فقط: $\frac{12}{18}=\frac23$.\par
-}{35 د}{جدول مزدوج ملون.}
-\Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $P(A)\neq0$: $P_A(B)=\dfrac{P(A\cap B)}{P(A)}$ احتمال $B$ علماً أن $A$ محققة.\par\Lab{cThm}{خاصية}\ $P(A\cap B)=P(A)\times P_A(B)$.\par}{50 د}{التمييز بين $P_A(B)$ و $P_B(A)$.}
+\Lab{cEx}{نشاط رقم 08}\ قسم من $30$ تلميذًا ، $M$: «يحب الرياضيات» ، نختار تلميذًا عشوائيًا.\par\smallskip\begin{LTR}\centering{\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|>{\centering\arraybackslash}p{0.200\linewidth}|}\hline\rowcolor{cSec!12}\ar{الجنس $\backslash$ الميل} & $M$ & $\overline M$ & \ar{المجموع}\\\hline \ar{بنات} $F$ & \cellcolor{cEx!30}$12$ & $6$ & $18$\\\hline \ar{بنون} $G$ & $4$ & $8$ & $12$\\\hline \ar{المجموع} & $16$ & $14$ & $30$\\\hline \end{tabular}}\end{LTR}\par \par\textbf{(1)} احسب $P(M)$ و $P(F\cap M)$.\par\textbf{(2)} نعلم أن التلميذ المختار بنت: ما احتمال أنه يحب الرياضيات؟}{35 د}{جدول مزدوج ملون.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $P_F(M)=\dfrac{12/30}{18/30}=\dfrac23$ ؛ $P_M(F)=\dfrac{12}{16}=\dfrac34$.\par\Lab{cThm!80!black}{حذار}\ $P_A(B)\neq P_B(A)$ عموماً.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $P(M)=\dfrac{16}{30}=\RR{\dfrac8{15}}$ ؛ \quad $P(F\cap M)=\dfrac{12}{30}=\RR{\dfrac25}$.\par\textbf{(2)} المخارج الممكنة أصبحت $18$ بنتًا ، منهن $12$: $\dfrac{12}{18}=\RR{\dfrac23}$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $\LW{P(A)\neq0}$. احتمال $\LW{B}$ علمًا أن $\LW{A}$ محققة: $\LW{\RR{P_A(B)=\dfrac{P(A\cap B)}{P(A)}}}$.}{50 د}{$\LW{P_A(B)}$ و $\LW{P_B(A)}$.}
+\Row{}{%
+\Lab{cThm}{الاحتمالات المركبة}\ \par $\RR{P(A\cap B)=P(A)\times P_A(B)}$.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $P_F(M)=\dfrac{P(F\cap M)}{P(F)}=\dfrac{12/30}{18/30}=\RR{\dfrac23}$.\par\textbf{(2)} $P_M(F)=\dfrac{12}{16}=\RR{\dfrac34}$.\par\textbf{(3)} كيس به $5$ حمراء و $3$ خضراء ، سحب على التوالي دون إرجاع: \par $P(R_1\cap R_2)=\dfrac58\times\dfrac47=\RR{\dfrac5{14}}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ $P_A(B)\neq P_B(A)$ عمومًا.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par من الجدول: احسب $P(G\cap M)$ و $P_G(M)$.\par\textbf{الحل:} $\frac4{30}=\frac2{15}$ ؛ $\frac4{12}=\frac13$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par من جدول النشاط:\par\textbf{(1)} احسب $P(G\cap M)$ و $P_G(M)$.\par\textbf{(2)} احسب $P_{\overline M}(G)$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $P(G\cap M)=\dfrac4{30}=\RR{\dfrac2{15}}$ ؛ \quad $P_G(M)=\dfrac4{12}=\RR{\dfrac13}$.\par\textbf{(2)} $P_{\overline M}(G)=\dfrac8{14}=\RR{\dfrac47}$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{54}{3 ع ت / 3 ر}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{شجرة الاحتمالات ، دستور الاحتمالات الكلية (علوم تجريبية ورياضيات)}%
 {\begin{itemize}\item الاحتمالات الشرطية.\end{itemize}}%
 {\begin{itemize}\item نمذجة تجربة بشجرة احتمالات ، واستعمال دستور الاحتمالات الكلية (السحب من أكثر من وعاء).\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} نختار أحد كيسين بقطعة نقدية ثم نسحب كرية: كيف ننظم الحساب؟}{10 د}{وضعية بكيسين.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مناقشة نشاط 01 صفحة 201}\ $U_1$: $3$ حمراء و $2$ خضراوان ؛ $U_2$: حمراء واحدة و $4$ خضراء. $R$: «حمراء» ، $V$: «خضراء».\par\ck\ مرحلتان: اختيار الكيس ثم السحب.\par
-}{35 د}{نشاط الكتاب.}
-\Row{بناء المعارف}{%
-\Lab{cMeth}{شجرة الاحتمالات}\ على كل فرع الاحتمال الشرطي ، ومجموع الفروع الخارجة من عقدة يساوي $1$ ؛ احتمال مسار = جداء احتمالات فروعه.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[font=\scriptsize,ev/.style={circle,fill=cDef!12,draw=cDef,inner sep=1pt,minimum size=5.5mm},br/.style={draw=cDef!70,thick}]
-\coordinate (O) at (0,0); \fill[cDef] (O) circle (1.8pt);
-\node[ev] (U1) at (3,1.5){$U_1$}; \node[ev] (U2) at (3,-1.5){$U_2$};
-\node[ev] (A) at (6,2.2){$R$}; \node[ev] (B) at (6,0.8){$V$}; \node[ev] (C) at (6,-0.8){$R$}; \node[ev] (Dd) at (6,-2.2){$V$};
-\draw[br] (O)--(U1) node[midway,above,sloped]{$\dfrac12$}; \draw[br] (O)--(U2) node[midway,below,sloped]{$\dfrac12$};
-\draw[br] (U1)--(A) node[midway,above,sloped]{$\dfrac35$}; \draw[br] (U1)--(B) node[midway,below,sloped]{$\dfrac25$};
-\draw[br] (U2)--(C) node[midway,above,sloped]{$\dfrac15$}; \draw[br] (U2)--(Dd) node[midway,below,sloped]{$\dfrac45$};
-\node[font=\scriptsize\bfseries] at (8.4,3){\ar{الاحتمال}};
-\node at (8.4,2.2){$\frac12\times\frac35=\frac3{10}$}; \node at (8.4,0.8){$\frac12\times\frac25=\frac15$};
-\node at (8.4,-0.8){$\frac12\times\frac15=\frac1{10}$}; \node at (8.4,-2.2){$\frac12\times\frac45=\frac25$};
-\end{tikzpicture}\end{LTR}\par \Lab{cThm}{الاحتمالات الكلية}\ إذا كانت $U_1$ ، $U_2$ تجزئة لـ $\Omega$: $P(R)=P(U_1)P_{U_1}(R)+P(U_2)P_{U_2}(R)=\frac3{10}+\frac1{10}=\frac25$.\par}{50 د}{رسم الشجرة بدقة وعمود الاحتمال.}
+\Lab{cEx}{نشاط رقم 09}\ $U_1$: $3$ حمراء و $2$ خضراوان ؛ $U_2$: حمراء واحدة و $4$ خضراء. نختار كيسًا بقطعة نقدية ثم نسحب كرية. $R$: «حمراء» ، $V$: «خضراء».\par\textbf{(1)} مثّل التجربة بشجرة احتمالات.\par\textbf{(2)} احسب $P(U_1\cap R)$ و $P(U_2\cap R)$ ، ثم $P(R)$.}{35 د}{رسم الشجرة بدقة.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $P_R(U_1)=\dfrac{P(U_1\cap R)}{P(R)}=\dfrac{3/10}{2/5}=\dfrac34$.\par\Lab{cThm!80!black}{حذار}\ مجموع عمود «الاحتمال» يساوي $1$.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} مرحلتان: اختيار الكيس ثم السحب ؛ على كل فرع الاحتمال (الشرطي):\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[font=\small,ev/.style={rounded corners=2pt,fill=cDef!12,draw=cDef,inner sep=2pt,minimum size=6mm},br/.style={draw=cDef!70,thick}]\coordinate (O) at (0,0); \fill[cDef] (O) circle (1.8pt);\node[ev] (F0) at (3.2,1.4){$U_1$};\draw[br] (O)--(F0) node[midway,above,sloped]{$\frac12$};\node[ev] (L00) at (6.4,2.1){$R$};\draw[br] (F0)--(L00) node[midway,above,sloped]{$\frac35$};\node[anchor=west] at (7,2.1){$\frac12\times\frac35=\frac3{10}$};\node[ev] (L01) at (6.4,0.7){$V$};\draw[br] (F0)--(L01) node[midway,below,sloped]{$\frac25$};\node[anchor=west] at (7,0.7){$\frac12\times\frac25=\frac15$};\node[ev] (F1) at (3.2,-1.4){$U_2$};\draw[br] (O)--(F1) node[midway,below,sloped]{$\frac12$};\node[ev] (L10) at (6.4,-0.7){$R$};\draw[br] (F1)--(L10) node[midway,above,sloped]{$\frac15$};\node[anchor=west] at (7,-0.7){$\frac12\times\frac15=\frac1{10}$};\node[ev] (L11) at (6.4,-2.1){$V$};\draw[br] (F1)--(L11) node[midway,below,sloped]{$\frac45$};\node[anchor=west] at (7,-2.1){$\frac12\times\frac45=\frac25$};\node[anchor=west,font=\small\bfseries] at (7,3){\ar{الاحتمال}};\end{tikzpicture}\end{LTR}\par \par\textbf{(2)} $P(U_1\cap R)=\dfrac12\times\dfrac35=\RR{\dfrac3{10}}$ ؛ \quad $P(U_2\cap R)=\dfrac12\times\dfrac15=\RR{\dfrac1{10}}$.\par\textbf{(3)} $P(R)=\dfrac3{10}+\dfrac1{10}=\RR{\dfrac25}$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cMeth}{شجرة الاحتمالات}\par\textbf{(1)} مجموع احتمالات الفروع الخارجة من عقدة يساوي $\LW{1}$.\par\textbf{(2)} احتمال مسار = \RR{جداء} \RR{احتمالات} \RR{فروعه} ؛ مجموع عمود «الاحتمال» يساوي $\LW{1}$.}{50 د}{عمود الاحتمال.}
+\Row{}{%
+\Lab{cThm}{دستور الاحتمالات الكلية}\ إذا كانت $\LW{A_1}$ ، $\LW{A_2}$ ، $\LW{\ldots}$ ، $\LW{A_n}$ تجزئة لـ $\LW{\Omega}$: \par $\LW{\RR{P(B)=\sum P(A_i)\times P_{A_i}(B)}}$.}{}{}
+\Row{}{%
+\Lab{cEx}{مثال محلول: آلتان}\ آلة $A$ تنتج $60\,\%$ من القطع ونسبة المعيب $2\,\%$ ، وآلة $B$ تنتج $40\,\%$ ونسبة المعيب $5\,\%$. $D$: «القطعة معيبة».\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[font=\small,ev/.style={rounded corners=2pt,fill=cDef!12,draw=cDef,inner sep=2pt,minimum size=6mm},br/.style={draw=cDef!70,thick}]\coordinate (O) at (0,0); \fill[cDef] (O) circle (1.8pt);\node[ev] (F0) at (3.2,1.4){$A$};\draw[br] (O)--(F0) node[midway,above,sloped]{$0{,}6$};\node[ev] (L00) at (6.4,2.1){$D$};\draw[br] (F0)--(L00) node[midway,above,sloped]{$0{,}02$};\node[anchor=west] at (7,2.1){$0{,}012$};\node[ev] (L01) at (6.4,0.7){$\overline D$};\draw[br] (F0)--(L01) node[midway,below,sloped]{$0{,}98$};\node[anchor=west] at (7,0.7){$0{,}588$};\node[ev] (F1) at (3.2,-1.4){$B$};\draw[br] (O)--(F1) node[midway,below,sloped]{$0{,}4$};\node[ev] (L10) at (6.4,-0.7){$D$};\draw[br] (F1)--(L10) node[midway,above,sloped]{$0{,}05$};\node[anchor=west] at (7,-0.7){$0{,}02$};\node[ev] (L11) at (6.4,-2.1){$\overline D$};\draw[br] (F1)--(L11) node[midway,below,sloped]{$0{,}95$};\node[anchor=west] at (7,-2.1){$0{,}38$};\node[anchor=west,font=\small\bfseries] at (7,3){\ar{الاحتمال}};\end{tikzpicture}\end{LTR}\par \par\textbf{(1)} $P(D)=0{,}6\times0{,}02+0{,}4\times0{,}05=0{,}012+0{,}02=\RR{0{,}032}$.\par\textbf{(2)} $P_D(A)=\dfrac{P(A\cap D)}{P(D)}=\dfrac{0{,}012}{0{,}032}=\RR{0{,}375}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ $P_R(U_1)$ (احتمال «عكسي») يُحسب بالتعريف وليس من الشجرة مباشرة.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $P(V)$ ؟ وما احتمال أن تكون الكرية من $U_2$ علماً أنها خضراء؟\par\textbf{الحل:} $P(V)=\frac15+\frac25=\frac35$ ؛ $P_V(U_2)=\dfrac{2/5}{3/5}=\dfrac23$.\par\textbf{واجب منزلي:} تمارين 47 ، 50 ، 52 صفحة 224.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par من النشاط:\par\textbf{(1)} احسب $P(V)$.\par\textbf{(2)} ما احتمال أن تكون الكرية من $U_2$ علمًا أنها خضراء؟}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $P(V)=\dfrac15+\dfrac25=\RR{\dfrac35}$ ، ونتحقق: $1-P(R)=1-\dfrac25=\dfrac35$.\par\textbf{(2)} $P_V(U_2)=\dfrac{P(U_2\cap V)}{P(V)}=\dfrac{2/5}{3/5}=\RR{\dfrac23}$.\par\textbf{واجب منزلي:} تمارين 47 ، 50 ، 52 صفحة 224.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{55}{3 ع ت / 3 ر}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{الحوادث المستقلة (علوم تجريبية ورياضيات)}%
 {\begin{itemize}\item الاحتمالات الشرطية.\end{itemize}}%
 {\begin{itemize}\item التعرف على حادثتين مستقلتين واستعمال الاستقلال.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} نرمي قطعة نقدية مرتين: هل تؤثر الرمية الأولى على الثانية؟}{10 د}{سؤال.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ نرمي نرداً: $A$: «زوجي» ، $B$: «أقل من أو يساوي $2$».\par\ck\ $P(A)=\frac12$ ، $P(B)=\frac13$ ، $P(A\cap B)=P(\{2\})=\frac16=P(A)P(B)$.\par
-}{35 د}{التحقق بالحساب.}
-\Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $A$ و $B$ \textbf{مستقلتان} إذا كان $P(A\cap B)=P(A)\times P(B)$ (أي $P_A(B)=P(B)$ إذا كان $P(A)\neq0$).\par\Lab{cThm}{خاصية}\ إذا كانت $A$ و $B$ مستقلتين فإن $A$ و $\overline B$ مستقلتان.\par}{50 د}{مقارنة المفهومين.}
+\Lab{cEx}{نشاط رقم 10}\ نرمي نردًا متوازنًا: $A$: «زوجي» ، $B$: «أقل من أو يساوي $2$» ، $D$: «أقل من أو يساوي $3$».\par\textbf{(1)} احسب $P(A)$ ، $P(B)$ ، $P(A\cap B)$ وقارن $P(A\cap B)$ بـ $P(A)\times P(B)$.\par\textbf{(2)} نفس السؤال مع $A$ و $D$.}{35 د}{التحقق بالحساب.}
 \Row{}{%
-\Lab{cEx}{مثال}\ في الوضعية: $A$ و $B$ مستقلتان.\par\Lab{cThm!80!black}{حذار}\ «مستقلتان» تختلف عن «غير متلائمتين».}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $P(A)=\dfrac12$ ، $P(B)=\dfrac13$ ، $P(A\cap B)=P(\{2\})=\dfrac16=\dfrac12\times\dfrac13$: \RR{متساويان}.\par\textbf{(2)} $P(A\cap D)=P(\{2\})=\dfrac16$ و $P(A)P(D)=\dfrac12\times\dfrac12=\dfrac14$: \RR{مختلفان}.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $\LW{A}$ و $\LW{B}$ \textbf{مستقلتان} إذا كان \par $\LW{\RR{P(A\cap B)=P(A)\times P(B)}}$ ، أي $\LW{P_A(B)=P(B)}$ إذا كان $\LW{P(A)\neq0}$.}{50 د}{مقارنة المفهومين.}
+\Row{}{%
+\Lab{cThm}{خاصية}\ إذا كانت $\LW{A}$ و $\LW{B}$ مستقلتين فإن $\LW{A}$ و $\LW{\overline B}$ مستقلتان ، و $\LW{\overline A}$ و $\LW{\overline B}$ مستقلتان.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} في النشاط: $A$ و $B$ \RR{مستقلتان} ؛ $A$ و $D$ \RR{غير} \RR{مستقلتين}.\par\textbf{(2)} نرمي قطعة نقدية $3$ مرات (رميات مستقلة): \par $P(FFF)=\left(\dfrac12\right)^3=\RR{\dfrac18}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ «مستقلتان» تختلف عن «غير متلائمتين»: إذا كانت $A\cap B=\varnothing$ و $P(A)P(B)\neq0$ فهما غير مستقلتين.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $P(A)=0{,}4$ ، $P(B)=0{,}5$ ، $P(A\cup B)=0{,}7$. هل $A$ و $B$ مستقلتان؟\par\textbf{الحل:} $P(A\cap B)=0{,}4+0{,}5-0{,}7=0{,}2=0{,}4\times0{,}5$: نعم.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par $P(A)=0{,}4$ ، $P(B)=0{,}5$ ، $P(A\cup B)=0{,}7$.\par\textbf{(1)} هل $A$ و $B$ مستقلتان؟\par\textbf{(2)} احسب $P(A\cap\overline B)$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $P(A\cap B)=0{,}4+0{,}5-0{,}7=0{,}2=0{,}4\times0{,}5$: \RR{مستقلتان}.\par\textbf{(2)} $P(A\cap\overline B)=0{,}4-0{,}2=\RR{0{,}2}$ ($=0{,}4\times0{,}5$).\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{56}{3 ع ت / 3 ر / 3 ت ر}{إحصاء واحتمالات}{الاحتمالات}{02 سا}{النمذجة والمحاكاة: تلاؤم معطيات مع نموذج}%
-{\begin{itemize}\item التواترات ، المحاكاة (2 ع ت).\end{itemize}}%
-{\begin{itemize}\item توظيف المحاكاة لتقرير تلاؤم معطيات تجربة مع نموذج متساوي الاحتمال.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة. مجدول.}
+{\begin{itemize}\item التواترات ، المحاكاة (السنة الثانية).\end{itemize}}%
+{\begin{itemize}\item نمذجة وضعيات بتجارب مرجعية ، وتوظيف المحاكاة لتقرير تلاؤم معطيات مع نموذج متساوي الاحتمال.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة. مجدول.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} نرد يبدو أن الرقم $6$ يظهر كثيراً: هل هو مزيف؟}{10 د}{سؤال إشكالي.}
+\textbf{التهيئة النفسية:} نرد يبدو أن الرقم $6$ يظهر كثيرًا: هل هو مزيف؟}{10 د}{سؤال إشكالي.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ نرمي نرداً $100$ مرة ، التواترات: $0{,}15$ ؛ $0{,}18$ ؛ $0{,}16$ ؛ $0{,}17$ ؛ $0{,}14$ ؛ $0{,}20$.\par\ck\ التواترات تختلف عن $\frac16$: هل الفرق «عادي» (تذبذب) أم دليل على تزييف؟\par
-}{35 د}{محاكاة بالمجدول.}
-\Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $d^2=\sum\left(f_i-\frac16\right)^2$ يقيس الابتعاد عن النموذج المتساوي.\par\Lab{cMeth}{طريقة}\ نحاكي $1000$ سلسلة من $100$ رمية لنرد متوازن ، ونحسب $d^2$ لكل سلسلة ، ثم العشير التاسع $D_9$. إذا كان $d^2_{\text{obs}}\leqslant D_9$ نقبل النموذج بمخاطرة $10\,\%$.\par}{50 د}{قاعدة القرار.}
+\Lab{cEx}{نشاط رقم 11}\ نرمي نردًا $100$ مرة ، والتواترات:\par\smallskip\begin{LTR}\centering{\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.086\linewidth}|>{\centering\arraybackslash}p{0.086\linewidth}|>{\centering\arraybackslash}p{0.086\linewidth}|>{\centering\arraybackslash}p{0.086\linewidth}|>{\centering\arraybackslash}p{0.086\linewidth}|>{\centering\arraybackslash}p{0.086\linewidth}|>{\centering\arraybackslash}p{0.086\linewidth}|}\hline\rowcolor{cSec!12}\ar{الوجه} & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & \ar{المجموع}\\\hline $f_i$ & $0{,}15$ & $0{,}18$ & $0{,}16$ & $0{,}17$ & $0{,}14$ & $0{,}20$ & $1$\\\hline \end{tabular}}\end{LTR}\par \par\textbf{(1)} هل التواترات تساوي $\dfrac16\approx0{,}167$ ؟\par\textbf{(2)} احسب $d^2=\sum\left(f_i-\dfrac16\right)^2$.}{35 د}{محاكاة بالمجدول.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $d^2_{\text{obs}}\approx0{,}0023$ ، و $D_9\approx0{,}015$ (من المحاكاة): $d^2\leqslant D_9$ ، المعطيات تتلاءم مع نرد متوازن.\par\Lab{cThm!80!black}{حذار}\ القرار احتمالي وليس يقيناً.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} لا ، لكن الفرق صغير: هل هو تذبذب عادي أم دليل على تزييف؟\par\textbf{(2)} $d^2\approx\RR{0{,}0023}$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $\LW{\RR{d^2=\sum\left(f_i-p_i\right)^2}}$ يقيس ابتعاد التواترات الملاحظة عن احتمالات النموذج.}{50 د}{قاعدة القرار.}
+\Row{}{%
+\Lab{cMeth}{قاعدة القرار}\par\textbf{(1)} نحاكي $\LW{1000}$ سلسلة من $\LW{100}$ رمية لنرد متوازن ، ونحسب $\LW{d^2}$ لكل سلسلة.\par\textbf{(2)} نعيّن العشير التاسع $\LW{D_9}$ لهذه القيم.\par\textbf{(3)} إذا كان $\LW{d^2_{\text{obs}}\leqslant D_9}$ \RR{نقبل} \RR{النموذج} بمخاطرة $\LW{10\,\%}$ ، وإلا نرفضه.}{}{}
+\Row{}{%
+\Lab{cEx}{مثال محلول}\ المحاكاة تعطي $D_9\approx0{,}015$ ، و \par $d^2_{\text{obs}}\approx0{,}0023\leqslant D_9$: \RR{المعطيات} \RR{تتلاءم} \RR{مع} \RR{نرد} \RR{متوازن}.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ القرار احتمالي (بمخاطرة) وليس يقينًا.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par قطعة نقدية رميت $100$ مرة: $62$ وجهاً. $d^2=(f_F-0{,}5)^2+(f_P-0{,}5)^2$ ، و $D_9=0{,}0135$. ماذا تقرر؟\par\textbf{الحل:} $d^2=0{,}0144+0{,}0144=0{,}0288>D_9$: نرفض فرضية التوازن بمخاطرة $10\,\%$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات (النمذجة).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\Lab{cMeth}{تمرين تطبيقي}\par قطعة نقدية رميت $100$ مرة فظهر الوجه $62$ مرة. \par $d^2=(f_F-0{,}5)^2+(f_P-0{,}5)^2$ ، و $D_9=0{,}0135$.\par\textbf{(1)} احسب $d^2$.\par\textbf{(2)} ماذا تقرر؟}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $d^2=0{,}12^2+0{,}12^2=0{,}0144+0{,}0144=\RR{0{,}0288}$.\par\textbf{(2)} $0{,}0288>D_9$: \RR{نرفض} \RR{فرضية} \RR{التوازن} بمخاطرة $10\,\%$.\par\textbf{واجب منزلي:} تمارين من باب الاحتمالات (النمذجة).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \end{document}

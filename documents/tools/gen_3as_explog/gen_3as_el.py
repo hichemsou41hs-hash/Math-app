@@ -2,7 +2,7 @@ import sys, re
 D0='/tmp/claude-0/-home-user-Math-app/edf6d12c-f942-5224-90ee-6cbaa794c825/scratchpad/p2/'
 which=sys.argv[1]
 exec(open(D0+'hdr_ln.py').read()); exec(open(D0+'explog_helpers.py').read())
-exec(open({'exp':D0+'sess_exp3.py','ln':D0+'sess_ln3.py','cg':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_cg3.py','int':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_int3.py','suites':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_suites3.py','arith':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_arith3.py'}[which]).read())
+exec(open({'exp':D0+'sess_exp3.py','ln':D0+'sess_ln3.py','cg':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_cg3.py','int':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_int3.py','suites':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_suites3.py','arith':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_arith3.py','proba':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_proba3.py'}[which]).read())
 import importlib.util; spec=importlib.util.spec_from_file_location('gf',D0+'ge_format.py'); gf=importlib.util.module_from_spec(spec); spec.loader.exec_module(gf)
 STREAM='علوم تجريبية'
 if which=='exp':
@@ -14,6 +14,9 @@ elif which=='int':
 elif which=='arith':
     TITLE='الأعداد والحساب'; OUT='modhakira_wahda8_3as_riyadiyat'; START=57; CNT='10 مذكرات (20 ساعة)'; STREAM='رياضيات وتقني رياضي'
     items=[r'قابلية القسمة في $\mathbb Z$.',r'القسمة الإقليدية في $\mathbb Z$.','القاسم المشترك الأكبر وخوارزمية إقليدس.','حل مشكلات بتوظيف خواص القاسم المشترك الأكبر.',r'الموافقات في $\mathbb Z$: تعريف وخواص.','تطبيقات الموافقات: الدورية ، قابلية القسمة ، المعادلات.','التعداد: نشر عدد وفق أساس.','الأعداد الأولية ، التحليل إلى جداء عوامل أولية.','المضاعف المشترك الأصغر وعلاقته بـ PGCD.',r'مبرهنتا بيزو وغوص ، المعادلة $ax+by=c$.']
+elif which=='proba':
+    TITLE='الاحتمالات'; OUT='modhakira_wahda7_3as'; START=46; CNT='11 مذكرة (22 ساعة)'; STREAM='علوم تجريبية ، رياضيات ، تقني رياضي'
+    items=['الاحتمالات المتساوية على مجموعة منتهية.','المتغير العشوائي: قانونه ، أمله ، تباينه ، انحرافه المعياري.','المبدأ الأساسي للعد.','القوائم والترتيبات.','التبديلات.','التوفيقات وتطبيقاتها في الاحتمالات.','دستور ثنائي الحد.',r'الاحتمالات الشرطية \textbf{(علوم تجريبية ورياضيات)}.',r'شجرة الاحتمالات ، دستور الاحتمالات الكلية \textbf{(علوم تجريبية ورياضيات)}.',r'الحوادث المستقلة \textbf{(علوم تجريبية ورياضيات)}.','النمذجة والمحاكاة: تلاؤم معطيات مع نموذج.']
 elif which=='suites':
     TITLE='المتتاليات العددية'; OUT='modhakira_wahda5_3as'; START=29; CNT='7 مذكرات (14 ساعة)'
     items=['توليد متتالية ، التمثيل البياني وتخمين السلوك.','التذكير بالمتتاليات الحسابية والهندسية ، المتتالية المساعدة.','الاستدلال بالتراجع.','خواص المتتاليات: المحدودة والرتيبة.','خواص المتتاليات: التقارب والنهاية.','المتتاليتان المتجاورتان.','حل مشكلات توظف المتتاليات والبرهان بالتراجع.']
