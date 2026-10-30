@@ -3,7 +3,7 @@
 %  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
 % ============================================================
 \documentclass[12pt,a4paper]{article}
-\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage[a4paper,margin=1.2cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{icomma}
 \usepackage[english,bidi=default,layout=lists]{babel}
@@ -188,183 +188,239 @@
 \end{LTR}
 \par\smallskip\textbf{الوسائل:} #9\par\smallskip}
 \newenvironment{Sayr}{%
-\begin{LTR}\renewcommand{\arraystretch}{1.25}
-\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
-\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\begin{LTR}\renewcommand{\arraystretch}{1.25}\setlength{\tabcolsep}{4pt}\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\begin{longtable}{|p{0.09\textwidth}|>{\centering\arraybackslash}p{0.05\textwidth}|p{0.71\textwidth}|>{\centering\arraybackslash}p{0.09\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\footnotesize\textbf{توجيهات وتعاليق}} & \ar{\footnotesize\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\footnotesize\textbf{مراحل الحصة}}\\\hline\endhead
 \hline\endfoot}{\end{longtable}\end{LTR}}
 % سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
-\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
+\newcommand{\RaggedEnd}{\leftskip=0pt plus 1fil\relax}
+\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{\RaggedEnd #2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
 
 \newcommand{\Lab}[2]{\foreignlanguage{english}{\tcbox[on line,colback=#1,colframe=#1,boxrule=0pt,arc=2pt,boxsep=1pt,left=5pt,right=5pt,top=1pt,bottom=1pt]{\ar{\textcolor{white}{\textbf{#2}}}}}}
 \newcommand{\Num}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[fill=cDef,text=white,inner sep=2pt,font=\footnotesize\bfseries](c){#1};}}
 \newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
 \newenvironment{Kad}[1]{\par\smallskip\Lab{#1}}{\par}
+\newcommand{\RR}[1]{\ifmmode{\color{cThm}#1}\else$\mbox{\color{cThm}#1}$\fi}
+\newcommand{\T}[1]{$\mbox{\color{cDef}\bfseries #1}$}
 \SetHeader{\small\bfseries\color{cSec}مذكرات محور: المتتاليات العددية}{\small\color{cSec}السنة الثالثة ثانوي -- علوم تجريبية}
 \begin{document}
 \begin{LTR}
 \begin{tcolorbox}[enhanced,colback=cThm!85!black,colframe=cThm!85!black,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
-{\color{white}\fontsize{26}{32}\selectfont\bfseries مذكرات محور: المتتاليات العددية}\\[8pt]
-{\color{white}\large السنة الثالثة ثانوي -- علوم تجريبية (صالحة لشعبتي رياضيات وتقني رياضي)}\\[4pt]
+{\color{white}\fontsize{24}{30}\selectfont\bfseries مذكرات محور: المتتاليات العددية}\\[8pt]
+{\color{white}\large السنة الثالثة ثانوي -- علوم تجريبية}\\[4pt]
 {\color{white}\large 7 مذكرات (14 ساعة) -- السنة الدراسية 2026-2027}
 \end{tcolorbox}
 \end{LTR}
 \begin{BOX}{cThm}{يتضمن هذا العمل}
 \begin{enumerate}[label=\textbf{مذكرة \arabic{enumi}:},leftmargin=6em,start=29]
 \item توليد متتالية ، التمثيل البياني وتخمين السلوك.
+\item التذكير بالمتتاليات الحسابية والهندسية ، المتتالية المساعدة.
 \item الاستدلال بالتراجع.
-\item المتتاليات المحدودة والرتيبة.
-\item المتتاليتان الحسابية والهندسية ، المتتالية المساعدة.
-\item تقارب متتالية ونهايتها.
+\item خواص المتتاليات: المحدودة والرتيبة.
+\item خواص المتتاليات: التقارب والنهاية.
 \item المتتاليتان المتجاورتان.
-\item حل مشكلات توظف المتتاليات.
+\item حل مشكلات توظف المتتاليات والبرهان بالتراجع.
 \end{enumerate}
-مراجع النشاطات والتمارين: الكتاب المدرسي للسنة الثالثة ثانوي ، الجزء الثاني (باب المتتاليات: نشاط ص 7 ، تمارين ص 25 و 37 و 64).
+الحلول مفصّلة: المعطيات بالأسود ، \T{العناوين} و\RR{النتائج} بلون مختلف ، وكل سؤال في سطر.
 \end{BOX}
 \newpage
 \ModhHead{29}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{توليد متتالية ، التمثيل البياني وتخمين السلوك}%
-{\begin{itemize}\item المتتاليات (2 ع ت) ، الدوال.\end{itemize}}%
-{\begin{itemize}\item توليد متتالية ، واستعمال التمثيل البياني لتخمين سلوكها ونهايتها.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{\begin{itemize}\item المتتاليات (السنة الثانية) ، الدوال المرجعية ، الدالة الجذرية.\end{itemize}}%
+{\begin{itemize}\item توليد متتالية بطريقتين ، واستعمال التمثيل البياني لتخمين اتجاه تغيرها ونهايتها.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة ، برمجية Geogebra.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} ذكّر بطريقتي توليد متتالية. ما الفرق بينهما؟}{10 د}{تذكير.}
+\textbf{التهيئة النفسية:} ذكّر بطريقتي توليد متتالية: $u_n=f(n)$ و $u_{n+1}=f(u_n)$. ما الفرق بينهما في حساب $u_{10}$ ؟}{10 د}{تذكير بالتوليد.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ $u_0=0$ و $u_{n+1}=\sqrt{u_n+2}$.\par\ck\ بالحاسبة: $u_1\approx1{,}41$ ، $u_2\approx1{,}85$ ، $u_3\approx1{,}96$.\par
-\ck\ نخمن: المتتالية متزايدة وتقترب من $2$.\par
-}{35 د}{الحاسبة.}
-\Row{بناء المعارف}{%
-\Lab{cMeth}{التمثيل البياني}\ نرسم $C_f$ و $y=x$ ، ونمثل الحدود على محور الفواصل بطريقة «السلم».\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[scale=1.9,font=\scriptsize]
-\draw[->] (-0.1,0)--(2.6,0) node[right]{$x$}; \draw[->] (0,-0.1)--(0,2.3) node[above]{$y$};
-\draw[cRem,dashed] (0,0)--(2.3,2.3) node[above]{$y=x$};
-\draw[cDef,thick,domain=0:2.5,samples=60] plot (\x,{sqrt(\x+2)}) node[right]{$y=\sqrt{x+2}$};
+\Lab{cEx}{نشاط رقم 01}\ $(u_n)$ معرفة بـ $u_0=0$ و $u_{n+1}=\sqrt{u_n+2}$ ، و $f(x)=\sqrt{x+2}$.\par\textbf{(1)} احسب $u_1$ ، $u_2$ ، $u_3$ (مدورة إلى $10^{-2}$).\par\textbf{(2)} ارسم $(C_f)$ والمستقيم $y=x$ ، ومثّل الحدود $u_0$ ، $u_1$ ، $u_2$ على محور الفواصل.\par\textbf{(3)} ضع تخمينًا حول اتجاه تغير $(u_n)$ ونهايتها.}{35 د}{الحاسبة ، رسم السلّم.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} \par $u_1=f(0)=\sqrt2\approx\RR{1{,}41}$\par $u_2=f(u_1)=\sqrt{\sqrt2+2}\approx\RR{1{,}85}$\par $u_3=f(u_2)\approx\sqrt{3{,}85}\approx\RR{1{,}96}$}{}{}
+\Row{}{%
+\Lab{cMeth}{التمثيل البياني}\par\textbf{(2)} نصعد من $u_0$ شاقوليًا إلى $(C_f)$ ثم أفقيًا إلى $y=x$ ثم ننزل إلى محور الفواصل: نحصل على $u_1$ ، ونكرر (شكل \RR{سلّم}):\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1.6cm,y=1.6cm,font=\footnotesize]\draw[gray!25,step=0.5] (-0.5,-0.5) grid (2.8,2.5);\draw[->,thick] (-0.5,0)--(2.8,0) node[right]{$x$}; \draw[->,thick] (0,-0.5)--(0,2.5) node[above]{$y$};\draw (1,0.08)--(1,-0.08) node[below]{$1$};\draw (2,0.08)--(2,-0.08) node[below]{$2$};\draw (0.08,1)--(-0.08,1) node[left]{$1$};\draw (0.08,2)--(-0.08,2) node[left]{$2$};\node[below left] at (0,0){$O$};\draw[cRem,dashed] (-0.5,-0.5)--(2.7,2.7) node[above]{$y=x$};
+\draw[cDef,thick,domain=-0.5:2.7,samples=60] plot (\x,{sqrt(\x+2)}) node[right]{$(C_f)$};
 \draw[cThm,thick,->] (0,0)--(0,1.414)--(1.414,1.414)--(1.414,1.848)--(1.848,1.848)--(1.848,1.962)--(1.962,1.962);
-\foreach \x/\n in {0/0,1.414/1,1.848/2} {\draw[dotted] (\x,0)--(\x,\x); \node[below] at (\x,0){$u_{\n}$};}
-\end{tikzpicture}\end{LTR}\par \Lab{cRem}{ملاحظات}\ فاصلة نقطة تقاطع $C_f$ و $y=x$ هي النهاية المحتملة: $l=\sqrt{l+2}$ ، أي $l=2$.\par}{50 د}{رسم السلم.}
+\foreach \x/\n in {1.414/1,1.848/2} {\draw[cThm,dotted] (\x,0)--(\x,\x); \node[cThm,below,font=\scriptsize] at (\x,-0.25){$u_{\n}$};}
+\node[cThm,below right,font=\scriptsize] at (0,-0.2){$u_0$};
+\fill[cThm] (2,2) circle (1.5pt) node[below right,font=\scriptsize]{$(2;2)$};\end{tikzpicture}\end{LTR}\par }{}{}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ التخمين يحتاج برهاناً (المذكرتان 30 و 33).}{}{}
+\Lab{cRem}{التخمين}\par\textbf{(3)} $(u_n)$ \RR{متزايدة} وتقترب من فاصلة نقطة تقاطع $(C_f)$ و $y=x$.\par\textbf{(4)} مع $\ell\geqslant0$: \ \par $\ell=\sqrt{\ell+2}\ \Rightarrow\ \ell^2-\ell-2=0\ \Rightarrow\ (\ell-2)(\ell+1)=0\ \Rightarrow\ \RR{\ell=2}$}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{توليد متتالية}\par\textbf{(1)} \textbf{توليد صريح:} $u_n=f(n)$ ؛ نحسب أي حد مباشرة. مثال: $u_n=\dfrac{2n+1}{n+1}$ ، $u_{9}=\dfrac{19}{10}=\RR{1{,}9}$.\par\textbf{(2)} \textbf{توليد تراجعي:} نعطي $u_0$ و $u_{n+1}=f(u_n)$ ؛ نحسب الحدود واحدًا بعد الآخر. مثال: $u_0=1$ ، $u_{n+1}=2u_n+3$: $u_1=\RR{5}$ ، $u_2=\RR{13}$ ، $u_3=\RR{29}$.}{50 د}{التعريف والطريقة.}
+\Row{}{%
+\Lab{cMeth}{تمثيل حدود $u_{n+1}=f(u_n)$}\par\textbf{(1)} نرسم $(C_f)$ والمستقيم $(\Delta):y=x$.\par\textbf{(2)} نعلّم $u_0$ على محور الفواصل ، ونصعد شاقوليًا إلى $(C_f)$: ترتيب النقطة هو $u_1=f(u_0)$.\par\textbf{(3)} ننتقل أفقيًا إلى $(\Delta)$ ثم ننزل شاقوليًا: نحصل على $u_1$ على محور الفواصل ، ونكرر.}{}{}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\par\textbf{(1)} $f$ متزايدة: نحصل على \textbf{سلّم} (متتالية رتيبة).\par\textbf{(2)} $f$ متناقصة: نحصل على \textbf{حلزون} (الحدود تتناوب حول النهاية).\par\textbf{(3)} النهاية المحتملة $\ell$ تحقق $\RR{f(\ell)=\ell}$: فاصلة نقطة تقاطع $(C_f)$ و $(\Delta)$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ لا نخلط بين $u_{n+1}$ و $u_n+1$: إذا كان $u_n=n^2$ فإن \par $u_{n+1}=(n+1)^2=\RR{n^2+2n+1}$ بينما $u_n+1=\RR{n^2+1}$. والتخمين يحتاج برهانًا (المذكرات 31 ، 32 ، 33).}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $v_0=5$ و $v_{n+1}=\frac12v_n+1$. احسب $v_1$ ، $v_2$ ، $v_3$ ، مثلها بيانياً وخمن سلوكها.\par\textbf{الحل:} $3{,}5$ ؛ $2{,}75$ ؛ $2{,}375$: متناقصة وتقترب من $2$.\par\textbf{واجب منزلي:} تمارين من باب المتتاليات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par $(v_n)$ معرفة بـ $v_0=5$ و $v_{n+1}=\dfrac12v_n+1$ ، و $g(x)=\dfrac12x+1$.\par\textbf{(1)} احسب $v_1$ ، $v_2$ ، $v_3$.\par\textbf{(2)} مثّل الحدود بيانيًا وخمّن اتجاه تغير $(v_n)$ ونهايتها.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} \par $v_1=\dfrac12\times5+1=\RR{3{,}5}$\par $v_2=\dfrac12\times3{,}5+1=\RR{2{,}75}$\par $v_3=\dfrac12\times2{,}75+1=\RR{2{,}375}$}{}{}
+\Row{}{%
+\Lab{cMeth}{التمثيل البياني}\par\textbf{(2)} السلّم:\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.85cm,y=0.85cm,font=\footnotesize]\draw[gray!25,step=0.5] (-0.5,-0.5) grid (5.8,4.2);\draw[->,thick] (-0.5,0)--(5.8,0) node[right]{$x$}; \draw[->,thick] (0,-0.5)--(0,4.2) node[above]{$y$};\draw (1,0.08)--(1,-0.08) node[below]{$1$};\draw (2,0.08)--(2,-0.08) node[below]{$2$};\draw (3,0.08)--(3,-0.08) node[below]{$3$};\draw (4,0.08)--(4,-0.08) node[below]{$4$};\draw (0.08,1)--(-0.08,1) node[left]{$1$};\draw (0.08,2)--(-0.08,2) node[left]{$2$};\draw (0.08,3)--(-0.08,3) node[left]{$3$};\node[below left] at (0,0){$O$};\draw[cRem,dashed] (-0.5,-0.5)--(5.6,5.6) node[above]{$y=x$};
+\draw[cDef,thick,domain=-0.5:5.6] plot (\x,{\x/2+1}) node[right]{$(C_g)$};
+\draw[cThm,thick,->] (5,0)--(5,3.5)--(3.5,3.5)--(3.5,2.75)--(2.75,2.75)--(2.75,2.375)--(2.375,2.375);
+\foreach \x/\n in {5/0,3.5/1,2.75/2} {\draw[cThm,dotted] (\x,0)--(\x,\x/2+1); \node[cThm,below,font=\scriptsize] at (\x,-0.3){$v_{\n}$};}
+\fill[cThm] (2,2) circle (1.5pt) node[above left,font=\scriptsize]{$(2;2)$};\end{tikzpicture}\end{LTR}\par \par التخمين: $(v_n)$ \RR{متناقصة} ونهايتها $\ell$ حيث $\ell=\dfrac12\ell+1$ ، أي $\RR{\ell=2}$.\par\textbf{واجب منزلي:} تمارين من باب المتتاليات (توليد وتمثيل).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
-\ModhHead{30}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{الاستدلال بالتراجع}%
-{\begin{itemize}\item المتتاليات ، المتباينات.\end{itemize}}%
+\ModhHead{30}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{التذكير بالمتتاليات الحسابية والهندسية ، المتتالية المساعدة}%
+{\begin{itemize}\item المتتاليات الحسابية والهندسية (السنة الثانية) ، توليد متتالية.\end{itemize}}%
+{\begin{itemize}\item استعمال الحد العام والمجموع لمتتالية حسابية أو هندسية.\item دراسة متتالية $u_{n+1}=au_n+b$ بمتتالية مساعدة هندسية.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة ، برمجية Geogebra.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} ذكّر بالحد العام ومجموع حدود متتابعة لمتتالية حسابية ولمتتالية هندسية.}{10 د}{تذكير سريع.}
+\Row{التشخيص والاكتشاف}{%
+\Lab{cEx}{نشاط رقم 02}\ $(u_n)$ معرفة بـ $u_0=1$ و $u_{n+1}=\dfrac12u_n+3$ ، ونضع $v_n=u_n-6$.\par\textbf{(1)} احسب $u_1$ و $u_2$. هل $(u_n)$ حسابية؟ هندسية؟\par\textbf{(2)} بيّن أن $(v_n)$ هندسية يطلب تعيين أساسها وحدها الأول.\par\textbf{(3)} اكتب $v_n$ ثم $u_n$ بدلالة $n$ ، واستنتج $\lim\limits_{n\to+\infty}u_n$.}{35 د}{مناقشة النشاط.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $u_1=\dfrac12+3=\RR{3{,}5}$ ؛ \quad $u_2=\dfrac{3{,}5}2+3=\RR{4{,}75}$.\par\textbf{(2)} $u_1-u_0=2{,}5\neq u_2-u_1=1{,}25$: \RR{ليست} \RR{حسابية}.\par\textbf{(3)} $\dfrac{u_1}{u_0}=3{,}5\neq\dfrac{u_2}{u_1}=\dfrac{19}{14}$: \RR{ليست} \RR{هندسية}.\par\textbf{(4)} $v_{n+1}=u_{n+1}-6=\dfrac12u_n+3-6=\dfrac12u_n-3=\dfrac12(u_n-6)=\RR{\dfrac12v_n}$.\par\textbf{(5)} إذن $(v_n)$ هندسية أساسها $\RR{q=\dfrac12}$ وحدها الأول $v_0=1-6=\RR{-5}$.\par\textbf{(6)} $v_n=\RR{-5\left(\dfrac12\right)^n}$ ؛ \quad $u_n=v_n+6=\RR{6-5\left(\dfrac12\right)^n}$.\par\textbf{(7)} $0<\dfrac12<1$ إذن $\lim\limits_{n\to+\infty}\left(\dfrac12\right)^n=0$ ومنه $\RR{\lim\limits_{n\to+\infty}u_n=6}$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cThm}{المتتالية الحسابية (أساسها $r$)}\par\textbf{(1)} $u_{n+1}=u_n+r$ ؛ \quad $u_n=u_0+nr$ ؛ \quad $u_n=u_p+(n-p)r$.\par\textbf{(2)} المجموع: $\RR{S=N\times\dfrac{P+L}{2}}$ ($N$ عدد الحدود ، $P$ الأول ، $L$ الأخير).\par\textbf{(3)} $a$ ، $b$ ، $c$ حدود متتابعة $\iff 2b=a+c$.}{50 د}{جدول الدساتير.}
+\Row{}{%
+\Lab{cThm}{المتتالية الهندسية (أساسها $q$)}\par\textbf{(1)} $u_{n+1}=q\,u_n$ ؛ \quad $u_n=u_0q^n$ ؛ \quad $u_n=u_pq^{\,n-p}$.\par\textbf{(2)} المجموع ($q\neq1$): $\RR{S=P\times\dfrac{1-q^N}{1-q}}$ ($P$ الأول ، $N$ عدد الحدود).\par\textbf{(3)} $a$ ، $b$ ، $c$ حدود متتابعة $\iff b^2=ac$.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $1+3+5+\cdots+(2n+1)$: حسابية ، $N=n+1$: \par $S=(n+1)\times\dfrac{1+(2n+1)}2=\RR{(n+1)^2}$.\par\textbf{(2)} $3+6+12+\cdots+3\times2^9$: هندسية ، $q=2$ ، $N=10$: \par $S=3\times\dfrac{1-2^{10}}{1-2}=3\times1023=\RR{3069}$.\par\textbf{(3)} $(u_n)$ حسابية ، $u_3=10$ و $u_8=25$: $5r=u_8-u_3=15$ ، $r=\RR{3}$ ، $u_0=u_3-3r=\RR{1}$ ، $u_n=\RR{3n+1}$.\par\textbf{(4)} $(u_n)$ هندسية حدودها موجبة: $v_n=\ln u_n$ \RR{حسابية} أساسها $\ln q$ لأن \par $\ln u_{n+1}=\ln(q\,u_n)=\ln u_n+\ln q$.}{}{}
+\Row{}{%
+\Lab{cMeth}{المتتالية المساعدة لـ $u_{n+1}=au_n+b$ ($a\neq1$)}\par\textbf{(1)} نحل $\alpha=a\alpha+b$: $\RR{\alpha=\dfrac{b}{1-a}}$.\par\textbf{(2)} نضع $v_n=u_n-\alpha$: $v_{n+1}=au_n+b-\alpha=a(u_n-\alpha)=\RR{a\,v_n}$ (هندسية).\par\textbf{(3)} $v_n=v_0a^n$ ومنه $\RR{u_n=\alpha+(u_0-\alpha)a^n}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نبرهن أن $(v_n)$ هندسية بكتابة $v_{n+1}$ على الشكل $q\times v_n$ ، لا بحساب ثلاثة حدود فقط.}{}{}
+\Row{التقويم}{%
+\Lab{cMeth}{تمرين تطبيقي}\par $u_0=1$ ، $u_{n+1}=3u_n-4$ ، و $v_n=u_n-2$.\par\textbf{(1)} بيّن أن $(v_n)$ هندسية ، واستنتج $u_n$ بدلالة $n$.\par\textbf{(2)} احسب $S_n=u_0+u_1+\cdots+u_n$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $v_{n+1}=3u_n-4-2=3(u_n-2)=\RR{3v_n}$ ؛ هندسية أساسها $3$ ، $v_0=\RR{-1}$.\par\textbf{(2)} $v_n=-3^n$ ؛ \quad $u_n=\RR{2-3^n}$.\par\textbf{(3)} $S_n=2(n+1)-\left(1+3+\cdots+3^n\right)=2(n+1)-\dfrac{3^{n+1}-1}{2}$.\par\textbf{(4)} تحقق: $S_0=2-1=1=u_0$ \ck\par\textbf{واجب منزلي:} تمارين من باب المتتاليات (حسابية ، هندسية ، مساعدة).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
+\end{Sayr}
+\newpage
+\ModhHead{31}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{الاستدلال بالتراجع}%
+{\begin{itemize}\item المتتاليات ، المتباينات ، المجاميع.\end{itemize}}%
 {\begin{itemize}\item إثبات خاصية متعلقة بعدد طبيعي باستعمال الاستدلال بالتراجع.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة ، برمجية Geogebra.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} صف من قطع الدومينو: ماذا يكفي لتسقط كلها؟}{10 د}{مثال الدومينو.}
+\textbf{التهيئة النفسية:} صف طويل من قطع الدومينو: ماذا يكفي لتسقط كل القطع؟}{10 د}{مثال الدومينو.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ $1=1^2$ ، $1+3=2^2$ ، $1+3+5=3^2$: تخمين $1+3+\cdots+(2n-1)=n^2$.\par
-\ck\ إذا صحت للعدد $n$ نضيف $2n+1$: $n^2+2n+1=(n+1)^2$.\par
-}{35 د}{تخمين ثم برهان.}
-\Row{بناء المعارف}{%
-\Lab{cThm}{مبدأ الاستدلال بالتراجع}\ لإثبات أن خاصية $P(n)$ صحيحة من أجل كل $n\geqslant n_0$:\par\ck\ \textbf{التحقق}: $P(n_0)$ صحيحة.\par
-\ck\ \textbf{الوراثة}: نفرض $P(n)$ صحيحة من أجل $n\geqslant n_0$ ونبرهن صحة $P(n+1)$.\par
-\Lab{cEx}{مثال}\ $u_0=0$ ، $u_{n+1}=\sqrt{u_n+2}$: نبرهن $0\leqslant u_n\leqslant2$. التحقق: $u_0=0$. الوراثة: إذا كان $0\leqslant u_n\leqslant2$ فإن $2\leqslant u_n+2\leqslant4$ ، ومنه $0\leqslant u_{n+1}\leqslant2$.\par}{50 د}{تحرير البرهان بالمراحل.}
+\Lab{cEx}{نشاط رقم 03}\par\textbf{(1)} احسب: $1$ ، $1+3$ ، $1+3+5$ ، $1+3+5+7$.\par\textbf{(2)} خمّن عبارة $S_n=1+3+5+\cdots+(2n-1)$.\par\textbf{(3)} إذا كانت $S_n=n^2$ ، احسب $S_{n+1}$.}{35 د}{تخمين ثم برهان.}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ الوراثة وحدها لا تكفي: لا ننسى التحقق.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $1=\RR{1^2}$ ؛ $1+3=\RR{2^2}$ ؛ $1+3+5=\RR{3^2}$ ؛ $1+3+5+7=\RR{4^2}$.\par\textbf{(2)} التخمين: $\RR{S_n=n^2}$.\par\textbf{(3)} $S_{n+1}=S_n+(2n+1)=n^2+2n+1=\RR{(n+1)^2}$: إذا صحت من أجل $n$ صحت من أجل $n+1$ (الدومينو يُسقط الذي يليه).}{}{}
+\Row{بناء المعارف}{%
+\Lab{cThm}{مبدأ الاستدلال بالتراجع}\ $P(n)$ خاصية متعلقة بعدد طبيعي $n$ ، و $n_0$ عدد طبيعي. إذا كان:\par\textbf{(1)} \textbf{التحقق:} $P(n_0)$ صحيحة ؛\par\textbf{(2)} \textbf{الوراثة:} من أجل كل $n\geqslant n_0$ ، إذا كانت $P(n)$ صحيحة فإن $P(n+1)$ صحيحة ؛\par فإن $\RR{P(n)}$ صحيحة من أجل كل عدد طبيعي $n\geqslant n_0$.}{50 د}{تحرير البرهان بالمراحل.}
+\Row{}{%
+\Lab{cMeth}{تحرير برهان بالتراجع}\par\textbf{(1)} نكتب الخاصية $P(n)$ بوضوح.\par\textbf{(2)} نتحقق من $P(n_0)$.\par\textbf{(3)} نفرض $P(n)$ صحيحة (فرضية التراجع) ونبرهن $P(n+1)$ باستعمالها.\par\textbf{(4)} نستنتج.}{}{}
+\Row{}{%
+\Lab{cEx}{مثال 1: حصر}\ $u_0=0$ ، $u_{n+1}=\sqrt{u_n+2}$. نبرهن: $0\leqslant u_n\leqslant2$.\par\textbf{(1)} التحقق: $u_0=0$ ، إذن $0\leqslant u_0\leqslant2$ \ck\par\textbf{(2)} الوراثة: نفرض $0\leqslant u_n\leqslant2$ ، إذن:\par $2\leqslant u_n+2\leqslant4\ \Rightarrow\ \sqrt2\leqslant u_{n+1}\leqslant2\ \Rightarrow\ \RR{0\leqslant u_{n+1}\leqslant2}$.}{}{}
+\Row{}{%
+\Lab{cEx}{مثال 2: مساواة}\ نبرهن: \par $1+2+\cdots+n=\dfrac{n(n+1)}2$ ($n\geqslant1$).\par\textbf{(1)} التحقق: $n=1$: $1=\dfrac{1\times2}2$ \ck\par\textbf{(2)} الوراثة: \par $1+\cdots+n+(n+1)=\dfrac{n(n+1)}2+(n+1)=\RR{\dfrac{(n+1)(n+2)}2}$.}{}{}
+\Row{}{%
+\Lab{cEx}{مثال 3: متتالية}\ $u_0=1$ ، $u_{n+1}=\dfrac{u_n}{1+u_n}$. نبرهن: $u_n=\dfrac1{n+1}$.\par\textbf{(1)} التحقق: $u_0=1=\dfrac1{0+1}$ \ck\par\textbf{(2)} الوراثة: $u_{n+1}=\dfrac{\frac1{n+1}}{1+\frac1{n+1}}=\dfrac{\frac1{n+1}}{\frac{n+2}{n+1}}=\RR{\dfrac1{n+2}}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ الوراثة وحدها لا تكفي: الخاصية «$3^n$ عدد زوجي» وراثية ($3^{n+1}=3\times3^n$) لكنها خاطئة لأن التحقق يفشل ($3^0=1$).}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par برهن بالتراجع أنه من أجل كل $n\in\mathbb N$: $3^n\geqslant1+2n$.\par\textbf{الحل:} $n=0$: $1\geqslant1$ ؛ إذا كان $3^n\geqslant1+2n$ فإن $3^{n+1}\geqslant3+6n\geqslant3+2n=1+2(n+1)$.\par\textbf{واجب منزلي:} تمرينا 64 و 65 صفحة 64.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} برهن بالتراجع أن من أجل كل $n\in\mathbb N$: $3^n\geqslant1+2n$.\par\textbf{(2)} $v_0=3$ و $v_{n+1}=\dfrac12v_n+1$: برهن أن $v_n\geqslant2$ من أجل كل $n$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} التحقق: $3^0=1\geqslant1$ \ck\par\textbf{(2)} الوراثة: $3^{n+1}=3\times3^n\geqslant3+6n=1+2(n+1)+4n\geqslant\RR{1+2(n+1)}$.\par\textbf{(3)} التحقق: $v_0=3\geqslant2$ \ck\par\textbf{(4)} الوراثة: $v_n\geqslant2\ \Rightarrow\ \dfrac12v_n\geqslant1\ \Rightarrow\ \dfrac12v_n+1\geqslant2\ \Rightarrow\ \RR{v_{n+1}\geqslant2}$.\par\textbf{واجب منزلي:} تمرينا 64 و 65 صفحة 64.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
-\ModhHead{31}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{المتتاليات المحدودة والرتيبة}%
-{\begin{itemize}\item الاستدلال بالتراجع ، اتجاه التغير.\end{itemize}}%
-{\begin{itemize}\item إثبات أن متتالية محدودة ، ودراسة رتابتها.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\ModhHead{32}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{خواص المتتاليات: المحدودة والرتيبة}%
+{\begin{itemize}\item الاستدلال بالتراجع ، المشتقات.\end{itemize}}%
+{\begin{itemize}\item إثبات أن متتالية محدودة ، ودراسة اتجاه تغيرها.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة ، برمجية Geogebra.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} $v_n=\dfrac{2n+1}{n+1}$: هل يمكن أن يتجاوز $v_n$ العدد $2$ ؟}{10 د}{سؤال.}
+\textbf{التهيئة النفسية:} $v_n=\dfrac{2n+1}{n+1}$: هل يمكن أن يتجاوز $v_n$ العدد $2$ ؟}{10 د}{سؤال تمهيدي.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ $v_n=2-\dfrac1{n+1}$: $1\leqslant v_n<2$ ، و $v_n$ تتزايد.\par
-}{35 د}{كتابة جديدة للعبارة.}
-\Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $(u_n)$ \textbf{محدودة من الأعلى} إذا وُجد $M$ حيث $u_n\leqslant M$ لكل $n$ ، و\textbf{من الأسفل} إذا وُجد $m$ حيث $u_n\geqslant m$ ، و\textbf{محدودة} إذا كانت محدودة من الأعلى والأسفل.\par\Lab{cMeth}{الرتابة}\ إشارة $u_{n+1}-u_n$ ، أو مقارنة $\dfrac{u_{n+1}}{u_n}$ بـ $1$ (حدود موجبة) ، أو بالتراجع إذا كانت $u_{n+1}=f(u_n)$ و $f$ متزايدة.\par}{50 د}{جدول الطرق.}
+\Lab{cEx}{نشاط رقم 04}\ $v_n=\dfrac{2n+1}{n+1}$ ($n\in\mathbb N$).\par\textbf{(1)} بيّن أن $v_n=2-\dfrac1{n+1}$.\par\textbf{(2)} استنتج أن $1\leqslant v_n<2$.\par\textbf{(3)} ادرس اتجاه تغير $(v_n)$.}{35 د}{كتابة جديدة للعبارة.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $u_0=0$ ، $u_{n+1}=\sqrt{u_n+2}$: نبرهن بالتراجع $u_n\leqslant u_{n+1}$: صحيحة لـ $n=0$ ($0\leqslant\sqrt2$) ، وإذا كان $u_n\leqslant u_{n+1}$ فإن $\sqrt{u_n+2}\leqslant\sqrt{u_{n+1}+2}$ ، أي $u_{n+1}\leqslant u_{n+2}$.\par\Lab{cThm!80!black}{حذار}\ محدودة لا تعني متقاربة: $(-1)^n$.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $2-\dfrac1{n+1}=\dfrac{2n+2-1}{n+1}=\RR{\dfrac{2n+1}{n+1}}$.\par\textbf{(2)} $0<\dfrac1{n+1}\leqslant1\ \Rightarrow\ -1\leqslant-\dfrac1{n+1}<0\ \Rightarrow\ \RR{1\leqslant v_n<2}$.\par\textbf{(3)} $v_{n+1}-v_n=\dfrac1{n+1}-\dfrac1{n+2}=\RR{\dfrac1{(n+1)(n+2)}>0}$: \RR{متزايدة} \RR{تمامًا}.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{متتالية محدودة}\par\textbf{(1)} $(u_n)$ \textbf{محدودة من الأعلى} إذا وُجد $M$ حيث $u_n\leqslant M$ لكل $n$.\par\textbf{(2)} \textbf{محدودة من الأسفل} إذا وُجد $m$ حيث $u_n\geqslant m$ لكل $n$.\par\textbf{(3)} \textbf{محدودة} إذا كانت محدودة من الأعلى ومن الأسفل: $\RR{m\leqslant u_n\leqslant M}$.}{50 د}{جدول الطرق.}
+\Row{}{%
+\Lab{cDef}{متتالية رتيبة}\ متزايدة ($u_{n+1}\geqslant u_n$) أو متناقصة ($u_{n+1}\leqslant u_n$) من أجل كل $n$ ، أو ابتداءً من رتبة معينة.}{}{}
+\Row{}{%
+\Lab{cMeth}{دراسة اتجاه التغير}\par\textbf{(1)} إشارة الفرق $u_{n+1}-u_n$.\par\textbf{(2)} مقارنة $\dfrac{u_{n+1}}{u_n}$ بالعدد $1$ (حدود موجبة تمامًا).\par\textbf{(3)} اتجاه تغير $f$ إذا كان $u_n=f(n)$.\par\textbf{(4)} التراجع إذا كانت $u_{n+1}=f(u_n)$.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} \textbf{الفرق:} $u_n=n^2-4n$: \par $u_{n+1}-u_n=(n+1)^2-4(n+1)-n^2+4n=\RR{2n-3}$ ، موجب من أجل $n\geqslant2$: \RR{متزايدة} \RR{ابتداءً} \RR{من} \RR{الرتبة} \RR{2}.\par\textbf{(2)} \textbf{النسبة:} $w_n=\dfrac{n}{3^n}$ ($n\geqslant1$): $\dfrac{w_{n+1}}{w_n}=\dfrac{n+1}{3^{n+1}}\times\dfrac{3^n}{n}=\RR{\dfrac{n+1}{3n}}\leqslant1$ لأن $n+1\leqslant3n$: \RR{متناقصة}.\par\textbf{(3)} \textbf{الدالة:} $u_n=f(n)$ مع $f(x)=\dfrac{x}{x+1}$: $f^{\prime}(x)=\dfrac1{(x+1)^2}>0$: \RR{متزايدة}.\par\textbf{(4)} \textbf{التراجع:} $u_0=0$ ، $u_{n+1}=\sqrt{u_n+2}$: $P(n)$: $u_n\leqslant u_{n+1}$.\par\textbf{(5)} التحقق: $u_0=0\leqslant\sqrt2=u_1$ \ck\par\textbf{(6)} الوراثة: $u_n\leqslant u_{n+1}\ \Rightarrow\ \sqrt{u_n+2}\leqslant\sqrt{u_{n+1}+2}\ \Rightarrow\ \RR{u_{n+1}\leqslant u_{n+2}}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ $(-1)^n$ محدودة ($-1\leqslant(-1)^n\leqslant1$) وليست رتيبة.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $w_n=\dfrac{n}{n^2+1}$: بيّن أن $0\leqslant w_n\leqslant\frac12$.\par\textbf{الحل:} $w_n\geqslant0$ ؛ $\frac12-w_n=\dfrac{(n-1)^2}{2(n^2+1)}\geqslant0$.\par\textbf{واجب منزلي:} تمارين من باب المتتاليات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par $w_n=\dfrac{n}{n^2+1}$ ($n\in\mathbb N$).\par\textbf{(1)} بيّن أن $0\leqslant w_n\leqslant\dfrac12$.\par\textbf{(2)} ادرس اتجاه تغير $(w_n)$ ابتداءً من الرتبة $1$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $w_n\geqslant0$ ؛ \quad $\dfrac12-w_n=\dfrac{n^2+1-2n}{2(n^2+1)}=\RR{\dfrac{(n-1)^2}{2(n^2+1)}\geqslant0}$.\par\textbf{(2)} $w_{n+1}-w_n=\dfrac{(n+1)(n^2+1)-n\left((n+1)^2+1\right)}{\left((n+1)^2+1\right)(n^2+1)}=\RR{\dfrac{-n^2-n+1}{\left((n+1)^2+1\right)(n^2+1)}}$.\par\textbf{(3)} من أجل $n\geqslant1$: $-n^2-n+1\leqslant-1<0$ ، إذن \RR{$(w_n)$} \RR{متناقصة}.\par\textbf{واجب منزلي:} تمارين من باب المتتاليات (محدودة ، رتيبة).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
-\ModhHead{32}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{المتتاليتان الحسابية والهندسية ، المتتالية المساعدة}%
-{\begin{itemize}\item المتتاليات الحسابية والهندسية (2 ع ت).\end{itemize}}%
-{\begin{itemize}\item استعمال متتالية مساعدة هندسية لحساب الحد العام لمتتالية $u_{n+1}=au_n+b$.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
-\begin{Sayr}
-\Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} ذكّر بالحد العام ومجموع الحدود لمتتالية حسابية وهندسية.}{10 د}{تذكير سريع.}
-\Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ $u_0=1$ و $u_{n+1}=\frac12u_n+3$ ، و $v_n=u_n-6$.\par\ck\ $v_{n+1}=\frac12u_n+3-6=\frac12(u_n-6)=\frac12v_n$: هندسية أساسها $\frac12$ وحدها الأول $v_0=-5$.\par
-\ck\ $u_n=6-5\left(\frac12\right)^n$ ، و $\lim u_n=6$.\par
-}{35 د}{نقطة صامدة.}
-\Row{بناء المعارف}{%
-\Lab{cThm}{تذكير}\par\ck\ حسابية: $u_n=u_0+nr$ ؛ مجموع $N$ حداً متتابعاً: $N\times\dfrac{a+b}2$ ($a$ الأول ، $b$ الأخير).\par
-\ck\ هندسية: $v_n=v_0q^n$ ؛ المجموع: $a\times\dfrac{1-q^N}{1-q}$ ($q\neq1$).\par
-\Lab{cMeth}{المتتالية المساعدة}\ لـ $u_{n+1}=au_n+b$ ($a\neq1$): نعين $l$ حيث $l=al+b$ ، والمتتالية $v_n=u_n-l$ هندسية أساسها $a$.\par}{50 د}{مخطط الطريقة.}
-\Row{}{%
-\Lab{cThm!80!black}{حذار}\ نبرهن أن $v_n$ هندسية بحساب $v_{n+1}$ بدلالة $v_n$.}{}{}
-\Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $u_0=1$ ، $u_{n+1}=3u_n-4$ و $v_n=u_n-2$. بيّن أن $(v_n)$ هندسية ، واستنتج $u_n$.\par\textbf{الحل:} $v_{n+1}=3v_n$ ، $v_0=-1$: $u_n=2-3^n$.\par\textbf{واجب منزلي:} تمارين من باب المتتاليات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
-\end{Sayr}
-\newpage
-\ModhHead{33}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{تقارب متتالية ونهايتها}%
-{\begin{itemize}\item المتتاليات المحدودة والرتيبة ، النهايات.\end{itemize}}%
+\ModhHead{33}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{خواص المتتاليات: التقارب والنهاية}%
+{\begin{itemize}\item المتتاليات المحدودة والرتيبة ، النهايات ، الاستمرارية.\end{itemize}}%
 {\begin{itemize}\item إثبات تقارب متتالية وحساب نهايتها.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة ، برمجية Geogebra.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} متتالية متزايدة ولا تتجاوز $2$: هل لها نهاية؟}{10 د}{تخمين.}
+\textbf{التهيئة النفسية:} متتالية متزايدة ولا تتجاوز $2$: هل يمكن أن تؤول إلى $+\infty$ ؟}{10 د}{تخمين.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ الحدود تتزايد و«تتراكم» تحت $2$: تخمين التقارب.\par
-}{35 د}{برهان كامل.}
-\Row{بناء المعارف}{%
-\Lab{cThm}{خاصية}\par\ck\ كل متتالية متزايدة ومحدودة من الأعلى متقاربة ؛ وكل متتالية متناقصة ومحدودة من الأسفل متقاربة.\par
-\ck\ مبرهنات النهايات (المجموع ، الجداء ، القسمة) ، المقارنة والحصر.\par
-\ck\ إذا كانت $u_{n+1}=f(u_n)$ متقاربة نحو $l$ و $f$ مستمرة عند $l$ فإن $f(l)=l$.\par
-\Lab{cEx}{مثال}\ $u_{n+1}=\sqrt{u_n+2}$: متزايدة ومحدودة من الأعلى بـ $2$ ، إذن متقاربة نحو $l\geqslant0$ حيث $l=\sqrt{l+2}$: $l^2-l-2=0$ ، $l=2$.\par}{50 د}{خطوات التحرير.}
+\Lab{cEx}{نشاط رقم 05}\ $u_0=0$ ، $u_{n+1}=\sqrt{u_n+2}$. (أثبتنا: $0\leqslant u_n\leqslant2$ و $(u_n)$ متزايدة.)\par\textbf{(1)} هل يمكن أن تكون $\lim\limits_{n\to+\infty}u_n=+\infty$ ؟\par\textbf{(2)} نفرض $\lim\limits_{n\to+\infty}u_n=\ell$: ما المعادلة التي يحققها $\ell$ ؟ حلها.}{35 د}{برهان كامل.}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ لا نستعمل $f(l)=l$ قبل إثبات التقارب.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} لا ، لأن $u_n\leqslant2$: الحدود تتزايد و«تتراكم» تحت $2$: \RR{متقاربة}.\par\textbf{(2)} بالمرور إلى النهاية في $u_{n+1}=\sqrt{u_n+2}$: \par $\ell=\sqrt{\ell+2}\ \Rightarrow\ \ell^2-\ell-2=0\ \Rightarrow\ \RR{\ell=2}$ ($\ell=-1$ مرفوض).}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $(u_n)$ \textbf{متقاربة} إذا كانت لها نهاية حقيقية $\ell$ ، وإلا فهي \textbf{متباعدة}. إذا كان $u_n=f(n)$ و $\lim\limits_{x\to+\infty}f(x)=\ell$ فإن $\RR{\lim\limits_{n\to+\infty}u_n=\ell}$.}{50 د}{خطوات التحرير.}
+\Row{}{%
+\Lab{cThm}{نهاية $q^n$}\par\textbf{(1)} $q>1$: $\lim\limits_{n\to+\infty}q^n=+\infty$ ؛ \quad $q=1$: $\lim\limits_{n\to+\infty}q^n=1$.\par\textbf{(2)} $-1<q<1$: $\RR{\lim\limits_{n\to+\infty}q^n=0}$ ؛ \quad $q\leqslant-1$: ليس لها نهاية.}{}{}
+\Row{}{%
+\Lab{cThm}{المقارنة والحصر}\par\textbf{(1)} $u_n\geqslant v_n$ و $\lim\limits_{n\to+\infty}v_n=+\infty$ $\Rightarrow$ $\lim\limits_{n\to+\infty}u_n=+\infty$.\par\textbf{(2)} $v_n\leqslant u_n\leqslant w_n$ و $\lim\limits_{n\to+\infty}v_n=\lim\limits_{n\to+\infty}w_n=\ell$ $\Rightarrow$ $\RR{\lim\limits_{n\to+\infty}u_n=\ell}$.}{}{}
+\Row{}{%
+\Lab{cThm}{التقارب الرتيب}\par\textbf{(1)} كل متتالية \textbf{متزايدة ومحدودة من الأعلى} متقاربة ؛ كل متتالية \textbf{متناقصة ومحدودة من الأسفل} متقاربة.\par\textbf{(2)} إذا كانت $u_{n+1}=f(u_n)$ متقاربة نحو $\ell$ و $f$ مستمرة عند $\ell$ فإن $\RR{f(\ell)=\ell}$.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $\lim\limits_{n\to+\infty}\dfrac{2^n-3^n}{3^n+1}=\lim\limits_{n\to+\infty}\dfrac{\left(\frac23\right)^n-1}{1+\left(\frac13\right)^n}=\RR{-1}$.\par\textbf{(2)} $-\dfrac1n\leqslant\dfrac{\cos n}{n}\leqslant\dfrac1n$ والطرفان يؤولان إلى $0$: $\RR{\lim\limits_{n\to+\infty}\dfrac{\cos n}{n}=0}$.\par\textbf{(3)} $\lim\limits_{n\to+\infty}\left(5-3\times0{,}8^n\right)=\RR{5}$ لأن $0<0{,}8<1$.\par\textbf{(4)} $(u_n)$ النشاط: متزايدة ومحدودة من الأعلى بـ $2$ إذن متقاربة.\par\textbf{(5)} $f(x)=\sqrt{x+2}$ مستمرة ، إذن $\RR{\lim\limits_{n\to+\infty}u_n=2}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ لا نستعمل $f(\ell)=\ell$ قبل إثبات التقارب.\par المبرهنة لا تعطي قيمة النهاية: $2-\dfrac1{n+1}\leqslant5$ لكن النهاية $2$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par احسب نهاية $w_n=\dfrac{3n^2+1}{n^2+n}$ ، و $t_n=\dfrac{(-1)^n}{n+1}$.\par\textbf{الحل:} $3$ ؛ $|t_n|\leqslant\dfrac1{n+1}$: النهاية $0$.\par\textbf{واجب منزلي:} تمرينا 28 و 29 ، و 123 و 124 صفحة 25.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par احسب النهايات:\par\textbf{(1)} $w_n=\dfrac{3n^2+1}{n^2+n}$.\par\textbf{(2)} $t_n=\dfrac{(-1)^n}{n+1}$.\par\textbf{(3)} $s_n=n+(-1)^n$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $w_n=\dfrac{3+\frac1{n^2}}{1+\frac1n}$ ، إذن $\RR{\lim\limits_{n\to+\infty}w_n=3}$.\par\textbf{(2)} $|t_n|=\dfrac1{n+1}$ و $-\dfrac1{n+1}\leqslant t_n\leqslant\dfrac1{n+1}$ ، إذن $\RR{\lim\limits_{n\to+\infty}t_n=0}$.\par\textbf{(3)} $s_n\geqslant n-1$ و $\lim\limits_{n\to+\infty}(n-1)=+\infty$ ، إذن $\RR{\lim\limits_{n\to+\infty}s_n=+\infty}$.\par\textbf{واجب منزلي:} تمرينا 28 و 29 ، و 123 و 124 صفحة 25.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{34}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{المتتاليتان المتجاورتان}%
-{\begin{itemize}\item التقارب ، الرتابة.\end{itemize}}%
+{\begin{itemize}\item التقارب ، الرتابة ، المتتاليات الهندسية.\end{itemize}}%
 {\begin{itemize}\item إثبات أن متتاليتين متجاورتان واستنتاج نهايتهما المشتركة.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة ، برمجية Geogebra.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} كيف نحصر عدداً مجهولاً بين قيم مقربة بالنقصان وبالزيادة تتقارب؟}{10 د}{سؤال حصر.}
+\textbf{التهيئة النفسية:} كيف نحصر عددًا مجهولًا بين قيم مقربة بالنقصان وأخرى بالزيادة تتقارب؟}{10 د}{سؤال حصر.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مناقشة نشاط 04 صفحة 7}\par\ck\ متتاليتان: الأولى تتزايد والثانية تتناقص ، والفرق بينهما يؤول إلى $0$.\par
-\ck\ تحصران عدداً وحيداً.\par
-}{35 د}{نشاط الكتاب.}
-\Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $(u_n)$ و $(v_n)$ \textbf{متجاورتان} إذا كانت إحداهما متزايدة والأخرى متناقصة و $\lim(v_n-u_n)=0$.\par\Lab{cThm}{خاصية}\ متتاليتان متجاورتان متقاربتان ولهما نفس النهاية $l$ ، ومن أجل كل $n$: $u_n\leqslant l\leqslant v_n$.\par}{50 د}{الشروط الثلاثة في جدول.}
+\Lab{cEx}{نشاط رقم 06}\ من أجل $n\geqslant1$: $u_n=2-\dfrac1n$ و $v_n=2+\dfrac1{n^2}$.\par\textbf{(1)} احسب $u_1$ ، $u_2$ ، $v_1$ ، $v_2$.\par\textbf{(2)} ادرس اتجاه تغير كل منهما.\par\textbf{(3)} احسب $\lim\limits_{n\to+\infty}(v_n-u_n)$.}{35 د}{مناقشة النشاط.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $u_n=2-\dfrac1n$ ، $v_n=2+\dfrac1{n^2}$ ($n\geqslant1$): $(u_n)$ متزايدة ، $(v_n)$ متناقصة ، $v_n-u_n=\dfrac1n+\dfrac1{n^2}\to0$: متجاورتان ، النهاية $2$.\par\Lab{cThm!80!black}{حذار}\ نتحقق من الشروط الثلاثة كلها.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $u_1=\RR{1}$ ، $u_2=\RR{1{,}5}$ ؛ $v_1=\RR{3}$ ، $v_2=\RR{2{,}25}$.\par\textbf{(2)} $u_{n+1}-u_n=\dfrac1n-\dfrac1{n+1}=\RR{\dfrac1{n(n+1)}>0}$: $(u_n)$ \RR{متزايدة}.\par\textbf{(3)} $v_{n+1}-v_n=\dfrac1{(n+1)^2}-\dfrac1{n^2}<0$: $(v_n)$ \RR{متناقصة}.\par\textbf{(4)} $v_n-u_n=\dfrac1{n^2}+\dfrac1n$ ، إذن $\RR{\lim\limits_{n\to+\infty}(v_n-u_n)=0}$: المتتاليتان تحصران العدد $2$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $(u_n)$ و $(v_n)$ \textbf{متجاورتان} إذا كانت إحداهما متزايدة والأخرى متناقصة و \par $\RR{\lim\limits_{n\to+\infty}(v_n-u_n)=0}$.}{50 د}{الشروط الثلاثة.}
+\Row{}{%
+\Lab{cThm}{خاصية}\ إذا كانت $(u_n)$ متزايدة و $(v_n)$ متناقصة ومتجاورتين ، فإنهما \textbf{متقاربتان نحو نفس النهاية} $\ell$ ، و $\RR{u_n\leqslant\ell\leqslant v_n}$ لكل $n$.}{}{}
+\Row{}{%
+\Lab{cEx}{مثال محلول}\ $u_0=1$ ، $v_0=8$ ، $u_{n+1}=\dfrac{2u_n+v_n}3$ ، $v_{n+1}=\dfrac{u_n+3v_n}4$ ، $w_n=v_n-u_n$ ، $t_n=3u_n+4v_n$.\par\textbf{(1)} $w_{n+1}=\dfrac{u_n+3v_n}4-\dfrac{2u_n+v_n}3=\dfrac{3u_n+9v_n-8u_n-4v_n}{12}=\RR{\dfrac5{12}w_n}$.\par\textbf{(2)} $(w_n)$ هندسية ، $w_0=7$: $w_n=\RR{7\left(\dfrac5{12}\right)^n}>0$ و $\RR{\lim\limits_{n\to+\infty}w_n=0}$.\par\textbf{(3)} $u_{n+1}-u_n=\dfrac{v_n-u_n}3=\dfrac{w_n}3>0$: \RR{$(u_n)$} \RR{متزايدة}.\par\textbf{(4)} $v_{n+1}-v_n=\dfrac{u_n-v_n}4=-\dfrac{w_n}4<0$: \RR{$(v_n)$} \RR{متناقصة} ، إذن \RR{متجاورتان}.\par\textbf{(5)} $t_{n+1}=(2u_n+v_n)+(u_n+3v_n)=3u_n+4v_n=t_n$: ثابتة ، $t_n=t_0=3+32=\RR{35}$.\par\textbf{(6)} بالمرور إلى النهاية: $3\ell+4\ell=35\ \Rightarrow\ \RR{\ell=5}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نتحقق من الشروط الثلاثة كلها (تزايد ، تناقص ، نهاية الفرق).}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par بيّن أن $u_n=1-\dfrac1{2^n}$ و $v_n=1+\dfrac1n$ ($n\geqslant1$) متجاورتان.\par\textbf{الحل:} $u_n$ متزايدة ، $v_n$ متناقصة ، $v_n-u_n=\dfrac1n+\dfrac1{2^n}\to0$: النهاية المشتركة $1$.\par\textbf{واجب منزلي:} تمرين 135 صفحة 37.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par $u_n=1-\dfrac1{2^n}$ و $v_n=1+\dfrac1n$ ($n\geqslant1$).\par\textbf{(1)} بيّن أن $(u_n)$ و $(v_n)$ متجاورتان.\par\textbf{(2)} عيّن نهايتهما المشتركة.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $u_{n+1}-u_n=\dfrac1{2^n}-\dfrac1{2^{n+1}}=\RR{\dfrac1{2^{n+1}}>0}$: متزايدة.\par\textbf{(2)} $v_{n+1}-v_n=\dfrac1{n+1}-\dfrac1n=\RR{-\dfrac1{n(n+1)}<0}$: متناقصة.\par\textbf{(3)} $v_n-u_n=\dfrac1n+\dfrac1{2^n}\to0$: \RR{متجاورتان}.\par\textbf{(4)} $\lim\limits_{n\to+\infty}u_n=1-0=\RR{1}$: النهاية المشتركة $1$.\par\textbf{واجب منزلي:} تمرين 135 صفحة 37.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
-\ModhHead{35}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{حل مشكلات توظف المتتاليات}%
-{\begin{itemize}\item المتتالية المساعدة ، التقارب ، الاستدلال بالتراجع.\end{itemize}}%
-{\begin{itemize}\item نمذجة وضعية بمتتالية وحل المشكلة.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+\ModhHead{35}{3 ع ت}{تحليل}{المتتاليات العددية}{02 سا}{حل مشكلات توظف المتتاليات والبرهان بالتراجع}%
+{\begin{itemize}\item المتتالية المساعدة ، التقارب ، الاستدلال بالتراجع ، الدالة اللوغاريتمية.\end{itemize}}%
+{\begin{itemize}\item نمذجة وضعية بمتتالية وحل المشكلة وتفسير النتائج.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة ، برمجية Geogebra.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} غابة فيها $1000$ شجرة ، يُقطع $10\,\%$ كل سنة ويُغرس $200$: كم شجرة على المدى البعيد؟}{10 د}{وضعية بيئية.}
+\textbf{التهيئة النفسية:} غابة فيها $1000$ شجرة ، يُقطع $10\,\%$ منها كل سنة ويُغرس $200$ شجرة: كم شجرة على المدى البعيد؟}{10 د}{وضعية بيئية.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ $P_0=1000$ ، $P_{n+1}=0{,}9P_n+200$.\par
-\ck\ النقطة الصامدة: $l=0{,}9l+200$ ، $l=2000$.\par
-}{35 د}{عمل بالأفواج.}
-\Row{بناء المعارف}{%
-\Lab{cEx}{الحل}\par\ck\ $v_n=P_n-2000$: $v_{n+1}=0{,}9v_n$ ، $v_0=-1000$.\par
-\ck\ $P_n=2000-1000\times0{,}9^n$ ، متزايدة ، $\lim P_n=2000$.\par
-\ck\ بالتراجع: $P_n\leqslant2000$ لكل $n$.\par
-\Lab{cMeth}{طريقة}\ ترييض الوضعية ، متتالية مساعدة ، عبارة الحد العام ، النهاية ، ثم تفسير النتيجة في سياق المشكلة.\par}{50 د}{تفسير النتائج.}
+\Lab{cEx}{نشاط رقم 07}\ $P_n$ عدد الأشجار بعد $n$ سنة: $P_0=1000$.\par\textbf{(1)} بيّن أن $P_{n+1}=0{,}9P_n+200$.\par\textbf{(2)} برهن بالتراجع أن $P_n\leqslant2000$ ، ثم أن $(P_n)$ متزايدة.\par\textbf{(3)} نضع $v_n=P_n-2000$: بيّن أن $(v_n)$ هندسية ، واكتب $P_n$ بدلالة $n$.\par\textbf{(4)} احسب $\lim\limits_{n\to+\infty}P_n$ وفسّر. ابتداءً من أي سنة يتجاوز العدد $1900$ ؟}{35 د}{عمل بالأفواج.}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ نفسر النتيجة بلغة الوضعية (عدد الأشجار).}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} يبقى $90\,\%$ أي $0{,}9P_n$ ونضيف $200$: $\RR{P_{n+1}=0{,}9P_n+200}$.\par\textbf{(2)} التحقق: $P_0=1000\leqslant2000$ \ck ؛ الوراثة: \par $P_{n+1}=0{,}9P_n+200\leqslant0{,}9\times2000+200=\RR{2000}$.\par\textbf{(3)} $P_{n+1}-P_n=200-0{,}1P_n=0{,}1(2000-P_n)\geqslant0$: \RR{متزايدة}.\par\textbf{(4)} $v_{n+1}=0{,}9P_n+200-2000=0{,}9(P_n-2000)=\RR{0{,}9\,v_n}$ ؛ $v_0=\RR{-1000}$.\par\textbf{(5)} $v_n=-1000\times0{,}9^n$ ؛ \quad $P_n=\RR{2000-1000\times0{,}9^n}$.\par\textbf{(6)} $0<0{,}9<1$: $\RR{\lim\limits_{n\to+\infty}P_n=2000}$: يستقر العدد قرب $2000$ شجرة.\par\textbf{(7)} $P_n>1900\iff0{,}9^n<0{,}1\iff n>\dfrac{\ln0{,}1}{\ln0{,}9}\approx21{,}85$: ابتداءً من \RR{السنة} \RR{22}.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cMeth}{حل مشكلة بمتتالية}\par\textbf{(1)} ترييض الوضعية: $u_0$ وعلاقة $u_{n+1}=f(u_n)$.\par\textbf{(2)} متتالية مساعدة (غالبًا هندسية) ثم عبارة الحد العام.\par\textbf{(3)} الرتابة ، الحصر (بالتراجع) ، النهاية.\par\textbf{(4)} تفسير النتائج بلغة الوضعية.}{50 د}{تفسير النتائج.}
+\Row{}{%
+\Lab{cEx}{مثال محلول: إيداع}\ نودع $100000$ دج بفائدة مركبة $4\,\%$ سنويًا: $C_{n+1}=1{,}04\,C_n$.\par\textbf{(1)} $(C_n)$ هندسية أساسها $1{,}04$: $C_n=\RR{100000\times1{,}04^n}$.\par\textbf{(2)} $C_{10}=100000\times1{,}04^{10}\approx\RR{148024{,}43}$ دج.\par\textbf{(3)} $C_n\geqslant200000\iff1{,}04^n\geqslant2\iff n\geqslant\dfrac{\ln2}{\ln1{,}04}\approx17{,}67$: يتضاعف المبلغ ابتداءً من \RR{السنة} \RR{18}.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نفسر النتيجة بلغة الوضعية (عدد الأشجار ، المبلغ) ، ونقرّب عدد السنوات إلى العدد الطبيعي الموالي.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par مريض يأخذ $2$ mg من دواء يومياً ، ويطرح الجسم نصف الكمية يومياً: $d_0=2$ ، $d_{n+1}=0{,}5d_n+2$. احسب $d_n$ ونهايتها.\par\textbf{الحل:} $v_n=d_n-4$ هندسية أساسها $0{,}5$ ، $v_0=-2$: $d_n=4-2\times0{,}5^n$ ، النهاية $4$ mg.\par\textbf{واجب منزلي:} مسائل من باب المتتاليات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\Lab{cMeth}{تمرين تطبيقي}\par مريض يأخذ $2$ mg من دواء يوميًا ، ويطرح جسمه نصف الكمية يوميًا: $d_0=2$ ، $d_{n+1}=0{,}5d_n+2$.\par\textbf{(1)} نضع $v_n=d_n-4$: بيّن أن $(v_n)$ هندسية.\par\textbf{(2)} اكتب $d_n$ بدلالة $n$ واحسب نهايتها.}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $v_{n+1}=0{,}5d_n+2-4=0{,}5(d_n-4)=\RR{0{,}5\,v_n}$ ؛ $v_0=\RR{-2}$.\par\textbf{(2)} $d_n=\RR{4-2\times0{,}5^n}$ ؛ \quad $\lim\limits_{n\to+\infty}d_n=\RR{4}$ mg: الكمية تستقر عند $4$ mg.\par\textbf{واجب منزلي:} مسائل من باب المتتاليات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \end{document}

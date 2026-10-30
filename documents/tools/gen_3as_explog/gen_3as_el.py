@@ -2,7 +2,7 @@ import sys, re
 D0='/tmp/claude-0/-home-user-Math-app/edf6d12c-f942-5224-90ee-6cbaa794c825/scratchpad/p2/'
 which=sys.argv[1]
 exec(open(D0+'hdr_ln.py').read()); exec(open(D0+'explog_helpers.py').read())
-exec(open({'exp':D0+'sess_exp3.py','ln':D0+'sess_ln3.py','cg':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_cg3.py','int':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_int3.py'}[which]).read())
+exec(open({'exp':D0+'sess_exp3.py','ln':D0+'sess_ln3.py','cg':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_cg3.py','int':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_int3.py','suites':'/home/user/Math-app/documents/tools/gen_3as_explog/sess_suites3.py'}[which]).read())
 import importlib.util; spec=importlib.util.spec_from_file_location('gf',D0+'ge_format.py'); gf=importlib.util.module_from_spec(spec); spec.loader.exec_module(gf)
 if which=='exp':
     TITLE='الدالة الأسية'; OUT='modhakira_wahda2a_3as'; START=10; CNT='4 مذكرات (8 ساعات)'
@@ -10,6 +10,9 @@ if which=='exp':
 elif which=='int':
     TITLE='الدوال الأصلية والحساب التكاملي'; OUT='modhakira_wahda6_3as'; START=36; CNT='10 مذكرات (20 ساعة)'
     items=['الدوال الأصلية: تعريف وخواص.','الدوال الأصلية للدوال المألوفة ، الدالة الأصلية التي تحقق شرطًا.','قواعد حساب الدوال الأصلية.','المعادلات التفاضلية البسيطة.','الحساب التكاملي: المقاربة والتعريف.','خواص التكامل ، مساحة حيز بين منحنيين.','القيمة المتوسطة ، حصر تكامل.','مساحة حيز: دالة سالبة أو متغيرة الإشارة.','التكامل بالتجزئة.','حساب حجوم ، حل مشكلات.']
+elif which=='suites':
+    TITLE='المتتاليات العددية'; OUT='modhakira_wahda5_3as'; START=29; CNT='7 مذكرات (14 ساعة)'
+    items=['توليد متتالية ، التمثيل البياني وتخمين السلوك.','التذكير بالمتتاليات الحسابية والهندسية ، المتتالية المساعدة.','الاستدلال بالتراجع.','خواص المتتاليات: المحدودة والرتيبة.','خواص المتتاليات: التقارب والنهاية.','المتتاليتان المتجاورتان.','حل مشكلات توظف المتتاليات والبرهان بالتراجع.']
 elif which=='cg':
     TITLE='التزايد المقارن ودراسة الدوال'; OUT='modhakira_wahda4_3as'; START=23; CNT='6 مذكرات (12 ساعة)'
     items=[r'قوى عدد حقيقي موجب تمامًا ، الدالة $x\mapsto a^x$.',r'الجذر النوني ، دوال القوى.',r'التزايد المقارن: الأسية ودوال القوى.',r'التزايد المقارن: اللوغاريتمية ودوال القوى ، نهايات بالعدد المشتق.','دراسة دوال أسية.','دراسة دوال لوغاريتمية ، حل مشكلات.']

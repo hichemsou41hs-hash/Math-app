@@ -161,6 +161,7 @@
 \newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
 \newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
 \newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
 \SetHeader{\small\bfseries\color{cSec}ملخص: المتتاليات العددية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
 \begin{document}
 \begin{LTR}
@@ -269,12 +270,14 @@
 \end{tariqa}
 
 \begin{mithal}[الفرق]
-$u_n=n^{2}-4n$: \quad $u_{n+1}-u_n=(n+1)^{2}-4(n+1)-n^{2}+4n=2n-3$.\par
+$u_n=n^{2}-4n$:
+\[u_{n+1}-u_n=(n+1)^{2}-4(n+1)-n^{2}+4n=\bx{2n-3}\]
 من أجل $n\geqslant2$: $2n-3>0$، إذن \bxt{المتتالية $(u_n)$ متزايدة تمامًا ابتداءً من الرتبة $2$} (لاحظ: $u_1=-3$ ، $u_2=-4$ ، $u_3=-3$).
 \end{mithal}
 
 \begin{mithal}[النسبة]
-$v_n=\dfrac{3^{n}}{n+1}>0$: \quad $\dfrac{v_{n+1}}{v_n}=\dfrac{3^{n+1}}{n+2}\times\dfrac{n+1}{3^{n}}=\dfrac{3n+3}{n+2}$.\par
+$v_n=\dfrac{3^{n}}{n+1}>0$:
+\[\dfrac{v_{n+1}}{v_n}=\dfrac{3^{n+1}}{n+2}\times\dfrac{n+1}{3^{n}}=\bx{\dfrac{3n+3}{n+2}}\]
 بما أن $3n+3>n+2$ (لأن $2n+1>0$) فإن $\dfrac{v_{n+1}}{v_n}>1$، إذن \bxt{$(v_n)$ متزايدة تمامًا}.
 \end{mithal}
 
@@ -363,14 +366,17 @@ $u_0=1$ و $u_{n+1}=\frac{1}{2}u_n+2$. نبرهن أن من أجل كل عدد �
 \item \textbf{التحقق:} $u_0=1<4$. \ok
 \item \textbf{الوراثة:} نفرض $u_n<4$؛ إذن $\frac{1}{2}u_n<2$ ومنه $\frac{1}{2}u_n+2<4$ أي $u_{n+1}<4$.
 \end{itemize}
-إذن \bx{u_n<4} من أجل كل $n\in\N$. ثم $u_{n+1}-u_n=-\frac{1}{2}u_n+2=\frac{1}{2}(4-u_n)>0$: المتتالية متزايدة تمامًا.
+إذن \bx{u_n<4} من أجل كل $n\in\N$. ثم:
+\[u_{n+1}-u_n=-\dfrac{1}{2}u_n+2=\dfrac{1}{2}(4-u_n)>0\]
+إذن \bxt{المتتالية $(u_n)$ متزايدة تمامًا}.
 \end{mithal}
 
 \begin{mithal}[متباينة]
 نبرهن أن من أجل كل عدد طبيعي $n$: $3^{n}\geqslant1+2n$.
 \begin{itemize}
 \item \textbf{التحقق:} $3^{0}=1\geqslant1$. \ok
-\item \textbf{الوراثة:} نفرض $3^{n}\geqslant1+2n$؛ إذن $3^{n+1}=3\times3^{n}\geqslant3+6n=(1+2(n+1))+4n\geqslant1+2(n+1)$.
+\item \textbf{الوراثة:} نفرض $3^{n}\geqslant1+2n$؛ إذن
+\[3^{n+1}=3\times3^{n}\geqslant3+6n=\left(1+2(n+1)\right)+4n\geqslant\bx{1+2(n+1)}\]
 \end{itemize}
 \end{mithal}
 
@@ -402,10 +408,13 @@ $(u_n)$ \textbf{حسابية} إذا وجد عدد حقيقي $r$ (يسمى \tex
 
 \begin{mithal}
 \begin{itemize}
-\item $u_0=5$ و $r=3$: $u_n=5+3n$، $u_{20}=65$، و $u_0+\cdots+u_{20}=21\times\frac{5+65}{2}=\bx{735}$.
-\item $(u_n)$ حسابية حيث $u_3=10$ و $u_8=25$: $u_8-u_3=5r=15$ إذن $r=3$، و $u_0=u_3-3r=1$، ومنه \bx{u_n=3n+1}.
+\item $u_0=5$ و $r=3$: \quad $u_n=5+3n$ \quad و \quad $u_{20}=5+3\times20=65$.
+\[u_0+u_1+\cdots+u_{20}=21\times\dfrac{5+65}{2}=\bx{735}\]
+\item $(u_n)$ حسابية حيث $u_3=10$ و $u_8=25$:
+\[u_8-u_3=5r=15\ \Rightarrow\ r=3\quad;\quad u_0=u_3-3r=10-9=1\quad;\quad \bx{u_n=3n+1}\]
 \item $u_n=\dfrac{n}{2}-1$: $u_{n+1}-u_n=\dfrac{1}{2}$ ثابت، إذن حسابية أساسها $\frac{1}{2}$ وحدها الأول $u_0=-1$.
-\item \textbf{الوسط الحسابي:} $a$ ، $b$ ، $c$ حدود متتابعة من متتالية حسابية مجموعها $36$: $a+c=2b$ إذن $3b=36$ ومنه \bx{b=12}.
+\item \textbf{الوسط الحسابي:} $a$ ، $b$ ، $c$ حدود متتابعة من متتالية حسابية مجموعها $36$:
+\[a+b+c=36\ \text{\ar{و}}\ a+c=2b\ \Rightarrow\ 3b=36\ \Rightarrow\ \bx{b=12}\]
 \end{itemize}
 \end{mithal}
 
@@ -417,7 +426,9 @@ $(u_n)$ \textbf{حسابية} إذا وجد عدد حقيقي $r$ (يسمى \tex
 
 \begin{mithal}
 $u_0=2$ و $u_{n+1}=u_n+2n+3$: \quad $v_n=u_{n+1}-u_n=2n+3$ حسابية أساسها $2$ وحدها الأول $v_0=3$.\par
-$v_0+\cdots+v_{n-1}=n\times\dfrac{3+(2n+1)}{2}=n(n+2)$، إذن \bx{u_n=n^{2}+2n+2} (تحقق: $u_1=5$ ، $u_2=10$ \ok).
+\[v_0+v_1+\cdots+v_{n-1}=n\times\dfrac{3+(2n+1)}{2}=n(n+2)\]
+\[u_n=u_0+n(n+2)=\bx{n^{2}+2n+2}\]
+تحقق: $u_1=5$ ، $u_2=10$ \ok
 \end{mithal}
 
 % =====================================================
@@ -449,19 +460,26 @@ $(u_n)$ \textbf{هندسية} إذا وجد عدد حقيقي $q$ (يسمى \tex
 
 \begin{mithal}
 \begin{itemize}
-\item $v_0=3$ و $q=2$: $v_n=3\times2^{n}$، و $v_0+\cdots+v_9=3\times\frac{1-2^{10}}{1-2}=\bx{3069}$.
-\item $(v_n)$ هندسية حيث $v_1=6$ و $v_4=48$: $q^{3}=\frac{48}{6}=8$ إذن $q=2$ و $v_0=3$.
-\item \textbf{تطبيق:} سعر سلعة $2000$ دج يرتفع بـ $5\%$ كل سنة: $P_{n+1}=1{,}05\,P_n$، إذن $P_n=2000\times1{,}05^{n}$ و $P_{10}\approx\bx{3257{,}79}$ دج.
-\item $1+\frac{1}{2}+\frac{1}{4}+\cdots+\frac{1}{2^{n}}=\dfrac{1-\left(\frac{1}{2}\right)^{n+1}}{1-\frac{1}{2}}=2-\dfrac{1}{2^{n}}$.
-\item \textbf{الوسط الهندسي:} $a$ ، $b$ ، $c$ حدود متتابعة من متتالية هندسية جداؤها $216$: $ac=b^{2}$ إذن $b^{3}=216$ ومنه \bx{b=6}.
+\item $v_0=3$ و $q=2$: \quad $v_n=3\times2^{n}$.
+\[v_0+v_1+\cdots+v_9=3\times\dfrac{1-2^{10}}{1-2}=3\times1023=\bx{3069}\]
+\item $(v_n)$ هندسية حيث $v_1=6$ و $v_4=48$:
+\[q^{3}=\dfrac{v_4}{v_1}=\dfrac{48}{6}=8\ \Rightarrow\ \bx{q=2}\quad;\quad v_0=\dfrac{v_1}{q}=\bx{3}\]
+\item \textbf{تطبيق:} سعر سلعة $2000$ دج يرتفع بـ $5\%$ كل سنة: $P_{n+1}=1{,}05\,P_n$.
+\[P_n=2000\times1{,}05^{n}\quad;\quad P_{10}=2000\times1{,}05^{10}\approx\bx{3257{,}79}\ \text{\ar{دج}}\]
+\item مجموع هندسي أساسه $\frac{1}{2}$ وحده الأول $1$:
+\[1+\dfrac{1}{2}+\dfrac{1}{4}+\cdots+\dfrac{1}{2^{n}}=\dfrac{1-\left(\frac{1}{2}\right)^{n+1}}{1-\frac{1}{2}}=\bx{2-\dfrac{1}{2^{n}}}\]
+\item \textbf{الوسط الهندسي:} $a$ ، $b$ ، $c$ حدود متتابعة من متتالية هندسية جداؤها $216$:
+\[abc=216\ \text{\ar{و}}\ ac=b^{2}\ \Rightarrow\ b^{3}=216\ \Rightarrow\ \bx{b=6}\]
 \item $(u_n)$ هندسية حدودها موجبة تمامًا حيث $u_0\times u_2=4$ و $\ln u_1+\ln u_4=5\ln2$:\par
-$u_1^{2}=u_0u_2=4$ و $u_1>0$ إذن $u_1=2$؛ ثم $\ln(u_1u_4)=\ln32$ أي $u_1^{2}q^{3}=32$ ومنه $q^{3}=8$ و $q=2$، إذن \bx{u_n=u_1q^{n-1}=2^{n}}.
+\[u_1^{2}=u_0u_2=4\ \text{\ar{و}}\ u_1>0\ \Rightarrow\ u_1=2\]
+\[\ln(u_1u_4)=\ln32\ \Rightarrow\ u_1^{2}q^{3}=32\ \Rightarrow\ q^{3}=8\ \Rightarrow\ q=2\quad;\quad \bx{u_n=u_1q^{n-1}=2^{n}}\]
 \end{itemize}
 \end{mithal}
 
 \begin{molahada}[الربط مع $\ln$ و $\exp$]
 \begin{itemize}
-\item إذا كانت $(u_n)$ هندسية حدودها موجبة تمامًا وأساسها $q$ فإن $v_n=\ln u_n$ \textbf{حسابية} أساسها $\ln q$، لأن $\ln u_{n+1}=\ln u_n+\ln q$.
+\item إذا كانت $(u_n)$ هندسية حدودها موجبة تمامًا وأساسها $q$ فإن $v_n=\ln u_n$ \textbf{حسابية} أساسها $\ln q$، لأن:
+\[v_{n+1}=\ln u_{n+1}=\ln(q\,u_n)=\ln u_n+\ln q=v_n+\ln q\]
 \item إذا كانت $(v_n)$ حسابية أساسها $r$ فإن $w_n=e^{v_n}$ \textbf{هندسية} أساسها $e^{r}$.
 \end{itemize}
 \end{molahada}
@@ -497,6 +515,7 @@ $u_1^{2}=u_0u_2=4$ و $u_1>0$ إذن $u_1=2$؛ ثم $\ln(u_1u_4)=\ln32$ أي $u_
 \end{itemize}
 \end{khassia}
 
+\Needspace{14\baselineskip}
 \begin{tariqa}[مجموع مشتق من متتالية هندسية $(v_n)$ أساسها $q$]
 نضع $w_n$ مساويًا للحد العام للمجموع، ونبين أن $\dfrac{w_{n+1}}{w_n}$ ثابت، ثم نطبق دستور المجموع الهندسي:
 \begin{itemize}
@@ -508,11 +527,16 @@ $u_1^{2}=u_0u_2=4$ و $u_1>0$ إذن $u_1=2$؛ ثم $\ln(u_1u_4)=\ln32$ أي $u_
 
 \begin{mithal}[$v_n=2\times3^{n}$ ($v_0=2$ ، $q=3$)]
 \begin{itemize}
-\item $v_0\times v_1\times\cdots\times v_n=2^{n+1}\times3^{0+1+\cdots+n}=\bx{2^{n+1}\times3^{\frac{n(n+1)}{2}}}$.
-\item $v_0^{2}+v_1^{2}+\cdots+v_n^{2}$: أساس $(v_n^{2})$ هو $9$ وحدها الأول $4$، إذن المجموع $=4\times\dfrac{9^{n+1}-1}{9-1}=\bx{\dfrac{9^{n+1}-1}{2}}$.
-\item $\dfrac{1}{v_0}+\cdots+\dfrac{1}{v_n}$: أساس $\left(\frac{1}{v_n}\right)$ هو $\frac{1}{3}$ وحدها الأول $\frac{1}{2}$، إذن المجموع $=\dfrac{1}{2}\times\dfrac{1-\left(\frac{1}{3}\right)^{n+1}}{1-\frac{1}{3}}=\bx{\dfrac{3}{4}\left(1-\left(\tfrac{1}{3}\right)^{n+1}\right)}$.
-\item $v_0+2v_1+4v_2+\cdots+2^{n}v_n$: أساس $(2^{n}v_n)$ هو $6$، إذن المجموع $=2\times\dfrac{6^{n+1}-1}{6-1}=\bx{\dfrac{2}{5}\left(6^{n+1}-1\right)}$.
-\item $v_0+\dfrac{v_1}{3}+\cdots+\dfrac{v_n}{3^{n}}$: الأساس $\frac{3}{3}=1$ فكل الحدود تساوي $2$، والمجموع $=\bx{2(n+1)}$.
+\item \textbf{الجداء:}
+\[v_0\times v_1\times\cdots\times v_n=2^{n+1}\times3^{0+1+\cdots+n}=\bx{2^{n+1}\times3^{\frac{n(n+1)}{2}}}\]
+\item \textbf{مجموع المربعات:} $(v_n^{2})$ هندسية أساسها $9$ وحدها الأول $4$:
+\[v_0^{2}+v_1^{2}+\cdots+v_n^{2}=4\times\dfrac{9^{n+1}-1}{9-1}=\bx{\dfrac{9^{n+1}-1}{2}}\]
+\item \textbf{مجموع المقلوبات:} $\left(\frac{1}{v_n}\right)$ هندسية أساسها $\frac{1}{3}$ وحدها الأول $\frac{1}{2}$:
+\[\dfrac{1}{v_0}+\dfrac{1}{v_1}+\cdots+\dfrac{1}{v_n}=\dfrac{1}{2}\times\dfrac{1-\left(\frac{1}{3}\right)^{n+1}}{1-\frac{1}{3}}=\bx{\dfrac{3}{4}\left(1-\left(\tfrac{1}{3}\right)^{n+1}\right)}\]
+\item \textbf{المجموع $\sum 2^{k}v_k$:} $(2^{n}v_n)$ هندسية أساسها $6$ وحدها الأول $2$:
+\[v_0+2v_1+4v_2+\cdots+2^{n}v_n=2\times\dfrac{6^{n+1}-1}{6-1}=\bx{\dfrac{2}{5}\left(6^{n+1}-1\right)}\]
+\item \textbf{المجموع $\sum \frac{v_k}{3^{k}}$:} الأساس $\frac{3}{3}=1$، فكل الحدود تساوي $2$ وعددها $n+1$:
+\[v_0+\dfrac{v_1}{3}+\cdots+\dfrac{v_n}{3^{n}}=(n+1)\times2=\bx{2(n+1)}\]
 \end{itemize}
 \end{mithal}
 
@@ -535,7 +559,8 @@ $u_1^{2}=u_0u_2=4$ و $u_1>0$ إذن $u_1=2$؛ ثم $\ln(u_1u_4)=\ln32$ أي $u_
 
 \begin{mithal}
 \begin{itemize}
-\item $\limn\dfrac{2^{n}-3^{n}}{3^{n}+1}=\limn\dfrac{\left(\frac{2}{3}\right)^{n}-1}{1+\left(\frac{1}{3}\right)^{n}}=\bx{-1}$ (لأن $\left(\frac{2}{3}\right)^{n}\to0$ و $\left(\frac{1}{3}\right)^{n}\to0$).
+\item لأن $\left(\frac{2}{3}\right)^{n}\to0$ و $\left(\frac{1}{3}\right)^{n}\to0$:
+\[\limn\dfrac{2^{n}-3^{n}}{3^{n}+1}=\limn\dfrac{\left(\frac{2}{3}\right)^{n}-1}{1+\left(\frac{1}{3}\right)^{n}}=\bx{-1}\]
 \item $\limn\left(5-3\times0{,}8^{n}\right)=\bx{5}$ \quad و \quad $\limn\left(2^{n}-n\right)=+\infty$.
 \end{itemize}
 \end{mithal}
@@ -578,9 +603,14 @@ $u_1^{2}=u_0u_2=4$ و $u_1>0$ إذن $u_1=2$؛ ثم $\ln(u_1u_4)=\ln32$ أي $u_
 
 \begin{mithal}[$u_0=0$ و $u_{n+1}=\sqrt{2u_n+3}$]
 \begin{itemize}
-\item \textbf{بالتراجع:} $0\leqslant u_n<3$: صحيح من أجل $n=0$؛ وإذا كان $0\leqslant u_n<3$ فإن $3\leqslant2u_n+3<9$ ومنه $\sqrt3\leqslant u_{n+1}<3$.
-\item \textbf{اتجاه التغير:} $u_{n+1}-u_n=\dfrac{2u_n+3-u_n^{2}}{\sqrt{2u_n+3}+u_n}=\dfrac{(3-u_n)(u_n+1)}{\sqrt{2u_n+3}+u_n}>0$: متزايدة تمامًا.
-\item \textbf{التقارب:} متزايدة ومحدودة من الأعلى بـ $3$ فهي متقاربة نحو $\ell\in[0;3]$، و $f:x\mapsto\sqrt{2x+3}$ مستمرة، إذن $\ell=\sqrt{2\ell+3}$ أي $\ell^{2}-2\ell-3=0$ ومنه $\ell=3$ أو $\ell=-1$ (مرفوض). إذن \bx{\limn u_n=3}.
+\item \textbf{بالتراجع:} $0\leqslant u_n<3$ صحيح من أجل $n=0$؛ ونفرض $0\leqslant u_n<3$:
+\[3\leqslant2u_n+3<9\ \Rightarrow\ \sqrt3\leqslant u_{n+1}<3\ \Rightarrow\ \bx{0\leqslant u_{n+1}<3}\]
+\item \textbf{اتجاه التغير:} (نضرب في المرافق)
+\[u_{n+1}-u_n=\dfrac{2u_n+3-u_n^{2}}{\sqrt{2u_n+3}+u_n}=\dfrac{(3-u_n)(u_n+1)}{\sqrt{2u_n+3}+u_n}>0\]
+إذن \bxt{$(u_n)$ متزايدة تمامًا}.
+\item \textbf{التقارب:} متزايدة ومحدودة من الأعلى بـ $3$ فهي متقاربة نحو $\ell\in[0;3]$، و $f:x\mapsto\sqrt{2x+3}$ مستمرة:
+\[\ell=\sqrt{2\ell+3}\ \Rightarrow\ \ell^{2}-2\ell-3=0\ \Rightarrow\ (\ell-3)(\ell+1)=0\]
+$\ell=-1$ مرفوض، إذن \bx{\limn u_n=3}.
 \end{itemize}
 \begin{GR}{-0.5}{4.6}{-0.5}{4.2}{1.05}
 \Ticks{1,2,3,4}{1,2,3,4}
@@ -607,13 +637,14 @@ $u_1^{2}=u_0u_2=4$ و $u_1>0$ إذن $u_1=2$؛ ثم $\ln(u_1u_4)=\ln32$ أي $u_
 \end{tarif}
 
 \begin{khassia}
-إذا كانت $(u_n)$ متزايدة و $(v_n)$ متناقصة ومتجاورتين، فإنهما \textbf{متقاربتان نحو نفس النهاية} $\ell$، ومن أجل كل عدد طبيعي $n$: \bx{u_n\leqslant\ell\leqslant v_n}.
+إذا كانت $(u_n)$ متزايدة و $(v_n)$ متناقصة ومتجاورتين، فإنهما \textbf{متقاربتان نحو نفس النهاية} $\ell$، ومن أجل كل عدد طبيعي $n$:
+\[\bx{u_n\leqslant\ell\leqslant v_n}\]
 \end{khassia}
 
 \begin{mithal}
 من أجل $n\geqslant1$: $u_n=2-\dfrac{1}{n}$ و $v_n=2+\dfrac{1}{n^{2}}$.
 \begin{itemize}
-\item $u_{n+1}-u_n=\dfrac{1}{n}-\dfrac{1}{n+1}=\dfrac{1}{n(n+1)}>0$: $(u_n)$ متزايدة.
+\item $u_{n+1}-u_n=\dfrac{1}{n}-\dfrac{1}{n+1}=\dfrac{1}{n(n+1)}>0$ \quad إذن $(u_n)$ متزايدة.
 \item $v_{n+1}-v_n=\dfrac{1}{(n+1)^{2}}-\dfrac{1}{n^{2}}<0$: $(v_n)$ متناقصة.
 \item $v_n-u_n=\dfrac{1}{n^{2}}+\dfrac{1}{n}\to0$.
 \end{itemize}
@@ -638,10 +669,13 @@ $u_1^{2}=u_0u_2=4$ و $u_1>0$ إذن $u_1=2$؛ ثم $\ln(u_1u_4)=\ln32$ أي $u_
 \begin{mithal}
 $u_0=1$ و $u_{n+1}=\frac{1}{2}u_n+2$.
 \begin{itemize}
-\item $\alpha=\frac{1}{2}\alpha+2$ ومنه $\alpha=4$. نضع $v_n=u_n-4$: $v_{n+1}=\frac{1}{2}u_n+2-4=\frac{1}{2}(u_n-4)=\frac{1}{2}v_n$.
-\item $(v_n)$ هندسية أساسها $\frac{1}{2}$ وحدها الأول $v_0=-3$، إذن $v_n=-3\left(\frac{1}{2}\right)^{n}$ و \bx{u_n=4-3\left(\tfrac{1}{2}\right)^{n}}.
+\item $\alpha=\frac{1}{2}\alpha+2$ ومنه $\alpha=4$. نضع $v_n=u_n-4$:
+\[v_{n+1}=u_{n+1}-4=\dfrac{1}{2}u_n+2-4=\dfrac{1}{2}(u_n-4)=\bx{\dfrac{1}{2}v_n}\]
+\item $(v_n)$ هندسية أساسها $\frac{1}{2}$ وحدها الأول $v_0=1-4=-3$:
+\[v_n=-3\left(\tfrac{1}{2}\right)^{n}\quad;\quad u_n=v_n+4=\bx{4-3\left(\tfrac{1}{2}\right)^{n}}\]
 \item $\limn\left(\frac{1}{2}\right)^{n}=0$ إذن \bx{\limn u_n=4}.
-\item $S_n=u_0+\cdots+u_n=4(n+1)+\left(v_0+\cdots+v_n\right)=4(n+1)-3\times\dfrac{1-\left(\frac{1}{2}\right)^{n+1}}{1-\frac{1}{2}}=\bx{4n-2+3\left(\tfrac{1}{2}\right)^{n}}$.
+\item المجموع $S_n=u_0+\cdots+u_n$: لأن $u_k=4+v_k$
+\[S_n=4(n+1)+\left(v_0+\cdots+v_n\right)=4(n+1)-3\times\dfrac{1-\left(\frac{1}{2}\right)^{n+1}}{1-\frac{1}{2}}=\bx{4n-2+3\left(\tfrac{1}{2}\right)^{n}}\]
 \end{itemize}
 \end{mithal}
 
@@ -659,15 +693,18 @@ $u_0=1$ و $u_{n+1}=\frac{1}{2}u_n+2$.
 \begin{mithal}[حل مضاعف]
 $u_0=2$ و $u_{n+1}=\dfrac{3u_n-1}{u_n+1}$. المعادلة $\frac{3x-1}{x+1}=x$ تكافئ $(x-1)^{2}=0$ إذن $\alpha=1$.
 \begin{itemize}
-\item $u_{n+1}-1=\dfrac{2(u_n-1)}{u_n+1}$، ومنه $v_{n+1}=\dfrac{u_n+1}{2(u_n-1)}=\dfrac{(u_n-1)+2}{2(u_n-1)}=\dfrac{1}{2}+v_n$.
+\item $u_{n+1}-1=\dfrac{2(u_n-1)}{u_n+1}$، ومنه
+\[v_{n+1}=\dfrac{1}{u_{n+1}-1}=\dfrac{u_n+1}{2(u_n-1)}=\dfrac{(u_n-1)+2}{2(u_n-1)}=\bx{\dfrac{1}{2}+v_n}\]
 \item $(v_n)$ حسابية أساسها $\frac{1}{2}$ و $v_0=1$: $v_n=1+\dfrac{n}{2}$، إذن \bx{u_n=1+\dfrac{2}{n+2}} و \bx{\limn u_n=1}.
 \end{itemize}
 \end{mithal}
 
 \begin{mithal}[مع اللوغاريتم]
 $u_0=3+e^{2}$ و $u_{n+1}=3+\sqrt{u_n-3}$. نضع $v_n=\ln(u_n-3)$:
-$v_{n+1}=\ln\sqrt{u_n-3}=\dfrac{1}{2}v_n$، و $v_0=2$.\par
-إذن $v_n=2\left(\tfrac{1}{2}\right)^{n}$ ، \bx{u_n=3+e^{\,2\left(\frac{1}{2}\right)^{n}}} ، و $v_n\to0$ ومنه \bx{\limn u_n=3+e^{0}=4}.
+\[v_{n+1}=\ln(u_{n+1}-3)=\ln\sqrt{u_n-3}=\dfrac{1}{2}\ln(u_n-3)=\bx{\dfrac{1}{2}v_n}\quad;\quad v_0=\ln e^{2}=2\]
+\[v_n=2\left(\tfrac{1}{2}\right)^{n}\quad;\quad u_n=3+e^{v_n}=\bx{3+e^{\,2\left(\frac{1}{2}\right)^{n}}}\]
+و $v_n\to0$ ومنه:
+\[\limn u_n=3+e^{0}=\bx{4}\]
 \end{mithal}
 
 % =====================================================
@@ -708,21 +745,28 @@ $v_{n+1}=\ln\sqrt{u_n-3}=\dfrac{1}{2}v_n$، و $v_0=2$.\par
 \QQ{3} نسمي $P(n)$: «$0\leqslant u_n<2$».
 \begin{itemize}
 \item \textbf{التحقق:} $u_0=0$ إذن $0\leqslant u_0<2$: $P(0)$ صحيحة.
-\item \textbf{الوراثة:} نفرض $0\leqslant u_n<2$. بما أن $f$ متزايدة تمامًا على $[0;+\infty[$ فإن $f(0)\leqslant f(u_n)<f(2)$، أي $1\leqslant u_{n+1}<2$، ومنه $0\leqslant u_{n+1}<2$: $P(n+1)$ صحيحة.
+\item \textbf{الوراثة:} نفرض $0\leqslant u_n<2$. بما أن $f$ متزايدة تمامًا على $[0;+\infty[$:
+\[f(0)\leqslant f(u_n)<f(2)\ \Rightarrow\ 1\leqslant u_{n+1}<2\ \Rightarrow\ 0\leqslant u_{n+1}<2\]
+إذن $P(n+1)$ صحيحة.
 \end{itemize}
 إذن من أجل كل عدد طبيعي $n$: \bx{0\leqslant u_n<2}.
 
-\QQ{4} $u_{n+1}-u_n=\dfrac{3u_n+2-u_n(u_n+2)}{u_n+2}=\dfrac{-u_n^{2}+u_n+2}{u_n+2}=\dfrac{(2-u_n)(u_n+1)}{u_n+2}$.\par
-لأن $0\leqslant u_n<2$: $2-u_n>0$ ، $u_n+1>0$ ، $u_n+2>0$؛ إذن $u_{n+1}-u_n>0$ و \bxt{$(u_n)$ متزايدة تمامًا}.\par
+\QQ{4}
+\[u_{n+1}-u_n=\dfrac{3u_n+2-u_n(u_n+2)}{u_n+2}=\dfrac{-u_n^{2}+u_n+2}{u_n+2}=\dfrac{(2-u_n)(u_n+1)}{u_n+2}\]
+لأن $0\leqslant u_n<2$ فإن $2-u_n>0$ ، $u_n+1>0$ ، $u_n+2>0$؛ إذن $u_{n+1}-u_n>0$ و \bxt{$(u_n)$ متزايدة تمامًا}.\par
 $(u_n)$ متزايدة ومحدودة من الأعلى بالعدد $2$، إذن \bxt{$(u_n)$ متقاربة}.
 
 \QQ{5}
-\pa $u_{n+1}-2=\dfrac{3u_n+2-2u_n-4}{u_n+2}=\dfrac{u_n-2}{u_n+2}$ \quad و \quad $u_{n+1}+1=\dfrac{3u_n+2+u_n+2}{u_n+2}=\dfrac{4(u_n+1)}{u_n+2}$.\par
-إذن $v_{n+1}=\dfrac{u_{n+1}-2}{u_{n+1}+1}=\dfrac{u_n-2}{4(u_n+1)}=\dfrac{1}{4}v_n$.\par
+\pa
+\[u_{n+1}-2=\dfrac{3u_n+2-2u_n-4}{u_n+2}=\dfrac{u_n-2}{u_n+2}\]
+\[u_{n+1}+1=\dfrac{3u_n+2+u_n+2}{u_n+2}=\dfrac{4(u_n+1)}{u_n+2}\]
+\[v_{n+1}=\dfrac{u_{n+1}-2}{u_{n+1}+1}=\dfrac{u_n-2}{4(u_n+1)}=\bx{\dfrac{1}{4}v_n}\]
 $(v_n)$ \bxt{هندسية أساسها $q=\frac{1}{4}$ وحدها الأول $v_0=\frac{0-2}{0+1}=-2$}.
-\pb $v_n=-2\left(\dfrac{1}{4}\right)^{n}$. من $v_n(u_n+1)=u_n-2$ نجد $u_n(1-v_n)=2+v_n$ ($v_n\neq1$)، إذن
+\pb $v_n=-2\left(\dfrac{1}{4}\right)^{n}$. لدينا $v_n\neq1$ و:
+\[v_n(u_n+1)=u_n-2\ \Rightarrow\ u_n(1-v_n)=2+v_n\]
 \[ \bx{u_n=\dfrac{2+v_n}{1-v_n}=\dfrac{2-2\left(\frac{1}{4}\right)^{n}}{1+2\left(\frac{1}{4}\right)^{n}}} \]
-(تحقق: $u_1=\frac{2-\frac{1}{2}}{1+\frac{1}{2}}=1$ \ok). بما أن $0<\frac{1}{4}<1$ فإن $\limn\left(\frac{1}{4}\right)^{n}=0$ ومنه \bx{\limn u_n=2}، وهذا يؤكد التخمين.
+تحقق: $u_1=\frac{2-\frac{1}{2}}{1+\frac{1}{2}}=1$ \ok\par
+بما أن $0<\frac{1}{4}<1$ فإن $\limn\left(\frac{1}{4}\right)^{n}=0$ ومنه \bx{\limn u_n=2}، وهذا يؤكد التخمين.
 \end{hal}
 
 \begin{tmr}
@@ -742,13 +786,19 @@ w_{n+1}=v_{n+1}-u_{n+1}&=\dfrac{u_n+3v_n}{4}-\dfrac{2u_n+v_n}{3}=\dfrac{3u_n+9v_
 إذن $(w_n)$ هندسية أساسها $\frac{5}{12}$ وحدها الأول $w_0=8-1=7$، ومنه \bx{w_n=7\left(\tfrac{5}{12}\right)^{n}}.\par
 بما أن $0<\frac{5}{12}<1$: \bx{\limn w_n=0}. ولاحظ أن $w_n>0$ أي $u_n<v_n$ من أجل كل $n$.
 
-\QQ{2} $u_{n+1}-u_n=\dfrac{2u_n+v_n-3u_n}{3}=\dfrac{v_n-u_n}{3}=\dfrac{w_n}{3}>0$: $(u_n)$ متزايدة تمامًا.\par
-$v_{n+1}-v_n=\dfrac{u_n+3v_n-4v_n}{4}=\dfrac{u_n-v_n}{4}=-\dfrac{w_n}{4}<0$: $(v_n)$ متناقصة تمامًا.\par
+\QQ{2}
+\[u_{n+1}-u_n=\dfrac{2u_n+v_n-3u_n}{3}=\dfrac{v_n-u_n}{3}=\dfrac{w_n}{3}>0\]
+إذن \bxt{$(u_n)$ متزايدة تمامًا}.
+\[v_{n+1}-v_n=\dfrac{u_n+3v_n-4v_n}{4}=\dfrac{u_n-v_n}{4}=-\dfrac{w_n}{4}<0\]
+إذن \bxt{$(v_n)$ متناقصة تمامًا}.\par
 وبما أن $\limn(v_n-u_n)=\limn w_n=0$ فإن \bxt{$(u_n)$ و $(v_n)$ متجاورتان}، إذن متقاربتان نحو نفس النهاية $\ell$.
 
-\QQ{3} $t_{n+1}=3\times\dfrac{2u_n+v_n}{3}+4\times\dfrac{u_n+3v_n}{4}=2u_n+v_n+u_n+3v_n=3u_n+4v_n=t_n$.\par
-إذن $(t_n)$ ثابتة: $t_n=t_0=3\times1+4\times8=35$.\par
-بالمرور إلى النهاية: $3\ell+4\ell=35$، أي $7\ell=35$ ومنه \bx{\ell=5}.
+\QQ{3}
+\[t_{n+1}=3\times\dfrac{2u_n+v_n}{3}+4\times\dfrac{u_n+3v_n}{4}=2u_n+v_n+u_n+3v_n=3u_n+4v_n=t_n\]
+إذن $(t_n)$ ثابتة:
+\[t_n=t_0=3\times1+4\times8=\bx{35}\]
+بالمرور إلى النهاية:
+\[3\ell+4\ell=35\ \Rightarrow\ 7\ell=35\ \Rightarrow\ \bx{\ell=5}\]
 \end{hal}
 
 % =====================================================
