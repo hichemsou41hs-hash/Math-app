@@ -1,0 +1,514 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings,patterns}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\newcommand{\LW}[1]{{\color{cDef}#1}}  % law / formula colour
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\newtcbox{\bxtbox}{on line,coltext=cThm,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}ملخص: الدالة اللوغاريتمية النيبيرية}{\small\color{cSec}السنة الثالثة ثانوي -- تسيير واقتصاد}
+\newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
+\renewcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{28}{34}\selectfont\bfseries الدالة اللوغاريتمية النيبيرية}\\[8pt]
+{\color{white}\large ملخص بأمثلة محلولة خطوة بخطوة وتمارين من نمط البكالوريا}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- شعبة تسيير واقتصاد}
+\end{tcolorbox}
+\end{LTR}
+
+\begin{BOX}{cSec}{محتوى الملخص}
+\begin{multicols}{2}
+\begin{enumerate}[label=\arabic*.]
+\item التعريف: الدالة الأصلية لمقلوب $x$
+\item الخواص الجبرية
+\item تبسيط عبارات لوغاريتمية
+\item المعادلات اللوغاريتمية
+\item المتراجحات اللوغاريتمية
+\item النهايات والنهايات الشهيرة
+\item المشتقات ، الدالة $\ln u$
+\item دراسة الدالة $\ln$ وتمثيلها
+\item اللوغاريتم العشري وذو الأساس $a$
+\item تطبيقات اقتصادية
+\item مثال شامل من نمط البكالوريا
+\item خلاصة الطرائق
+\end{enumerate}
+\end{multicols}
+\end{BOX}
+
+\begin{molahada}[تنبيه حول الترتيب]
+في شعبة تسيير واقتصاد تُدرس الدالة اللوغاريتمية \textbf{قبل} الدالة الأسية: نعرّفها انطلاقًا من الدوال الأصلية ، ولا نستعمل الدالة الأسية في هذا الدرس.
+\end{molahada}
+
+% =====================================================
+\section{التعريف: الدالة الأصلية لمقلوب $x$}
+\begin{tarif}
+الدالة $\LW{x\mapsto\dfrac1x}$ مستمرة على $\LW{]0;+\infty[}$ ، فهي تقبل دوالًا أصلية عليه.\par
+\textbf{الدالة اللوغاريتمية النيبيرية} ، ونرمز لها بـ $\LW{\ln}$ ، هي \textbf{الدالة الأصلية للدالة $\LW{x\mapsto\dfrac1x}$ على $\LW{]0;+\infty[}$ والتي تنعدم عند $\LW{1}$}:
+\[\LW{\LW{\ln1=0\qquad\text{و}\qquad(\ln x)'=\frac1x}\qquad\text{\ar{من أجل كل}}\ x>0}\]
+\end{tarif}
+
+\begin{khassia}[نتائج مباشرة]
+\begin{itemize}
+\item مجموعة تعريف $\LW{\ln}$ هي $\LW{]0;+\infty[}$ ، و $\LW{\ln}$ قابلة للاشتقاق (إذن مستمرة) عليها.
+\item $\LW{(\ln x)'=\dfrac1x>0}$: الدالة $\LW{\ln}$ \textbf{متزايدة تمامًا} على $\LW{]0;+\infty[}$.
+\item العدد $\LW{e\approx2{,}718}$ هو العدد الذي يحقق $\bx{\ln e=1}$.
+\item إشارة $\LW{\ln x}$: \quad $\LW{\ln x<0}$ إذا كان $\LW{0<x<1}$ ؛ \quad $\LW{\ln1=0}$ ؛ \quad $\LW{\ln x>0}$ إذا كان $\LW{x>1}$.
+\end{itemize}
+\end{khassia}
+
+\begin{mithal}[بالآلة الحاسبة]
+$\ln2\approx\bx{0{,}69}$ ؛ \quad $\ln3\approx\bx{1{,}10}$ ؛ \quad $\ln\dfrac12\approx\bx{-0{,}69}$ ؛ \quad $\ln10\approx\bx{2{,}30}$.
+\end{mithal}
+
+% =====================================================
+\section{الخواص الجبرية}
+\begin{khassia}[من أجل كل عددين حقيقيين موجبين تمامًا $a$ و $b$ ، وكل عدد صحيح $n$]
+\begin{center}
+\renewcommand{\arraystretch}{1.9}
+\begin{tabular}{|c|c|}\hline
+\rowcolor{cSec!12}$\LW{\ln\dfrac ab=\ln a-\ln b}$ & $\LW{\ln(ab)=\ln a+\ln b}$\\\hline
+$\LW{\ln a^n=n\ln a}$ & $\LW{\ln\dfrac1a=-\ln a}$\\\hline
+$\LW{\ln e^n=n}$ & $\LW{\ln\sqrt a=\dfrac12\ln a}$\\\hline
+\end{tabular}
+\end{center}
+\end{khassia}
+
+\begin{molahada}[برهان الخاصية الأساسية]
+نثبت $a>0$ ونضع $h(x)=\ln(ax)-\ln x$ على $]0;+\infty[$: $h'(x)=\dfrac a{ax}-\dfrac1x=0$ ، إذن $h$ ثابتة ، و $h(1)=\ln a$. ومنه $\ln(ax)=\ln a+\ln x$.
+\end{molahada}
+
+\begin{khassia}[نتائج: المقارنة]
+من أجل $\LW{a>0}$ و $\LW{b>0}$ (لأن $\LW{\ln}$ متزايدة تمامًا):
+\[\LW{\LW{\ln a=\ln b\iff a=b\qquad\qquad\ln a<\ln b\iff a<b}}\]
+ومن أجل كل عدد حقيقي $\LW{k}$: $\LW{k=k\ln e=\ln e^k}$ ، إذن $\bx{\ln x=k\iff x=e^k}$.
+\end{khassia}
+
+% =====================================================
+\section{تبسيط عبارات لوغاريتمية}
+\begin{tariqa}[كتابة عدد بدلالة $\ln2$ و $\ln3$]
+نحلل الأعداد إلى جداء عوامل أولية ، ثم نطبق $\LW{\ln(ab)=\ln a+\ln b}$ و $\LW{\ln a^n=n\ln a}$.
+\end{tariqa}
+
+\begin{mithal}[اكتب بدلالة $\ln2$ و $\ln3$]
+\begin{itemize}
+\item $\ln18=\ln(2\times3^2)=\bx{\ln2+2\ln3}$.
+\item $\ln\dfrac{16}9=\ln2^4-\ln3^2=\bx{4\ln2-2\ln3}$.
+\item $\ln\sqrt{12}=\dfrac12\ln(2^2\times3)=\bx{\ln2+\dfrac12\ln3}$.
+\item $A=\ln12-\ln3+\ln\dfrac14=\ln\dfrac{12}{3\times4}=\ln1=\bx{0}$.
+\end{itemize}
+\end{mithal}
+
+\begin{mithal}[أعداد فيها $e$]
+\begin{itemize}
+\item $\ln e^3=\bx{3}$ ؛ \quad $\ln\dfrac1e=-\ln e=\bx{-1}$ ؛ \quad $\ln\sqrt e=\dfrac12\ln e=\bx{\dfrac12}$.
+\item $B=\ln(e^2\sqrt e)=\ln e^2+\ln\sqrt e=2+\dfrac12=\bx{\dfrac52}$.
+\item $C=\ln\left(\sqrt5+1\right)+\ln\left(\sqrt5-1\right)=\ln\left(5-1\right)=\ln4=\bx{2\ln2}$.
+\end{itemize}
+\end{mithal}
+
+% =====================================================
+\section{المعادلات اللوغاريتمية}
+\begin{tariqa}[حل معادلة لوغاريتمية]
+\begin{enumerate}
+\item نعيّن مجموعة الحلول الممكنة $\LW{D}$ (العبارات داخل $\LW{\ln}$ موجبة تمامًا).
+\item نكتب المعادلة على الشكل $\LW{\ln A=\ln B}$ (أي $\LW{A=B}$) ، أو $\LW{\ln A=k}$ (أي $\LW{A=e^k}$).
+\item نحتفظ بالحلول التي تنتمي إلى $\LW{D}$.
+\end{enumerate}
+\end{tariqa}
+
+\begin{mithal}[حل في $\R$]
+\QQ{1} $\ln(2x-1)=\ln(x+3)$: \quad $D$: $2x-1>0$ و $x+3>0$ ، أي $D=\left]\dfrac12;+\infty\right[$.
+\[2x-1=x+3\ \Rightarrow\ x=4\in D\qquad;\qquad\bx{S=\{4\}}\]
+\QQ{2} $\ln(3x-2)=0$: \quad $D=\left]\dfrac23;+\infty\right[$:
+\[\ln(3x-2)=\ln1\ \Rightarrow\ 3x-2=1\ \Rightarrow\ x=1\in D\qquad;\qquad\bx{S=\{1\}}\]
+\QQ{3} $\ln(x+1)=4$: \quad $D=]-1;+\infty[$:
+\[\ln(x+1)=\ln e^4\ \Rightarrow\ x+1=e^4\ \Rightarrow\ x=e^4-1\in D\qquad;\qquad\bx{S=\left\{e^4-1\right\}}\]
+\QQ{4} $\ln x+\ln(x-1)=\ln6$: \quad $D=]1;+\infty[$:
+\[\ln\big(x(x-1)\big)=\ln6\ \Rightarrow\ x^2-x-6=0\ \Rightarrow\ x=3\ \text{\ar{أو}}\ x=-2\]
+$-2\notin D$ ، إذن $\bx{S=\{3\}}$.
+\QQ{5} $(\ln x)^2-3\ln x+2=0$: \quad $D=]0;+\infty[$ ، نضع $X=\ln x$:
+\[X^2-3X+2=0\ \Rightarrow\ X=1\ \text{\ar{أو}}\ X=2\ \Rightarrow\ x=e\ \text{\ar{أو}}\ x=e^2\qquad;\qquad\bx{S=\left\{e;e^2\right\}}\]
+\end{mithal}
+
+\begin{molahada}
+$\ln x+\ln(x-1)$ و $\ln\big(x(x-1)\big)$ ليستا لهما نفس مجموعة التعريف: نعيّن $D$ من المعادلة الأصلية \textbf{قبل} أي تحويل.
+\end{molahada}
+
+% =====================================================
+\section{المتراجحات اللوغاريتمية}
+\begin{tariqa}[حل متراجحة لوغاريتمية]
+نعيّن $\LW{D}$ ، ثم نستعمل: $\LW{\ln A<\ln B\iff A<B}$ (لأن $\LW{\ln}$ متزايدة تمامًا) ، وأخيرًا $\LW{S=D\cap}$ (حلول المتراجحة الناتجة).
+\end{tariqa}
+
+\begin{mithal}[حل في $\R$]
+\QQ{1} $\ln(2x-1)\leqslant0$: \quad $D=\left]\dfrac12;+\infty\right[$:
+\[\ln(2x-1)\leqslant\ln1\ \Rightarrow\ 2x-1\leqslant1\ \Rightarrow\ x\leqslant1\qquad;\qquad\bx{S=\left]\dfrac12;1\right]}\]
+\QQ{2} $\ln(x+2)>\ln(3-x)$: \quad $D=]-2;3[$:
+\[x+2>3-x\ \Rightarrow\ x>\frac12\qquad;\qquad\bx{S=\left]\dfrac12;3\right[}\]
+\QQ{3} $\ln x\geqslant1$: \quad $\ln x\geqslant\ln e\ \Rightarrow\ x\geqslant e$ ، \quad $\bx{S=[e;+\infty[}$.
+\QQ{4} $\ln x<-1$: \quad $\ln x<\ln e^{-1}\ \Rightarrow\ 0<x<\dfrac1e$ ، \quad $\bx{S=\left]0;\dfrac1e\right[}$.
+\QQ{5} $(\ln x)^2-\ln x>0$: \quad $D=]0;+\infty[$ ، نحلل: $\ln x\,(\ln x-1)>0$.
+\begin{TAB}
+\tkzTabInit[lgt=2.6,espcl=2.4]{$x$/1,$\ln x$/1,$\ln x-1$/1,$\ln x(\ln x-1)$/1}{$0$,$1$,$e$,$+\infty$}
+\tkzTabLine{d,-,z,+,t,+,}
+\tkzTabLine{d,-,t,-,z,+,}
+\tkzTabLine{d,+,z,-,z,+,}
+\end{TAB}
+$\bx{S=]0;1[\cup]e;+\infty[}$.
+\end{mithal}
+
+% =====================================================
+\section{النهايات والنهايات الشهيرة}
+\begin{khassia}[نهايات مرجعية]
+\begin{center}
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|c|c|}\hline
+\rowcolor{cSec!12}$\LW{\displaystyle\lim_{x\to0^+}\ln x=-\infty}$ & $\LW{\displaystyle\lim_{x\to+\infty}\ln x=+\infty}$\\\hline
+$\LW{\displaystyle\lim_{x\to0^+}x\ln x=0}$ & $\LW{\displaystyle\lim_{x\to+\infty}\frac{\ln x}x=0}$\\\hline
+\multicolumn{2}{|c|}{$\LW{\displaystyle\lim_{x\to1}\frac{\ln x}{x-1}=1}$ \ \ar{(العدد المشتق للدالة $\LW{\ln}$ عند $\LW{1}$)}}\\\hline
+\end{tabular}
+\end{center}
+\end{khassia}
+
+\begin{tariqa}[رفع حالة عدم التعيين]
+عند $\LW{+\infty}$: نخرج $\LW{x}$ عاملًا مشتركًا لتظهر $\LW{\dfrac{\ln x}x}$. \quad عند $\LW{0^+}$: نُظهر $\LW{x\ln x}$.
+\end{tariqa}
+
+\begin{mithal}[احسب النهايات]
+\QQ{1} $\displaystyle\lim_{x\to+\infty}(x-\ln x)$: حالة عدم تعيين $(+\infty-\infty)$:
+\[x-\ln x=x\left(1-\frac{\ln x}x\right)\ \xrightarrow[x\to+\infty]{}\ (+\infty)\times(1-0)=\bx{+\infty}\]
+\QQ{2} $\displaystyle\lim_{x\to0^+}(x-\ln x)=0-(-\infty)=\bx{+\infty}$.
+\QQ{3} $\displaystyle\lim_{x\to+\infty}\frac{2+\ln x}x=\lim_{x\to+\infty}\left(\frac2x+\frac{\ln x}x\right)=0+0=\bx{0}$.
+\QQ{4} $\displaystyle\lim_{x\to0^+}\frac{2+\ln x}x$: البسط $\to-\infty$ والمقام $\to0^+$ ، إذن النهاية $\bx{-\infty}$.
+\QQ{5} $\displaystyle\lim_{x\to0^+}(x\ln x-x+1)=0-0+1=\bx{1}$.
+\QQ{6} $\displaystyle\lim_{x\to+\infty}\frac{\ln x}{x+1}=\lim_{x\to+\infty}\frac{\ln x}x\times\frac x{x+1}=0\times1=\bx{0}$.
+\QQ{7} $\displaystyle\lim_{x\to+\infty}\ln(2x+1)=\bx{+\infty}$ \quad لأن $2x+1\to+\infty$.
+\QQ{8} $\displaystyle\lim_{x\to-\frac12^+}\ln(2x+1)=\bx{-\infty}$ \quad لأن $2x+1\to0^+$.
+\end{mithal}
+
+% =====================================================
+\section{المشتقات ، الدالة $\ln u$}
+\begin{khassia}
+\begin{itemize}
+\item $\LW{(\ln x)'=\dfrac1x}$ على $\LW{]0;+\infty[}$.
+\item إذا كانت $\LW{u}$ قابلة للاشتقاق و\textbf{موجبة تمامًا} على مجال $\LW{I}$ فإن: $\bx{\big(\ln u\big)'=\dfrac{u'}u}$.
+\item للدالتين $\LW{u}$ و $\LW{\ln u}$ نفس اتجاه التغير على $\LW{I}$.
+\end{itemize}
+\end{khassia}
+
+\begin{mithal}[احسب المشتقة]
+\QQ{1} $f(x)=x-1-\ln x$: \quad $f'(x)=1-\dfrac1x=\bx{\dfrac{x-1}x}$.
+\QQ{2} $g(x)=x\ln x-x$: \quad $g'(x)=\ln x+x\times\dfrac1x-1=\bx{\ln x}$.
+\QQ{3} $h(x)=\dfrac{\ln x}x$: \quad $h'(x)=\dfrac{\frac1x\times x-\ln x}{x^2}=\bx{\dfrac{1-\ln x}{x^2}}$.
+\QQ{4} $k(x)=(\ln x)^2$: \quad $k'(x)=2\ln x\times\dfrac1x=\bx{\dfrac{2\ln x}x}$.
+\QQ{5} $m(x)=\ln(x^2+1)$ على $\R$ ($x^2+1>0$): \quad $m'(x)=\bx{\dfrac{2x}{x^2+1}}$.
+\QQ{6} $p(x)=\ln\left(\dfrac{x-1}{x+1}\right)$ على $]1;+\infty[$: \quad $u'(x)=\dfrac2{(x+1)^2}$:
+\[p'(x)=\frac{u'(x)}{u(x)}=\frac2{(x+1)^2}\times\frac{x+1}{x-1}=\bx{\frac2{x^2-1}}\]
+\end{mithal}
+
+\begin{mithal}[اتجاه تغير $\ln u$]
+$f(x)=\ln(6-3x)$ على $]-\infty;2[$: الدالة $u(x)=6-3x$ موجبة تمامًا ومتناقصة تمامًا على $]-\infty;2[$.\par
+إذن \bxt{$f$ متناقصة تمامًا على $]-\infty;2[$}.
+\end{mithal}
+
+% =====================================================
+\section{دراسة الدالة $\ln$ وتمثيلها البياني}
+\RL{0.5}{%
+\begin{itemize}
+\item $\displaystyle\lim_{x\to0^+}\ln x=-\infty$: محور التراتيب \textbf{مقارب عمودي}.
+\item $\displaystyle\lim_{x\to+\infty}\ln x=+\infty$.
+\item المماس عند $(1;0)$: $y=x-1$ ، والمنحنى تحته: $\bx{\ln x\leqslant x-1}$.
+\item $\ln e=1$: النقطة $(e;1)$.
+\end{itemize}
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.2]{$x$/1,$\frac1x$/1,$\ln x$/2}{$0$,$1$,$+\infty$}
+\tkzTabLine{d,+,t,+,}
+\tkzTabVar{D-/$-\infty$,R/,+/$+\infty$}
+\tkzTabVal{1}{3}{0.5}{}{$0$}
+\end{TAB}}{0.46}{%
+\begin{GR}{-0.6}{5.5}{-2.6}{2.4}{0.85}
+\Ticks{1,2,3,4,5}{-2,-1,1,2}
+\draw[cThm,thick,domain=-0.6:3.4] plot(\x,{\x-1}) node[above,font=\scriptsize]{$y=x-1$};
+\draw[cDef,very thick,domain=0.075:5.5,samples=120] plot(\x,{ln(\x)});
+\node[cDef,font=\scriptsize] at (4.6,1.95){$y=\ln x$};
+\fill[cDef] (2.718,1) circle (1.6pt) node[below right,font=\scriptsize]{$(e;1)$};
+\fill[cThm] (1,0) circle (1.6pt);
+\end{GR}}
+
+% =====================================================
+\section{اللوغاريتم العشري واللوغاريتم ذو الأساس $a$}
+\begin{tarif}
+\begin{itemize}
+\item $\LW{a>0}$ و $\LW{a\neq1}$: \textbf{اللوغاريتم ذو الأساس $\LW{a}$}: $\bx{\log_a x=\dfrac{\ln x}{\ln a}}$ على $\LW{]0;+\infty[}$.
+\item \textbf{اللوغاريتم العشري}: $\LW{a=10}$: $\bx{\log x=\dfrac{\ln x}{\ln10}}$.
+\end{itemize}
+\end{tarif}
+
+\begin{khassia}
+للدالة $\LW{\log_a}$ نفس الخواص الجبرية للدالة $\LW{\ln}$ ، و $\LW{\log_a a=1}$ ، $\LW{\log_a a^n=n}$. وبالخصوص $\LW{\log10^n=n}$.
+\end{khassia}
+
+\begin{mithal}
+\begin{itemize}
+\item $\log1000=\log10^3=\bx{3}$ ؛ \quad $\log0{,}01=\log10^{-2}=\bx{-2}$ ؛ \quad $\log_28=\dfrac{\ln2^3}{\ln2}=\bx{3}$.
+\item $\log x=2\iff x=10^2=\bx{100}$.
+\end{itemize}
+\end{mithal}
+
+% =====================================================
+\section{تطبيقات اقتصادية}
+\begin{mithal}[إيداع بفائدة مركبة]
+نودع مبلغ $C_0=100000$ DA في بنك بفائدة مركبة سنوية $5\,\%$ ، فيصبح المبلغ بعد $n$ سنة: $C_n=C_0\times1{,}05^n$.\par
+بعد كم سنة يتضاعف المبلغ؟
+\[C_n\geqslant2C_0\ \Rightarrow\ 1{,}05^n\geqslant2\ \Rightarrow\ n\ln1{,}05\geqslant\ln2\ \Rightarrow\ n\geqslant\frac{\ln2}{\ln1{,}05}\approx14{,}21\]
+إذن يتضاعف المبلغ ابتداءً من \bxt{السنة $15$}.
+\end{mithal}
+
+\begin{mithal}[الربح]
+مؤسسة تنتج $x$ آلاف قطعة ($1\leqslant x\leqslant10$) ، والربح بملايين الدينارات: $B(x)=-x+6\ln x+2$.
+\[B'(x)=-1+\frac6x=\frac{6-x}x\]
+$B'(x)>0$ على $[1;6[$ و $B'(x)<0$ على $]6;10]$: يكون الربح أعظميًا من أجل $\bx{x=6}$ (أي $6000$ قطعة) ، وقيمته:
+\[B(6)=-6+6\ln6+2=\bx{6\ln6-4}\approx6{,}75\ \text{\ar{مليون دينار}}\]
+\end{mithal}
+
+% =====================================================
+\section{مثال شامل من نمط البكالوريا}
+\begin{tmr}
+\textbf{I.} $g$ الدالة المعرفة على $]0;+\infty[$ بـ: $g(x)=x^2-1+\ln x$.
+\QQ{1} ادرس اتجاه تغير $g$ ، واحسب $g(1)$ ، ثم استنتج إشارة $g(x)$.\par
+\textbf{II.} $f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=x+1-\dfrac{\ln x}x$ ، و $(C_f)$ تمثيلها البياني.
+\QQ{2} احسب $\displaystyle\lim_{x\to0^+}f(x)$ و $\displaystyle\lim_{x\to+\infty}f(x)$.
+\QQ{3} بيّن أن $f'(x)=\dfrac{g(x)}{x^2}$ ، ثم شكّل جدول تغيرات $f$.
+\QQ{4} بيّن أن المستقيم $(\Delta)$: $y=x+1$ مقارب مائل لـ $(C_f)$ ، وادرس الوضع النسبي.
+\QQ{5} ارسم $(\Delta)$ و $(C_f)$.
+\end{tmr}
+
+\begin{hal}
+\QQ{1} $g'(x)=2x+\dfrac1x>0$ على $]0;+\infty[$: \bxt{$g$ متزايدة تمامًا} ، و $g(1)=1-1+0=\bx{0}$.
+\begin{TAB}
+\tkzTabInit[lgt=2.6,espcl=3]{$x$/1,$g(x)$/1}{$0$,$1$,$+\infty$}
+\tkzTabLine{d,-,z,+,}
+\end{TAB}
+\QQ{2} عند $0^+$: $\ln x\to-\infty$ و $\dfrac1x\to+\infty$ ، إذن $\dfrac{\ln x}x\to-\infty$:
+\[\lim_{x\to0^+}f(x)=0+1-(-\infty)=\bx{+\infty}\qquad\text{\ar{(محور التراتيب مقارب عمودي)}}\]
+عند $+\infty$: $\dfrac{\ln x}x\to0$ ، إذن $\displaystyle\lim_{x\to+\infty}f(x)=\bx{+\infty}$.
+\QQ{3}
+\[f'(x)=1-\frac{\frac1x\times x-\ln x}{x^2}=1-\frac{1-\ln x}{x^2}=\frac{x^2-1+\ln x}{x^2}=\bx{\frac{g(x)}{x^2}}\]
+إشارة $f'(x)$ هي إشارة $g(x)$ ، و $f(1)=1+1-0=2$:
+\begin{TAB}
+\tkzTabInit[lgt=2.6,espcl=3]{$x$/1,$f'(x)$/1,$f(x)$/2}{$0$,$1$,$+\infty$}
+\tkzTabLine{d,-,z,+,}
+\tkzTabVar{D+/$+\infty$,-/$2$,+/$+\infty$}
+\end{TAB}
+\QQ{4} $f(x)-(x+1)=-\dfrac{\ln x}x\ \xrightarrow[x\to+\infty]{}\ 0$: \bxt{$(\Delta)$ مقارب مائل لـ $(C_f)$ بجوار $+\infty$}.\par
+إشارة $-\dfrac{\ln x}x$ عكس إشارة $\ln x$ ، وتنعدم عند $x=1$ ($f(1)=2$):
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15,-4.6);
+\draw[thick] (0,0) rectangle (15,-4.6); \draw (0,-0.9)--(15,-0.9) (0,-1.8)--(15,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$-\frac{\ln x}{x}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (8.8,-0.45){$1$};
+\node at (14.3,-0.45){$+\infty$};
+\node at (5.3,-1.35){$+$};
+\node[align=center,font=\small] at (5.3,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.3,-1.35){$-$};
+\node[align=center,font=\small] at (12.3,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\draw[double,thick] (3.3,-0.9)--(3.3,-4.6);
+\node at (8.8,-1.35){$0$};
+\draw[densely dotted] (8.8,-0.9)--(8.8,-1.13) (8.8,-1.57)--(8.8,-1.8);
+\draw (7.3,-4.6) .. controls (7.375,-3.06) and (8.35,-2.136) .. (8.8,-1.8) .. controls (9.25,-2.136) and (10.225,-3.06) .. (10.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (8.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(1;2)$};
+\end{tikzpicture}
+\end{FIG}
+\QQ{5} التمثيل البياني:
+\begin{GR}{-0.5}{5.5}{-0.5}{6}{0.9}
+\Ticks{1,2,3,4,5}{1,2,3,4,5}
+\draw[cThm,thick,domain=-0.5:5] plot(\x,{\x+1}); \node[cThm,font=\scriptsize] at (3.6,5.2){$(\Delta)$};
+\draw[cDef,very thick,domain=0.33:5.5,samples=150] plot(\x,{\x+1-ln(\x)/\x});
+\node[cDef,font=\scriptsize] at (4.4,4.3){$(C_f)$};
+\fill[cThm] (1,2) circle (1.7pt) node[below right,font=\scriptsize]{$(1;2)$};
+\end{GR}
+\end{hal}
+
+% =====================================================
+\section{خلاصة الطرائق}
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{0.3\textwidth}|p{0.62\textwidth}|}\hline
+\rowcolor{cSec!12}\textbf{المطلوب} & \textbf{الطريقة}\\\hline
+تبسيط عبارة & نحلل الأعداد إلى عوامل أولية ونطبق $\ln(ab)=\ln a+\ln b$ و $\ln a^n=n\ln a$.\\\hline
+حل معادلة & نعيّن $D$ ، نكتب $\ln A=\ln B$ أو $\ln A=k=\ln e^k$ ، ونحتفظ بالحلول في $D$.\\\hline
+معادلة فيها $(\ln x)^2$ & نضع $X=\ln x$ فنحصل على معادلة من الدرجة الثانية.\\\hline
+حل متراجحة & $\ln A<\ln B\iff A<B$ ، ثم $S=D\cap$ (الحلول).\\\hline
+رفع حالة عدم التعيين & عند $+\infty$ نُظهر $\dfrac{\ln x}x$ ، وعند $0^+$ نُظهر $x\ln x$.\\\hline
+مشتقة $\ln u$ & $(\ln u)'=\dfrac{u'}u$ مع $u>0$ ؛ و $\ln u$ لها نفس اتجاه تغير $u$.\\\hline
+مقارب مائل ووضع نسبي & $f(x)-(ax+b)\to0$ ، والوضع النسبي من إشارة الفرق في جدول.\\\hline
+عدد السنوات في مسألة فائدة & $q^n\geqslant k\iff n\ln q\geqslant\ln k$ ($q>1$).\\\hline
+\end{tabular}
+\end{center}
+\end{document}
