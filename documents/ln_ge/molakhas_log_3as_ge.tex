@@ -166,6 +166,9 @@
 \newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
 \renewcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
 \relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\newcommand{\Car}[1]{\left\{\begin{array}{l}#1\end{array}\right.}
+\newcommand{\Lm}[1]{\displaystyle\lim_{x\to#1}}
+\newcommand{\Ld}[2]{\par لدينا: $\Lm{#1}f(x)=\bx{#2}$ لأنّ:}
 \begin{document}
 \begin{LTR}
 \begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
@@ -360,15 +363,17 @@ $\LW{\displaystyle\lim_{x\to0^+}x\ln x=0}$ & $\LW{\displaystyle\lim_{x\to+\infty
 \end{tariqa}
 
 \begin{mithal}[احسب النهايات]
-\QQ{1} $\displaystyle\lim_{x\to+\infty}(x-\ln x)$: حالة عدم تعيين $(+\infty-\infty)$:
-\[x-\ln x=x\left(1-\frac{\ln x}x\right)\ \xrightarrow[x\to+\infty]{}\ (+\infty)\times(1-0)=\bx{+\infty}\]
-\QQ{2} $\displaystyle\lim_{x\to0^+}(x-\ln x)=0-(-\infty)=\bx{+\infty}$.
-\QQ{3} $\displaystyle\lim_{x\to+\infty}\frac{2+\ln x}x=\lim_{x\to+\infty}\left(\frac2x+\frac{\ln x}x\right)=0+0=\bx{0}$.
-\QQ{4} $\displaystyle\lim_{x\to0^+}\frac{2+\ln x}x$: البسط $\to-\infty$ والمقام $\to0^+$ ، إذن النهاية $\bx{-\infty}$.
-\QQ{5} $\displaystyle\lim_{x\to0^+}(x\ln x-x+1)=0-0+1=\bx{1}$.
-\QQ{6} $\displaystyle\lim_{x\to+\infty}\frac{\ln x}{x+1}=\lim_{x\to+\infty}\frac{\ln x}x\times\frac x{x+1}=0\times1=\bx{0}$.
-\QQ{7} $\displaystyle\lim_{x\to+\infty}\ln(2x+1)=\bx{+\infty}$ \quad لأن $2x+1\to+\infty$.
-\QQ{8} $\displaystyle\lim_{x\to-\frac12^+}\ln(2x+1)=\bx{-\infty}$ \quad لأن $2x+1\to0^+$.
+\QQ{1} $\Lm{+\infty}(x-\ln x)$: حالة عدم تعيين ، نكتب: $x-\ln x=x\left(1-\dfrac{\ln x}x\right)$.
+\par لدينا: $\Lm{+\infty}(x-\ln x)=\bx{+\infty}$ لأنّ: \quad $\Car{\Lm{+\infty}x=+\infty\\[6pt] \Lm{+\infty}\left(1-\dfrac{\ln x}x\right)=1}$\par\smallskip
+\QQ{2} لدينا: $\Lm{0^+}(x-\ln x)=\bx{+\infty}$ لأنّ: \quad $\Car{\Lm{0^+}x=0\\[6pt] \Lm{0^+}\ln x=-\infty}$\par\smallskip
+\QQ{3} نكتب: $\dfrac{2+\ln x}x=\dfrac2x+\dfrac{\ln x}x$.
+\par لدينا: $\Lm{+\infty}\dfrac{2+\ln x}x=\bx{0}$ لأنّ: \quad $\Car{\Lm{+\infty}\dfrac2x=0\\[6pt] \Lm{+\infty}\dfrac{\ln x}x=0}$\par\smallskip
+\QQ{4} لدينا: $\Lm{0^+}\dfrac{2+\ln x}x=\bx{-\infty}$ لأنّ: \quad $\Car{\Lm{0^+}(2+\ln x)=-\infty\\[6pt] \Lm{0^+}x=0^+}$\par\smallskip
+\QQ{5} لدينا: $\Lm{0^+}(x\ln x-x+1)=\bx{1}$ لأنّ: \quad $\Car{\Lm{0^+}x\ln x=0\\[6pt] \Lm{0^+}(-x+1)=1}$\par\smallskip
+\QQ{6} نكتب: $\dfrac{\ln x}{x+1}=\dfrac{\ln x}x\times\dfrac x{x+1}$.
+\par لدينا: $\Lm{+\infty}\dfrac{\ln x}{x+1}=\bx{0}$ لأنّ: \quad $\Car{\Lm{+\infty}\dfrac{\ln x}x=0\\[6pt] \Lm{+\infty}\dfrac x{x+1}=1}$\par\smallskip
+\QQ{7} لدينا: $\Lm{+\infty}\ln(2x+1)=\bx{+\infty}$ لأنّ: \quad $\Car{\Lm{+\infty}(2x+1)=+\infty\\[6pt] \displaystyle\lim_{X\to+\infty}\ln X=+\infty}$\par\smallskip
+\QQ{8} لدينا: $\Lm{-\frac12^+}\ln(2x+1)=\bx{-\infty}$ لأنّ: \quad $\Car{\Lm{-\frac12^+}(2x+1)=0^+\\[6pt] \displaystyle\lim_{X\to0^+}\ln X=-\infty}$\par\smallskip
 \end{mithal}
 
 % =====================================================
@@ -460,19 +465,27 @@ $B'(x)>0$ على $[1;6[$ و $B'(x)<0$ على $]6;10]$: يكون الربح أع�
 % =====================================================
 \section{أمثلة من بكالوريا تسيير واقتصاد}
 \begin{mithal}[نهايات]
-\QQ{1} \textbf{(2014)} $f(x)=x-1-\dfrac{\ln x}x$ على $]0;+\infty[$:
-\[\lim_{x\to+\infty}f(x)=+\infty-1-0=\bx{+\infty}\qquad;\qquad\lim_{x\to0^+}f(x)=0-1-(-\infty)=\bx{+\infty}\]
-لأن عند $0^+$: $\ln x\to-\infty$ و $\dfrac1x\to+\infty$ ، فـ $\dfrac{\ln x}x\to-\infty$.
-\QQ{2} \textbf{(2016)} $f(x)=\dfrac{x\ln x}{x+1}$: \quad $\displaystyle\lim_{x\to0^+}x\ln x=0$ و $x+1\to1$ ، إذن $\displaystyle\lim_{x\to0^+}f(x)=\bx{0}$.
-\[\lim_{x\to+\infty}f(x)=\lim_{x\to+\infty}\ln x\times\frac x{x+1}=(+\infty)\times1=\bx{+\infty}\]
-\QQ{3} \textbf{(2016)} $f(x)=(2x-4)\ln x$: \quad عند $0^+$: $(-4)\times(-\infty)=\bx{+\infty}$ ؛ \quad عند $+\infty$: $(+\infty)\times(+\infty)=\bx{+\infty}$.
-\QQ{4} \textbf{(2016)} $g(x)=-4+2x(1+\ln x)=-4+2x+2x\ln x$: \quad $\displaystyle\lim_{x\to0^+}g(x)=-4+0+0=\bx{-4}$.
-\QQ{5} \textbf{(2013)} $f(x)=3-x-\dfrac2x+\ln x$: \quad عند $0^+$: $-\dfrac2x\to-\infty$ و $\ln x\to-\infty$ ، إذن $\displaystyle\lim_{x\to0^+}f(x)=\bx{-\infty}$.
-\QQ{6} \textbf{(2018)} $f(x)=\ln(x+2)+\ln(8-x)-\ln16$ على $]-2;8[$:
-\[\lim_{x\to-2^+}f(x)=-\infty+\ln10-\ln16=\bx{-\infty}\qquad;\qquad\lim_{x\to8^-}f(x)=\ln10-\infty-\ln16=\bx{-\infty}\]
-\QQ{7} \textbf{(2015)} $f(x)=-x+1+3\ln(x+1)$ على $]-1;+\infty[$: \quad عند $-1^+$: $\ln(x+1)\to-\infty$ ، إذن $\bx{-\infty}$.\par
-عند $+\infty$ (حالة عدم تعيين): نكتب $-x+1=-(x+1)+2$:
-\[f(x)=(x+1)\left(-1+3\frac{\ln(x+1)}{x+1}\right)+2\ \xrightarrow[x\to+\infty]{}\ (+\infty)\times(-1+0)+2=\bx{-\infty}\]
+\QQ{1} \textbf{(2014)} $f(x)=x-1-\dfrac{\ln x}x$ على $]0;+\infty[$.
+\Ld{+\infty}{+\infty} \quad $\Car{\Lm{+\infty}(x-1)=+\infty\\[6pt] \Lm{+\infty}\dfrac{\ln x}x=0}$\par\smallskip
+\Ld{0^+}{+\infty} \quad $\Car{\Lm{0^+}(x-1)=-1\\[6pt] \Lm{0^+}\dfrac{\ln x}x=\Lm{0^+}\ln x\times\dfrac1x=-\infty}$\par\smallskip
+\QQ{2} \textbf{(2016)} $f(x)=\dfrac{x\ln x}{x+1}$.
+\Ld{0^+}{0} \quad $\Car{\Lm{0^+}x\ln x=0\\[6pt] \Lm{0^+}(x+1)=1}$\par\smallskip
+نكتب: $f(x)=\ln x\times\dfrac x{x+1}$.
+\Ld{+\infty}{+\infty} \quad $\Car{\Lm{+\infty}\ln x=+\infty\\[6pt] \Lm{+\infty}\dfrac x{x+1}=1}$\par\smallskip
+\QQ{3} \textbf{(2016)} $f(x)=(2x-4)\ln x$.
+\Ld{0^+}{+\infty} \quad $\Car{\Lm{0^+}(2x-4)=-4\\[6pt] \Lm{0^+}\ln x=-\infty}$\par\smallskip
+\Ld{+\infty}{+\infty} \quad $\Car{\Lm{+\infty}(2x-4)=+\infty\\[6pt] \Lm{+\infty}\ln x=+\infty}$\par\smallskip
+\QQ{4} \textbf{(2016)} $g(x)=-4+2x+2x\ln x$.
+\par لدينا: $\Lm{0^+}g(x)=\bx{-4}$ لأنّ: \quad $\Car{\Lm{0^+}(-4+2x)=-4\\[6pt] \Lm{0^+}2x\ln x=0}$\par\smallskip
+\QQ{5} \textbf{(2013)} $f(x)=3-x-\dfrac2x+\ln x$.
+\Ld{0^+}{-\infty} \quad $\Car{\Lm{0^+}(3-x)=3\\[6pt] \Lm{0^+}\left(-\dfrac2x\right)=-\infty\\[6pt] \Lm{0^+}\ln x=-\infty}$\par\smallskip
+\QQ{6} \textbf{(2018)} $f(x)=\ln(x+2)+\ln(8-x)-\ln16$ على $]-2;8[$.
+\Ld{-2^+}{-\infty} \quad $\Car{\Lm{-2^+}\ln(x+2)=-\infty\\[6pt] \Lm{-2^+}\ln(8-x)=\ln10}$\par\smallskip
+\Ld{8^-}{-\infty} \quad $\Car{\Lm{8^-}\ln(x+2)=\ln10\\[6pt] \Lm{8^-}\ln(8-x)=-\infty}$\par\smallskip
+\QQ{7} \textbf{(2015)} $f(x)=-x+1+3\ln(x+1)$ على $]-1;+\infty[$.
+\Ld{-1^+}{-\infty} \quad $\Car{\Lm{-1^+}(-x+1)=2\\[6pt] \Lm{-1^+}3\ln(x+1)=-\infty}$\par\smallskip
+عند $+\infty$ حالة عدم تعيين ، نكتب: $f(x)=(x+1)\left(-1+3\dfrac{\ln(x+1)}{x+1}\right)+2$.
+\Ld{+\infty}{-\infty} \quad $\Car{\Lm{+\infty}(x+1)=+\infty\\[6pt] \Lm{+\infty}\left(-1+3\dfrac{\ln(x+1)}{x+1}\right)=-1}$\par\smallskip
 \end{mithal}
 
 \begin{mithal}[مشتقات]
@@ -518,10 +531,10 @@ $f'(x)=0$ يعني $\ln x=\dfrac12$ ، أي $x=\sqrt e$.
 \tkzTabInit[lgt=2.6,espcl=3]{$x$/1,$g(x)$/1}{$0$,$1$,$+\infty$}
 \tkzTabLine{d,-,z,+,}
 \end{TAB}
-\QQ{2} عند $0^+$: $\ln x\to-\infty$ و $\dfrac1x\to+\infty$ ، إذن $\dfrac{\ln x}x\to-\infty$:
-\[\lim_{x\to0^+}f(x)=0+1-(-\infty)=\bx{+\infty}\]
+\QQ{2}
+\Ld{0^+}{+\infty} \quad $\Car{\Lm{0^+}(x+1)=1\\[6pt] \Lm{0^+}\dfrac{\ln x}x=\Lm{0^+}\ln x\times\dfrac1x=-\infty}$\par\smallskip
 إذن محور التراتيب مقارب عمودي لـ $(C_f)$.
-عند $+\infty$: $\dfrac{\ln x}x\to0$ ، إذن $\displaystyle\lim_{x\to+\infty}f(x)=\bx{+\infty}$.
+\Ld{+\infty}{+\infty} \quad $\Car{\Lm{+\infty}(x+1)=+\infty\\[6pt] \Lm{+\infty}\dfrac{\ln x}x=0}$\par\smallskip
 \QQ{3}
 \[f'(x)=1-\frac{\frac1x\times x-\ln x}{x^2}=1-\frac{1-\ln x}{x^2}=\frac{x^2-1+\ln x}{x^2}=\bx{\frac{g(x)}{x^2}}\]
 إشارة $f'(x)$ هي إشارة $g(x)$ ، و $f(1)=1+1-0=2$:
