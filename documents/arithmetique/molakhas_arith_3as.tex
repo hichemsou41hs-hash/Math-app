@@ -147,7 +147,8 @@
  \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
 {\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
 \newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
-\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\newcommand{\LW}[1]{{\color{cDef}#1}}  % law / formula colour
 \newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
 \newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
 \newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
@@ -159,9 +160,10 @@
 \newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
 \newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
 \newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
-\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newtcbox{\bxtbox}{on line,coltext=cThm,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
 \newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
 \SetHeader{\small\bfseries\color{cSec}ملخص: الأعداد والحساب}{\small\color{cSec}السنة الثالثة ثانوي -- رياضيات وتقني رياضي}
+\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
 \begin{document}
 \begin{LTR}
 \begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
@@ -192,16 +194,18 @@
 %=====================================================
 \section{قابلية القسمة في $\Z$}
 \begin{tarif}
-$a$ و $b$ عددان صحيحان مع $a\neq 0$. نقول إن $a$ \textbf{يقسم} $b$ إذا وُجد عدد صحيح $k$ بحيث:
-\[ b=k\,a \]
-ونكتب $a\mid b$، ونقول أيضًا: $a$ قاسم لـ $b$، أو $b$ مضاعف لـ $a$.
+$\LW{a}$ و $\LW{b}$ عددان صحيحان مع $\LW{a\neq 0}$. نقول إن $\LW{a}$ \textbf{يقسم} $\LW{b}$ إذا وُجد عدد صحيح $\LW{k}$ بحيث:
+\[\LW{ b=k\,a }\]
+ونكتب $\LW{a\mid b}$، ونقول أيضًا: $\LW{a}$ قاسم لـ $\LW{b}$، أو $\LW{b}$ مضاعف لـ $\LW{a}$.
 \end{tarif}
 
 \begin{mithal}
 \begin{itemize}
 \item $7\mid 35$ لأن $35=5\times 7$.
 \item $-3\mid 1962$ لأن $1962=(-654)\times(-3)$.
-\item مجموعة قواسم $24$ في $\N$: $D_{24}=\{1;2;3;4;6;8;12;24\}$، وفي $\Z$ نضيف معاكساتها، فيكون لـ $24$ في $\Z$ ستة عشر قاسمًا.
+\item مجموعة قواسم $24$ في $\N$: 
+\[ D_{24}=\{1;2;3;4;6;8;12;24\} \]
+وفي $\Z$ نضيف معاكساتها، فيكون لـ $24$ في $\Z$ ستة عشر قاسمًا.
 \end{itemize}
 \end{mithal}
 
@@ -214,13 +218,13 @@ $a$ و $b$ عددان صحيحان مع $a\neq 0$. نقول إن $a$ \textbf{ي�
 \end{molahada}
 
 \begin{khassia}[خواص قابلية القسمة]
-$a$، $b$، $c$ أعداد صحيحة ($a\neq0$):
+$\LW{a}$، $\LW{b}$، $\LW{c}$ أعداد صحيحة ($\LW{a\neq0}$):
 \begin{enumerate}
-\item إذا كان $a\mid b$ و $b\mid c$ فإن $a\mid c$ (التعدي).
-\item إذا كان $a\mid b$ فإن $a\mid mb$ من أجل كل عدد صحيح $m$.
-\item إذا كان $a\mid b$ فإن $ma\mid mb$ من أجل كل عدد صحيح غير معدوم $m$.
-\item إذا كان $a\mid b$ و $a\mid c$ فإن $a\mid mb+nc$ من أجل كل عددين صحيحين $m$ و $n$.
-\item إذا كان $a\mid b$ و $b\mid a$ فإن $|a|=|b|$.
+\item إذا كان $\LW{a\mid b}$ و $\LW{b\mid c}$ فإن $\LW{a\mid c}$ (التعدي).
+\item إذا كان $\LW{a\mid b}$ فإن $\LW{a\mid mb}$ من أجل كل عدد صحيح $\LW{m}$.
+\item إذا كان $\LW{a\mid b}$ فإن $\LW{ma\mid mb}$ من أجل كل عدد صحيح غير معدوم $\LW{m}$.
+\item إذا كان $\LW{a\mid b}$ و $\LW{a\mid c}$ فإن $\LW{a\mid mb+nc}$ من أجل كل عددين صحيحين $\LW{m}$ و $\LW{n}$.
+\item إذا كان $\LW{a\mid b}$ و $\LW{b\mid a}$ فإن $\LW{|a|=|b|}$.
 \end{enumerate}
 \end{khassia}
 
@@ -233,9 +237,9 @@ $a$، $b$، $c$ أعداد صحيحة ($a\neq0$):
 \end{mithal}
 
 \begin{tariqa}[$n+a$ يقسم عبارة $P(n)$]
-نكتب $P(n)=(n+a)Q(n)+r$ حيث $r$ عدد ثابت. بما أن $n+a\mid (n+a)Q(n)$ فإن:
-\[ n+a\mid P(n)\iff n+a\mid r \]
-ثم نعين قواسم $r$ ونستنتج قيم $n$.
+نكتب $\LW{P(n)=(n+a)Q(n)+r}$ حيث $\LW{r}$ عدد ثابت. بما أن $\LW{n+a\mid (n+a)Q(n)}$ فإن:
+\[\LW{ n+a\mid P(n)\iff n+a\mid r }\]
+ثم نعين قواسم $\LW{r}$ ونستنتج قيم $\LW{n}$.
 \end{tariqa}
 
 \begin{mithal}[عين الأعداد الطبيعية $n$ حيث $n+1\mid 3n^2+15n+20$]
@@ -246,11 +250,11 @@ $a$، $b$، $c$ أعداد صحيحة ($a\neq0$):
 %=====================================================
 \section{القسمة الإقليدية}
 \begin{khassia}[مبرهنة]
-$a$ عدد صحيح و $b$ عدد طبيعي غير معدوم. توجد ثنائية وحيدة $(q;r)$ من الأعداد الصحيحة بحيث:
-\[ a=bq+r\qquad\text{و}\qquad 0\leqslant r<b \]
+$\LW{a}$ عدد صحيح و $\LW{b}$ عدد طبيعي غير معدوم. توجد ثنائية وحيدة $\LW{(q;r)}$ من الأعداد الصحيحة بحيث:
+\[\LW{ a=bq+r\qquad\text{و}\qquad 0\leqslant r<b }\]
 \begin{itemize}
-\item تسمى هذه العملية \textbf{القسمة الإقليدية} لـ $a$ على $b$.
-\item $q$ هو \textbf{حاصل} القسمة و $r$ هو \textbf{باقي} القسمة.
+\item تسمى هذه العملية \textbf{القسمة الإقليدية} لـ $\LW{a}$ على $\LW{b}$.
+\item $\LW{q}$ هو \textbf{حاصل} القسمة و $\LW{r}$ هو \textbf{باقي} القسمة.
 \end{itemize}
 \end{khassia}
 
@@ -284,27 +288,28 @@ $a$ عدد صحيح و $b$ عدد طبيعي غير معدوم. توجد ثنا�
 %=====================================================
 \section{القاسم المشترك الأكبر وخوارزمية إقليدس}
 \begin{tarif}
-$a$ و $b$ عددان طبيعيان غير معدومين. أكبر عنصر في مجموعة القواسم المشتركة $D_a\cap D_b$ يسمى \textbf{القاسم المشترك الأكبر} لـ $a$ و $b$، ونرمز له بـ $\pgcd(a;b)$.\par
-من أجل عددين صحيحين غير معدومين: $\pgcd(a;b)=\pgcd(|a|;|b|)$.
+$\LW{a}$ و $\LW{b}$ عددان طبيعيان غير معدومين. أكبر عنصر في مجموعة القواسم المشتركة $\LW{D_a\cap D_b}$ يسمى \textbf{القاسم المشترك الأكبر} لـ $\LW{a}$ و $\LW{b}$، ونرمز له بـ $\LW{\pgcd(a;b)}$.\par
+من أجل عددين صحيحين غير معدومين: $\LW{\pgcd(a;b)=\pgcd(|a|;|b|)}$.
 \end{tarif}
 
 \begin{mithal}
-$\pgcd(24;18)=6$،\quad $\pgcd(27;140)=1$،\quad $\pgcd(150;240)=30$،\quad $\pgcd(-85;-25)=\pgcd(85;25)=5$.
+$\pgcd(24;18)=\bx{6}$ \qquad $\pgcd(27;140)=\bx{1}$ \qquad $\pgcd(150;240)=\bx{30}$\par
+$\pgcd(-85;-25)=\pgcd(85;25)=\bx{5}$
 \end{mithal}
 
 \begin{khassia}
-$a$ و $b$ عددان طبيعيان غير معدومين:
+$\LW{a}$ و $\LW{b}$ عددان طبيعيان غير معدومين:
 \begin{enumerate}
-\item إذا كان $b\mid a$ فإن $\pgcd(a;b)=b$.
-\item إذا كان $r$ باقي القسمة الإقليدية لـ $a$ على $b$ فإن: \bx{\pgcd(a;b)=\pgcd(b;r)}.
-\item القواسم المشتركة لـ $a$ و $b$ هي قواسم $\pgcd(a;b)$.
-\item من أجل كل عدد طبيعي غير معدوم $k$: $\pgcd(ka;kb)=k\,\pgcd(a;b)$.
-\item $d=\pgcd(a;b)$ إذا وفقط إذا كان $a=da'$ و $b=db'$ مع $\pgcd(a';b')=1$.
+\item إذا كان $\LW{b\mid a}$ فإن $\LW{\pgcd(a;b)=b}$.
+\item إذا كان $\LW{r}$ باقي القسمة الإقليدية لـ $\LW{a}$ على $\LW{b}$ فإن: \bx{\pgcd(a;b)=\pgcd(b;r)}.
+\item القواسم المشتركة لـ $\LW{a}$ و $\LW{b}$ هي قواسم $\LW{\pgcd(a;b)}$.
+\item من أجل كل عدد طبيعي غير معدوم $\LW{k}$: $\LW{\pgcd(ka;kb)=k\,\pgcd(a;b)}$.
+\item $\LW{d=\pgcd(a;b)}$ إذا وفقط إذا كان $\LW{a=da'}$ و $\LW{b=db'}$ مع $\LW{\pgcd(a';b')=1}$.
 \end{enumerate}
 \end{khassia}
 
 \begin{tariqa}[خوارزمية إقليدس]
-نقسم $a$ على $b$، ثم نقسم $b$ على الباقي، ثم نقسم كل باقٍ على الباقي الذي يليه، إلى أن نحصل على باقٍ معدوم.\par
+نقسم $\LW{a}$ على $\LW{b}$، ثم نقسم $\LW{b}$ على الباقي، ثم نقسم كل باقٍ على الباقي الذي يليه، إلى أن نحصل على باقٍ معدوم.\par
 \textbf{القاسم المشترك الأكبر هو آخر باقٍ غير معدوم.}
 \end{tariqa}
 
@@ -336,7 +341,7 @@ $a+b=54$ تكافئ $9(a'+b')=54$، أي $a'+b'=6$.\par
 \end{mithal}
 
 \begin{tariqa}[قاسم مشترك لعبارتين بدلالة $n$]
-إذا كان $d=\pgcd(\alpha n+\beta;\gamma n+\delta)$ فإن $d$ يقسم كل تركيب خطي لهما. نختار تركيبًا يحذف $n$، فنحصل على $d\mid c$ حيث $c$ عدد ثابت، ثم نبحث متى يأخذ $d$ كل قيمة ممكنة.
+إذا كان $\LW{d=\pgcd(\alpha n+\beta;\gamma n+\delta)}$ فإن $\LW{d}$ يقسم كل تركيب خطي لهما. نختار تركيبًا يحذف $\LW{n}$، فنحصل على $\LW{d\mid c}$ حيث $\LW{c}$ عدد ثابت، ثم نبحث متى يأخذ $\LW{d}$ كل قيمة ممكنة.
 \end{tariqa}
 
 \begin{mithal}[$n$ عدد طبيعي و $d=\pgcd(2n+1;n+3)$]
@@ -348,31 +353,31 @@ $d=5$ يتطلب $n+3\equiv0\,[5]$، أي $n=5k+2$؛ وعندئذ $2n+1=10k+5$ �
 %=====================================================
 \section{الموافقات في $\Z$}
 \begin{tarif}
-$n$ عدد طبيعي غير معدوم. نقول إن العددين الصحيحين $a$ و $b$ \textbf{متوافقان بترديد} $n$ إذا كان لهما نفس الباقي في القسمة الإقليدية على $n$. نكتب:
-\[ a\equiv b\,[n] \]
-ونقرأ: «$a$ يوافق $b$ بترديد $n$».
+$\LW{n}$ عدد طبيعي غير معدوم. نقول إن العددين الصحيحين $\LW{a}$ و $\LW{b}$ \textbf{متوافقان بترديد} $\LW{n}$ إذا كان لهما نفس الباقي في القسمة الإقليدية على $\LW{n}$. نكتب:
+\[\LW{ a\equiv b\,[n] }\]
+ونقرأ: «$\LW{a}$ يوافق $\LW{b}$ بترديد $\LW{n}$».
 \end{tarif}
 
 \begin{khassia}[نتائج مباشرة]
 \begin{itemize}
 \item \bx{a\equiv b\,[n]\iff n\mid a-b}.
-\item إذا كان $r$ باقي قسمة $a$ على $n$ فإن $a\equiv r\,[n]$. وعكسيًا: إذا كان $a\equiv r\,[n]$ و $0\leqslant r<n$ فإن $r$ هو باقي قسمة $a$ على $n$.
-\item $a\equiv 0\,[n]$ يعني $n\mid a$.
+\item إذا كان $\LW{r}$ باقي قسمة $\LW{a}$ على $\LW{n}$ فإن $\LW{a\equiv r\,[n]}$. وعكسيًا: إذا كان $\LW{a\equiv r\,[n]}$ و $\LW{0\leqslant r<n}$ فإن $\LW{r}$ هو باقي قسمة $\LW{a}$ على $\LW{n}$.
+\item $\LW{a\equiv 0\,[n]}$ يعني $\LW{n\mid a}$.
 \end{itemize}
 \end{khassia}
 
 \begin{khassia}[خواص الموافقات]
-$n$ عدد طبيعي غير معدوم، $a$، $b$، $c$، $d$ أعداد صحيحة:
+$\LW{n}$ عدد طبيعي غير معدوم، $\LW{a}$، $\LW{b}$، $\LW{c}$، $\LW{d}$ أعداد صحيحة:
 \begin{enumerate}
-\item $a\equiv a\,[n]$.
-\item إذا كان $a\equiv b\,[n]$ فإن $b\equiv a\,[n]$.
-\item إذا كان $a\equiv b\,[n]$ و $b\equiv c\,[n]$ فإن $a\equiv c\,[n]$.
-\item إذا كان $a\equiv b\,[n]$ و $c\equiv d\,[n]$ فإن:
-\[ a+c\equiv b+d\,[n]\qquad a-c\equiv b-d\,[n]\qquad ac\equiv bd\,[n] \]
-\item إذا كان $a\equiv b\,[n]$ فإن $ka\equiv kb\,[n]$ من أجل كل $k\in\Z$.
-\item إذا كان $a\equiv b\,[n]$ فإن \bx{a^p\equiv b^p\,[n]} من أجل كل $p\in\N$.
-\item إذا كان $a\equiv b\,[n]$ فإن $ma\equiv mb\,[mn]$ من أجل كل $m\in\N^*$.
-\item إذا كان $a\equiv b\,[n]$ و $m\mid n$ ($m\in\N^*$) فإن $a\equiv b\,[m]$.
+\item $\LW{a\equiv a\,[n]}$.
+\item إذا كان $\LW{a\equiv b\,[n]}$ فإن $\LW{b\equiv a\,[n]}$.
+\item إذا كان $\LW{a\equiv b\,[n]}$ و $\LW{b\equiv c\,[n]}$ فإن $\LW{a\equiv c\,[n]}$.
+\item إذا كان $\LW{a\equiv b\,[n]}$ و $\LW{c\equiv d\,[n]}$ فإن:
+\[\LW{ a+c\equiv b+d\,[n]\qquad a-c\equiv b-d\,[n]\qquad ac\equiv bd\,[n] }\]
+\item إذا كان $\LW{a\equiv b\,[n]}$ فإن $\LW{ka\equiv kb\,[n]}$ من أجل كل $\LW{k\in\Z}$.
+\item إذا كان $\LW{a\equiv b\,[n]}$ فإن \bx{a^p\equiv b^p\,[n]} من أجل كل $\LW{p\in\N}$.
+\item إذا كان $\LW{a\equiv b\,[n]}$ فإن $\LW{ma\equiv mb\,[mn]}$ من أجل كل $\LW{m\in\N^*}$.
+\item إذا كان $\LW{a\equiv b\,[n]}$ و $\LW{m\mid n}$ ($\LW{m\in\N^*}$) فإن $\LW{a\equiv b\,[m]}$.
 \end{enumerate}
 \end{khassia}
 
@@ -398,9 +403,9 @@ $n\equiv4\,[7]$ يعني $n=7k+4$ ($k\in\N$). الشرط $7k+4<30$ يعطي $k<\
 \subsection{دراسة بواقي $a^n$ (البواقي الدورية)}
 \begin{tariqa}[بواقي قسمة $a^n$ على $m$]
 \begin{enumerate}
-\item نحسب بواقي $a^0$، $a^1$، $a^2$، $\ldots$ على $m$ حتى نجد أصغر عدد طبيعي غير معدوم $p$ حيث $a^p\equiv1\,[m]$.
-\item نكتب $n=pk+i$ مع $0\leqslant i<p$، فيكون $a^{pk+i}=(a^p)^k\times a^i\equiv1^k\times a^i\equiv a^i\,[m]$.
-\item نلخص النتائج في جدول: البواقي دورية ودورها $p$.
+\item نحسب بواقي $\LW{a^0}$، $\LW{a^1}$، $\LW{a^2}$، $\LW{\ldots}$ على $\LW{m}$ حتى نجد أصغر عدد طبيعي غير معدوم $\LW{p}$ حيث $\LW{a^p\equiv1\,[m]}$.
+\item نكتب $\LW{n=pk+i}$ مع $\LW{0\leqslant i<p}$، فيكون $\LW{a^{pk+i}=(a^p)^k\times a^i\equiv1^k\times a^i\equiv a^i\,[m]}$.
+\item نلخص النتائج في جدول: البواقي دورية ودورها $\LW{p}$.
 \end{enumerate}
 \end{tariqa}
 
@@ -448,7 +453,7 @@ $2024=9\times224+8$، إذن $2024\equiv8\equiv-1\,[9]$ ومنه $2024^{2025}\eq
 
 \subsection{حل معادلات بالموافقات}
 \begin{tariqa}[{حل $ax\equiv b\,[n]$ مع $\pgcd(a;n)=1$}]
-نبحث عن عدد $c$ حيث $ac\equiv1\,[n]$ (مقلوب $a$ بترديد $n$)، ثم نضرب الطرفين في $c$: $x\equiv cb\,[n]$.
+نبحث عن عدد $\LW{c}$ حيث $\LW{ac\equiv1\,[n]}$ (مقلوب $\LW{a}$ بترديد $\LW{n}$)، ثم نضرب الطرفين في $\LW{c}$: $\LW{x\equiv cb\,[n]}$.
 \end{tariqa}
 
 \begin{mithal}
@@ -459,7 +464,7 @@ $2024=9\times224+8$، إذن $2024\equiv8\equiv-1\,[9]$ ومنه $2024^{2025}\eq
 \end{mithal}
 
 \begin{tariqa}[طريقة الجدول]
-نعوض $x$ بكل البواقي الممكنة $0$، $1$، $\ldots$، $n-1$ ونحسب العبارة بترديد $n$، ثم نحتفظ بالبواقي التي تحقق المعادلة.
+نعوض $\LW{x}$ بكل البواقي الممكنة $\LW{0}$، $\LW{1}$، $\LW{\ldots}$، $\LW{n-1}$ ونحسب العبارة بترديد $\LW{n}$، ثم نحتفظ بالبواقي التي تحقق المعادلة.
 \end{tariqa}
 
 \begin{mithal}[{حل في $\Z$ المعادلة $2x^2\equiv5\,[9]$}]
@@ -478,9 +483,9 @@ $2x^2\equiv\ldots\,[9]$ & $0$ & $2$ & $8$ & $0$ & $5$ & $5$ & $0$ & $8$ & $2$\\\
 %=====================================================
 \section{أنظمة التعداد}
 \begin{tarif}
-$x$ عدد طبيعي حيث $x\geqslant2$. كل عدد طبيعي غير معدوم $a$ يكتب بطريقة وحيدة على الشكل:
-\[ a=q_nx^n+q_{n-1}x^{n-1}+\cdots+q_1x+q_0 \]
-حيث $q_0$، $q_1$، $\ldots$، $q_n$ أعداد طبيعية أصغر تمامًا من $x$ و $q_n\neq0$. نكتب $a=\overline{q_nq_{n-1}\ldots q_1q_0}^{(x)}$ ونقول إن $a$ مكتوب في \textbf{نظام التعداد ذي الأساس} $x$.
+$\LW{x}$ عدد طبيعي حيث $\LW{x\geqslant2}$. كل عدد طبيعي غير معدوم $\LW{a}$ يكتب بطريقة وحيدة على الشكل:
+\[\LW{ a=q_nx^n+q_{n-1}x^{n-1}+\cdots+q_1x+q_0 }\]
+حيث $\LW{q_0}$، $\LW{q_1}$، $\LW{\ldots}$، $\LW{q_n}$ أعداد طبيعية أصغر تمامًا من $\LW{x}$ و $\LW{q_n\neq0}$. نكتب $\LW{a=\overline{q_nq_{n-1}\ldots q_1q_0}^{(x)}}$ ونقول إن $\LW{a}$ مكتوب في \textbf{نظام التعداد ذي الأساس} $\LW{x}$.
 \end{tarif}
 
 \begin{molahada}
@@ -492,7 +497,7 @@ $x$ عدد طبيعي حيث $x\geqslant2$. كل عدد طبيعي غير معد
 \end{molahada}
 
 \begin{tariqa}[من الأساس $x$ إلى النظام العشري]
-ننشر الكتابة بقوى الأساس $x$ ونحسب.
+ننشر الكتابة بقوى الأساس $\LW{x}$ ونحسب.
 \end{tariqa}
 
 \begin{mithal}
@@ -505,7 +510,7 @@ $x$ عدد طبيعي حيث $x\geqslant2$. كل عدد طبيعي غير معد
 \end{mithal}
 
 \begin{tariqa}[من النظام العشري إلى الأساس $x$]
-نقسم العدد على $x$، ثم نقسم الحاصل على $x$، وهكذا حتى نحصل على حاصل معدوم. نكتب البواقي \textbf{من آخر باقٍ إلى أول باقٍ}.
+نقسم العدد على $\LW{x}$، ثم نقسم الحاصل على $\LW{x}$، وهكذا حتى نحصل على حاصل معدوم. نكتب البواقي \textbf{من آخر باقٍ إلى أول باقٍ}.
 \end{tariqa}
 
 \begin{mithal}[اكتب $419$ في النظام ذي الأساس $2$]
@@ -528,12 +533,12 @@ a&=6\times8^2+4\times8+3=6\times4^2\times4+2\times4^2+3\\
 \end{mithal}
 
 \begin{khassia}[معايير قابلية القسمة في النظام العشري]
-$a=\overline{q_n\ldots q_1q_0}$ في النظام العشري. باستعمال $10\equiv0\,[2]$، $10\equiv0\,[5]$، $10\equiv1\,[3]$، $10\equiv1\,[9]$، $10\equiv-1\,[11]$:
+$\LW{a=\overline{q_n\ldots q_1q_0}}$ في النظام العشري. باستعمال $\LW{10\equiv0\,[2]}$، $\LW{10\equiv0\,[5]}$، $\LW{10\equiv1\,[3]}$، $\LW{10\equiv1\,[9]}$، $\LW{10\equiv-1\,[11]}$:
 \begin{itemize}
-\item $a$ يقبل القسمة على $2$ (على $5$) إذا وفقط إذا كان رقم آحاده $q_0$ يقبل القسمة على $2$ (على $5$).
-\item $a$ يقبل القسمة على $4$ إذا وفقط إذا كان العدد $\overline{q_1q_0}$ يقبل القسمة على $4$.
-\item $a\equiv q_n+\cdots+q_1+q_0\,[3]$ و $a\equiv q_n+\cdots+q_1+q_0\,[9]$.
-\item $a\equiv q_0-q_1+q_2-\cdots\,[11]$.
+\item $\LW{a}$ يقبل القسمة على $\LW{2}$ (على $\LW{5}$) إذا وفقط إذا كان رقم آحاده $\LW{q_0}$ يقبل القسمة على $\LW{2}$ (على $\LW{5}$).
+\item $\LW{a}$ يقبل القسمة على $\LW{4}$ إذا وفقط إذا كان العدد $\LW{\overline{q_1q_0}}$ يقبل القسمة على $\LW{4}$.
+\item $\LW{a\equiv q_n+\cdots+q_1+q_0\,[3]}$ و $\LW{a\equiv q_n+\cdots+q_1+q_0\,[9]}$.
+\item $\LW{a\equiv q_0-q_1+q_2-\cdots\,[11]}$.
 \end{itemize}
 \end{khassia}
 
@@ -546,7 +551,7 @@ $N\equiv0\,[7]$ يكافئ $\alpha\equiv5\,[7]$، ومع $0\leqslant\alpha\leqsl
 %=====================================================
 \section{الأعداد الأولية}
 \begin{tarif}
-نقول إن عددًا طبيعيًا $p$ \textbf{أولي} إذا كان يقبل قاسمين بالضبط في $\N$ هما $1$ و $p$.
+نقول إن عددًا طبيعيًا $\LW{p}$ \textbf{أولي} إذا كان يقبل قاسمين بالضبط في $\LW{\N}$ هما $\LW{1}$ و $\LW{p}$.
 \end{tarif}
 
 \begin{molahada}
@@ -559,7 +564,7 @@ $2;3;5;7;11;13;17;19;23;29;31;37;41;43;47;53;59;61;67;71;73;79;83;89;97$.
 \end{molahada}
 
 \begin{khassia}[اختبار أولية عدد]
-$n$ عدد طبيعي حيث $n\geqslant2$. إذا لم يقبل $n$ القسمة على أي عدد أولي $p$ يحقق $p^2\leqslant n$ فإن $n$ أولي.
+$\LW{n}$ عدد طبيعي حيث $\LW{n\geqslant2}$. إذا لم يقبل $\LW{n}$ القسمة على أي عدد أولي $\LW{p}$ يحقق $\LW{p^2\leqslant n}$ فإن $\LW{n}$ أولي.
 \end{khassia}
 
 \begin{mithal}[هل العدد $1999$ أولي؟]
@@ -569,10 +574,10 @@ $2;3;5;7;11;13;17;19;23;29;31;37;41;43$، ولا أحد منها يقسم $1999$
 \end{mithal}
 
 \begin{khassia}[التحليل إلى جداء عوامل أولية]
-كل عدد طبيعي $n\geqslant2$ يكتب بطريقة وحيدة (دون اعتبار الترتيب) على الشكل:
-\[ n=p_1^{\alpha_1}\times p_2^{\alpha_2}\times\cdots\times p_k^{\alpha_k} \]
-حيث $p_1$، $\ldots$، $p_k$ أعداد أولية مختلفة و $\alpha_1$، $\ldots$، $\alpha_k$ أعداد طبيعية غير معدومة.\par
-\textbf{عدد قواسم} $n$ في $\N$ هو: \bx{(\alpha_1+1)(\alpha_2+1)\cdots(\alpha_k+1)}.
+كل عدد طبيعي $\LW{n\geqslant2}$ يكتب بطريقة وحيدة (دون اعتبار الترتيب) على الشكل:
+\[\LW{ n=p_1^{\alpha_1}\times p_2^{\alpha_2}\times\cdots\times p_k^{\alpha_k} }\]
+حيث $\LW{p_1}$، $\LW{\ldots}$، $\LW{p_k}$ أعداد أولية مختلفة و $\LW{\alpha_1}$، $\LW{\ldots}$، $\LW{\alpha_k}$ أعداد طبيعية غير معدومة.\par
+\textbf{عدد قواسم} $\LW{n}$ في $\LW{\N}$ هو: \bx{(\alpha_1+1)(\alpha_2+1)\cdots(\alpha_k+1)}.
 \end{khassia}
 
 \begin{mithal}[حلل $7832$ ثم عين عدد قواسمه ومجموعتها]
@@ -583,16 +588,16 @@ $7832=2\times3916=2^2\times1958=2^3\times979=2^3\times11\times89$، إذن \bx{7
 
 \begin{khassia}
 \begin{itemize}
-\item إذا كان $p$ أوليًا و $p\mid ab$ فإن $p\mid a$ أو $p\mid b$.
-\item إذا كان $p$ أوليًا و $p$ لا يقسم $a$ فإن $\pgcd(a;p)=1$.
-\item $\pgcd(a;b)$ هو جداء العوامل الأولية \textbf{المشتركة} بأصغر أس.
+\item إذا كان $\LW{p}$ أوليًا و $\LW{p\mid ab}$ فإن $\LW{p\mid a}$ أو $\LW{p\mid b}$.
+\item إذا كان $\LW{p}$ أوليًا و $\LW{p}$ لا يقسم $\LW{a}$ فإن $\LW{\pgcd(a;p)=1}$.
+\item $\LW{\pgcd(a;b)}$ هو جداء العوامل الأولية \textbf{المشتركة} بأصغر أس.
 \end{itemize}
 \end{khassia}
 
 \begin{khassia}[مبرهنة فيرما الصغرى (شعبة رياضيات)]
-إذا كان $p$ عددًا أوليًا و $a$ عددًا صحيحًا لا يقبل القسمة على $p$ فإن:
-\[ a^{p-1}\equiv1\,[p] \]
-ومن أجل كل عدد صحيح $a$: $a^p\equiv a\,[p]$.
+إذا كان $\LW{p}$ عددًا أوليًا و $\LW{a}$ عددًا صحيحًا لا يقبل القسمة على $\LW{p}$ فإن:
+\[\LW{ a^{p-1}\equiv1\,[p] }\]
+ومن أجل كل عدد صحيح $\LW{a}$: $\LW{a^p\equiv a\,[p]}$.
 \end{khassia}
 
 \begin{mithal}[باقي قسمة $3^{100}$ على $7$]
@@ -603,25 +608,25 @@ $100=6\times16+4$، إذن $3^{100}=(3^6)^{16}\times3^4\equiv3^4=81\equiv4\,[7]$
 %=====================================================
 \section{المضاعف المشترك الأصغر}
 \begin{tarif}
-$a$ و $b$ عددان طبيعيان غير معدومين. أصغر عنصر غير معدوم في مجموعة المضاعفات المشتركة $M_a\cap M_b$ يسمى \textbf{المضاعف المشترك الأصغر} لـ $a$ و $b$، ونرمز له بـ $\ppcm(a;b)$.
+$\LW{a}$ و $\LW{b}$ عددان طبيعيان غير معدومين. أصغر عنصر غير معدوم في مجموعة المضاعفات المشتركة $\LW{M_a\cap M_b}$ يسمى \textbf{المضاعف المشترك الأصغر} لـ $\LW{a}$ و $\LW{b}$، ونرمز له بـ $\LW{\ppcm(a;b)}$.
 \end{tarif}
 
 \begin{tariqa}[حساب $\pgcd$ و $\ppcm$ بالتحليل]
-نحلل $a$ و $b$ إلى جداء عوامل أولية:
+نحلل $\LW{a}$ و $\LW{b}$ إلى جداء عوامل أولية:
 \begin{itemize}
-\item $\pgcd(a;b)$: جداء العوامل المشتركة، كل عامل بأصغر أس.
-\item $\ppcm(a;b)$: جداء العوامل المشتركة وغير المشتركة، كل عامل بأكبر أس.
+\item $\LW{\pgcd(a;b)}$: جداء العوامل المشتركة، كل عامل بأصغر أس.
+\item $\LW{\ppcm(a;b)}$: جداء العوامل المشتركة وغير المشتركة، كل عامل بأكبر أس.
 \end{itemize}
 \end{tariqa}
 
 \begin{khassia}
-$a$ و $b$ عددان طبيعيان غير معدومين:
+$\LW{a}$ و $\LW{b}$ عددان طبيعيان غير معدومين:
 \begin{enumerate}
 \item \bx{\pgcd(a;b)\times\ppcm(a;b)=ab}.
-\item إذا كان $a\mid b$ فإن $\ppcm(a;b)=b$.
-\item إذا كان $\pgcd(a;b)=1$ فإن $\ppcm(a;b)=ab$.
-\item $\ppcm(ka;kb)=k\,\ppcm(a;b)$ من أجل كل $k\in\N^*$.
-\item $a\mid m$ و $b\mid m$ إذا وفقط إذا كان $\ppcm(a;b)\mid m$.
+\item إذا كان $\LW{a\mid b}$ فإن $\LW{\ppcm(a;b)=b}$.
+\item إذا كان $\LW{\pgcd(a;b)=1}$ فإن $\LW{\ppcm(a;b)=ab}$.
+\item $\LW{\ppcm(ka;kb)=k\,\ppcm(a;b)}$ من أجل كل $\LW{k\in\N^*}$.
+\item $\LW{a\mid m}$ و $\LW{b\mid m}$ إذا وفقط إذا كان $\LW{\ppcm(a;b)\mid m}$.
 \end{enumerate}
 \end{khassia}
 
@@ -640,14 +645,14 @@ $\pgcd(a;b)=2^4=\bx{16}$ و $\ppcm(a;b)=2^8\times3^2\times5\times7=\bx{80640}$.\
 %=====================================================
 \section{مبرهنة بيزو ومبرهنة غوص}
 \begin{tarif}
-نقول إن العددين الصحيحين $a$ و $b$ \textbf{أوليان فيما بينهما} إذا كان $\pgcd(a;b)=1$.
+نقول إن العددين الصحيحين $\LW{a}$ و $\LW{b}$ \textbf{أوليان فيما بينهما} إذا كان $\LW{\pgcd(a;b)=1}$.
 \end{tarif}
 
 \begin{khassia}[مبرهنة بيزو]
-$a$ و $b$ عددان صحيحان غير معدومين:
-$a$ و $b$ أوليان فيما بينهما إذا وفقط إذا وُجد عددان صحيحان $u$ و $v$ بحيث:
-\[ au+bv=1 \]
-وبصفة عامة: إذا كان $d=\pgcd(a;b)$ فإنه توجد ثنائية $(u;v)$ من $\Z^2$ حيث $au+bv=d$.
+$\LW{a}$ و $\LW{b}$ عددان صحيحان غير معدومين:
+$\LW{a}$ و $\LW{b}$ أوليان فيما بينهما إذا وفقط إذا وُجد عددان صحيحان $\LW{u}$ و $\LW{v}$ بحيث:
+\[\LW{ au+bv=1 }\]
+وبصفة عامة: إذا كان $\LW{d=\pgcd(a;b)}$ فإنه توجد ثنائية $\LW{(u;v)}$ من $\LW{\Z^2}$ حيث $\LW{au+bv=d}$.
 \end{khassia}
 
 \begin{mithal}[$n$ عدد طبيعي. بين أن $a$ و $b$ أوليان فيما بينهما]
@@ -656,7 +661,7 @@ $a$ و $b$ أوليان فيما بينهما إذا وفقط إذا وُجد ع
 \end{mithal}
 
 \begin{tariqa}[إيجاد ثنائية بيزو $(u;v)$]
-نطبق خوارزمية إقليدس، ثم نكتب كل باقٍ على الشكل $r=a-bq$ ونعوض البواقي \textbf{من الأخير إلى الأول}، مع التبسيط بعد كل تعويض.
+نطبق خوارزمية إقليدس، ثم نكتب كل باقٍ على الشكل $\LW{r=a-bq}$ ونعوض البواقي \textbf{من الأخير إلى الأول}، مع التبسيط بعد كل تعويض.
 \end{tariqa}
 
 \begin{mithal}[أوجد ثنائية $(x;y)$ من $\Z^2$ حيث $150x+108y=6$]
@@ -670,14 +675,14 @@ $a$ و $b$ أوليان فيما بينهما إذا وفقط إذا وُجد ع
 \end{mithal}
 
 \begin{khassia}[مبرهنة غوص]
-$a$، $b$، $c$ أعداد صحيحة غير معدومة. إذا كان $a$ يقسم $bc$ وكان $a$ أوليًا مع $b$ فإن $a$ يقسم $c$.
+$\LW{a}$، $\LW{b}$، $\LW{c}$ أعداد صحيحة غير معدومة. إذا كان $\LW{a}$ يقسم $\LW{bc}$ وكان $\LW{a}$ أوليًا مع $\LW{b}$ فإن $\LW{a}$ يقسم $\LW{c}$.
 \end{khassia}
 
 \begin{khassia}[نتائج]
 \begin{enumerate}
-\item إذا كان $a\mid n$ و $b\mid n$ و $\pgcd(a;b)=1$ فإن $ab\mid n$.
-\item إذا كان $a$ أوليًا مع $b$ ومع $c$ فإن $a$ أولي مع $bc$.
-\item إذا كان $\pgcd(a;b)=1$ فإن $\pgcd(a^m;b^n)=1$ من أجل كل $m,n\in\N^*$.
+\item إذا كان $\LW{a\mid n}$ و $\LW{b\mid n}$ و $\LW{\pgcd(a;b)=1}$ فإن $\LW{ab\mid n}$.
+\item إذا كان $\LW{a}$ أوليًا مع $\LW{b}$ ومع $\LW{c}$ فإن $\LW{a}$ أولي مع $\LW{bc}$.
+\item إذا كان $\LW{\pgcd(a;b)=1}$ فإن $\LW{\pgcd(a^m;b^n)=1}$ من أجل كل $\LW{m,n\in\N^*}$.
 \end{enumerate}
 \end{khassia}
 
@@ -689,22 +694,24 @@ $5x=7y$، إذن $7\mid5x$، و $\pgcd(7;5)=1$، فحسب غوص $7\mid x$، أ�
 %=====================================================
 \section{المعادلات من الشكل $ax+by=c$}
 \begin{khassia}[مبرهنة]
-$a$، $b$ عددان صحيحان غير معدومين و $c$ عدد صحيح. المعادلة $ax+by=c$ ذات المجهول $(x;y)\in\Z^2$ تقبل حلولًا إذا وفقط إذا كان $\pgcd(a;b)$ يقسم $c$.
+$\LW{a}$، $\LW{b}$ عددان صحيحان غير معدومين و $\LW{c}$ عدد صحيح. المعادلة $\LW{ax+by=c}$ ذات المجهول $\LW{(x;y)\in\Z^2}$ تقبل حلولًا إذا وفقط إذا كان $\LW{\pgcd(a;b)}$ يقسم $\LW{c}$.
 \end{khassia}
 
 \begin{tariqa}[حل $ax+by=c$ في $\Z^2$]
 \begin{enumerate}
-\item نحسب $d=\pgcd(a;b)$: إذا كان $d$ لا يقسم $c$ فلا حلول. وإلا نقسم الطرفين على $d$ فنحصل على $a'x+b'y=c'$ مع $\pgcd(a';b')=1$.
-\item نبحث عن حل خاص $(x_0;y_0)$: بالملاحظة، أو بخوارزمية إقليدس (بيزو)، أو بالموافقات: $a'x\equiv c'\,[b']$.
-\item نطرح: $a'(x-x_0)=-b'(y-y_0)$، ثم نطبق غوص: $b'\mid x-x_0$.
-\item الحلول: $x=x_0+b'k$ و $y=y_0-a'k$ حيث $k\in\Z$.
+\item نحسب $\LW{d=\pgcd(a;b)}$: إذا كان $\LW{d}$ لا يقسم $\LW{c}$ فلا حلول. وإلا نقسم الطرفين على $\LW{d}$ فنحصل على $\LW{a'x+b'y=c'}$ مع $\LW{\pgcd(a';b')=1}$.
+\item نبحث عن حل خاص $\LW{(x_0;y_0)}$: بالملاحظة، أو بخوارزمية إقليدس (بيزو)، أو بالموافقات: $\LW{a'x\equiv c'\,[b']}$.
+\item نطرح: $\LW{a'(x-x_0)=-b'(y-y_0)}$، ثم نطبق غوص: $\LW{b'\mid x-x_0}$.
+\item الحلول: $\LW{x=x_0+b'k}$ و $\LW{y=y_0-a'k}$ حيث $\LW{k\in\Z}$.
 \end{enumerate}
 \end{tariqa}
 
 \begin{mithal}[حل في $\Z^2$ المعادلة $2045x-64y=1$]
 $\pgcd(2045;64)=1$ يقسم $1$، إذن المعادلة تقبل حلولًا.\par
 حل خاص: $2045\times21-64\times671=42945-42944=1$، إذن $(21;671)$ حل.\par
-بالطرح: $2045(x-21)=64(y-671)$. $64$ يقسم $2045(x-21)$ و $\pgcd(64;2045)=1$، فحسب غوص $64\mid x-21$، أي $x=64k+21$.\par
+بالطرح: 
+\[ 2045(x-21)=64(y-671) \]
+$64$ يقسم $2045(x-21)$ و $\pgcd(64;2045)=1$، فحسب غوص $64\mid x-21$، أي $x=64k+21$.\par
 بالتعويض: $2045\times64k=64(y-671)$، أي $y=2045k+671$.\par
 \bx{(x;y)=(64k+21\ ;\ 2045k+671),\ k\in\Z}
 \end{mithal}
@@ -734,7 +741,9 @@ $6x+9y=4$: $\pgcd(6;9)=3$ و $3$ لا يقسم $4$، إذن المعادلة \te
 \end{tmr}
 \begin{hal}
 \QQ{1} $2^0=1\equiv1\,[7]$، $2^1\equiv2\,[7]$، $2^2\equiv4\,[7]$، $2^3=8\equiv1\,[7]$.\par
-بما أن $2^3\equiv1\,[7]$ فإن من أجل كل $k\in\N$: $2^{3k}=(2^3)^k\equiv1\,[7]$، ثم $2^{3k+1}=2^{3k}\times2\equiv2\,[7]$ و $2^{3k+2}\equiv4\,[7]$:
+بما أن $2^3\equiv1\,[7]$ فإن من أجل كل $k\in\N$: 
+\[ 2^{3k}=(2^3)^k\equiv1\,[7] \]
+ثم $2^{3k+1}=2^{3k}\times2\equiv2\,[7]$ و $2^{3k+2}\equiv4\,[7]$:
 \begin{center}
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{|c|c|c|c|}\hline

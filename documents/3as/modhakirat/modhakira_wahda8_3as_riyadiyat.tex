@@ -3,7 +3,7 @@
 %  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
 % ============================================================
 \documentclass[12pt,a4paper]{article}
-\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage[a4paper,margin=1.2cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{icomma}
 \usepackage[english,bidi=default,layout=lists]{babel}
@@ -188,22 +188,26 @@
 \end{LTR}
 \par\smallskip\textbf{الوسائل:} #9\par\smallskip}
 \newenvironment{Sayr}{%
-\begin{LTR}\renewcommand{\arraystretch}{1.25}
-\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
-\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\begin{LTR}\renewcommand{\arraystretch}{1.25}\setlength{\tabcolsep}{4pt}\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\begin{longtable}{|p{0.09\textwidth}|>{\centering\arraybackslash}p{0.05\textwidth}|p{0.71\textwidth}|>{\centering\arraybackslash}p{0.09\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\footnotesize\textbf{توجيهات وتعاليق}} & \ar{\footnotesize\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\footnotesize\textbf{مراحل الحصة}}\\\hline\endhead
 \hline\endfoot}{\end{longtable}\end{LTR}}
 % سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
-\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
+\newcommand{\RaggedEnd}{\leftskip=0pt plus 1fil\relax}
+\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{\RaggedEnd #2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
 
 \newcommand{\Lab}[2]{\foreignlanguage{english}{\tcbox[on line,colback=#1,colframe=#1,boxrule=0pt,arc=2pt,boxsep=1pt,left=5pt,right=5pt,top=1pt,bottom=1pt]{\ar{\textcolor{white}{\textbf{#2}}}}}}
 \newcommand{\Num}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[fill=cDef,text=white,inner sep=2pt,font=\footnotesize\bfseries](c){#1};}}
 \newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
 \newenvironment{Kad}[1]{\par\smallskip\Lab{#1}}{\par}
+\newcommand{\RR}[1]{\ifmmode{\color{cThm}#1}\else$\mbox{\color{cThm}#1}$\fi}
+\newcommand{\T}[1]{$\mbox{\color{cDef}\bfseries #1}$}
+\providecommand{\LW}[1]{{\color{cDef}#1}}
 \SetHeader{\small\bfseries\color{cSec}مذكرات محور: الأعداد والحساب}{\small\color{cSec}السنة الثالثة ثانوي -- رياضيات وتقني رياضي}
 \begin{document}
 \begin{LTR}
 \begin{tcolorbox}[enhanced,colback=cThm!85!black,colframe=cThm!85!black,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
-{\color{white}\fontsize{26}{32}\selectfont\bfseries مذكرات محور: الأعداد والحساب}\\[8pt]
+{\color{white}\fontsize{24}{30}\selectfont\bfseries مذكرات محور: الأعداد والحساب}\\[8pt]
 {\color{white}\large السنة الثالثة ثانوي -- رياضيات وتقني رياضي}\\[4pt]
 {\color{white}\large 10 مذكرات (20 ساعة) -- السنة الدراسية 2026-2027}
 \end{tcolorbox}
@@ -215,207 +219,274 @@
 \item القاسم المشترك الأكبر وخوارزمية إقليدس.
 \item حل مشكلات بتوظيف خواص القاسم المشترك الأكبر.
 \item الموافقات في $\mathbb Z$: تعريف وخواص.
-\item تطبيقات الموافقات: الدورية ، قابلية القسمة.
+\item تطبيقات الموافقات: الدورية ، قابلية القسمة ، المعادلات.
 \item التعداد: نشر عدد وفق أساس.
 \item الأعداد الأولية ، التحليل إلى جداء عوامل أولية.
 \item المضاعف المشترك الأصغر وعلاقته بـ PGCD.
 \item مبرهنتا بيزو وغوص ، المعادلة $ax+by=c$.
 \end{enumerate}
-خاص بشعبتي رياضيات وتقني رياضي ، ويُدرَّس حسب التوزيع بعد محور الحساب التكاملي (أسبوع 15--17). مراجع التمارين: الكتاب المدرسي للسنة الثالثة ثانوي ، الجزء الثاني (ص 56--112).
+الحلول مفصّلة: المعطيات بالأسود ، \T{العناوين} و\RR{النتائج} بلون مختلف ، وكل سؤال في سطر.
 \end{BOX}
 \newpage
 \ModhHead{57}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{قابلية القسمة في $\mathbb Z$}%
-{\begin{itemize}\item القسمة في $\mathbb N$ ، الأعداد الأولية (1 ج م).\end{itemize}}%
-{\begin{itemize}\item إثبات أن عدداً صحيحاً يقسم آخر ، واستعمال خواص قابلية القسمة.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{\begin{itemize}\item القسمة في $\mathbb N$ ، الأعداد الأولية (السنة الأولى).\end{itemize}}%
+{\begin{itemize}\item إثبات أن عددًا صحيحًا يقسم آخر ، واستعمال خواص قابلية القسمة.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} هل $-12$ مضاعف لـ $3$ ؟ وهل $0$ مضاعف لكل عدد؟}{10 د}{سؤال.}
+\textbf{التهيئة النفسية:} هل $-12$ مضاعف لـ $3$ ؟ وهل $0$ مضاعف لكل عدد صحيح؟}{10 د}{سؤال.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ نوسع مفهوم القاسم من $\mathbb N$ إلى $\mathbb Z$: $3$ يقسم $-12$ لأن $-12=3\times(-4)$.\par
-}{35 د}{توسيع المفهوم.}
-\Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $a$ يقسم $b$ ($a\neq0$) ونكتب $a\mid b$ إذا وُجد $k\in\mathbb Z$ حيث $b=ka$.\par\Lab{cThm}{خاصية}\par\ck\ إذا كان $a\mid b$ و $b\mid c$ فإن $a\mid c$.\par
-\ck\ إذا كان $a\mid b$ و $a\mid c$ فإن $a\mid(\beta b+\gamma c)$ من أجل كل $\beta,\gamma\in\mathbb Z$.\par
-}{50 د}{خاصية التركيب الخطي.}
+\Lab{cEx}{نشاط رقم 01}\par\textbf{(1)} اكتب قواسم $12$ في $\mathbb N$ ثم في $\mathbb Z$.\par\textbf{(2)} هل $3$ يقسم $-12$ ؟ برّر.\par\textbf{(3)} $a$ يقسم $b$ و $a$ يقسم $c$: بيّن أن $a$ يقسم $2b-3c$.}{35 د}{توسيع المفهوم.}
 \Row{}{%
-\Lab{cEx}{مثال}\ عيّن $n\in\mathbb Z$ حيث $(n+1)\mid(n+5)$: $n+5=(n+1)+4$ ، إذن $(n+1)\mid4$: $n+1\in\{\pm1;\pm2;\pm4\}$ ، $n\in\{-5;-3;-2;0;1;3\}$.\par\Lab{cThm!80!black}{حذار}\ لا ننسى القواسم السالبة في $\mathbb Z$.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} في $\mathbb N$: $\RR{1;2;3;4;6;12}$. في $\mathbb Z$: $\RR{\pm1;\pm2;\pm3;\pm4;\pm6;\pm12}$.\par\textbf{(2)} $-12=3\times(-4)$ و $-4\in\mathbb Z$ ، إذن \RR{$3$} \RR{يقسم} \RR{$-12$}.\par\textbf{(3)} $b=ka$ و $c=k^{\prime}a$: $2b-3c=2ka-3k^{\prime}a=\RR{(2k-3k^{\prime})a}$ و $2k-3k^{\prime}\in\mathbb Z$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $\LW{a}$ و $\LW{b}$ عددان صحيحان ($\LW{a\neq0}$). نقول إن $\LW{a}$ \textbf{يقسم} $\LW{b}$ ونكتب $\LW{a\mid b}$ إذا وُجد $\LW{k\in\mathbb Z}$ حيث $\LW{b=ka}$. نقول أيضًا: $\LW{b}$ \textbf{مضاعف} لـ $\LW{a}$.}{50 د}{التركيب الخطي.}
+\Row{}{%
+\Lab{cThm}{خاصية}\par\textbf{(1)} $\LW{a\mid a}$ ، $\LW{1\mid a}$ ، $\LW{a\mid0}$.\par\textbf{(2)} $\LW{a\mid b}$ و $\LW{b\mid c}$ $\LW{\Rightarrow}$ $\LW{a\mid c}$.\par\textbf{(3)} $\LW{a\mid b}$ و $\LW{b\mid a}$ $\LW{\Rightarrow}$ $\LW{a=b}$ أو $\LW{a=-b}$.\par\textbf{(4)} $\LW{a\mid b}$ و $\LW{a\mid c}$ $\LW{\Rightarrow}$ $\LW{a\mid(\beta b+\gamma c)}$ من أجل كل $\LW{\beta,\gamma\in\mathbb Z}$.\par\textbf{(5)} $\LW{a\mid b}$ $\LW{\Rightarrow}$ $\LW{ac\mid bc}$ ($\LW{c\neq0}$).}{}{}
+\Row{}{%
+\Lab{cMeth}{البرهان}\ للخاصية (4): $b=ka$ و $c=k^{\prime}a$ ، إذن \par $\beta b+\gamma c=(\beta k+\gamma k^{\prime})a$.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $(n+1)\mid(n+5)$ في $\mathbb Z$: $n+5=(n+1)+4$ ، إذن $(n+1)\mid4$.\par\textbf{(2)} $n+1\in\{\pm1;\pm2;\pm4\}$ ، ومنه $\RR{n\in\{-5;-3;-2;0;1;3\}}$.\par\textbf{(3)} $(2n+1)\mid(n+7)$ في $\mathbb N$: $2(n+7)=(2n+1)+13$ ، إذن $(2n+1)\mid13$.\par\textbf{(4)} $2n+1\in\{1;13\}$ ، ومنه $\RR{n\in\{0;6\}}$ (تحقق: $n=6$: $13\mid13$ \ck).}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ لا ننسى القواسم السالبة في $\mathbb Z$. و $a\mid bc$ لا يعني $a\mid b$ أو $a\mid c$: $6\mid2\times3$ لكن $6\nmid2$ و $6\nmid3$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par عيّن الأعداد الطبيعية $n$ حيث $n\mid(n+8)$.\par\textbf{الحل:} $n\mid8$: $n\in\{1;2;4;8\}$.\par\textbf{واجب منزلي:} تمارين 2 ، 3 ، 12 ، 13 صفحة 56.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} عيّن الأعداد الطبيعية $n$ حيث $n\mid(n+8)$.\par\textbf{(2)} عيّن الأعداد الصحيحة $n$ حيث $(n-2)\mid(3n+1)$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $n\mid n$ و $n\mid(n+8)$ ، إذن $n\mid8$: $\RR{n\in\{1;2;4;8\}}$.\par\textbf{(2)} $3n+1=3(n-2)+7$ ، إذن $(n-2)\mid7$: $n-2\in\{\pm1;\pm7\}$.\par\textbf{(3)} $\RR{n\in\{-5;1;3;9\}}$.\par\textbf{واجب منزلي:} تمارين 2 ، 3 ، 12 ، 13 صفحة 56.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{58}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{القسمة الإقليدية في $\mathbb Z$}%
-{\begin{itemize}\item قابلية القسمة.\end{itemize}}%
-{\begin{itemize}\item إجراء القسمة الإقليدية في $\mathbb Z$ واستعمالها.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{\begin{itemize}\item قابلية القسمة في $\mathbb Z$.\end{itemize}}%
+{\begin{itemize}\item إجراء القسمة الإقليدية في $\mathbb Z$ واستعمالها (فصل الحالات).\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
 \textbf{التهيئة النفسية:} ما حاصل وباقي قسمة $17$ على $5$ ؟ وماذا عن $-17$ ؟}{10 د}{سؤال.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ $17=5\times3+2$ ؛ $-17=5\times(-4)+3$ (الباقي يبقى موجباً).\par
-}{35 د}{تقويم الأيام.}
-\Row{بناء المعارف}{%
-\Lab{cThm}{خاصية}\ من أجل $a\in\mathbb Z$ و $b\in\mathbb N^*$: يوجد ثنائية وحيدة $(q;r)$ حيث $a=bq+r$ و $0\leqslant r<b$.\par\Lab{cEx}{مثال}\ $2026=7\times289+3$: الباقي $3$ ؛ اليوم $2026$ بعد يوم الأحد هو الأربعاء.\par}{50 د}{فصل الحالات.}
+\Lab{cEx}{نشاط رقم 02}\par\textbf{(1)} اكتب $17=5q+r$ حيث $0\leqslant r<5$.\par\textbf{(2)} اكتب $-17=5q+r$ حيث $0\leqslant r<5$.\par\textbf{(3)} اليوم أحد: ما اليوم بعد $2026$ يومًا؟}{35 د}{تقويم الأيام.}
 \Row{}{%
-\Lab{cRem}{ملاحظات}\ بواقي القسمة على $b$: $0$ ، $1$ ، $\ldots$ ، $b-1$: كل عدد صحيح يكتب $bq+r$.\par\Lab{cThm!80!black}{حذار}\ في $-17=5\times(-3)-2$ الباقي سالب: ليست قسمة إقليدية.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $17=5\times3+2$: $\RR{q=3}$ ، $\RR{r=2}$.\par\textbf{(2)} $-17=5\times(-4)+3$: $\RR{q=-4}$ ، $\RR{r=3}$ (الباقي يبقى موجبًا).\par\textbf{(3)} $2026=7\times289+3$: بعد $3$ أيام من الأحد: \RR{الأربعاء}.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cThm}{مبرهنة القسمة الإقليدية}\ من أجل $\LW{a\in\mathbb Z}$ و $\LW{b\in\mathbb N^*}$ توجد ثنائية وحيدة $\LW{(q;r)}$ من الأعداد الصحيحة حيث: $\LW{\RR{a=bq+r}}$ و $\LW{\RR{0\leqslant r<b}}$.}{50 د}{فصل الحالات.}
+\Row{}{%
+\Lab{cRem}{ملاحظات}\par\textbf{(1)} $q$ الحاصل ، $r$ الباقي ؛ $b\mid a\iff r=0$.\par\textbf{(2)} البواقي الممكنة في القسمة على $b$: $0$ ، $1$ ، $\ldots$ ، $b-1$: كل عدد صحيح يكتب $bk$ أو $bk+1$ أو $\ldots$ أو $bk+(b-1)$.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $-45=7\times(-7)+4$: الحاصل $\RR{-7}$ والباقي $\RR{4}$.\par\textbf{(2)} مربع عدد صحيح: $n=2m\Rightarrow n^2=\RR{4m^2}$ ؛ \quad $n=2m+1\Rightarrow n^2=\RR{4(m^2+m)+1}$.\par\textbf{(3)} $n(n+1)(n+2)$ مضاعف لـ $3$: نفصل الحالات $n=3k$ ، $n=3k+1$ ($n+2=3(k+1)$) ، $n=3k+2$ ($n+1=3(k+1)$).}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ $-17=5\times(-3)-2$ ليست قسمة إقليدية لأن الباقي سالب.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par بيّن أن مربع كل عدد صحيح يكتب على الشكل $4k$ أو $4k+1$.\par\textbf{الحل:} $n=2m$: $n^2=4m^2$ ؛ $n=2m+1$: $n^2=4(m^2+m)+1$.\par\textbf{واجب منزلي:} تمرينا 15 و 16 صفحة 56 ، وتمرين 35 صفحة 57.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} أجرِ القسمة الإقليدية لـ $-100$ على $9$.\par\textbf{(2)} باقي قسمة $a$ على $6$ هو $4$: ما باقي قسمة $a$ على $3$ ؟\par\textbf{(3)} بيّن أن مربع كل عدد فردي يكتب على الشكل $8k+1$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $-100=9\times(-12)+8$: $\RR{q=-12}$ ، $\RR{r=8}$.\par\textbf{(2)} $a=6q+4=3(2q+1)+1$: الباقي $\RR{1}$.\par\textbf{(3)} $n=2m+1$: $n^2=4m(m+1)+1$ ، و $m(m+1)$ زوجي $=2k$ ، إذن $\RR{n^2=8k+1}$.\par\textbf{واجب منزلي:} تمرينا 15 و 16 صفحة 56 ، وتمرين 35 صفحة 57.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{59}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{القاسم المشترك الأكبر وخوارزمية إقليدس}%
-{\begin{itemize}\item القسمة الإقليدية.\end{itemize}}%
-{\begin{itemize}\item تعيين PGCD عددين والقواسم المشتركة بخوارزمية إقليدس.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{\begin{itemize}\item القسمة الإقليدية ، قابلية القسمة.\end{itemize}}%
+{\begin{itemize}\item تعيين PGCD عددين طبيعيين والقواسم المشتركة لهما بخوارزمية إقليدس.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} كيف نحسب PGCD$(1071;462)$ دون تحليل؟}{10 د}{سؤال.}
+\textbf{التهيئة النفسية:} ما أكبر عدد يقسم $84$ و $60$ معًا؟}{10 د}{سؤال.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ إذا كان $a=bq+r$ فإن القواسم المشتركة لـ $a$ و $b$ هي القواسم المشتركة لـ $b$ و $r$.\par
-}{35 د}{جدول الخوارزمية.}
-\Row{بناء المعارف}{%
-\Lab{cThm}{خاصية}\ $\mathrm{PGCD}(a;b)=\mathrm{PGCD}(b;r)$ ؛ آخر باقٍ غير معدوم في خوارزمية إقليدس هو PGCD.\par\Lab{cEx}{مثال}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|}\hline
-\rowcolor{cSec!12}$a$ & $b$ & $q$ & $r$\\\hline
-$1071$ & $462$ & $2$ & $147$\\\hline
-$462$ & $147$ & $3$ & $21$\\\hline
-$147$ & $21$ & $7$ & $0$\\\hline
-\end{tabular}}\end{LTR}\par $\mathrm{PGCD}(1071;462)=21$ ؛ القواسم المشتركة هي قواسم $21$: $1$ ، $3$ ، $7$ ، $21$.\par}{50 د}{الحاسبة للتحقق.}
+\Lab{cEx}{نشاط رقم 03}\par\textbf{(1)} اكتب القواسم الموجبة لـ $84$ ولـ $60$ ، ثم قواسمهما المشتركة.\par\textbf{(2)} ما أكبرها؟\par\textbf{(3)} $84=60\times1+24$: قارن القواسم المشتركة لـ $(84;60)$ و $(60;24)$.}{35 د}{مقارنة القواسم.}
 \Row{}{%
-\Lab{cThm}{خواص}\ $\mathrm{PGCD}(ka;kb)=k\,\mathrm{PGCD}(a;b)$ ؛ $a$ و $b$ أوليان فيما بينهما إذا كان $\mathrm{PGCD}(a;b)=1$.\par\Lab{cThm!80!black}{حذار}\ نتوقف عند أول باقٍ معدوم.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $84$: $1;2;3;4;6;7;12;14;21;28;42;84$ ؛ $60$: \par $1;2;3;4;5;6;10;12;15;20;30;60$.\par\textbf{(2)} القواسم المشتركة: $\RR{1;2;3;4;6;12}$ ، أكبرها $\RR{12}$.\par\textbf{(3)} القواسم المشتركة لـ $60$ و $24$ هي نفسها: \par $\RR{\operatorname{PGCD}(84;60)=\operatorname{PGCD}(60;24)}$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $\LW{\operatorname{PGCD}(a;b)}$ هو \textbf{أكبر قاسم مشترك} لـ $\LW{a}$ و $\LW{b}$. نقول إن $\LW{a}$ و $\LW{b}$ \textbf{أوليان فيما بينهما} إذا كان $\LW{\operatorname{PGCD}(a;b)=1}$.}{50 د}{خوارزمية إقليدس.}
+\Row{}{%
+\Lab{cThm}{خاصية}\par\textbf{(1)} إذا كان $\LW{a=bq+r}$ فإن $\LW{\RR{\operatorname{PGCD}(a;b)=\operatorname{PGCD}(b;r)}}$.\par\textbf{(2)} \textbf{خوارزمية إقليدس:} $\LW{\operatorname{PGCD}(a;b)}$ هو \textbf{آخر باقٍ غير معدوم}.\par\textbf{(3)} القواسم المشتركة لـ $\LW{a}$ و $\LW{b}$ هي قواسم $\LW{\operatorname{PGCD}(a;b)}$.\par\textbf{(4)} $\LW{\operatorname{PGCD}(ka;kb)=k\,\operatorname{PGCD}(a;b)}$ ($\LW{k\in\mathbb N^*}$).}{}{}
+\Row{}{%
+\Lab{cMeth}{البرهان}\ $d\mid a$ و $d\mid b$ $\Rightarrow$ $d\mid a-bq=r$ ؛ وبالعكس $d\mid b$ و $d\mid r$ $\Rightarrow$ $d\mid bq+r=a$.}{}{}
+\Row{}{%
+\Lab{cEx}{مثال محلول: PGCD(1071;462)}\par\textbf{(1)} $1071=462\times2+147$\par\textbf{(2)} $462=147\times3+21$\par\textbf{(3)} $147=21\times7+0$\par\textbf{(4)} آخر باقٍ غير معدوم: $\RR{\operatorname{PGCD}(1071;462)=21}$ ؛ القواسم المشتركة: $\RR{1;3;7;21}$.}{}{}
+\Row{}{%
+\Lab{cEx}{مثال}\ $2n+1=n\times2+1$ ، إذن \par $\operatorname{PGCD}(2n+1;n)=\operatorname{PGCD}(n;1)=\RR{1}$: $2n+1$ و $n$ \RR{أوليان} \RR{فيما} \RR{بينهما}.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ $\operatorname{PGCD}$ هو آخر \textbf{باقٍ} غير معدوم ، وليس آخر حاصل.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par احسب $\mathrm{PGCD}(2024;345)$.\par\textbf{الحل:} $2024=345\times5+299$ ، $345=299+46$ ، $299=46\times6+23$ ، $46=23\times2$: PGCD $=23$.\par\textbf{واجب منزلي:} تمارين من باب القسمة في $\mathbb Z$.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} احسب $\operatorname{PGCD}(756;210)$ بخوارزمية إقليدس.\par\textbf{(2)} بيّن أن $\operatorname{PGCD}(n+3;n+1)$ يساوي $1$ أو $2$ ، ومتى يساوي $2$ ؟}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $756=210\times3+126$ ؛ $210=126\times1+84$ ؛ $126=84\times1+42$ ؛ $84=42\times2+0$: $\RR{\operatorname{PGCD}=42}$.\par\textbf{(2)} $n+3=(n+1)+2$ ، إذن $\operatorname{PGCD}(n+3;n+1)=\operatorname{PGCD}(n+1;2)$ ، وهو قاسم لـ $2$: $\RR{1}$ أو $\RR{2}$.\par\textbf{(3)} يساوي $2$ إذا وفقط إذا كان $n+1$ زوجيًا ، أي \RR{$n$} \RR{فردي}.\par\textbf{واجب منزلي:} تمارين من باب PGCD.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{60}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{حل مشكلات بتوظيف خواص القاسم المشترك الأكبر}%
-{\begin{itemize}\item PGCD وخواصه.\end{itemize}}%
-{\begin{itemize}\item حل مشكلات بتوظيف PGCD.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{\begin{itemize}\item PGCD ، خوارزمية إقليدس.\end{itemize}}%
+{\begin{itemize}\item ترييض مشكلة وحلها بتوظيف خواص PGCD.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} أرضية $360\times150$ cm نريد تبليطها بمربعات متقايسة أكبر ما يمكن: ما ضلع المربع؟}{10 د}{وضعية بناء.}
+\textbf{التهيئة النفسية:} كيف نبلّط غرفة ببلاطات مربعة متماثلة بأكبر قياس ممكن دون قطع؟}{10 د}{وضعية واقعية.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ الضلع يقسم $360$ و $150$ ، وأكبر قاسم مشترك هو $\mathrm{PGCD}(360;150)=30$ cm.\par
-}{35 د}{الكتابة $a=da^{\prime}$.}
-\Row{بناء المعارف}{%
-\Lab{cMeth}{طريقة}\ إذا كان $\mathrm{PGCD}(a;b)=d$: نكتب $a=da^{\prime}$ و $b=db^{\prime}$ مع $\mathrm{PGCD}(a^{\prime};b^{\prime})=1$.\par\Lab{cEx}{مثال}\ عيّن $a$ و $b$ طبيعيين حيث $a+b=84$ و $\mathrm{PGCD}(a;b)=12$: $a^{\prime}+b^{\prime}=7$ مع $a^{\prime}$ و $b^{\prime}$ أوليين فيما بينهما: $(a;b)\in\{(12;72),(24;60),(36;48)\}$ ومقلوباتها.\par}{50 د}{جدول الحالات.}
+\Lab{cEx}{نشاط رقم 04}\ غرفة أبعادها $3{,}36$ m و $2{,}40$ m نبلّطها ببلاطات مربعة متماثلة دون قطع.\par\textbf{(1)} ما أكبر طول ممكن لضلع البلاطة؟\par\textbf{(2)} كم بلاطة نحتاج؟}{35 د}{عمل بالأفواج.}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ نتحقق من شرط الأولية فيما بينهما.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} الضلع يقسم $336$ و $240$ (بالسنتيمتر) ، وأكبرها \par $\operatorname{PGCD}(336;240)$.\par\textbf{(2)} $336=240\times1+96$ ؛ $240=96\times2+48$ ؛ $96=48\times2+0$: الضلع $\RR{48}$ cm.\par\textbf{(3)} $\dfrac{336}{48}\times\dfrac{240}{48}=7\times5=\RR{35}$ بلاطة.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cThm}{خاصية}\ إذا كان $\LW{d=\operatorname{PGCD}(a;b)}$ فإن $\LW{a=da^{\prime}}$ و $\LW{b=db^{\prime}}$ حيث \par $\LW{\RR{\operatorname{PGCD}(a^{\prime};b^{\prime})=1}}$.}{50 د}{ترييض المشكلة.}
+\Row{}{%
+\Lab{cMeth}{مشكلة PGCD}\par\textbf{(1)} «أكبر قياس مشترك» أو «أكبر عدد مجموعات متماثلة» $\Rightarrow$ $\operatorname{PGCD}$.\par\textbf{(2)} إذا علمنا $\operatorname{PGCD}(a;b)=d$: نكتب $a=da^{\prime}$ ، $b=db^{\prime}$ مع $a^{\prime}$ و $b^{\prime}$ أوليين فيما بينهما.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $a+b=144$ و $\operatorname{PGCD}(a;b)=12$ ($a<b$): $a^{\prime}+b^{\prime}=12$ مع \par $\operatorname{PGCD}(a^{\prime};b^{\prime})=1$.\par\textbf{(2)} $(a^{\prime};b^{\prime})\in\{(1;11);(5;7)\}$ ، ومنه \par $\RR{(a;b)\in\{(12;132);(60;84)\}}$.\par\textbf{(3)} $168$ قلمًا و $126$ كراسًا نوزعها بالتساوي على أكبر عدد من الأفواج: $168=126+42$ ؛ $126=42\times3$.\par\textbf{(4)} $\RR{42}$ فوجًا ، لكل فوج $\RR{4}$ أقلام و $\RR{3}$ كراريس.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نتحقق أن $a^{\prime}$ و $b^{\prime}$ أوليان فيما بينهما: $(2;10)$ و $(3;9)$ و $(4;8)$ مرفوضة.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par عيّن $a$ و $b$ حيث $ab=1728$ و $\mathrm{PGCD}(a;b)=12$.\par\textbf{الحل:} $144a^{\prime}b^{\prime}=1728$ ، $a^{\prime}b^{\prime}=12$ مع أولية: $(1;12)$ ، $(3;4)$: $(12;144)$ ، $(36;48)$ ومقلوباتها.\par\textbf{واجب منزلي:} تمرين 17 صفحة 57.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} عيّن $a$ و $b$ ($a<b$) حيث $a+b=60$ و $\operatorname{PGCD}(a;b)=6$.\par\textbf{(2)} بيّن أن $\operatorname{PGCD}(2n+3;n+5)$ يقسم $7$ ، ومتى يساوي $7$ ؟}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $a^{\prime}+b^{\prime}=10$ مع $\operatorname{PGCD}(a^{\prime};b^{\prime})=1$: $(1;9)$ ، $(3;7)$: $\RR{(6;54)}$ ، $\RR{(18;42)}$.\par\textbf{(2)} $2n+3=2(n+5)-7$: كل قاسم مشترك يقسم $7$: $\operatorname{PGCD}\in\{1;7\}$.\par\textbf{(3)} يساوي $7$ إذا كان $7\mid(n+5)$ ، أي $\RR{n=7k+2}$ (تحقق: $n=2$: $7$ و $7$ \ck).\par\textbf{واجب منزلي:} مسائل من باب PGCD.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{61}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{الموافقات في $\mathbb Z$: تعريف وخواص}%
 {\begin{itemize}\item القسمة الإقليدية.\end{itemize}}%
 {\begin{itemize}\item استعمال الموافقات وخواصها لتعيين بواقي القسمة.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} كم الساعة بعد $100$ ساعة من الآن (الساعة $8$)؟}{10 د}{وضعية الساعة.}
+\textbf{التهيئة النفسية:} $23$ و $58$: هل لهما نفس باقي القسمة على $5$ ؟}{10 د}{سؤال.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مناقشة نشاط 1 صفحة 67}\par\ck\ $8+100=108=24\times4+12$: الساعة $12$. نقول $108\equiv12\ [24]$.\par
-}{35 د}{نشاط الكتاب.}
-\Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $a\equiv b\ [n]$ إذا كان $n\mid(a-b)$ ، أي لـ $a$ و $b$ نفس الباقي في القسمة على $n$.\par\Lab{cThm}{خاصية}\ إذا كان $a\equiv b$ و $c\equiv d\ [n]$ فإن $a+c\equiv b+d$ ، $ac\equiv bd$ ، $a^k\equiv b^k\ [n]$.\par}{50 د}{البحث عن قوة توافق $1$.}
+\Lab{cEx}{نشاط رقم 05}\par\textbf{(1)} عيّن باقي قسمة $23$ و $58$ على $5$.\par\textbf{(2)} احسب $58-23$. ماذا تلاحظ؟}{35 د}{مقارنة البواقي.}
 \Row{}{%
-\Lab{cEx}{مثال}\ باقي قسمة $2^{100}$ على $7$: $2^3=8\equiv1\ [7]$ ، $2^{100}=(2^3)^{33}\times2\equiv2\ [7]$.\par\Lab{cThm!80!black}{حذار}\ لا يمكن «القسمة» على الطرفين في الموافقة عموماً.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $23=5\times4+3$ و $58=5\times11+3$: الباقي نفسه $\RR{3}$.\par\textbf{(2)} $58-23=35=5\times7$: الفرق \RR{مضاعف} \RR{لـ} \RR{$5$}.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $\LW{n\in\mathbb N}$ ، $\LW{n\geqslant2}$. نقول إن $\LW{a}$ \textbf{يوافق} $\LW{b}$ بترديد $\LW{n}$ ونكتب $\LW{a\equiv b\ [n]}$ إذا كان $\LW{\RR{n\mid(a-b)}}$ ، أي إذا كان لـ $\LW{a}$ و $\LW{b}$ نفس الباقي في القسمة على $\LW{n}$.}{50 د}{خواص العمليات.}
+\Row{}{%
+\Lab{cThm}{خاصية}\par\textbf{(1)} $\LW{a\equiv a\ [n]}$ ؛ $\LW{a\equiv b\Rightarrow b\equiv a}$ ؛ $\LW{a\equiv b}$ و $\LW{b\equiv c\Rightarrow a\equiv c}$.\par\textbf{(2)} إذا كان $\LW{a\equiv r\ [n]}$ و $\LW{0\leqslant r<n}$ فإن $\LW{r}$ هو باقي قسمة $\LW{a}$ على $\LW{n}$.\par\textbf{(3)} $\LW{a\equiv b}$ و $\LW{c\equiv d}$ $\LW{\Rightarrow}$ $\LW{\RR{a+c\equiv b+d}}$ و $\LW{\RR{ac\equiv bd}}$\ [n].\par\textbf{(4)} $\LW{a\equiv b\ [n]}$ $\LW{\Rightarrow}$ $\LW{\RR{a^k\equiv b^k\ [n]}}$ ($\LW{k\in\mathbb N}$).}{}{}
+\Row{}{%
+\Lab{cMeth}{البرهان}\ للجداء: \par $ac-bd=a(c-d)+d(a-b)$ ، و $n$ يقسم الحدين.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $2026=7\times289+3$: $\RR{2026\equiv3\ [7]}$.\par\textbf{(2)} $100\equiv2\ [7]$ ، إذن $100^3\equiv2^3=8\equiv\RR{1\ [7]}$.\par\textbf{(3)} $2^3=8\equiv1\ [7]$ ، إذن $2^{10}=(2^3)^3\times2\equiv\RR{2\ [7]}$: الباقي $2$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ لا نقسم طرفي موافقة: $2\times3\equiv2\times8\ [10]$ لكن $3\not\equiv8\ [10]$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par عيّن باقي قسمة $5^{2026}$ على $3$.\par\textbf{الحل:} $5\equiv-1\ [3]$: $5^{2026}\equiv(-1)^{2026}=1$: الباقي $1$.\par\textbf{واجب منزلي:} تمارين 1 ، 2 ، 4 صفحة 78 ، و 17 ، 21 ، 31 ، 32 صفحة 79.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} عيّن باقي قسمة $5^{100}$ على $3$.\par\textbf{(2)} بيّن أن $7$ يقسم $3^{2n}-2^n$ من أجل كل $n\in\mathbb N$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $5\equiv-1\ [3]$ ، إذن $5^{100}\equiv(-1)^{100}=\RR{1\ [3]}$.\par\textbf{(2)} $3^{2n}=9^n$ و $9\equiv2\ [7]$ ، إذن $9^n\equiv2^n$ ، ومنه $\RR{3^{2n}-2^n\equiv0\ [7]}$.\par\textbf{واجب منزلي:} تمارين من باب الموافقات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
-\ModhHead{62}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{تطبيقات الموافقات: الدورية ، قابلية القسمة}%
+\ModhHead{62}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{تطبيقات الموافقات: الدورية ، قابلية القسمة ، المعادلات}%
 {\begin{itemize}\item الموافقات وخواصها.\end{itemize}}%
-{\begin{itemize}\item دراسة بواقي قسمة $a^n$ (الدورية) ، وإثبات قابلية القسمة بالموافقات.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{\begin{itemize}\item دراسة بواقي قسمة $a^n$ على $b$ ، معايير قابلية القسمة ، حل معادلات بالموافقة.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} ما رقم آحاد $3^{2027}$ ؟}{10 د}{سؤال رقم الآحاد.}
+\textbf{التهيئة النفسية:} ما باقي قسمة $3^{2026}$ على $7$ ؟ هل نحسب $3^{2026}$ ؟}{10 د}{سؤال.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ بواقي $3^n$ على $5$: $1$ ، $3$ ، $4$ ، $2$ ، $1$ ، $\ldots$: دورية دورها $4$.\par
-}{35 د}{جدول البواقي.}
-\Row{بناء المعارف}{%
-\Lab{cMeth}{الدورية}\par\smallskip\begin{LTR}\centering {\footnotesize\renewcommand{\arraystretch}{1.4}\begin{tabular}{|c|c|c|c|c|}\hline
-\rowcolor{cSec!12}$n\equiv\ldots\,[4]$ & $0$ & $1$ & $2$ & $3$\\\hline
-$3^n\equiv\ldots\,[5]$ & $1$ & $3$ & $4$ & $2$\\\hline
-\end{tabular}}\end{LTR}\par $2027=4\times506+3$: $3^{2027}\equiv2\ [5]$.\par\Lab{cEx}{قابلية القسمة}\ $9^n-2^n$ يقبل القسمة على $7$: $9\equiv2\ [7]$ ، إذن $9^n\equiv2^n$.\par}{50 د}{التحقق بقيمة صغيرة.}
+\Lab{cEx}{نشاط رقم 06}\par\textbf{(1)} عيّن بواقي قسمة $3^n$ على $7$ من أجل $n$ من $0$ إلى $6$.\par\textbf{(2)} استنتج باقي قسمة $3^{2026}$ على $7$.}{35 د}{جدول البواقي.}
 \Row{}{%
-\Lab{cRem}{ملاحظات}\ معايير قابلية القسمة على $3$ و $9$ و $11$ تبرهن بالموافقات ($10\equiv1\ [9]$ ، $10\equiv-1\ [11]$).\par\Lab{cThm!80!black}{حذار}\ نحدد الدور قبل الاستعمال.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $3^2=9\equiv2$ ؛ $3^3\equiv6$ ؛ $3^4\equiv18\equiv4$ ؛ $3^5\equiv12\equiv5$ ؛ $3^6\equiv15\equiv\RR{1}\ [7]$.\par\smallskip\begin{LTR}\centering{\renewcommand{\arraystretch}{1.4}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.086\linewidth}|>{\centering\arraybackslash}p{0.086\linewidth}|>{\centering\arraybackslash}p{0.086\linewidth}|>{\centering\arraybackslash}p{0.086\linewidth}|>{\centering\arraybackslash}p{0.086\linewidth}|>{\centering\arraybackslash}p{0.086\linewidth}|>{\centering\arraybackslash}p{0.086\linewidth}|}\hline\rowcolor{cSec!12}$n$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\\hline \ar{باقي $3^n$ على $7$} & 1 & 3 & 2 & 6 & 4 & 5 & \textcolor{cThm}{1}\\\hline \end{tabular}}\end{LTR}\par \par\textbf{(2)} $2026=6\times337+4$ ، إذن $3^{2026}=(3^6)^{337}\times3^4\equiv\RR{4\ [7]}$.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cMeth}{دورية البواقي}\par\textbf{(1)} نبحث عن أصغر $\LW{p\geqslant1}$ حيث $\LW{a^p\equiv1\ [b]}$.\par\textbf{(2)} نكتب $\LW{n=pq+r}$ ($\LW{0\leqslant r<p}$): $\LW{\RR{a^n\equiv a^r\ [b]}}$.}{50 د}{الدور.}
+\Row{}{%
+\Lab{cThm}{معايير قابلية القسمة}\par\textbf{(1)} $\LW{10\equiv1\ [9]}$: كل عدد يوافق مجموع أرقامه بترديد $\LW{9}$ (وبترديد $\LW{3}$).\par\textbf{(2)} $\LW{10\equiv-1\ [11]}$: يوافق المجموع المتناوب لأرقامه بترديد $\LW{11}$.}{}{}
+\Row{}{%
+\Lab{cEx}{حل معادلة}\ $3x\equiv2\ [5]$: نجرب البواقي:\par\smallskip\begin{LTR}\centering{\renewcommand{\arraystretch}{1.4}\setlength{\tabcolsep}{2pt}\begin{tabular}{|>{\centering\arraybackslash}p{0.260\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|>{\centering\arraybackslash}p{0.120\linewidth}|}\hline\rowcolor{cSec!12}\ar{باقي $x$ على $5$} & 0 & 1 & 2 & 3 & 4\\\hline \ar{باقي $3x$ على $5$} & 0 & 3 & 1 & 4 & \textcolor{cThm}{2}\\\hline \end{tabular}}\end{LTR}\par إذن $\RR{x\equiv4\ [5]}$ ، أي $x=5k+4$.}{}{}
+\Row{}{%
+\Lab{cEx}{مثال}\ $2^n\ [5]$: $2$ ، $4$ ، $3$ ، $1$ (دور $4$) ؛ $5\mid2^n-1\iff\RR{n=4k}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ نتحقق أن الباقي يساوي $1$ بالضبط قبل استعمال الدور.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par بيّن أن $3^{2n+1}+2^{n+2}$ يقبل القسمة على $7$ من أجل كل $n\in\mathbb N$.\par\textbf{الحل:} $3^{2n+1}=3\times9^n\equiv3\times2^n\ [7]$ و $2^{n+2}=4\times2^n$: المجموع $\equiv7\times2^n\equiv0\ [7]$.\par\textbf{واجب منزلي:} تمارين 42 ، 43 ، 55 صفحة 79 ، و 69 إلى 71 صفحة 81.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} باقي قسمة $2^{2026}$ على $5$.\par\textbf{(2)} حل $2x\equiv3\ [7]$.\par\textbf{(3)} هل $123456789$ يقبل القسمة على $9$ ؟}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $2026=4\times506+2$: $2^{2026}\equiv2^2=\RR{4\ [5]}$.\par\textbf{(2)} $2\times5=10\equiv3\ [7]$: $\RR{x\equiv5\ [7]}$.\par\textbf{(3)} مجموع الأرقام $45\equiv0\ [9]$: \RR{نعم}.\par\textbf{واجب منزلي:} تمارين من باب الموافقات.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{63}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{التعداد: نشر عدد وفق أساس}%
-{\begin{itemize}\item القسمة الإقليدية ، القوى.\end{itemize}}%
-{\begin{itemize}\item نشر عدد طبيعي وفق أساس $b$ ، والانتقال من أساس إلى آخر.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{\begin{itemize}\item القسمة الإقليدية.\end{itemize}}%
+{\begin{itemize}\item كتابة عدد طبيعي في أساس $b$ ، والانتقال من أساس إلى آخر.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} الحاسوب يكتب الأعداد بـ $0$ و $1$ فقط: كيف يكتب $2026$ ؟}{10 د}{سؤال تقني.}
+\textbf{التهيئة النفسية:} \par $2026=2\times10^3+0\times10^2+2\times10+6$: هل يمكن استعمال أساس آخر غير $10$ ؟}{10 د}{سؤال.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ $2026=1024+512+256+128+64+32+8+2$.\par
-}{35 د}{القسمات المتتالية.}
-\Row{بناء المعارف}{%
-\Lab{cThm}{خاصية}\ كل عدد طبيعي $N$ يكتب بطريقة وحيدة $N=a_nb^n+\cdots+a_1b+a_0$ مع $0\leqslant a_i<b$ ؛ نكتب $N=\overline{a_n\ldots a_0}^{(b)}$.\par\Lab{cMeth}{طريقة}\ نقسم $N$ على $b$ قسمات متتالية ونقرأ البواقي من الأخير إلى الأول.\par}{50 د}{التحقق بالنشر.}
+\Lab{cEx}{نشاط رقم 07}\par\textbf{(1)} أجرِ القسمات المتتابعة لـ $2026$ على $5$ حتى حاصل معدوم.\par\textbf{(2)} اكتب البواقي من الأخير إلى الأول ، وتحقق بالنشر.}{35 د}{قسمات متتابعة.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $2026=\overline{11111101010}^{(2)}$ ؛ $\overline{213}^{(4)}=2\times16+1\times4+3=39$.\par\Lab{cThm!80!black}{حذار}\ الأرقام في الأساس $b$ أصغر من $b$.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $2026=5\times405+1$\par\textbf{(2)} $405=5\times81+0$\par\textbf{(3)} $81=5\times16+1$\par\textbf{(4)} $16=5\times3+1$\par\textbf{(5)} $3=5\times0+3$\par\textbf{(6)} $2026=\RR{\overline{31101}_5}$ ؛ تحقق: \par $3\times625+1\times125+1\times25+0\times5+1=2026$ \ck}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $\LW{b\geqslant2}$. كل عدد طبيعي $\LW{x}$ يكتب بكيفية وحيدة:\par $\LW{\RR{x=a_nb^n+\cdots+a_1b+a_0}}$ حيث $\LW{0\leqslant a_i<b}$ و $\LW{a_n\neq0}$.\par ونكتب: $\LW{x=\overline{a_n\cdots a_1a_0}_b}$.}{50 د}{جدول الأساسات.}
+\Row{}{%
+\Lab{cMeth}{الانتقال بين الأساسات}\par\textbf{(1)} من الأساس $\LW{10}$ إلى $\LW{b}$: قسمات متتابعة على $\LW{b}$ ، والأرقام هي البواقي من الأخير.\par\textbf{(2)} من $\LW{b}$ إلى $\LW{10}$: ننشر $\LW{a_nb^n+\cdots+a_0}$.\par\textbf{(3)} في الأساس $\LW{12}$ نستعمل $\LW{\alpha=10}$ و $\LW{\beta=11}$.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $\overline{101101}_2=32+8+4+1=\RR{45}$.\par\textbf{(2)} $45=3\times15$ ؛ $15=3\times5$ ؛ $5=3\times1+2$ ؛ $1=3\times0+1$: $45=\RR{\overline{1200}_3}$.\par\textbf{(3)} $\overline{1\alpha3}_{12}=144+10\times12+3=\RR{267}$.\par\textbf{(4)} $\overline{123}_b=38$: $b^2+2b+3=38\Rightarrow(b+7)(b-5)=0\Rightarrow\RR{b=5}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ كل رقم أصغر تمامًا من الأساس: $\overline{123}_b$ يفرض $b\geqslant4$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par اكتب $100$ في الأساس $3$.\par\textbf{الحل:} $100=81+2\times9+1$: $\overline{10201}^{(3)}$.\par\textbf{واجب منزلي:} تمارين من باب الموافقات (التعداد).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} اكتب $2026$ في الأساس $2$.\par\textbf{(2)} اكتب $\overline{2301}_4$ في الأساس $10$.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $2026=1024+512+256+128+64+32+8+2$: $\RR{\overline{11111101010}_2}$.\par\textbf{(2)} $2\times64+3\times16+0\times4+1=\RR{177}$.\par\textbf{واجب منزلي:} تمارين من باب التعداد.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{64}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{الأعداد الأولية ، التحليل إلى جداء عوامل أولية}%
-{\begin{itemize}\item قابلية القسمة.\end{itemize}}%
-{\begin{itemize}\item التعرف على أولية عدد ، وتحليله لتعيين قواسمه.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{\begin{itemize}\item قابلية القسمة ، الموافقات.\end{itemize}}%
+{\begin{itemize}\item التعرف على أولية عدد ، وتحليل عدد إلى جداء عوامل أولية لتعيين قواسمه ومضاعفاته.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} هل $221$ أولي؟ هل $211$ أولي؟}{10 د}{تحدٍّ.}
+\textbf{التهيئة النفسية:} هل $211$ عدد أولي؟ كيف نتحقق دون تجريب كل الأعداد؟}{10 د}{سؤال.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ يكفي اختبار القسمة على الأعداد الأولية $p\leqslant\sqrt n$.\par
-}{35 د}{غربال إراتوستين.}
-\Row{بناء المعارف}{%
-\Lab{cThm}{خاصية}\par\ck\ إذا لم يقبل $n\geqslant2$ القسمة على أي عدد أولي $p\leqslant\sqrt n$ فهو أولي.\par
-\ck\ كل عدد طبيعي $n\geqslant2$ يحلل بطريقة وحيدة إلى جداء عوامل أولية.\par
-\ck\ إذا كان $n=p_1^{\alpha_1}\cdots p_k^{\alpha_k}$ فعدد قواسمه $(\alpha_1+1)\cdots(\alpha_k+1)$.\par
-\Lab{cEx}{مثال}\ $221=13\times17$ ليس أولياً ؛ $211$ أولي ($\sqrt{211}<15$) ؛ $360=2^3\times3^2\times5$ له $4\times3\times2=24$ قاسماً.\par}{50 د}{شجرة القواسم.}
+\Lab{cEx}{نشاط رقم 08}\par\textbf{(1)} اكتب الأعداد الأولية الأصغر من $50$.\par\textbf{(2)} هل $211$ أولي؟ (اختبر القواسم الأولية $p$ حيث $p^2\leqslant211$).}{35 د}{غربال إراتوستين.}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ $1$ ليس أولياً.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $\RR{2;3;5;7;11;13;17;19;23;29;31;37;41;43;47}$.\par\textbf{(2)} $13^2=169\leqslant211<17^2=289$: نختبر $2;3;5;7;11;13$: لا أحد منها يقسم $211$: \RR{$211$} \RR{أولي}.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ عدد طبيعي $\LW{p\geqslant2}$ \textbf{أولي} إذا كان له قاسمان موجبان فقط: $\LW{1}$ و $\LW{p}$.}{50 د}{التحليل.}
+\Row{}{%
+\Lab{cThm}{خاصية}\par\textbf{(1)} كل عدد $\LW{n\geqslant2}$ غير أولي له قاسم أولي $\LW{p}$ حيث $\LW{\RR{p^2\leqslant n}}$.\par\textbf{(2)} مجموعة الأعداد الأولية غير منتهية.\par\textbf{(3)} كل عدد $\LW{n\geqslant2}$ يكتب بكيفية وحيدة $\LW{\RR{n=p_1^{\alpha_1}p_2^{\alpha_2}\cdots p_k^{\alpha_k}}}$.\par\textbf{(4)} عدد قواسمه الموجبة: $\LW{\RR{(\alpha_1+1)(\alpha_2+1)\cdots(\alpha_k+1)}}$.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $360=2^3\times3^2\times5$: عدد القواسم $(3+1)(2+1)(1+1)=\RR{24}$.\par\textbf{(2)} أصغر $k$ حيث $360k$ مربع: نجعل الأسس زوجية: $k=2\times5=\RR{10}$ ($3600=60^2$).\par\textbf{(3)} $\sqrt{391}\approx19{,}8$ و $391=\RR{17\times23}$: ليس أوليًا.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ العدد $1$ ليس أوليًا ، و $2$ هو العدد الأولي الزوجي الوحيد.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par حلل $1001$ ، وعيّن عدد قواسمه.\par\textbf{الحل:} $1001=7\times11\times13$: $2\times2\times2=8$ قواسم.\par\textbf{واجب منزلي:} تمرينا 20 و 22 صفحة 107.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} حلّل $1764$ ، واستنتج عدد قواسمه.\par\textbf{(2)} هل $221$ عدد أولي؟}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $1764=2^2\times3^2\times7^2=42^2$ ؛ عدد القواسم $3\times3\times3=\RR{27}$.\par\textbf{(2)} $221=\RR{13\times17}$: \RR{ليس} \RR{أوليًا}.\par\textbf{واجب منزلي:} تمارين من باب الأعداد الأولية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{65}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{المضاعف المشترك الأصغر وعلاقته بـ PGCD}%
-{\begin{itemize}\item التحليل إلى عوامل أولية ، PGCD.\end{itemize}}%
+{\begin{itemize}\item PGCD ، التحليل إلى عوامل أولية.\end{itemize}}%
 {\begin{itemize}\item تعيين PPCM و PGCD بالتحليل ، واستعمال العلاقة بينهما.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} حافلتان تنطلقان معاً ، الأولى كل $12$ دقيقة والثانية كل $18$: متى تلتقيان مجدداً؟}{10 د}{وضعية يومية.}
+\textbf{التهيئة النفسية:} حافلتان تنطلقان معًا ، الأولى كل $12$ دقيقة والثانية كل $18$ دقيقة: متى تنطلقان معًا مرة أخرى؟}{10 د}{وضعية واقعية.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ أصغر مضاعف مشترك لـ $12$ و $18$: $36$ دقيقة.\par
-}{35 د}{التحليل.}
-\Row{بناء المعارف}{%
-\Lab{cMeth}{طريقة}\ بالتحليل: PGCD جداء العوامل المشتركة بأصغر أس ، PPCM جداء كل العوامل بأكبر أس.\par\Lab{cThm}{خاصية}\ $\mathrm{PGCD}(a;b)\times\mathrm{PPCM}(a;b)=ab$.\par}{50 د}{التحقق بالعلاقة.}
+\Lab{cEx}{نشاط رقم 09}\par\textbf{(1)} اكتب المضاعفات الموجبة الأولى لـ $12$ ولـ $18$.\par\textbf{(2)} ما أصغر مضاعف مشترك؟}{35 د}{المضاعفات.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $360=2^3\cdot3^2\cdot5$ ، $84=2^2\cdot3\cdot7$: PGCD $=12$ ، PPCM $=2520$ ، و $12\times2520=360\times84$.\par\Lab{cThm!80!black}{حذار}\ في PPCM نأخذ كل العوامل ، حتى غير المشتركة.}{}{}
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $12;24;36;48;\ldots$ ؛ $18;36;54;\ldots$\par\textbf{(2)} $\RR{\operatorname{PPCM}(12;18)=36}$: تنطلقان معًا بعد $36$ دقيقة.}{}{}
+\Row{بناء المعارف}{%
+\Lab{cDef}{تعريف}\ $\LW{\operatorname{PPCM}(a;b)}$ هو \textbf{أصغر مضاعف مشترك موجب تمامًا} لـ $\LW{a}$ و $\LW{b}$.}{50 د}{جدول الأسس.}
+\Row{}{%
+\Lab{cThm}{خاصية}\par\textbf{(1)} بالتحليل: $\LW{\operatorname{PGCD}}$ = جداء العوامل المشتركة بأصغر أس ؛ $\LW{\operatorname{PPCM}}$ = جداء كل العوامل بأكبر أس.\par\textbf{(2)} $\LW{\RR{\operatorname{PGCD}(a;b)\times\operatorname{PPCM}(a;b)=ab}}$ ($\LW{a,b\in\mathbb N^*}$).\par\textbf{(3)} المضاعفات المشتركة لـ $\LW{a}$ و $\LW{b}$ هي مضاعفات $\LW{\operatorname{PPCM}(a;b)}$.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $360=2^3\times3^2\times5$ ، $84=2^2\times3\times7$:\par\textbf{(2)} $\operatorname{PGCD}=2^2\times3=\RR{12}$ ؛ $\operatorname{PPCM}=2^3\times3^2\times5\times7=\RR{2520}$.\par\textbf{(3)} تحقق: $360\times84=30240=12\times2520$ \ck\par\textbf{(4)} $\operatorname{PGCD}(a;b)=6$ و $\operatorname{PPCM}(a;b)=180$ ($a<b$): $a^{\prime}b^{\prime}=30$ مع $a^{\prime}$ ، $b^{\prime}$ أوليين فيما بينهما.\par\textbf{(5)} $\RR{(a;b)\in\{(6;180);(12;90);(18;60);(30;36)\}}$.}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ العلاقة \par $\operatorname{PGCD}\times\operatorname{PPCM}=ab$ صحيحة لعددين فقط.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par احسب $\mathrm{PPCM}(48;180)$ بطريقتين.\par\textbf{الحل:} $48=2^4\cdot3$ ، $180=2^2\cdot3^2\cdot5$: PPCM $=720$ ؛ PGCD $=12$ و $\dfrac{48\times180}{12}=720$.\par\textbf{واجب منزلي:} تمرينا 35 و 37 صفحتي 107 و 108.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} احسب $\operatorname{PGCD}(252;198)$ و $\operatorname{PPCM}(252;198)$.\par\textbf{(2)} منارتان تومضان كل $15$ ثانية وكل $21$ ثانية: متى تومضان معًا؟}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $252=2^2\times3^2\times7$ ، $198=2\times3^2\times11$: $\operatorname{PGCD}=\RR{18}$ ، $\operatorname{PPCM}=\RR{2772}$.\par\textbf{(2)} $\operatorname{PPCM}(15;21)=\RR{105}$ ثانية.\par\textbf{واجب منزلي:} تمارين من باب PPCM.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{66}{3 ر / 3 ت ر}{أعداد وحساب}{الأعداد والحساب}{02 سا}{مبرهنتا بيزو وغوص ، المعادلة $ax+by=c$}%
-{\begin{itemize}\item PGCD ، الموافقات.\end{itemize}}%
-{\begin{itemize}\item استعمال مبرهنتي بيزو وغوص ، وحل المعادلات $ax+by=c$ في $\mathbb Z^2$.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، مراجع ، الحاسبة.}
+{\begin{itemize}\item خوارزمية إقليدس ، PGCD.\end{itemize}}%
+{\begin{itemize}\item استعمال مبرهنتي بيزو وغوص ، وحل المعادلة $ax+by=c$ في $\mathbb Z^2$.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي (الجزء الثاني) ، الآلة الحاسبة.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} هل يمكن دفع $1$ DA بقطع من $7$ DA و $5$ DA (مع إرجاع الصرف)؟}{10 د}{وضعية نقدية.}
+\textbf{التهيئة النفسية:} هل يمكن دفع $1$ دج بقطع من $17$ دج و $5$ دج (مع الإرجاع)؟}{10 د}{وضعية نقدية.}
 \Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ $7\times(-2)+5\times3=1$: نعم.\par
-}{35 د}{برهان الحل العام.}
+\Lab{cEx}{نشاط رقم 10}\par\textbf{(1)} طبّق خوارزمية إقليدس على $17$ و $5$.\par\textbf{(2)} اصعد في الخوارزمية لتجد $u$ و $v$ حيث $17u+5v=1$.}{35 د}{الصعود في الخوارزمية.}
+\Row{}{%
+\Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $17=5\times3+2$ ؛ $5=2\times2+1$.\par\textbf{(2)} $1=5-2\times2=5-2(17-5\times3)=7\times5-2\times17$: $\RR{u=-2}$ ، $\RR{v=7}$ (تحقق: $-34+35=1$ \ck).}{}{}
 \Row{بناء المعارف}{%
-\Lab{cThm}{مبرهنة بيزو}\ $a$ و $b$ أوليان فيما بينهما $\Leftrightarrow$ يوجد $u,v\in\mathbb Z$ حيث $au+bv=1$.\par\Lab{cThm}{مبرهنة غوص}\ إذا كان $a\mid bc$ و $\mathrm{PGCD}(a;b)=1$ فإن $a\mid c$.\par}{50 د}{التحقق بالتعويض.}
+\Lab{cThm}{مبرهنة بيزو}\ $\LW{a}$ و $\LW{b}$ أوليان فيما بينهما $\LW{\iff}$ يوجد $\LW{u,v\in\mathbb Z}$ حيث $\LW{\RR{au+bv=1}}$. وعمومًا يوجد $\LW{u,v}$ حيث \par $\LW{au+bv=\operatorname{PGCD}(a;b)}$.}{50 د}{المبرهنتان.}
 \Row{}{%
-\Lab{cEx}{حل $7x+5y=1$}\ حل خاص $(-2;3)$ ؛ بالطرح: $7(x+2)=-5(y-3)$ ، و $\mathrm{PGCD}(7;5)=1$ فحسب غوص $5\mid(x+2)$: $x=-2+5k$ ، $y=3-7k$ ($k\in\mathbb Z$).\par\Lab{cRem}{ملاحظات}\ $ax+by=c$ تقبل حلولاً إذا وفقط إذا كان $\mathrm{PGCD}(a;b)\mid c$.\par}{}{}
+\Lab{cThm}{مبرهنة غوص}\par\textbf{(1)} $\LW{a\mid bc}$ و $\LW{\operatorname{PGCD}(a;b)=1}$ $\LW{\Rightarrow}$ $\LW{\RR{a\mid c}}$.\par\textbf{(2)} $\LW{a\mid n}$ و $\LW{b\mid n}$ و $\LW{\operatorname{PGCD}(a;b)=1}$ $\LW{\Rightarrow}$ $\LW{ab\mid n}$.\par\textbf{(3)} $\LW{p}$ أولي و $\LW{p\mid ab}$ $\LW{\Rightarrow}$ $\LW{p\mid a}$ أو $\LW{p\mid b}$.}{}{}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ نتحقق من الحل العام بالتعويض.}{}{}
+\Lab{cMeth}{حل $ax+by=c$}\par\textbf{(1)} لها حلول إذا وفقط إذا كان $\LW{\operatorname{PGCD}(a;b)\mid c}$.\par\textbf{(2)} نجد حلًا خاصًا $\LW{(x_0;y_0)}$ (بيزو).\par\textbf{(3)} نطرح: $\LW{a(x-x_0)=b(y_0-y)}$ ، ثم نطبق غوص.}{}{}
+\Row{}{%
+\Lab{cEx}{مثال محلول: $17x+5y=3$}\par\textbf{(1)} من النشاط: $17(-2)+5(7)=1$ ، إذن $(x_0;y_0)=(-6;21)$.\par\textbf{(2)} $17(x+6)=5(21-y)$ ، و $\operatorname{PGCD}(17;5)=1$ ، إذن $5\mid(x+6)$: $x=5k-6$.\par\textbf{(3)} $17\times5k=5(21-y)$ ، ومنه $\RR{(x;y)=(5k-6;\,21-17k)}$ ($k\in\mathbb Z$).\par\textbf{(4)} تحقق $k=1$: $(-1;4)$: $-17+20=3$ \ck}{}{}
+\Row{}{%
+\Lab{cThm!80!black}{حذار}\ غوص يشترط الأولية: $6\mid4\times3$ لكن $6\nmid4$ و $6\nmid3$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par حل في $\mathbb Z^2$: $3x+4y=7$.\par\textbf{الحل:} حل خاص $(1;1)$ ؛ $3(x-1)=-4(y-1)$: $x=1+4k$ ، $y=1-3k$.\par\textbf{واجب منزلي:} تمرين 95 صفحة 112 ، ومسائل الحساب.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\Lab{cMeth}{تمرين تطبيقي}\par\textbf{(1)} حل في $\mathbb Z^2$ المعادلة $23x-7y=1$.\par\textbf{(2)} هل للمعادلة $6x+9y=7$ حلول صحيحة؟}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\Row{}{%
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $23=7\times3+2$ ؛ $7=2\times3+1$: $1=7-3\times2=10\times7-3\times23$ ، إذن \par $(x_0;y_0)=(-3;-10)$.\par\textbf{(2)} $23(x+3)=7(y+10)$ و $\operatorname{PGCD}(23;7)=1$: $7\mid(x+3)$: \par $\RR{(x;y)=(7k-3;\,23k-10)}$.\par\textbf{(3)} تحقق $k=1$: $(4;13)$: $92-91=1$ \ck\par\textbf{(4)} $\operatorname{PGCD}(6;9)=3$ و $3\nmid7$: \RR{لا} \RR{توجد} \RR{حلول}.\par\textbf{واجب منزلي:} تمارين من باب بيزو وغوص ، ومسائل في الحساب.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \end{document}
