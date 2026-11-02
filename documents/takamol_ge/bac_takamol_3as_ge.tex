@@ -1,0 +1,1261 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings,patterns}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\newtcbox{\bxtbox}{on line,coltext=cThm,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
+\renewcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\newcommand{\LW}[1]{{\color{cDef}#1}}
+\newcommand{\Car}[1]{\left\{\begin{array}{l}#1\end{array}\right.}
+\newcommand{\Lm}[1]{\displaystyle\lim_{x\to#1}}
+\newcommand{\LDx}[3]{لدينا: $\Lm{#2}#1=\bx{#3}$ لأنّ: \quad}
+\newcommand{\LD}{\par\LDx}
+\newcommand{\E}{\par\smallskip}
+\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\newenvironment{GRB}[7]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#6cm,font=\footnotesize]
+ \draw[gray!25,very thin,xstep=1,ystep=#7] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3*#7) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\renewenvironment{tamrin}[1]{\stepcounter{exo}\gdef\curt{#1}\begin{BOX}{cSec}{#1}}{\end{BOX}}
+\newcommand{\curt}{}
+\renewenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل \curt}}{\end{arbox}\end{otherlanguage}}
+\renewcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\renewcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\newcommand{\Ss}{$\star\star$}
+\SetHeader{\small\bfseries\color{cSec}الدوال الأصلية والتكامل -- تمارين البكالوريا}{\small\color{cSec}السنة الثالثة ثانوي -- تسيير واقتصاد}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\fontsize{26}{32}\selectfont\bfseries الدوال الأصلية وحساب التكامل والمساحات}\\[8pt]
+{\color{cSec!80!black}\large أسئلة مواضيع البكالوريا (2013 -- 2025) مع الحلول المفصلة والتمثيلات البيانية}\\[5pt]
+{\color{cSec!80!black}\large السنة الثالثة ثانوي -- شعبة تسيير واقتصاد}
+\end{tcolorbox}
+\end{LTR}
+
+\begin{BOX}{cMeth}{ما نحتاجه في هذه السلسلة}
+\RL{0.48}{\textbf{دالة أصلية:} $F$ دالة أصلية لـ $f$ على $I$ يعني $\LW{F'(x)=f(x)}$ من أجل كل $x$ من $I$.\par
+\textbf{التكامل:} $\LW{\displaystyle\int_a^bf(x)\,dx=F(b)-F(a)}$.\par
+\textbf{القيمة المتوسطة:} $\LW{\mu=\dfrac1{b-a}\displaystyle\int_a^bf(x)\,dx}$.}{0.48}{\textbf{المساحة:} إذا كان $(C_f)$ فوق $(C_g)$ على $[a;b]$ فإن $\LW{\mathcal A=\displaystyle\int_a^b\big[f(x)-g(x)\big]dx}$ (بوحدة المساحة).\par
+\textbf{وحدة المساحة:} إذا كانت الوحدة على المحورين $u$ و $v$ (بالسنتيمتر) فإن $\LW{1\,ua=u\times v\ \text{cm}^2}$.\par
+\textbf{قبل كل مساحة:} ندرس الوضع النسبي ، ونرسم الحيز.}
+\end{BOX}
+\par\smallskip الأسئلة المعلَّمة \Ss\ تحتاج الدالة الأسية أو اللوغاريتمية: تُنجز بعد درسيهما.
+
+% =====================================================================
+\section{أسئلة لا تحتاج الدالتين الأسية واللوغاريتمية}
+
+\begin{tamrin}{تمرين من بكالوريا 2022 -- الموضوع الأول}
+المستوي منسوب إلى معلم $(O;\vec i,\vec j)$. \ $(C_f)$ و $(C_g)$ التمثيلان البيانيان للدالتين $f$ و $g$ المعرفتين على $\R$ بـ:
+\[g(x)=(x+1)^2(x-1)\qquad;\qquad f(x)=ax^2+bx-1\quad\text{\ar{حيث $a$ و $b$ عددان حقيقيان.}}\]
+\begin{enumerate}
+\item \pa بيّن أنه من أجل كل عدد حقيقي $x$: $g(x)=x^3+x^2-x-1$.
+\pb عيّن العددين $a$ و $b$ حتى تكون $g$ دالة أصلية لـ $f$ على $\R$.
+\item تحقق أنه من أجل كل عدد حقيقي $x$: $f(x)=(x+1)(3x-1)$.
+\item \pa حلّل العبارة $g(x)-f(x)$.
+\pb استنتج أن $(C_f)$ و $(C_g)$ يتقاطعان في ثلاث نقط يطلب تعيينها.
+\item \textbf{(سؤال إضافي)} ادرس الوضع النسبي لـ $(C_f)$ و $(C_g)$ ، ثم احسب مساحة الحيز المحدد بالمنحنيين والمستقيمين $x=0$ و $x=3$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \pa $g(x)=\left(x^2+2x+1\right)(x-1)=x^3-x^2+2x^2-2x+x-1=\bx{x^3+x^2-x-1}$
+\pb $g$ دالة أصلية لـ $f$ يعني $g'(x)=f(x)$: \quad $g'(x)=3x^2+2x-1=ax^2+bx-1$ \quad إذن \quad \bx{a=3} \ و \ \bx{b=2}
+\QQ{2} $(x+1)(3x-1)=3x^2-x+3x-1=3x^2+2x-1=f(x)$ \ok
+\QQ{3} \pa $g(x)-f(x)=(x+1)^2(x-1)-(x+1)(3x-1)=(x+1)\big[x^2-1-3x+1\big]=\bx{x(x+1)(x-3)}$
+\pb $g(x)-f(x)=0\iff x=-1$ أو $x=0$ أو $x=3$ ، و $f(-1)=0$ ، $f(0)=-1$ ، $f(3)=32$:\par
+نقط التقاطع: \bx{(-1;0)} \ ، \ \bx{(0;-1)} \ و \ \bx{(3;32)}
+\QQ{4} إشارة $g(x)-f(x)=x(x+1)(x-3)$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$g(x)-f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (5.71412,-0.45){$-1$};
+\node at (9.05,-0.45){$0$};
+\node at (12.3859,-0.45){$3$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (3.98206,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (3.98206,-3.2){$(C_g)$\\ \ar{تحت}\\ $(C_f)$};
+\node at (7.38206,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (7.38206,-3.2){$(C_g)$\\ \ar{فوق}\\ $(C_f)$};
+\node at (10.7179,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (10.7179,-3.2){$(C_g)$\\ \ar{تحت}\\ $(C_f)$};
+\node at (14.1179,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (14.1179,-3.2){$(C_g)$\\ \ar{فوق}\\ $(C_f)$};
+\node at (5.71412,-1.35){$0$};
+\draw[densely dotted] (5.71412,-0.9)--(5.71412,-1.13) (5.71412,-1.57)--(5.71412,-1.8);
+\draw (4.66412,-4.6) .. controls (4.71662,-3.06) and (5.39912,-2.136) .. (5.71412,-1.8) .. controls (6.02912,-2.136) and (6.71162,-3.06) .. (6.76412,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (5.71412,-3.65){\ar{$(C_g)$ يقطع}\\ $(C_f)$\\ \ar{في النقطة}\\ $(-1;0)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (8,-4.6) .. controls (8.0525,-3.06) and (8.735,-2.136) .. (9.05,-1.8) .. controls (9.365,-2.136) and (10.0475,-3.06) .. (10.1,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_g)$ يقطع}\\ $(C_f)$\\ \ar{في النقطة}\\ $(0;-1)$};
+\node at (12.3859,-1.35){$0$};
+\draw[densely dotted] (12.3859,-0.9)--(12.3859,-1.13) (12.3859,-1.57)--(12.3859,-1.8);
+\draw (11.3359,-4.6) .. controls (11.3884,-3.06) and (12.0709,-2.136) .. (12.3859,-1.8) .. controls (12.7009,-2.136) and (13.3834,-3.06) .. (13.4359,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (12.3859,-3.65){\ar{$(C_g)$ يقطع}\\ $(C_f)$\\ \ar{في النقطة}\\ $(3;32)$};
+\end{tikzpicture}
+\end{FIG}
+\begin{GRB}{-2}{4}{-4}{36}{1.3}{0.13}{4}
+\foreach \t in {-1,1,2,3} \node[below,font=\scriptsize] at (\t,0){$\t$};
+\foreach \t in {8,16,24,32} \node[left,font=\scriptsize] at (0,\t){$\t$};
+\fill[cDef!25] plot[domain=0:3,samples=60](\x,{3*\x*\x+2*\x-1}) -- plot[domain=3:0,samples=60](\x,{\x*\x*\x+\x*\x-\x-1}) -- cycle;
+\draw[cDef,very thick,domain=-2:3.18,samples=80] plot(\x,{3*\x*\x+2*\x-1}); \node[cDef] at (2.4,30){$(C_f)$};
+\draw[cThm,very thick,domain=-2:3.1,samples=80] plot(\x,{\x*\x*\x+\x*\x-\x-1}); \node[cThm] at (3.6,22){$(C_g)$};
+\fill (-1,0) circle(2pt) (0,-1) circle(2pt) (3,32) circle(2pt);
+\end{GRB}
+على $[0;3]$: $(C_f)$ فوق $(C_g)$ ، ومنه:
+\[\mathcal A=\int_0^3\big[f(x)-g(x)\big]dx=\int_0^3\left(-x^3+2x^2+3x\right)dx\]
+\[\mathcal A=\Big[-\frac{x^4}4+\frac{2x^3}3+\frac{3x^2}2\Big]_0^3=-\frac{81}4+18+\frac{27}2=\bx{\frac{45}4\ ua}\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2022 -- الموضوع الأول (اختيار من متعدد)}
+عيّن الاقتراح الصحيح الوحيد مع التبرير: \quad قيمة العدد الحقيقي $\displaystyle\int_1^2\Big(1+\frac1{x^2}\Big)dx$ هي:
+\ABC{$\dfrac12$}{$\dfrac32$}{$\dfrac23$}
+\end{tamrin}
+\begin{hal}
+$\LW{\Big(-\dfrac1x\Big)'=\dfrac1{x^2}}$ \quad ومنه: \quad $\displaystyle\int_1^2\Big(1+\frac1{x^2}\Big)dx=\Big[x-\frac1x\Big]_1^2=\Big(2-\frac12\Big)-(1-1)=\bx{\frac32}$ \quad الجواب \textbf{(ب)}.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2022 -- الموضوع الثاني (صحيح أم خطأ)}
+$f$ و $g$ الدالتان المعرفتان على $\R$ بـ: $f(x)=(x+1)(3x-3)$ و $g(x)=(x+1)\left(x^2-x-2\right)$.\par
+أجب بصحيح أو خطأ مع التعليل: \quad «$g$ هي الدالة الأصلية للدالة $f$ والتي تنعدم عند $-1$».
+\end{tamrin}
+\begin{hal}
+$g'(x)=\left(x^2-x-2\right)+(x+1)(2x-1)=x^2-x-2+2x^2+x-1=3x^2-3=3(x-1)(x+1)=f(x)$\par
+و $g(-1)=0$ \quad إذن العبارة \bxt{صحيحة}.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2020 -- الموضوع الثاني (اختيار من متعدد)}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=\dfrac13x^2-2x$. \ عيّن الاقتراح الصحيح الوحيد مع التبرير:
+\begin{enumerate}
+\item الدالة الأصلية لـ $f$ على $\R$ التي تنعدم من أجل $x=1$ هي الدالة $F$ حيث:
+\ABC{$F(x)=x^3-x^2$}{$F(x)=\frac19x^3-x^2$}{$F(x)=\frac19x^3-x^2+\frac89$}
+\item القيمة المتوسطة للدالة $f$ على المجال $[0;1]$ هي:
+\ABC{$\dfrac19$}{$-\dfrac89$}{$\dfrac89$}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} الدوال الأصلية: $F(x)=\dfrac19x^3-x^2+c$. \quad $F(1)=\dfrac19-1+c=0$ \quad ومنه $c=\dfrac89$: \quad \bx{F(x)=\frac19x^3-x^2+\frac89} \quad الجواب \textbf{(جـ)}.
+\QQ{2} $\mu=\dfrac1{1-0}\displaystyle\int_0^1f(x)\,dx=F(1)-F(0)=0-\dfrac89=\bx{-\frac89}$ \quad الجواب \textbf{(ب)}.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2021 -- الموضوع الأول (اختيار من متعدد)}
+$g$ الدالة المعرفة على $]0;+\infty[$ بـ: $g(x)=2x+1-\dfrac1{x^2}$. \quad دالتها الأصلية $G$ على $]0;+\infty[$ والتي تنعدم من أجل القيمة $1$ معرّفة بـ:
+\ABC{$G(x)=x^2+x-\frac1x$}{$G(x)=x^2+x-1-\frac1x$}{$G(x)=x^2+x+\frac1x-3$}
+\end{tamrin}
+\begin{hal}
+$\LW{\Big(\dfrac1x\Big)'=-\dfrac1{x^2}}$ \quad إذن الدوال الأصلية: $G(x)=x^2+x+\dfrac1x+c$.\par
+$G(1)=1+1+1+c=0$ \quad ومنه $c=-3$: \quad \bx{G(x)=x^2+x+\frac1x-3} \quad الجواب \textbf{(جـ)}.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2021 -- الموضوع الأول (صحيح أم خطأ)}
+\RL{0.55}{$g$ الدالة المعرفة على $]0;+\infty[$ بتمثيلها البياني $(C)$ ، و $(T)$ المماس لـ $(C)$ في النقطة $A(1;0)$ (الشكل المقابل).\par
+أجب بصحيح أو خطأ مع التبرير:\par
+«كل دالة أصلية $G$ للدالة $g$ على $]0;+\infty[$ متزايدة تمامًا على $]0;2]$».}{0.4}{%
+\begin{GR}{-0.3}{3.6}{-2.6}{3.4}{0.6}
+\Ticks{1,2,3}{-2,-1,1,2,3}
+\draw[cDef,very thick,domain=0:3.35,samples=80] plot(\x,{\x*\x*\x-3*\x*\x+2});
+\draw[cThm,thick,domain=0:2] plot(\x,{-3*\x+3});
+\fill (1,0) circle(2pt) node[above right]{$A$}; \node[cDef] at (3.1,3.1){$(C)$}; \node[cThm] at (1.85,-2.3){$(T)$};
+\end{GR}}
+\end{tamrin}
+\begin{hal}
+$G'(x)=g(x)$ ، فاتجاه تغير $G$ هو إشارة $g$. من البيان: $g(x)>0$ على $]0;1[$ ، و $g(x)<0$ على $]1;2]$.\par
+إذن $G$ متزايدة تمامًا على $]0;1]$ ومتناقصة تمامًا على $[1;2]$: العبارة \bxt{خاطئة}.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2023 -- الموضوع الأول (اختيار من متعدد)}
+القيمة المتوسطة للدالة $x\mapsto3(x+1)^2$ على المجال $[0;1]$ تساوي:
+\ABC{$7$}{$14$}{$21$}
+\end{tamrin}
+\begin{hal}
+$\LW{\big[(x+1)^3\big]'=3(x+1)^2}$: \quad $\mu=\dfrac1{1-0}\displaystyle\int_0^13(x+1)^2dx=\big[(x+1)^3\big]_0^1=8-1=\bx{7}$ \quad الجواب \textbf{(أ)}.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2024 -- الموضوع الثاني (اختيار من متعدد)}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=8x^3+1$. \quad الدالة الأصلية لـ $f$ على $\R$ والتي تنعدم عند $1$ هي الدالة $F$ حيث:
+\ABC{$F(x)=x^4+x-2$}{$F(x)=2x^4+x-3$}{$F(x)=2x^4-2x$}
+\end{tamrin}
+\begin{hal}
+الدوال الأصلية: $F(x)=8\times\dfrac{x^4}4+x+c=2x^4+x+c$. \quad $F(1)=3+c=0$ \quad ومنه $c=-3$: \quad \bx{F(x)=2x^4+x-3} \quad الجواب \textbf{(ب)}.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2024 -- الموضوع الأول}
+\RL{0.55}{المستوي منسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$. \ في الشكل المقابل $(C_f)$ التمثيل البياني لدالة $f$ معرّفة على $\R$ ، والذي يقطع حامل محور الفواصل في نقطتين فاصلتاهما $\alpha$ و $1$ ، و $(T)$ مماس المنحنى في النقطة $A(1;0)$.\par
+\textbf{بقراءة بيانية:}
+\begin{enumerate}
+\item عيّن $f(1)$ و $f'(1)$.
+\item $F$ دالة أصلية للدالة $f$ على $\R$. \ حدّد حسب قيم $x$ إشارة $f(x)$ ، ثم استنتج اتجاه تغير الدالة $F$.
+\end{enumerate}}{0.4}{%
+\begin{GR}{-2}{5}{-3}{2}{0.55}
+\Ticks{-1,1,2,3,4}{-2,-1,1}
+\draw[cDef,very thick,domain=-1.12:5,samples=120] plot(\x,{(1-\x)*(1-exp(-3*(\x+0.7)))/(1+0.15*(\x-1)*(\x-1))});
+\draw[cThm,thick,domain=-1:4] plot(\x,{-\x+1});
+\fill (1,0) circle(2pt) node[above right]{$A$}; \fill (-0.7,0) circle(2pt) node[below right]{$\alpha$};
+\node[cDef] at (3.3,-0.7){$(C_f)$}; \node[cThm] at (-0.6,1.85){$(T)$};
+\end{GR}}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $A(1;0)\in(C_f)$: \bx{f(1)=0}. \quad $(T)$ يشمل $A(1;0)$ و $(0;1)$: معامل توجيهه $\dfrac{0-1}{1-0}=-1$ ، إذن \bx{f'(1)=-1}.
+\QQ{2} $\LW{F'(x)=f(x)}$ ، فإشارة $f(x)$ تعطي اتجاه تغير $F$. من البيان:
+\begin{TAB}
+\tkzTabInit[lgt=2,espcl=2.2]{$x$/1,$F'(x)$/1,$F(x)$/1.6}{$-\infty$,$\alpha$,$1$,$+\infty$}
+\tkzTabLine{,-,z,+,z,-,}
+\tkzTabVar{+/ ,-/ ,+/ ,-/ }
+\end{TAB}
+\bxt{$F$ متناقصة تمامًا على $]-\infty;\alpha]$ وعلى $[1;+\infty[$ ، ومتزايدة تمامًا على $[\alpha;1]$}.
+\end{hal}
+
+% =====================================================================
+\section{دوال أصلية وقيمة متوسطة (\Ss)}
+
+\begin{tamrin}{تمرين من بكالوريا 2013 -- الموضوع الثاني (\Ss\ بعد درس اللوغاريتم)}
+\textbf{I)} $g$ الدالة المعرفة على $]0;+\infty[$ بـ: $g(x)=\dfrac{-x^2+x+2}{x^2}$.
+\begin{enumerate}
+\item عيّن تبعًا لقيم $x$ إشارة $g(x)$.
+\item \pa تحقق أنه من أجل كل $x$ من $]0;+\infty[$: $g(x)=-1+\dfrac1x+\dfrac2{x^2}$.
+\pb استنتج الدوال الأصلية للدالة $g$ على $]0;+\infty[$.
+\end{enumerate}
+\textbf{II)} $f$ الدالة المعرفة على $]0;8]$ بـ: $f(x)=3-x-\dfrac2x+\ln x$. \ تحقق أن $f$ هي الدالة الأصلية للدالة $g$ على $]0;8]$ والتي تنعدم عند $1$ ، ثم استنتج اتجاه تغير $f$.
+\end{tamrin}
+\begin{hal}
+\textbf{I) 1.} $x^2>0$ ، فإشارة $g(x)$ هي إشارة $-x^2+x+2=-(x+1)(x-2)$:
+\begin{TAB}
+\tkzTabInit[lgt=2,espcl=2.6]{$x$/1,$g(x)$/1}{$0$,$2$,$+\infty$}
+\tkzTabLine{d,+,z,-,}
+\end{TAB}
+\textbf{2.} \pa $\dfrac{-x^2+x+2}{x^2}=-\dfrac{x^2}{x^2}+\dfrac x{x^2}+\dfrac2{x^2}=-1+\dfrac1x+\dfrac2{x^2}$ \ok
+\pb $\LW{(\ln x)'=\dfrac1x}$ \ و \ $\LW{\Big(-\dfrac2x\Big)'=\dfrac2{x^2}}$: \quad الدوال الأصلية: \bx{G(x)=-x+\ln x-\frac2x+c} \quad ($c\in\R$).
+\par\smallskip\textbf{II)} $f(x)=3-x-\dfrac2x+\ln x$ من الشكل $G(x)+c$ مع $c=3$ ، إذن $f'(x)=g(x)$ ، و $f(1)=3-1-2+0=0$ \ok\par
+$f'=g$: \bxt{$f$ متزايدة تمامًا على $]0;2]$ ومتناقصة تمامًا على $[2;8]$}.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2014 -- الموضوع الأول (\Ss\ بعد درس اللوغاريتم)}
+$f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=x-1-\dfrac{\ln x}x$. \quad احسب القيمة المتوسطة للدالة $f$ على المجال $[1;3]$.
+\end{tamrin}
+\begin{hal}
+$\LW{\Big[\dfrac12(\ln x)^2\Big]'=\dfrac{\ln x}x}$ ، فدالة أصلية لـ $f$ هي: $F(x)=\dfrac{x^2}2-x-\dfrac12(\ln x)^2$.
+\[\int_1^3f(x)\,dx=F(3)-F(1)=\Big(\frac92-3-\frac{(\ln3)^2}2\Big)-\Big(\frac12-1\Big)=2-\frac{(\ln3)^2}2\]
+\[\mu=\frac1{3-1}\int_1^3f(x)\,dx=\bx{1-\frac{(\ln3)^2}4}\approx0{,}70\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2016 -- الموضوع الأول (اختيار من متعدد ، \Ss\ بعد درس الأسية)}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=e^x+2e^{-x}-3$. \quad القيمة المتوسطة $m$ للدالة $f$ على المجال $[0;2]$ ، مدوّر $m$ إلى الوحدة هو:
+\ABC{$1$}{$2$}{$-1$}
+\end{tamrin}
+\begin{hal}
+دالة أصلية: $F(x)=e^x-2e^{-x}-3x$. \quad $\displaystyle\int_0^2f(x)\,dx=\left(e^2-2e^{-2}-6\right)-(1-2)=e^2-2e^{-2}-5$
+\[m=\frac{e^2-2e^{-2}-5}2\approx1{,}06\]
+مدوّره إلى الوحدة \bx{1} \quad الجواب \textbf{(أ)}.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2020 -- الموضوع الأول (\Ss\ بعد درس اللوغاريتم)}
+$f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=\dfrac13x^3-2x+2+x\ln x$ ، و $F$ الدالة المعرفة على $]0;+\infty[$ بـ:
+\[F(x)=\frac1{12}x^4-\frac54x^2+2x-8+\frac12x^2\ln x\]
+بيّن أن $F$ دالة أصلية للدالة $f$ على $]0;+\infty[$.
+\end{tamrin}
+\begin{hal}
+$\LW{(uv)'=u'v+uv'}$: \quad $\Big(\dfrac12x^2\ln x\Big)'=x\ln x+\dfrac12x^2\times\dfrac1x=x\ln x+\dfrac x2$
+\[F'(x)=\frac13x^3-\frac52x+2+x\ln x+\frac x2=\frac13x^3-2x+2+x\ln x=f(x)\]
+إذن \bxt{$F$ دالة أصلية لـ $f$ على $]0;+\infty[$}.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2023 -- الموضوع الأول (اختيار من متعدد ، \Ss\ بعد درس اللوغاريتم)}
+$g$ الدالة المعرفة على $]0;+\infty[$ بـ: $g(x)=2x-\dfrac1x$. \quad دالتها الأصلية $G$ على $]0;+\infty[$ التي تنعدم من أجل القيمة $1$ معرّفة بـ:
+\ABC{$G(x)=x^2+1-\ln x$}{$G(x)=-x^2+1-\ln x$}{$G(x)=x^2-1-\ln x$}
+\end{tamrin}
+\begin{hal}
+الدوال الأصلية: $G(x)=x^2-\ln x+c$. \quad $G(1)=1+c=0$ \quad ومنه \quad \bx{G(x)=x^2-1-\ln x} \quad الجواب \textbf{(جـ)}.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2023 -- الموضوع الثاني (اختيار من متعدد ، \Ss\ بعد الدرسين)}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=\dfrac{2e^x}{e^x+1}$. \quad الدالة الأصلية $F$ لـ $f$ على $\R$ والتي تنعدم من أجل القيمة $0$ معرّفة بـ:
+\ABC{$-2\ln\left(e^x+1\right)+\ln4$}{$2\ln\left(e^x+1\right)-\ln4$}{$\ln\Big(\frac{e^x+1}2\Big)$}
+\end{tamrin}
+\begin{hal}
+$\LW{\big(\ln u\big)'=\dfrac{u'}u}$ مع $u=e^x+1>0$: \quad $F(x)=2\ln\left(e^x+1\right)+c$ ، و $F(0)=2\ln2+c=0$ \quad ومنه $c=-2\ln2=-\ln4$:\par
+\bx{F(x)=2\ln\left(e^x+1\right)-\ln4} \quad الجواب \textbf{(ب)}.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2024 -- الموضوع الثاني (اختيار من متعدد ، \Ss\ بعد الدرسين)}
+$g$ الدالة المعرفة على $\R$ بـ: $g(x)=\dfrac{e^x}{1+e^x}$. \quad القيمة المتوسطة للدالة $g$ على المجال $[-\ln2;\ln2]$ هي:
+\ABC{$2\ln2$}{$\dfrac1{2\ln2}$}{$\dfrac12$}
+\end{tamrin}
+\begin{hal}
+دالة أصلية: $G(x)=\ln\left(1+e^x\right)$. \quad $\displaystyle\int_{-\ln2}^{\ln2}g(x)\,dx=\ln3-\ln\Big(1+\frac12\Big)=\ln\Big(3\times\frac23\Big)=\ln2$
+\[\mu=\frac1{\ln2-(-\ln2)}\times\ln2=\bx{\frac12}\quad\text{\ar{الجواب (جـ).}}\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2025 -- الموضوع الثاني (\Ss\ بعد الدرسين)}
+\begin{enumerate}
+\item $f$ الدالة المعرفة على $\R$ بـ: $f(x)=e^x-x-1$ ، و $F$ الدالة المعرفة على $\R$ بـ: $F(x)=e^x-\dfrac12x^2-x$.\par
+احسب $F'(x)$ ، ثم استنتج حساب القيمة المتوسطة للدالة $f$ على $[0;1]$.
+\item \pa تحقق أن الدالة $h$ المعرفة على $]0;+\infty[$ بـ: $h(x)=x\ln x-x$ أصلية للدالة $\ln$ على $]0;+\infty[$.
+\pb استنتج حساب القيمة المتوسطة للدالة $\ln$ على $[1;e]$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $F'(x)=e^x-x-1=f(x)$: $F$ دالة أصلية لـ $f$.
+\[\mu=\frac1{1-0}\int_0^1f(x)\,dx=F(1)-F(0)=\Big(e-\frac12-1\Big)-1=\bx{e-\frac52}\approx0{,}22\]
+\textbf{2.} \pa $h'(x)=\ln x+x\times\dfrac1x-1=\ln x$ \ok
+\pb $\mu=\dfrac1{e-1}\displaystyle\int_1^e\ln x\,dx=\dfrac{h(e)-h(1)}{e-1}=\dfrac{0-(-1)}{e-1}=\bx{\frac1{e-1}}\approx0{,}58$
+\end{hal}
+
+% =====================================================================
+\section{حساب التكامل والمساحات (\Ss)}
+
+\begin{tamrin}{تمرين من بكالوريا 2013 -- الموضوع الأول (\Ss\ بعد الدرسين)}
+$f$ الدالة المعرفة على $\R^*$ بـ: $f(x)=2x-1+\dfrac1{e^x-1}$ ، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس. \ نقبل أنه من أجل كل $x\neq0$: $f(x)=2x-2+\dfrac{e^x}{e^x-1}$.\par
+احسب العدد $\displaystyle\int_1^2f(x)\,dx$ ، ثم فسّره هندسيًا.
+\end{tamrin}
+\begin{hal}
+$\LW{\big(\ln u\big)'=\dfrac{u'}u}$ مع $u=e^x-1>0$ على $[1;2]$: \quad دالة أصلية: $F(x)=x^2-2x+\ln\left(e^x-1\right)$.
+\[\int_1^2f(x)\,dx=\big(0+\ln(e^2-1)\big)-\big(-1+\ln(e-1)\big)=1+\ln\frac{(e-1)(e+1)}{e-1}=\bx{1+\ln(e+1)}\approx2{,}31\]
+\textbf{التفسير:} على $[1;2]$: $2x-1>0$ و $\dfrac1{e^x-1}>0$ ، إذن $f(x)>0$ و $(C_f)$ فوق محور الفواصل. العدد هو \textbf{مساحة الحيز} المحدد بـ $(C_f)$ ومحور الفواصل والمستقيمين $x=1$ و $x=2$ (بوحدة المساحة).
+\begin{GR}{-0.5}{3}{-0.5}{6}{0.6}
+\Ticks{1,2}{2,4}
+\fill[cDef!25] (1,0) -- plot[domain=1:2,samples=60](\x,{2*\x-1+1/(exp(\x)-1)}) -- (2,0) -- cycle;
+\draw[cDef,very thick,domain=0.2:2.9,samples=80] plot(\x,{2*\x-1+1/(exp(\x)-1)});
+\draw[dashed] (1,0)--(1,1.58) (2,0)--(2,3.16);
+\node[cDef] at (2.5,5.3){$(C_f)$};
+\end{GR}
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2015 -- الموضوع الأول (\Ss\ بعد الدرسين)}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=\dfrac{4e^{-x}}{e^{-x}+1}-3$ ، و $(C_f)$ منحناها في معلم متعامد ومتجانس. \ نقبل أن $f(x)=\dfrac4{e^x+1}-3$ ، وأن $f$ متناقصة تمامًا على $\R$.
+\begin{enumerate}
+\item جد فاصلة نقطة تقاطع $(C_f)$ مع محور الفواصل.
+\item احسب مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $x=0$ ، $x=-\ln3$ و $y=0$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $f(x)=0\iff\dfrac4{e^x+1}=3\iff e^x+1=\dfrac43\iff e^x=\dfrac13\iff\bx{x=-\ln3}$
+\QQ{2} $f$ متناقصة تمامًا وتنعدم عند $-\ln3$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$-\ln3$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(-\ln3;0)$};
+\end{tikzpicture}
+\end{FIG}
+\begin{GR}{-3}{3}{-3.2}{1.4}{0.7}
+\Ticks{-2,-1,1,2}{-3,-2,-1,1}
+\fill[cDef!25] (-1.0986,0) -- plot[domain=-1.0986:0,samples=40](\x,{4/(exp(\x)+1)-3}) -- (0,0) -- cycle;
+\draw[cDef,very thick,domain=-3:3,samples=80] plot(\x,{4/(exp(\x)+1)-3});
+\fill (-1.0986,0) circle(2pt) node[above]{$-\ln3$};
+\node[cDef] at (2.2,-2.3){$(C_f)$};
+\end{GR}
+على $[-\ln3;0]$: $f(x)\leqslant0$ ، إذن $\mathcal A=-\displaystyle\int_{-\ln3}^0f(x)\,dx$.\par
+$\dfrac4{e^x+1}=\dfrac{4e^{-x}}{1+e^{-x}}$ ، فدالة أصلية لـ $f$: $F(x)=-4\ln\left(1+e^{-x}\right)-3x$.
+\[\mathcal A=-\big[F(0)-F(-\ln3)\big]=-\big[-4\ln2-(-4\ln4+3\ln3)\big]=\bx{3\ln3-4\ln2}\approx0{,}52\ ua\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2015 -- الموضوع الثاني (\Ss\ بعد درس اللوغاريتم)}
+$f$ الدالة المعرفة على $]-1;+\infty[$ بـ: $f(x)=-x+1+3\ln(x+1)$ ، و $(\Gamma)$ تمثيلها البياني. \ نقبل أن $(\Gamma)$ يقطع محور الفواصل في نقطتين فاصلتاهما $\beta\in]-0{,}37;-0{,}36[$ و $\alpha\in]7{,}37;7{,}38[$.
+\begin{enumerate}
+\item $g$ الدالة المعرفة على $]-1;+\infty[$ بـ: $g(x)=(x+1)\ln(x+1)-x$. \ احسب $g'(x)$ ، ثم استنتج دالة أصلية للدالة $f$.
+\item \pa احسب $S$ مساحة الحيز المستوي المحدد بـ $(\Gamma)$ وحامل محور الفواصل والمستقيمين $x=0$ و $x=\alpha$.
+\pb تحقق أن $S=\Big(\dfrac12\alpha^2-2\alpha-1\Big)ua$ ، ثم عيّن حصرًا لـ $S$.
+\item تنتج ورشة يوميًا $7$ آلاف قطعة على الأكثر. تُنمذج الكلفة الهامشية $C_m$ (الوحدة $1000$ دينار) لإنتاج $x$ ألف قطعة على $[0;7]$ بالدالة $f$: $C_m(x)=f(x)$. \ نرمز بـ $C_T(x)$ إلى الكلفة الإجمالية.
+\pa عيّن عبارة $C_T(x)$ علمًا أن الكلفة الإجمالية لإنتاج الألف قطعة الأولى هي $\dfrac52$.
+\pb قدّر قيمة الكلفة الإجمالية لإنتاج $7$ آلاف قطعة.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $g'(x)=\ln(x+1)+(x+1)\times\dfrac1{x+1}-1=\bx{\ln(x+1)}$\par
+ومنه $3g$ دالة أصلية لـ $3\ln(x+1)$ ، ودالة أصلية لـ $f$: \quad \bx{F(x)=-\frac{x^2}2+x+3(x+1)\ln(x+1)-3x=-\frac{x^2}2-2x+3(x+1)\ln(x+1)}
+\QQ{2} \pa إشارة $f$ من التقاطعين مع محور الفواصل (و $f(0)=1>0$):
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-1$};
+\node at (6.69773,-0.45){$\beta$};
+\node at (11.4023,-0.45){$\alpha$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (4.37386,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (4.37386,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (13.7261,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (13.7261,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (6.69773,-1.35){$0$};
+\draw[densely dotted] (6.69773,-0.9)--(6.69773,-1.13) (6.69773,-1.57)--(6.69773,-1.8);
+\draw (5.44773,-4.6) .. controls (5.51023,-3.06) and (6.32273,-2.136) .. (6.69773,-1.8) .. controls (7.07273,-2.136) and (7.88523,-3.06) .. (7.94773,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (6.69773,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(\beta;0)$};
+\node at (11.4023,-1.35){$0$};
+\draw[densely dotted] (11.4023,-0.9)--(11.4023,-1.13) (11.4023,-1.57)--(11.4023,-1.8);
+\draw (10.1523,-4.6) .. controls (10.2148,-3.06) and (11.0273,-2.136) .. (11.4023,-1.8) .. controls (11.7773,-2.136) and (12.5898,-3.06) .. (12.6523,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (11.4023,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(\alpha;0)$};
+\end{tikzpicture}
+\end{FIG}
+\begin{GR}{-1.2}{9}{-3.5}{4.5}{0.5}
+\Ticks{2,4,6,8}{-2,2,4}
+\fill[cDef!25] (0,0) -- plot[domain=0:7.376,samples=80](\x,{-\x+1+3*ln(\x+1)}) -- (7.376,0) -- cycle;
+\draw[cDef,very thick,domain=-0.75:9,samples=100] plot(\x,{-\x+1+3*ln(\x+1)});
+\draw[dashed] (-1,-3.5)--(-1,4.5);
+\fill (7.376,0) circle(2pt) node[below]{$\alpha$}; \fill (2,2.296) circle(2pt) node[above]{$A$};
+\node[cDef] at (8.3,-1.6){$(\Gamma)$};
+\end{GR}
+على $[0;\alpha]$: $(\Gamma)$ فوق محور الفواصل ، إذن $S=\displaystyle\int_0^\alpha f(x)\,dx=F(\alpha)-F(0)=F(\alpha)$.
+\pb $f(\alpha)=0$ يعني $3\ln(\alpha+1)=\alpha-1$ ، ومنه:
+\[S=-\frac{\alpha^2}2-2\alpha+(\alpha+1)(\alpha-1)=\bx{\frac12\alpha^2-2\alpha-1}\ ua\]
+الدالة $t\mapsto\dfrac12t^2-2t-1$ متزايدة على $[2;+\infty[$ ، و $7{,}37<\alpha<7{,}38$: \quad \bx{11{,}41<S<11{,}48}
+\QQ{3} \pa $C_T$ دالة أصلية لـ $C_m=f$: \quad $C_T(x)=F(x)+k$ ، و $C_T(1)=\dfrac52$:\par
+$F(1)=-\dfrac12-2+6\ln2=6\ln2-\dfrac52$ \quad ومنه $k=5-6\ln2$: \quad \bx{C_T(x)=-\frac{x^2}2-2x+3(x+1)\ln(x+1)+5-6\ln2}
+\pb $C_T(7)=-\dfrac{49}2-14+24\ln8+5-6\ln2=\bx{66\ln2-\frac{67}2}\approx12{,}25$ ، أي حوالي \bxt{$12\,250$ دينار}.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2016 -- الموضوع الثاني (\Ss\ بعد درس اللوغاريتم)}
+$f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=(2x-4)\ln x$ ، و $(C_f)$ تمثيلها البياني.
+\begin{enumerate}
+\item عيّن نقط تقاطع $(C_f)$ مع حامل محور الفواصل.
+\item $F$ الدالة المعرفة على $]0;+\infty[$ بـ: $F(x)=\left(x^2-4x\right)\ln x-\dfrac12x^2+4x$.
+\pa بيّن أن $F$ دالة أصلية للدالة $f$ على $]0;+\infty[$.
+\pb احسب مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=0$ ، $x=1$ و $x=2$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $f(x)=0\iff2x-4=0$ أو $\ln x=0\iff x=2$ أو $x=1$: النقطتان \bx{(1;0)} و \bx{(2;0)}.
+\QQ{2} \pa $F'(x)=(2x-4)\ln x+\left(x^2-4x\right)\times\dfrac1x-x+4=(2x-4)\ln x+x-4-x+4=f(x)$ \ok
+\pb إشارة $f(x)$: جداء إشارتي $2x-4$ و $\ln x$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (6.69773,-0.45){$1$};
+\node at (11.4023,-0.45){$2$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (4.37386,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (4.37386,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (9.05,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (9.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (13.7261,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (13.7261,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (6.69773,-1.35){$0$};
+\draw[densely dotted] (6.69773,-0.9)--(6.69773,-1.13) (6.69773,-1.57)--(6.69773,-1.8);
+\draw (5.44773,-4.6) .. controls (5.51023,-3.06) and (6.32273,-2.136) .. (6.69773,-1.8) .. controls (7.07273,-2.136) and (7.88523,-3.06) .. (7.94773,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (6.69773,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(1;0)$};
+\node at (11.4023,-1.35){$0$};
+\draw[densely dotted] (11.4023,-0.9)--(11.4023,-1.13) (11.4023,-1.57)--(11.4023,-1.8);
+\draw (10.1523,-4.6) .. controls (10.2148,-3.06) and (11.0273,-2.136) .. (11.4023,-1.8) .. controls (11.7773,-2.136) and (12.5898,-3.06) .. (12.6523,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (11.4023,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(2;0)$};
+\end{tikzpicture}
+\end{FIG}
+\begin{GR}{-0.3}{3.6}{-1}{3}{1.1}
+\Ticks{1,2,3}{-1,1,2}
+\fill[cDef!25] (1,0) -- plot[domain=1:2,samples=60](\x,{(2*\x-4)*ln(\x)}) -- (2,0) -- cycle;
+\draw[cDef,very thick,domain=0.25:3.6,samples=100] plot(\x,{(2*\x-4)*ln(\x)});
+\node[cDef] at (3.2,2.3){$(C_f)$};
+\end{GR}
+على $[1;2]$: $f(x)\leqslant0$ ، إذن:
+\[\mathcal A=-\int_1^2f(x)\,dx=-\big[F(2)-F(1)\big]=-\big[(-4\ln2-2+8)-\Big(-\frac12+4\Big)\big]=\bx{4\ln2-\frac52}\approx0{,}27\ ua\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2017 -- الموضوع الأول (\Ss\ بعد درس اللوغاريتم)}
+$f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=x+1-\dfrac{3\ln x}x$ ، و $(C_f)$ تمثيلها البياني ، و $(\Delta)$ المستقيم ذو المعادلة $y=x+1$.
+\begin{enumerate}
+\item ادرس وضعية $(C_f)$ بالنسبة إلى $(\Delta)$.
+\item \pa بيّن أن الدالة $h$ حيث $h(x)=\dfrac12(\ln x)^2$ أصلية للدالة $x\mapsto\dfrac{\ln x}x$ على $]0;+\infty[$.
+\pb احسب $S$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $x=1$ ، $x=e$ و $y=x+1$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $f(x)-(x+1)=-\dfrac{3\ln x}x$ ، و $x>0$ ، فإشارته عكس إشارة $\ln x$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x+1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(1;2)$};
+\end{tikzpicture}
+\end{FIG}
+\textbf{2.} \pa $h'(x)=\dfrac12\times2\ln x\times\dfrac1x=\dfrac{\ln x}x$ \ok
+\pb
+\begin{GR}{-0.3}{4}{-0.5}{6.5}{0.7}
+\Ticks{1,2,3}{2,4,6}
+\fill[cDef!25] plot[domain=1:2.71828,samples=60](\x,{\x+1}) -- plot[domain=2.71828:1,samples=60](\x,{\x+1-3*ln(\x)/\x}) -- cycle;
+\draw[cRem,thick,domain=-0.3:4] plot(\x,{\x+1}); \node[cRem] at (3.7,5.3){$(\Delta)$};
+\draw[cDef,very thick,domain=0.42:4,samples=100] plot(\x,{\x+1-3*ln(\x)/\x});
+\draw[dashed] (2.718,0)--(2.718,3.72); \node[below] at (2.718,0){$e$};
+\node[cDef] at (0.85,5.7){$(C_f)$};
+\end{GR}
+على $[1;e]$: $(\Delta)$ فوق $(C_f)$ ، إذن:
+\[S=\int_1^e\Big[(x+1)-f(x)\Big]dx=3\int_1^e\frac{\ln x}x\,dx=3\big[h(e)-h(1)\big]=3\times\frac12=\bx{\frac32\ ua}\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2017 (الدورة الاستثنائية) -- الموضوع الأول (\Ss\ بعد درس الأسية)}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=x^2-x-\dfrac12e^{2x}$ ، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس $(O;\vec i,\vec j)$ حيث $\|\vec i\|=2\ \text{cm}$. \ نقبل أن $f$ متناقصة تمامًا على $\R$ ، وأن المعادلة $f(x)=0$ تقبل حلًا وحيدًا $\alpha$ حيث $-0{,}25<\alpha<-0{,}24$.
+\begin{enumerate}
+\item احسب بالسنتيمتر المربع المساحة $A(\alpha)$ للحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $x=0$ ، $x=\alpha$ و $y=0$.
+\item تحقق أن: $A(\alpha)=\dfrac13\left(4\alpha^3-12\alpha^2+6\alpha+3\right)\ \text{cm}^2$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $f$ متناقصة تمامًا و $f(\alpha)=0$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$\alpha$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(\alpha;0)$};
+\end{tikzpicture}
+\end{FIG}
+\begin{GR}{-1.2}{0.8}{-1.6}{1.6}{2}
+\Ticks{-1,0.5}{-1,1}
+\fill[cDef!25] (-0.2456,0) -- plot[domain=-0.2456:0,samples=40](\x,{\x*\x-\x-exp(2*\x)/2}) -- (0,0) -- cycle;
+\draw[cDef,very thick,domain=-1.2:0.75,samples=80] plot(\x,{\x*\x-\x-exp(2*\x)/2});
+\fill (-0.2456,0) circle(1.5pt) node[above]{$\alpha$};
+\node[cDef] at (-0.9,1.3){$(C_f)$};
+\end{GR}
+على $[\alpha;0]$: $f(x)\leqslant0$ ، و $1\,ua=2\times2=4\ \text{cm}^2$. \ دالة أصلية لـ $f$: $F(x)=\dfrac{x^3}3-\dfrac{x^2}2-\dfrac14e^{2x}$.
+\[A(\alpha)=-4\int_\alpha^0f(x)\,dx=4\big[F(\alpha)-F(0)\big]=4\Big[\frac{\alpha^3}3-\frac{\alpha^2}2-\frac14e^{2\alpha}+\frac14\Big]\]
+\textbf{2.} $f(\alpha)=0$ يعني $e^{2\alpha}=2\left(\alpha^2-\alpha\right)$ ، ومنه $\dfrac14e^{2\alpha}=\dfrac{\alpha^2-\alpha}2$:
+\[A(\alpha)=4\Big[\frac{\alpha^3}3-\alpha^2+\frac\alpha2+\frac14\Big]=\bx{\frac13\left(4\alpha^3-12\alpha^2+6\alpha+3\right)}\ \text{cm}^2\approx0{,}25\ \text{cm}^2\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2018 -- الموضوع الأول (\Ss\ بعد درس اللوغاريتم)}
+$f$ الدالة المعرفة على $]-2;8[$ بـ: $f(x)=\ln(x+2)+\ln(-x+8)-\ln16$ ، و $(C_f)$ منحناها في معلم متعامد ومتجانس ، الوحدة البيانية $2\ \text{cm}$.
+\begin{enumerate}
+\item عيّن نقط تقاطع المنحنى $(C_f)$ مع محوري الإحداثيات.
+\item $F$ الدالة المعرفة على $]-2;8[$ بـ: $F(x)=(x+2)\ln(x+2)+(x-8)\ln(-x+8)-2x-x\ln16$. \ بيّن أن $F$ دالة أصلية لـ $f$ على $]-2;8[$.
+\item احسب بـ $\text{cm}^2$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=0$ ، $x=0$ و $x=4$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $f(0)=\ln2+\ln8-\ln16=\ln16-\ln16=0$. \quad $f(x)=0\iff(x+2)(8-x)=16\iff x^2-6x=0\iff x=0$ أو $x=6$:\par
+النقطتان \bx{O(0;0)} و \bx{(6;0)}.
+\QQ{2} \[F'(x)=\ln(x+2)+1+\ln(-x+8)+(x-8)\times\dfrac{-1}{-x+8}-2-\ln16\]
+\[F'(x)=\ln(x+2)+\ln(-x+8)-\ln16=f(x)\]
+\QQ{3} $f(x)\geqslant0\iff(x+2)(8-x)\geqslant16\iff x(6-x)\geqslant0\iff0\leqslant x\leqslant6$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-2$};
+\node at (6.69773,-0.45){$0$};
+\node at (11.4023,-0.45){$6$};
+\node at (14.8,-0.45){$8$};
+\node at (4.37386,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (4.37386,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (9.05,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (13.7261,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (13.7261,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (6.69773,-1.35){$0$};
+\draw[densely dotted] (6.69773,-0.9)--(6.69773,-1.13) (6.69773,-1.57)--(6.69773,-1.8);
+\draw (5.44773,-4.6) .. controls (5.51023,-3.06) and (6.32273,-2.136) .. (6.69773,-1.8) .. controls (7.07273,-2.136) and (7.88523,-3.06) .. (7.94773,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (6.69773,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $O(0;0)$};
+\node at (11.4023,-1.35){$0$};
+\draw[densely dotted] (11.4023,-0.9)--(11.4023,-1.13) (11.4023,-1.57)--(11.4023,-1.8);
+\draw (10.1523,-4.6) .. controls (10.2148,-3.06) and (11.0273,-2.136) .. (11.4023,-1.8) .. controls (11.7773,-2.136) and (12.5898,-3.06) .. (12.6523,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (11.4023,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $(6;0)$};
+\end{tikzpicture}
+\end{FIG}
+\begin{GR}{-2}{8.3}{-2.3}{1.2}{0.75}
+\Ticks{-1,2,4,6}{-2,-1,1}
+\fill[cDef!25] (0,0) -- plot[domain=0:4,samples=60](\x,{ln(\x+2)+ln(8-\x)-ln(16)}) -- (4,0) -- cycle;
+\draw[cDef,very thick,domain=-1.85:7.85,samples=120] plot(\x,{ln(\x+2)+ln(8-\x)-ln(16)});
+\draw[dashed] (-2,-2.3)--(-2,1.2) (8,-2.3)--(8,1.2);
+\node[cDef] at (6.6,0.9){$(C_f)$};
+\end{GR}
+على $[0;4]$: $f(x)\geqslant0$ ، و $1\,ua=2\times2=4\ \text{cm}^2$:
+\[\int_0^4f(x)\,dx=F(4)-F(0)=(6\ln6-4\ln4-8-4\ln16)-(2\ln2-8\ln8)=6\ln3+4\ln2-8\]
+\[\mathcal A=4\left(6\ln3+4\ln2-8\right)=\bx{24\ln3+16\ln2-32}\approx5{,}46\ \text{cm}^2\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2018 -- الموضوع الثاني (\Ss\ بعد درس الأسية)}
+$f$ الدالة المعرفة على $[0;+\infty[$ بـ: $f(x)=x+xe^{-x+1}$ ، و $(C_f)$ تمثيلها البياني ، و $(\Delta)$ المستقيم ذو المعادلة $y=x$. \ نقبل أن $f$ متزايدة تمامًا على $[0;+\infty[$ ، وأن المعادلة $f(x)=4$ تقبل حلًا وحيدًا $\alpha$ حيث $3{,}75<\alpha<3{,}77$.
+\begin{enumerate}
+\item ادرس وضعية $(C_f)$ بالنسبة إلى $(\Delta)$.
+\item $F$ الدالة المعرفة على $[0;+\infty[$ بـ: $F(x)=\dfrac12x^2-(x+1)e^{-x+1}$.
+\pa بيّن أن $F$ دالة أصلية للدالة $f$ على $[0;+\infty[$.
+\pb أوجد القيمة المضبوطة للعدد $\displaystyle\int_1^4f(x)\,dx$ ، ثم أعط تفسيرًا هندسيًا لهذا العدد.
+\item تُنمذج الكلفة الهامشية $C_m$ لإنتاج كمية $q$ (مقدرة بآلاف الوحدات) حيث $0\leqslant q\leqslant7$ بالدالة $f$: $C_m(q)=f(q)$ (مقدرة بملايين الدنانير).
+\pa ما هي كمية المنتوج التي من أجلها لا تتجاوز الكلفة الهامشية $4$ ملايين دينار؟
+\pb نذكّر أن الكلفة الإجمالية $C_T$ دالة أصلية للكلفة الهامشية. احسب القيمة المتوسطة للكلفة الهامشية عندما تنتج الشركة ما بين $1000$ و $4000$ وحدة.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $f(x)-x=xe^{-x+1}$ ، و $e^{-x+1}>0$ ، فإشارته إشارة $x$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.8,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (10.55,-1.35){$+$};
+\node[align=center,font=\small] at (10.55,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (4.8,-1.35){$0$};
+\draw[densely dotted] (4.8,-0.9)--(4.8,-1.13) (4.8,-1.57)--(4.8,-1.8);
+\draw (3.3,-4.6) .. controls (3.375,-3.06) and (4.35,-2.136) .. (4.8,-1.8) .. controls (5.25,-2.136) and (6.225,-3.06) .. (6.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (4.8,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $O(0;0)$};
+\end{tikzpicture}
+\end{FIG}
+\textbf{2.} \pa $F'(x)=x-\left[e^{-x+1}-(x+1)e^{-x+1}\right]=x+xe^{-x+1}=f(x)$ \ok
+\pb $\displaystyle\int_1^4f(x)\,dx=F(4)-F(1)=\left(8-5e^{-3}\right)-\Big(\frac12-2\Big)=\bx{\frac{19}2-5e^{-3}}\approx9{,}25$
+\begin{GR}{-0.3}{5.5}{-0.5}{6}{0.6}
+\Ticks{1,2,3,4,5}{2,4}
+\fill[cDef!25] (1,0) -- plot[domain=1:4,samples=60](\x,{\x+\x*exp(1-\x)}) -- (4,0) -- cycle;
+\draw[cRem,thick,domain=0:5.5] plot(\x,{\x}); \node[cRem] at (5.2,4.6){$(\Delta)$};
+\draw[cDef,very thick,domain=0:5.5,samples=80] plot(\x,{\x+\x*exp(1-\x)});
+\node[cDef] at (1.3,3.5){$(C_f)$};
+\end{GR}
+\textbf{التفسير:} $f(x)>0$ على $[1;4]$ ، فالعدد هو مساحة الحيز المحدد بـ $(C_f)$ ومحور الفواصل والمستقيمين $x=1$ و $x=4$.
+\QQ{3} \pa $f$ متزايدة تمامًا و $f(\alpha)=4$: \quad $C_m(q)\leqslant4\iff q\leqslant\alpha$ ، أي \bx{q\in[0;\alpha]} (حوالي $3\,760$ وحدة على الأكثر).
+\pb $\mu=\dfrac1{4-1}\displaystyle\int_1^4f(q)\,dq=\dfrac13\Big(\frac{19}2-5e^{-3}\Big)=\bx{\frac{19}6-\frac53e^{-3}}\approx3{,}08$ مليون دينار.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2019 -- الموضوع الأول (\Ss\ بعد درس اللوغاريتم)}
+$f$ الدالة المعرفة على $\R^*$ بـ: $f(x)=x-\dfrac{x-1}{x^2}$ ، و $(C_f)$ تمثيلها البياني ، و $(\Delta)$ المستقيم ذو المعادلة $y=x$.
+\begin{enumerate}
+\item ادرس الوضع النسبي للمنحنى $(C_f)$ والمستقيم $(\Delta)$.
+\item احسب $A$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=x$ ، $x=1$ و $x=3$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $f(x)-x=\dfrac{1-x}{x^2}$ ، و $x^2>0$ ، فإشارته إشارة $1-x$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (6.00588,-0.45){$0$};
+\node at (10.4029,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (4.65294,-1.35){$+$};
+\node[align=center,font=\small] at (4.65294,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (7.45441,-1.35){$+$};
+\node[align=center,font=\small] at (7.45441,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (13.3515,-1.35){$-$};
+\node[align=center,font=\small] at (13.3515,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\draw[double,thick] (6.00588,-0.9)--(6.00588,-4.6);
+\node at (10.4029,-1.35){$0$};
+\draw[densely dotted] (10.4029,-0.9)--(10.4029,-1.13) (10.4029,-1.57)--(10.4029,-1.8);
+\draw (8.90294,-4.6) .. controls (8.97794,-3.06) and (9.95294,-2.136) .. (10.4029,-1.8) .. controls (10.8529,-2.136) and (11.8279,-3.06) .. (11.9029,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (10.4029,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(1;1)$};
+\end{tikzpicture}
+\end{FIG}
+\textbf{2.}
+\begin{GR}{-3}{4}{-3}{5}{0.6}
+\Ticks{-2,-1,1,2,3}{-2,2,4}
+\fill[cDef!25] plot[domain=1:3,samples=60](\x,{\x}) -- plot[domain=3:1,samples=60](\x,{\x-(\x-1)/(\x*\x)}) -- cycle;
+\draw[cRem,thick,domain=-3:4] plot(\x,{\x}); \node[cRem] at (3.6,3.1){$(\Delta)$};
+\draw[cDef,very thick,domain=-3:-0.45,samples=80] plot(\x,{\x-(\x-1)/(\x*\x)});
+\draw[cDef,very thick,domain=0.38:4,samples=80] plot(\x,{\x-(\x-1)/(\x*\x)});
+\node[cDef] at (-1.5,2.2){$(C_f)$};
+\end{GR}
+على $[1;3]$: $(\Delta)$ فوق $(C_f)$ ، و $\dfrac{x-1}{x^2}=\dfrac1x-\dfrac1{x^2}$:
+\[A=\int_1^3\Big[x-f(x)\Big]dx=\int_1^3\Big(\frac1x-\frac1{x^2}\Big)dx=\Big[\ln x+\frac1x\Big]_1^3=\ln3+\frac13-1=\bx{\ln3-\frac23}\approx0{,}43\ ua\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2019 -- الموضوع الثاني (\Ss\ بعد درس الأسية)}
+$g$ الدالة المعرفة على $]-\infty;0]$ بـ: $g(x)=2x+6-e^{2x+1}$ ، والمعادلة $g(x)=0$ تقبل حلًا وحيدًا $\alpha$ حيث $-3<\alpha<-2{,}9$.\par
+$f$ الدالة المعرفة على $]-\infty;0]$ بـ: $f(x)=-2x^2-12x+e^{2x+1}$ ، و $(C_f)$ تمثيلها البياني في معلم متعامد ، الوحدة $1\ \text{cm}$ على محور الفواصل و $0{,}5\ \text{cm}$ على محور التراتيب. \ نقبل أن $f'(x)=-2g(x)$ ، وأن $f(\alpha)=-2\alpha(\alpha+5)+6$.\par
+احسب بدلالة $\alpha$ التكامل $\dfrac12\displaystyle\int_\alpha^0f(x)\,dx$ ، ثم فسّر النتيجة بيانيًا.
+\end{tamrin}
+\begin{hal}
+دالة أصلية: $F(x)=-\dfrac23x^3-6x^2+\dfrac12e^{2x+1}$. \quad و $g(\alpha)=0$ يعني $e^{2\alpha+1}=2\alpha+6$:
+\[\int_\alpha^0f(x)\,dx=\frac e2-\Big(-\frac23\alpha^3-6\alpha^2+\alpha+3\Big)\]
+\[\frac12\int_\alpha^0f(x)\,dx=\bx{\frac e4+\frac{\alpha^3}3+3\alpha^2-\frac\alpha2-\frac32}\approx18{,}65\]
+\textbf{التفسير:} على $[\alpha;0]$: $g(x)>0$ ، فـ $f$ متناقصة ، و $f(0)=e>0$ ، إذن $f(x)>0$:
+\begin{GRB}{-4.2}{0.6}{-4}{24}{1.1}{0.17}{4}
+\foreach \t in {-4,-3,-2,-1} \node[below,font=\scriptsize] at (\t,0){$\t$};
+\foreach \t in {4,8,12,16,20} \node[left,font=\scriptsize] at (0,\t){$\t$};
+\fill[cDef!25] (-2.9966,0) -- plot[domain=-2.9966:0,samples=60](\x,{-2*\x*\x-12*\x+exp(2*\x+1)}) -- (0,0) -- cycle;
+\draw[cDef,very thick,domain=-4.2:0.3,samples=80] plot(\x,{-2*\x*\x-12*\x+exp(2*\x+1)});
+\draw[dashed] (-2.9966,0)--(-2.9966,18.05); \node[below] at (-2.9966,0){$\alpha$};
+\node[cDef] at (-3.9,21){$(C_f)$};
+\end{GRB}
+$1\,ua=1\times0{,}5=0{,}5\ \text{cm}^2$: العدد $\dfrac12\displaystyle\int_\alpha^0f(x)\,dx$ هو \textbf{مساحة الحيز} المحدد بـ $(C_f)$ ومحور الفواصل والمستقيمين $x=\alpha$ و $x=0$ ، بالسنتيمتر المربع.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2020 -- الموضوع الثاني (\Ss\ بعد درس اللوغاريتم)}
+$f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=3x-2-\dfrac{2\ln x}{x^2}$ ، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس (وحدة الطول $2\ \text{cm}$) ، و $(\Delta)$ المستقيم ذو المعادلة $y=3x-2$.
+\begin{enumerate}
+\item ادرس وضعية المنحنى $(C_f)$ بالنسبة إلى المستقيم $(\Delta)$.
+\item $H$ الدالة المعرفة على $]0;+\infty[$ بـ: $H(x)=\dfrac{1+\ln x}x$. \ نقبل أن $f$ تقبل قيمة حدية صغرى $f(\alpha)\approx0{,}9$ حيث $0{,}9<\alpha<1$.
+\pa بيّن أن $H$ دالة أصلية للدالة $x\mapsto-\dfrac{\ln x}{x^2}$ على $]0;+\infty[$.
+\pb احسب بـ $\text{cm}^2$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ وحامل محور الفواصل والمستقيمين $x=1$ و $x=2$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $f(x)-(3x-2)=-\dfrac{2\ln x}{x^2}$: إشارته عكس إشارة $\ln x$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(3x-2)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(1;1)$};
+\end{tikzpicture}
+\end{FIG}
+\textbf{2.} \pa $\LW{\Big(\dfrac uv\Big)'=\dfrac{u'v-uv'}{v^2}}$: \quad $H'(x)=\dfrac{\frac1x\times x-(1+\ln x)}{x^2}=\dfrac{-\ln x}{x^2}$ \ok
+\pb القيمة الحدية الصغرى للدالة $f$ هي $f(\alpha)\approx0{,}9>0$ ، إذن $f(x)>0$ و $(C_f)$ فوق محور الفواصل:
+\begin{GR}{-0.3}{2.6}{-0.5}{5.5}{0.9}
+\Ticks{1,2}{2,4}
+\fill[cDef!25] (1,0) -- plot[domain=1:2,samples=60](\x,{3*\x-2-2*ln(\x)/(\x*\x)}) -- (2,0) -- cycle;
+\draw[cRem,thick,domain=0.3:2.5] plot(\x,{3*\x-2}); \node[cRem] at (2.3,5.3){$(\Delta)$};
+\draw[cDef,very thick,domain=0.55:2.5,samples=80] plot(\x,{3*\x-2-2*ln(\x)/(\x*\x)});
+\node[cDef] at (0.75,4.5){$(C_f)$};
+\end{GR}
+\[\int_1^2f(x)\,dx=\Big[\frac32x^2-2x+2H(x)\Big]_1^2=\big(6-4+1+\ln2\big)-\Big(\frac32-2+2\Big)=\frac32+\ln2\]
+$1\,ua=2\times2=4\ \text{cm}^2$: \quad $\mathcal A=4\Big(\dfrac32+\ln2\Big)=\bx{6+4\ln2}\approx8{,}77\ \text{cm}^2$
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2023 -- الموضوع الأول (\Ss\ بعد الدرسين)}
+$f$ الدالة المعرفة على $[0;+\infty[$ بـ: $f(x)=x+1-\dfrac3{e^x+1}$ ، و $(C_f)$ تمثيلها البياني (وحدة الطول $2\ \text{cm}$) ، و $(\Delta)$ المستقيم ذو المعادلة $y=x+1$.
+\begin{enumerate}
+\item ادرس وضعية $(C_f)$ بالنسبة إلى $(\Delta)$.
+\item $F$ الدالة المعرفة على $[0;+\infty[$ بـ: $F(x)=3x-3\ln\left(e^x+1\right)$.
+\pa تحقق أن $F$ أصلية للدالة $x\mapsto\dfrac3{e^x+1}$ على $[0;+\infty[$.
+\pb احسب بالسنتيمتر المربع مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيم $(\Delta)$ والمستقيمين اللذين معادلتاهما $x=0$ و $x=\ln2$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $f(x)-(x+1)=-\dfrac3{e^x+1}<0$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x+1)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (9.05,-1.35){$-$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\end{tikzpicture}
+\end{FIG}
+\textbf{2.} \pa $F'(x)=3-\dfrac{3e^x}{e^x+1}=\dfrac{3e^x+3-3e^x}{e^x+1}=\dfrac3{e^x+1}$ \ok
+\pb
+\begin{GR}{-0.3}{2.6}{-0.7}{3.8}{1}
+\Ticks{1,2}{1,2,3}
+\fill[cDef!25] plot[domain=0:0.6931,samples=40](\x,{\x+1}) -- plot[domain=0.6931:0,samples=40](\x,{\x+1-3/(exp(\x)+1)}) -- cycle;
+\draw[cRem,thick,domain=-0.3:2.6] plot(\x,{\x+1}); \node[cRem] at (2.3,3.6){$(\Delta)$};
+\draw[cDef,very thick,domain=0:2.6,samples=80] plot(\x,{\x+1-3/(exp(\x)+1)});
+\draw[dashed] (0.6931,0)--(0.6931,1.69); \node[below] at (0.6931,0){$\ln2$};
+\node[cDef] at (2.2,1.8){$(C_f)$};
+\end{GR}
+$(\Delta)$ فوق $(C_f)$ ، و $1\,ua=4\ \text{cm}^2$:
+\[\int_0^{\ln2}\frac3{e^x+1}dx=F(\ln2)-F(0)=(3\ln2-3\ln3)-(-3\ln2)=6\ln2-3\ln3=3\ln\frac43\]
+\[\mathcal A=4\times3\ln\frac43=\bx{12\ln\frac43}\approx3{,}45\ \text{cm}^2\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2023 -- الموضوع الثاني (\Ss\ بعد درس اللوغاريتم)}
+$f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=x^2-x-\ln x$ ، و $(C_f)$ تمثيلها البياني. \ نقبل أن $f'(x)=\dfrac{(2x+1)(x-1)}x$.
+\begin{enumerate}
+\item ادرس إشارة $f(x)$ (استعمل جدول تغيرات $f$).
+\item $F$ الدالة المعرفة على $]0;+\infty[$ بـ: $F(x)=\dfrac13x^3-\dfrac12x^2+x-x\ln x$.
+\pa تحقق أن $F$ أصلية للدالة $f$ على $]0;+\infty[$.
+\pb احسب مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ وحامل محور الفواصل والمستقيمين اللذين معادلتاهما $x=1$ و $x=3$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $f$ متناقصة تمامًا على $]0;1]$ ومتزايدة تمامًا على $[1;+\infty[$ ، وقيمتها الحدية الصغرى $f(1)=0$ ، إذن $f(x)\geqslant0$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يمس}\\ $(xx')$\\ \ar{في النقطة}\\ $(1;0)$};
+\end{tikzpicture}
+\end{FIG}
+\textbf{2.} \pa $F'(x)=x^2-x+1-\big(\ln x+1\big)=x^2-x-\ln x=f(x)$ \ok
+\pb
+\begin{GR}{-0.3}{3.5}{-0.5}{5.5}{0.8}
+\Ticks{1,2,3}{2,4}
+\fill[cDef!25] (1,0) -- plot[domain=1:3,samples=60](\x,{\x*\x-\x-ln(\x)}) -- (3,0) -- cycle;
+\draw[cDef,very thick,domain=0.05:3.4,samples=100] plot(\x,{\x*\x-\x-ln(\x)});
+\node[cDef] at (3.2,4.5){$(C_f)$};
+\end{GR}
+\[\mathcal A=\int_1^3f(x)\,dx=F(3)-F(1)=\Big(9-\frac92+3-3\ln3\Big)-\Big(\frac13-\frac12+1\Big)=\bx{\frac{20}3-3\ln3}\approx3{,}37\ ua\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2024 -- الموضوع الأول (\Ss\ بعد درس اللوغاريتم)}
+$f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=1+\dfrac{1+2\ln x}{x^2}$ ، و $(C_f)$ تمثيلها البياني ، و $(\Delta)$ المستقيم ذو المعادلة $y=1$.
+\begin{enumerate}
+\item ادرس الوضع النسبي للمنحنى $(C_f)$ والمستقيم $(\Delta)$.
+\item \pa أثبت أن $H:x\mapsto\dfrac{-3-2\ln x}x$ دالة أصلية للدالة $h:x\mapsto\dfrac{1+2\ln x}{x^2}$ على $]0;+\infty[$.
+\pb استنتج $\mathcal A$ مساحة الحيز المستوي المحدد بـ $(C_f)$ و $(\Delta)$ والمستقيمين اللذين معادلتاهما $x=1$ و $x=e$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $f(x)-1=\dfrac{1+2\ln x}{x^2}$: إشارته إشارة $1+2\ln x$ ، و $1+2\ln x=0\iff x=e^{-\frac12}=\dfrac1{\sqrt e}$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-1$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$\frac1{\sqrt e}$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $\left(\frac1{\sqrt e};1\right)$};
+\end{tikzpicture}
+\end{FIG}
+\textbf{2.} \pa $H'(x)=\dfrac{-\frac2x\times x-(-3-2\ln x)}{x^2}=\dfrac{1+2\ln x}{x^2}=h(x)$ \ok
+\pb
+\begin{GR}{-0.3}{4.5}{-1.5}{2.6}{0.9}
+\Ticks{1,2,3,4}{-1,1,2}
+\fill[cDef!25] plot[domain=1:2.71828,samples=60](\x,{1+(1+2*ln(\x))/(\x*\x)}) -- plot[domain=2.71828:1,samples=10](\x,{1}) -- cycle;
+\draw[cRem,thick] (-0.3,1)--(4.5,1); \node[cRem,above] at (4.2,1){$(\Delta)$};
+\draw[cDef,very thick,domain=0.42:4.5,samples=100] plot(\x,{1+(1+2*ln(\x))/(\x*\x)});
+\draw[dashed] (2.718,0)--(2.718,1.41); \node[below] at (2.718,0){$e$};
+\node[cDef] at (0.6,2.4){$(C_f)$};
+\end{GR}
+على $[1;e]$: $(C_f)$ فوق $(\Delta)$:
+\[\mathcal A=\int_1^eh(x)\,dx=H(e)-H(1)=\frac{-5}e-(-3)=\bx{3-\frac5e}\approx1{,}16\ ua\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2024 -- الموضوع الثاني (\Ss\ بعد درس الأسية)}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=x+(x+2)e^{-x}$ ، و $(C_f)$ تمثيلها البياني ، و $(\Delta)$ المستقيم ذو المعادلة $y=x$.
+\begin{enumerate}
+\item ادرس الوضع النسبي للمنحنى $(C_f)$ والمستقيم $(\Delta)$.
+\item \pa بيّن أن الدالة $H:x\mapsto-(x+3)e^{-x}$ هي دالة أصلية للدالة $h:x\mapsto(x+2)e^{-x}$ على $\R$.
+\pb احسب $\mathcal A$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=x$ ، $x=0$ و $x=2$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $f(x)-x=(x+2)e^{-x}$: إشارته إشارة $x+2$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$-2$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(-2;-2)$};
+\end{tikzpicture}
+\end{FIG}
+\textbf{2.} \pa $H'(x)=-e^{-x}+(x+3)e^{-x}=(x+2)e^{-x}=h(x)$ \ok
+\pb
+\begin{GR}{-2.5}{4}{-3}{4.5}{0.65}
+\Ticks{-2,-1,1,2,3}{-2,2,4}
+\fill[cDef!25] plot[domain=0:2,samples=60](\x,{\x+(\x+2)*exp(-\x)}) -- plot[domain=2:0,samples=10](\x,{\x}) -- cycle;
+\draw[cRem,thick,domain=-2.5:4] plot(\x,{\x}); \node[cRem] at (3.7,3.1){$(\Delta)$};
+\draw[cDef,very thick,domain=-2.4:4,samples=100] plot(\x,{\x+(\x+2)*exp(-\x)});
+\node[cDef] at (0.6,3.4){$(C_f)$};
+\end{GR}
+على $[0;2]$: $(C_f)$ فوق $(\Delta)$:
+\[\mathcal A=\int_0^2h(x)\,dx=H(2)-H(0)=-5e^{-2}+3=\bx{3-\frac5{e^2}}\approx2{,}32\ ua\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2025 -- الموضوع الأول (\Ss\ بعد درس اللوغاريتم)}
+$f$ الدالة المعرفة على $[0;+\infty[$ بـ: $f(0)=0$ ، ومن أجل كل $x$ من $]0;+\infty[$: $f(x)=\dfrac14x^2\left(2\ln x-3\right)$ ، و $(C_f)$ تمثيلها البياني.
+\begin{enumerate}
+\item ادرس إشارة $f(x)$ على $]0;+\infty[$.
+\item $F$ الدالة المعرفة على $]0;+\infty[$ بـ: $F(x)=\dfrac1{36}x^3\left(6\ln x-11\right)$.
+\pa بيّن أنه من أجل كل $x$ من $]0;+\infty[$: $F'(x)=f(x)$.
+\pb استنتج حساب $\mathcal A$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=0$ ، $x=1$ و $x=e$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $\dfrac14x^2>0$ ، فإشارة $f(x)$ إشارة $2\ln x-3$ ، و $2\ln x-3=0\iff x=e^{\frac32}$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (9.05,-0.45){$e^{\frac32}$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$-$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{تحت}\\ $(xx')$};
+\node at (12.675,-1.35){$+$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{فوق}\\ $(xx')$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(xx')$\\ \ar{في النقطة}\\ $\left(e^{\frac32};0\right)$};
+\end{tikzpicture}
+\end{FIG}
+\textbf{2.} \pa $F'(x)=\dfrac1{36}\Big[3x^2(6\ln x-11)+x^3\times\dfrac6x\Big]=\dfrac{x^2}{36}\left(18\ln x-27\right)=\dfrac{x^2}4\left(2\ln x-3\right)=f(x)$ \ok
+\pb
+\begin{GR}{-0.3}{5}{-2.3}{2}{0.8}
+\Ticks{1,2,3,4}{-2,-1,1}
+\fill[cDef!25] (1,0) -- plot[domain=1:2.71828,samples=60](\x,{\x*\x*(2*ln(\x)-3)/4}) -- (2.71828,0) -- cycle;
+\draw[cDef,very thick,domain=0.01:5,samples=100] plot(\x,{\x*\x*(2*ln(\x)-3)/4});
+\fill (4.4817,0) circle(2pt) node[above left]{$e^{\frac32}$};
+\node[cDef] at (4.7,1.5){$(C_f)$};
+\end{GR}
+على $[1;e]$: $f(x)<0$ ، إذن:
+\[\mathcal A=-\int_1^ef(x)\,dx=-\big[F(e)-F(1)\big]=-\Big[\frac{-5e^3}{36}+\frac{11}{36}\Big]=\bx{\frac{5e^3-11}{36}}\approx2{,}48\ ua\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2025 -- الموضوع الثاني (\Ss\ بعد درس الأسية)}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=x+2-xe^x$ ، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس (وحدة الطول $2\ \text{cm}$) ، و $(\Delta)$ المستقيم ذو المعادلة $y=x+2$.
+\begin{enumerate}
+\item ادرس الوضع النسبي للمنحنى $(C_f)$ والمستقيم $(\Delta)$.
+\item $h$ الدالة المعرفة على $\R$ بـ: $h(x)=(1-x)e^x$. \ احسب $h'(x)$ ، ثم استنتج بالسنتيمتر المربع حساب $\mathcal A$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=x+2$ ، $x=-1$ و $x=0$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $f(x)-(x+2)=-xe^x$: إشارته عكس إشارة $x$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-(x+2)$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (5.425,-1.35){$+$};
+\node[align=center,font=\small] at (5.425,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.675,-1.35){$-$};
+\node[align=center,font=\small] at (12.675,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (9.05,-1.35){$0$};
+\draw[densely dotted] (9.05,-0.9)--(9.05,-1.13) (9.05,-1.57)--(9.05,-1.8);
+\draw (7.55,-4.6) .. controls (7.625,-3.06) and (8.6,-2.136) .. (9.05,-1.8) .. controls (9.5,-2.136) and (10.475,-3.06) .. (10.55,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (9.05,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(0;2)$};
+\end{tikzpicture}
+\end{FIG}
+\textbf{2.} $h'(x)=-e^x+(1-x)e^x=-xe^x$: \ $h$ دالة أصلية لـ $x\mapsto-xe^x$.
+\begin{GR}{-4}{1.3}{-2.5}{3}{0.9}
+\Ticks{-3,-2,-1,1}{-2,-1,1,2}
+\fill[cDef!25] plot[domain=-1:0,samples=40](\x,{\x+2-\x*exp(\x)}) -- plot[domain=0:-1,samples=10](\x,{\x+2}) -- cycle;
+\draw[cRem,thick,domain=-4:1] plot(\x,{\x+2}); \node[cRem] at (-3.4,-1.9){$(\Delta)$};
+\draw[cDef,very thick,domain=-4:1.15,samples=100] plot(\x,{\x+2-\x*exp(\x)});
+\node[cDef] at (-3.3,0.3){$(C_f)$};
+\end{GR}
+على $[-1;0]$: $(C_f)$ فوق $(\Delta)$ ، و $1\,ua=4\ \text{cm}^2$:
+\[\int_{-1}^0\big(-xe^x\big)dx=h(0)-h(-1)=1-\frac2e\qquad;\qquad\mathcal A=4\Big(1-\frac2e\Big)=\bx{4-\frac8e}\approx1{,}06\ \text{cm}^2\]
+\end{hal}
+
+% =====================================================================
+\section{الكلفة الإجمالية دالة أصلية للكلفة الهامشية (\Ss)}
+
+\begin{tamrin}{تمرين من بكالوريا 2014 -- الموضوع الثاني (\Ss\ بعد درس الأسية)}
+$f$ الدالة المعرفة على $[0;7]$ بـ: $f(x)=6(1-2x)e^{-x}+5$.
+\begin{enumerate}
+\item \pa عيّن العددين الحقيقيين $a$ و $b$ بحيث تكون الدالة $g$ المعرفة على $[0;7]$ بـ: $g(x)=(ax+b)e^{-x}$ دالة أصلية للدالة $h:x\mapsto6(1-2x)e^{-x}$.
+\pb استنتج دالة أصلية للدالة $f$ على $[0;7]$.
+\item الكلفة الهامشية $C_m$ لصناعة كمية $x$ (مقدرة بالطن) من منتوج ، حيث $x\in[0;7]$ ، تُنمذج بالدالة $f$: $C_m(x)=f(x)$ (الكلفة مقدرة بملايين الدنانير). نذكّر أن دالة الكلفة الإجمالية دالة أصلية لدالة الكلفة الهامشية.
+\pa بيّن أن الكلفة الإجمالية $C_T$ معرفة بـ: $C_T(x)=(12x+6)e^{-x}+5x+k$ حيث $k$ عدد حقيقي.
+\pb حدّد قيمة $k$ إذا علمت أن الكلفة الثابتة $2$ مليون دينار (أي $C_T(0)=2$).
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \pa $g'(x)=ae^{-x}-(ax+b)e^{-x}=(-ax+a-b)e^{-x}$ ، ونريد $g'(x)=(-12x+6)e^{-x}$:\par
+بالمطابقة: $-a=-12$ و $a-b=6$ \quad إذن \quad \bx{a=12} \ و \ \bx{b=6}
+\pb دالة أصلية لـ $f$: \quad \bx{F(x)=(12x+6)e^{-x}+5x}
+\QQ{2} \pa $C_T$ دالة أصلية لـ $C_m=f$ ، والدوال الأصلية لـ $f$ تختلف بثابت: \quad $C_T(x)=(12x+6)e^{-x}+5x+k$ \ok
+\pb $C_T(0)=6+k=2$ \quad ومنه \quad \bx{k=-4} \quad و \quad $C_T(x)=(12x+6)e^{-x}+5x-4$.
+\end{hal}
+
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\Large\bfseries بالتوفيق والنجاح}
+\end{tcolorbox}
+\end{LTR}
+\end{document}
