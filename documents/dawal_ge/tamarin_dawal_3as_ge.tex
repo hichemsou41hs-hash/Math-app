@@ -1,0 +1,1135 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings,patterns}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}تمارين الدوال العددية}{\small\color{cSec}السنة الثالثة ثانوي -- تسيير واقتصاد}
+\newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
+\renewcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\newcommand{\LW}[1]{{\color{cDef}#1}}
+\newcommand{\Car}[1]{\left\{\begin{array}{l}#1\end{array}\right.}
+\newcommand{\Lm}[1]{\displaystyle\lim_{x\to#1}}
+\newcommand{\LD}[3]{\par لدينا: $\Lm{#2}#1=\bx{#3}$ لأنّ: \quad}
+\newcommand{\E}{\par\smallskip}
+\renewenvironment{tamrin}[1]{\stepcounter{exo}\gdef\curt{#1}\begin{BOX}{cSec}{#1}}{\end{BOX}}
+\newcommand{\curt}{}
+\renewenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل \curt}}{\end{arbox}\end{otherlanguage}}
+\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\fontsize{28}{34}\selectfont\bfseries تمارين الدوال العددية}\\[8pt]
+{\color{cSec!80!black}\large تمارين على نمط اختبارات الفصل الأول + تمارين البكالوريا مع الحلول المفصلة}\\[5pt]
+{\color{cSec!80!black}\large السنة الثالثة ثانوي -- شعبة تسيير واقتصاد}
+\end{tcolorbox}
+\end{LTR}
+
+% =====================================================
+\section{تمارين على نمط اختبارات الفصل الأول}
+
+\begin{tamrin}{التمرين 1: تحليل كثير حدود وحل متراجحة}
+ليكن كثير الحدود $P$ المعرف على $\R$ بـ: $P(x)=x^3-2x^2-5x+6$.
+\QQ{1} أحسب $P(1)$. ماذا تستنتج؟
+\QQ{2} عيّن الأعداد الحقيقية $a$ ، $b$ و $c$ بحيث من أجل كل عدد حقيقي $x$: $P(x)=(x-1)\left(ax^2+bx+c\right)$.
+\QQ{3} حلّل $P(x)$ إلى جداء ثلاثة عوامل من الدرجة الأولى.
+\QQ{4} حل في $\R$ المعادلة $P(x)=0$ ، ثم المتراجحة $P(x)\leqslant0$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $P(1)=1-2-5+6=\bx{0}$ ، إذن $1$ جذر لكثير الحدود $P$ ، ومنه $P(x)$ يقبل القسمة على $(x-1)$.
+\QQ{2} ننشر: $(x-1)(ax^2+bx+c)=ax^3+(b-a)x^2+(c-b)x-c$. بالمطابقة مع $P(x)$:
+\[a=1\ ;\ b-a=-2\ ;\ c-b=-5\ ;\ -c=6\ \Rightarrow\ \bx{a=1\ ;\ b=-1\ ;\ c=-6}\]
+إذن: $P(x)=(x-1)\left(x^2-x-6\right)$.
+\QQ{3} $x^2-x-6$: \quad $\Delta=1+24=25$ ، $x_1=\dfrac{1-5}2=-2$ ، $x_2=\dfrac{1+5}2=3$:
+\[\bx{P(x)=(x-1)(x+2)(x-3)}\]
+\QQ{4} $P(x)=0$ يعني $x=1$ أو $x=-2$ أو $x=3$: \quad $\bx{S=\{-2;1;3\}}$.
+\begin{TAB}
+\tkzTabInit[lgt=1.8,espcl=2.2]{$x$/1,$x+2$/1,$x-1$/1,$x-3$/1,$P(x)$/1}{$-\infty$,$-2$,$1$,$3$,$+\infty$}
+\tkzTabLine{,-,z,+,t,+,t,+,}
+\tkzTabLine{,-,t,-,z,+,t,+,}
+\tkzTabLine{,-,t,-,t,-,z,+,}
+\tkzTabLine{,-,z,+,z,-,z,+,}
+\end{TAB}
+مجموعة حلول المتراجحة $P(x)\leqslant0$: \quad $\bx{S=]-\infty;-2]\cup[1;3]}$.
+\end{hal}
+
+\begin{tamrin}{التمرين 2: نهايات ومستقيمات مقاربة}
+أحسب النهايات التالية ، ثم فسّر النتائج بيانيًا عندما يكون ذلك ممكنًا:
+\QQ{1} $f(x)=-3x^3+2x-7$: \quad $\Lm{-\infty}f(x)$ و $\Lm{+\infty}f(x)$.
+\QQ{2} $g(x)=\dfrac{4x^2-1}{2x^2+x+3}$: \quad $\Lm{+\infty}g(x)$.
+\QQ{3} $h(x)=\dfrac{2x+1}{x-3}$: \quad $\Lm{3^-}h(x)$ ، $\Lm{3^+}h(x)$ و $\Lm{\pm\infty}h(x)$.
+\QQ{4} $k(x)=2x-1+\dfrac3{x+1}$: بيّن أن المستقيم $(\Delta):\ y=2x-1$ مقارب مائل لـ $(C_k)$ ، ثم ادرس الوضع النسبي.
+\end{tamrin}
+\begin{hal}
+\QQ{1} نهاية كثير حدود عند $\pm\infty$ هي نهاية حده الأعلى درجة:
+\[\Lm{-\infty}f(x)=\Lm{-\infty}\left(-3x^3\right)=\bx{+\infty}\qquad;\qquad\Lm{+\infty}f(x)=\Lm{+\infty}\left(-3x^3\right)=\bx{-\infty}\]
+\QQ{2} نهاية دالة ناطقة عند $\pm\infty$ هي نهاية حاصل قسمة الحدين الأعلى درجة:
+\[\Lm{+\infty}g(x)=\Lm{+\infty}\frac{4x^2}{2x^2}=\bx{2}\]
+إذن المستقيم $y=2$ مقارب أفقي لـ $(C_g)$ بجوار $+\infty$.
+\QQ{3}
+\LD{h(x)}{3^-}{-\infty} $\Car{\Lm{3}(2x+1)=7\\[6pt]\Lm{3^-}(x-3)=0^-}$\E
+\LD{h(x)}{3^+}{+\infty} $\Car{\Lm{3}(2x+1)=7\\[6pt]\Lm{3^+}(x-3)=0^+}$\E
+إذن المستقيم $x=3$ مقارب عمودي لـ $(C_h)$.
+\[\Lm{\pm\infty}h(x)=\Lm{\pm\infty}\frac{2x}x=\bx{2}\]
+إذن المستقيم $y=2$ مقارب أفقي لـ $(C_h)$.
+\QQ{4} $k(x)-(2x-1)=\dfrac3{x+1}$ و $\Lm{\pm\infty}\dfrac3{x+1}=0$: \bxt{$(\Delta)$ مقارب مائل لـ $(C_k)$ بجوار $\pm\infty$}.\par
+إشارة الفرق هي إشارة $x+1$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15,-4.6);
+\draw[thick] (0,0) rectangle (15,-4.6); \draw (0,-0.9)--(15,-0.9) (0,-1.8)--(15,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{3}{x+1}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (8.8,-0.45){$-1$};
+\node at (14.3,-0.45){$+\infty$};
+\node at (6.05,-1.35){$-$};
+\node[align=center,font=\small] at (6.05,-3.2){$(C_k)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (11.55,-1.35){$+$};
+\node[align=center,font=\small] at (11.55,-3.2){$(C_k)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (8.8,-0.9)--(8.8,-4.6);
+\end{tikzpicture}
+\end{FIG}
+\end{hal}
+
+\begin{tamrin}{التمرين 3: حساب المشتقات}
+أحسب الدالة المشتقة لكل دالة من الدوال التالية على المجال المعطى:
+\QQ{1} $f_1(x)=2x^3-5x^2+4x-1$ على $\R$.
+\QQ{2} $f_2(x)=\dfrac{3x-1}{x+2}$ على $]-2;+\infty[$.
+\QQ{3} $f_3(x)=x+1-\dfrac4{x^2}$ على $]0;+\infty[$.
+\QQ{4} $f_4(x)=\left(2x^2-3\right)^4$ على $\R$.
+\QQ{5} $f_5(x)=\sqrt{x^2+3}$ على $\R$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $f_1'(x)=\bx{6x^2-10x+4}$.
+\QQ{2} $u=3x-1$ ، $v=x+2$ ، $u'=3$ ، $v'=1$:
+\[f_2'(x)=\frac{3(x+2)-1\times(3x-1)}{(x+2)^2}=\frac{3x+6-3x+1}{(x+2)^2}=\bx{\frac7{(x+2)^2}}\]
+\QQ{3} $\left(\dfrac1{x^2}\right)'=-\dfrac2{x^3}$ ، ومنه:
+\[f_3'(x)=1-4\times\left(-\frac2{x^3}\right)=1+\frac8{x^3}=\bx{\frac{x^3+8}{x^3}}\]
+\QQ{4} $\left(u^n\right)'=n\,u'\,u^{n-1}$ مع $u=2x^2-3$ و $u'=4x$:
+\[f_4'(x)=4\times4x\left(2x^2-3\right)^3=\bx{16x\left(2x^2-3\right)^3}\]
+\QQ{5} $\left(\sqrt u\right)'=\dfrac{u'}{2\sqrt u}$ ، و $x^2+3>0$:
+\[f_5'(x)=\frac{2x}{2\sqrt{x^2+3}}=\bx{\frac x{\sqrt{x^2+3}}}\]
+\end{hal}
+
+\begin{tamrin}{التمرين 4: الدالة المساعدة ومبرهنة القيم المتوسطة}
+لتكن $g$ الدالة المعرفة على $\R$ بـ: $g(x)=x^3-3x-3$.
+\QQ{1} أحسب نهايتي $g$ عند $-\infty$ وعند $+\infty$.
+\QQ{2} أدرس اتجاه تغير الدالة $g$ ، ثم شكّل جدول تغيراتها.
+\QQ{3}
+\begin{sq}
+\qa بيّن أن المعادلة $g(x)=0$ تقبل حلًا وحيدًا $\alpha$ في $\R$.
+\qb تحقق أن: $2{,}1<\alpha<2{,}11$.
+\end{sq}
+\QQ{4} استنتج إشارة $g(x)$ حسب قيم $x$.
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\[\Lm{+\infty}g(x)=\Lm{+\infty}x^3=\bx{+\infty}\qquad;\qquad\Lm{-\infty}g(x)=\Lm{-\infty}x^3=\bx{-\infty}\]
+\QQ{2} $g'(x)=3x^2-3=3(x-1)(x+1)$:
+\begin{itemize}
+\item $g'(x)>0$ على $]-\infty;-1[$ وعلى $]1;+\infty[$: \bxt{$g$ متزايدة تمامًا على $]-\infty;-1]$ وعلى $[1;+\infty[$}.
+\item $g'(x)<0$ على $]-1;1[$: \bxt{$g$ متناقصة تمامًا على $[-1;1]$}.
+\end{itemize}
+$g(-1)=-1+3-3=-1$ و $g(1)=1-3-3=-5$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$/1,$g'(x)$/1,$g(x)$/2}{$-\infty$,$-1$,$1$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$-1$,-/$-5$,+/$+\infty$}
+\end{TAB}
+\QQ{3}
+\pa على المجال $]-\infty;1]$: القيمة الكبرى لـ $g$ هي $g(-1)=-1<0$ ، إذن $g(x)<0$ ولا توجد حلول.\par
+على المجال $[1;+\infty[$: $g$ مستمرة ومتزايدة تمامًا ، و $g(1)=-5<0$ و $\Lm{+\infty}g(x)=+\infty$ ، إذن حسب مبرهنة القيم المتوسطة المعادلة $g(x)=0$ تقبل حلًا وحيدًا $\alpha$ في هذا المجال.\par
+إذن المعادلة $g(x)=0$ تقبل \bxt{حلًا وحيدًا $\alpha$ في $\R$}.
+\pb
+\[g(2{,}1)=9{,}261-6{,}3-3=-0{,}039<0\qquad;\qquad g(2{,}11)\approx0{,}064>0\]
+إذن: $\bx{2{,}1<\alpha<2{,}11}$.
+\QQ{4} من جدول التغيرات: $g(x)<0$ على $]-\infty;\alpha[$ ، $g(\alpha)=0$ ، و $g(x)>0$ على $]\alpha;+\infty[$.
+\end{hal}
+
+\begin{tamrin}{التمرين 5: دراسة دالة كثير حدود من الدرجة الثالثة}
+لتكن $f$ الدالة المعرفة على $\R$ بـ: $f(x)=x^3-3x^2+4$ ، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1} أحسب $\Lm{-\infty}f(x)$ و $\Lm{+\infty}f(x)$.
+\QQ{2} أدرس اتجاه تغير الدالة $f$ ، ثم شكّل جدول تغيراتها.
+\QQ{3} تحقق أنه من أجل كل عدد حقيقي $x$: $f(x)=(x+1)(x-2)^2$ ، ثم استنتج نقط تقاطع $(C_f)$ مع محور الفواصل.
+\QQ{4}
+\begin{sq}
+\qa بيّن أن النقطة $\Omega(1;2)$ مركز تناظر للمنحنى $(C_f)$.
+\qb بيّن أن $\Omega$ نقطة انعطاف لـ $(C_f)$.
+\qc أكتب معادلة المماس $(T)$ لـ $(C_f)$ عند النقطة $\Omega$.
+\end{sq}
+\QQ{5} أرسم $(T)$ و $(C_f)$.
+\QQ{6} ناقش بيانيًا ، حسب قيم الوسيط الحقيقي $m$ ، عدد حلول المعادلة: $f(x)=m$.
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\[\Lm{-\infty}f(x)=\Lm{-\infty}x^3=\bx{-\infty}\qquad;\qquad\Lm{+\infty}f(x)=\Lm{+\infty}x^3=\bx{+\infty}\]
+\QQ{2} $f'(x)=3x^2-6x=3x(x-2)$ ، و $f'(x)=0$ يعني $x=0$ أو $x=2$.\par
+\bxt{$f$ متزايدة تمامًا على $]-\infty;0]$ وعلى $[2;+\infty[$ ، ومتناقصة تمامًا على $[0;2]$} ؛ $f(0)=4$ و $f(2)=8-12+4=0$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$0$,$2$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$4$,-/$0$,+/$+\infty$}
+\end{TAB}
+\QQ{3}
+\[(x+1)(x-2)^2=(x+1)(x^2-4x+4)=x^3-4x^2+4x+x^2-4x+4=\bx{x^3-3x^2+4}\]
+$f(x)=0$ يعني $x=-1$ أو $x=2$: $(C_f)$ \bxt{يقطع محور الفواصل في $A(-1;0)$ ويمسه في $B(2;0)$}.
+\QQ{4}
+\pa من أجل كل $x\in\R$: $2-x\in\R$ ، و:
+\[f(2-x)=(2-x)^3-3(2-x)^2+4=8-12x+6x^2-x^3-12+12x-3x^2+4=-x^3+3x^2\]
+\[f(2-x)+f(x)=-x^3+3x^2+x^3-3x^2+4=4=2\times2\]
+إذن \bxt{$\Omega(1;2)$ مركز تناظر لـ $(C_f)$}.
+\pb $f''(x)=6x-6$ تنعدم عند $1$ وتغير إشارتها (سالبة قبل $1$ وموجبة بعده) ، و $f(1)=2$: \bxt{$\Omega(1;2)$ نقطة انعطاف}.
+\pc $f'(1)=3-6=-3$: \quad $(T):\ y=-3(x-1)+2$ ، أي $\bx{(T):\ y=-3x+5}$.
+\QQ{5} الرسم:
+\begin{GR}{-1.6}{3.6}{-1.4}{5.6}{0.8}
+\Ticks{-1,1,2,3}{-1,1,2,3,4,5}
+\draw[cThm,thick,domain=0:2.1] plot(\x,{-3*\x+5}) node[below right,font=\scriptsize]{$(T)$};
+\draw[cDef,very thick,domain=-1.3:3.1,samples=150] plot(\x,{\x*\x*\x-3*\x*\x+4});
+\fill[cThm] (1,2) circle (1.6pt) node[right,font=\scriptsize]{$\Omega$};
+\node[cDef,font=\scriptsize] at (3.3,4.4){$(C_f)$};
+\end{GR}
+\QQ{6} الحلول هي فواصل نقط تقاطع $(C_f)$ مع المستقيم الأفقي $y=m$:
+\begin{itemize}
+\item $m<0$ أو $m>4$: \bxt{حل وحيد}.
+\item $m=0$ أو $m=4$: \bxt{حلان} (أحدهما مضاعف).
+\item $0<m<4$: \bxt{ثلاثة حلول}.
+\end{itemize}
+\end{hal}
+
+\begin{tamrin}{التمرين 6: تعيين ثوابت دالة ناطقة ودراستها}
+$f$ الدالة المعرفة على $\R-\{2\}$ بـ: $f(x)=ax+b+\dfrac c{x-2}$ حيث $a$ ، $b$ و $c$ أعداد حقيقية ، و $(C_f)$ تمثيلها البياني.
+\QQ{1} عيّن $a$ ، $b$ و $c$ علمًا أن $(C_f)$ يشمل النقطة $B\left(0;-\dfrac32\right)$ ، ويقبل عند النقطة $A(3;3)$ مماسًا موازيًا لمحور الفواصل.
+\QQ{2} نضع: $f(x)=x-1+\dfrac1{x-2}$.
+\begin{sq}
+\qa أحسب النهايات عند أطراف مجموعة التعريف ، وفسّر النتائج بيانيًا.
+\qb بيّن أن $(\Delta):\ y=x-1$ مقارب مائل لـ $(C_f)$ ، وادرس الوضع النسبي.
+\qc بيّن أن: $f'(x)=\dfrac{(x-1)(x-3)}{(x-2)^2}$ ، ثم شكّل جدول تغيرات $f$.
+\qd بيّن أن النقطة $\Omega(2;1)$ مركز تناظر لـ $(C_f)$.
+\end{sq}
+\QQ{3} $g$ الدالة المعرفة على $\R-\{-2;2\}$ بـ: $g(x)=f(|x|)$. بيّن أن $g$ زوجية ، ثم اشرح كيف يمكن رسم $(C_g)$ انطلاقًا من $(C_f)$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $f'(x)=a-\dfrac c{(x-2)^2}$. نترجم المعطيات:
+\[f(0)=-\frac32\ ;\ f(3)=3\ ;\ f'(3)=0\ \Rightarrow\ b-\frac c2=-\frac32\ ;\ 3a+b+c=3\ ;\ a-c=0\]
+من الثالثة $c=a$ ، فتصبح الثانية $b=3-4a$ ، وبالتعويض في الأولى:
+\[3-4a-\frac a2=-\frac32\ \Rightarrow\ \frac92a=\frac92\ \Rightarrow\ a=1\]
+إذن: $\bx{a=1\ ;\ b=-1\ ;\ c=1}$.
+\QQ{2}
+\pa
+\LD{f(x)}{-\infty}{-\infty} $\Car{\Lm{-\infty}(x-1)=-\infty\\[6pt]\Lm{-\infty}\dfrac1{x-2}=0}$\E
+\LD{f(x)}{+\infty}{+\infty} $\Car{\Lm{+\infty}(x-1)=+\infty\\[6pt]\Lm{+\infty}\dfrac1{x-2}=0}$\E
+\LD{f(x)}{2^-}{-\infty} $\Car{\Lm{2}(x-1)=1\\[6pt]\Lm{2^-}(x-2)=0^-}$\E
+\LD{f(x)}{2^+}{+\infty} $\Car{\Lm{2}(x-1)=1\\[6pt]\Lm{2^+}(x-2)=0^+}$\E
+إذن المستقيم $x=2$ مقارب عمودي لـ $(C_f)$.
+\pb $f(x)-(x-1)=\dfrac1{x-2}$ ونهايته عند $\pm\infty$ هي $0$: \bxt{$(\Delta)$ مقارب مائل}. إشارة الفرق هي إشارة $x-2$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15,-4.6);
+\draw[thick] (0,0) rectangle (15,-4.6); \draw (0,-0.9)--(15,-0.9) (0,-1.8)--(15,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{1}{x-2}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (8.8,-0.45){$2$};
+\node at (14.3,-0.45){$+\infty$};
+\node at (6.05,-1.35){$-$};
+\node[align=center,font=\small] at (6.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (11.55,-1.35){$+$};
+\node[align=center,font=\small] at (11.55,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (8.8,-0.9)--(8.8,-4.6);
+\end{tikzpicture}
+\end{FIG}
+\pc
+\[f'(x)=1-\frac1{(x-2)^2}=\frac{(x-2)^2-1}{(x-2)^2}=\frac{(x-2-1)(x-2+1)}{(x-2)^2}=\bx{\frac{(x-3)(x-1)}{(x-2)^2}}\]
+$f(1)=0-1=-1$ و $f(3)=2+1=3$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.4]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$1$,$2$,$3$,$+\infty$}
+\tkzTabLine{,+,z,-,d,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$-1$,-D+/$-\infty$/$+\infty$,-/$3$,+/$+\infty$}
+\end{TAB}
+\pd من أجل كل $x\neq2$: $4-x\neq2$ ، و:
+\[f(4-x)+f(x)=\left(3-x+\frac1{2-x}\right)+\left(x-1+\frac1{x-2}\right)=2=2\times1\]
+إذن \bxt{$\Omega(2;1)$ مركز تناظر لـ $(C_f)$}.
+\QQ{3} من أجل كل $x\in\R-\{-2;2\}$: $-x\in\R-\{-2;2\}$ و $g(-x)=f(|-x|)=f(|x|)=g(x)$: \bxt{$g$ زوجية}.\par
+من أجل $x\geqslant0$: $|x|=x$ ومنه $g(x)=f(x)$ ، إذن $(C_g)$ ينطبق على $(C_f)$ في الجزء $x\geqslant0$ ، ثم نكمل بالتناظر بالنسبة إلى محور التراتيب.
+\end{hal}
+
+\begin{tamrin}{التمرين 7: مسألة اقتصادية: الكلفة والربح}
+تنتج مؤسسة يوميًا كمية $q$ من منتوج (بالأطنان) حيث $q\in[0;10]$. الكلفة الإجمالية (بآلاف الدنانير) هي: $C(q)=q^3-12q^2+60q$.
+\QQ{1}
+\begin{sq}
+\qa أحسب الكلفة الهامشية $C_m(q)=C'(q)$ ، وبيّن أنها موجبة تمامًا. ماذا تستنتج بالنسبة لـ $C$ ؟
+\qb أحسب الكلفة المتوسطة $C_M(q)=\dfrac{C(q)}q$ من أجل $q\in]0;10]$ ، ثم عيّن الكمية التي تكون من أجلها الكلفة المتوسطة أصغر ما يمكن.
+\end{sq}
+\QQ{2} يباع الطن الواحد بـ $39$ ألف دينار. نسمي $B(q)$ الربح الإجمالي.
+\begin{sq}
+\qa بيّن أن: $B(q)=-q^3+12q^2-21q$.
+\qb أدرس اتجاه تغير $B$ على $[0;10]$ ، ثم عيّن الكمية التي تحقق أكبر ربح ، وما قيمة هذا الربح؟
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa $C_m(q)=C'(q)=3q^2-24q+60=3\left(q^2-8q+20\right)$. مميز $q^2-8q+20$: $\Delta=64-80=-16<0$ ، إذن هو موجب دائمًا ، و $\bx{C_m(q)>0}$.\par
+ومنه: \bxt{الكلفة الإجمالية متزايدة تمامًا} (كلما زاد الإنتاج زادت الكلفة).
+\pb
+\[C_M(q)=\frac{q^3-12q^2+60q}q=\bx{q^2-12q+60}\qquad;\qquad C_M'(q)=2q-12\]
+$C_M'(q)$ تنعدم عند $6$:
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3]{$q$/1,$C_M'(q)$/1,$C_M(q)$/2}{$0$,$6$,$10$}
+\tkzTabLine{,-,z,+,}
+\tkzTabVar{+/$60$,-/$24$,+/$40$}
+\end{TAB}
+الكلفة المتوسطة أصغر ما يمكن من أجل $\bx{q=6}$ طن ، وقيمتها $C_M(6)=36-72+60=\bx{24}$ ألف دينار للطن.
+\QQ{2}
+\pa الربح $=$ المداخيل $-$ الكلفة:
+\[B(q)=39q-\left(q^3-12q^2+60q\right)=\bx{-q^3+12q^2-21q}\]
+\pb $B'(q)=-3q^2+24q-21=-3\left(q^2-8q+7\right)=-3(q-1)(q-7)$:
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$q$/1,$B'(q)$/1,$B(q)$/2}{$0$,$1$,$7$,$10$}
+\tkzTabLine{,-,z,+,z,-,}
+\tkzTabVar{+/$0$,-/$-10$,+/$98$,-/$-10$}
+\end{TAB}
+$B(7)=-343+588-147=98$. أكبر ربح يتحقق من أجل إنتاج $\bx{q=7}$ أطنان ، وقيمته $\bx{98\,000\ DA}$.
+\end{hal}
+
+% =====================================================
+\section{تمارين البكالوريا -- شعبة تسيير واقتصاد}
+
+\begin{tamrin}{تمرين من بكالوريا 2022 -- الموضوع الأول}
+$f$ الدالة العددية المعرفة على $D=\R-\{-2\}$ بـ: $f(x)=\dfrac{x^2+3x+3}{x+2}$ ، و $(C)$ تمثيلها البياني في معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\Lm{-2^-}f(x)$ و $\Lm{-2^+}f(x)$ ، ثم فسّر النتيجتين بيانيًا.
+\qb أحسب $\Lm{-\infty}f(x)$ و $\Lm{+\infty}f(x)$.
+\end{sq}
+\QQ{2} بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x+1$ مقارب مائل لـ $(C)$ ، ثم ادرس وضعية $(C)$ بالنسبة إلى $(\Delta)$.
+\QQ{3} بيّن أن النقطة $A(-2;-1)$ مركز تناظر لـ $(C)$.
+\QQ{4}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ من $D$: $f'(x)=\dfrac{(x+3)(x+1)}{(x+2)^2}$.
+\qb أدرس اتجاه تغير الدالة $f$ ، ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{5} أكتب معادلة لـ $(T)$ مماس $(C)$ في النقطة ذات الفاصلة $0$.
+\QQ{6} أنشئ $(\Delta)$ ، $(T)$ و $(C)$.
+\QQ{7} $g$ الدالة العددية المعرفة على $\R-\{-2;2\}$ بـ: $g(x)=\dfrac{x^2-3|x|+3}{-|x|+2}$ ، و $(C_g)$ تمثيلها البياني في المعلم السابق.
+\begin{sq}
+\qa بيّن أن $g$ دالة زوجية ، ثم تحقق أنه من أجل كل $x$ من $]-\infty;-2[\cup]-2;0]$: $g(x)=f(x)$.
+\qb اشرح كيف يمكن إنشاء $(C_g)$ انطلاقًا من $(C)$ ، ثم أنشئه.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa
+\LD{f(x)}{-2^-}{-\infty} $\Car{\Lm{-2}(x^2+3x+3)=4-6+3=1\\[6pt]\Lm{-2^-}(x+2)=0^-}$\E
+\LD{f(x)}{-2^+}{+\infty} $\Car{\Lm{-2}(x^2+3x+3)=1\\[6pt]\Lm{-2^+}(x+2)=0^+}$\E
+\textbf{التفسير:} المستقيم ذو المعادلة $x=-2$ مقارب عمودي لـ $(C)$.
+\pb
+\[\Lm{+\infty}f(x)=\Lm{+\infty}\frac{x^2}x=\Lm{+\infty}x=\bx{+\infty}\qquad;\qquad\Lm{-\infty}f(x)=\Lm{-\infty}x=\bx{-\infty}\]
+\QQ{2} $(x+1)(x+2)+1=x^2+3x+3$ ، إذن من أجل كل $x\in D$: $\bx{f(x)=x+1+\dfrac1{x+2}}$.\par
+$f(x)-(x+1)=\dfrac1{x+2}$ ونهايته عند $\pm\infty$ هي $0$: \bxt{$(\Delta)$ مقارب مائل لـ $(C)$ بجوار $-\infty$ و $+\infty$}.\par
+إشارة الفرق هي إشارة $x+2$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15,-4.6);
+\draw[thick] (0,0) rectangle (15,-4.6); \draw (0,-0.9)--(15,-0.9) (0,-1.8)--(15,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{1}{x+2}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (8.8,-0.45){$-2$};
+\node at (14.3,-0.45){$+\infty$};
+\node at (6.05,-1.35){$-$};
+\node[align=center,font=\small] at (6.05,-3.2){$(C)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (11.55,-1.35){$+$};
+\node[align=center,font=\small] at (11.55,-3.2){$(C)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (8.8,-0.9)--(8.8,-4.6);
+\end{tikzpicture}
+\end{FIG}
+\QQ{3} من أجل كل $x\in D$: $-4-x\neq-2$ ، أي $-4-x\in D$ ، و:
+\[f(-4-x)+f(x)=\left(-4-x+1+\frac1{-4-x+2}\right)+\left(x+1+\frac1{x+2}\right)=-2-\frac1{x+2}+\frac1{x+2}=-2\]
+$-2=2\times(-1)$ ، إذن \bxt{$A(-2;-1)$ مركز تناظر لـ $(C)$}.
+\QQ{4}
+\pa
+\[f'(x)=1-\frac1{(x+2)^2}=\frac{(x+2)^2-1}{(x+2)^2}=\frac{(x+2-1)(x+2+1)}{(x+2)^2}=\bx{\frac{(x+3)(x+1)}{(x+2)^2}}\]
+\pb إشارة $f'(x)$ هي إشارة $(x+3)(x+1)$ (لأن $(x+2)^2>0$):
+\begin{itemize}
+\item \bxt{$f$ متزايدة تمامًا على $]-\infty;-3]$ وعلى $[-1;+\infty[$}.
+\item \bxt{$f$ متناقصة تمامًا على $[-3;-2[$ وعلى $]-2;-1]$}.
+\end{itemize}
+$f(-3)=\dfrac{9-9+3}{-1}=-3$ و $f(-1)=\dfrac{1-3+3}1=1$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.4]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$-3$,$-2$,$-1$,$+\infty$}
+\tkzTabLine{,+,z,-,d,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$-3$,-D+/$-\infty$/$+\infty$,-/$1$,+/$+\infty$}
+\end{TAB}
+\QQ{5} $f(0)=\dfrac32$ و $f'(0)=\dfrac{3\times1}4=\dfrac34$ ، ومنه $(T)$: $y=\dfrac34(x-0)+\dfrac32$ ، أي $\bx{(T):\ y=\dfrac34x+\dfrac32}$.
+\QQ{6} الإنشاء:
+\begin{GR}{-6.4}{3.6}{-6.4}{4.6}{0.6}
+\Ticks{-6,-5,-4,-3,-1,1,2,3}{-6,-5,-4,-3,-2,-1,1,2,3,4}
+\draw[gray,dashed] (-2,-6.4)--(-2,4.6);
+\draw[cRem!70!black,thick,domain=-6.4:3.6] plot(\x,{\x+1}) node[below right,font=\scriptsize]{$(\Delta)$};
+\draw[cThm,thick,domain=-3:3.4] plot(\x,{0.75*\x+1.5}) node[above,font=\scriptsize]{$(T)$};
+\draw[cDef,very thick,domain=-6.4:-2.17,samples=120] plot(\x,{\x+1+1/(\x+2)});
+\draw[cDef,very thick,domain=-1.83:3.6,samples=120] plot(\x,{\x+1+1/(\x+2)});
+\fill[cThm] (-2,-1) circle (1.6pt) node[left,font=\scriptsize]{$A$};
+\node[cDef,font=\scriptsize] at (-1.2,4.2){$(C)$};
+\end{GR}
+\QQ{7}
+\pa المجموعة $\R-\{-2;2\}$ متناظرة بالنسبة إلى $0$ ، و $|-x|=|x|$ ، إذن $g(-x)=g(x)$: \bxt{$g$ زوجية}.\par
+من أجل $x\in]-\infty;-2[\cup]-2;0]$: $|x|=-x$ ، ومنه:
+\[g(x)=\frac{x^2-3(-x)+3}{-(-x)+2}=\frac{x^2+3x+3}{x+2}=\bx{f(x)}\]
+\pb على $]-\infty;-2[\cup]-2;0]$: $(C_g)$ ينطبق على $(C)$. وبما أن $g$ زوجية ، نكمل $(C_g)$ على $[0;2[\cup]2;+\infty[$ بالتناظر بالنسبة إلى محور التراتيب.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2022 -- الموضوع الثاني}
+$f$ الدالة المعرفة على $\R-\{1\}$ بـ: $f(x)=-x+1+\dfrac x{(x-1)^2}$ ، و $(C_f)$ تمثيلها البياني في المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\Lm{-\infty}f(x)$ و $\Lm{+\infty}f(x)$.
+\qb أحسب $\Lm{1}f(x)$ وفسّر النتيجة بيانيًا.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $\R-\{1\}$: $f'(x)=\dfrac{-x\left(x^2-3x+4\right)}{(x-1)^3}$.
+\qb بيّن أن $f$ متزايدة تمامًا على $[0;1[$ ، ومتناقصة تمامًا على كل من $]-\infty;0]$ و $]1;+\infty[$.
+\qc شكّل جدول تغيرات الدالة $f$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أن $(C_f)$ يقبل مستقيمًا مقاربًا مائلًا $(\Delta)$ يطلب تعيين معادلة له.
+\qb أدرس وضعية $(C_f)$ بالنسبة إلى $(\Delta)$.
+\qc بيّن أن $(C_f)$ يقطع حامل محور الفواصل في نقطة وحيدة فاصلتها $\alpha$ حيث $2{,}3<\alpha<2{,}4$.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa أكتب معادلة لـ $(T)$ مماس $(C_f)$ في النقطة ذات الفاصلة $-1$.
+\qb أنشئ $(\Delta)$ و $(C_f)$.
+\end{sq}
+\QQ{5} $g$ الدالة المعرفة على $]1;+\infty[$ بـ: $g(x)=|f(x)|$ ، و $(C_g)$ تمثيلها البياني في المعلم السابق. بيّن كيف يمكن إنشاء $(C_g)$ انطلاقًا من $(C_f)$.
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa $\dfrac x{(x-1)^2}$ دالة ناطقة نهايتها عند $\pm\infty$ هي نهاية $\dfrac x{x^2}=\dfrac1x$ ، أي $0$.
+\LD{f(x)}{-\infty}{+\infty} $\Car{\Lm{-\infty}(-x+1)=+\infty\\[6pt]\Lm{-\infty}\dfrac x{(x-1)^2}=0}$\E
+\LD{f(x)}{+\infty}{-\infty} $\Car{\Lm{+\infty}(-x+1)=-\infty\\[6pt]\Lm{+\infty}\dfrac x{(x-1)^2}=0}$\E
+\pb
+\LD{f(x)}{1}{+\infty} $\Car{\Lm{1}(-x+1)=0\\[6pt]\Lm{1}\dfrac x{(x-1)^2}=+\infty}$\E
+لأن $\Lm1x=1>0$ و $\Lm1(x-1)^2=0^+$. \textbf{التفسير:} المستقيم ذو المعادلة $x=1$ مقارب عمودي لـ $(C_f)$.
+\QQ{2}
+\pa مشتقة $\dfrac x{(x-1)^2}$:
+\[\frac{1\times(x-1)^2-x\times2(x-1)}{(x-1)^4}=\frac{(x-1)-2x}{(x-1)^3}=\frac{-x-1}{(x-1)^3}\]
+\[f'(x)=-1+\frac{-x-1}{(x-1)^3}=\frac{-(x-1)^3-x-1}{(x-1)^3}=\frac{-x^3+3x^2-4x}{(x-1)^3}=\bx{\frac{-x\left(x^2-3x+4\right)}{(x-1)^3}}\]
+\pb $x^2-3x+4$: $\Delta=9-16=-7<0$ ، إذن $x^2-3x+4>0$ دائمًا ، وإشارة $(x-1)^3$ هي إشارة $x-1$. إذن إشارة $f'(x)$ هي إشارة $\dfrac{-x}{x-1}$:
+\begin{TAB}
+\tkzTabInit[lgt=1.8,espcl=2.6]{$x$/1,$-x$/1,$(x-1)^3$/1,$f'(x)$/1}{$-\infty$,$0$,$1$,$+\infty$}
+\tkzTabLine{,+,z,-,t,-,}
+\tkzTabLine{,-,t,-,z,+,}
+\tkzTabLine{,-,z,+,d,-,}
+\end{TAB}
+إذن \bxt{$f$ متزايدة تمامًا على $[0;1[$ ، ومتناقصة تمامًا على $]-\infty;0]$ وعلى $]1;+\infty[$}.
+\pc $f(0)=0+1+0=1$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$0$,$1$,$+\infty$}
+\tkzTabLine{,-,z,+,d,-,}
+\tkzTabVar{+/$+\infty$,-/$1$,+D+/$+\infty$/$+\infty$,-/$-\infty$}
+\end{TAB}
+\QQ{3}
+\pa $f(x)-(-x+1)=\dfrac x{(x-1)^2}$ ونهايته عند $\pm\infty$ هي $0$.\par
+إذن \bxt{$(\Delta):\ y=-x+1$ مقارب مائل لـ $(C_f)$ بجوار $\pm\infty$}.
+\pb إشارة الفرق $\dfrac x{(x-1)^2}$ هي إشارة $x$ ، وينعدم عند $0$ ($f(0)=1$):
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15,-4.6);
+\draw[thick] (0,0) rectangle (15,-4.6); \draw (0,-0.9)--(15,-0.9) (0,-1.8)--(15,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{x}{(x-1)^2}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (7.50588,-0.45){$0$};
+\node at (11.7118,-0.45){$1$};
+\node at (14.3,-0.45){$+\infty$};
+\node at (4.65294,-1.35){$-$};
+\node[align=center,font=\small] at (4.65294,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (10.3588,-1.35){$+$};
+\node[align=center,font=\small] at (10.3588,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (13.0059,-1.35){$+$};
+\node[align=center,font=\small] at (13.0059,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (11.7118,-0.9)--(11.7118,-4.6);
+\node at (7.50588,-1.35){$0$};
+\draw[densely dotted] (7.50588,-0.9)--(7.50588,-1.13) (7.50588,-1.57)--(7.50588,-1.8);
+\draw (6.00588,-4.6) .. controls (6.08088,-3.06) and (7.05588,-2.136) .. (7.50588,-1.8) .. controls (7.95588,-2.136) and (8.93088,-3.06) .. (9.00588,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (7.50588,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(0;1)$};
+\end{tikzpicture}
+\end{FIG}
+\pc على $]-\infty;1[$: من جدول التغيرات $f(x)\geqslant f(0)=1>0$ ، إذن لا يقطع $(C_f)$ محور الفواصل.\par
+على $]1;+\infty[$: $f$ مستمرة ومتناقصة تمامًا ، و:
+\[f(2{,}3)\approx0{,}061>0\qquad;\qquad f(2{,}4)\approx-0{,}176<0\]
+حسب مبرهنة القيم المتوسطة: المعادلة $f(x)=0$ تقبل حلًا وحيدًا $\bx{\alpha\in]2{,}3;2{,}4[}$. إذن $(C_f)$ يقطع حامل محور الفواصل في نقطة وحيدة فاصلتها $\alpha$.
+\QQ{4}
+\pa $f(-1)=1+1+\dfrac{-1}4=\dfrac74$ و $f'(-1)=\dfrac{1\times(1+3+4)}{(-2)^3}=\dfrac8{-8}=-1$:
+\[(T):\ y=-1(x+1)+\frac74\ \Rightarrow\ \bx{(T):\ y=-x+\frac34}\]
+\pb الإنشاء:
+\begin{GR}{-2.4}{4.8}{-3.6}{5.6}{0.7}
+\Ticks{-2,-1,1,2,3,4}{-3,-2,-1,1,2,3,4,5}
+\draw[gray,dashed] (1,-3.6)--(1,5.6);
+\draw[cRem!70!black,thick,domain=-2.4:4.6] plot(\x,{-\x+1}) node[below,font=\scriptsize]{$(\Delta)$};
+\draw[cDef,very thick,domain=-2.4:0.62,samples=120] plot(\x,{-\x+1+\x/((\x-1)*(\x-1))});
+\draw[cDef,very thick,domain=1.42:4.8,samples=120] plot(\x,{-\x+1+\x/((\x-1)*(\x-1))});
+\fill[cThm] (2.35,0) circle (1.6pt) node[below left,font=\scriptsize]{$\alpha$};
+\node[cDef,font=\scriptsize] at (1.9,4.8){$(C_f)$};
+\end{GR}
+\QQ{5} على $]1;\alpha]$: $f(x)\geqslant0$ ، ومنه $g(x)=f(x)$: \bxt{$(C_g)$ ينطبق على $(C_f)$}.\par
+على $[\alpha;+\infty[$: $f(x)\leqslant0$ ، ومنه $g(x)=-f(x)$: \bxt{$(C_g)$ نظير $(C_f)$ بالنسبة إلى محور الفواصل}.
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2021 -- الموضوع الأول}
+$f$ الدالة العددية المعرفة على $\R$ بـ: $f(x)=\dfrac{x^2-4}{x^2+1}$ ، و $(C)$ تمثيلها البياني في معلم متعامد ومتجانس.
+\QQ{1}
+\begin{sq}
+\qa بيّن أن $f$ دالة زوجية.
+\qb أحسب $\Lm{+\infty}f(x)$ ثم استنتج $\Lm{-\infty}f(x)$ ، وفسّر النتيجتين هندسيًا.
+\qc ادرس وضعية $(C)$ بالنسبة إلى المستقيم $(\Delta)$ ذي المعادلة $y=1$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$: $f'(x)=\dfrac{10x}{(x^2+1)^2}$.
+\qb استنتج أن $f$ متناقصة تمامًا على $]-\infty;0]$ ومتزايدة تمامًا على $[0;+\infty[$ ، ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa أكتب معادلة للمماس $(T)$ للمنحنى $(C)$ في النقطة التي فاصلتها $2$.
+\qb جد إحداثيي نقطتي تقاطع $(C)$ مع حامل محور الفواصل.
+\end{sq}
+\QQ{4} ارسم $(\Delta)$ ، $(T)$ و $(C)$.
+\QQ{5} $g$ الدالة المعرفة على $\R$ بـ: $g(x)=\dfrac{\left|x^2-4\right|}{x^2+1}$.
+\begin{sq}
+\qa بيّن أن: من أجل كل $x$ من $]-\infty;-2]\cup[2;+\infty[$: $g(x)=f(x)$ ، ومن أجل كل $x$ من $[-2;2]$: $g(x)=-f(x)$.
+\qb شكّل جدول تغيرات الدالة $g$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa من أجل كل $x\in\R$: $-x\in\R$ و $f(-x)=\dfrac{(-x)^2-4}{(-x)^2+1}=\dfrac{x^2-4}{x^2+1}=f(x)$: \bxt{$f$ زوجية}.
+\pb
+\[\Lm{+\infty}f(x)=\Lm{+\infty}\frac{x^2}{x^2}=\bx{1}\]
+وبما أن $f$ زوجية (منحناها متناظر بالنسبة إلى محور التراتيب): $\Lm{-\infty}f(x)=\bx{1}$.\par
+\textbf{التفسير:} المستقيم ذو المعادلة $y=1$ مقارب أفقي لـ $(C)$ بجوار $-\infty$ و $+\infty$.
+\pc $f(x)-1=\dfrac{x^2-4-(x^2+1)}{x^2+1}=\dfrac{-5}{x^2+1}<0$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15,-4.6);
+\draw[thick] (0,0) rectangle (15,-4.6); \draw (0,-0.9)--(15,-0.9) (0,-1.8)--(15,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{-5}{x^2+1}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (14.3,-0.45){$+\infty$};
+\node at (8.8,-1.35){$-$};
+\node[align=center,font=\small] at (8.8,-3.2){$(C)$\\ \ar{تحت}\\ $(\Delta)$};
+\end{tikzpicture}
+\end{FIG}
+\QQ{2}
+\pa
+\[f'(x)=\frac{2x(x^2+1)-2x(x^2-4)}{(x^2+1)^2}=\frac{2x^3+2x-2x^3+8x}{(x^2+1)^2}=\bx{\frac{10x}{(x^2+1)^2}}\]
+\pb إشارة $f'(x)$ هي إشارة $x$: سالبة على $]-\infty;0[$ وموجبة على $]0;+\infty[$. و $f(0)=-4$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$0$,$+\infty$}
+\tkzTabLine{,-,z,+,}
+\tkzTabVar{+/$1$,-/$-4$,+/$1$}
+\end{TAB}
+\QQ{3}
+\pa $f(2)=\dfrac{4-4}5=0$ و $f'(2)=\dfrac{20}{25}=\dfrac45$:
+\[(T):\ y=\frac45(x-2)+0\ \Rightarrow\ \bx{(T):\ y=\frac45x-\frac85}\]
+\pb $f(x)=0\iff x^2-4=0\iff x=-2$ أو $x=2$: نقطتا التقاطع $\bx{(-2;0)}$ و $\bx{(2;0)}$.
+\QQ{4} الرسم:
+\begin{GR}{-5.6}{5.6}{-4.4}{2.4}{0.65}
+\Ticks{-5,-4,-3,-2,-1,1,2,3,4,5}{-4,-3,-2,-1,1,2}
+\draw[cRem!70!black,thick] (-5.6,1)--(5.6,1) node[above left,font=\scriptsize]{$(\Delta)$};
+\draw[cThm,thick,domain=0:4.6] plot(\x,{0.8*\x-1.6}) node[above,font=\scriptsize]{$(T)$};
+\draw[cDef,very thick,domain=-5.6:5.6,samples=150] plot(\x,{(\x*\x-4)/(\x*\x+1)});
+\node[cDef,font=\scriptsize] at (-4.4,0.2){$(C)$};
+\end{GR}
+\QQ{5}
+\pa إذا كان $x\in]-\infty;-2]\cup[2;+\infty[$ فإن $x^2\geqslant4$ ، أي $x^2-4\geqslant0$ ، ومنه $\left|x^2-4\right|=x^2-4$ و $\bx{g(x)=f(x)}$.\par
+إذا كان $x\in[-2;2]$ فإن $x^2-4\leqslant0$ ، ومنه $\left|x^2-4\right|=-(x^2-4)$ و $\bx{g(x)=-f(x)}$.
+\pb على $[-2;2]$ اتجاه تغير $g=-f$ عكس اتجاه تغير $f$ ؛ $g(0)=4$ و $g(\pm2)=0$:
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.2]{$x$/1,$g(x)$/2}{$-\infty$,$-2$,$0$,$2$,$+\infty$}
+\tkzTabVar{+/$1$,-/$0$,+/$4$,-/$0$,+/$1$}
+\end{TAB}
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2021 -- الموضوع الثاني}
+$f$ الدالة العددية المعرفة على $\R$ بـ: $f(x)=\dfrac{x^2-x+4}{x^2+x+2}$ ، و $(C)$ تمثيلها البياني (الوحدة $2\,cm$).
+\QQ{1} أحسب $\Lm{-\infty}f(x)$ و $\Lm{+\infty}f(x)$ ، ثم فسّر النتيجتين هندسيًا.
+\QQ{2} من أجل كل $x$ من $\R$ نضع: $g(x)=f(x)-1$.
+\begin{sq}
+\qa ادرس حسب قيم العدد الحقيقي $x$ إشارة $g(x)$.
+\qb استنتج وضعية $(C)$ بالنسبة إلى المستقيم $(\Delta)$ ذي المعادلة $y=1$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$: $f'(x)=\dfrac{2(x+1)(x-3)}{\left(x^2+x+2\right)^2}$.
+\qb بيّن أن $f$ متزايدة تمامًا على كل من $]-\infty;-1]$ و $[3;+\infty[$ ومتناقصة تمامًا على $[-1;3]$.
+\qc شكّل جدول تغيرات الدالة $f$.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa أكتب معادلة لـ $(T)$ مماس المنحنى $(C)$ في النقطة التي فاصلتها $1$.
+\qb تحقق أن $(T)$ يقطع $(C)$ في النقطة $A\left(-2;\dfrac52\right)$.
+\end{sq}
+\QQ{5} ارسم $(\Delta)$ ، $(T)$ و $(C)$.
+\QQ{6} $h$ الدالة المعرفة على $\R$ بـ: $h(x)=\dfrac{x^2-|x|+4}{x^2+|x|+2}$ ، و $(C_h)$ تمثيلها البياني في المعلم السابق.
+\begin{sq}
+\qa بيّن أن الدالة $h$ زوجية.
+\qb تحقق أنه من أجل كل $x$ من المجال $[0;+\infty[$: $h(x)=f(x)$.
+\qc اشرح كيفية رسم $(C_h)$ انطلاقًا من $(C)$ ، وارسمه.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\[\Lm{\pm\infty}f(x)=\Lm{\pm\infty}\frac{x^2}{x^2}=\bx{1}\]
+إذن المستقيم $y=1$ مقارب أفقي لـ $(C)$ بجوار $-\infty$ و $+\infty$.
+\QQ{2}
+\pa
+\[g(x)=\frac{x^2-x+4-\left(x^2+x+2\right)}{x^2+x+2}=\bx{\frac{-2x+2}{x^2+x+2}}\]
+المقام: $\Delta=1-8=-7<0$ ، إذن $x^2+x+2>0$ دائمًا ، وإشارة $g(x)$ هي إشارة $-2x+2$:\par
+$g(x)>0$ على $]-\infty;1[$ ؛ \quad $g(1)=0$ ؛ \quad $g(x)<0$ على $]1;+\infty[$.
+\pb $g(x)=f(x)-1$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15,-4.6);
+\draw[thick] (0,0) rectangle (15,-4.6); \draw (0,-0.9)--(15,-0.9) (0,-1.8)--(15,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node[font=\footnotesize] at (1.3,-1.35){$\frac{-2x+2}{x^2+x+2}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (8.8,-0.45){$1$};
+\node at (14.3,-0.45){$+\infty$};
+\node at (5.3,-1.35){$+$};
+\node[align=center,font=\small] at (5.3,-3.2){$(C)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.3,-1.35){$-$};
+\node[align=center,font=\small] at (12.3,-3.2){$(C)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (8.8,-1.35){$0$};
+\draw[densely dotted] (8.8,-0.9)--(8.8,-1.13) (8.8,-1.57)--(8.8,-1.8);
+\draw (7.3,-4.6) .. controls (7.375,-3.06) and (8.35,-2.136) .. (8.8,-1.8) .. controls (9.25,-2.136) and (10.225,-3.06) .. (10.3,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (8.8,-3.65){\ar{$(C)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(1;1)$};
+\end{tikzpicture}
+\end{FIG}
+\QQ{3}
+\pa $u=x^2-x+4$ ، $u'=2x-1$ ، $v=x^2+x+2$ ، $v'=2x+1$:
+\begin{align*}
+u'v-uv'&=(2x-1)(x^2+x+2)-(2x+1)(x^2-x+4)\\
+&=(2x^3+x^2+3x-2)-(2x^3-x^2+7x+4)\\
+&=2x^2-4x-6=2(x^2-2x-3)=2(x+1)(x-3)
+\end{align*}
+إذن: $\bx{f'(x)=\dfrac{2(x+1)(x-3)}{\left(x^2+x+2\right)^2}}$.
+\pb إشارة $f'(x)$ هي إشارة $(x+1)(x-3)$: موجبة على $]-\infty;-1[$ وعلى $]3;+\infty[$ ، وسالبة على $]-1;3[$ ، ومنه النتيجة.
+\pc $f(-1)=\dfrac{1+1+4}{1-1+2}=3$ و $f(3)=\dfrac{9-3+4}{9+3+2}=\dfrac{10}{14}=\dfrac57$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$-1$,$3$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\tkzTabVar{-/$1$,+/$3$,-/$\frac57$,+/$1$}
+\end{TAB}
+\QQ{4}
+\pa $f(1)=\dfrac44=1$ و $f'(1)=\dfrac{2\times2\times(-2)}{4^2}=-\dfrac12$:
+\[(T):\ y=-\frac12(x-1)+1\ \Rightarrow\ \bx{(T):\ y=-\frac12x+\frac32}\]
+\pb $f(-2)=\dfrac{4+2+4}{4-2+2}=\dfrac{10}4=\dfrac52$ ، ومعادلة $(T)$ عند $x=-2$: $y=1+\dfrac32=\dfrac52$.\par
+إذن $A\left(-2;\dfrac52\right)$ تنتمي إلى $(C)$ وإلى $(T)$: \bxt{$(T)$ يقطع $(C)$ في $A$}.
+\QQ{5} الرسم (الوحدة $2\,cm$):
+\begin{GR}{-4.6}{5.6}{-0.6}{3.4}{0.75}
+\Ticks{-4,-3,-2,-1,1,2,3,4,5}{1,2,3}
+\draw[cRem!70!black,thick] (-4.6,1)--(5.6,1) node[above left,font=\scriptsize]{$(\Delta)$};
+\draw[cThm,thick,domain=-3.6:3.6] plot(\x,{-0.5*\x+1.5}) node[below,font=\scriptsize]{$(T)$};
+\draw[cDef,very thick,domain=-4.6:5.6,samples=150] plot(\x,{(\x*\x-\x+4)/(\x*\x+\x+2)});
+\fill[cThm] (-2,2.5) circle (1.6pt) node[above left,font=\scriptsize]{$A$};
+\node[cDef,font=\scriptsize] at (-0.4,3.2){$(C)$};
+\end{GR}
+\QQ{6}
+\pa من أجل كل $x\in\R$: $-x\in\R$ و $|-x|=|x|$ ، ومنه $h(-x)=h(x)$: \bxt{$h$ زوجية}.
+\pb من أجل $x\geqslant0$: $|x|=x$ ، ومنه $h(x)=\dfrac{x^2-x+4}{x^2+x+2}=\bx{f(x)}$.
+\pc على $[0;+\infty[$: $(C_h)$ ينطبق على $(C)$ ، ثم نكمل الرسم على $]-\infty;0]$ بالتناظر بالنسبة إلى محور التراتيب (لأن $h$ زوجية).
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2026 -- الموضوع الأول}
+$f$ الدالة المعرفة على $\R-\{3\}$ بـ: $f(x)=\dfrac{x^2-5x+7}{x-3}$ ، و $(c_f)$ تمثيلها البياني في المعلم المتعامد والمتجانس.
+\QQ{1}
+\begin{sq}
+\qa تحقق أنه: من أجل كل $x$ من $\R-\{3\}$: $f(x)=x-2+\dfrac1{x-3}$.
+\qb أحسب النهايات: $\Lm{-\infty}f(x)$ ، $\Lm{3^-}f(x)$ ، $\Lm{3^+}f(x)$ ، $\Lm{+\infty}f(x)$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x-2$ مقارب مائل لـ $(c_f)$ عند $-\infty$ وعند $+\infty$.
+\qb ادرس الوضع النسبي لـ $(c_f)$ و $(\Delta)$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه: من أجل كل $x$ من $\R-\{3\}$: $f'(x)=\dfrac{(x-2)(x-4)}{(x-3)^2}$.
+\qb استنتج اتجاه تغير الدالة $f$ ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa بيّن أن النقطة $A(3;1)$ مركز تناظر للمنحنى $(c_f)$.
+\qb ارسم $(\Delta)$ و $(c_f)$.
+\end{sq}
+\QQ{5} $(\star)$ أحسب $\mathcal A$ مساحة الحيز المستوي المحدد بـ $(c_f)$ والمستقيمات التي معادلاتها: $y=x-2$ ، $x=4$ و $x=5$.
+\QQ{6} $g$ الدالة المعرفة على $\R-\{3\}$ بـ: $g(x)=\dfrac{x^2-5x+7}{|x-3|}$ ، و $(c_g)$ تمثيلها البياني. اشرح كيف يمكن رسم $(c_g)$ انطلاقًا من $(c_f)$ ثم ارسم $(c_g)$ في المعلم السابق.
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa
+\[x-2+\frac1{x-3}=\frac{(x-2)(x-3)+1}{x-3}=\frac{x^2-5x+6+1}{x-3}=\frac{x^2-5x+7}{x-3}=\bx{f(x)}\]
+\pb
+\LD{f(x)}{-\infty}{-\infty} $\Car{\Lm{-\infty}(x-2)=-\infty\\[6pt]\Lm{-\infty}\dfrac1{x-3}=0}$\E
+\LD{f(x)}{+\infty}{+\infty} $\Car{\Lm{+\infty}(x-2)=+\infty\\[6pt]\Lm{+\infty}\dfrac1{x-3}=0}$\E
+\LD{f(x)}{3^-}{-\infty} $\Car{\Lm{3}(x-2)=1\\[6pt]\Lm{3^-}(x-3)=0^-}$\E
+\LD{f(x)}{3^+}{+\infty} $\Car{\Lm{3}(x-2)=1\\[6pt]\Lm{3^+}(x-3)=0^+}$\E
+إذن المستقيم $x=3$ مقارب عمودي.
+\QQ{2}
+\pa $f(x)-(x-2)=\dfrac1{x-3}$ ونهايته عند $\pm\infty$ هي $0$: \bxt{$(\Delta)$ مقارب مائل عند $-\infty$ وعند $+\infty$}.
+\pb إشارة الفرق هي إشارة $x-3$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15,-4.6);
+\draw[thick] (0,0) rectangle (15,-4.6); \draw (0,-0.9)--(15,-0.9) (0,-1.8)--(15,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{1}{x-3}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (8.8,-0.45){$3$};
+\node at (14.3,-0.45){$+\infty$};
+\node at (6.05,-1.35){$-$};
+\node[align=center,font=\small] at (6.05,-3.2){$(c_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (11.55,-1.35){$+$};
+\node[align=center,font=\small] at (11.55,-3.2){$(c_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (8.8,-0.9)--(8.8,-4.6);
+\end{tikzpicture}
+\end{FIG}
+\QQ{3}
+\pa
+\[f'(x)=1-\frac1{(x-3)^2}=\frac{(x-3)^2-1}{(x-3)^2}=\frac{(x-3-1)(x-3+1)}{(x-3)^2}=\bx{\frac{(x-4)(x-2)}{(x-3)^2}}\]
+\pb \bxt{$f$ متزايدة تمامًا على $]-\infty;2]$ وعلى $[4;+\infty[$ ، ومتناقصة تمامًا على $[2;3[$ وعلى $]3;4]$}. $f(2)=0+\dfrac1{-1}=-1$ و $f(4)=2+1=3$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.4]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$2$,$3$,$4$,$+\infty$}
+\tkzTabLine{,+,z,-,d,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$-1$,-D+/$-\infty$/$+\infty$,-/$3$,+/$+\infty$}
+\end{TAB}
+\QQ{4}
+\pa من أجل كل $x\neq3$: $6-x\neq3$ ، و:
+\[f(6-x)+f(x)=\left(4-x+\frac1{3-x}\right)+\left(x-2+\frac1{x-3}\right)=2=2\times1\]
+إذن \bxt{$A(3;1)$ مركز تناظر لـ $(c_f)$}.
+\pb الرسم:
+\begin{GR}{-1.4}{7.6}{-3.4}{6.6}{0.65}
+\Ticks{-1,1,2,4,5,6,7}{-3,-2,-1,1,2,3,4,5,6}
+\draw[gray,dashed] (3,-3.4)--(3,6.6);
+\draw[cRem!70!black,thick,domain=-1.4:7.6] plot(\x,{\x-2}) node[below right,font=\scriptsize]{$(\Delta)$};
+\draw[cDef,very thick,domain=-1.4:2.85,samples=120] plot(\x,{\x-2+1/(\x-3)});
+\draw[cDef,very thick,domain=3.15:7.6,samples=120] plot(\x,{\x-2+1/(\x-3)});
+\fill[cThm] (3,1) circle (1.6pt) node[right,font=\scriptsize]{$A$};
+\node[cDef,font=\scriptsize] at (3.8,6.2){$(c_f)$};
+\end{GR}
+\QQ{5} $(\star)$ على $[4;5]$: $(c_f)$ فوق $(\Delta)$ ، إذن:
+\[\mathcal A=\int_4^5\big[f(x)-(x-2)\big]\,dx=\int_4^5\frac1{x-3}\,dx=\Big[\ln(x-3)\Big]_4^5=\ln2-\ln1=\bx{\ln2\ \text{ua}}\approx0{,}69\ \text{ua}\]
+\QQ{6}
+\begin{itemize}
+\item على $]3;+\infty[$: $|x-3|=x-3$ ومنه $g(x)=f(x)$: \bxt{$(c_g)$ ينطبق على $(c_f)$}.
+\item على $]-\infty;3[$: $|x-3|=-(x-3)$ ومنه $g(x)=-f(x)$: \bxt{$(c_g)$ نظير $(c_f)$ بالنسبة إلى محور الفواصل}.
+\end{itemize}
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2026 -- الموضوع الثاني}
+$f$ الدالة المعرفة على $\R^*$ بـ: $f(x)=x+\dfrac4{x^2}$ ، و $(c_f)$ تمثيلها البياني و $(\Delta)$ مستقيم مقارب مائل لـ $(c_f)$ عند $-\infty$ وعند $+\infty$ ، كما في الشكل المقابل.
+\RL{0.56}{%
+\QQ{1} بقراءة بيانية:
+\begin{sq}
+\qa حدّد إشارة $f'(x)$ واتجاه تغير الدالة $f$.
+\qb جد معادلة للمستقيم $(\Delta)$.
+\qc حل المعادلة: $f(x)=3$.
+\qd شكّل جدول تغيرات الدالة $f$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أن المعادلة $f(x)=0$ تقبل حلًا وحيدًا $\alpha$ في المجال $]-1{,}6;-1{,}5[$.
+\qb استنتج حسب قيم $x$ إشارة $f(x)$.
+\end{sq}
+\QQ{3} $(\star)$ نضع على المجال $]0;+\infty[$:\par $g(x)=\ln\big(f(x)\big)$.\par شكّل جدول تغيرات الدالة $g$.}{0.4}{%
+\begin{GR}{-2.4}{5.6}{-2.4}{5.6}{0.55}
+\Ticks{-2,-1,1,2,3,4,5}{-2,-1,1,2,3,4,5}
+\draw[cRem!70!black,thick,domain=-2.4:5.6] plot(\x,{\x});
+\draw[cDef,very thick,domain=-2.4:-0.9,samples=100] plot(\x,{\x+4/(\x*\x)});
+\draw[cDef,very thick,domain=0.86:5.6,samples=100] plot(\x,{\x+4/(\x*\x)});
+\node[cDef,font=\scriptsize] at (1.6,5.2){$(c_f)$}; \node[cRem!70!black,font=\scriptsize] at (4.6,3.4){$(\Delta)$};
+\end{GR}}
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa من الشكل: $f$ متزايدة تمامًا على $]-\infty;0[$ ، متناقصة تمامًا على $]0;2]$ ، ومتزايدة تمامًا على $[2;+\infty[$.\par
+إذن: $f'(x)>0$ على $]-\infty;0[\cup]2;+\infty[$ ، $f'(x)<0$ على $]0;2[$ ، و $f'(2)=0$.\par
+\textbf{تحقق جبري:} $f'(x)=1-\dfrac8{x^3}=\dfrac{x^3-8}{x^3}$.
+\pb $(\Delta)$ يشمل $O(0;0)$ و $(1;1)$ ، إذن $\bx{(\Delta):\ y=x}$ (فعلًا $f(x)-x=\dfrac4{x^2}\to0$).
+\pc حلول $f(x)=3$ هي فواصل نقط تقاطع $(c_f)$ مع المستقيم $y=3$: النقطتان ذات الفاصلتين $-1$ و $2$.\par
+\textbf{تحقق:} $f(-1)=-1+4=3$ و $f(2)=2+1=3$. إذن $\bx{S=\{-1;2\}}$.
+\pd جدول التغيرات:
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$0$,$2$,$+\infty$}
+\tkzTabLine{,+,d,-,z,+,}
+\tkzTabVar{-/$-\infty$,+D+/$+\infty$/$+\infty$,-/$3$,+/$+\infty$}
+\end{TAB}
+\QQ{2}
+\pa على $]0;+\infty[$: $f(x)\geqslant3>0$ ، فلا توجد حلول.\par
+على $]-\infty;0[$: $f$ مستمرة ومتزايدة تمامًا ، و:
+\[f(-1{,}6)=-1{,}6+\frac4{2{,}56}=-0{,}0375<0\qquad;\qquad f(-1{,}5)=-1{,}5+\frac4{2{,}25}\approx0{,}278>0\]
+حسب مبرهنة القيم المتوسطة: المعادلة $f(x)=0$ تقبل حلًا وحيدًا $\bx{\alpha\in]-1{,}6;-1{,}5[}$.
+\pb $f(x)<0$ على $]-\infty;\alpha[$ ، $f(\alpha)=0$ ، و $f(x)>0$ على $]\alpha;0[\cup]0;+\infty[$.
+\QQ{3} $(\star)$ على $]0;+\infty[$: $f(x)>0$ فالدالة $g$ معرفة ، و $g'(x)=\dfrac{f'(x)}{f(x)}$ لها نفس إشارة $f'(x)$.
+\LD{g(x)}{0^+}{+\infty} $\Car{\Lm{0^+}f(x)=+\infty\\[6pt]\displaystyle\lim_{X\to+\infty}\ln X=+\infty}$\E
+\LD{g(x)}{+\infty}{+\infty} $\Car{\Lm{+\infty}f(x)=+\infty\\[6pt]\displaystyle\lim_{X\to+\infty}\ln X=+\infty}$\E
+و $g(2)=\ln3$:
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3]{$x$/1,$g'(x)$/1,$g(x)$/2}{$0$,$2$,$+\infty$}
+\tkzTabLine{d,-,z,+,}
+\tkzTabVar{D+/$+\infty$,-/$\ln3$,+/$+\infty$}
+\end{TAB}
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2019 -- الموضوع الأول}
+\textbf{I)} $g$ الدالة المعرفة على $\R$ بـ: $g(x)=x^3+x-2$ ، و $(\Gamma)$ تمثيلها البياني ، يقطع محور الفواصل في النقطة ذات الفاصلة $1$. بقراءة بيانية عيّن $g(1)$ واستنتج إشارة $g(x)$ على $\R$.\par
+\textbf{II)} $f$ الدالة المعرفة على $\R-\{0\}$ بـ: $f(x)=x-\dfrac{x-1}{x^2}$ ، و $(C_f)$ تمثيلها البياني في المعلم المتعامد والمتجانس.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\Lm{-\infty}f(x)$ و $\Lm{+\infty}f(x)$.
+\qb أحسب $\Lm{0}f(x)$ وفسّر النتيجة بيانيًا.
+\end{sq}
+\QQ{2} بيّن أنه من أجل كل عدد حقيقي غير معدوم $x$: $f'(x)=\dfrac{g(x)}{x^3}$ ، ثم استنتج اتجاه تغير الدالة $f$ وشكّل جدول تغيراتها.
+\QQ{3}
+\begin{sq}
+\qa بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x$ مقارب مائل للمنحنى $(C_f)$.
+\qb ادرس الوضع النسبي للمنحنى $(C_f)$ والمستقيم $(\Delta)$.
+\end{sq}
+\QQ{4} بيّن أن المعادلة $f(x)=0$ تقبل حلًا وحيدًا $\alpha$ في المجال $]-1{,}4;-1{,}3[$.
+\QQ{5} ارسم $(\Delta)$ ثم المنحنى $(C_f)$.
+\QQ{6} $(\star)$ احسب $A$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=x$ ، $x=1$ و $x=3$.
+\end{tamrin}
+\begin{hal}
+\textbf{I)} من الشكل: $(\Gamma)$ يقطع محور الفواصل في النقطة ذات الفاصلة $1$ ، إذن $\bx{g(1)=0}$ (تحقق: $1+1-2=0$).\par
+$(\Gamma)$ تحت محور الفواصل لما $x<1$ وفوقه لما $x>1$: $g(x)<0$ على $]-\infty;1[$ ، و $g(x)>0$ على $]1;+\infty[$.\par
+\textbf{II)}
+\QQ{1}
+\pa $\Lm{\pm\infty}\dfrac{x-1}{x^2}=\Lm{\pm\infty}\dfrac x{x^2}=\Lm{\pm\infty}\dfrac1x=0$ ، ومنه:
+\LD{f(x)}{-\infty}{-\infty} $\Car{\Lm{-\infty}x=-\infty\\[6pt]\Lm{-\infty}\dfrac{x-1}{x^2}=0}$\E
+\LD{f(x)}{+\infty}{+\infty} $\Car{\Lm{+\infty}x=+\infty\\[6pt]\Lm{+\infty}\dfrac{x-1}{x^2}=0}$\E
+\pb
+\LD{f(x)}{0}{+\infty} $\Car{\Lm{0}(x-1)=-1\\[6pt]\Lm{0}x^2=0^+}$\E
+لأن $-\dfrac{x-1}{x^2}\to+\infty$. \textbf{التفسير:} محور التراتيب ($x=0$) مقارب عمودي لـ $(C_f)$.
+\QQ{2} $\left(\dfrac{x-1}{x^2}\right)'=\dfrac{1\times x^2-2x(x-1)}{x^4}=\dfrac{x-2(x-1)}{x^3}=\dfrac{-x+2}{x^3}$ ، ومنه:
+\[f'(x)=1-\frac{-x+2}{x^3}=\frac{x^3+x-2}{x^3}=\bx{\frac{g(x)}{x^3}}\]
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$/1,$g(x)$/1,$x^3$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$0$,$1$,$+\infty$}
+\tkzTabLine{,-,t,-,z,+,}
+\tkzTabLine{,-,z,+,t,+,}
+\tkzTabLine{,+,d,-,z,+,}
+\tkzTabVar{-/$-\infty$,+D+/$+\infty$/$+\infty$,-/$1$,+/$+\infty$}
+\end{TAB}
+\bxt{$f$ متزايدة تمامًا على $]-\infty;0[$ وعلى $[1;+\infty[$ ، ومتناقصة تمامًا على $]0;1]$} ؛ $f(1)=1-0=1$.
+\QQ{3}
+\pa $f(x)-x=-\dfrac{x-1}{x^2}$ ونهايته عند $\pm\infty$ هي $0$: \bxt{$(\Delta):\ y=x$ مقارب مائل لـ $(C_f)$ بجوار $\pm\infty$}.
+\pb $f(x)-x=\dfrac{1-x}{x^2}$ ، إشارته إشارة $1-x$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15,-4.6);
+\draw[thick] (0,0) rectangle (15,-4.6); \draw (0,-0.9)--(15,-0.9) (0,-1.8)--(15,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{1-x}{x^2}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (5.88824,-0.45){$0$};
+\node at (10.0941,-0.45){$1$};
+\node at (14.3,-0.45){$+\infty$};
+\node at (4.59412,-1.35){$+$};
+\node[align=center,font=\small] at (4.59412,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (7.24118,-1.35){$+$};
+\node[align=center,font=\small] at (7.24118,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (12.9471,-1.35){$-$};
+\node[align=center,font=\small] at (12.9471,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\draw[double,thick] (5.88824,-0.9)--(5.88824,-4.6);
+\node at (10.0941,-1.35){$0$};
+\draw[densely dotted] (10.0941,-0.9)--(10.0941,-1.13) (10.0941,-1.57)--(10.0941,-1.8);
+\draw (8.59412,-4.6) .. controls (8.66912,-3.06) and (9.64412,-2.136) .. (10.0941,-1.8) .. controls (10.5441,-2.136) and (11.5191,-3.06) .. (11.5941,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (10.0941,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(1;1)$};
+\end{tikzpicture}
+\end{FIG}
+\QQ{4} على $]0;+\infty[$: $f(x)\geqslant f(1)=1>0$ ، لا توجد حلول.\par
+على $]-\infty;0[$: $f$ مستمرة ومتزايدة تمامًا ، و:
+\[f(-1{,}4)=-1{,}4+\frac{2{,}4}{1{,}96}\approx-0{,}176<0\qquad;\qquad f(-1{,}3)=-1{,}3+\frac{2{,}3}{1{,}69}\approx0{,}061>0\]
+إذن المعادلة $f(x)=0$ تقبل حلًا وحيدًا $\bx{\alpha\in]-1{,}4;-1{,}3[}$.
+\QQ{5} الرسم:
+\begin{GR}{-3.6}{4.6}{-3.6}{5.6}{0.65}
+\Ticks{-3,-2,-1,1,2,3,4}{-3,-2,-1,1,2,3,4,5}
+\draw[cRem!70!black,thick,domain=-3.6:4.6] plot(\x,{\x}) node[below right,font=\scriptsize]{$(\Delta)$};
+\draw[cDef,very thick,domain=-3.6:-0.4,samples=120] plot(\x,{\x-(\x-1)/(\x*\x)});
+\draw[cDef,very thick,domain=0.25:4.6,samples=120] plot(\x,{\x-(\x-1)/(\x*\x)});
+\fill[cThm] (-1.33,0) circle (1.6pt);
+\node[cDef,font=\scriptsize] at (1.2,5.2){$(C_f)$};
+\end{GR}
+\QQ{6} $(\star)$ على $[1;3]$: $(C_f)$ تحت $(\Delta)$ ، إذن:
+\[A=\int_1^3\big[x-f(x)\big]\,dx=\int_1^3\left(\frac1x-\frac1{x^2}\right)dx=\Big[\ln x+\frac1x\Big]_1^3=\left(\ln3+\frac13\right)-1\]
+\[A=\bx{\ln3-\frac23\ \text{ua}}\approx0{,}43\ \text{ua}\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2017 (الدورة الاستثنائية) -- الموضوع الثاني}
+\textbf{I)} نعتبر الدالة $g$ المعرفة على $\R$ كما يلي: $g(x)=x^3-x^2-1$.
+\QQ{1} احسب $\Lm{-\infty}g(x)$ و $\Lm{+\infty}g(x)$.
+\QQ{2} ادرس اتجاه تغير الدالة $g$ ثم شكّل جدول تغيراتها.
+\QQ{3} بيّن أن المعادلة $g(x)=0$ تقبل حلًا وحيدًا $\alpha$ حيث $1{,}46<\alpha<1{,}48$.
+\QQ{4} استنتج إشارة $g(x)$ حسب قيم $x$.\par
+\textbf{II)} $(\star)$ مؤسسة صناعية تنتج يوميًا كمية $q$ (مقدرة بالطن) من منتوج بكلفة متوسطة $C_M$ (مقدرة بملايين الدنانير) معرفة على $[0;10]$ بـ: $C_M(q)=\dfrac12q^2-q+1-\dfrac12\ln\left(q^2+1\right)$.
+\QQ{1} بيّن أنه: من أجل كل عدد حقيقي $q$ من $[0;10]$: $C_M'(q)=\dfrac{g(q)}{q^2+1}$.
+\QQ{2} عيّن اتجاه تغير الكلفة المتوسطة $C_M$ ثم شكّل جدول تغيراتها (نأخذ $\alpha\simeq1{,}47$).
+\QQ{3} عيّن الكمية التي تُنتج يوميًا بأقل كلفة متوسطة ثم حدد هذه الكلفة المتوسطة.
+\QQ{4} ما هي الكلفة الإجمالية $C$ لإنتاج $2$ طن يوميًا؟
+\end{tamrin}
+\begin{hal}
+\textbf{I)}
+\QQ{1}
+\[\Lm{+\infty}g(x)=\Lm{+\infty}x^3=\bx{+\infty}\qquad;\qquad\Lm{-\infty}g(x)=\Lm{-\infty}x^3=\bx{-\infty}\]
+\QQ{2} $g'(x)=3x^2-2x=x(3x-2)$ ، تنعدم عند $0$ و $\dfrac23$ ؛ $g(0)=-1$ و $g\left(\dfrac23\right)=\dfrac8{27}-\dfrac{12}{27}-\dfrac{27}{27}=-\dfrac{31}{27}$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$/1,$g'(x)$/1,$g(x)$/2}{$-\infty$,$0$,$\frac23$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$-1$,-/$-\frac{31}{27}$,+/$+\infty$}
+\end{TAB}
+\bxt{$g$ متزايدة تمامًا على $]-\infty;0]$ وعلى $\left[\frac23;+\infty\right[$ ، ومتناقصة تمامًا على $\left[0;\frac23\right]$}.
+\QQ{3} على $\left]-\infty;\dfrac23\right]$: القيمة الكبرى لـ $g$ هي $g(0)=-1<0$ ، فلا توجد حلول.\par
+على $\left[\dfrac23;+\infty\right[$: $g$ مستمرة ومتزايدة تمامًا ، و:
+\[g(1{,}46)\approx-0{,}019<0\qquad;\qquad g(1{,}48)\approx0{,}051>0\]
+إذن المعادلة $g(x)=0$ تقبل حلًا وحيدًا $\alpha$ حيث $\bx{1{,}46<\alpha<1{,}48}$.
+\QQ{4} $g(x)<0$ على $]-\infty;\alpha[$ ، $g(\alpha)=0$ ، و $g(x)>0$ على $]\alpha;+\infty[$.\par
+\textbf{II)} $(\star)$
+\QQ{1} $\left[\ln(q^2+1)\right]'=\dfrac{2q}{q^2+1}$ ، ومنه:
+\[C_M'(q)=q-1-\frac q{q^2+1}=\frac{(q-1)(q^2+1)-q}{q^2+1}=\frac{q^3-q^2-1}{q^2+1}=\bx{\frac{g(q)}{q^2+1}}\]
+\QQ{2} إشارة $C_M'(q)$ هي إشارة $g(q)$: \bxt{$C_M$ متناقصة تمامًا على $[0;\alpha]$ ومتزايدة تمامًا على $[\alpha;10]$}.\par
+$C_M(0)=1$ ، $C_M(\alpha)\approx0{,}035$ ، $C_M(10)=41-\dfrac12\ln101\approx38{,}69$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3]{$q$/1,$C_M'(q)$/1,$C_M(q)$/2}{$0$,$\alpha$,$10$}
+\tkzTabLine{,-,z,+,}
+\tkzTabVar{+/$1$,-/$C_M(\alpha)$,+/$38{,}69$}
+\end{TAB}
+\QQ{3} أقل كلفة متوسطة تتحقق من أجل $q=\alpha\simeq1{,}47$ طن ، وقيمتها $C_M(1{,}47)\approx\bx{0{,}035}$ مليون دينار للطن ، أي حوالي $35\,000\ DA$.
+\QQ{4} الكلفة الإجمالية: $C(q)=q\times C_M(q)$ ، ومنه:
+\[C(2)=2\times C_M(2)=2\left(2-2+1-\frac12\ln5\right)=\bx{2-\ln5}\approx0{,}39\ \text{\ar{مليون دينار}}\]
+\end{hal}
+
+\begin{tamrin}{تمرين من بكالوريا 2023 -- الموضوع الثاني}
+\QQ{1} تحقق أنه: من أجل كل عدد حقيقي $x$: $x^3-6x^2+11x-6=(x-2)\left(x^2-4x+3\right)$.
+\QQ{2} حل في $\R$ المعادلة: $x^3-6x^2+11x-6=0$.
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\[(x-2)\left(x^2-4x+3\right)=x^3-4x^2+3x-2x^2+8x-6=\bx{x^3-6x^2+11x-6}\]
+\QQ{2} $x^3-6x^2+11x-6=0$ يعني $x-2=0$ أو $x^2-4x+3=0$.\par
+$x^2-4x+3=0$: $1$ جذر بديهي ($1-4+3=0$) ، والجذر الآخر $\dfrac ca=3$. إذن: $\bx{S=\{1;2;3\}}$.
+\end{hal}
+
+\begin{tamrin}{تمارين الاختيار من متعدد}
+لكل سؤال جواب واحد فقط صحيح من بين الأجوبة الثلاثة المقترحة ، عيّنه مع التبرير.
+\QQ{1} (بكالوريا 2021) $\Lm{+\infty}\left(\dfrac{-2x+1}{1+x+x^2}\right)$ هي:\ABC{$0$}{$-2$}{$1$}
+\QQ{2} (بكالوريا 2021) الدالة $h$ المعرفة على $]0;+\infty[$ بـ: $h(x)=2x-1+\dfrac3x$ ، منحناها $(C)$ يقبل مستقيمًا مقاربًا مائلًا معادلته:\ABC{$y=2x-1$}{$y=2x$}{$y=2x+1$}
+\QQ{3} (بكالوريا 2021) الدالة $g$ المعرفة على $]2;+\infty[$ بـ: $g(x)=1+\dfrac3{x-2}$. معادلة المماس لـ $(C_g)$ في النقطة ذات الفاصلة $3$ هي:\ABC{$y=3x-5$}{$y=-3x+13$}{$y=-3x+5$}
+\QQ{4} (بكالوريا 2015) منحنى الدالة $f$ المعرفة على $\R$ بـ: $f(x)=\left(x^2-1\right)^3$ يقبل مماسًا في النقطة ذات الفاصلة $\sqrt2$ معادلته:\ABC{$y=\sqrt2x+1$}{$y=6\sqrt2x-11$}{$y=6\sqrt2x+1$}
+\end{tamrin}
+\begin{hal}
+\QQ{1} دالة ناطقة: $\Lm{+\infty}\dfrac{-2x}{x^2}=\Lm{+\infty}\dfrac{-2}x=0$. \quad \bxt{الجواب (أ)}.
+\QQ{2} $h(x)-(2x-1)=\dfrac3x$ و $\Lm{+\infty}\dfrac3x=0$ ، إذن المقارب المائل $y=2x-1$. \quad \bxt{الجواب (أ)}.
+\QQ{3} $g(3)=1+3=4$ ، $g'(x)=-\dfrac3{(x-2)^2}$ ومنه $g'(3)=-3$. المماس: $y=-3(x-3)+4=-3x+13$. \quad \bxt{الجواب (ب)}.
+\QQ{4} $f(\sqrt2)=(2-1)^3=1$ ، $f'(x)=3\times2x\left(x^2-1\right)^2=6x\left(x^2-1\right)^2$ ومنه $f'(\sqrt2)=6\sqrt2$.\par
+المماس: $y=6\sqrt2\left(x-\sqrt2\right)+1=6\sqrt2x-12+1=6\sqrt2x-11$. \quad \bxt{الجواب (ب)}.
+\end{hal}
+
+\begin{BOX}{cSec}{}
+\centering{\Large\bfseries بالتوفيق في شهادة البكالوريا}
+\end{BOX}
+\end{document}
