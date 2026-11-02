@@ -1,0 +1,733 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+% أعمدة جداول تُكتب خلاياها بالعربية في الاتجاه الصحيح
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+% تجنب عنوان يتيم في أسفل الصفحة
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+% ---------- الألوان ----------
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+% ---------- العناوين ----------
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+% ---------- الصناديق (تُرسم في سياق LTR ويُكتب محتواها بالعربية) ----------
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+% ---------- التمارين والحلول ----------
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+% رسومات TikZ تُوضع في سياق LTR
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+% ---------- رموز ----------
+% نقاط الحذف داخل الرياضيات (\dots يسبب خللاً في الاتجاه مع babel)
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% ---------- تمثيل مجال على مستقيم عددي ----------
+% \NLseg{a}{b}{[}{]}  مجال محدود
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+% \NLright{a}{[}  مجال نحو +∞
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+% \NLleft{b}{]}  مجال نحو −∞
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- أيقونات مواقع التواصل (مرسومة بـ TikZ، لا تحتاج أي حزمة) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% سطر مواقع التواصل أسفل كل صفحة
+% (يُكتب السطر بترتيب بصري من اليسار إلى اليمين: الأيقونة يمين كل اسم)
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+% ---------- رأس وتذييل الصفحة ----------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{يمين الرأس}{يسار الرأس}{يمين التذييل}{يسار التذييل}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% جدول تغيرات / إشارة (يُرسم في سياق LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% معلم بشبكة: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \def\xmn{#1}\def\xmx{#2}\def\ymn{#3}\def\ymx{#4}
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \draw[very thick,-{Stealth[length=1.6mm]}] (0,0)--(1,0) node[below,pos=.55]{$\vec i$};
+ \draw[very thick,-{Stealth[length=1.6mm]}] (0,0)--(0,1) node[left,pos=.55]{$\vec j$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\hl}[1]{\ensuremath{\colorbox{cEx!20}{$\displaystyle #1$}}}
+\newcommand{\Lim}[1]{\displaystyle\lim_{x\to #1}}
+\newcommand{\Cf}{(C_f)}
+\newenvironment{qst}{\begin{enumerate}[label=\protect\circled{\arabic*},leftmargin=*]}{\end{enumerate}}
+\newcommand{\circled}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[circle,fill=cDef,text=white,inner sep=1.2pt,font=\scriptsize\bfseries](c){#1};}}
+% عمودان: \TwoCol{عرض اليسار}{محتوى اليسار}{عرض اليمين}{محتوى اليمين}  (آمن مع TikZ)
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\un}{(u_n)}\newcommand{\vn}{(v_n)}
+% برهان بالتراجع: \Rec{الخاصية P(n)}{التحقق من P(0)}{البرهان على الوراثة}
+\newcommand{\Rec}[3]{\textbf{برهان بالتراجع:} نسمي $P(n)$ الخاصية: «#1».
+\begin{itemize}
+\item \textbf{التحقق:} #2
+\item \textbf{الوراثة:} نفرض أن $P(n)$ صحيحة ونبرهن صحة $P(n+1)$: #3
+\item \textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع، $P(n)$ صحيحة من أجل كل عدد طبيعي $n$.
+\end{itemize}}
+\newcommand{\src}[1]{{\footnotesize\textbf{#1}}\par}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% أسئلة فرعية (أ) (ب) (جـ) كل سؤال في سطر
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\ccl}[1]{\par\textbf{الخلاصة:} #1}
+
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\renewcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\newtcbox{\bxtbox}{on line,coltext=cThm,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\newcommand{\LW}[1]{{\color{cDef}#1}}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\SetHeader{\small\bfseries\color{cSec}تمارين: العبارات الجبرية}{\small\color{cSec}السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\fontsize{26}{32}\selectfont\bfseries سلسلة تمارين: العبارات الجبرية}\\[8pt]
+{\color{cSec!80!black}\large تمارين متدرجة ومسائل مع الحلول المفصلة}\\[5pt]
+{\color{cSec!80!black}\large السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا}
+\end{tcolorbox}
+\end{LTR}
+
+% =====================================================================
+\section{العبارات الجبرية وقيمتها العددية}
+\begin{tamrin}{تسمية عبارة جبرية}
+سمِّ كل عبارة من العبارات التالية (مجموع ، فرق ، جداء ، حاصل قسمة) حسب آخر عملية نجريها:
+\[A=3(2x-1)^2\quad;\quad B=2-x(x+1)\quad;\quad C=\frac{x+1}{x-3}+2\]
+\[D=(x-2)(x+5)-(x-2)^2\quad;\quad E=\sqrt x\,(1-x)\]
+\end{tamrin}
+\begin{hal}
+\LW{نسمي العبارة حسب آخر عملية في الحساب.}
+\begin{itemize}
+\item $A$: آخر عملية ضرب العدد $3$ في المربع: \bxt{جداء}.
+\item $B$: نطرح الجداء $x(x+1)$ من $2$: \bxt{فرق}.
+\item $C$: نضيف $2$ إلى حاصل القسمة: \bxt{مجموع}.
+\item $D$: الفرق بين جداء ومربع: \bxt{فرق}.
+\item $E$: \bxt{جداء} العاملين $\sqrt x$ و $(1-x)$.
+\end{itemize}
+\end{hal}
+
+\begin{tamrin}{القيمة العددية والقيم الممنوعة}
+\begin{enumerate}
+\item $E(x)=2x^2-3x+5$. احسب $E(-1)$ ، $E(0)$ ، $E\Big(\dfrac12\Big)$ و $E\big(\sqrt2\big)$.
+\item $F(x)=\dfrac{x^2-1}{x+3}$. ما هي القيمة الممنوعة؟ احسب $F(0)$ ، $F(1)$ و $F(-2)$.
+\item $G(x)=\dfrac1{x-1}-\dfrac2x$. عيّن القيم الممنوعة ، ثم احسب $G(2)$ و $G(-1)$.
+\item احسب $-x^2$ و $(-x)^2$ من أجل $x=-3$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $E(-1)=2+3+5=\bx{10}$ \quad ؛ \quad $E(0)=\bx{5}$ \quad ؛ \quad $E\Big(\dfrac12\Big)=\dfrac12-\dfrac32+5=\bx{4}$ \quad ؛ \quad $E\big(\sqrt2\big)=4-3\sqrt2+5=\bx{9-3\sqrt2}$
+\QQ{2} $x+3=0\iff x=-3$: القيمة الممنوعة \bx{-3}.\par
+$F(0)=\dfrac{-1}3=\bx{-\frac13}$ \quad ؛ \quad $F(1)=\dfrac03=\bx{0}$ \quad ؛ \quad $F(-2)=\dfrac{4-1}{1}=\bx{3}$
+\QQ{3} المقامان $x-1$ و $x$ ينعدمان عند $1$ و $0$: القيمتان الممنوعتان \bx{0} و \bx{1}.\par
+$G(2)=\dfrac11-\dfrac22=\bx{0}$ \quad ؛ \quad $G(-1)=\dfrac1{-2}-\dfrac2{-1}=-\dfrac12+2=\bx{\frac32}$
+\QQ{4} $-x^2=-(-3)^2=\bx{-9}$ \quad و \quad $(-x)^2=3^2=\bx{9}$ \quad (الأس يُطبَّق قبل الإشارة $-$).
+\end{hal}
+
+% =====================================================================
+\section{النشر ، التحليل والمتطابقات الشهيرة}
+\begin{tamrin}{النشر}
+انشر ثم بسّط العبارات التالية:
+\[A=(2x-3)^2\quad;\quad B=(x+2)(x-5)\quad;\quad C=(3x+1)(3x-1)\]
+\[D=(x-1)^2-(x+2)(x-2)\quad;\quad E=2(x+1)^2-(2x-1)^2\]
+\end{tamrin}
+\begin{hal}
+\LW{$(a+b)^2=a^2+2ab+b^2$ \ ؛ \ $(a-b)^2=a^2-2ab+b^2$ \ ؛ \ $(a-b)(a+b)=a^2-b^2$}\par
+$A=\bx{4x^2-12x+9}$ \qquad ؛ \qquad $B=x^2-5x+2x-10=\bx{x^2-3x-10}$ \qquad ؛ \qquad $C=\bx{9x^2-1}$\par
+$D=x^2-2x+1-\left(x^2-4\right)=\bx{-2x+5}$\par
+$E=2\left(x^2+2x+1\right)-\left(4x^2-4x+1\right)=2x^2+4x+2-4x^2+4x-1=\bx{-2x^2+8x+1}$
+\end{hal}
+
+\begin{tamrin}{التحليل}
+حلّل إلى جداء عوامل:
+\[A=9x^2-16\ ;\ B=x^2-6x+9\ ;\ C=4x^2+20x+25\ ;\ D=(x-1)^2-9\]
+\[E=(x+1)(2x-3)-(x+1)(x+4)\ ;\ F=(2x+1)^2-(x-3)^2\ ;\ G=x^3-4x\ ;\ H=3x^2-12x\]
+\end{tamrin}
+\begin{hal}
+$A=(3x)^2-4^2=\bx{(3x-4)(3x+4)}$ \qquad ؛ \qquad $B=x^2-2\times3x+3^2=\bx{(x-3)^2}$ \qquad ؛ \qquad $C=(2x)^2+2\times2x\times5+5^2=\bx{(2x+5)^2}$\par
+$D=(x-1)^2-3^2=(x-1-3)(x-1+3)=\bx{(x-4)(x+2)}$\par
+$E=(x+1)\big[(2x-3)-(x+4)\big]=\bx{(x+1)(x-7)}$ \quad (عامل مشترك $x+1$)\par
+$F=\big[(2x+1)-(x-3)\big]\big[(2x+1)+(x-3)\big]=\bx{(x+4)(3x-2)}$\par
+$G=x\left(x^2-4\right)=\bx{x(x-2)(x+2)}$ \qquad ؛ \qquad $H=\bx{3x(x-4)}$
+\end{hal}
+
+\begin{tamrin}{حساب ذهني بالمتطابقات}
+احسب دون آلة حاسبة: \quad $99^2$ \ ؛ \ $101\times99$ \ ؛ \ $1002^2$ \ ؛ \ $1999^2-1998^2$.
+\end{tamrin}
+\begin{hal}
+$99^2=(100-1)^2=10000-200+1=\bx{9801}$ \qquad ؛ \qquad $101\times99=(100+1)(100-1)=10000-1=\bx{9999}$\par
+$1002^2=(1000+2)^2=1000000+4000+4=\bx{1004004}$\par
+$1999^2-1998^2=(1999-1998)(1999+1998)=1\times3997=\bx{3997}$
+\end{hal}
+
+\begin{tamrin}{اختزال عبارة كسرية}
+بسّط كل عبارة بعد تعيين قيمها الممنوعة:
+\[A=\frac{x^2-1}{x+1}\qquad;\qquad B=\frac{x^2-4x+4}{x^2-4}\qquad;\qquad C=\frac{2x^2-8}{x^2+4x+4}\]
+\end{tamrin}
+\begin{hal}
+\textbf{القاعدة:} نحلل البسط والمقام ، ثم نختزل العامل المشترك بشرط ألا ينعدم.\par
+$A$: القيمة الممنوعة $-1$. \quad $A=\dfrac{(x-1)(x+1)}{x+1}=\bx{x-1}$ \quad من أجل $x\neq-1$.\par
+$B$: $x^2-4=(x-2)(x+2)$ ، القيمتان الممنوعتان $2$ و $-2$. \quad $B=\dfrac{(x-2)^2}{(x-2)(x+2)}=\bx{\frac{x-2}{x+2}}$ \quad من أجل $x\neq\pm2$.\par
+$C$: $x^2+4x+4=(x+2)^2$ ، القيمة الممنوعة $-2$. \quad $C=\dfrac{2(x-2)(x+2)}{(x+2)^2}=\bx{\frac{2(x-2)}{x+2}}$ \quad من أجل $x\neq-2$.
+\end{hal}
+
+\begin{tamrin}{البرهان على صحة مساواة}
+\begin{enumerate}
+\item بيّن أنه من أجل كل عددين حقيقيين $a$ و $b$: $(a+b)^2-(a-b)^2=4ab$.
+\item بيّن أنه من أجل كل عدد طبيعي $n$: $(n+1)^2-n^2=2n+1$ ، ثم استنتج $2026^2-2025^2$.
+\item بيّن أنه من أجل كل عدد حقيقي $x\neq2$: $\dfrac{x^2-x-2}{x-2}=x+1$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $(a+b)^2-(a-b)^2=\left(a^2+2ab+b^2\right)-\left(a^2-2ab+b^2\right)=\bx{4ab}$
+\QQ{2} $(n+1)^2-n^2=n^2+2n+1-n^2=\bx{2n+1}$. \quad من أجل $n=2025$: \quad $2026^2-2025^2=2\times2025+1=\bx{4051}$
+\QQ{3} $x^2-x-2=(x-2)(x+1)$ (تحقق بالنشر: $x^2+x-2x-2$) \quad إذن من أجل $x\neq2$: \quad $\dfrac{(x-2)(x+1)}{x-2}=\bx{x+1}$
+\end{hal}
+
+% =====================================================================
+\section{الشكل النموذجي لثلاثي حدود}
+\begin{tamrin}{الشكل النموذجي والتحليل}
+اكتب كل ثلاثي حدود على الشكل النموذجي ، ثم حلّله إن أمكن:
+\[A=x^2+6x+5\ ;\ B=x^2-4x+7\ ;\ C=2x^2+4x-6\ ;\ D=-x^2+2x+3\ ;\ E=3x^2-6x+3\]
+\end{tamrin}
+\begin{hal}
+\textbf{الطريقة:} \LW{نخرج $a$ عاملًا ، ثم نكمل المربع: $x^2+px=\Big(x+\dfrac p2\Big)^2-\dfrac{p^2}4$.}\par
+$A=(x+3)^2-9+5=\bx{(x+3)^2-4}=(x+3-2)(x+3+2)=\bx{(x+1)(x+5)}$\par
+$B=(x-2)^2-4+7=\bx{(x-2)^2+3}$ \quad لا يحلل لأن $(x-2)^2+3\geqslant3>0$.\par
+$C=2\left(x^2+2x-3\right)=2\big[(x+1)^2-4\big]=\bx{2\big[(x+1)^2-4\big]}=\bx{2(x-1)(x+3)}$\par
+$D=-\left(x^2-2x-3\right)=-\big[(x-1)^2-4\big]=\bx{4-(x-1)^2}=(2-x+1)(2+x-1)=\bx{(3-x)(x+1)}$\par
+$E=3\left(x^2-2x+1\right)=\bx{3(x-1)^2}$
+\end{hal}
+
+\begin{tamrin}{القيمة الحدية}
+\begin{enumerate}
+\item بيّن أن $x^2-4x+7\geqslant3$ من أجل كل عدد حقيقي $x$. متى تتحقق المساواة؟
+\item عيّن القيمة الحدية العظمى للعبارة $-x^2+2x+3$.
+\item مستطيل محيطه $20\ \text{cm}$ ، وأحد بعديه $x$. عبّر عن مساحته $S(x)$ بدلالة $x$ ، ثم عيّن $x$ لتكون المساحة أكبر ما يمكن.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $x^2-4x+7=(x-2)^2+3$ و $(x-2)^2\geqslant0$ \quad إذن \quad \bx{x^2-4x+7\geqslant3} ، والمساواة من أجل \bx{x=2}.
+\QQ{2} $-x^2+2x+3=4-(x-1)^2\leqslant4$ \quad إذن القيمة الحدية العظمى \bx{4} عند $x=1$.
+\QQ{3} نصف المحيط $10$ ، فالبعد الآخر $10-x$ مع $0<x<10$:\par
+$S(x)=x(10-x)=-x^2+10x=-\big[(x-5)^2-25\big]=25-(x-5)^2\leqslant25$\par
+المساحة أكبر ما يمكن من أجل \bx{x=5} ، وهي \bx{25\ \text{cm}^2}: المستطيل \bxt{مربع}.
+\end{hal}
+
+\begin{tamrin}{لمحة تاريخية: الخوارزمي والعدد الذهبي}
+\begin{enumerate}
+\item حل الخوارزمي المعادلة $x^2+21=10x$. اكتب $x^2-10x+21$ على الشكل النموذجي ، ثم حل المعادلة.
+\item العدد الذهبي $\varphi$ هو الحل الموجب للمعادلة $\varphi^2-\varphi-1=0$. باستعمال الشكل النموذجي عيّن $\varphi$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $x^2-10x+21=(x-5)^2-25+21=(x-5)^2-4$\par
+$(x-5)^2=4\iff x-5=2$ أو $x-5=-2\iff x=7$ أو $x=3$ \quad ؛ \quad \bx{S=\{3;7\}}
+\QQ{2} $\varphi^2-\varphi-1=\Big(\varphi-\dfrac12\Big)^2-\dfrac14-1=\Big(\varphi-\dfrac12\Big)^2-\dfrac54=0$\par
+ومنه $\varphi-\dfrac12=\dfrac{\sqrt5}2$ أو $\varphi-\dfrac12=-\dfrac{\sqrt5}2$. الحل الموجب: \quad \bx{\varphi=\frac{1+\sqrt5}2\approx1{,}618}
+\end{hal}
+
+% =====================================================================
+\section{حل المعادلة $ax^2+bx+c=0$ باستعمال المميز}
+\begin{tamrin}{المميز}
+\begin{enumerate}
+\item حل في $\R$ المعادلات التالية:\par
+(أ) $2x^2-5x+2=0$ \qquad (ب) $x^2-6x+9=0$ \qquad (جـ) $x^2+x+1=0$\par
+(د) $3x^2+2x-1=0$ \qquad (هـ) $x^2-2x-4=0$ \qquad (و) $-2x^2+3x+2=0$
+\item استنتج تحليل العبارات $2x^2-5x+2$ ، $3x^2+2x-1$ و $-2x^2+3x+2$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\LW{$\Delta=b^2-4ac$ \ ؛ \ إذا كان $\Delta>0$: $x_1=\dfrac{-b-\sqrt\Delta}{2a}$ و $x_2=\dfrac{-b+\sqrt\Delta}{2a}$ \ ؛ \ إذا كان $\Delta=0$: $x_0=-\dfrac b{2a}$ \ ؛ \ إذا كان $\Delta<0$: لا حلول.}
+\begin{itemize}
+\item (أ) $\Delta=25-16=9$: \quad $x_1=\dfrac{5-3}4=\dfrac12$ \quad و \quad $x_2=\dfrac{5+3}4=2$ \quad ؛ \quad \bx{S=\left\{\frac12;2\right\}}
+\item (ب) $\Delta=36-36=0$: \quad $x_0=\dfrac62=3$ \quad ؛ \quad \bx{S=\{3\}}
+\item (جـ) $\Delta=1-4=-3<0$ \quad ؛ \quad \bx{S=\varnothing}
+\item (د) $\Delta=4+12=16$: \quad $x_1=\dfrac{-2-4}6=-1$ \quad و \quad $x_2=\dfrac{-2+4}6=\dfrac13$ \quad ؛ \quad \bx{S=\left\{-1;\frac13\right\}}
+\item (هـ) $\Delta=4+16=20$ ، $\sqrt{20}=2\sqrt5$: \quad $x=\dfrac{2\pm2\sqrt5}2=1\pm\sqrt5$ \quad ؛ \quad \bx{S=\left\{1-\sqrt5;1+\sqrt5\right\}}
+\item (و) $\Delta=9+16=25$: \quad $x_1=\dfrac{-3-5}{-4}=2$ \quad و \quad $x_2=\dfrac{-3+5}{-4}=-\dfrac12$ \quad ؛ \quad \bx{S=\left\{-\frac12;2\right\}}
+\end{itemize}
+\textbf{2.} \LW{$ax^2+bx+c=a(x-x_1)(x-x_2)$}:\par
+$2x^2-5x+2=2(x-2)\Big(x-\dfrac12\Big)=\bx{(x-2)(2x-1)}$ \qquad ؛ \qquad $3x^2+2x-1=3(x+1)\Big(x-\dfrac13\Big)=\bx{(x+1)(3x-1)}$\par
+$-2x^2+3x+2=-2(x-2)\Big(x+\dfrac12\Big)=\bx{(2-x)(2x+1)}$
+\end{hal}
+
+\begin{tamrin}{معادلة بوسيط}
+$m$ عدد حقيقي. نعتبر المعادلة $x^2+mx+4=0$.
+\begin{enumerate}
+\item احسب المميز $\Delta$ بدلالة $m$.
+\item عيّن قيم $m$ التي تقبل من أجلها المعادلة حلًا مضاعفًا ، وأعط هذا الحل.
+\item حل المعادلة من أجل $m=5$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $\Delta=\bx{m^2-16}$
+\QQ{2} حل مضاعف $\iff\Delta=0\iff m^2=16\iff m=4$ أو $m=-4$.\par
+من أجل $m=4$: $x_0=-\dfrac42=\bx{-2}$ \qquad ؛ \qquad من أجل $m=-4$: $x_0=\dfrac42=\bx{2}$
+\QQ{3} $x^2+5x+4=0$: \quad $\Delta=25-16=9$ \quad و \quad $x=\dfrac{-5\pm3}2$ \quad ؛ \quad \bx{S=\{-4;-1\}}
+\end{hal}
+
+% =====================================================================
+\section{حل المعادلات والمتراجحات جبريًا}
+\begin{tamrin}{معادلات تؤول إلى جداء أو حاصل قسمة}
+حل في $\R$ المعادلات التالية:\par
+(أ) $x^2=5x$ \qquad (ب) $(2x-1)(x+3)=0$ \qquad (جـ) $\dfrac{x+1}{x-2}=3$ \qquad (د) $\dfrac{x^2-9}{x+3}=0$ \qquad (هـ) $(x-1)^2=4(x+2)^2$
+\end{tamrin}
+\begin{hal}
+\LW{$A\times B=0\iff A=0$ أو $B=0$ \ ؛ \ $\dfrac AB=0\iff A=0$ و $B\neq0$}
+\begin{itemize}
+\item (أ) $x^2-5x=0\iff x(x-5)=0\iff x=0$ أو $x=5$ \quad ؛ \quad \bx{S=\{0;5\}} \quad (لا نقسم على $x$: نضيع الحل $0$).
+\item (ب) $2x-1=0$ أو $x+3=0$ \quad ؛ \quad \bx{S=\left\{-3;\frac12\right\}}
+\item (جـ) القيمة الممنوعة $2$. \quad $x+1=3(x-2)\iff x+1=3x-6\iff x=\dfrac72$ \quad ؛ \quad \bx{S=\left\{\frac72\right\}}
+\item (د) القيمة الممنوعة $-3$. \quad $x^2-9=0\iff x=3$ أو $x=-3$ ، ونرفض $-3$ \quad ؛ \quad \bx{S=\{3\}}
+\item (هـ) $(x-1)^2-\big[2(x+2)\big]^2=0$\par $\iff(x-1-2x-4)(x-1+2x+4)=0\iff(-x-5)(3x+3)=0$\par ومنه \quad \bx{S=\{-5;-1\}}
+\end{itemize}
+\end{hal}
+
+\begin{tamrin}{متراجحات وجدول الإشارة}
+حل في $\R$ المتراجحات التالية:\par
+(أ) $(x-1)(x+2)\leqslant0$ \qquad (ب) $x^2-4x\geqslant0$ \qquad (جـ) $x^2-x-6<0$\par
+(د) $\dfrac{2x-4}{x+1}>0$ \qquad (هـ) $\dfrac{3-x}{x+2}\geqslant0$ \qquad (و) $\dfrac1x\leqslant2$
+\end{tamrin}
+\begin{hal}
+\textbf{الطريقة:} \LW{ننقل كل الحدود إلى طرف واحد ، نحلل إلى عوامل من الدرجة الأولى ، ثم ننجز جدول الإشارة.}
+\begin{itemize}
+\item (أ) الجداء سالب بين الجذرين $-2$ و $1$ \quad ؛ \quad \bx{S=[-2;1]}
+\item (ب) $x(x-4)\geqslant0$: موجب خارج الجذرين \quad ؛ \quad \bx{S=\,]-\infty;0]\cup[4;+\infty[}
+\item (جـ) $x^2-x-6=(x-3)(x+2)<0$ \quad ؛ \quad \bx{S=\,]-2;3[}
+\end{itemize}
+(د) القيمة الممنوعة $-1$:
+\begin{TAB}
+\tkzTabInit[lgt=2.6,espcl=2.2]{$x$/1,$2x-4$/1,$x+1$/1,$\frac{2x-4}{x+1}$/1.2}{$-\infty$,$-1$,$2$,$+\infty$}
+\tkzTabLine{,-,t,-,z,+,}
+\tkzTabLine{,-,z,+,t,+,}
+\tkzTabLine{,+,d,-,z,+,}
+\end{TAB}
+\bx{S=\,]-\infty;-1[\,\cup\,]2;+\infty[}\par
+(هـ) القيمة الممنوعة $-2$:
+\begin{TAB}
+\tkzTabInit[lgt=2.6,espcl=2.2]{$x$/1,$3-x$/1,$x+2$/1,$\frac{3-x}{x+2}$/1.2}{$-\infty$,$-2$,$3$,$+\infty$}
+\tkzTabLine{,+,t,+,z,-,}
+\tkzTabLine{,-,z,+,t,+,}
+\tkzTabLine{,-,d,+,z,-,}
+\end{TAB}
+\bx{S=\,]-2;3]}\par
+(و) القيمة الممنوعة $0$. \quad $\dfrac1x-2\leqslant0\iff\dfrac{1-2x}x\leqslant0$:
+\begin{TAB}
+\tkzTabInit[lgt=2.6,espcl=2.2]{$x$/1,$1-2x$/1,$x$/1,$\frac{1-2x}{x}$/1.2}{$-\infty$,$0$,$\frac12$,$+\infty$}
+\tkzTabLine{,+,t,+,z,-,}
+\tkzTabLine{,-,z,+,t,+,}
+\tkzTabLine{,-,d,+,z,-,}
+\end{TAB}
+\bx{S=\,]-\infty;0[\,\cup\left[\frac12;+\infty\right[}
+\end{hal}
+
+\begin{tamrin}{إشارة ثلاثي حدود}
+\begin{enumerate}
+\item حلّل $2x^2-5x+2$ ، ثم ادرس إشارته.
+\item استنتج حلول المتراجحة $2x^2-5x+2>0$ ، ثم المتراجحة $2x^2+2\leqslant5x$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} من التمرين 11: $2x^2-5x+2=(x-2)(2x-1)$:
+\begin{TAB}
+\tkzTabInit[lgt=2.8,espcl=2.2]{$x$/1,$2x-1$/1,$x-2$/1,$2x^2-5x+2$/1}{$-\infty$,$\frac12$,$2$,$+\infty$}
+\tkzTabLine{,-,z,+,t,+,}
+\tkzTabLine{,-,t,-,z,+,}
+\tkzTabLine{,+,z,-,z,+,}
+\end{TAB}
+\textbf{2.} $2x^2-5x+2>0$: \quad \bx{S=\left]-\infty;\frac12\right[\cup\,]2;+\infty[}\par
+$2x^2+2\leqslant5x\iff2x^2-5x+2\leqslant0$: \quad \bx{S=\left[\frac12;2\right]}
+\end{hal}
+
+% =====================================================================
+\section{الحل البياني}
+\begin{tamrin}{تقاطع منحنى ومستقيم}
+$f(x)=x^2-2x-3$ و $g(x)=x+1$.
+\begin{enumerate}
+\item ارسم في نفس المعلم المنحنى $(C_f)$ والمستقيم $(D)$ الممثل لـ $g$.
+\item حل بيانيًا: $f(x)=0$ ، $f(x)=g(x)$ و $f(x)<g(x)$.
+\item تحقق جبريًا من النتائج.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.}
+\begin{GR}{-2.5}{5}{-4.5}{7}{0.45}
+\Ticks{-2,-1,1,2,3,4}{-4,-2,2,4,6}
+\draw[cDef,very thick,domain=-2.4:4.8,samples=80] plot(\x,{\x*\x-2*\x-3});
+\draw[cThm,thick,domain=-2.5:5] plot(\x,{\x+1});
+\fill[cRem] (-1,0) circle (2.5pt) (4,5) circle (2.5pt) (3,0) circle (2.5pt);
+\node[cDef] at (-1.6,4){$(C_f)$}; \node[cThm] at (4.6,6.5){$(D)$};
+\end{GR}
+\textbf{2.} $(C_f)$ يقطع محور الفواصل عند $-1$ و $3$: \quad \bx{S=\{-1;3\}}\par
+$(C_f)$ و $(D)$ يتقاطعان في نقطتين فاصلتاهما $-1$ و $4$: \quad \bx{S=\{-1;4\}}\par
+$(C_f)$ تحت $(D)$ بين $-1$ و $4$: \quad \bx{S=\,]-1;4[}
+\QQ{3} $f(x)=(x-3)(x+1)$ \ok \quad و \quad $f(x)-g(x)=x^2-3x-4=(x-4)(x+1)$: ينعدم عند $-1$ و $4$ ، وسالب بينهما \ok.
+\end{hal}
+
+\begin{tamrin}{قراءة بيانية}
+$f(x)=-x^2+4x$ و $(C_f)$ تمثيلها البياني.
+\begin{enumerate}
+\item ارسم $(C_f)$ والمستقيم ذا المعادلة $y=3$.
+\item حل بيانيًا: $f(x)=3$ ، $f(x)\geqslant0$ و $f(x)>3$.
+\item تحقق جبريًا (حلّل $f(x)-3$).
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.}
+\begin{GR}{-1}{5}{-2.5}{5}{0.55}
+\Ticks{1,2,3,4}{-2,2,3,4}
+\draw[cDef,very thick,domain=-0.55:4.55,samples=80] plot(\x,{-\x*\x+4*\x});
+\draw[cThm,thick] (-1,3)--(5,3); \node[cThm,above] at (4.6,3){$y=3$};
+\fill[cRem] (1,3) circle (2.5pt) (3,3) circle (2.5pt) (0,0) circle (2.5pt) (4,0) circle (2.5pt);
+\node[cDef] at (0.3,4.4){$(C_f)$};
+\end{GR}
+\textbf{2.} $f(x)=3$: \bx{S=\{1;3\}} \quad ؛ \quad $f(x)\geqslant0$: \bx{S=[0;4]} \quad ؛ \quad $f(x)>3$: \bx{S=\,]1;3[}
+\QQ{3} $f(x)=x(4-x)$ \quad و \quad $f(x)-3=-x^2+4x-3=-(x-1)(x-3)$: موجب بين $1$ و $3$ \ok.
+\end{hal}
+
+% =====================================================================
+\section{ترييض المشكلات}
+\begin{tamrin}{أبعاد مستطيل}
+مستطيل محيطه $34\ \text{m}$ ومساحته $60\ \text{m}^2$. ما بعداه؟
+\end{tamrin}
+\begin{hal}
+نسمي $x$ أحد البعدين ($0<x<17$) ، فالآخر $17-x$ (نصف المحيط $17$).\par
+$x(17-x)=60\iff x^2-17x+60=0$: \quad $\Delta=289-240=49$ \quad و \quad $x=\dfrac{17\pm7}2$ ، أي $x=12$ أو $x=5$.\par
+البعدان: \bx{12\ \text{m}} و \bx{5\ \text{m}}.
+\end{hal}
+
+\begin{tamrin}{أعداد}
+\begin{enumerate}
+\item عيّن عددين طبيعيين متتابعين جداؤهما $156$.
+\item عيّن عددين مجموعهما $10$ وجداؤهما $21$.
+\item «عدد مربعه يساوي ضعفه»: ما هو؟
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $n(n+1)=156\iff n^2+n-156=0$: \quad $\Delta=1+624=625$ \quad و \quad $n=\dfrac{-1\pm25}2$ ، أي $n=12$ أو $n=-13$ (مرفوض لأن $n\in\N$).\par
+العددان: \bx{12} و \bx{13}.
+\QQ{2} إذا كان أحدهما $t$ فالآخر $10-t$: \quad $t(10-t)=21\iff t^2-10t+21=0$: \quad $\Delta=16$ ، $t=3$ أو $t=7$. \quad العددان: \bx{3} و \bx{7}.
+\QQ{3} $x^2=2x\iff x(x-2)=0$: \quad العدد هو \bx{0} أو \bx{2}.
+\end{hal}
+
+\begin{tamrin}{حديقة وممر}
+\begin{enumerate}
+\item حديقة مربعة ضلعها $x$ (بالمتر) يحيط بها ممر عرضه $1\ \text{m}$. المساحة الكلية (الحديقة والممر) $64\ \text{m}^2$. احسب $x$.
+\item ما قيم $x$ التي تجعل مساحة مربع ضلعه $x$ أكبر من محيطه؟
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} ضلع المربع الكلي $x+2$: \quad $(x+2)^2=64\iff x+2=8$ (لأن $x+2>0$) \quad ومنه \quad \bx{x=6\ \text{m}}
+\QQ{2} $x^2>4x$ مع $x>0$: \quad $x(x-4)>0$ ، وبما أن $x>0$ فإن $x-4>0$ \quad ؛ \quad \bx{x>4}
+\end{hal}
+
+\begin{tamrin}{مقارنة عرضين}
+يقترح متعامل للهاتف عرضين: \textbf{العرض A}: اشتراك $1000\ DA$ زائد $5\ DA$ للدقيقة ؛ \textbf{العرض B}: $15\ DA$ للدقيقة دون اشتراك.
+\begin{enumerate}
+\item عبّر عن كلفة كل عرض بدلالة عدد الدقائق $x$.
+\item ابتداءً من كم دقيقة يصبح العرض A أفضل؟
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $A(x)=1000+5x$ \qquad و \qquad $B(x)=15x$.
+\QQ{2} $A(x)<B(x)\iff1000+5x<15x\iff1000<10x\iff x>100$. \quad العرض A أفضل ابتداءً من \bx{101} دقيقة (ويتساويان عند $100$ دقيقة).
+\end{hal}
+
+\begin{tamrin}{قذف كرة}
+يُقذف جسم إلى الأعلى ، فيكون ارتفاعه (بالمتر) بعد $t$ ثانية: $h(t)=-5t^2+20t$ ، حيث $0\leqslant t\leqslant4$.
+\begin{enumerate}
+\item متى يكون الارتفاع $15\ \text{m}$؟
+\item اكتب $h(t)$ على الشكل النموذجي ، ثم عيّن أقصى ارتفاع يبلغه الجسم.
+\item خلال أي مدة يكون الارتفاع أكبر من أو يساوي $15\ \text{m}$؟
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $-5t^2+20t=15\iff t^2-4t+3=0\iff(t-1)(t-3)=0$: \quad \bx{t=1\ \text{s}} \quad و \quad \bx{t=3\ \text{s}}
+\QQ{2} $h(t)=-5\left(t^2-4t\right)=-5\big[(t-2)^2-4\big]=\bx{20-5(t-2)^2}$\par
+$h(t)\leqslant20$ والمساواة عند $t=2$: أقصى ارتفاع \bx{20\ \text{m}} بعد $2$ ثانية.
+\QQ{3} $h(t)\geqslant15\iff t^2-4t+3\leqslant0\iff(t-1)(t-3)\leqslant0$ \quad ؛ \quad \bx{t\in[1;3]}
+\end{hal}
+
+% =====================================================================
+\section{تمارين شاملة}
+\begin{tamrin}{المميز والتحليل والشكل النموذجي}
+\begin{enumerate}
+\item حل في $\R$ المعادلات التالية: \quad $x^2-4x+3=0$ \ ؛ \ $2x^2-x-10=0$ \ ؛ \ $x^2+x-2=-3$.
+\item استنتج تحليلًا للعبارات السابقة.
+\item اكتب العبارات السابقة على الشكل النموذجي.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.}
+\begin{itemize}
+\item $x^2-4x+3=0$: \quad $\Delta=16-12=4>0$ \quad و \quad $x_1=\dfrac{4-2}2=1$ ، $x_2=\dfrac{4+2}2=3$ \quad ؛ \quad \bx{S=\{1;3\}}
+\item $2x^2-x-10=0$: \quad $\Delta=1+80=81$ \quad و \quad $x_1=\dfrac{1-9}4=-2$ ، $x_2=\dfrac{1+9}4=\dfrac52$ \quad ؛ \quad \bx{S=\left\{-2;\frac52\right\}}
+\item $x^2+x-2=-3\iff x^2+x+1=0$: \quad $\Delta=1-4=-3<0$ \quad ؛ \quad \bx{S=\varnothing}
+\end{itemize}
+\textbf{2.} $x^2-4x+3=\bx{(x-1)(x-3)}$ \quad ؛ \quad $2x^2-x-10=2(x+2)\Big(x-\dfrac52\Big)=\bx{(x+2)(2x-5)}$ \quad ؛ \quad $x^2+x+1$ \bxt{لا يحلل} ($\Delta<0$).
+\QQ{3} \LW{$ax^2+bx+c=a\Big[\Big(x+\dfrac b{2a}\Big)^2-\dfrac\Delta{4a^2}\Big]$}:\par
+$x^2-4x+3=\bx{(x-2)^2-1}$ \quad ؛ \quad $2x^2-x-10=2\Big[\Big(x-\dfrac14\Big)^2-\dfrac{81}{16}\Big]=\bx{2\Big(x-\frac14\Big)^2-\frac{81}8}$ \quad ؛ \quad $x^2+x+1=\bx{\Big(x+\frac12\Big)^2+\frac34}$
+\end{hal}
+
+\begin{tamrin}{عبارة من الدرجة الثانية ودالة}
+نعتبر في $\R$ العبارة: $E(x)=x^2-x-6$.
+\begin{enumerate}
+\item حل في $\R$ المعادلة $E(x)=0$.
+\item حلّل العبارة $E(x)$ إلى جداء عاملين من الدرجة الأولى.
+\item ادرس إشارة $E(x)$ ، ثم استنتج حلول المتراجحة $E(x)<0$.
+\item لتكن الدالة $f$ المعرفة على $\R$ بـ: $f(x)=x^2-x-6$.
+\begin{sq}
+\qa باستعمال الشكل النموذجي ، بيّن أنه من أجل كل $x$ من $\R$: $f(x)=\Big(x-\dfrac12\Big)^2-\dfrac{25}4$.
+\qb عيّن السوابق الممكنة للعدد $-6$.
+\qc ادرس اتجاه تغير الدالة $f$ على كل من المجالين $\left]-\infty;\dfrac12\right]$ و $\left[\dfrac12;+\infty\right[$ ، ثم شكّل جدول تغيراتها.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $\Delta=1+24=25$: \quad $x_1=\dfrac{1-5}2=-2$ \quad و \quad $x_2=\dfrac{1+5}2=3$ \quad ؛ \quad \bx{S=\{-2;3\}}
+\QQ{2} $E(x)=\bx{(x+2)(x-3)}$
+\QQ{3}
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=2.4]{$x$/1,$E(x)$/1}{$-\infty$,$-2$,$3$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\end{TAB}
+$E(x)<0$: \quad \bx{S=\,]-2;3[}
+\QQ{4} \pa $x^2-x=\Big(x-\dfrac12\Big)^2-\dfrac14$ \quad إذن \quad $f(x)=\Big(x-\dfrac12\Big)^2-\dfrac14-6=\bx{\Big(x-\frac12\Big)^2-\frac{25}4}$
+\pb $f(x)=-6\iff x^2-x=0\iff x(x-1)=0$: \quad السابقتان \bx{0} و \bx{1}.
+\pc إذا كان $a<b\leqslant\dfrac12$: \quad $a-\dfrac12<b-\dfrac12\leqslant0$ ، وبالتربيع (أعداد سالبة) $\Big(a-\dfrac12\Big)^2>\Big(b-\dfrac12\Big)^2$ ، أي $f(a)>f(b)$: \bxt{$f$ متناقصة تمامًا على $\left]-\infty;\frac12\right]$}.\par
+إذا كان $\dfrac12\leqslant a<b$: \quad $0\leqslant a-\dfrac12<b-\dfrac12$ ، ومنه $f(a)<f(b)$: \bxt{$f$ متزايدة تمامًا على $\left[\frac12;+\infty\right[$}.
+\begin{TAB}
+\tkzTabInit[lgt=2,espcl=3]{$x$/1,$f(x)$/2}{$-\infty$,$\frac12$,$+\infty$}
+\tkzTabVar{+/ ,-/$-\frac{25}4$,+/ }
+\end{TAB}
+\end{hal}
+
+\begin{tamrin}{عبارة كسرية وإشارتها}
+نعتبر العبارة $A(x)$ المعرفة على $\R$ بـ: $A(x)=4x^2-8x+3$.
+\begin{enumerate}
+\item حل في $\R$ المعادلة $A(x)=0$ ، ثم استنتج تحليلًا للعبارة $A(x)$.
+\item ادرس إشارة العبارة $A(x)$.
+\item نضع: $g(x)=\dfrac{A(x)}{2-x}$.
+\begin{sq}
+\qa عيّن القيمة الممنوعة للعبارة $g(x)$.
+\qb ادرس إشارة العبارة $2-x$ ، ثم استنتج إشارة العبارة $g(x)$.
+\qc حل في $\R$ المتراجحة $g(x)\leqslant0$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $\Delta=64-48=16$: \quad $x_1=\dfrac{8-4}8=\dfrac12$ \quad و \quad $x_2=\dfrac{8+4}8=\dfrac32$ \quad ؛ \quad \bx{S=\left\{\frac12;\frac32\right\}}\par
+$A(x)=4\Big(x-\dfrac12\Big)\Big(x-\dfrac32\Big)=\bx{(2x-1)(2x-3)}$
+\QQ{2}
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=2.4]{$x$/1,$A(x)$/1}{$-\infty$,$\frac12$,$\frac32$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\end{TAB}
+\textbf{3.} \pa $2-x\neq0$: القيمة الممنوعة \bx{2}.
+\pb $2-x>0$ إذا كان $x<2$ ، و $2-x<0$ إذا كان $x>2$:
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=2.2]{$x$/1,$A(x)$/1,$2-x$/1,$g(x)$/1}{$-\infty$,$\frac12$,$\frac32$,$2$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,t,+,}
+\tkzTabLine{,+,t,+,t,+,z,-,}
+\tkzTabLine{,+,z,-,z,+,d,-,}
+\end{TAB}
+\pc $g(x)\leqslant0$: \quad \bx{S=\left[\frac12;\frac32\right]\cup\,]2;+\infty[} \quad (المجال مفتوح عند $2$ لأنها قيمة ممنوعة).
+\end{hal}
+
+\begin{tamrin}{تحليل وإشارة حاصل قسمة}
+لتكن العبارتان الجبريتان: $P(x)=(x+1)(2x+3)-\left(x^2-1\right)$ و $Q(x)=x^2-4x+3$.
+\begin{enumerate}
+\item حلّل كلًا من العبارتين $P(x)$ و $Q(x)$.
+\item نضع $K(x)=\dfrac{P(x)}{Q(x)}$.
+\begin{sq}
+\qa عيّن القيم الممنوعة للعبارة $K(x)$.
+\qb ادرس إشارة العبارة $K(x)$.
+\qc استنتج حلول المتراجحة $K(x)\geqslant0$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $x^2-1=(x-1)(x+1)$ ، ومنه:
+\[P(x)=(x+1)\big[(2x+3)-(x-1)\big]=\bx{(x+1)(x+4)}\]
+$Q(x)$: \quad $\Delta=16-12=4$ \quad و \quad $x_1=1$ ، $x_2=3$ \quad ؛ \quad $Q(x)=\bx{(x-1)(x-3)}$
+\QQ{2} \pa $K(x)$ معرفة إذا كان $Q(x)\neq0$ ، أي $x\neq1$ و $x\neq3$: القيمتان الممنوعتان \bx{1} و \bx{3}.
+\pb إشارة $K(x)$ هي إشارة الجداء $P(x)\times Q(x)$:
+\begin{TAB}
+\tkzTabInit[lgt=2,espcl=2]{$x$/1,$P(x)$/1,$Q(x)$/1,$K(x)$/1}{$-\infty$,$-4$,$-1$,$1$,$3$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,t,+,t,+,}
+\tkzTabLine{,+,t,+,t,+,z,-,z,+,}
+\tkzTabLine{,+,z,-,z,+,d,-,d,+,}
+\end{TAB}
+\pc $K(x)\geqslant0$: \quad \bx{S=\,]-\infty;-4]\cup[-1;1[\,\cup\,]3;+\infty[}
+\end{hal}
+
+% =====================================================================
+\section{صحيح أم خطأ ، اختيار من متعدد}
+\begin{tamrin}{صحيح أم خطأ}
+أجب بصحيح أو خطأ مع التعليل:
+\begin{enumerate}
+\item من أجل كل عددين حقيقيين $a$ و $b$: $(a+b)^2=a^2+b^2$.
+\item $x^2=4x$ يكافئ $x=4$.
+\item من أجل كل عدد حقيقي $x\neq1$: $\dfrac{x^2-1}{x-1}=x+1$.
+\item إذا كان $\Delta<0$ فإن المعادلة $ax^2+bx+c=0$ لا تقبل حلولًا في $\R$.
+\item $x^2+x+1>0$ من أجل كل عدد حقيقي $x$.
+\item القيمة الممنوعة للعبارة $\dfrac{x+2}{x^2+1}$ هي $-2$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \bxt{خطأ}: $(a+b)^2=a^2+2ab+b^2$. مثال مضاد: $a=b=1$: \ $4\neq2$.
+\QQ{2} \bxt{خطأ}: $x^2=4x\iff x(x-4)=0\iff x=0$ أو $x=4$.
+\QQ{3} \bxt{صحيح}: $\dfrac{(x-1)(x+1)}{x-1}=x+1$ من أجل $x\neq1$.
+\QQ{4} \bxt{صحيح}: من الشكل النموذجي $\Big(x+\dfrac b{2a}\Big)^2=\dfrac\Delta{4a^2}<0$ مستحيلة.
+\QQ{5} \bxt{صحيح}: $x^2+x+1=\Big(x+\dfrac12\Big)^2+\dfrac34\geqslant\dfrac34>0$.
+\QQ{6} \bxt{خطأ}: المقام $x^2+1\geqslant1$ لا ينعدم ، فلا توجد قيمة ممنوعة ($-2$ تعدم البسط فقط).
+\end{hal}
+
+\begin{tamrin}{اختيار من متعدد}
+اختر الإجابة الصحيحة الوحيدة مع التعليل:
+\begin{enumerate}
+\item الشكل النموذجي للعبارة $x^2-8x+10$ هو:
+\ABC{$(x-4)^2+10$}{$(x-4)^2-6$}{$(x+4)^2-6$}
+\item مميز العبارة $2x^2-3x-2$ هو:
+\ABC{$-7$}{$25$}{$1$}
+\item مجموعة حلول المعادلة $x^2=9$ هي:
+\ABC{$\{3\}$}{$\{-3;3\}$}{$\{9\}$}
+\item مجموعة حلول المتراجحة $x^2<4$ هي:
+\ABC{$]-\infty;2[$}{$]-2;2[$}{$]-\infty;-2[\cup]2;+\infty[$}
+\item القيم الممنوعة للعبارة $\dfrac1{x^2-4}$ هي:
+\ABC{$4$}{$2$ فقط}{$-2$ و $2$}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} (ب): $x^2-8x+10=(x-4)^2-16+10=\bx{(x-4)^2-6}$
+\QQ{2} (ب): $\Delta=9+16=\bx{25}$
+\QQ{3} (ب): $x^2-9=(x-3)(x+3)=0$ \quad ؛ \quad \bx{S=\{-3;3\}}
+\QQ{4} (ب): $x^2-4=(x-2)(x+2)<0$ بين الجذرين \quad ؛ \quad \bx{S=\,]-2;2[}
+\QQ{5} (جـ): $x^2-4=0\iff x=-2$ أو $x=2$.
+\end{hal}
+
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\Large\bfseries بالتوفيق والنجاح}
+\end{tcolorbox}
+\end{LTR}
+\end{document}
