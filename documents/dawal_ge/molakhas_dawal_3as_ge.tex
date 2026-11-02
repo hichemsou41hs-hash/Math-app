@@ -431,29 +431,39 @@ $f(x)=\dfrac{2x-4}{x+1}$ على $\R-\{-1\}$.
 % =====================================================
 \section{استنتاج تمثيل بياني لدالة انطلاقًا من منحنى دالة أخرى}
 نوضح كل حالة على نفس الدالة $f(x)=x^2-2x$: منحناها $(C_f)$ قطع مكافئ رأسه $S(1;-1)$ ويقطع محور الفواصل في $O(0;0)$ و $(2;0)$. في كل شكل: $(C_f)$ \textcolor{cDef}{\textbf{بالخط المتقطع الأزرق}} و $(C_g)$ \textcolor{cThm}{\textbf{بالخط الأحمر}}.
-\newcommand{\Pf}{\draw[cDef,thick,dashed,domain=-1.2:3.2] plot(\x,{\x*\x-2*\x});}
-\newcommand{\Fig}[1]{\begin{GR}{-3.4}{3.4}{-2.4}{3.4}{0.42}\Ticks{-2,2}{-2,2}\Pf #1\end{GR}}
 
 \begin{mithal}[الحالة 1: $g(x)=f(x+b)+k$ (انسحاب)]
 \RL{0.58}{%
 $(C_g)$ صورة $(C_f)$ بالانسحاب الذي شعاعه $\vec u\binom{-b}{k}$: نزيح كل نقطة أفقيًا بـ $-b$ ، وعموديًا بـ $k$.\par
 \textbf{مثال:} $g(x)=f(x+2)+1$: $b=2$ و $k=1$ ، والشعاع $\vec u\binom{-2}{1}$.\par
 الرأس يصبح: $S'(1-2;-1+1)=\bx{S'(-1;0)}$.}{0.38}{%
-\Fig{\draw[cThm,very thick,domain=-3.2:1.2] plot(\x,{(\x+2)*(\x+2)-2*(\x+2)+1});}}
+\begin{GR}{-3.4}{3.4}{-2.4}{3.4}{0.42}
+\Ticks{-2,2}{-2,2}
+\draw[cDef,thick,dashed,domain=-1.2:3.2] plot(\x,{\x*\x-2*\x});
+\draw[cThm,very thick,domain=-3.2:1.2] plot(\x,{(\x+2)*(\x+2)-2*(\x+2)+1});
+\end{GR}}
 \end{mithal}
 
 \begin{mithal}[الحالة 2: $g(x)=-f(x)$]
 \RL{0.58}{%
 $(C_g)$ \textbf{نظير} $(C_f)$ بالنسبة إلى \textbf{محور الفواصل}: النقطة $M(x;y)$ تقابلها $M'(x;-y)$.\par
 \textbf{مثال:} $g(x)=-x^2+2x$: الرأس $S(1;-1)$ يصبح $\bx{S'(1;1)}$ ، ونقطتا التقاطع مع محور الفواصل لا تتغيران.}{0.38}{%
-\Fig{\draw[cThm,very thick,domain=-1.2:3.2] plot(\x,{-\x*\x+2*\x});}}
+\begin{GR}{-3.4}{3.4}{-2.4}{3.4}{0.42}
+\Ticks{-2,2}{-2,2}
+\draw[cDef,thick,dashed,domain=-1.2:3.2] plot(\x,{\x*\x-2*\x});
+\draw[cThm,very thick,domain=-1.2:3.2] plot(\x,{-\x*\x+2*\x});
+\end{GR}}
 \end{mithal}
 
 \begin{mithal}[الحالة 3: $g(x)=f(-x)$]
 \RL{0.58}{%
 $(C_g)$ \textbf{نظير} $(C_f)$ بالنسبة إلى \textbf{محور التراتيب}: النقطة $M(x;y)$ تقابلها $M'(-x;y)$.\par
 \textbf{مثال:} $g(x)=(-x)^2-2(-x)=x^2+2x$: الرأس يصبح $\bx{S'(-1;-1)}$ ، والنقطة $(2;0)$ تصبح $(-2;0)$.}{0.38}{%
-\Fig{\draw[cThm,very thick,domain=-3.2:1.2] plot(\x,{\x*\x+2*\x});}}
+\begin{GR}{-3.4}{3.4}{-2.4}{3.4}{0.42}
+\Ticks{-2,2}{-2,2}
+\draw[cDef,thick,dashed,domain=-1.2:3.2] plot(\x,{\x*\x-2*\x});
+\draw[cThm,very thick,domain=-3.2:1.2] plot(\x,{\x*\x+2*\x});
+\end{GR}}
 \end{mithal}
 
 \begin{mithal}[الحالة 4: $g(x)=|f(x)|$]
@@ -464,7 +474,11 @@ $(C_g)$ \textbf{نظير} $(C_f)$ بالنسبة إلى \textbf{محور الت�
 \item \textbf{مثال:} $g(x)=\left|x^2-2x\right|$: على $[0;2]$ نقلب الجزء السفلي ، فيصبح الرأس $\bx{S'(1;1)}$.
 \item منحنى $|f|$ لا ينزل أبدًا تحت محور الفواصل.
 \end{itemize}}{0.38}{%
-\Fig{\draw[cThm,very thick,domain=-1.2:3.2,samples=120] plot(\x,{abs(\x*\x-2*\x)});}}
+\begin{GR}{-3.4}{3.4}{-2.4}{3.4}{0.42}
+\Ticks{-2,2}{-2,2}
+\draw[cDef,thick,dashed,domain=-1.2:3.2] plot(\x,{\x*\x-2*\x});
+\draw[cThm,very thick,domain=-1.2:3.2,samples=120] plot(\x,{abs(\x*\x-2*\x)});
+\end{GR}}
 \end{mithal}
 
 \begin{mithal}[الحالة 5: $g(x)=f(|x|)$]
@@ -475,7 +489,11 @@ $(C_g)$ \textbf{نظير} $(C_f)$ بالنسبة إلى \textbf{محور الت�
 \item نعوض الجزء الأيسر \textbf{بنظير الجزء الأيمن بالنسبة إلى محور التراتيب}.
 \item \textbf{مثال:} $g(x)=x^2-2|x|$: الرأسان $S(1;-1)$ و $\bx{S'(-1;-1)}$.
 \end{itemize}}{0.38}{%
-\Fig{\draw[cThm,very thick,domain=-3.2:3.2,samples=120] plot(\x,{\x*\x-2*abs(\x)});}}
+\begin{GR}{-3.4}{3.4}{-2.4}{3.4}{0.42}
+\Ticks{-2,2}{-2,2}
+\draw[cDef,thick,dashed,domain=-1.2:3.2] plot(\x,{\x*\x-2*\x});
+\draw[cThm,very thick,domain=-3.2:3.2,samples=120] plot(\x,{\x*\x-2*abs(\x)});
+\end{GR}}
 \end{mithal}
 
 % =====================================================
@@ -586,13 +604,13 @@ $C(q)=q^2+4q+16$ (بآلاف الدنانير) حيث $q>0$.
 مفتاح الإجابة هو معرفة \textbf{فاصلة نقطة التماس} $x_0$.
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
-\begin{tabular}{|p{0.42\textwidth}|p{0.5\textwidth}|}\hline
-\rowcolor{cSec!12}\textbf{الطرح} & \textbf{كيفية الإجابة}\\\hline
-معادلة المماس عند النقطة ذات الفاصلة $x_0$. & نكتب $y=f'(x_0)(x-x_0)+f(x_0)$ ونعوّض.\\\hline
-معادلة المماس عند النقطة ذات الترتيبة $y_0$. & نحل $f(x)=y_0$ لنجد $x_0$ ، ثم نكتب المعادلة.\\\hline
-تعيين $f'(x_0)$ بيانيًا. & $f'(x_0)=\dfrac{y_B-y_A}{x_B-x_A}$ حيث $A$ و $B$ من المماس.\\\hline
-هل توجد مماسات معامل توجيهها $a$ ؟ & نحل $f'(x)=a$ ؛ عدد الحلول هو عدد المماسات.\\\hline
-مماسات توازي المستقيم $y=ax+b$. & نفس معامل التوجيه: نحل $f'(x)=a$.\\\hline
+\begin{tabular}{|p{0.5\textwidth}|p{0.42\textwidth}|}\hline
+\rowcolor{cSec!12}\textbf{كيفية الإجابة} & \textbf{الطرح}\\\hline
+نكتب $y=f'(x_0)(x-x_0)+f(x_0)$ ونعوّض. & معادلة المماس عند النقطة ذات الفاصلة $x_0$.\\\hline
+نحل $f(x)=y_0$ لنجد $x_0$ ، ثم نكتب المعادلة. & معادلة المماس عند النقطة ذات الترتيبة $y_0$.\\\hline
+$f'(x_0)=\dfrac{y_B-y_A}{x_B-x_A}$ حيث $A$ و $B$ من المماس. & تعيين $f'(x_0)$ بيانيًا.\\\hline
+نحل $f'(x)=a$ ؛ عدد الحلول هو عدد المماسات. & هل توجد مماسات معامل توجيهها $a$ ؟\\\hline
+نفس معامل التوجيه: نحل $f'(x)=a$. & مماسات توازي المستقيم $y=ax+b$.\\\hline
 \end{tabular}
 \end{center}
 
@@ -621,13 +639,13 @@ $f(x)=\dfrac{3x-4}{x-2}$ على $\R-\{2\}$.
 \begin{center}
 \renewcommand{\arraystretch}{1.8}
 \begin{tabular}{|c|c|c|}\hline
-\rowcolor{cSec!12}\ar{الدالة $f(x)$} & \ar{المشتقة $f'(x)$} & \ar{مجال قابلية الاشتقاق}\\\hline
-$a$ \ar{(ثابت)} & $0$ & $\R$\\\hline
-$ax$ & $a$ & $\R$\\\hline
-$x^n$ ($n\geqslant2$) & $n\,x^{n-1}$ & $\R$\\\hline
-$\dfrac1x$ & $-\dfrac1{x^2}$ & $\R^*$\\\hline
-$\dfrac1{x^n}$ & $-\dfrac n{x^{n+1}}$ & $\R^*$\\\hline
-$\sqrt x$ & $\dfrac1{2\sqrt x}$ & $]0;+\infty[$\\\hline
+\rowcolor{cSec!12}\ar{مجال قابلية الاشتقاق} & \ar{المشتقة $f'(x)$} & \ar{الدالة $f(x)$}\\\hline
+$\R$ & $0$ & $a$ \ar{(ثابت)}\\\hline
+$\R$ & $a$ & $ax$\\\hline
+$\R$ & $n\,x^{n-1}$ & $x^n$ ($n\geqslant2$)\\\hline
+$\R^*$ & $-\dfrac1{x^2}$ & $\dfrac1x$\\\hline
+$\R^*$ & $-\dfrac n{x^{n+1}}$ & $\dfrac1{x^n}$\\\hline
+$]0;+\infty[$ & $\dfrac1{2\sqrt x}$ & $\sqrt x$\\\hline
 \end{tabular}
 \end{center}
 \end{khassia}
@@ -637,8 +655,8 @@ $\sqrt x$ & $\dfrac1{2\sqrt x}$ & $]0;+\infty[$\\\hline
 \begin{center}
 \renewcommand{\arraystretch}{2}
 \begin{tabular}{|c|c|c|c|c|c|}\hline
-\rowcolor{cSec!12}\ar{الدالة} & $u\pm v$ & $k\,u$ & $u\times v$ & $\dfrac1v$ & $\dfrac uv$\\\hline
-\ar{المشتقة} & $u'\pm v'$ & $k\,u'$ & $u'v+uv'$ & $-\dfrac{v'}{v^2}$ & $\dfrac{u'v-uv'}{v^2}$\\\hline
+\rowcolor{cSec!12}$\dfrac uv$ & $\dfrac1v$ & $u\times v$ & $k\,u$ & $u\pm v$ & \ar{الدالة}\\\hline
+$\dfrac{u'v-uv'}{v^2}$ & $-\dfrac{v'}{v^2}$ & $u'v+uv'$ & $k\,u'$ & $u'\pm v'$ & \ar{المشتقة}\\\hline
 \end{tabular}
 \end{center}
 \end{khassia}
@@ -758,15 +776,55 @@ $\dfrac a{0^+}=+\infty\ \ (a>0)$ \ ؛ \ $\dfrac a{0^+}=-\infty\ \ (a<0)$ & $\dfr
 \begin{khassia}
 \begin{center}
 \renewcommand{\arraystretch}{1.7}
-\begin{tabular}{|p{0.36\textwidth}|p{0.56\textwidth}|}\hline
-\rowcolor{cSec!12}\textbf{النهاية} & \textbf{التفسير الهندسي}\\\hline
-$\Lm af(x)=\pm\infty$ & مستقيم مقارب \textbf{عمودي} معادلته $x=a$.\\\hline
-$\Lm{\pm\infty}f(x)=b$ & مستقيم مقارب \textbf{أفقي} معادلته $y=b$ بجوار $\pm\infty$.\\\hline
-$\Lm{\pm\infty}\big[f(x)-(ax+b)\big]=0$ & مستقيم مقارب \textbf{مائل} معادلته $y=ax+b$ بجوار $\pm\infty$.\\\hline
-$f(x)=ax+b+\theta(x)$ \ar{مع} $\Lm{\pm\infty}\theta(x)=0$ & مستقيم مقارب مائل معادلته $y=ax+b$.\\\hline
+\begin{tabular}{|p{0.56\textwidth}|p{0.36\textwidth}|}\hline
+\rowcolor{cSec!12}\textbf{التفسير الهندسي} & \textbf{النهاية}\\\hline
+مستقيم مقارب \textbf{عمودي} معادلته $x=a$. & $\Lm af(x)=\pm\infty$\\\hline
+مستقيم مقارب \textbf{أفقي} معادلته $y=b$ بجوار $\pm\infty$. & $\Lm{\pm\infty}f(x)=b$\\\hline
+مستقيم مقارب \textbf{مائل} معادلته $y=ax+b$ بجوار $\pm\infty$. & $\Lm{\pm\infty}\big[f(x)-(ax+b)\big]=0$\\\hline
+مستقيم مقارب مائل معادلته $y=ax+b$. & $f(x)=ax+b+\theta(x)$ \ar{مع} $\Lm{\pm\infty}\theta(x)=0$\\\hline
 \end{tabular}
 \end{center}
 \end{khassia}
+
+\begin{mithal}[تفسير بياني: المستقيم المقارب العمودي $x=a$]
+\RL{0.56}{%
+إذا كانت $\Lm{a}f(x)=+\infty$ أو $-\infty$ (من اليمين أو من اليسار) فإن المنحنى $(C_f)$ \textbf{يقترب} من المستقيم $x=a$ لما يقترب $x$ من $a$ ، ويصعد (أو ينزل) بلا حدود \textbf{دون أن يقطعه}.\par
+\textbf{مثال:} $f(x)=\dfrac1{x-1}$: \quad $\Lm{1^+}f(x)=+\infty$ و $\Lm{1^-}f(x)=-\infty$ ، فالمستقيم \bx{x=1} مقارب عمودي.}{0.4}{%
+\begin{GR}{-2.4}{4.4}{-3.4}{3.4}{0.45}
+\Ticks{-2,2,4}{-2,2}
+\draw[cThm,dashed,thick] (1,-3.4)--(1,3.4); \node[cThm,font=\scriptsize,right] at (1,3){$x=1$};
+\draw[cDef,very thick,domain=1.3:4.4,samples=80] plot(\x,{1/(\x-1)});
+\draw[cDef,very thick,domain=-2.4:0.7,samples=80] plot(\x,{1/(\x-1)});
+\draw[-{Stealth},cThm] (1.6,2.2)--(1.25,3.1); \draw[-{Stealth},cThm] (0.4,-2.2)--(0.75,-3.1);
+\end{GR}}
+\end{mithal}
+
+\begin{mithal}[تفسير بياني: المستقيم المقارب الأفقي $y=b$]
+\RL{0.56}{%
+إذا كانت $\Lm{+\infty}f(x)=b$ (أو عند $-\infty$) فإن النقطة $M$ من $(C_f)$ تقترب من المستقيم $y=b$ لما يكبر $x$: المسافة بين $M$ والمستقيم تؤول إلى $0$.\par
+\textbf{مثال:} $f(x)=\dfrac{2x^2}{x^2+1}$: \quad $\Lm{\pm\infty}f(x)=\Lm{\pm\infty}\dfrac{2x^2}{x^2}=2$ ، فالمستقيم \bx{y=2} مقارب أفقي بجوار $\pm\infty$.}{0.4}{%
+\begin{GR}{-5.4}{5.4}{-0.9}{3.2}{0.38}
+\Ticks{-4,-2,2,4}{1,2}
+\draw[cThm,dashed,thick] (-5.4,2)--(5.4,2); \node[cThm,font=\scriptsize,above] at (4,2){$y=2$};
+\draw[cDef,very thick,domain=-5.4:5.4,samples=120] plot(\x,{2*\x*\x/(\x*\x+1)});
+\end{GR}}
+\end{mithal}
+
+\begin{mithal}[تفسير بياني: المستقيم المقارب المائل $y=ax+b$]
+\RL{0.56}{%
+لتكن $M\big(x;f(x)\big)$ نقطة من $(C_f)$ و $N(x;ax+b)$ النقطة من $(\Delta)$ التي لها نفس الفاصلة. الطول $MN=\big|f(x)-(ax+b)\big|$.\par
+إذا كانت $\Lm{+\infty}\big[f(x)-(ax+b)\big]=0$ فإن $MN$ يؤول إلى $0$: المنحنى \textbf{يلتصق} بالمستقيم $(\Delta)$ لما يكبر $x$.\par
+\textbf{مثال:} $f(x)=x+1+\dfrac1{x-1}$: \quad $MN=\left|\dfrac1{x-1}\right|$ يؤول إلى $0$ ، فالمستقيم \bx{y=x+1} مقارب مائل.}{0.4}{%
+\begin{GR}{-2.4}{5.4}{-3.4}{7.4}{0.38}
+\Ticks{2,4}{2,4,6}
+\draw[gray,dashed] (1,-3.4)--(1,7.4);
+\draw[cRem!70!black,thick,domain=-2.4:5.4] plot(\x,{\x+1}); \node[cRem!70!black,font=\scriptsize] at (4.9,4.9){$(\Delta)$};
+\draw[cDef,very thick,domain=-2.4:0.82,samples=80] plot(\x,{\x+1+1/(\x-1)});
+\draw[cDef,very thick,domain=1.15:5.4,samples=80] plot(\x,{\x+1+1/(\x-1)});
+\draw[cThm,thick] (2.5,3.5)--(2.5,4.1667); \fill[cThm] (2.5,3.5) circle (1.5pt) node[right,font=\scriptsize]{$N$}; \fill[cThm] (2.5,4.1667) circle (1.5pt) node[left,font=\scriptsize]{$M$};
+\end{GR}}
+\end{mithal}
+
 \begin{mithal}
 $f(x)=\dfrac{2x+1}{x-1}$ على $\R-\{1\}$.
 \begin{itemize}
@@ -831,13 +889,13 @@ $f(x)-(x+1)=\dfrac1{x-1}$ و $\Lm{\pm\infty}\dfrac1{x-1}=0$: \bxt{$(\Delta):\ y=
 عدد المعطيات يساوي عدد الثوابت ، ونترجم كل معطى إلى معادلة:
 \begin{center}
 \renewcommand{\arraystretch}{1.6}
-\begin{tabular}{|p{0.58\textwidth}|p{0.34\textwidth}|}\hline
-\rowcolor{cSec!12}\textbf{المعطى} & \textbf{المعادلات}\\\hline
-$(C_f)$ يقبل عند $A(x_0;y_0)$ مماسًا موازيًا لمحور الفواصل. & $f(x_0)=y_0$ \ و \ $f'(x_0)=0$\\\hline
-$(C_f)$ يقبل عند النقطة ذات الفاصلة $x_0$ مماسًا معادلته $y=ax+b$. & $f'(x_0)=a$ \ و \ $f(x_0)=ax_0+b$\\\hline
-الدالة تقبل قيمة حدية محلية $y_0$ من أجل $x_0$. & $f(x_0)=y_0$ \ و \ $f'(x_0)=0$\\\hline
-المماس عند $A(x_A;y_A)$ يوازي $y=ax+b$. & $f(x_A)=y_A$ \ و \ $f'(x_A)=a$\\\hline
-$(C_f)$ يشمل النقطة $B(x_B;y_B)$. & $f(x_B)=y_B$\\\hline
+\begin{tabular}{|p{0.34\textwidth}|p{0.58\textwidth}|}\hline
+\rowcolor{cSec!12}\textbf{المعادلات} & \textbf{المعطى}\\\hline
+$f(x_0)=y_0$ \ و \ $f'(x_0)=0$ & $(C_f)$ يقبل عند $A(x_0;y_0)$ مماسًا موازيًا لمحور الفواصل.\\\hline
+$f'(x_0)=a$ \ و \ $f(x_0)=ax_0+b$ & $(C_f)$ يقبل عند النقطة ذات الفاصلة $x_0$ مماسًا معادلته $y=ax+b$.\\\hline
+$f(x_0)=y_0$ \ و \ $f'(x_0)=0$ & الدالة تقبل قيمة حدية محلية $y_0$ من أجل $x_0$.\\\hline
+$f(x_A)=y_A$ \ و \ $f'(x_A)=a$ & المماس عند $A(x_A;y_A)$ يوازي $y=ax+b$.\\\hline
+$f(x_B)=y_B$ & $(C_f)$ يشمل النقطة $B(x_B;y_B)$.\\\hline
 \end{tabular}
 \end{center}
 \begin{mithal}
@@ -913,15 +971,15 @@ $f(x)=x+\dfrac{4x}{x^2+1}$ على $\R$.
 \textbf{الخطوة 4: النتائج}
 \begin{center}
 \renewcommand{\arraystretch}{1.4}
-\begin{tabular}{|c|p{0.62\textwidth}|}\hline
-\rowcolor{cSec!12}\textbf{قيم $m$} & \textbf{عدد الحلول وإشارتها}\\\hline
-$m>2$ & لا توجد حلول\\\hline
-$m=2$ & حل وحيد موجب: $x=1$ (نقطة التماس $A$)\\\hline
-$0<m<2$ & حلان موجبان\\\hline
-$m=0$ & حل وحيد معدوم: $x=0$\\\hline
-$-2<m<0$ & حلان سالبان\\\hline
-$m=-2$ & حل وحيد سالب: $x=-1$ (نقطة التماس $B$)\\\hline
-$m<-2$ & لا توجد حلول\\\hline
+\begin{tabular}{|p{0.62\textwidth}|p{0.22\textwidth}|}\hline
+\rowcolor{cSec!12}\textbf{عدد الحلول وإشارتها} & \textbf{قيم $m$}\\\hline
+لا توجد حلول & $m>2$\\\hline
+حل وحيد موجب: $x=1$ (نقطة التماس $A$) & $m=2$\\\hline
+حلان موجبان & $0<m<2$\\\hline
+حل وحيد معدوم: $x=0$ & $m=0$\\\hline
+حلان سالبان & $-2<m<0$\\\hline
+حل وحيد سالب: $x=-1$ (نقطة التماس $B$) & $m=-2$\\\hline
+لا توجد حلول & $m<-2$\\\hline
 \end{tabular}
 \end{center}
 \textbf{تحقق جبري:} $f(x)=x+m\iff\dfrac{4x}{x^2+1}=m\iff mx^2-4x+m=0$. من أجل $m\neq0$: $\Delta=16-4m^2$ ، موجب تمامًا لما $-2<m<2$ ، ومعدوم لما $m=\pm2$ ، وسالب لما $|m|>2$. جداء الحلين $1>0$ ومجموعهما $\dfrac4m$ له إشارة $m$ \ok\par
