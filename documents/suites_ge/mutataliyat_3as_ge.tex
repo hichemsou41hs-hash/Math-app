@@ -1,0 +1,2246 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+% أعمدة جداول تُكتب خلاياها بالعربية في الاتجاه الصحيح
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+% تجنب عنوان يتيم في أسفل الصفحة
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+% ---------- الألوان ----------
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+% ---------- العناوين ----------
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+% ---------- الصناديق (تُرسم في سياق LTR ويُكتب محتواها بالعربية) ----------
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+% ---------- التمارين والحلول ----------
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+% رسومات TikZ تُوضع في سياق LTR
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+% ---------- رموز ----------
+% نقاط الحذف داخل الرياضيات (\dots يسبب خللاً في الاتجاه مع babel)
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% ---------- تمثيل مجال على مستقيم عددي ----------
+% \NLseg{a}{b}{[}{]}  مجال محدود
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+% \NLright{a}{[}  مجال نحو +∞
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+% \NLleft{b}{]}  مجال نحو −∞
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- أيقونات مواقع التواصل (مرسومة بـ TikZ، لا تحتاج أي حزمة) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% سطر مواقع التواصل أسفل كل صفحة
+% (يُكتب السطر بترتيب بصري من اليسار إلى اليمين: الأيقونة يمين كل اسم)
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+% ---------- رأس وتذييل الصفحة ----------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{يمين الرأس}{يسار الرأس}{يمين التذييل}{يسار التذييل}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% جدول تغيرات / إشارة (يُرسم في سياق LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% معلم بشبكة: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \def\xmn{#1}\def\xmx{#2}\def\ymn{#3}\def\ymx{#4}
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \draw[very thick,-{Stealth[length=1.6mm]}] (0,0)--(1,0) node[below,pos=.55]{$\vec i$};
+ \draw[very thick,-{Stealth[length=1.6mm]}] (0,0)--(0,1) node[left,pos=.55]{$\vec j$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\newcommand{\LW}[1]{{\color{cDef}#1}}
+\newtcbox{\bxtbox}{on line,coltext=cThm,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\newcommand{\Car}[1]{\left\{\begin{array}{l}#1\end{array}\right.}
+\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\newcommand{\hl}[1]{\ensuremath{\colorbox{cEx!20}{$\displaystyle #1$}}}
+\newcommand{\Lim}[1]{\displaystyle\lim_{x\to #1}}
+\newcommand{\Cf}{(C_f)}
+\newenvironment{qst}{\begin{enumerate}[label=\protect\circled{\arabic*},leftmargin=*]}{\end{enumerate}}
+\newcommand{\circled}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[circle,fill=cDef,text=white,inner sep=1.2pt,font=\scriptsize\bfseries](c){#1};}}
+% عمودان: \TwoCol{عرض اليسار}{محتوى اليسار}{عرض اليمين}{محتوى اليمين}  (آمن مع TikZ)
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\un}{(u_n)}\newcommand{\vn}{(v_n)}
+% برهان بالتراجع: \Rec{الخاصية P(n)}{التحقق من P(0)}{البرهان على الوراثة}
+\newcommand{\Rec}[3]{\textbf{برهان بالتراجع:} نسمي $P(n)$ الخاصية: «#1».
+\begin{itemize}
+\item \textbf{التحقق:} #2
+\item \textbf{الوراثة:} نفرض أن $P(n)$ صحيحة ونبرهن صحة $P(n+1)$: #3
+\item \textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع، $P(n)$ صحيحة من أجل كل عدد طبيعي $n$.
+\end{itemize}}
+\newcommand{\src}[1]{{\footnotesize\textbf{#1}}\par}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% أسئلة فرعية (أ) (ب) (جـ) كل سؤال في سطر
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\ccl}[1]{\par\textbf{الخلاصة:} #1}
+
+\SetHeader{\small\bfseries\color{cSec}المتتاليات العددية -- تمارين البكالوريا}{\small\color{cSec}السنة الثالثة ثانوي -- تسيير واقتصاد}
+\renewenvironment{tamrin}[1]{\stepcounter{exo}\gdef\curt{#1}\begin{BOX}{cSec}{#1}}{\end{BOX}}
+\newcommand{\curt}{}
+\renewenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل \curt}}{\end{arbox}\end{otherlanguage}}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\fontsize{28}{34}\selectfont\bfseries المتتاليات العددية}\\[8pt]
+{\color{cSec!80!black}\large ملخص شامل للدرس + 39 تمريناً من مواضيع البكالوريا مع الحلول المفصلة خطوة بخطوة}\\[5pt]
+{\color{cSec!80!black}\large السنة الثالثة ثانوي -- شعبة تسيير واقتصاد}
+\end{tcolorbox}
+\end{LTR}
+
+% =====================================================================
+%                     ملخص الدرس: المتتاليات العددية
+% =====================================================================
+\newcolumntype{M}[1]{>{\centering\arraybackslash}p{#1}}
+\section{تذكير بالمكتسبات القبلية}
+\subsection{الحساب}
+\begin{center}
+\renewcommand{\arraystretch}{2.2}
+\begin{tabular}{|M{0.44\textwidth}|M{0.44\textwidth}|}\hline
+$a\pm\dfrac{b}{c}=\dfrac{(a\times c)\pm b}{c}$ & $\dfrac{a}{b}\pm\dfrac{c}{d}=\dfrac{(a\times d)\pm(b\times c)}{b\times d}$\\\hline
+$(a+b)^2=a^2+2ab+b^2$ & $(a+b)^3=a^3+3a^2b+3ab^2+b^3$\\
+$(a-b)^2=a^2-2ab+b^2$ & $(a-b)^3=a^3-3a^2b+3ab^2-b^3$\\
+$a^2-b^2=(a-b)(a+b)$ & $a^3-b^3=(a-b)(a^2+ab+b^2)$\\
+ & $a^3+b^3=(a+b)(a^2-ab+b^2)$\\\hline
+\end{tabular}
+\end{center}
+
+\subsection{خواص القوى}
+من أجل كل عددين حقيقيين غير معدومين $a$ و $b$ ، ومن أجل كل عددين صحيحين $n$ و $m$:
+\begin{center}
+\renewcommand{\arraystretch}{2.2}
+\begin{tabular}{|M{0.44\textwidth}|M{0.44\textwidth}|}\hline
+$a^0=1$ & $a^{-n}=\dfrac{1}{a^n}$\\\hline
+$\big(a^n\big)^m=a^{n\times m}$ & $a^n\times b^n=(a\times b)^n$\\\hline
+$a^n\times a^m=a^{n+m}$ & $\dfrac{a^n}{a^m}=a^{n-m}$\\\hline
+\end{tabular}
+\end{center}
+
+\subsection{المقارنة والحصر}
+من أجل كل الأعداد الحقيقية $x$ ، $y$ و $a$:
+\begin{center}
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|p{0.44\textwidth}|p{0.44\textwidth}|}\hline
+إذا كان $x<y$ و $a>0$ فإن $ax<ay$. & إذا كان $x<y$ و $a<0$ فإن $ax>ay$ \ (يتغير اتجاه المتباينة).\\\hline
+إذا كان $x<y$ فإن $x+a<y+a$ و $x-a<y-a$. & إذا كان $0<x<y$ (أو $x<y<0$) فإن $\dfrac1x>\dfrac1y$.\\\hline
+\end{tabular}
+\end{center}
+
+% ---------------------------------------------------------------------
+\section{تعريف متتالية عددية}
+\begin{tarif}
+نسمي \textbf{متتالية عددية} $\LW{u}$ كل دالة معرفة على مجموعة الأعداد الطبيعية $\LW{\N}$ (أو على جزء منها) نحو مجموعة الأعداد الحقيقية $\LW{\R}$.
+\end{tarif}
+\begin{molahada}[ملاحظات]
+\begin{itemize}
+\item نرمز للمتتالية بأحد الرموز: $(u_n)$ ، $(v_n)$ ، $u$ ، $W$ ، $\ldots$
+\item $u_n$ هو \textbf{الحد العام} للمتتالية ، والعدد $n$ هو \textbf{دليله} (أو رتبته).
+\item إذا كانت $(u_n)$ معرفة على $\N$ فإن حدها الأول هو $u_0$ ، أما إذا كانت معرفة على $\N^*$ فإن حدها الأول هو $u_1$.
+\end{itemize}
+\end{molahada}
+
+% ---------------------------------------------------------------------
+\section{طرق توليد متتالية}
+\begin{center}
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|M{0.44\textwidth}|M{0.44\textwidth}|}\hline
+\textbf{متتالية معرفة بعلاقة تراجعية} & \textbf{متتالية معرفة بحدها العام}\\
+\bx{u_{n+1}=f(u_n)} \ مع إعطاء الحد الأول & \bx{u_n=f(n)}\\\hline
+مثال: $u_0=1$ و $u_{n+1}=2u_n+n+3$ & مثال: $u_n=\dfrac52n-\dfrac13$\\\hline
+\end{tabular}
+\end{center}
+
+\begin{mithal}[مثال 1: متتالية معرفة بحدها العام]
+لتكن $(u_n)$ المتتالية المعرفة على $\N$ كما يلي: من أجل كل عدد طبيعي $n$: \ $u_n=\dfrac23n+2$.
+\begin{enumerate}
+\item أحسب الحدود: $u_0$ ، $u_3$ و $u_{2n}$.
+\item عيّن قيمة الحد الذي رتبته $10$.
+\end{enumerate}
+\textbf{الحل:}
+\begin{enumerate}
+\item نعوّض $n$ بالقيمة المطلوبة في عبارة الحد العام:
+\begin{align*}
+u_0&=\frac23\times0+2=2\\
+u_3&=\frac23\times3+2=2+2=4\\
+u_{2n}&=\frac23\times(2n)+2=\frac{4n}{3}+2=\frac{4n+6}{3}
+\end{align*}
+\item الحد الأول هو $u_0$ (رتبته $1$) ، والحد الثاني $u_1$ (رتبته $2$) ، $\ldots$ \ إذن الحد ذو الرتبة $p$ هو $u_{p-1}$.\\
+الحد الذي رتبته $10$ هو $u_9$: \ $u_9=\dfrac23\times9+2=6+2=\bx{8}$.
+\end{enumerate}
+\end{mithal}
+
+\begin{mithal}[مثال 2: متتالية معرفة بعلاقة تراجعية]
+نعتبر المتتالية $(u_n)$ المعرفة على $\N$ بـ: $u_0=\dfrac12$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac25u_n+\dfrac15$.
+\begin{itemize}
+\item أحسب الحدود $u_1$ ، $u_2$ و $u_3$.
+\end{itemize}
+\textbf{الحل:} نحسب كل حد انطلاقاً من الحد الذي قبله:
+\begin{align*}
+u_1&=\frac25u_0+\frac15=\frac25\times\frac12+\frac15=\frac15+\frac15=\frac25\\
+u_2&=\frac25u_1+\frac15=\frac25\times\frac25+\frac15=\frac{4}{25}+\frac{5}{25}=\frac{9}{25}\\
+u_3&=\frac25u_2+\frac15=\frac25\times\frac{9}{25}+\frac15=\frac{18}{125}+\frac{25}{125}=\frac{43}{125}
+\end{align*}
+\end{mithal}
+\begin{molahada}
+يمكن حساب الحدود باستعمال الآلة الحاسبة (Casio) ، ويُشرح ذلك في القسم.
+\end{molahada}
+
+% ---------------------------------------------------------------------
+\section{دراسة اتجاه تغير متتالية عددية}
+لدراسة اتجاه تغير متتالية عددية $(u_n)$ نتبع إحدى الطريقتين التاليتين:
+\begin{tariqa}[الطريقة الأولى: إشارة الفرق $u_{n+1}-u_n$]
+ندرس إشارة الفرق $u_{n+1}-u_n$ من أجل كل عدد طبيعي $n$ ، ونميز ثلاث حالات:
+\begin{itemize}
+\item إذا كان $u_{n+1}-u_n>0$ فإن المتتالية $(u_n)$ \textbf{متزايدة تماماً}.
+\item إذا كان $u_{n+1}-u_n<0$ فإن المتتالية $(u_n)$ \textbf{متناقصة تماماً}.
+\item إذا كان $u_{n+1}-u_n=0$ فإن المتتالية $(u_n)$ \textbf{ثابتة}.
+\end{itemize}
+\end{tariqa}
+
+\begin{mithal}[مثال 1]
+$(u_n)$ متتالية عددية معرفة على $\N$ كما يلي: من أجل كل عدد طبيعي $n$: \ $u_n=-2n+3$.
+\begin{itemize}
+\item أدرس اتجاه تغير المتتالية $(u_n)$.
+\end{itemize}
+\textbf{الحل:} من أجل كل عدد طبيعي $n$ لدينا:
+\begin{align*}
+u_{n+1}-u_n&=\big[-2(n+1)+3\big]-\big(-2n+3\big)\\
+&=-2n-2+3+2n-3\\
+&=-2<0
+\end{align*}
+إذن المتتالية $(u_n)$ \textbf{متناقصة تماماً} على $\N$.
+\end{mithal}
+
+\begin{mithal}[مثال 2]
+$(v_n)$ متتالية عددية معرفة على $\N$ كما يلي: من أجل كل عدد طبيعي $n$: \ $v_n=2\Big(\dfrac13\Big)^n-1$.
+\begin{itemize}
+\item أدرس اتجاه تغير المتتالية $(v_n)$.
+\end{itemize}
+\textbf{الحل:} من أجل كل عدد طبيعي $n$ لدينا:
+\begin{align*}
+v_{n+1}-v_n&=\Big[2\Big(\frac13\Big)^{n+1}-1\Big]-\Big[2\Big(\frac13\Big)^n-1\Big]
+=2\Big(\frac13\Big)^n\times\frac13-1-2\Big(\frac13\Big)^n+1\\
+&=2\Big(\frac13\Big)^n\Big[\frac13-1\Big]\qquad(\text{\ar{نخرج}}\ 2\big(\tfrac13\big)^n\ \text{\ar{عاملاً مشتركاً}})\\
+&=2\Big(\frac13\Big)^n\times\Big(-\frac23\Big)=-\frac43\Big(\frac13\Big)^n
+\end{align*}
+وبما أن $\Big(\dfrac13\Big)^n>0$ فإن $v_{n+1}-v_n<0$ ، إذن المتتالية $(v_n)$ \textbf{متناقصة تماماً} على $\N$.
+\end{mithal}
+
+\begin{mithal}[مثال 3]
+$(u_n)$ متتالية عددية معرفة على $\N$ بـ: $u_0=-1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac13u_n+\dfrac43$.\\
+نقبل أنه من أجل كل عدد طبيعي $n$: \ $u_n\le2$.
+\begin{itemize}
+\item أدرس اتجاه تغير المتتالية $(u_n)$.
+\end{itemize}
+\textbf{الحل:} من أجل كل عدد طبيعي $n$ لدينا:
+\[u_{n+1}-u_n=\frac13u_n+\frac43-u_n=\Big(\frac13-1\Big)u_n+\frac43=-\frac23u_n+\frac43.\]
+ولدينا من أجل كل عدد طبيعي $n$: $u_n\le2$ ، نضرب الطرفين في العدد السالب $-\dfrac23$ فيتغير اتجاه المتباينة:
+\[-\frac23u_n\ge-\frac23\times2\quad\text{\ar{أي}}\quad-\frac23u_n\ge-\frac43\quad\text{\ar{ومنه}}\quad-\frac23u_n+\frac43\ge-\frac43+\frac43=0.\]
+إذن من أجل كل عدد طبيعي $n$: \ $u_{n+1}-u_n\ge0$ ، ومنه المتتالية $(u_n)$ \textbf{متزايدة} على $\N$.
+\end{mithal}
+\begin{molahada}[تنبيه]
+عند ضرب طرفي متباينة في عدد \textbf{سالب} يجب قلب اتجاهها. في المثال 3 أعلاه: من $u_n\le2$ نحصل على $-\dfrac23u_n\ge-\dfrac43$ (وليس $\le$) ، لذلك المتتالية متزايدة وليست متناقصة.
+\end{molahada}
+
+\begin{tariqa}[الطريقة الثانية: مقارنة النسبة $\dfrac{u_{n+1}}{u_n}$ بالعدد $1$]
+إذا كانت حدود المتتالية $(u_n)$ \textbf{موجبة تماماً} ، نحسب النسبة $\dfrac{u_{n+1}}{u_n}$ ونميز ثلاث حالات:
+\begin{itemize}
+\item إذا كان $\dfrac{u_{n+1}}{u_n}>1$ فإن المتتالية $(u_n)$ متزايدة تماماً.
+\item إذا كان $\dfrac{u_{n+1}}{u_n}<1$ فإن المتتالية $(u_n)$ متناقصة تماماً.
+\item إذا كان $\dfrac{u_{n+1}}{u_n}=1$ فإن المتتالية $(u_n)$ ثابتة.
+\end{itemize}
+\end{tariqa}
+
+\begin{tarif}[المتتالية الثابتة]
+نقول إن $\LW{(u_n)}$ متتالية \textbf{ثابتة} إذا كان من أجل كل عدد طبيعي $\LW{n}$: \ \bx{u_{n+1}=u_n=u_0} \ (كل الحدود متساوية وتساوي الحد الأول).
+\end{tarif}
+\begin{mithal}
+نعتبر المتتالية العددية $(u_n)$ المعرفة على $\N$ بـ: $u_0=\alpha$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=2u_n-1$.
+\begin{itemize}
+\item عيّن قيمة العدد الحقيقي $\alpha$ حتى تكون المتتالية $(u_n)$ ثابتة.
+\end{itemize}
+\textbf{الحل:} $(u_n)$ ثابتة معناه $u_{n+1}=u_n=u_0=\alpha$. نعوّض $u_{n+1}$ و $u_n$ بـ $\alpha$ في العلاقة التراجعية:
+\[\alpha=2\alpha-1\quad\Longleftrightarrow\quad\alpha-2\alpha=-1\quad\Longleftrightarrow\quad-\alpha=-1\quad\Longleftrightarrow\quad\bx{\alpha=1}.\]
+\end{mithal}
+
+% ---------------------------------------------------------------------
+\section{المتتالية الحسابية والمتتالية الهندسية}
+\subsection{المتتالية الحسابية}
+\begin{tarif}
+نقول إن $\LW{(u_n)}$ متتالية \textbf{حسابية} إذا وُجد عدد حقيقي $\LW{r}$ (يسمى \textbf{الأساس}) بحيث من أجل كل عدد طبيعي $\LW{n}$: \ \bx{u_{n+1}=u_n+r}.\\
+\textbf{للبرهان أن $\LW{(u_n)}$ حسابية:} نحسب الفرق $\LW{u_{n+1}-u_n}$ فنجد عدداً حقيقياً ثابتاً (لا يتعلق بـ $\LW{n}$): \ \bx{u_{n+1}-u_n=r}.
+\end{tarif}
+\begin{mithal}
+نعتبر المتتالية العددية $(u_n)$ المعرفة على $\N$ بـ: $u_0=1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac{u_n-4}{u_n+5}$.\\
+ونضع من أجل كل عدد طبيعي $n$: \ $v_n=\dfrac{1}{u_n+2}$ \ (نقبل أن $u_n+2\ne0$).
+\begin{itemize}
+\item برهن أن المتتالية $(v_n)$ حسابية.
+\end{itemize}
+\textbf{الحل:} نحسب أولاً $u_{n+1}+2$ بتوحيد المقامات:
+\[u_{n+1}+2=\frac{u_n-4}{u_n+5}+\frac{2(u_n+5)}{u_n+5}=\frac{u_n-4+2u_n+10}{u_n+5}=\frac{3u_n+6}{u_n+5}=\frac{3(u_n+2)}{u_n+5}.\]
+ومنه من أجل كل عدد طبيعي $n$:
+\begin{align*}
+v_{n+1}-v_n&=\frac{1}{u_{n+1}+2}-\frac{1}{u_n+2}=\frac{u_n+5}{3(u_n+2)}-\frac{3}{3(u_n+2)}\\
+&=\frac{u_n+5-3}{3(u_n+2)}=\frac{u_n+2}{3(u_n+2)}=\frac13
+\end{align*}
+إذن $(v_n)$ متتالية حسابية أساسها \bx{r=\dfrac13} وحدها الأول $v_0=\dfrac{1}{u_0+2}=\dfrac13$.
+\end{mithal}
+
+\begin{khassia}[عبارة الحد العام لمتتالية حسابية]
+إذا كانت $\LW{(u_n)}$ حسابية أساسها $\LW{r}$ فإنه من أجل كل عددين طبيعيين $\LW{n}$ و $\LW{p}$:
+\[\bx{u_n=u_p+(n-p)\,r}\qquad\text{\ar{وبصفة خاصة (الحد الأول $\LW{u_0}$):}}\qquad\bx{u_n=u_0+n\,r}\]
+تستعمل هذه العلاقة لحساب حد معين ، أو لحساب الأساس إذا عُلم حدان: \ \bx{r=\dfrac{u_p-u_q}{p-q}}.
+\end{khassia}
+\begin{mithal}
+$(u_n)$ متتالية حسابية حدها الأول $u_0=2$ ، وتحقق: $u_2+u_5=25$.
+\begin{enumerate}
+\item عيّن أساس المتتالية $(u_n)$.
+\item أكتب عبارة الحد العام $u_n$ بدلالة $n$.
+\end{enumerate}
+\textbf{الحل:}
+\begin{enumerate}
+\item لدينا $u_2=u_0+2r$ و $u_5=u_0+5r$ ، ومنه:
+\[u_2+u_5=2u_0+7r=4+7r.\]
+لكن $u_2+u_5=25$ ، ومنه $4+7r=25$ أي $7r=21$ ، إذن \bx{r=3}.
+\item $u_n=u_0+nr$ ، أي من أجل كل عدد طبيعي $n$: \ \bx{u_n=2+3n}.
+\end{enumerate}
+\end{mithal}
+
+\begin{khassia}[الوسط الحسابي]
+إذا كانت $\LW{a}$ ، $\LW{b}$ و $\LW{c}$ ثلاثة حدود متتابعة من متتالية حسابية فإن: \ \bx{2b=a+c} \ أي \bx{3b=a+b+c}.
+\end{khassia}
+\begin{mithal}
+$(u_n)$ متتالية حسابية معرفة على $\N$ أساسها $r$ ، حيث:
+$\begin{cases}u_2+u_3+u_4=21 & (1)\\ u_4+u_5=20 & (2)\end{cases}$
+\begin{enumerate}
+\item[(أ)] بيّن أن $u_3=7$ و $r=2$ ، ثم استنتج قيمة $u_0$.
+\item[(ب)] أكتب $u_n$ بدلالة $n$.
+\end{enumerate}
+\textbf{الحل:}
+\begin{enumerate}
+\item[(أ)] حسب خاصية الوسط الحسابي: $u_2+u_4=2u_3$ ، فتصبح المعادلة $(1)$: $2u_3+u_3=21$ أي $3u_3=21$ ، إذن \bx{u_3=7}.\\
+من جهة أخرى: $u_4=u_3+r=7+r$ و $u_5=u_3+2r=7+2r$. بالتعويض في $(2)$:
+\[(7+r)+(7+2r)=20\ \Longleftrightarrow\ 14+3r=20\ \Longleftrightarrow\ 3r=6\ \Longleftrightarrow\ \bx{r=2}.\]
+ونعلم أن $u_3=u_0+3r$ ، ومنه: $u_0=u_3-3r=7-3\times2=\bx{1}$.
+\item[(ب)] $u_n=u_0+nr$ ، إذن من أجل كل عدد طبيعي $n$: \ \bx{u_n=1+2n}.
+\end{enumerate}
+\end{mithal}
+
+\begin{khassia}[مجموع حدود متتابعة من متتالية حسابية]
+\[\bx{S=\frac{\text{\ar{عدد الحدود}}}{2}\times\big(\text{\ar{الحد الأول}}+\text{\ar{الحد الأخير}}\big)}\]
+حيث: \ \textbf{عدد الحدود} $\LW{=}$ دليل الحد الأخير $\LW{-}$ دليل الحد الأول $\LW{+1}$.\\
+مثلاً: $\LW{S_n=u_0+u_1+\cdots+u_n=\dfrac{n+1}{2}\big(u_0+u_n\big)}$.
+\end{khassia}
+
+\begin{khassia}[اتجاه تغير متتالية حسابية]
+نستنتج اتجاه تغير متتالية حسابية $\LW{(u_n)}$ حسب إشارة أساسها $\LW{r}$:
+\begin{center}
+\renewcommand{\arraystretch}{1.8}
+\begin{tabular}{|M{0.27\textwidth}|M{0.27\textwidth}|M{0.27\textwidth}|}\hline
+\hl{r>0} & \hl{r<0} & \hl{r=0}\\\hline
+$\LW{(u_n)}$ متزايدة تماماً & $\LW{(u_n)}$ متناقصة تماماً & $\LW{(u_n)}$ ثابتة\\\hline
+\end{tabular}
+\end{center}
+\end{khassia}
+
+% -------------------------------
+\subsection{المتتالية الهندسية}
+\begin{tarif}
+نقول إن $\LW{(v_n)}$ متتالية \textbf{هندسية} إذا وُجد عدد حقيقي $\LW{q}$ (يسمى \textbf{الأساس}) بحيث من أجل كل عدد طبيعي $\LW{n}$: \ \bx{v_{n+1}=q\times v_n}.\\
+\textbf{للبرهان أن $\LW{(v_n)}$ هندسية:} نحسب عبارة $\LW{v_{n+1}}$ فنجدها $\LW{v_n}$ مضروبة في عدد ثابت $\LW{q}$ ، أو (إذا كانت حدودها غير معدومة) نجد $\LW{\dfrac{v_{n+1}}{v_n}=q}$.
+\end{tarif}
+\begin{mithal}
+نعتبر المتتالية العددية $(u_n)$ المعرفة على $\N$ بـ: $u_0=-3$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=2u_n+3$.\\
+ونضع من أجل كل عدد طبيعي $n$: \ $v_n=u_n+3$.
+\begin{itemize}
+\item برهن أن المتتالية $(v_n)$ هندسية.
+\end{itemize}
+\textbf{الحل:} لدينا $v_n=u_n+3$ ومنه $u_n=v_n-3$. من أجل كل عدد طبيعي $n$:
+\begin{align*}
+v_{n+1}&=u_{n+1}+3=(2u_n+3)+3=2u_n+6\\
+&=2(v_n-3)+6=2v_n-6+6=2v_n
+\end{align*}
+إذن $(v_n)$ متتالية هندسية أساسها \bx{q=2} وحدها الأول $v_0=u_0+3=-3+3=0$.
+\end{mithal}
+
+\begin{khassia}[عبارة الحد العام لمتتالية هندسية]
+إذا كانت $\LW{(v_n)}$ هندسية أساسها $\LW{q}$ فإنه من أجل كل عددين طبيعيين $\LW{n}$ و $\LW{p}$:
+\[\bx{v_n=v_p\times q^{\,n-p}}\qquad\text{\ar{وبصفة خاصة (الحد الأول $\LW{v_0}$):}}\qquad\bx{v_n=v_0\times q^{\,n}}\]
+وتستعمل في حساب الأساس إذا عُلم حدان: \ \bx{q^{\,n-p}=\dfrac{v_n}{v_p}}.
+\end{khassia}
+\begin{mithal}
+$(u_n)$ متتالية هندسية أساسها $3$ وحدها الأول $u_0$ بحيث: $u_0+u_3=28$.
+\begin{itemize}
+\item أحسب $u_0$ ، ثم أكتب $u_n$ بدلالة $n$.
+\end{itemize}
+\textbf{الحل:} لدينا $q=3$ و $u_3=u_0\times q^3=27u_0$. ومنه:
+\[u_0+u_3=28\ \Longleftrightarrow\ u_0+27u_0=28\ \Longleftrightarrow\ 28u_0=28\ \Longleftrightarrow\ \bx{u_0=1}.\]
+إذن من أجل كل عدد طبيعي $n$: \ $u_n=u_0\times q^n=\bx{3^n}$.
+\end{mithal}
+
+\begin{khassia}[الوسط الهندسي]
+إذا كانت $\LW{a}$ ، $\LW{b}$ و $\LW{c}$ ثلاثة حدود متتابعة من متتالية هندسية فإن: \ \bx{b^2=a\times c} \ أي \bx{b^3=a\times b\times c}.
+\end{khassia}
+\begin{mithal}
+لتكن $(v_n)$ متتالية هندسية حدودها موجبة ، معرفة على $\N$ بـ: $v_0=2$ و $v_2=18$.
+\begin{itemize}
+\item أحسب $v_1$ ، ثم استنتج أساس المتتالية $(v_n)$.
+\end{itemize}
+\textbf{الحل:} بتطبيق خاصية الوسط الهندسي: $v_1^2=v_0\times v_2=2\times18=36$ ، ومنه $v_1=6$ أو $v_1=-6$.\\
+وبما أن حدود المتتالية موجبة فإن \bx{v_1=6} ($v_1=-6$ مرفوض).\\
+الأساس: $q=\dfrac{v_1}{v_0}=\dfrac62=\bx{3}$.
+\end{mithal}
+
+\begin{khassia}[مجموع حدود متتابعة من متتالية هندسية أساسها $q\ne1$]
+\[\bx{S=\text{\ar{الحد الأول}}\times\frac{1-q^{\,\text{\ar{عدد الحدود}}}}{1-q}}\]
+حيث: \ \textbf{عدد الحدود} $\LW{=}$ دليل الحد الأخير $\LW{-}$ دليل الحد الأول $\LW{+1}$.\\
+مثلاً: $\LW{S_n=v_0+v_1+\cdots+v_n=v_0\times\dfrac{1-q^{\,n+1}}{1-q}}$.
+\end{khassia}
+
+\begin{khassia}[اتجاه تغير متتالية هندسية $v_n=v_0\,q^n$]
+نستنتج اتجاه تغير متتالية هندسية حسب إشارة حدها الأول $\LW{v_0}$ وقيمة أساسها $\LW{q}$:
+\begin{center}
+\renewcommand{\arraystretch}{1.8}
+\begin{tabular}{|M{0.16\textwidth}|M{0.22\textwidth}|M{0.18\textwidth}|M{0.22\textwidth}|}\hline
+ & \hl{0<q<1} & \hl{q=1} & \hl{q>1}\\\hline
+\hl{v_0>0} & متناقصة تماماً & ثابتة & متزايدة تماماً\\\hline
+\hl{v_0<0} & متزايدة تماماً & ثابتة & متناقصة تماماً\\\hline
+\end{tabular}
+\end{center}
+\begin{itemize}
+\item إذا كان $\LW{q<0}$ فإن المتتالية الهندسية $\LW{(v_n)}$ (بحد أول غير معدوم) \textbf{ليست رتيبة} (إشارات حدودها متناوبة).
+\item إذا كان $\LW{q=0}$ فإن المتتالية $\LW{(v_n)}$ ثابتة (معدومة) ابتداءً من الحد $\LW{v_1}$.
+\end{itemize}
+\end{khassia}
+
+\begin{khassia}[نهاية المتتالية $(q^n)$]
+\begin{itemize}
+\item إذا كان $\LW{-1<q<1}$ فإن \bx{\lim_{n\to+\infty}q^n=0}.
+\item إذا كان $\LW{q=1}$ فإن \bx{\lim_{n\to+\infty}q^n=1}.
+\item إذا كان $\LW{q>1}$ فإن \bx{\lim_{n\to+\infty}q^n=+\infty}.
+\item إذا كان $\LW{q\le-1}$ فإن المتتالية $\LW{(q^n)}$ ليس لها نهاية.
+\end{itemize}
+\end{khassia}
+
+% ---------------------------------------------------------------------
+\section{البرهان بالتراجع}
+\begin{tariqa}[مبدأ الاستدلال بالتراجع]
+لتكن $P(n)$ خاصية متعلقة بعدد طبيعي $n$ ، و $n_0$ عدداً طبيعياً.
+للبرهان على صحة الخاصية $P(n)$ من أجل كل عدد طبيعي $n\ge n_0$ يكفي:
+\begin{enumerate}
+\item \textbf{التحقق:} نتأكد من صحة الخاصية من أجل $n_0$ أي صحة $P(n_0)$.
+\item \textbf{الوراثة:} نفرض أن الخاصية صحيحة من أجل عدد طبيعي كيفي $n\ge n_0$ أي $P(n)$ صحيحة ، ونبرهن صحة الخاصية من أجل $n+1$ أي $P(n+1)$.
+\item \textbf{الخلاصة:} من أجل كل عدد طبيعي $n$ أكبر من أو يساوي $n_0$ ، $P(n)$ صحيحة.
+\end{enumerate}
+\begin{center}
+\begin{LTR}
+\begin{tikzpicture}[font=\small]
+\draw[-{Stealth[length=2.5mm]},thick] (0,0)--(11,0);
+\foreach \x/\l in {1.5/{$P(n_0)$},5.2/{$P(n)$},8.8/{$P(n+1)$}}{
+ \fill (\x,0) circle (2pt);
+ \node[above=3pt] at (\x,0){\l};
+ \node[below=3pt,font=\footnotesize] at (\x,0){\ar{صحيحة}};}
+\draw[-{Stealth[length=2mm]},cThm,thick] (5.2,0.8) to[bend left=40] node[above,font=\footnotesize]{\ar{فإن}} (8.8,0.8);
+\node[cThm,font=\footnotesize,left] at (5.0,0.95){\ar{إذا كانت}};
+\node[cDef,font=\footnotesize\bfseries] at (1.5,-1){\ar{المرحلة 1: التحقق}};
+\node[cDef,font=\footnotesize\bfseries] at (7,-1){\ar{المرحلة 2: الوراثة}};
+\end{tikzpicture}
+\end{LTR}
+\end{center}
+\end{tariqa}
+
+\begin{mithal}
+لتكن $(u_n)$ المتتالية المعرفة على $\N$ بـ: $u_0=1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac{3u_n+2}{4}$.
+\begin{itemize}
+\item برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: \ $u_n<2$.
+\end{itemize}
+\textbf{الحل:} لتكن $P(n)$ الخاصية: «$u_n<2$».
+\begin{itemize}
+\item \textbf{التحقق:} من أجل $n=0$: $u_0=1<2$ ، ومنه $P(0)$ صحيحة.
+\item \textbf{الوراثة:} نفرض أن $P(n)$ صحيحة من أجل عدد طبيعي كيفي $n$ (أي $u_n<2$) ونبرهن صحة $P(n+1)$ (أي $u_{n+1}<2$):\\
+لدينا $u_n<2$ ، بضرب الطرفين في العدد الموجب $3$: $3u_n<6$ ، وبإضافة العدد $2$: $3u_n+2<8$ ، وبضرب الطرفين في العدد الموجب $\dfrac14$: $\dfrac{3u_n+2}{4}<2$ ، أي $u_{n+1}<2$ ، ومنه $P(n+1)$ صحيحة.
+\item \textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع فإن $P(n)$ صحيحة من أجل كل عدد طبيعي $n$ ، أي $u_n<2$.
+\end{itemize}
+\end{mithal}
+
+% ---------------------------------------------------------------------
+\section{المتتالية المحدودة من الأعلى ، المحدودة من الأسفل والمحدودة}
+\begin{tarif}
+لتكن $\LW{(u_n)}$ متتالية عددية معرفة على $\LW{\N}$.
+\begin{itemize}
+\item نقول إن $\LW{(u_n)}$ \textbf{محدودة من الأعلى} إذا وُجد عدد حقيقي $\LW{A}$ بحيث من أجل كل عدد طبيعي $\LW{n}$: \ \bx{u_n\le A}.
+\item نقول إن $\LW{(u_n)}$ \textbf{محدودة من الأسفل} إذا وُجد عدد حقيقي $\LW{B}$ بحيث من أجل كل عدد طبيعي $\LW{n}$: \ \bx{u_n\ge B}.
+\item نقول إن $\LW{(u_n)}$ \textbf{محدودة} إذا كانت محدودة من الأعلى ومحدودة من الأسفل.
+\end{itemize}
+\end{tarif}
+
+% ---------------------------------------------------------------------
+\section{المتتالية المتقاربة}
+\begin{tarif}
+نقول إن المتتالية $\LW{(u_n)}$ \textbf{متقاربة} إذا كانت لها نهاية منتهية: \ \bx{\lim_{n\to+\infty}u_n=\ell} \ حيث $\LW{\ell}$ عدد حقيقي.
+وإذا لم تكن متقاربة نقول إنها \textbf{متباعدة}.
+\end{tarif}
+\begin{khassia}[مبرهنة التقارب]
+\begin{itemize}
+\item كل متتالية \textbf{متزايدة} ($\LW{u_{n+1}-u_n\ge0}$) و\textbf{محدودة من الأعلى} ($\LW{u_n\le a}$) هي متتالية متقاربة.
+\item كل متتالية \textbf{متناقصة} ($\LW{u_{n+1}-u_n\le0}$) و\textbf{محدودة من الأسفل} ($\LW{u_n\ge a}$) هي متتالية متقاربة.
+\end{itemize}
+\end{khassia}
+
+% ---------------------------------------------------------------------
+\section{ملاحظات مهمة: المتتاليات في المسائل الاقتصادية}
+لتكن $(u_n)$ متتالية معرفة في مسألة اقتصادية ، حيث $u_n$ هو المقدار القديم و $u_{n+1}$ هو المقدار الجديد (بعد سنة ، شهر ، $\ldots$).
+\begin{khassia}[الزيادة والتخفيض بنسبة مئوية]
+\begin{itemize}
+\item \textbf{الزيادة بـ $\LW{p\%}$}: المقدار الجديد هو المقدار القديم مضروباً في العدد $\LW{\Big(1+\dfrac{p}{100}\Big)}$ ، أي:
+\[\bx{u_{n+1}=\Big(1+\frac{p}{100}\Big)\times u_n}\]
+\item \textbf{التخفيض بـ $\LW{p\%}$}: المقدار الجديد هو المقدار القديم مضروباً في العدد $\LW{\Big(1-\dfrac{p}{100}\Big)}$ ، أي:
+\[\bx{u_{n+1}=\Big(1-\frac{p}{100}\Big)\times u_n}\]
+\item \textbf{الزيادة بـ $\LW{p\%}$ ثم إضافة أو طرح مقدار ثابت $\LW{a}$}: نضرب المقدار القديم في $\LW{\Big(1+\dfrac{p}{100}\Big)}$ ثم نضيف أو نطرح العدد $\LW{a}$ حسب سياق التمرين ، أي:
+\[\bx{u_{n+1}=\Big(1+\frac{p}{100}\Big)\times u_n\pm a}\]
+\item \textbf{التخفيض بـ $\LW{p\%}$ ثم إضافة أو طرح مقدار ثابت $\LW{a}$}: نضرب المقدار القديم في $\LW{\Big(1-\dfrac{p}{100}\Big)}$ ثم نضيف أو نطرح العدد $\LW{a}$ حسب سياق التمرين ، أي:
+\[\bx{u_{n+1}=\Big(1-\frac{p}{100}\Big)\times u_n\pm a}\]
+\end{itemize}
+\end{khassia}
+\begin{mithal}
+\begin{itemize}
+\item زيادة بـ $5\%$: \ $u_{n+1}=1{,}05\,u_n$.
+\item تخفيض بـ $20\%$: \ $u_{n+1}=0{,}8\,u_n$.
+\item ينخفض عدد السكان بـ $4\%$ سنوياً ويستقر $500$ ساكن جديد: \ $u_{n+1}=0{,}96\,u_n+500$.
+\end{itemize}
+\end{mithal}
+
+% ---------------------------------------------------------------------
+\section{مخطط حل التمرين النموذجي في البكالوريا}
+\begin{tariqa}[التمرين النموذجي: $u_{n+1}=a\,u_n+b$ \ مع $a\ne1$]
+\begin{enumerate}
+\item \textbf{النقطة الصامدة:} نحل المعادلة $\ell=a\ell+b$ فنجد $\ell=\dfrac{b}{1-a}$ ، وهي غالباً العدد الذي يُطلب البرهان بالتراجع على أن $u_n\le\ell$ أو $u_n\ge\ell$.
+\item \textbf{الرتابة:} ندرس إشارة الفرق: $u_{n+1}-u_n=(a-1)u_n+b=(a-1)(u_n-\ell)$.
+\item \textbf{التقارب:} متتالية متزايدة ومحدودة من الأعلى (أو متناقصة ومحدودة من الأسفل) هي متتالية متقاربة.
+\item \textbf{المتتالية المساعدة:} $v_n=u_n-\ell$ متتالية هندسية أساسها $a$ ، لأن: $v_{n+1}=a u_n+b-\ell=a(u_n-\ell)=a\,v_n$.
+\item \textbf{العبارة بدلالة $n$:} $v_n=v_0\times a^n$ ، ثم $u_n=v_n+\ell$.
+\item \textbf{النهاية:} إذا كان $-1<a<1$ فإن $\displaystyle\lim_{n\to+\infty}a^n=0$ ومنه $\displaystyle\lim_{n\to+\infty}u_n=\ell$.
+\item \textbf{المجموع:} $u_0+u_1+\cdots+u_n=(v_0+v_1+\cdots+v_n)+(n+1)\,\ell$.
+\end{enumerate}
+\end{tariqa}
+
+\section{التمارين والحلول}
+% ================================================= 1
+\begin{tamrin}{تمرين من بكالوريا 2008 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=\alpha$ حيث $\alpha$ عدد حقيقي ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac23u_n-\dfrac89$.
+\begin{enumerate}
+\item برهن بالتراجع أنه في حالة $\alpha=-\dfrac83$ تكون المتتالية $(u_n)$ ثابتة.
+\item في كل ما يلي نضع $\alpha=2$ ، ونعرّف المتتالية $(v_n)$ كما يلي: من أجل كل عدد طبيعي $n$: \ $v_n=u_n+\dfrac83$.
+\begin{sq}
+\qa أحسب $u_1$ و $u_2$.
+\qb أثبت أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها $q$ وحدها الأول $v_0$.
+\qc أكتب عبارة $v_n$ ثم $u_n$ بدلالة $n$.
+\qd أحسب $\limn u_n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} نفرض $\alpha=-\dfrac83$ ، ونبرهن أنه من أجل كل عدد طبيعي $n$: $u_n=-\dfrac83$.
+\Rec{$u_n=-\dfrac83$}{من أجل $n=0$: $u_0=\alpha=-\dfrac83$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n=-\dfrac83$ ، ومنه:
+\[u_{n+1}=\frac23u_n-\frac89=\frac23\times\Big(-\frac83\Big)-\frac89=-\frac{16}{9}-\frac89=-\frac{24}{9}=-\frac83.\]
+إذن $P(n+1)$ صحيحة.}
+ومنه من أجل كل عدد طبيعي $n$: $u_n=u_0=-\dfrac83$ ، أي المتتالية $(u_n)$ \textbf{ثابتة}.
+
+\textbf{2.} $\alpha=2$ أي $u_0=2$.
+\pa نعوّض في العلاقة التراجعية:
+\begin{align*}
+u_1&=\frac23u_0-\frac89=\frac23\times2-\frac89=\frac{12}{9}-\frac89=\bx{\frac49}\\
+u_2&=\frac23u_1-\frac89=\frac23\times\frac49-\frac89=\frac{8}{27}-\frac{24}{27}=\bx{-\frac{16}{27}}
+\end{align*}
+\pb من أجل كل عدد طبيعي $n$:
+\begin{align*}
+v_{n+1}&=u_{n+1}+\frac83=\frac23u_n-\frac89+\frac{24}{9}=\frac23u_n+\frac{16}{9}\\
+&=\frac23\Big(u_n+\frac{16}{9}\times\frac32\Big)=\frac23\Big(u_n+\frac83\Big)=\frac23\,v_n
+\end{align*}
+إذن $(v_n)$ متتالية هندسية أساسها \bx{q=\dfrac23} وحدها الأول $v_0=u_0+\dfrac83=2+\dfrac83=\bx{\dfrac{14}{3}}$.
+\pc من أجل كل عدد طبيعي $n$: \ $v_n=v_0\times q^n=\bx{\dfrac{14}{3}\Big(\dfrac23\Big)^n}$.\\
+ولدينا $v_n=u_n+\dfrac83$ ومنه $u_n=v_n-\dfrac83$ ، أي من أجل كل عدد طبيعي $n$: \ \bx{u_n=\dfrac{14}{3}\Big(\dfrac23\Big)^n-\dfrac83}.
+\pd لدينا: $\limn u_n=\bx{-\dfrac83}$ لأنّ: \quad $\Car{\limn\Big(\dfrac23\Big)^n=0\qquad\left(-1<\dfrac23<1\right)}$
+\end{hal}
+
+% ================================================= 2
+\begin{tamrin}{تمرين من بكالوريا 2008 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac12u_n-1$.
+\begin{enumerate}
+\item أحسب $u_1$ ، $u_2$ و $u_3$.
+\item \begin{sq}
+\qa أثبت بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n\ge-2$.
+\qb جد اتجاه تغير المتتالية $(u_n)$. ماذا تستنتج؟
+\end{sq}
+\item نعتبر المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=u_n+2$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb عبّر بدلالة $n$ عن $v_n$ ثم عن $u_n$.
+\qc أحسب $\limn u_n$.
+\qd أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} حساب الحدود:
+\begin{align*}
+u_1&=\frac12u_0-1=\frac12-1=\bx{-\frac12}\\
+u_2&=\frac12u_1-1=-\frac14-1=\bx{-\frac54}\\
+u_3&=\frac12u_2-1=-\frac58-1=\bx{-\frac{13}{8}}
+\end{align*}
+\par\smallskip\textbf{2.} \textbf{(أ)} \Rec{$u_n\ge-2$}{من أجل $n=0$: $u_0=1\ge-2$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n\ge-2$ ، بضرب الطرفين في العدد الموجب $\dfrac12$ نجد $\dfrac12u_n\ge-1$ ، وبإضافة $-1$ للطرفين نجد $\dfrac12u_n-1\ge-2$ أي $u_{n+1}\ge-2$ ، إذن $P(n+1)$ صحيحة.}
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac12u_n-1-u_n=-\frac12u_n-1=-\frac12\big(u_n+2\big).\]
+لدينا $u_n\ge-2$ أي $u_n+2\ge0$ ، ومنه $-\dfrac12(u_n+2)\le0$. إذن $u_{n+1}-u_n\le0$ والمتتالية $(u_n)$ \textbf{متناقصة}.\\
+\textbf{الاستنتاج:} $(u_n)$ متناقصة ومحدودة من الأسفل بالعدد $-2$ ، إذن هي \textbf{متقاربة}.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}+2=\frac12u_n-1+2=\frac12u_n+1=\frac12\big(u_n+2\big)=\frac12\,v_n.\]
+إذن $(v_n)$ هندسية أساسها \bx{q=\dfrac12} وحدها الأول $v_0=u_0+2=1+2=\bx{3}$.
+\pb من أجل كل عدد طبيعي $n$: \ $v_n=v_0\,q^n=\bx{3\Big(\dfrac12\Big)^n}$ \ ، ومنه \ $u_n=v_n-2=\bx{3\Big(\dfrac12\Big)^n-2}$.
+\pc لدينا: $\limn u_n=\bx{-2}$ لأنّ: \quad $\Car{\limn\Big(\dfrac12\Big)^n=0\qquad\left(-1<\dfrac12<1\right)}$
+\pd لدينا $u_k=v_k-2$ ، إذن:
+\[S_n=u_0+u_1+\cdots+u_n=(v_0+v_1+\cdots+v_n)-\underbrace{(2+2+\cdots+2)}_{n+1\ \text{\ar{حداً}}}=(v_0+\cdots+v_n)-2(n+1).\]
+المجموع $v_0+\cdots+v_n$ فيه $n+1$ حداً من متتالية هندسية أساسها $\dfrac12$:
+\[v_0+\cdots+v_n=v_0\times\frac{1-q^{n+1}}{1-q}=3\times\frac{1-\big(\frac12\big)^{n+1}}{\frac12}=6-6\Big(\frac12\Big)^{n+1}=6-3\Big(\frac12\Big)^{n}.\]
+إذن: $S_n=6-3\Big(\dfrac12\Big)^n-2n-2$ ، أي \ \bx{S_n=4-2n-3\Big(\dfrac12\Big)^n}.
+\end{hal}
+
+% ================================================= 3
+\begin{tamrin}{تمرين من بكالوريا 2009 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=-1$ ، ومن أجل كل عدد طبيعي $n$: \ $3u_{n+1}=u_n+4$.
+\begin{enumerate}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n\le2$.
+\qb بيّن أن المتتالية $(u_n)$ متزايدة.
+\qc استنتج مع التبرير أن المتتالية $(u_n)$ متقاربة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-2$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تحديد حدها الأول وأساسها.
+\qb أكتب $v_n$ ثم $u_n$ بدلالة $n$.
+\qc أحسب $\limn u_n$.
+\qd أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+من $3u_{n+1}=u_n+4$ نجد: من أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac13u_n+\dfrac43$.
+
+\par\smallskip\textbf{1.} \textbf{(أ)} \Rec{$u_n\le2$}{من أجل $n=0$: $u_0=-1\le2$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n\le2$ ، بإضافة $4$: $u_n+4\le6$ ، وبالقسمة على العدد الموجب $3$: $\dfrac{u_n+4}{3}\le2$ أي $u_{n+1}\le2$ ، إذن $P(n+1)$ صحيحة.}
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac13u_n+\frac43-u_n=-\frac23u_n+\frac43=\frac23\big(2-u_n\big).\]
+وبما أن $u_n\le2$ فإن $2-u_n\ge0$ ، ومنه $u_{n+1}-u_n\ge0$ ، إذن $(u_n)$ \textbf{متزايدة}.
+\pc $(u_n)$ متزايدة ومحدودة من الأعلى بالعدد $2$ ، إذن هي \textbf{متقاربة}.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}-2=\frac13u_n+\frac43-\frac63=\frac13u_n-\frac23=\frac13\big(u_n-2\big)=\frac13\,v_n.\]
+إذن $(v_n)$ هندسية أساسها \bx{q=\dfrac13} وحدها الأول $v_0=u_0-2=-1-2=\bx{-3}$.
+\pb من أجل كل عدد طبيعي $n$: \ $v_n=v_0\,q^n=\bx{-3\Big(\dfrac13\Big)^n}$ \ ، ومنه \ $u_n=v_n+2=\bx{2-3\Big(\dfrac13\Big)^n}$.
+\pc لدينا: $\limn u_n=\bx{2}$ لأنّ: \quad $\Car{\limn\Big(\dfrac13\Big)^n=0\qquad\left(-1<\dfrac13<1\right)}$
+\pd لدينا $u_k=v_k+2$ ، إذن:
+\begin{align*}
+S_n&=(v_0+v_1+\cdots+v_n)+2(n+1)=-3\times\frac{1-\big(\frac13\big)^{n+1}}{1-\frac13}+2n+2\\
+&=-\frac92\Big[1-\Big(\frac13\Big)^{n+1}\Big]+2n+2=-\frac92+\frac92\times\frac13\Big(\frac13\Big)^n+2n+2
+\end{align*}
+إذن من أجل كل عدد طبيعي $n$: \ \bx{S_n=2n-\dfrac52+\dfrac32\Big(\dfrac13\Big)^n}.
+\end{hal}
+
+% ================================================= 4
+\begin{tamrin}{تمرين من بكالوريا 2009 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=-1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=3u_n-2$.
+\begin{enumerate}
+\item أحسب $u_1$ و $u_2$.
+\item نعتبر المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=u_n-1$.
+\begin{sq}
+\qa أثبت أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها $q$ وحدها الأول $v_0$.
+\qb أكتب $v_n$ بدلالة $n$ ، ثم استنتج $u_n$ بدلالة $n$.
+\end{sq}
+\item بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=(-4)\times3^n$.
+\item استنتج اتجاه تغير المتتالية $(u_n)$.
+\item عيّن العدد الطبيعي $n$ بحيث: $u_0+u_1+\cdots+u_n=n-79$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \ $u_1=3u_0-2=3\times(-1)-2=\bx{-5}$ \ ؛ \ $u_2=3u_1-2=3\times(-5)-2=\bx{-17}$.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}-1=3u_n-2-1=3u_n-3=3\big(u_n-1\big)=3\,v_n.\]
+إذن $(v_n)$ هندسية أساسها \bx{q=3} وحدها الأول $v_0=u_0-1=-1-1=\bx{-2}$.
+\pb من أجل كل عدد طبيعي $n$: \ $v_n=v_0\,q^n=\bx{-2\times3^n}$ ، ومنه \ $u_n=v_n+1=\bx{1-2\times3^n}$.
+
+\textbf{3.} من أجل كل عدد طبيعي $n$:
+\begin{align*}
+u_{n+1}-u_n&=\big(1-2\times3^{n+1}\big)-\big(1-2\times3^n\big)=-2\times3^{n+1}+2\times3^n\\
+&=-2\times3^n\times3+2\times3^n=2\times3^n(-3+1)=\bx{(-4)\times3^n}
+\end{align*}
+\textbf{4.} بما أن $3^n>0$ فإن $(-4)\times3^n<0$ ، أي $u_{n+1}-u_n<0$ ، إذن $(u_n)$ \textbf{متناقصة تماماً}.
+
+\textbf{5.} لدينا $u_k=1+v_k$ ، ومنه:
+\begin{align*}
+u_0+u_1+\cdots+u_n&=(n+1)+(v_0+\cdots+v_n)=(n+1)-2\times\frac{1-3^{n+1}}{1-3}\\
+&=(n+1)-\big(3^{n+1}-1\big)=n+2-3^{n+1}
+\end{align*}
+نحل المعادلة:
+\[n+2-3^{n+1}=n-79\iff-3^{n+1}=-81\iff3^{n+1}=81=3^4\iff n+1=4\iff\bx{n=3}.\]
+\end{hal}
+
+% ================================================= 5
+\begin{tamrin}{تمرين من بكالوريا 2010 -- الموضوع الأول ($\star\star$ بعد درس الأسية)}
+\begin{enumerate}
+\item $n$ عدد طبيعي. أحسب بدلالة $n$ المجموع: $S_n=1+e+e^2+\cdots+e^n$.
+\item $(w_n)$ متتالية معرفة من أجل كل عدد طبيعي $n$ بـ: $w_n=2n+4+e^n$.\\
+بيّن أن $w_n=u_n+v_n$ حيث $(u_n)$ متتالية حسابية و $(v_n)$ متتالية هندسية ، يطلب تعيين الحد الأول والأساس لكل منهما.
+\item أثبت أنه من أجل كل عدد طبيعي $n$: $4+6+8+\cdots+(2n+4)=(n+1)(n+4)$.
+\item استنتج بدلالة $n$ المجموع: $S'_n=w_0+w_1+\cdots+w_n$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $S_n$ هو مجموع حدود متتابعة من متتالية هندسية حدها الأول $1=e^0$ وأساسها $e$ (مع $e\ne1$).\\
+عدد الحدود: $n-0+1=n+1$. إذن:
+\[S_n=1\times\frac{1-e^{n+1}}{1-e}=\bx{\frac{e^{n+1}-1}{e-1}}.\]
+\textbf{2.} نضع من أجل كل عدد طبيعي $n$: $u_n=2n+4$ و $v_n=e^n$ ، فيكون $w_n=u_n+v_n$.
+\begin{itemize}
+\item $u_{n+1}-u_n=2(n+1)+4-(2n+4)=2$ ، إذن $(u_n)$ حسابية أساسها \bx{r=2} وحدها الأول $u_0=\bx{4}$.
+\item $v_{n+1}=e^{n+1}=e\times e^n=e\times v_n$ ، إذن $(v_n)$ هندسية أساسها \bx{q=e} وحدها الأول $v_0=e^0=\bx{1}$.
+\end{itemize}
+\textbf{3.} المجموع $4+6+\cdots+(2n+4)=u_0+u_1+\cdots+u_n$ فيه $n+1$ حداً من متتالية حسابية ، حدها الأول $4$ وحدها الأخير $2n+4$:
+\[4+6+\cdots+(2n+4)=\frac{n+1}{2}\big(4+2n+4\big)=\frac{(n+1)(2n+8)}{2}=\frac{2(n+1)(n+4)}{2}=\bx{(n+1)(n+4)}.\]
+\textbf{4.} من أجل كل عدد طبيعي $n$:
+\[S'_n=(u_0+\cdots+u_n)+(v_0+\cdots+v_n)=\bx{(n+1)(n+4)+\frac{e^{n+1}-1}{e-1}}.\]
+\end{hal}
+
+% ================================================= 6
+\begin{tamrin}{تمرين من بكالوريا 2010 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac{3u_n+2}{4}$.
+\begin{enumerate}
+\item أحسب $u_1$ ، $u_2$ و $u_3$.
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n<2$.
+\qb بيّن أن المتتالية $(u_n)$ متزايدة تماماً.
+\qc استنتج أن المتتالية $(u_n)$ متقاربة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-2$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb أكتب $v_n$ بدلالة $n$ ، واستنتج أن: $u_n=2-\Big(\dfrac34\Big)^n$.
+\qc ما هي نهاية المتتالية $(u_n)$؟
+\end{sq}
+\item \begin{sq}
+\qa أحسب بدلالة $n$ المجموع: $S_n=v_0+v_1+\cdots+v_n$.
+\qb استنتج أن: $u_0+u_1+\cdots+u_n=3\Big(\dfrac34\Big)^n+2n-2$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} حساب الحدود:
+\begin{align*}
+u_1&=\frac{3u_0+2}{4}=\frac{3+2}{4}=\bx{\frac54}\\
+u_2&=\frac{3u_1+2}{4}=\frac{\frac{15}{4}+\frac84}{4}=\frac{23}{16}\ \Rightarrow\ \bx{u_2=\frac{23}{16}}\\
+u_3&=\frac{3u_2+2}{4}=\frac{\frac{69}{16}+\frac{32}{16}}{4}=\frac{101}{64}\ \Rightarrow\ \bx{u_3=\frac{101}{64}}
+\end{align*}
+\par\smallskip\textbf{2.} \textbf{(أ)} \Rec{$u_n<2$}{من أجل $n=0$: $u_0=1<2$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n<2$ ، بالضرب في $3$: $3u_n<6$ ، وبإضافة $2$: $3u_n+2<8$ ، وبالقسمة على $4$: $\dfrac{3u_n+2}{4}<2$ ، أي $u_{n+1}<2$.}
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac{3u_n+2}{4}-\frac{4u_n}{4}=\frac{2-u_n}{4}.\]
+وبما أن $u_n<2$ فإن $2-u_n>0$ ، ومنه $u_{n+1}-u_n>0$ ، إذن $(u_n)$ \textbf{متزايدة تماماً}.
+\pc $(u_n)$ متزايدة ومحدودة من الأعلى بالعدد $2$ ، إذن هي \textbf{متقاربة}.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}-2=\frac{3u_n+2}{4}-\frac84=\frac{3u_n-6}{4}=\frac34\big(u_n-2\big)=\frac34\,v_n.\]
+إذن $(v_n)$ هندسية أساسها \bx{q=\dfrac34} وحدها الأول $v_0=u_0-2=1-2=\bx{-1}$.
+\pb من أجل كل عدد طبيعي $n$: $v_n=v_0\,q^n=-\Big(\dfrac34\Big)^n$ ، ومنه $u_n=v_n+2$ أي \bx{u_n=2-\Big(\dfrac34\Big)^n}.
+\pc لدينا: $\limn u_n=\bx{2}$ لأنّ: \quad $\Car{\limn\Big(\dfrac34\Big)^n=0\qquad\left(-1<\dfrac34<1\right)}$
+
+\par\smallskip\textbf{4.} \textbf{(أ)} $S_n$ مجموع $n+1$ حداً من متتالية هندسية حدها الأول $v_0=-1$ وأساسها $\dfrac34$:
+\[S_n=-1\times\frac{1-\big(\frac34\big)^{n+1}}{1-\frac34}=-4\Big[1-\Big(\frac34\Big)^{n+1}\Big]=-4+4\times\frac34\Big(\frac34\Big)^n=\bx{-4+3\Big(\frac34\Big)^n}.\]
+\pb لدينا $u_k=v_k+2$ ، إذن:
+\[u_0+u_1+\cdots+u_n=S_n+2(n+1)=-4+3\Big(\frac34\Big)^n+2n+2=\bx{3\Big(\frac34\Big)^n+2n-2}.\]
+\end{hal}
+
+% ================================================= 7
+\begin{tamrin}{تمرين من بكالوريا 2011 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=\dfrac12$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac25u_n+\dfrac15$.
+\begin{enumerate}
+\item أحسب $u_1$ و $u_2$.
+\item بيّن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>\dfrac13$.
+\item بيّن أن المتتالية $(u_n)$ متناقصة تماماً ، ثم استنتج أنها متقاربة.
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-\dfrac13$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb أكتب $v_n$ ثم $u_n$ بدلالة $n$.
+\qc أحسب نهاية المتتالية $(u_n)$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \ $u_1=\dfrac25\times\dfrac12+\dfrac15=\dfrac15+\dfrac15=\bx{\dfrac25}$ \ ؛ \ $u_2=\dfrac25\times\dfrac25+\dfrac15=\dfrac{4}{25}+\dfrac{5}{25}=\bx{\dfrac{9}{25}}$.
+
+\textbf{2.} \Rec{$u_n>\dfrac13$}{من أجل $n=0$: $u_0=\dfrac12>\dfrac13$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n>\dfrac13$ ، بالضرب في العدد الموجب $\dfrac25$: $\dfrac25u_n>\dfrac{2}{15}$ ، وبإضافة $\dfrac15=\dfrac{3}{15}$:
+$\dfrac25u_n+\dfrac15>\dfrac{2}{15}+\dfrac{3}{15}=\dfrac{5}{15}=\dfrac13$ ، أي $u_{n+1}>\dfrac13$.}
+
+\textbf{3.} من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac25u_n+\frac15-u_n=-\frac35u_n+\frac15=-\frac35\Big(u_n-\frac13\Big).\]
+بما أن $u_n>\dfrac13$ فإن $u_n-\dfrac13>0$ ، ومنه $u_{n+1}-u_n<0$ ، إذن $(u_n)$ \textbf{متناقصة تماماً}.\\
+$(u_n)$ متناقصة ومحدودة من الأسفل بالعدد $\dfrac13$ ، إذن هي \textbf{متقاربة}.
+
+\par\smallskip\textbf{4.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}-\frac13=\frac25u_n+\frac{3}{15}-\frac{5}{15}=\frac25u_n-\frac{2}{15}=\frac25\Big(u_n-\frac13\Big)=\frac25\,v_n.\]
+إذن $(v_n)$ هندسية أساسها \bx{q=\dfrac25} وحدها الأول $v_0=\dfrac12-\dfrac13=\bx{\dfrac16}$.
+\pb من أجل كل عدد طبيعي $n$: \ $v_n=\bx{\dfrac16\Big(\dfrac25\Big)^n}$ \ ، و \ $u_n=v_n+\dfrac13=\bx{\dfrac13+\dfrac16\Big(\dfrac25\Big)^n}$.
+\pc لدينا: $\limn u_n=\bx{\dfrac13}$ لأنّ: \quad $\Car{\limn\Big(\dfrac25\Big)^n=0\qquad\left(-1<\dfrac25<1\right)}$
+\end{hal}
+
+% ================================================= 8
+\begin{tamrin}{تمرين من بكالوريا 2012 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac{3u_n+4}{9}$.
+\begin{enumerate}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>\dfrac23$.
+\qb بيّن أن المتتالية $(u_n)$ متناقصة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-\dfrac23$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb أكتب $v_n$ بدلالة $n$ ، واستنتج أن: $u_n=\dfrac13\Big[\Big(\dfrac13\Big)^n+2\Big]$.
+\qc ما هي نهاية المتتالية $(u_n)$؟
+\end{sq}
+\item أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_n$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\par\smallskip\textbf{1.} \textbf{(أ)} \Rec{$u_n>\dfrac23$}{من أجل $n=0$: $u_0=1>\dfrac23$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n>\dfrac23$ ، بالضرب في $3$: $3u_n>2$ ، وبإضافة $4$: $3u_n+4>6$ ، وبالقسمة على $9$: $\dfrac{3u_n+4}{9}>\dfrac69=\dfrac23$ ، أي $u_{n+1}>\dfrac23$.}
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac{3u_n+4}{9}-\frac{9u_n}{9}=\frac{4-6u_n}{9}=-\frac69\Big(u_n-\frac23\Big)=-\frac23\Big(u_n-\frac23\Big).\]
+بما أن $u_n>\dfrac23$ فإن $u_n-\dfrac23>0$ ، ومنه $u_{n+1}-u_n<0$ ، إذن $(u_n)$ \textbf{متناقصة} (تماماً).
+
+\par\smallskip\textbf{2.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}-\frac23=\frac{3u_n+4}{9}-\frac69=\frac{3u_n-2}{9}=\frac39\Big(u_n-\frac23\Big)=\frac13\,v_n.\]
+إذن $(v_n)$ هندسية أساسها \bx{q=\dfrac13} وحدها الأول $v_0=u_0-\dfrac23=1-\dfrac23=\bx{\dfrac13}$.
+\pb من أجل كل عدد طبيعي $n$: $v_n=\dfrac13\Big(\dfrac13\Big)^n$ ، ومنه:
+\[u_n=v_n+\frac23=\frac13\Big(\frac13\Big)^n+\frac13\times2=\bx{\frac13\Big[\Big(\frac13\Big)^n+2\Big]}.\]
+\pc لدينا: $\limn u_n=\bx{\dfrac23}$ لأنّ: \quad $\Car{\limn\Big(\dfrac13\Big)^n=0\qquad\left(-1<\dfrac13<1\right)}$
+
+\textbf{3.} لدينا $u_k=v_k+\dfrac23$ ، إذن:
+\begin{align*}
+S_n&=(v_0+\cdots+v_n)+\frac23(n+1)=\frac13\times\frac{1-\big(\frac13\big)^{n+1}}{1-\frac13}+\frac23(n+1)\\
+&=\frac13\times\frac32\Big[1-\Big(\frac13\Big)^{n+1}\Big]+\frac23(n+1)=\bx{\frac12\Big[1-\Big(\frac13\Big)^{n+1}\Big]+\frac23(n+1)}
+\end{align*}
+\end{hal}
+
+% ================================================= 9
+\begin{tamrin}{تمرين من بكالوريا 2012 -- الموضوع الثاني (مسألة)}
+في بداية جانفي 2008 وضع شخص مبلغاً قدره $50000\,DA$ في صندوق التوفير بفائدة سنوية قدرها $5\%$.
+يسحب هذا الشخص في نهاية كل سنة مبلغاً قدره $5000\,DA$ (بعد حساب الفوائد).
+نرمز بـ $u_n$ إلى المبلغ الذي يملكه في حسابه بداية جانفي من السنة $2008+n$.
+\begin{enumerate}
+\item \begin{sq}
+\qa أحسب $u_0$ ، $u_1$ و $u_2$.
+\qb هل المتتالية $(u_n)$ هندسية؟ هل هي حسابية؟
+\qc بيّن لماذا: من أجل كل عدد طبيعي $n$: $u_{n+1}=1{,}05\,u_n-5000$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-100000$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية.
+\qb أكتب $v_n$ بدلالة $n$ ، واستنتج أن: $u_n=-50000\times(1{,}05)^n+100000$.
+\end{sq}
+\item \begin{sq}
+\qa ما هو المبلغ الذي يكون في حساب هذا الشخص نهاية عام 2015؟
+\qb ابتداءً من أية سنة لا تسمح إدارة الصندوق بسحب المبلغ المعتاد؟
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\par\smallskip\textbf{1.} \textbf{(أ)} $u_0=\bx{50000}$ (المبلغ المودع بداية 2008).\\
+في نهاية 2008 يصبح المبلغ مع الفائدة: $50000\times1{,}05=52500$ ، ثم يسحب $5000$: \ $u_1=52500-5000=\bx{47500}$.\\
+وبنفس الطريقة: $u_2=47500\times1{,}05-5000=49875-5000=\bx{44875}$.
+\pb $u_1-u_0=-2500$ و $u_2-u_1=-2625$: الفرقان مختلفان ، إذن $(u_n)$ \textbf{ليست حسابية}.\\
+$\dfrac{u_1}{u_0}=\dfrac{47500}{50000}=0{,}95$ و $\dfrac{u_2}{u_1}=\dfrac{44875}{47500}\approx0{,}9447$: النسبتان مختلفتان ، إذن $(u_n)$ \textbf{ليست هندسية}.
+\pc في بداية السنة $2008+n$ يملك $u_n$. خلال السنة يكسب فائدة $\dfrac{5}{100}u_n$ فيصبح المبلغ $u_n+0{,}05u_n=1{,}05\,u_n$ ، ثم يسحب $5000$ في نهاية السنة.\\
+إذن من أجل كل عدد طبيعي $n$: \ $u_{n+1}=1{,}05\,u_n-5000$.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\begin{align*}
+v_{n+1}&=u_{n+1}-100000=1{,}05u_n-5000-100000=1{,}05u_n-105000\\
+&=1{,}05\big(u_n-100000\big)=1{,}05\,v_n
+\end{align*}
+إذن $(v_n)$ هندسية أساسها \bx{q=1{,}05} وحدها الأول $v_0=50000-100000=\bx{-50000}$.
+\pb من أجل كل عدد طبيعي $n$: $v_n=-50000\times(1{,}05)^n$ ، ومنه $u_n=v_n+100000$ أي:
+\[\bx{u_n=-50000\times(1{,}05)^n+100000}.\]
+
+\par\smallskip\textbf{3.} \textbf{(أ)} المبلغ في نهاية 2015 هو نفسه المبلغ في بداية 2016 ، أي $2008+n=2016$ ومنه $n=8$:
+\[u_8=-50000\times(1{,}05)^8+100000\approx-50000\times1{,}477455+100000\approx\bx{26127{,}23\ DA}.\]
+\pb لا يمكن سحب $5000\,DA$ في نهاية السنة $2008+n$ إذا كان المبلغ بعد الفائدة أقل من $5000$ ، أي إذا كان $1{,}05\,u_n<5000$.
+نحسب بعض القيم:
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|C|C|C|C|}\hline
+$n$ & السنة & $u_n$ (بداية السنة) & $1{,}05\,u_n$ (نهاية السنة)\\\hline
+$13$ & 2021 & $\approx5717{,}54$ & $\approx6003{,}42$\\\hline
+$14$ & 2022 & $\approx1003{,}42$ & $\approx1053{,}59$\\\hline
+\end{tabular}
+\end{center}
+في نهاية 2021 يملك $6003{,}42\,DA\ge5000$ فيسحب ، ويبقى $1003{,}42\,DA$.
+في نهاية 2022 يملك $1053{,}59\,DA<5000$.\\
+إذن ابتداءً من \textbf{نهاية سنة 2022} لا تسمح إدارة الصندوق بسحب المبلغ المعتاد.
+\end{hal}
+
+% ================================================= 10
+\begin{tamrin}{تمرين من بكالوريا 2013 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=3$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\Big(\dfrac{2a+1}{3}\Big)u_n-\dfrac{2a+4}{3}$ \ حيث $a$ وسيط حقيقي.
+\begin{enumerate}
+\item عيّن قيمة $a$ التي من أجلها تكون المتتالية $(u_n)$ ثابتة.
+\item نفرض $a\ne\dfrac52$.
+\begin{sq}
+\qa عيّن قيمة $a$ حتى تكون $(u_n)$ متتالية حسابية.
+\qb أحسب عندئذ $u_n$ بدلالة $n$ ، ومجموع $n$ حداً الأولى.
+\end{sq}
+\item \begin{sq}
+\qa عيّن قيمة $a$ حتى تكون $(u_n)$ متتالية هندسية.
+\qb عيّن عندئذ $u_{50}$ ومجموع $50$ حداً الأولى.
+\end{sq}
+\item نفرض $a=4$.
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n=3^n+2$.
+\qb بيّن أن: $u_0+u_1+\cdots+u_n=\dfrac12\big(3^{n+1}+4n+3\big)$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} إذا كانت $(u_n)$ ثابتة فإن $u_1=u_0=3$ ، أي:
+\begin{align*}
+\frac{2a+1}{3}\times3-\frac{2a+4}{3}=3&\iff3(2a+1)-(2a+4)=9\\
+&\iff6a+3-2a-4=9\iff4a=10\iff\bx{a=\frac52}
+\end{align*}
+\textbf{تحقق:} من أجل $a=\dfrac52$: $\dfrac{2a+1}{3}=2$ و $\dfrac{2a+4}{3}=3$ ، فتصبح $u_{n+1}=2u_n-3$.
+وبالتراجع: $u_0=3$ ، وإذا كان $u_n=3$ فإن $u_{n+1}=2\times3-3=3$. إذن من أجل كل عدد طبيعي $n$: $u_n=3$ ، والمتتالية ثابتة.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} تكون $(u_n)$ حسابية إذا كانت العلاقة من الشكل $u_{n+1}=u_n+r$ ، أي إذا كان معامل $u_n$ يساوي $1$:
+\[\frac{2a+1}{3}=1\iff2a+1=3\iff\bx{a=1}.\]
+عندئذ: $\dfrac{2a+4}{3}=\dfrac63=2$ ، فتصبح: من أجل كل عدد طبيعي $n$: $u_{n+1}=u_n-2$ ، أي $(u_n)$ حسابية أساسها $r=-2$.
+\pb من أجل كل عدد طبيعي $n$: \ $u_n=u_0+nr=\bx{3-2n}$.\\
+مجموع $n$ حداً الأولى هو $u_0+u_1+\cdots+u_{n-1}$ (عدد حدوده $n$ ، وحده الأخير $u_{n-1}=3-2(n-1)=5-2n$):
+\[u_0+\cdots+u_{n-1}=\frac{n}{2}\big(u_0+u_{n-1}\big)=\frac n2\big(3+5-2n\big)=\frac n2\big(8-2n\big)=\bx{n(4-n)}.\]
+\par\smallskip\textbf{3.} \textbf{(أ)} تكون $(u_n)$ هندسية إذا كانت العلاقة من الشكل $u_{n+1}=q\,u_n$ ، أي إذا انعدم الحد الثابت:
+\[\frac{2a+4}{3}=0\iff2a+4=0\iff\bx{a=-2}.\]
+عندئذ: $\dfrac{2a+1}{3}=\dfrac{-3}{3}=-1$ ، فتصبح $u_{n+1}=-u_n$: هندسية أساسها $q=-1$ وحدها الأول $u_0=3$.
+\pb من أجل كل عدد طبيعي $n$: $u_n=3\times(-1)^n$ ، ومنه $u_{50}=3\times(-1)^{50}=\bx{3}$.\\
+مجموع $50$ حداً الأولى: $u_0+\cdots+u_{49}=3\times\dfrac{1-(-1)^{50}}{1-(-1)}=3\times\dfrac{1-1}{2}=\bx{0}$.
+
+\textbf{4.} من أجل $a=4$: $\dfrac{2a+1}{3}=3$ و $\dfrac{2a+4}{3}=4$ ، أي: من أجل كل عدد طبيعي $n$: $u_{n+1}=3u_n-4$.
+\pa \Rec{$u_n=3^n+2$}{من أجل $n=0$: $3^0+2=1+2=3=u_0$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n=3^n+2$ ، ومنه:
+$u_{n+1}=3u_n-4=3\big(3^n+2\big)-4=3^{n+1}+6-4=3^{n+1}+2$ ، إذن $P(n+1)$ صحيحة.}
+\pb من أجل كل عدد طبيعي $n$:
+\begin{align*}
+u_0+u_1+\cdots+u_n&=\big(3^0+3^1+\cdots+3^n\big)+2(n+1)=1\times\frac{1-3^{n+1}}{1-3}+2n+2\\
+&=\frac{3^{n+1}-1}{2}+\frac{4n+4}{2}=\bx{\frac12\big(3^{n+1}+4n+3\big)}
+\end{align*}
+\end{hal}
+
+% ================================================= 11
+\begin{tamrin}{تمرين من بكالوريا 2013 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=6$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=-\dfrac12u_n+6$.
+\begin{enumerate}
+\item \begin{sq}
+\qa أحسب $u_1$ ، $u_2$ ، $u_3$ و $u_4$.
+\qb هل المتتالية $(u_n)$ رتيبة على $\N$؟ برّر إجابتك.
+\end{sq}
+\item \begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-4=-\dfrac12\big(u_n-4\big)$.
+\qb استنتج أن المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=u_n-4$ هندسية.
+\qc أكتب $v_n$ ثم $u_n$ بدلالة $n$.
+\qd بيّن أن المتتالية $(u_n)$ متقاربة.
+\end{sq}
+\item باستعمال عبارة $u_n$ بدلالة $n$ ، تأكد ثانية من نتيجة السؤال 1(ب).
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \textbf{(أ)} حساب الحدود:
+\begin{align*}
+u_1&=-\frac12u_0+6=-\frac12\times6+6=-3+6=\bx{3}\\
+u_2&=-\frac12u_1+6=-\frac32+\frac{12}{2}=\bx{\frac92}\\
+u_3&=-\frac12u_2+6=-\frac94+\frac{24}{4}=\bx{\frac{15}{4}}\\
+u_4&=-\frac12u_3+6=-\frac{15}{8}+\frac{48}{8}=\bx{\frac{33}{8}}
+\end{align*}
+\pb لدينا $u_1=3<u_0=6$ (تناقص) ، بينما $u_2=\dfrac92>u_1=3$ (تزايد).
+إذن المتتالية $(u_n)$ \textbf{ليست رتيبة} على $\N$.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-4=-\frac12u_n+6-4=-\frac12u_n+2=-\frac12\big(u_n-4\big).\]
+\pb من أجل كل عدد طبيعي $n$: $v_{n+1}=u_{n+1}-4=-\dfrac12\big(u_n-4\big)=-\dfrac12\,v_n$.\\
+إذن $(v_n)$ هندسية أساسها \bx{q=-\dfrac12} وحدها الأول $v_0=u_0-4=6-4=\bx{2}$.
+\pc من أجل كل عدد طبيعي $n$: \ $v_n=v_0\,q^n=\bx{2\Big(-\dfrac12\Big)^n}$ \ ، و \ $u_n=v_n+4=\bx{4+2\Big(-\dfrac12\Big)^n}$.
+\pd لدينا: $\limn u_n=\bx{4}$ لأنّ: \quad $\Car{\limn\Big(-\dfrac12\Big)^n=0\qquad\left(-1<-\dfrac12<1\right)}$
+النهاية منتهية ، إذن المتتالية $(u_n)$ \textbf{متقاربة} نحو $4$.
+
+\par\smallskip\textbf{3.} من أجل كل عدد طبيعي $n$:
+\begin{align*}
+u_{n+1}-u_n&=\Big[4+2\Big(-\frac12\Big)^{n+1}\Big]-\Big[4+2\Big(-\frac12\Big)^n\Big]=2\Big(-\frac12\Big)^n\Big(-\frac12-1\Big)\\
+&=-3\Big(-\frac12\Big)^n
+\end{align*}
+\begin{itemize}
+\item إذا كان $n$ زوجياً فإن $\Big(-\dfrac12\Big)^n>0$ ومنه $u_{n+1}-u_n<0$.
+\item إذا كان $n$ فردياً فإن $\Big(-\dfrac12\Big)^n<0$ ومنه $u_{n+1}-u_n>0$.
+\end{itemize}
+إشارة الفرق تتغير ، إذن $(u_n)$ ليست رتيبة ، وهي نفس نتيجة السؤال 1(ب). \ok
+\end{hal}
+
+% ================================================= 12
+\begin{tamrin}{تمرين من بكالوريا 2014 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=3$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac23u_n-1$.
+\begin{enumerate}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>-3$.
+\qb بيّن أن المتتالية $(u_n)$ متناقصة تماماً.
+\qc استنتج أن المتتالية $(u_n)$ متقاربة.
+\end{sq}
+\item $(v_n)$ متتالية هندسية متقاربة أساسها $q$ ، حيث: $v_0=6$ و $\limn\big(v_0+v_1+\cdots+v_n\big)=18$.
+\begin{sq}
+\qa بيّن أن: $\limn\big(v_0+v_1+\cdots+v_n\big)=\dfrac{v_0}{1-q}$.
+\qb أحسب $q$ ، ثم عيّن $v_n$ بدلالة $n$.
+\qc برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n=v_n-3$.
+\qd استنتج عبارة $u_n$ بدلالة $n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \textbf{(أ)} \Rec{$u_n>-3$}{من أجل $n=0$: $u_0=3>-3$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n>-3$ ، بالضرب في العدد الموجب $\dfrac23$: $\dfrac23u_n>-2$ ، وبإضافة $-1$: $\dfrac23u_n-1>-3$ ، أي $u_{n+1}>-3$.}
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac23u_n-1-u_n=-\frac13u_n-1=-\frac13\big(u_n+3\big).\]
+بما أن $u_n>-3$ فإن $u_n+3>0$ ، ومنه $u_{n+1}-u_n<0$ ، إذن $(u_n)$ \textbf{متناقصة تماماً}.
+\pc $(u_n)$ متناقصة ومحدودة من الأسفل بالعدد $-3$ ، إذن هي \textbf{متقاربة}.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} $(v_n)$ هندسية متقاربة وغير ثابتة ، إذن أساسها يحقق $-1<q<1$ ، ومنه $\limn q^{n+1}=0$.\\
+من أجل كل عدد طبيعي $n$: \ $v_0+v_1+\cdots+v_n=v_0\times\dfrac{1-q^{n+1}}{1-q}$ \ (عدد الحدود $n+1$) ، إذن:
+\[\limn\big(v_0+\cdots+v_n\big)=v_0\times\frac{1-0}{1-q}=\frac{v_0}{1-q}.\]
+\pb لدينا $\dfrac{v_0}{1-q}=18$ و $v_0=6$:
+\[\frac{6}{1-q}=18\iff1-q=\frac{6}{18}=\frac13\iff\bx{q=\frac23}.\]
+ومنه من أجل كل عدد طبيعي $n$: \ $v_n=v_0\,q^n=\bx{6\Big(\dfrac23\Big)^n}$.
+\pc \Rec{$u_n=v_n-3$}{من أجل $n=0$: $v_0-3=6-3=3=u_0$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n=v_n-3$ أي $v_n=u_n+3$ ، ومنه:
+$v_{n+1}-3=\dfrac23v_n-3=\dfrac23\big(u_n+3\big)-3=\dfrac23u_n+2-3=\dfrac23u_n-1=u_{n+1}$.}
+\pd من أجل كل عدد طبيعي $n$: \ \bx{u_n=6\Big(\dfrac23\Big)^n-3}.
+\end{hal}
+
+% ================================================= 13
+\begin{tamrin}{تمرين من بكالوريا 2015 -- الموضوع الأول (مسألة)}
+بيّنت دراسة أن $5\%$ من عمال إحدى القطاعات الصناعية يحالون على التقاعد سنوياً ، وبالمقابل يوظَّف $3000$ عامل سنوياً ، علماً أنه في سنة 2012 كان عدد العمال $50000$.
+نعتبر الألف هو الوحدة ، ونرمز بـ $u_n$ لعدد العمال سنة $2012+n$ ، أي $u_0=50$.
+\begin{enumerate}
+\item أحسب $u_1$ و $u_2$.
+\item \begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}=0{,}95u_n+3$.
+\qb بيّن أن المتتالية $(u_n)$ ليست حسابية وليست هندسية.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=60-u_n$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb أكتب $v_n$ ثم $u_n$ بدلالة $n$.
+\qc قدّر عدد العمال سنة 2017.
+\qd حدد اتجاه تغير المتتالية $(u_n)$.
+\qe أحسب نهاية $(u_n)$. هل يمكن أن يصل عدد عمال هذا القطاع إلى $60000$ عامل؟
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} في كل سنة يبقى $95\%$ من العمال ويضاف $3$ آلاف:
+\begin{align*}
+u_1&=0{,}95\times50+3=47{,}5+3=\bx{50{,}5}\quad(\text{\ar{أي}}\ 50500\ \text{\ar{عامل}})\\
+u_2&=0{,}95\times50{,}5+3=47{,}975+3=\bx{50{,}975}\quad(\text{\ar{أي}}\ 50975\ \text{\ar{عامل}})
+\end{align*}
+\textbf{2.} \textbf{(أ)} عدد العمال سنة $2012+n$ هو $u_n$. يتقاعد منهم $5\%$ أي $0{,}05u_n$ ، ويوظَّف $3$ آلاف ، إذن:
+\[u_{n+1}=u_n-0{,}05u_n+3=(1-0{,}05)u_n+3=0{,}95\,u_n+3.\]
+\pb $u_1-u_0=0{,}5$ و $u_2-u_1=0{,}475$: الفرقان مختلفان ، إذن $(u_n)$ \textbf{ليست حسابية}.\\
+$\dfrac{u_1}{u_0}=\dfrac{50{,}5}{50}=1{,}01$ و $\dfrac{u_2}{u_1}=\dfrac{50{,}975}{50{,}5}\approx1{,}0094$: النسبتان مختلفتان ، إذن $(u_n)$ \textbf{ليست هندسية}.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=60-u_{n+1}=60-0{,}95u_n-3=57-0{,}95u_n=0{,}95\Big(\frac{57}{0{,}95}-u_n\Big)=0{,}95\big(60-u_n\big)=0{,}95\,v_n.\]
+إذن $(v_n)$ هندسية أساسها \bx{q=0{,}95} وحدها الأول $v_0=60-u_0=60-50=\bx{10}$.
+\pb من أجل كل عدد طبيعي $n$: \ $v_n=\bx{10\times(0{,}95)^n}$ ، ومن $v_n=60-u_n$ نجد $u_n=60-v_n$ ، أي \ \bx{u_n=60-10\times(0{,}95)^n}.
+\pc سنة 2017 توافق $2012+n=2017$ أي $n=5$:
+\[u_5=60-10\times(0{,}95)^5\approx60-7{,}738=52{,}262.\]
+إذن عدد العمال سنة 2017 حوالي \bx{52262} عاملاً.
+\pd من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\big[60-10(0{,}95)^{n+1}\big]-\big[60-10(0{,}95)^n\big]=-10(0{,}95)^n\big(0{,}95-1\big)=0{,}5\times(0{,}95)^n>0.\]
+إذن $(u_n)$ \textbf{متزايدة تماماً}.
+\pe لدينا: $\limn u_n=\bx{60}$ لأنّ: \quad $\Car{\limn(0{,}95)^n=0\qquad\left(0<0{,}95<1\right)}$\\
+من أجل كل عدد طبيعي $n$: $10\times(0{,}95)^n>0$ ، ومنه $u_n=60-10(0{,}95)^n<60$.
+إذن عدد العمال يقترب من $60000$ لكنه \textbf{لا يصل إليه أبداً}.
+\end{hal}
+
+% ================================================= 14
+\begin{tamrin}{تمرين من بكالوريا 2016 -- الموضوع الأول}
+$(v_n)$ متتالية هندسية حدودها موجبة ، حدها الأول $v_0=18$ ، وتحقق: $v_0+v_1+v_2=38$.
+\begin{enumerate}
+\item بيّن أن أساس المتتالية $(v_n)$ هو $q=\dfrac23$.
+\item \begin{sq}
+\qa أكتب $v_n$ بدلالة $n$.
+\qb أدرس اتجاه تغير المتتالية $(v_n)$.
+\qc أحسب نهاية المتتالية $(v_n)$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي غير معدوم $n$: $S_n=v_0+v_1+\cdots+v_{n-1}$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$ ، ثم أحسب نهايتها.
+\qb جد العدد الطبيعي $n$ بحيث: $S_n=\dfrac{3510}{81}$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} لدينا $v_1=18q$ و $v_2=18q^2$ ، ومنه:
+\[v_0+v_1+v_2=38\iff18+18q+18q^2=38\iff18q^2+18q-20=0\iff9q^2+9q-10=0.\]
+المميز: $\Delta=9^2-4\times9\times(-10)=81+360=441=21^2$ ، إذن للمعادلة حلان:
+\[q_1=\frac{-9+21}{18}=\frac{12}{18}=\frac23\qquad;\qquad q_2=\frac{-9-21}{18}=-\frac{30}{18}=-\frac53.\]
+الحل $q_2=-\dfrac53$ مرفوض لأن حدود المتتالية موجبة (أساس سالب يعطي حدوداً متناوبة الإشارة). إذن \bx{q=\dfrac23}.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} من أجل كل عدد طبيعي $n$: \ $v_n=v_0\,q^n=\bx{18\Big(\dfrac23\Big)^n}$.
+\pb من أجل كل عدد طبيعي $n$:
+\[v_{n+1}-v_n=18\Big(\frac23\Big)^{n+1}-18\Big(\frac23\Big)^n=18\Big(\frac23\Big)^n\Big(\frac23-1\Big)=-6\Big(\frac23\Big)^n<0.\]
+إذن $(v_n)$ \textbf{متناقصة تماماً}. \ (أو: $v_0>0$ و $0<q<1$).
+\pc لدينا: $\limn v_n=\bx{0}$ لأنّ: \quad $\Car{\limn\Big(\dfrac23\Big)^n=0\qquad\left(0<\dfrac23<1\right)}$
+
+\par\smallskip\textbf{3.} \textbf{(أ)} $S_n$ مجموع حدود من $v_0$ إلى $v_{n-1}$ ، عددها $(n-1)-0+1=n$:
+\[S_n=v_0\times\frac{1-q^n}{1-q}=18\times\frac{1-\big(\frac23\big)^n}{1-\frac23}=18\times3\Big[1-\Big(\frac23\Big)^n\Big]=\bx{54\Big[1-\Big(\frac23\Big)^n\Big]}.\]
+لدينا: $\limn S_n=\bx{54}$ لأنّ: \quad $\Car{\limn\Big(\dfrac23\Big)^n=0\qquad\left(0<\dfrac23<1\right)}$
+\pb نحل المعادلة:
+\begin{align*}
+54\Big[1-\Big(\frac23\Big)^n\Big]=\frac{3510}{81}&\iff1-\Big(\frac23\Big)^n=\frac{3510}{81\times54}=\frac{65}{81}\\
+&\iff\Big(\frac23\Big)^n=1-\frac{65}{81}=\frac{16}{81}=\frac{2^4}{3^4}=\Big(\frac23\Big)^4\iff\bx{n=4}
+\end{align*}
+\end{hal}
+
+% ================================================= 15
+\begin{tamrin}{تمرين من بكالوريا 2016 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة على $\N$ بـ: $u_0=5$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac47u_n+\dfrac37$.
+\begin{enumerate}
+\item أحسب $u_1$ و $u_2$.
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>1$.
+\qb بيّن أن المتتالية $(u_n)$ متناقصة تماماً.
+\qc ماذا تستنتج بالنسبة لتقارب المتتالية $(u_n)$؟
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-1$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb أكتب $v_n$ بدلالة $n$ ، واستنتج أن: $u_n=1+4\Big(\dfrac47\Big)^n$.
+\qc أحسب نهاية المتتالية $(u_n)$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} حساب الحدود:
+\begin{align*}
+u_1&=\frac47u_0+\frac37=\frac47\times5+\frac37=\frac{20}{7}+\frac37=\bx{\frac{23}{7}}\\
+u_2&=\frac47u_1+\frac37=\frac47\times\frac{23}{7}+\frac37=\frac{92}{49}+\frac{21}{49}=\bx{\frac{113}{49}}
+\end{align*}
+\textbf{2.} \textbf{(أ)} \Rec{$u_n>1$}{من أجل $n=0$: $u_0=5>1$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n>1$ ، بالضرب في العدد الموجب $\dfrac47$: $\dfrac47u_n>\dfrac47$ ، وبإضافة $\dfrac37$: $\dfrac47u_n+\dfrac37>\dfrac47+\dfrac37=1$ ، أي $u_{n+1}>1$.}
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac47u_n+\frac37-u_n=-\frac37u_n+\frac37=-\frac37\big(u_n-1\big).\]
+بما أن $u_n>1$ فإن $u_n-1>0$ ، ومنه $u_{n+1}-u_n<0$ ، إذن $(u_n)$ \textbf{متناقصة تماماً}.
+\pc $(u_n)$ متناقصة ومحدودة من الأسفل بالعدد $1$ ، إذن هي \textbf{متقاربة}.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}-1=\frac47u_n+\frac37-\frac77=\frac47u_n-\frac47=\frac47\big(u_n-1\big)=\frac47\,v_n.\]
+إذن $(v_n)$ هندسية أساسها \bx{q=\dfrac47} وحدها الأول $v_0=u_0-1=5-1=\bx{4}$.
+\pb من أجل كل عدد طبيعي $n$: $v_n=v_0\,q^n=4\Big(\dfrac47\Big)^n$ ، ومنه $u_n=v_n+1$ أي \bx{u_n=1+4\Big(\dfrac47\Big)^n}.
+\pc لدينا: $\limn u_n=\bx{1}$ لأنّ: \quad $\Car{\limn\Big(\dfrac47\Big)^n=0\qquad\left(-1<\dfrac47<1\right)}$
+\end{hal}
+
+% ================================================= 16
+\begin{tamrin}{تمرين من بكالوريا 2017 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=-1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac13u_n+2$.
+\begin{enumerate}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n<3$.
+\qb بيّن أن المتتالية $(u_n)$ متزايدة تماماً.
+\qc استنتج أن المتتالية $(u_n)$ متقاربة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=3-u_n$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac13$ ، ثم عيّن حدها الأول.
+\qb أكتب $u_n$ بدلالة $n$.
+\qc نضع: $S_n=u_0+u_1+\cdots+u_n$. بيّن أن: $S_n=3(n-1)+2\Big(\dfrac13\Big)^n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \textbf{(أ)} \Rec{$u_n<3$}{من أجل $n=0$: $u_0=-1<3$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n<3$ ، بالضرب في $\dfrac13$: $\dfrac13u_n<1$ ، وبإضافة $2$: $\dfrac13u_n+2<3$ ، أي $u_{n+1}<3$.}
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac13u_n+2-u_n=-\frac23u_n+2=\frac23\big(3-u_n\big).\]
+بما أن $u_n<3$ فإن $3-u_n>0$ ، ومنه $u_{n+1}-u_n>0$ ، إذن $(u_n)$ \textbf{متزايدة تماماً}.
+\pc $(u_n)$ متزايدة ومحدودة من الأعلى بالعدد $3$ ، إذن هي \textbf{متقاربة}.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=3-u_{n+1}=3-\frac13u_n-2=1-\frac13u_n=\frac13\big(3-u_n\big)=\frac13\,v_n.\]
+إذن $(v_n)$ هندسية أساسها $\dfrac13$ وحدها الأول $v_0=3-u_0=3-(-1)=\bx{4}$.
+\pb من أجل كل عدد طبيعي $n$: $v_n=4\Big(\dfrac13\Big)^n$ ، ومن $v_n=3-u_n$ نجد \bx{u_n=3-4\Big(\dfrac13\Big)^n}.
+\pc لدينا $u_k=3-v_k$ ، إذن:
+\begin{align*}
+S_n&=3(n+1)-(v_0+\cdots+v_n)=3(n+1)-4\times\frac{1-\big(\frac13\big)^{n+1}}{1-\frac13}\\
+&=3n+3-6\Big[1-\Big(\frac13\Big)^{n+1}\Big]=3n+3-6+6\times\frac13\Big(\frac13\Big)^n=\bx{3(n-1)+2\Big(\frac13\Big)^n}
+\end{align*}
+\end{hal}
+
+% ================================================= 17
+\begin{tamrin}{تمرين من بكالوريا 2017 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=2$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=3u_n-2$.
+\begin{enumerate}
+\item أحسب $u_1$ ، $u_2$ و $u_3$ ، ثم خمّن اتجاه تغير المتتالية $(u_n)$.
+\item نعتبر المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=u_{n+1}-u_n$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $3$ ، يطلب تعيين حدها الأول.
+\qb عيّن $v_n$ بدلالة $n$ ، ثم استنتج أن المتتالية $(u_n)$ متزايدة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي غير معدوم $n$: $S_n=v_0+v_1+\cdots+v_{n-1}$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb بيّن أن $u_n=S_n+u_0$ ، ثم استنتج عبارة $u_n$ بدلالة $n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \ $u_1=3\times2-2=\bx{4}$ \ ؛ \ $u_2=3\times4-2=\bx{10}$ \ ؛ \ $u_3=3\times10-2=\bx{28}$.\\
+نلاحظ أن $u_0<u_1<u_2<u_3$ ، فنخمّن أن المتتالية $(u_n)$ \textbf{متزايدة}.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+2}-u_{n+1}=\big(3u_{n+1}-2\big)-\big(3u_n-2\big)=3u_{n+1}-3u_n=3\big(u_{n+1}-u_n\big)=3\,v_n.\]
+إذن $(v_n)$ هندسية أساسها \bx{q=3} وحدها الأول $v_0=u_1-u_0=4-2=\bx{2}$.
+\pb من أجل كل عدد طبيعي $n$: $v_n=v_0\,q^n=\bx{2\times3^n}$.\\
+بما أن $3^n>0$ فإن $v_n>0$ ، أي $u_{n+1}-u_n>0$ ، إذن $(u_n)$ \textbf{متزايدة تماماً} (وهذا يؤكد التخمين).
+
+\par\smallskip\textbf{3.} \textbf{(أ)} $S_n$ مجموع $n$ حداً (من $v_0$ إلى $v_{n-1}$):
+\[S_n=v_0\times\frac{1-3^n}{1-3}=2\times\frac{3^n-1}{2}=\bx{3^n-1}.\]
+\pb نعوّض كل $v_k$ بـ $u_{k+1}-u_k$:
+\[S_n=(u_1-u_0)+(u_2-u_1)+(u_3-u_2)+\cdots+(u_n-u_{n-1})=u_n-u_0\quad(\text{\ar{الحدود الوسطى تختزل}}).\]
+ومنه $u_n=S_n+u_0=3^n-1+2$ ، أي من أجل كل عدد طبيعي $n$: \ \bx{u_n=3^n+1} \ (وهي صحيحة أيضاً من أجل $n=0$: $3^0+1=2=u_0$).
+\end{hal}
+
+% ================================================= 18
+\begin{tamrin}{تمرين من بكالوريا 2017 (الدورة الاستثنائية) -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=-2$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac12u_n+1$.
+\begin{enumerate}
+\item \begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $u_n<2$.
+\qb عيّن اتجاه تغير المتتالية $(u_n)$ ، ثم استنتج أنها متقاربة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=2u_n-4$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb أكتب $v_n$ بدلالة $n$ ، ثم استنتج $u_n$ بدلالة $n$.
+\end{sq}
+\item أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_n$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \textbf{(أ)} \Rec{$u_n<2$}{من أجل $n=0$: $u_0=-2<2$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n<2$ ، بالضرب في $\dfrac12$: $\dfrac12u_n<1$ ، وبإضافة $1$: $\dfrac12u_n+1<2$ ، أي $u_{n+1}<2$.}
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac12u_n+1-u_n=1-\frac12u_n=\frac12\big(2-u_n\big).\]
+بما أن $u_n<2$ فإن $2-u_n>0$ ، ومنه $u_{n+1}-u_n>0$: المتتالية $(u_n)$ \textbf{متزايدة تماماً}.\\
+$(u_n)$ متزايدة ومحدودة من الأعلى بالعدد $2$ ، إذن هي \textbf{متقاربة}.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=2u_{n+1}-4=2\Big(\frac12u_n+1\Big)-4=u_n+2-4=u_n-2=\frac12\big(2u_n-4\big)=\frac12\,v_n.\]
+إذن $(v_n)$ هندسية أساسها \bx{q=\dfrac12} وحدها الأول $v_0=2u_0-4=2\times(-2)-4=\bx{-8}$.
+\pb من أجل كل عدد طبيعي $n$: \ $v_n=\bx{-8\Big(\dfrac12\Big)^n}$.\\
+ومن $v_n=2u_n-4$ نجد $u_n=\dfrac{v_n+4}{2}=\dfrac{-8\big(\frac12\big)^n+4}{2}$ ، أي \bx{u_n=2-4\Big(\dfrac12\Big)^n}.
+
+\par\smallskip\textbf{3.} لدينا $u_k=2-4\Big(\dfrac12\Big)^k$ ، إذن:
+\begin{align*}
+S_n&=2(n+1)-4\Big[1+\frac12+\cdots+\Big(\frac12\Big)^n\Big]=2n+2-4\times\frac{1-\big(\frac12\big)^{n+1}}{1-\frac12}\\
+&=2n+2-8+8\times\frac12\Big(\frac12\Big)^n=\bx{2n-6+4\Big(\frac12\Big)^n}
+\end{align*}
+\end{hal}
+
+% ================================================= 19
+\begin{tamrin}{تمرين من بكالوريا 2017 (الدورة الاستثنائية) -- الموضوع الثاني ($\star\star$ بعد درس الأسية)}
+$(v_n)$ متتالية هندسية أساسها $e^2$ وحدها الأول $v_0=1$.
+\begin{enumerate}
+\item أحسب بدلالة $n$ المجموع: $S_n=v_0+v_1+\cdots+v_n$.
+\item نعتبر المتتاليتين $(w_n)$ و $(u_n)$ المعرفتين من أجل كل عدد طبيعي $n$ بـ: $w_n=2n+4+e^{2n}$ و $u_n=w_n-v_n$.\\
+بيّن أن $(u_n)$ متتالية حسابية يطلب تعيين أساسها $r$ وحدها الأول $u_0$.
+\item بيّن أنه من أجل كل عدد طبيعي $n$: $4+6+8+\cdots+(2n+4)=(n+1)(n+4)$.
+\item استنتج بدلالة $n$ المجموع: $T_n=w_0+w_1+\cdots+w_n$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} $S_n$ مجموع $n+1$ حداً من متتالية هندسية حدها الأول $1$ وأساسها $e^2\ne1$:
+\[S_n=1\times\frac{1-(e^2)^{n+1}}{1-e^2}=\bx{\frac{e^{2n+2}-1}{e^2-1}}.\]
+\textbf{2.} من أجل كل عدد طبيعي $n$: $v_n=v_0\times(e^2)^n=e^{2n}$ ، ومنه:
+\[u_n=w_n-v_n=2n+4+e^{2n}-e^{2n}=2n+4.\]
+$u_{n+1}-u_n=2(n+1)+4-(2n+4)=2$ ، إذن $(u_n)$ حسابية أساسها \bx{r=2} وحدها الأول $u_0=\bx{4}$.
+
+\par\smallskip\textbf{3.} $4+6+\cdots+(2n+4)=u_0+u_1+\cdots+u_n$: مجموع $n+1$ حداً من متتالية حسابية ، حدها الأول $4$ والأخير $2n+4$:
+\[4+6+\cdots+(2n+4)=\frac{n+1}{2}\big(4+2n+4\big)=\frac{(n+1)\times2(n+4)}{2}=\bx{(n+1)(n+4)}.\]
+\textbf{4.} لدينا $w_n=u_n+v_n$ ، إذن:
+\[T_n=(u_0+\cdots+u_n)+(v_0+\cdots+v_n)=\bx{(n+1)(n+4)+\frac{e^{2n+2}-1}{e^2-1}}.\]
+\end{hal}
+
+% ================================================= 20
+\begin{tamrin}{تمرين من بكالوريا 2018 -- الموضوع الأول}
+\textbf{الجزء الأول:} $(u_n)$ و $(v_n)$ متتاليتان معرفتان بـ: $u_0=50$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=0{,}7u_n+6$ \ و \ $v_n=u_n-20$.
+\begin{enumerate}
+\item برهن أن $(v_n)$ متتالية هندسية أساسها $0{,}7$ ، يطلب تعيين حدها الأول $v_0$.
+\item أكتب $v_n$ بدلالة $n$.
+\item \begin{sq}
+\qa أكتب $u_n$ بدلالة $n$.
+\qb عيّن اتجاه تغير المتتالية $(u_n)$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\end{enumerate}
+\textbf{الجزء الثاني:} تملك جريدة يومية $5000$ مشترك سنة 2016. بعد كل سنة تفقد $30\%$ من المشتركين وتكتسب $600$ مشترك جديد.
+نعتبر المئة هي الوحدة ، ونرمز بـ $u_n$ لعدد المشتركين سنة $2016+n$ ، أي $u_0=50$.
+\begin{enumerate}
+\item ما هو عدد المشتركين سنة 2017؟ ثم سنة 2018؟
+\item \begin{sq}
+\qa برّر أنه من أجل كل عدد طبيعي $n$: $u_{n+1}=0{,}7u_n+6$.
+\qb ابتداءً من أي سنة يصبح عدد المشتركين أقل من $2400$؟
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{الجزء الأول:}
+
+\textbf{1.} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}-20=0{,}7u_n+6-20=0{,}7u_n-14=0{,}7\big(u_n-20\big)=0{,}7\,v_n.\]
+إذن $(v_n)$ هندسية أساسها \bx{q=0{,}7} وحدها الأول $v_0=u_0-20=50-20=\bx{30}$.
+
+\textbf{2.} من أجل كل عدد طبيعي $n$: \ $v_n=v_0\,q^n=\bx{30\times(0{,}7)^n}$.
+
+\textbf{3.} \textbf{(أ)} $u_n=v_n+20$ ، أي من أجل كل عدد طبيعي $n$: \ \bx{u_n=20+30\times(0{,}7)^n}.
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=30(0{,}7)^{n+1}-30(0{,}7)^n=30(0{,}7)^n(0{,}7-1)=-9\times(0{,}7)^n<0.\]
+إذن $(u_n)$ \textbf{متناقصة تماماً}.
+\pc لدينا: $\limn u_n=\bx{20}$ لأنّ: \quad $\Car{\limn(0{,}7)^n=0\qquad\left(0<0{,}7<1\right)}$
+
+\medskip
+\textbf{الجزء الثاني:}
+
+\textbf{1.} سنة 2017: \ $u_1=0{,}7\times50+6=35+6=41$ ، أي \bx{4100} مشترك.\\
+سنة 2018: \ $u_2=0{,}7\times41+6=28{,}7+6=34{,}7$ ، أي \bx{3470} مشترك.
+
+\textbf{2.} \textbf{(أ)} تفقد الجريدة $30\%$ من مشتركيها ، فيبقى $70\%$ منهم أي $0{,}7\,u_n$ (بالمئات) ، وتكتسب $600$ مشترك أي $6$ مئات. إذن: $u_{n+1}=0{,}7\,u_n+6$.
+\pb $2400$ مشترك توافق $24$ مئة. نبحث عن أصغر $n$ بحيث $u_n<24$:
+\[20+30(0{,}7)^n<24\iff30(0{,}7)^n<4\iff(0{,}7)^n<\frac{4}{30}=\frac{2}{15}.\]
+بما أن $0<0{,}7<1$ فإن المتتالية $\big((0{,}7)^n\big)$ متناقصة تمامًا ، فنحسب حدودها بالآلة الحاسبة:
+\[(0{,}7)^5\approx0{,}168>\frac2{15}\approx0{,}133\qquad;\qquad(0{,}7)^6\approx0{,}118<\frac2{15}\]
+إذن أصغر قيمة هي $n=6$ ، وتبقى المتراجحة محققة من أجل كل $n\geqslant6$.\\
+\textbf{تحقق:} $u_5=20+30(0{,}7)^5\approx25{,}04>24$ \ و \ $u_6=20+30(0{,}7)^6\approx23{,}53<24$.\\
+إذن يصبح عدد المشتركين أقل من $2400$ ابتداءً من سنة $2016+6=\bx{2022}$.
+\end{hal}
+
+% ================================================= 21
+\begin{tamrin}{تمرين من بكالوريا 2018 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=-1$ ، ومن أجل كل عدد طبيعي $n$: \ $2u_{n+1}=u_n+6$.
+\begin{enumerate}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n<6$.
+\qb أدرس اتجاه تغير المتتالية $(u_n)$ ، واستنتج أنها متقاربة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-6$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac12$ ، وعيّن حدها الأول $v_0$.
+\qb أكتب $v_n$ بدلالة $n$ ، ثم استنتج $u_n$ بدلالة $n$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\item \begin{sq}
+\qa أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_n$.
+\qb أحسب بدلالة $n$ الجداء: $P_n=v_0\times v_1\times\cdots\times v_n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+من $2u_{n+1}=u_n+6$ نجد: من أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac12u_n+3$.
+
+\textbf{1.} \textbf{(أ)} \Rec{$u_n<6$}{من أجل $n=0$: $u_0=-1<6$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n<6$ ، بالضرب في $\dfrac12$: $\dfrac12u_n<3$ ، وبإضافة $3$: $\dfrac12u_n+3<6$ ، أي $u_{n+1}<6$.}
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac12u_n+3-u_n=3-\frac12u_n=\frac12\big(6-u_n\big).\]
+بما أن $u_n<6$ فإن $6-u_n>0$ ، ومنه $u_{n+1}-u_n>0$: المتتالية $(u_n)$ \textbf{متزايدة تماماً}.\\
+$(u_n)$ متزايدة ومحدودة من الأعلى بالعدد $6$ ، إذن هي \textbf{متقاربة}.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}-6=\frac12u_n+3-6=\frac12u_n-3=\frac12\big(u_n-6\big)=\frac12\,v_n.\]
+إذن $(v_n)$ هندسية أساسها $\dfrac12$ وحدها الأول $v_0=u_0-6=-1-6=\bx{-7}$.
+\pb من أجل كل عدد طبيعي $n$: \ $v_n=\bx{-7\Big(\dfrac12\Big)^n}$ \ ، و \ $u_n=v_n+6=\bx{6-7\Big(\dfrac12\Big)^n}$.
+\pc لدينا: $\limn u_n=\bx{6}$ لأنّ: \quad $\Car{\limn\Big(\dfrac12\Big)^n=0\qquad\left(-1<\dfrac12<1\right)}$
+
+\par\smallskip\textbf{3.} \textbf{(أ)} لدينا $u_k=6+v_k$ ، إذن:
+\begin{align*}
+S_n&=6(n+1)+(v_0+\cdots+v_n)=6(n+1)-7\times\frac{1-\big(\frac12\big)^{n+1}}{1-\frac12}\\
+&=6n+6-14+14\times\frac12\Big(\frac12\Big)^n=\bx{6n-8+7\Big(\frac12\Big)^n}
+\end{align*}
+\pb كل حد من الجداء من الشكل $v_k=(-7)\times\Big(\dfrac12\Big)^k$ ، والجداء فيه $n+1$ عاملاً:
+\begin{align*}
+P_n&=\Big[(-7)\Big(\frac12\Big)^0\Big]\times\Big[(-7)\Big(\frac12\Big)^1\Big]\times\cdots\times\Big[(-7)\Big(\frac12\Big)^n\Big]=(-7)^{n+1}\times\Big(\frac12\Big)^{0+1+2+\cdots+n}
+\end{align*}
+و $0+1+\cdots+n=\dfrac{n(n+1)}{2}$ (مجموع حدود متتالية حسابية) ، إذن: \ \bx{P_n=(-7)^{n+1}\Big(\dfrac12\Big)^{\frac{n(n+1)}{2}}}.
+\end{hal}
+
+% ================================================= 22
+\begin{tamrin}{تمرين من بكالوريا 2019 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=-4$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac34u_n+2$.
+\begin{enumerate}
+\item \begin{sq}
+\qa أحسب $u_1$ و $u_2$.
+\qb برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n<8$.
+\end{sq}
+\item أدرس اتجاه تغير المتتالية $(u_n)$ ، واستنتج أنها متقاربة.
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-\alpha$ ، حيث $\alpha$ عدد حقيقي.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $v_{n+1}=\dfrac34v_n-\dfrac14\alpha+2$.
+\qb عيّن قيمة $\alpha$ حتى تكون $(v_n)$ متتالية هندسية أساسها $\dfrac34$ ، وعيّن حدها الأول $v_0$.
+\qc نضع $\alpha=8$. عبّر عن $v_n$ بدلالة $n$ ، واستنتج أن: $u_n=-12\Big(\dfrac34\Big)^n+8$.
+\end{sq}
+\item أحسب بدلالة $n$ المجموع: $S_n=u_1+u_2+\cdots+u_n$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \textbf{(أ)} \ $u_1=\dfrac34\times(-4)+2=-3+2=\bx{-1}$ \ ؛ \ $u_2=\dfrac34\times(-1)+2=-\dfrac34+\dfrac84=\bx{\dfrac54}$.
+\pb \Rec{$u_n<8$}{من أجل $n=0$: $u_0=-4<8$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n<8$ ، بالضرب في $\dfrac34$: $\dfrac34u_n<6$ ، وبإضافة $2$: $\dfrac34u_n+2<8$ ، أي $u_{n+1}<8$.}
+
+\textbf{2.} من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac34u_n+2-u_n=2-\frac14u_n=\frac14\big(8-u_n\big).\]
+بما أن $u_n<8$ فإن $8-u_n>0$ ، ومنه $u_{n+1}-u_n>0$: المتتالية $(u_n)$ \textbf{متزايدة تماماً}.\\
+$(u_n)$ متزايدة ومحدودة من الأعلى بالعدد $8$ ، إذن هي \textbf{متقاربة}.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} لدينا $v_n=u_n-\alpha$ أي $u_n=v_n+\alpha$. من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}-\alpha=\frac34u_n+2-\alpha=\frac34\big(v_n+\alpha\big)+2-\alpha=\frac34v_n+\frac34\alpha-\alpha+2=\frac34v_n-\frac14\alpha+2.\]
+\pb تكون $(v_n)$ هندسية أساسها $\dfrac34$ إذا كان $v_{n+1}=\dfrac34v_n$ ، أي إذا انعدم الحد الثابت:
+\[-\frac14\alpha+2=0\iff\frac14\alpha=2\iff\bx{\alpha=8}.\]
+وعندئذ: $v_0=u_0-8=-4-8=\bx{-12}$.
+\pc من أجل $\alpha=8$ ومن أجل كل عدد طبيعي $n$: \ $v_n=v_0\,q^n=-12\Big(\dfrac34\Big)^n$ ، ومنه:
+\[u_n=v_n+8=\bx{-12\Big(\frac34\Big)^n+8}.\]
+\textbf{4.} لدينا $u_k=8+v_k$ ، والمجموع من $u_1$ إلى $u_n$ فيه $n$ حداً:
+\begin{align*}
+S_n&=8n+(v_1+v_2+\cdots+v_n)=8n+v_1\times\frac{1-\big(\frac34\big)^n}{1-\frac34}\qquad\Big(v_1=-12\times\frac34=-9\Big)\\
+&=8n-9\times4\Big[1-\Big(\frac34\Big)^n\Big]=\bx{8n-36+36\Big(\frac34\Big)^n}
+\end{align*}
+\end{hal}
+
+% ================================================= 23
+\begin{tamrin}{تمرين من بكالوريا 2019 -- الموضوع الثاني ($\star\star$ بعد درس الأسية)}
+$(u_n)$ متتالية حسابية معرفة على $\N$ ، تحقق: $u_2+2u_5=27$ \ و \ $u_1=\dfrac92$.
+\begin{enumerate}
+\item أحسب حدها الأول $u_0$ وأساسها $r$.
+\item أكتب $u_n$ بدلالة $n$.
+\item \begin{sq}
+\qa بيّن أن العدد $2019$ حد من حدود المتتالية $(u_n)$ ، وعيّن رتبته.
+\qb أحسب المجموع: $S_1=u_1+u_2+\cdots+u_{1344}$.
+\qc أحسب المجموع: $S_2=u_2+u_4+u_6+\cdots+u_{1344}$.
+\qd استنتج المجموع: $S_3=u_1+u_3+u_5+\cdots+u_{1343}$.
+\end{sq}
+\item نعتبر المتتالية $(v_n)$ المعرفة على $\N$ بـ: $v_n=e^{6-2u_n}$.\\
+أحسب بدلالة $n$ المجموع: $S_n=\dfrac1{v_0}+\dfrac1{v_1}+\cdots+\dfrac1{v_n}$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} نعبّر عن الحدود بدلالة $u_1$: $u_2=u_1+r$ و $u_5=u_1+4r$. ومنه:
+\begin{align*}
+u_2+2u_5=27&\iff(u_1+r)+2(u_1+4r)=27\iff3u_1+9r=27\\
+&\iff\frac{27}{2}+9r=27\iff9r=\frac{27}{2}\iff\bx{r=\frac32}
+\end{align*}
+والحد الأول: $u_0=u_1-r=\dfrac92-\dfrac32=\bx{3}$.
+
+\textbf{2.} من أجل كل عدد طبيعي $n$: \ $u_n=u_0+nr=\bx{3+\dfrac32n}$.
+
+\textbf{3.} \textbf{(أ)} نبحث عن عدد طبيعي $n$ بحيث $u_n=2019$:
+\[3+\frac32n=2019\iff\frac32n=2016\iff n=\frac{2\times2016}{3}=1344.\]
+$1344$ عدد طبيعي ، إذن $2019$ حد من حدود المتتالية وهو \bx{u_{1344}}.
+\pb عدد حدود $S_1$: $1344-1+1=1344$ ، حده الأول $u_1=\dfrac92$ والأخير $u_{1344}=2019$:
+\[S_1=\frac{1344}{2}\Big(\frac92+2019\Big)=672\times2023{,}5=\bx{1359792}.\]
+\pc الحدود $u_2,u_4,\ldots,u_{1344}$ تشكل متتالية حسابية أساسها $2r=3$. عددها: $\dfrac{1344-2}{2}+1=672$ ، أولها $u_2=6$ وآخرها $2019$:
+\[S_2=\frac{672}{2}\big(6+2019\big)=336\times2025=\bx{680400}.\]
+\pd $S_1$ يحوي كل الحدود من $u_1$ إلى $u_{1344}$ ، أي الحدود ذات الدليل الفردي ($S_3$) والحدود ذات الدليل الزوجي ($S_2$):
+\[S_3=S_1-S_2=1359792-680400=\bx{679392}.\]
+\textbf{4.} من أجل كل عدد طبيعي $n$: $6-2u_n=6-2\Big(3+\dfrac32n\Big)=6-6-3n=-3n$ ، ومنه $v_n=e^{-3n}$ و:
+\[\frac1{v_n}=\frac{1}{e^{-3n}}=e^{3n}=\big(e^3\big)^n.\]
+إذن $\Big(\dfrac1{v_n}\Big)$ متتالية هندسية أساسها $e^3$ وحدها الأول $1$ ، و $S_n$ مجموع $n+1$ حداً منها:
+\[S_n=1\times\frac{1-(e^3)^{n+1}}{1-e^3}=\bx{\frac{e^{3n+3}-1}{e^3-1}}.\]
+\end{hal}
+
+% ================================================= 24
+\begin{tamrin}{تمرين من بكالوريا 2020 -- الموضوع الأول (مسألة)}
+يتقاضى موظف خلال سنة 2019 راتباً شهرياً ثابتاً قدره $70000\,DA$. في شهر جانفي استهلك منه $80\%$ ، وابتداءً من شهر فيفري قرر تخفيض مبلغ الاستهلاك شهرياً بنسبة $5\%$ من المبلغ المستهلك في الشهر الذي قبله.
+\begin{enumerate}
+\item \begin{sq}
+\qa ما هو المبلغ المستهلك في شهر جانفي؟
+\qb حدد المبلغ المستهلك في شهر فيفري.
+\end{sq}
+\item نرمز بـ $u_1$ للمبلغ المستهلك في شهر جانفي ، وبـ $u_n$ للمبلغ المستهلك في الشهر رقم $n$.
+\begin{sq}
+\qa عبّر عن $u_{n+1}$ بدلالة $u_n$.
+\qb استنتج أن $(u_n)$ متتالية هندسية أساسها $0{,}95$.
+\end{sq}
+\item أكتب عبارة الحد العام $u_n$ بدلالة $n$.
+\item \begin{sq}
+\qa أحسب المبلغ المستهلك خلال سنة 2019.
+\qb أوجد المبلغ المدخر خلال هذه السنة.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \textbf{(أ)} المبلغ المستهلك في جانفي: $u_1=\dfrac{80}{100}\times70000=\bx{56000\,DA}$.
+\pb في فيفري يُخفَّض الاستهلاك بـ $5\%$ من استهلاك جانفي:
+\[u_2=56000-\frac{5}{100}\times56000=56000-2800=\bx{53200\,DA}.\]
+\textbf{2.} \textbf{(أ)} من أجل كل عدد طبيعي غير معدوم $n$: \ $u_{n+1}=u_n-\dfrac{5}{100}u_n=(1-0{,}05)u_n=\bx{0{,}95\,u_n}$.
+\pb العلاقة من الشكل $u_{n+1}=q\,u_n$ ، إذن $(u_n)$ هندسية أساسها $q=0{,}95$ وحدها الأول $u_1=56000$.
+
+\textbf{3.} الحد الأول هو $u_1$ ، ومنه من أجل كل عدد طبيعي غير معدوم $n$: \ $u_n=u_1\times q^{n-1}=\bx{56000\times(0{,}95)^{n-1}}$.
+
+\textbf{4.} \textbf{(أ)} المبلغ المستهلك خلال السنة هو مجموع $12$ حداً من $u_1$ إلى $u_{12}$:
+\[u_1+u_2+\cdots+u_{12}=56000\times\frac{1-(0{,}95)^{12}}{1-0{,}95}=1120000\big[1-(0{,}95)^{12}\big]\approx\bx{514796{,}70\,DA}.\]
+\pb مجموع الرواتب خلال السنة: $12\times70000=840000\,DA$. المبلغ المدخر:
+\[840000-514796{,}70\approx\bx{325203{,}30\,DA}.\]
+\end{hal}
+
+% ================================================= 25
+\begin{tamrin}{تمرين من بكالوريا 2020 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac23u_n+\dfrac32$.
+\begin{enumerate}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n<\dfrac92$.
+\qb أدرس اتجاه تغير المتتالية $(u_n)$ ، واستنتج أنها متقاربة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-\dfrac92$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac23$ ، وأحسب حدها الأول $v_0$.
+\qb عبّر عن $v_n$ ثم عن $u_n$ بدلالة $n$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\item أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_n$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \textbf{(أ)} \Rec{$u_n<\dfrac92$}{من أجل $n=0$: $u_0=1<\dfrac92$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n<\dfrac92$ ، بالضرب في $\dfrac23$: $\dfrac23u_n<3$ ، وبإضافة $\dfrac32$: $\dfrac23u_n+\dfrac32<3+\dfrac32=\dfrac92$ ، أي $u_{n+1}<\dfrac92$.}
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac23u_n+\frac32-u_n=\frac32-\frac13u_n=\frac13\Big(\frac92-u_n\Big).\]
+بما أن $u_n<\dfrac92$ فإن $\dfrac92-u_n>0$ ، ومنه $u_{n+1}-u_n>0$: المتتالية $(u_n)$ \textbf{متزايدة تماماً}.\\
+$(u_n)$ متزايدة ومحدودة من الأعلى بالعدد $\dfrac92$ ، إذن هي \textbf{متقاربة}.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}-\frac92=\frac23u_n+\frac32-\frac92=\frac23u_n-3=\frac23\Big(u_n-\frac92\Big)=\frac23\,v_n.\]
+إذن $(v_n)$ هندسية أساسها $\dfrac23$ وحدها الأول $v_0=1-\dfrac92=\bx{-\dfrac72}$.
+\pb من أجل كل عدد طبيعي $n$: \ $v_n=\bx{-\dfrac72\Big(\dfrac23\Big)^n}$ \ ، و \ $u_n=v_n+\dfrac92=\bx{\dfrac92-\dfrac72\Big(\dfrac23\Big)^n}$.
+\pc لدينا: $\limn u_n=\bx{\dfrac92}$ لأنّ: \quad $\Car{\limn\Big(\dfrac23\Big)^n=0\qquad\left(-1<\dfrac23<1\right)}$
+
+\par\smallskip\textbf{3.} لدينا $u_k=\dfrac92+v_k$ ، إذن:
+\begin{align*}
+S_n&=\frac92(n+1)+(v_0+\cdots+v_n)=\frac92(n+1)-\frac72\times\frac{1-\big(\frac23\big)^{n+1}}{1-\frac23}\\
+&=\frac92(n+1)-\frac{21}{2}\Big[1-\Big(\frac23\Big)^{n+1}\Big]=\frac{9n+9-21}{2}+\frac{21}{2}\times\frac23\Big(\frac23\Big)^n\\
+&=\bx{\frac{9n-12}{2}+7\Big(\frac23\Big)^n}
+\end{align*}
+\end{hal}
+
+% ================================================= 26
+\begin{tamrin}{تمرين من بكالوريا 2020 -- الموضوع الثاني ($\star\star$ بعد درس اللوغاريتم)}
+$(v_n)$ متتالية هندسية حدها الأول $v_0$ وأساسها $q$ موجبان تماماً ، وتحقق:
+$\begin{cases}\ln v_5+\ln v_3=8\ln2\\ \ln v_5-\ln v_3=2\ln2\end{cases}$
+\begin{enumerate}
+\item بيّن أن $v_3=8$ و $v_5=32$.
+\item \begin{sq}
+\qa بيّن أن $q=2$ و $v_0=1$.
+\qb أكتب $v_n$ بدلالة $n$.
+\qc هل العدد $1024$ حد من حدود المتتالية $(v_n)$؟
+\end{sq}
+\item نعتبر المتتالية $(w_n)$ المعرفة على $\N$ بـ: $w_n=2n-3+2^n$.
+\begin{sq}
+\qa تحقق أن $w_n=u_n+v_n$ حيث $u_n=2n-3$ ، وعيّن طبيعة المتتالية $(u_n)$.
+\qb نضع: $S_n=w_0+w_1+\cdots+w_n$. بيّن أن: $S_n=(n+1)(n-3)+2^{n+1}-1$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} بجمع المعادلتين طرفاً لطرف:
+\[2\ln v_5=10\ln2\iff\ln v_5=5\ln2=\ln2^5\iff v_5=2^5=\bx{32}.\]
+وبطرح المعادلة الثانية من الأولى:
+\[2\ln v_3=6\ln2\iff\ln v_3=3\ln2=\ln2^3\iff v_3=2^3=\bx{8}.\]
+\textbf{2.} \textbf{(أ)} لدينا $v_5=v_3\times q^{5-3}=v_3\times q^2$ ، ومنه $q^2=\dfrac{32}{8}=4$ ، وبما أن $q>0$ فإن \bx{q=2}.\\
+ولدينا $v_3=v_0\times q^3$ ، ومنه $v_0=\dfrac{v_3}{q^3}=\dfrac88=\bx{1}$.
+\pb من أجل كل عدد طبيعي $n$: \ $v_n=v_0\times q^n=\bx{2^n}$.
+\pc $1024=2^{10}=v_{10}$ ، إذن \textbf{نعم} ، العدد $1024$ حد من حدود المتتالية ، وهو $v_{10}$ (الحد ذو الرتبة $11$).
+
+\par\smallskip\textbf{3.} \textbf{(أ)} من أجل كل عدد طبيعي $n$: $u_n+v_n=2n-3+2^n=w_n$.\\
+$u_{n+1}-u_n=2(n+1)-3-(2n-3)=2$ ، إذن $(u_n)$ حسابية أساسها $2$ وحدها الأول $u_0=-3$.
+\pb $S_n=(u_0+\cdots+u_n)+(v_0+\cdots+v_n)$ ، وكل مجموع فيه $n+1$ حداً:
+\begin{itemize}
+\item $u_0+\cdots+u_n=\dfrac{n+1}{2}\big(u_0+u_n\big)=\dfrac{n+1}{2}\big(-3+2n-3\big)=\dfrac{(n+1)(2n-6)}{2}=(n+1)(n-3)$.
+\item $v_0+\cdots+v_n=1\times\dfrac{1-2^{n+1}}{1-2}=2^{n+1}-1$.
+\end{itemize}
+إذن: \ \bx{S_n=(n+1)(n-3)+2^{n+1}-1}.
+\end{hal}
+
+% ================================================= 27
+\begin{tamrin}{تمرين من بكالوريا 2020 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=5$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac57u_n+\dfrac67$.
+\begin{enumerate}
+\item برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>3$.
+\item أدرس اتجاه تغير المتتالية $(u_n)$ ، واستنتج أنها متقاربة.
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-3$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb أكتب $v_n$ بدلالة $n$.
+\qc استنتج أن: $u_n=2\Big(\dfrac57\Big)^n+3$ ، ثم أحسب نهاية المتتالية $(u_n)$.
+\end{sq}
+\item عيّن أصغر قيمة للعدد الطبيعي $n$ التي يكون من أجلها: $u_n<\dfrac72$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \Rec{$u_n>3$}{من أجل $n=0$: $u_0=5>3$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n>3$ ، بالضرب في $\dfrac57$: $\dfrac57u_n>\dfrac{15}{7}$ ، وبإضافة $\dfrac67$: $\dfrac57u_n+\dfrac67>\dfrac{21}{7}=3$ ، أي $u_{n+1}>3$.}
+
+\textbf{2.} من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac57u_n+\frac67-u_n=-\frac27u_n+\frac67=-\frac27\big(u_n-3\big).\]
+بما أن $u_n>3$ فإن $u_n-3>0$ ، ومنه $u_{n+1}-u_n<0$: المتتالية $(u_n)$ \textbf{متناقصة تماماً}.\\
+$(u_n)$ متناقصة ومحدودة من الأسفل بالعدد $3$ ، إذن هي \textbf{متقاربة}.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}-3=\frac57u_n+\frac67-\frac{21}{7}=\frac57u_n-\frac{15}{7}=\frac57\big(u_n-3\big)=\frac57\,v_n.\]
+إذن $(v_n)$ هندسية أساسها \bx{q=\dfrac57} وحدها الأول $v_0=u_0-3=5-3=\bx{2}$.
+\pb من أجل كل عدد طبيعي $n$: \ $v_n=v_0\,q^n=\bx{2\Big(\dfrac57\Big)^n}$.
+\pc $u_n=v_n+3$ ، أي من أجل كل عدد طبيعي $n$: \bx{u_n=2\Big(\dfrac57\Big)^n+3}.\\
+لدينا: $\limn u_n=\bx{3}$ لأنّ: \quad $\Car{\limn\Big(\dfrac57\Big)^n=0\qquad\left(-1<\dfrac57<1\right)}$
+
+\par\smallskip\textbf{4.} نحل المتراجحة:
+\[u_n<\frac72\iff2\Big(\frac57\Big)^n+3<\frac72\iff2\Big(\frac57\Big)^n<\frac12\iff\Big(\frac57\Big)^n<\frac14.\]
+بما أن $0<\dfrac57<1$ فإن المتتالية $\Big(\big(\tfrac57\big)^n\Big)$ متناقصة تمامًا ، فنحسب حدودها بالآلة الحاسبة:
+\[\Big(\frac57\Big)^4\approx0{,}260>\frac14\qquad;\qquad\Big(\frac57\Big)^5\approx0{,}186<\frac14\]
+إذن أصغر قيمة هي \bx{n=5}. \ \textbf{تحقق:} $u_4\approx3{,}52>3{,}5$ \ و \ $u_5\approx3{,}37<3{,}5$.
+\end{hal}
+
+% ================================================= 28
+\begin{tamrin}{تمرين من بكالوريا 2021 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة من أجل كل عدد طبيعي $n$ بـ: $u_n=2\Big(\dfrac14\Big)^n+1$.
+\begin{enumerate}
+\item \begin{sq}
+\qa أحسب $u_0$ ، $u_1$ و $u_2$.
+\qb تحقق أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=-\dfrac32\Big(\dfrac14\Big)^n$.
+\qc استنتج اتجاه تغير المتتالية $(u_n)$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-1$.
+\begin{sq}
+\qa أحسب $v_0$ ، ثم أكتب $v_n$ بدلالة $n$.
+\qb بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac14$.
+\end{sq}
+\item نضع: $S_n=v_0+v_1+\cdots+v_n$ \ و \ $S'_n=u_0+u_1+\cdots+u_n$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb استنتج أن: $S'_n=n+\dfrac{11}{3}-\dfrac83\Big(\dfrac14\Big)^{n+1}$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \textbf{(أ)} \ $u_0=2\times1+1=\bx{3}$ \ ؛ \ $u_1=2\times\dfrac14+1=\bx{\dfrac32}$ \ ؛ \ $u_2=2\times\dfrac{1}{16}+1=\bx{\dfrac98}$.
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\Big[2\Big(\frac14\Big)^{n+1}+1\Big]-\Big[2\Big(\frac14\Big)^n+1\Big]=2\Big(\frac14\Big)^n\Big(\frac14-1\Big)=2\times\Big(-\frac34\Big)\Big(\frac14\Big)^n=-\frac32\Big(\frac14\Big)^n.\]
+\pc $\Big(\dfrac14\Big)^n>0$ إذن $u_{n+1}-u_n<0$ ، والمتتالية $(u_n)$ \textbf{متناقصة تماماً}.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} $v_0=u_0-1=3-1=\bx{2}$ ، ومن أجل كل عدد طبيعي $n$: $v_n=u_n-1=\bx{2\Big(\dfrac14\Big)^n}$.
+\pb من أجل كل عدد طبيعي $n$: $v_{n+1}=2\Big(\dfrac14\Big)^{n+1}=\dfrac14\times2\Big(\dfrac14\Big)^n=\dfrac14\,v_n$ ، إذن $(v_n)$ هندسية أساسها $\dfrac14$.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} $S_n$ مجموع $n+1$ حداً من متتالية هندسية حدها الأول $2$ وأساسها $\dfrac14$:
+\[S_n=2\times\frac{1-\big(\frac14\big)^{n+1}}{1-\frac14}=2\times\frac43\Big[1-\Big(\frac14\Big)^{n+1}\Big]=\bx{\frac83\Big[1-\Big(\frac14\Big)^{n+1}\Big]}.\]
+\pb لدينا $u_k=v_k+1$ ، إذن:
+\[S'_n=S_n+(n+1)=\frac83-\frac83\Big(\frac14\Big)^{n+1}+n+1=\bx{n+\frac{11}{3}-\frac83\Big(\frac14\Big)^{n+1}}.\]
+\end{hal}
+
+% ================================================= 29
+\begin{tamrin}{تمرين من بكالوريا 2021 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة على $\N$ بـ: $u_0=5$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac13u_n+2$.
+\begin{enumerate}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n=2\Big(\dfrac13\Big)^n+3$.
+\qb بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=-\dfrac43\Big(\dfrac13\Big)^n$.
+\qc استنتج اتجاه تغير المتتالية $(u_n)$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-3$.
+\begin{sq}
+\qa أحسب $v_0$ ، ثم أكتب $v_n$ بدلالة $n$.
+\qb بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac13$.
+\end{sq}
+\item نضع: $S_n=v_0+v_1+\cdots+v_n$ \ و \ $S'_n=u_0+u_1+\cdots+u_n$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb استنتج أن: $S'_n=3n+6-\Big(\dfrac13\Big)^n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \textbf{(أ)} \Rec{$u_n=2\Big(\dfrac13\Big)^n+3$}{من أجل $n=0$: $2\Big(\dfrac13\Big)^0+3=2+3=5=u_0$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n=2\Big(\dfrac13\Big)^n+3$ ، ومنه:
+$u_{n+1}=\dfrac13u_n+2=\dfrac13\Big[2\Big(\dfrac13\Big)^n+3\Big]+2=2\Big(\dfrac13\Big)^{n+1}+1+2=2\Big(\dfrac13\Big)^{n+1}+3$.}
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=2\Big(\frac13\Big)^{n+1}-2\Big(\frac13\Big)^n=2\Big(\frac13\Big)^n\Big(\frac13-1\Big)=2\times\Big(-\frac23\Big)\Big(\frac13\Big)^n=-\frac43\Big(\frac13\Big)^n.\]
+\pc $\Big(\dfrac13\Big)^n>0$ إذن $u_{n+1}-u_n<0$ ، والمتتالية $(u_n)$ \textbf{متناقصة تماماً}.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} $v_0=u_0-3=5-3=\bx{2}$ ، ومن أجل كل عدد طبيعي $n$: $v_n=u_n-3=\bx{2\Big(\dfrac13\Big)^n}$.
+\pb من أجل كل عدد طبيعي $n$: $v_{n+1}=2\Big(\dfrac13\Big)^{n+1}=\dfrac13\times2\Big(\dfrac13\Big)^n=\dfrac13\,v_n$ ، إذن $(v_n)$ هندسية أساسها $\dfrac13$.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} $S_n$ مجموع $n+1$ حداً من متتالية هندسية حدها الأول $2$ وأساسها $\dfrac13$:
+\[S_n=2\times\frac{1-\big(\frac13\big)^{n+1}}{1-\frac13}=3\Big[1-\Big(\frac13\Big)^{n+1}\Big]=3-3\times\frac13\Big(\frac13\Big)^n=\bx{3-\Big(\frac13\Big)^n}.\]
+\pb لدينا $u_k=v_k+3$ ، إذن:
+\[S'_n=S_n+3(n+1)=3-\Big(\frac13\Big)^n+3n+3=\bx{3n+6-\Big(\frac13\Big)^n}.\]
+\end{hal}
+
+% ================================================= 30
+\begin{tamrin}{تمرين من بكالوريا 2022 -- الموضوع الأول}
+$(u_n)$ متتالية حسابية معرفة على $\N$ وأساسها $r$ ، حيث: \ $\begin{cases}u_2+u_3+u_4=21\\ u_4+u_5=20\end{cases}$
+\begin{enumerate}
+\item \begin{sq}
+\qa بيّن أن $u_3=7$ و $r=2$ ، ثم استنتج $u_0$.
+\qb أكتب $u_n$ بدلالة $n$.
+\qc أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_{n-1}$.
+\end{sq}
+\item نعتبر المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=3\times2^{2n}$.
+\begin{sq}
+\qa أحسب $\dfrac{v_{n+1}}{v_n}$ ، ثم استنتج طبيعة المتتالية $(v_n)$.
+\qb أحسب بدلالة $n$ المجموع: $S'_n=v_0+v_1+\cdots+v_{n-1}$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $w_n=\dfrac23v_n$.
+\begin{sq}
+\qa تحقق أنه من أجل كل عدد طبيعي $n$: $w_n=2^{u_n}$.
+\qb أحسب بدلالة $n$ الجداء: $P_n=w_0\times w_1\times\cdots\times w_{n-1}$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \textbf{(أ)} حسب خاصية الوسط الحسابي: $u_2+u_4=2u_3$ ، فتصبح المعادلة الأولى: $3u_3=21$ ، إذن \bx{u_3=7}.\\
+ولدينا $u_4=u_3+r=7+r$ و $u_5=u_3+2r=7+2r$. بالتعويض في المعادلة الثانية:
+\[(7+r)+(7+2r)=20\iff14+3r=20\iff3r=6\iff\bx{r=2}.\]
+ومن $u_3=u_0+3r$ نجد: $u_0=u_3-3r=7-6=\bx{1}$.
+\pb من أجل كل عدد طبيعي $n$: \ $u_n=u_0+nr=\bx{2n+1}$.
+\pc $S_n$ فيه $n$ حداً ، أوله $u_0=1$ وآخره $u_{n-1}=2(n-1)+1=2n-1$:
+\[S_n=\frac n2\big(1+2n-1\big)=\frac n2\times2n=\bx{n^2}.\]
+\textbf{2.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[\frac{v_{n+1}}{v_n}=\frac{3\times2^{2(n+1)}}{3\times2^{2n}}=\frac{2^{2n+2}}{2^{2n}}=2^2=\bx{4}.\]
+النسبة ثابتة ، إذن $(v_n)$ متتالية هندسية أساسها $4$ وحدها الأول $v_0=3\times2^0=3$.
+\pb $S'_n$ مجموع $n$ حداً: \ $S'_n=3\times\dfrac{1-4^n}{1-4}=3\times\dfrac{4^n-1}{3}=\bx{4^n-1}$.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} من أجل كل عدد طبيعي $n$: \ $w_n=\dfrac23\times3\times2^{2n}=2\times2^{2n}=2^{2n+1}=2^{u_n}$.
+\pb باستعمال خاصية $a^m\times a^p=a^{m+p}$:
+\[P_n=2^{u_0}\times2^{u_1}\times\cdots\times2^{u_{n-1}}=2^{u_0+u_1+\cdots+u_{n-1}}=2^{S_n}=\bx{2^{n^2}}.\]
+\end{hal}
+
+% ================================================= 31
+\begin{tamrin}{تمرين من بكالوريا 2022 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة على $\N$ بـ: $u_0=-2$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=5u_n+20$.
+\begin{enumerate}
+\item \begin{sq}
+\qa أحسب $u_1$ و $u_2$.
+\qb تحقق أنه من أجل كل عدد طبيعي $n$: $u_{n+1}+5=5\big(u_n+5\big)$.
+\end{sq}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>-5$.
+\qb أدرس اتجاه تغير المتتالية $(u_n)$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n+5$.
+\begin{sq}
+\qa تحقق أن $(v_n)$ متتالية هندسية أساسها $5$ ، يطلب تعيين حدها الأول.
+\qb أكتب $v_n$ ثم $u_n$ بدلالة $n$.
+\end{sq}
+\item أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_n$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \textbf{(أ)} \ $u_1=5\times(-2)+20=-10+20=\bx{10}$ \ ؛ \ $u_2=5\times10+20=50+20=\bx{70}$.
+\pb من أجل كل عدد طبيعي $n$: \ $5\big(u_n+5\big)=5u_n+25=\big(5u_n+20\big)+5=u_{n+1}+5$.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} \Rec{$u_n>-5$}{من أجل $n=0$: $u_0=-2>-5$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n>-5$ أي $u_n+5>0$ ، ومنه $5(u_n+5)>0$ ، أي (حسب 1(ب)) $u_{n+1}+5>0$ ، إذن $u_{n+1}>-5$.}
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=5u_n+20-u_n=4u_n+20=4\big(u_n+5\big).\]
+بما أن $u_n>-5$ فإن $u_n+5>0$ ، ومنه $u_{n+1}-u_n>0$: المتتالية $(u_n)$ \textbf{متزايدة تماماً}.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} من أجل كل عدد طبيعي $n$: $v_{n+1}=u_{n+1}+5=5\big(u_n+5\big)=5\,v_n$.\\
+إذن $(v_n)$ هندسية أساسها $5$ وحدها الأول $v_0=u_0+5=-2+5=\bx{3}$.
+\pb من أجل كل عدد طبيعي $n$: \ $v_n=v_0\times5^n=\bx{3\times5^n}$ \ ، و \ $u_n=v_n-5=\bx{3\times5^n-5}$.
+
+\textbf{4.} لدينا $u_k=v_k-5$ ، والمجموع فيه $n+1$ حداً:
+\[S_n=(v_0+\cdots+v_n)-5(n+1)=3\times\frac{1-5^{n+1}}{1-5}-5(n+1)=\bx{\frac34\big(5^{n+1}-1\big)-5(n+1)}.\]
+\end{hal}
+
+% ================================================= 32
+\begin{tamrin}{تمرين من بكالوريا 2023 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة على $\N$ بـ: $u_0=2$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac35u_n-\dfrac65$.
+\begin{enumerate}
+\item برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>-3$.
+\item بيّن أن المتتالية $(u_n)$ متناقصة تماماً ، ثم استنتج أنها متقاربة.
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n+3$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac35$ ، يطلب تعيين حدها الأول $v_0$.
+\qb عيّن عبارة $v_n$ بدلالة $n$ ، ثم استنتج أن: $u_n=5\Big(\dfrac35\Big)^n-3$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\item نضع: $S_n=v_0+v_1+\cdots+v_n$ \ و \ $T_n=u_0+u_1+\cdots+u_n$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb بيّن أن: $T_n=\dfrac{19}{2}-3n-\dfrac{15}{2}\Big(\dfrac35\Big)^n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \Rec{$u_n>-3$}{من أجل $n=0$: $u_0=2>-3$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n>-3$ ، بالضرب في $\dfrac35$: $\dfrac35u_n>-\dfrac95$ ، وبإضافة $-\dfrac65$: $\dfrac35u_n-\dfrac65>-\dfrac{15}{5}=-3$ ، أي $u_{n+1}>-3$.}
+
+\textbf{2.} من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac35u_n-\frac65-u_n=-\frac25u_n-\frac65=-\frac25\big(u_n+3\big).\]
+بما أن $u_n>-3$ فإن $u_n+3>0$ ، ومنه $u_{n+1}-u_n<0$: المتتالية $(u_n)$ \textbf{متناقصة تماماً}.\\
+$(u_n)$ متناقصة ومحدودة من الأسفل بالعدد $-3$ ، إذن هي \textbf{متقاربة}.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}+3=\frac35u_n-\frac65+\frac{15}{5}=\frac35u_n+\frac95=\frac35\big(u_n+3\big)=\frac35\,v_n.\]
+إذن $(v_n)$ هندسية أساسها $\dfrac35$ وحدها الأول $v_0=u_0+3=2+3=\bx{5}$.
+\pb من أجل كل عدد طبيعي $n$: $v_n=5\Big(\dfrac35\Big)^n$ ، ومنه $u_n=v_n-3$ أي \bx{u_n=5\Big(\dfrac35\Big)^n-3}.
+\pc لدينا: $\limn u_n=\bx{-3}$ لأنّ: \quad $\Car{\limn\Big(\dfrac35\Big)^n=0\qquad\left(-1<\dfrac35<1\right)}$
+
+\par\smallskip\textbf{4.} \textbf{(أ)} $S_n$ مجموع $n+1$ حداً من متتالية هندسية حدها الأول $5$ وأساسها $\dfrac35$:
+\[S_n=5\times\frac{1-\big(\frac35\big)^{n+1}}{1-\frac35}=5\times\frac52\Big[1-\Big(\frac35\Big)^{n+1}\Big]=\bx{\frac{25}{2}\Big[1-\Big(\frac35\Big)^{n+1}\Big]}.\]
+\pb لدينا $u_k=v_k-3$ ، إذن:
+\begin{align*}
+T_n&=S_n-3(n+1)=\frac{25}{2}-\frac{25}{2}\times\frac35\Big(\frac35\Big)^n-3n-3\\
+&=\frac{25}{2}-\frac62-3n-\frac{15}{2}\Big(\frac35\Big)^n=\bx{\frac{19}{2}-3n-\frac{15}{2}\Big(\frac35\Big)^n}
+\end{align*}
+\end{hal}
+
+% ================================================= 33
+\begin{tamrin}{تمرين من بكالوريا 2023 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة على $\N$ بـ: $u_0=2$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac14u_n+3$.
+\begin{enumerate}
+\item برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n<4$.
+\item بيّن أن المتتالية $(u_n)$ متزايدة تماماً ، ثم استنتج أنها متقاربة.
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-4$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac14$ ، وعيّن حدها الأول $v_0$.
+\qb عيّن عبارة $v_n$ بدلالة $n$ ، ثم استنتج أن: $u_n=-2\Big(\dfrac14\Big)^n+4$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\item نضع: $S_n=v_0+v_1+\cdots+v_n$ \ و \ $T_n=u_0+u_1+\cdots+u_n$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb بيّن أن: $T_n=4n+\dfrac43+\dfrac23\Big(\dfrac14\Big)^n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \Rec{$u_n<4$}{من أجل $n=0$: $u_0=2<4$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n<4$ ، بالضرب في $\dfrac14$: $\dfrac14u_n<1$ ، وبإضافة $3$: $\dfrac14u_n+3<4$ ، أي $u_{n+1}<4$.}
+
+\textbf{2.} من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac14u_n+3-u_n=3-\frac34u_n=\frac34\big(4-u_n\big).\]
+بما أن $u_n<4$ فإن $4-u_n>0$ ، ومنه $u_{n+1}-u_n>0$: المتتالية $(u_n)$ \textbf{متزايدة تماماً}.\\
+$(u_n)$ متزايدة ومحدودة من الأعلى بالعدد $4$ ، إذن هي \textbf{متقاربة}.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}-4=\frac14u_n+3-4=\frac14u_n-1=\frac14\big(u_n-4\big)=\frac14\,v_n.\]
+إذن $(v_n)$ هندسية أساسها $\dfrac14$ وحدها الأول $v_0=u_0-4=2-4=\bx{-2}$.
+\pb من أجل كل عدد طبيعي $n$: $v_n=-2\Big(\dfrac14\Big)^n$ ، ومنه $u_n=v_n+4$ أي \bx{u_n=-2\Big(\dfrac14\Big)^n+4}.
+\pc لدينا: $\limn u_n=\bx{4}$ لأنّ: \quad $\Car{\limn\Big(\dfrac14\Big)^n=0\qquad\left(-1<\dfrac14<1\right)}$
+
+\par\smallskip\textbf{4.} \textbf{(أ)} $S_n$ مجموع $n+1$ حداً من متتالية هندسية حدها الأول $-2$ وأساسها $\dfrac14$:
+\[S_n=-2\times\frac{1-\big(\frac14\big)^{n+1}}{1-\frac14}=-\frac83\Big[1-\Big(\frac14\Big)^{n+1}\Big]=-\frac83+\frac83\times\frac14\Big(\frac14\Big)^n=\bx{-\frac83+\frac23\Big(\frac14\Big)^n}.\]
+\pb لدينا $u_k=v_k+4$ ، إذن:
+\[T_n=S_n+4(n+1)=-\frac83+\frac23\Big(\frac14\Big)^n+4n+\frac{12}{3}=\bx{4n+\frac43+\frac23\Big(\frac14\Big)^n}.\]
+\end{hal}
+
+% ================================================= 34
+\begin{tamrin}{تمرين من بكالوريا 2024 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=0$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac56u_n-\dfrac13$.
+\begin{enumerate}
+\item أحسب $u_1$ و $u_2$.
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $-2<u_n\le0$.
+\qb بيّن أن المتتالية $(u_n)$ متناقصة تماماً.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n+2$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac56$ ، يطلب تعيين حدها الأول.
+\qb أكتب $v_n$ بدلالة $n$ ، ثم بيّن أن: $u_n=2\Big(\dfrac56\Big)^n-2$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\item نضع: $S_n=v_0+v_1+\cdots+v_n$ \ و \ $T_n=u_0+u_1+\cdots+u_n$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb استنتج $T_n$ بدلالة $n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} حساب الحدود:
+\begin{align*}
+u_1&=\frac56u_0-\frac13=\frac56\times0-\frac13=\bx{-\frac13}\\
+u_2&=\frac56u_1-\frac13=\frac56\times\Big(-\frac13\Big)-\frac13=-\frac{5}{18}-\frac{6}{18}=\bx{-\frac{11}{18}}
+\end{align*}
+\textbf{2.} \textbf{(أ)} \Rec{$-2<u_n\le0$}{من أجل $n=0$: $u_0=0$ و $-2<0\le0$ ، إذن $P(0)$ صحيحة.}{لدينا $-2<u_n\le0$. بالضرب في العدد الموجب $\dfrac56$: $-\dfrac53<\dfrac56u_n\le0$.
+وبإضافة $-\dfrac13$: $-\dfrac53-\dfrac13<\dfrac56u_n-\dfrac13\le-\dfrac13$ ، أي $-2<u_{n+1}\le-\dfrac13$ ، وبما أن $-\dfrac13\le0$ فإن $-2<u_{n+1}\le0$.}
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac56u_n-\frac13-u_n=-\frac16u_n-\frac13=-\frac16\big(u_n+2\big).\]
+بما أن $u_n>-2$ فإن $u_n+2>0$ ، ومنه $u_{n+1}-u_n<0$: المتتالية $(u_n)$ \textbf{متناقصة تماماً}.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}+2=\frac56u_n-\frac13+\frac63=\frac56u_n+\frac53=\frac56\big(u_n+2\big)=\frac56\,v_n.\]
+إذن $(v_n)$ هندسية أساسها $\dfrac56$ وحدها الأول $v_0=u_0+2=\bx{2}$.
+\pb من أجل كل عدد طبيعي $n$: \ $v_n=\bx{2\Big(\dfrac56\Big)^n}$ ، ومنه $u_n=v_n-2=\bx{2\Big(\dfrac56\Big)^n-2}$.
+\pc لدينا: $\limn u_n=\bx{-2}$ لأنّ: \quad $\Car{\limn\Big(\dfrac56\Big)^n=0\qquad\left(-1<\dfrac56<1\right)}$
+
+\par\smallskip\textbf{4.} \textbf{(أ)} $S_n$ مجموع $n+1$ حداً من متتالية هندسية حدها الأول $2$ وأساسها $\dfrac56$:
+\[S_n=2\times\frac{1-\big(\frac56\big)^{n+1}}{1-\frac56}=12\Big[1-\Big(\frac56\Big)^{n+1}\Big]=12-12\times\frac56\Big(\frac56\Big)^n=\bx{12-10\Big(\frac56\Big)^n}.\]
+\pb لدينا $u_k=v_k-2$ ، إذن:
+\[T_n=S_n-2(n+1)=12-10\Big(\frac56\Big)^n-2n-2=\bx{10-2n-10\Big(\frac56\Big)^n}.\]
+\end{hal}
+
+% ================================================= 35
+\begin{tamrin}{تمرين من بكالوريا 2024 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=4$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac34u_n-\dfrac12$.
+\begin{enumerate}
+\item أحسب $u_1$ و $u_2$.
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>-2$.
+\qb أثبت أن المتتالية $(u_n)$ متناقصة تماماً.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n+2$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac34$ ، يطلب تعيين حدها الأول.
+\qb أكتب $v_n$ بدلالة $n$ ، ثم بيّن أن: $u_n=6\Big(\dfrac34\Big)^n-2$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\item أحسب بدلالة $n$ كلاً من المجموعين:
+\begin{sq}
+\qa $S_n=v_0+v_1+\cdots+v_n$.
+\qb $T_n=\dfrac{1}{2+u_0}+\dfrac{1}{2+u_1}+\cdots+\dfrac{1}{2+u_n}$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \ $u_1=\dfrac34\times4-\dfrac12=3-\dfrac12=\bx{\dfrac52}$ \ ؛ \ $u_2=\dfrac34\times\dfrac52-\dfrac12=\dfrac{15}{8}-\dfrac48=\bx{\dfrac{11}{8}}$.
+
+\textbf{2.} \textbf{(أ)} \Rec{$u_n>-2$}{من أجل $n=0$: $u_0=4>-2$ ، إذن $P(0)$ صحيحة.}{لدينا $u_n>-2$ ، بالضرب في $\dfrac34$: $\dfrac34u_n>-\dfrac32$ ، وبإضافة $-\dfrac12$: $\dfrac34u_n-\dfrac12>-2$ ، أي $u_{n+1}>-2$.}
+\pb من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac34u_n-\frac12-u_n=-\frac14u_n-\frac12=-\frac14\big(u_n+2\big).\]
+بما أن $u_n>-2$ فإن $u_n+2>0$ ، ومنه $u_{n+1}-u_n<0$: المتتالية $(u_n)$ \textbf{متناقصة تماماً}.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}+2=\frac34u_n-\frac12+2=\frac34u_n+\frac32=\frac34\big(u_n+2\big)=\frac34\,v_n.\]
+إذن $(v_n)$ هندسية أساسها $\dfrac34$ وحدها الأول $v_0=u_0+2=4+2=\bx{6}$.
+\pb من أجل كل عدد طبيعي $n$: \ $v_n=\bx{6\Big(\dfrac34\Big)^n}$ ، ومنه $u_n=v_n-2=\bx{6\Big(\dfrac34\Big)^n-2}$.
+\pc لدينا: $\limn u_n=\bx{-2}$ لأنّ: \quad $\Car{\limn\Big(\dfrac34\Big)^n=0\qquad\left(-1<\dfrac34<1\right)}$
+
+\par\smallskip\textbf{4.} \textbf{(أ)} $S_n$ مجموع $n+1$ حداً:
+\[S_n=6\times\frac{1-\big(\frac34\big)^{n+1}}{1-\frac34}=24\Big[1-\Big(\frac34\Big)^{n+1}\Big]=24-24\times\frac34\Big(\frac34\Big)^n=\bx{24-18\Big(\frac34\Big)^n}.\]
+\pb من أجل كل عدد طبيعي $k$: $2+u_k=v_k=6\Big(\dfrac34\Big)^k$ ، ومنه:
+\[\frac{1}{2+u_k}=\frac{1}{v_k}=\frac16\times\Big(\frac43\Big)^k.\]
+إذن $T_n$ مجموع $n+1$ حداً من متتالية هندسية حدها الأول $\dfrac16$ وأساسها $\dfrac43$:
+\[T_n=\frac16\times\frac{1-\big(\frac43\big)^{n+1}}{1-\frac43}=\frac16\times(-3)\Big[1-\Big(\frac43\Big)^{n+1}\Big]=\bx{\frac12\Big[\Big(\frac43\Big)^{n+1}-1\Big]}.\]
+\end{hal}
+
+% ================================================= 36
+\begin{tamrin}{تمرين من بكالوريا 2025 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة على $\N$ بـ: $u_0=2$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac35u_n+\dfrac85$.
+\begin{enumerate}
+\item \begin{sq}
+\qa أحسب $u_1$ و $u_2$ ، ثم خمّن اتجاه تغير المتتالية $(u_n)$.
+\qb برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $2\le u_n<4$.
+\qc أدرس اتجاه تغير المتتالية $(u_n)$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-4$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac35$ ، ثم أكتب $v_n$ بدلالة $n$.
+\qb استنتج $u_n$ بدلالة $n$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\item نضع: $S_n=u_0+u_1+\cdots+u_n$. بيّن أن: $S_n=5\Big(\dfrac35\Big)^{n+1}+4n-1$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \textbf{(أ)} حساب الحدود:
+\begin{align*}
+u_1&=\frac35\times2+\frac85=\frac65+\frac85=\bx{\frac{14}{5}}\\
+u_2&=\frac35\times\frac{14}{5}+\frac85=\frac{42}{25}+\frac{40}{25}=\bx{\frac{82}{25}}
+\end{align*}
+نلاحظ أن $u_0=2<u_1=2{,}8<u_2=3{,}28$ ، فنخمّن أن $(u_n)$ \textbf{متزايدة}.
+\pb \Rec{$2\le u_n<4$}{من أجل $n=0$: $u_0=2$ و $2\le2<4$ ، إذن $P(0)$ صحيحة.}{لدينا $2\le u_n<4$. بالضرب في $\dfrac35$: $\dfrac65\le\dfrac35u_n<\dfrac{12}{5}$.
+وبإضافة $\dfrac85$: $\dfrac{14}{5}\le\dfrac35u_n+\dfrac85<\dfrac{20}{5}$ ، أي $\dfrac{14}{5}\le u_{n+1}<4$ ، وبما أن $\dfrac{14}{5}>2$ فإن $2\le u_{n+1}<4$.}
+\pc من أجل كل عدد طبيعي $n$:
+\[u_{n+1}-u_n=\frac35u_n+\frac85-u_n=\frac85-\frac25u_n=\frac25\big(4-u_n\big).\]
+بما أن $u_n<4$ فإن $4-u_n>0$ ، ومنه $u_{n+1}-u_n>0$: المتتالية $(u_n)$ \textbf{متزايدة تماماً} (التخمين صحيح).
+
+\par\smallskip\textbf{2.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}-4=\frac35u_n+\frac85-\frac{20}{5}=\frac35u_n-\frac{12}{5}=\frac35\big(u_n-4\big)=\frac35\,v_n.\]
+إذن $(v_n)$ هندسية أساسها $\dfrac35$ وحدها الأول $v_0=u_0-4=-2$ ، ومنه: \ $v_n=\bx{-2\Big(\dfrac35\Big)^n}$.
+\pb من أجل كل عدد طبيعي $n$: \ $u_n=v_n+4=\bx{4-2\Big(\dfrac35\Big)^n}$.
+\pc لدينا: $\limn u_n=\bx{4}$ لأنّ: \quad $\Car{\limn\Big(\dfrac35\Big)^n=0\qquad\left(-1<\dfrac35<1\right)}$
+
+\par\smallskip\textbf{3.} لدينا $u_k=4+v_k$ ، والمجموع فيه $n+1$ حداً:
+\begin{align*}
+S_n&=4(n+1)+(v_0+\cdots+v_n)=4n+4-2\times\frac{1-\big(\frac35\big)^{n+1}}{1-\frac35}\\
+&=4n+4-5\Big[1-\Big(\frac35\Big)^{n+1}\Big]=4n+4-5+5\Big(\frac35\Big)^{n+1}=\bx{5\Big(\frac35\Big)^{n+1}+4n-1}
+\end{align*}
+\end{hal}
+
+% ================================================= 37
+\begin{tamrin}{تمرين من بكالوريا 2025 -- الموضوع الثاني}
+\begin{enumerate}
+\item $f$ الدالة المعرفة على $\R$ بـ: $f(x)=\dfrac25x+1$.
+\begin{sq}
+\qa حدد اتجاه تغير الدالة $f$ على $\R$.
+\qb حل في $\R$ المعادلة: $f(x)=x$.
+\end{sq}
+\item $(u_n)$ متتالية معرفة على $\N$ بـ: $u_0=1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac25u_n+1$.
+\begin{sq}
+\qa أحسب $u_1$ ، ثم عيّن اتجاه تغير المتتالية $(u_n)$.
+\qb برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $1\le u_n<\dfrac53$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-\dfrac53$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac25$ ، ثم أكتب $v_n$ بدلالة $n$.
+\qb استنتج $u_n$ بدلالة $n$ ، ثم أحسب $\limn u_n$.
+\end{sq}
+\item نضع: $S_n=u_0+u_1+\cdots+u_n$. بيّن أن: $S_n=\dfrac49\Big(\dfrac25\Big)^{n}+\dfrac53n+\dfrac59$.
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \textbf{(أ)} $f$ دالة تآلفية معاملها $\dfrac25>0$ ، إذن $f$ \textbf{متزايدة تماماً} على $\R$.
+\pb $f(x)=x\iff\dfrac25x+1=x\iff1=x-\dfrac25x\iff\dfrac35x=1\iff\bx{x=\dfrac53}$.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} $u_1=\dfrac25\times1+1=\bx{\dfrac75}$ ، ونلاحظ أن $u_1>u_0$.\\
+نبرهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_{n+1}>u_n$:
+\begin{itemize}
+\item من أجل $n=0$: $u_1=\dfrac75>1=u_0$ صحيحة.
+\item نفرض $u_{n+1}>u_n$ ، وبما أن $f$ متزايدة تماماً فإن $f(u_{n+1})>f(u_n)$ ، أي $u_{n+2}>u_{n+1}$.
+\end{itemize}
+إذن المتتالية $(u_n)$ \textbf{متزايدة تماماً}.
+\pb \Rec{$1\le u_n<\dfrac53$}{من أجل $n=0$: $u_0=1$ و $1\le1<\dfrac53$ ، إذن $P(0)$ صحيحة.}{لدينا $1\le u_n<\dfrac53$ ، وبما أن $f$ متزايدة تماماً: $f(1)\le f(u_n)<f\Big(\dfrac53\Big)$ ،
+أي $\dfrac75\le u_{n+1}<\dfrac53$ (لأن $f\big(\frac53\big)=\frac53$) ، وبما أن $\dfrac75>1$ فإن $1\le u_{n+1}<\dfrac53$.}
+
+\par\smallskip\textbf{3.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}-\frac53=\frac25u_n+\frac33-\frac53=\frac25u_n-\frac23=\frac25\Big(u_n-\frac53\Big)=\frac25\,v_n.\]
+إذن $(v_n)$ هندسية أساسها $\dfrac25$ وحدها الأول $v_0=1-\dfrac53=-\dfrac23$ ، ومنه: \ $v_n=\bx{-\dfrac23\Big(\dfrac25\Big)^n}$.
+\pb من أجل كل عدد طبيعي $n$: \ $u_n=v_n+\dfrac53=\bx{\dfrac53-\dfrac23\Big(\dfrac25\Big)^n}$.\\
+لدينا: $\limn u_n=\bx{\dfrac53}$ لأنّ: \quad $\Car{\limn\Big(\dfrac25\Big)^n=0\qquad\left(-1<\dfrac25<1\right)}$
+
+\par\smallskip\textbf{4.} لدينا $u_k=\dfrac53+v_k$ ، والمجموع فيه $n+1$ حداً:
+\begin{align*}
+S_n&=\frac53(n+1)+(v_0+\cdots+v_n)=\frac53n+\frac53-\frac23\times\frac{1-\big(\frac25\big)^{n+1}}{1-\frac25}\\
+&=\frac53n+\frac53-\frac{10}{9}\Big[1-\Big(\frac25\Big)^{n+1}\Big]=\frac53n+\frac{15-10}{9}+\frac{10}{9}\times\frac25\Big(\frac25\Big)^n\\
+&=\bx{\frac49\Big(\frac25\Big)^n+\frac53n+\frac59}
+\end{align*}
+\end{hal}
+
+% ================================================= 38
+\begin{tamrin}{تمرين من بكالوريا 2026 -- الموضوع الأول}
+\begin{enumerate}
+\item حل في $\R$ المعادلة: $x^2+x-6=0$.
+\item $(u_n)$ متتالية هندسية حدودها موجبة ، حدها الأول $u_0=3$ وأساسها $q$ ، وتحقق: $u_1+u_2=18$.
+\begin{sq}
+\qa بيّن أن $q=2$ ، ثم أكتب $u_n$ بدلالة $n$.
+\qb حدد اتجاه تغير المتتالية $(u_n)$.
+\qc بيّن أن العدد $768$ حد من حدود المتتالية $(u_n)$.
+\end{sq}
+\item نضع: $S_n=u_0+u_1+\cdots+u_n$ \ و \ $P_n=u_0\times u_1\times\cdots\times u_n$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb بيّن أن: $P_n=3^{n+1}\times2^{\frac12n(n+1)}$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} المميز: $\Delta=1^2-4\times1\times(-6)=1+24=25=5^2$ ، إذن للمعادلة حلان:
+\[x_1=\frac{-1-5}{2}=-3\qquad;\qquad x_2=\frac{-1+5}{2}=2.\]
+مجموعة الحلول: \bx{S=\{-3\ ;\ 2\}}.
+
+\textbf{2.} \textbf{(أ)} $u_1=u_0\,q=3q$ و $u_2=u_0\,q^2=3q^2$ ، ومنه:
+\[u_1+u_2=18\iff3q+3q^2=18\iff q^2+q-6=0.\]
+حسب السؤال 1: $q=2$ أو $q=-3$. القيمة $q=-3$ مرفوضة لأن حدود المتتالية موجبة ، إذن \bx{q=2}.\\
+من أجل كل عدد طبيعي $n$: \ $u_n=u_0\,q^n=\bx{3\times2^n}$.
+\pb من أجل كل عدد طبيعي $n$: \ $u_{n+1}-u_n=3\times2^{n+1}-3\times2^n=3\times2^n(2-1)=3\times2^n>0$.\\
+إذن $(u_n)$ \textbf{متزايدة تماماً}.
+\pc $u_n=768\iff3\times2^n=768\iff2^n=256=2^8\iff n=8$. إذن $768$ حد من حدود المتتالية وهو \bx{u_8}.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} $S_n$ مجموع $n+1$ حداً:
+\[S_n=3\times\frac{1-2^{n+1}}{1-2}=\bx{3\big(2^{n+1}-1\big)}.\]
+\pb الجداء فيه $n+1$ عاملاً كل منها من الشكل $3\times2^k$:
+\[P_n=\big(3\times2^0\big)\times\big(3\times2^1\big)\times\cdots\times\big(3\times2^n\big)=3^{n+1}\times2^{0+1+2+\cdots+n}.\]
+و $0+1+\cdots+n=\dfrac{n(n+1)}{2}$ ، إذن \ \bx{P_n=3^{n+1}\times2^{\frac12n(n+1)}}.
+\end{hal}
+
+% ================================================= 39
+\begin{tamrin}{تمرين من بكالوريا 2026 -- الموضوع الثاني}
+\begin{enumerate}
+\item $(u_n)$ متتالية معرفة بـ: $u_0=3$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=3u_n-1$.
+\begin{sq}
+\qa أحسب $u_1$ ، $u_2$ و $u_3$.
+\qb حدد اتجاه تغير الدالة $x\mapsto3x-1$ على $\R$ ، ثم استنتج اتجاه تغير المتتالية $(u_n)$.
+\end{sq}
+\item نعتبر المتتالية $(v_n)$ المعرفة على $\N$ بـ: $v_n=u_n-\dfrac12$.
+\begin{sq}
+\qa أثبت أن $(v_n)$ متتالية هندسية أساسها $3$ ، يطلب تعيين حدها الأول $v_0$.
+\qb عبّر عن $v_n$ بدلالة $n$ ، ثم استنتج أن: $u_n=\dfrac52\times3^n+\dfrac12$.
+\end{sq}
+\item نضع: $S_n=v_0+v_1+\cdots+v_n$ \ و \ $T_n=u_0+u_1+\cdots+u_n$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb بيّن أن: $T_n=\dfrac54\times3^{n+1}+\dfrac12n-\dfrac34$.
+\qc عيّن قيمة العدد الطبيعي $n$ حتى يكون: $4T_n-2n=1212$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} \textbf{(أ)} \ $u_1=3\times3-1=\bx{8}$ \ ؛ \ $u_2=3\times8-1=\bx{23}$ \ ؛ \ $u_3=3\times23-1=\bx{68}$.
+\pb الدالة $g:x\mapsto3x-1$ تآلفية معاملها $3>0$ ، إذن $g$ \textbf{متزايدة تماماً} على $\R$.\\
+نبرهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_{n+1}>u_n$:
+\begin{itemize}
+\item من أجل $n=0$: $u_1=8>3=u_0$ صحيحة.
+\item نفرض $u_{n+1}>u_n$ ، وبما أن $g$ متزايدة تماماً: $g(u_{n+1})>g(u_n)$ أي $3u_{n+1}-1>3u_n-1$ ، أي $u_{n+2}>u_{n+1}$.
+\end{itemize}
+إذن المتتالية $(u_n)$ \textbf{متزايدة تماماً}.
+
+\par\smallskip\textbf{2.} \textbf{(أ)} من أجل كل عدد طبيعي $n$:
+\[v_{n+1}=u_{n+1}-\frac12=3u_n-1-\frac12=3u_n-\frac32=3\Big(u_n-\frac12\Big)=3\,v_n.\]
+إذن $(v_n)$ هندسية أساسها $3$ وحدها الأول $v_0=u_0-\dfrac12=3-\dfrac12=\bx{\dfrac52}$.
+\pb من أجل كل عدد طبيعي $n$: $v_n=\dfrac52\times3^n$ ، ومنه $u_n=v_n+\dfrac12$ أي \bx{u_n=\dfrac52\times3^n+\dfrac12}.
+
+\par\smallskip\textbf{3.} \textbf{(أ)} $S_n$ مجموع $n+1$ حداً من متتالية هندسية حدها الأول $\dfrac52$ وأساسها $3$:
+\[S_n=\frac52\times\frac{1-3^{n+1}}{1-3}=\frac52\times\frac{3^{n+1}-1}{2}=\bx{\frac54\big(3^{n+1}-1\big)}.\]
+\pb لدينا $u_k=v_k+\dfrac12$ ، إذن:
+\[T_n=S_n+\frac12(n+1)=\frac54\times3^{n+1}-\frac54+\frac12n+\frac24=\bx{\frac54\times3^{n+1}+\frac12n-\frac34}.\]
+\pc نحسب $4T_n-2n=5\times3^{n+1}+2n-3-2n=5\times3^{n+1}-3$ ، ومنه:
+\begin{align*}
+4T_n-2n=1212&\iff5\times3^{n+1}-3=1212\iff5\times3^{n+1}=1215\\
+&\iff3^{n+1}=243=3^5\iff n+1=5\iff\bx{n=4}
+\end{align*}
+\end{hal}
+
+% ================================================= إضافي
+\begin{tamrin}{أسئلة إضافية (اختيار من متعدد)}
+اختر الإجابة الصحيحة مع التعليل:
+\begin{enumerate}
+\item $(u_n)$ متتالية حسابية حدها الأول $u_0=3$ وأساسها $r=5$. من أجل كل عدد طبيعي $n$ ، عبارة $u_n$ هي:\\[2pt]
+\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}
+(أ) \ $3\times5^n$ & (ب) \ $5n+3$ & (جـ) \ $3n+5$\end{tabular}
+\item $(u_n)$ متتالية حسابية حدها الأول $u_0$ وأساسها $r$ ، حيث $u_2=5$ و $u_4=9$:\\[2pt]
+\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}
+(أ) \ $u_0=2$ ، $r=1$ & (ب) \ $u_0=1$ ، $r=2$ & (جـ) \ $u_0=1$ ، $r=4$\end{tabular}
+\end{enumerate}
+\end{tamrin}
+\begin{hal}
+\textbf{1.} الحد العام لمتتالية حسابية: $u_n=u_0+nr=3+5n$. الجواب الصحيح \textbf{(ب)}: \bx{u_n=5n+3}.\\
+(العبارة (أ) هي عبارة متتالية هندسية ، والعبارة (جـ) تعطي $u_0=5\ne3$).
+
+\textbf{2.} $u_4=u_2+2r$ ، ومنه $9=5+2r$ أي $2r=4$ و $r=2$. ثم $u_0=u_2-2r=5-4=1$.\\
+الجواب الصحيح \textbf{(ب)}: \bx{u_0=1\ ;\ r=2}.
+\end{hal}
+
+\vfill
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!6,colframe=cSec,arc=3mm,halign=center,boxrule=0.8pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\Large\bfseries بالتوفيق في شهادة البكالوريا}
+\end{tcolorbox}
+\end{LTR}
+
+\end{document}

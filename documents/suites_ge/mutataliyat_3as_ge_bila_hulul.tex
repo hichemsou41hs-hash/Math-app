@@ -1,0 +1,1415 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+% أعمدة جداول تُكتب خلاياها بالعربية في الاتجاه الصحيح
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+% تجنب عنوان يتيم في أسفل الصفحة
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+% ---------- الألوان ----------
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+% ---------- العناوين ----------
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+% ---------- الصناديق (تُرسم في سياق LTR ويُكتب محتواها بالعربية) ----------
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+% ---------- التمارين والحلول ----------
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+% رسومات TikZ تُوضع في سياق LTR
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+% ---------- رموز ----------
+% نقاط الحذف داخل الرياضيات (\dots يسبب خللاً في الاتجاه مع babel)
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% ---------- تمثيل مجال على مستقيم عددي ----------
+% \NLseg{a}{b}{[}{]}  مجال محدود
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+% \NLright{a}{[}  مجال نحو +∞
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+% \NLleft{b}{]}  مجال نحو −∞
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- أيقونات مواقع التواصل (مرسومة بـ TikZ، لا تحتاج أي حزمة) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% سطر مواقع التواصل أسفل كل صفحة
+% (يُكتب السطر بترتيب بصري من اليسار إلى اليمين: الأيقونة يمين كل اسم)
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+% ---------- رأس وتذييل الصفحة ----------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{يمين الرأس}{يسار الرأس}{يمين التذييل}{يسار التذييل}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% جدول تغيرات / إشارة (يُرسم في سياق LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% معلم بشبكة: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \def\xmn{#1}\def\xmx{#2}\def\ymn{#3}\def\ymx{#4}
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \draw[very thick,-{Stealth[length=1.6mm]}] (0,0)--(1,0) node[below,pos=.55]{$\vec i$};
+ \draw[very thick,-{Stealth[length=1.6mm]}] (0,0)--(0,1) node[left,pos=.55]{$\vec j$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\newcommand{\LW}[1]{{\color{cDef}#1}}
+\newtcbox{\bxtbox}{on line,coltext=cThm,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\newcommand{\Car}[1]{\left\{\begin{array}{l}#1\end{array}\right.}
+\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\newcommand{\hl}[1]{\ensuremath{\colorbox{cEx!20}{$\displaystyle #1$}}}
+\newcommand{\Lim}[1]{\displaystyle\lim_{x\to #1}}
+\newcommand{\Cf}{(C_f)}
+\newenvironment{qst}{\begin{enumerate}[label=\protect\circled{\arabic*},leftmargin=*]}{\end{enumerate}}
+\newcommand{\circled}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[circle,fill=cDef,text=white,inner sep=1.2pt,font=\scriptsize\bfseries](c){#1};}}
+% عمودان: \TwoCol{عرض اليسار}{محتوى اليسار}{عرض اليمين}{محتوى اليمين}  (آمن مع TikZ)
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\un}{(u_n)}\newcommand{\vn}{(v_n)}
+% برهان بالتراجع: \Rec{الخاصية P(n)}{التحقق من P(0)}{البرهان على الوراثة}
+\newcommand{\Rec}[3]{\textbf{برهان بالتراجع:} نسمي $P(n)$ الخاصية: «#1».
+\begin{itemize}
+\item \textbf{التحقق:} #2
+\item \textbf{الوراثة:} نفرض أن $P(n)$ صحيحة ونبرهن صحة $P(n+1)$: #3
+\item \textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع، $P(n)$ صحيحة من أجل كل عدد طبيعي $n$.
+\end{itemize}}
+\newcommand{\src}[1]{{\footnotesize\textbf{#1}}\par}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% أسئلة فرعية (أ) (ب) (جـ) كل سؤال في سطر
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\ccl}[1]{\par\textbf{الخلاصة:} #1}
+
+\SetHeader{\small\bfseries\color{cSec}المتتاليات العددية -- تمارين البكالوريا}{\small\color{cSec}السنة الثالثة ثانوي -- تسيير واقتصاد}
+\renewenvironment{tamrin}[1]{\stepcounter{exo}\gdef\curt{#1}\begin{BOX}{cSec}{#1}}{\end{BOX}}
+\newcommand{\curt}{}
+\renewenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل \curt}}{\end{arbox}\end{otherlanguage}}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\fontsize{28}{34}\selectfont\bfseries المتتاليات العددية}\\[8pt]
+{\color{cSec!80!black}\large ملخص شامل للدرس + 39 تمريناً من مواضيع البكالوريا -- بدون حلول (للتدرّب)}\\[5pt]
+{\color{cSec!80!black}\large السنة الثالثة ثانوي -- شعبة تسيير واقتصاد}
+\end{tcolorbox}
+\end{LTR}
+
+% =====================================================================
+%                     ملخص الدرس: المتتاليات العددية
+% =====================================================================
+\newcolumntype{M}[1]{>{\centering\arraybackslash}p{#1}}
+\section{تذكير بالمكتسبات القبلية}
+\subsection{الحساب}
+\begin{center}
+\renewcommand{\arraystretch}{2.2}
+\begin{tabular}{|M{0.44\textwidth}|M{0.44\textwidth}|}\hline
+$a\pm\dfrac{b}{c}=\dfrac{(a\times c)\pm b}{c}$ & $\dfrac{a}{b}\pm\dfrac{c}{d}=\dfrac{(a\times d)\pm(b\times c)}{b\times d}$\\\hline
+$(a+b)^2=a^2+2ab+b^2$ & $(a+b)^3=a^3+3a^2b+3ab^2+b^3$\\
+$(a-b)^2=a^2-2ab+b^2$ & $(a-b)^3=a^3-3a^2b+3ab^2-b^3$\\
+$a^2-b^2=(a-b)(a+b)$ & $a^3-b^3=(a-b)(a^2+ab+b^2)$\\
+ & $a^3+b^3=(a+b)(a^2-ab+b^2)$\\\hline
+\end{tabular}
+\end{center}
+
+\subsection{خواص القوى}
+من أجل كل عددين حقيقيين غير معدومين $a$ و $b$ ، ومن أجل كل عددين صحيحين $n$ و $m$:
+\begin{center}
+\renewcommand{\arraystretch}{2.2}
+\begin{tabular}{|M{0.44\textwidth}|M{0.44\textwidth}|}\hline
+$a^0=1$ & $a^{-n}=\dfrac{1}{a^n}$\\\hline
+$\big(a^n\big)^m=a^{n\times m}$ & $a^n\times b^n=(a\times b)^n$\\\hline
+$a^n\times a^m=a^{n+m}$ & $\dfrac{a^n}{a^m}=a^{n-m}$\\\hline
+\end{tabular}
+\end{center}
+
+\subsection{المقارنة والحصر}
+من أجل كل الأعداد الحقيقية $x$ ، $y$ و $a$:
+\begin{center}
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|p{0.44\textwidth}|p{0.44\textwidth}|}\hline
+إذا كان $x<y$ و $a>0$ فإن $ax<ay$. & إذا كان $x<y$ و $a<0$ فإن $ax>ay$ \ (يتغير اتجاه المتباينة).\\\hline
+إذا كان $x<y$ فإن $x+a<y+a$ و $x-a<y-a$. & إذا كان $0<x<y$ (أو $x<y<0$) فإن $\dfrac1x>\dfrac1y$.\\\hline
+\end{tabular}
+\end{center}
+
+% ---------------------------------------------------------------------
+\section{تعريف متتالية عددية}
+\begin{tarif}
+نسمي \textbf{متتالية عددية} $\LW{u}$ كل دالة معرفة على مجموعة الأعداد الطبيعية $\LW{\N}$ (أو على جزء منها) نحو مجموعة الأعداد الحقيقية $\LW{\R}$.
+\end{tarif}
+\begin{molahada}[ملاحظات]
+\begin{itemize}
+\item نرمز للمتتالية بأحد الرموز: $(u_n)$ ، $(v_n)$ ، $u$ ، $W$ ، $\ldots$
+\item $u_n$ هو \textbf{الحد العام} للمتتالية ، والعدد $n$ هو \textbf{دليله} (أو رتبته).
+\item إذا كانت $(u_n)$ معرفة على $\N$ فإن حدها الأول هو $u_0$ ، أما إذا كانت معرفة على $\N^*$ فإن حدها الأول هو $u_1$.
+\end{itemize}
+\end{molahada}
+
+% ---------------------------------------------------------------------
+\section{طرق توليد متتالية}
+\begin{center}
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|M{0.44\textwidth}|M{0.44\textwidth}|}\hline
+\textbf{متتالية معرفة بعلاقة تراجعية} & \textbf{متتالية معرفة بحدها العام}\\
+\bx{u_{n+1}=f(u_n)} \ مع إعطاء الحد الأول & \bx{u_n=f(n)}\\\hline
+مثال: $u_0=1$ و $u_{n+1}=2u_n+n+3$ & مثال: $u_n=\dfrac52n-\dfrac13$\\\hline
+\end{tabular}
+\end{center}
+
+\begin{mithal}[مثال 1: متتالية معرفة بحدها العام]
+لتكن $(u_n)$ المتتالية المعرفة على $\N$ كما يلي: من أجل كل عدد طبيعي $n$: \ $u_n=\dfrac23n+2$.
+\begin{enumerate}
+\item أحسب الحدود: $u_0$ ، $u_3$ و $u_{2n}$.
+\item عيّن قيمة الحد الذي رتبته $10$.
+\end{enumerate}
+\textbf{الحل:}
+\begin{enumerate}
+\item نعوّض $n$ بالقيمة المطلوبة في عبارة الحد العام:
+\begin{align*}
+u_0&=\frac23\times0+2=2\\
+u_3&=\frac23\times3+2=2+2=4\\
+u_{2n}&=\frac23\times(2n)+2=\frac{4n}{3}+2=\frac{4n+6}{3}
+\end{align*}
+\item الحد الأول هو $u_0$ (رتبته $1$) ، والحد الثاني $u_1$ (رتبته $2$) ، $\ldots$ \ إذن الحد ذو الرتبة $p$ هو $u_{p-1}$.\\
+الحد الذي رتبته $10$ هو $u_9$: \ $u_9=\dfrac23\times9+2=6+2=\bx{8}$.
+\end{enumerate}
+\end{mithal}
+
+\begin{mithal}[مثال 2: متتالية معرفة بعلاقة تراجعية]
+نعتبر المتتالية $(u_n)$ المعرفة على $\N$ بـ: $u_0=\dfrac12$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac25u_n+\dfrac15$.
+\begin{itemize}
+\item أحسب الحدود $u_1$ ، $u_2$ و $u_3$.
+\end{itemize}
+\textbf{الحل:} نحسب كل حد انطلاقاً من الحد الذي قبله:
+\begin{align*}
+u_1&=\frac25u_0+\frac15=\frac25\times\frac12+\frac15=\frac15+\frac15=\frac25\\
+u_2&=\frac25u_1+\frac15=\frac25\times\frac25+\frac15=\frac{4}{25}+\frac{5}{25}=\frac{9}{25}\\
+u_3&=\frac25u_2+\frac15=\frac25\times\frac{9}{25}+\frac15=\frac{18}{125}+\frac{25}{125}=\frac{43}{125}
+\end{align*}
+\end{mithal}
+\begin{molahada}
+يمكن حساب الحدود باستعمال الآلة الحاسبة (Casio) ، ويُشرح ذلك في القسم.
+\end{molahada}
+
+% ---------------------------------------------------------------------
+\section{دراسة اتجاه تغير متتالية عددية}
+لدراسة اتجاه تغير متتالية عددية $(u_n)$ نتبع إحدى الطريقتين التاليتين:
+\begin{tariqa}[الطريقة الأولى: إشارة الفرق $u_{n+1}-u_n$]
+ندرس إشارة الفرق $u_{n+1}-u_n$ من أجل كل عدد طبيعي $n$ ، ونميز ثلاث حالات:
+\begin{itemize}
+\item إذا كان $u_{n+1}-u_n>0$ فإن المتتالية $(u_n)$ \textbf{متزايدة تماماً}.
+\item إذا كان $u_{n+1}-u_n<0$ فإن المتتالية $(u_n)$ \textbf{متناقصة تماماً}.
+\item إذا كان $u_{n+1}-u_n=0$ فإن المتتالية $(u_n)$ \textbf{ثابتة}.
+\end{itemize}
+\end{tariqa}
+
+\begin{mithal}[مثال 1]
+$(u_n)$ متتالية عددية معرفة على $\N$ كما يلي: من أجل كل عدد طبيعي $n$: \ $u_n=-2n+3$.
+\begin{itemize}
+\item أدرس اتجاه تغير المتتالية $(u_n)$.
+\end{itemize}
+\textbf{الحل:} من أجل كل عدد طبيعي $n$ لدينا:
+\begin{align*}
+u_{n+1}-u_n&=\big[-2(n+1)+3\big]-\big(-2n+3\big)\\
+&=-2n-2+3+2n-3\\
+&=-2<0
+\end{align*}
+إذن المتتالية $(u_n)$ \textbf{متناقصة تماماً} على $\N$.
+\end{mithal}
+
+\begin{mithal}[مثال 2]
+$(v_n)$ متتالية عددية معرفة على $\N$ كما يلي: من أجل كل عدد طبيعي $n$: \ $v_n=2\Big(\dfrac13\Big)^n-1$.
+\begin{itemize}
+\item أدرس اتجاه تغير المتتالية $(v_n)$.
+\end{itemize}
+\textbf{الحل:} من أجل كل عدد طبيعي $n$ لدينا:
+\begin{align*}
+v_{n+1}-v_n&=\Big[2\Big(\frac13\Big)^{n+1}-1\Big]-\Big[2\Big(\frac13\Big)^n-1\Big]
+=2\Big(\frac13\Big)^n\times\frac13-1-2\Big(\frac13\Big)^n+1\\
+&=2\Big(\frac13\Big)^n\Big[\frac13-1\Big]\qquad(\text{\ar{نخرج}}\ 2\big(\tfrac13\big)^n\ \text{\ar{عاملاً مشتركاً}})\\
+&=2\Big(\frac13\Big)^n\times\Big(-\frac23\Big)=-\frac43\Big(\frac13\Big)^n
+\end{align*}
+وبما أن $\Big(\dfrac13\Big)^n>0$ فإن $v_{n+1}-v_n<0$ ، إذن المتتالية $(v_n)$ \textbf{متناقصة تماماً} على $\N$.
+\end{mithal}
+
+\begin{mithal}[مثال 3]
+$(u_n)$ متتالية عددية معرفة على $\N$ بـ: $u_0=-1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac13u_n+\dfrac43$.\\
+نقبل أنه من أجل كل عدد طبيعي $n$: \ $u_n\le2$.
+\begin{itemize}
+\item أدرس اتجاه تغير المتتالية $(u_n)$.
+\end{itemize}
+\textbf{الحل:} من أجل كل عدد طبيعي $n$ لدينا:
+\[u_{n+1}-u_n=\frac13u_n+\frac43-u_n=\Big(\frac13-1\Big)u_n+\frac43=-\frac23u_n+\frac43.\]
+ولدينا من أجل كل عدد طبيعي $n$: $u_n\le2$ ، نضرب الطرفين في العدد السالب $-\dfrac23$ فيتغير اتجاه المتباينة:
+\[-\frac23u_n\ge-\frac23\times2\quad\text{\ar{أي}}\quad-\frac23u_n\ge-\frac43\quad\text{\ar{ومنه}}\quad-\frac23u_n+\frac43\ge-\frac43+\frac43=0.\]
+إذن من أجل كل عدد طبيعي $n$: \ $u_{n+1}-u_n\ge0$ ، ومنه المتتالية $(u_n)$ \textbf{متزايدة} على $\N$.
+\end{mithal}
+\begin{molahada}[تنبيه]
+عند ضرب طرفي متباينة في عدد \textbf{سالب} يجب قلب اتجاهها. في المثال 3 أعلاه: من $u_n\le2$ نحصل على $-\dfrac23u_n\ge-\dfrac43$ (وليس $\le$) ، لذلك المتتالية متزايدة وليست متناقصة.
+\end{molahada}
+
+\begin{tariqa}[الطريقة الثانية: مقارنة النسبة $\dfrac{u_{n+1}}{u_n}$ بالعدد $1$]
+إذا كانت حدود المتتالية $(u_n)$ \textbf{موجبة تماماً} ، نحسب النسبة $\dfrac{u_{n+1}}{u_n}$ ونميز ثلاث حالات:
+\begin{itemize}
+\item إذا كان $\dfrac{u_{n+1}}{u_n}>1$ فإن المتتالية $(u_n)$ متزايدة تماماً.
+\item إذا كان $\dfrac{u_{n+1}}{u_n}<1$ فإن المتتالية $(u_n)$ متناقصة تماماً.
+\item إذا كان $\dfrac{u_{n+1}}{u_n}=1$ فإن المتتالية $(u_n)$ ثابتة.
+\end{itemize}
+\end{tariqa}
+
+\begin{tarif}[المتتالية الثابتة]
+نقول إن $\LW{(u_n)}$ متتالية \textbf{ثابتة} إذا كان من أجل كل عدد طبيعي $\LW{n}$: \ \bx{u_{n+1}=u_n=u_0} \ (كل الحدود متساوية وتساوي الحد الأول).
+\end{tarif}
+\begin{mithal}
+نعتبر المتتالية العددية $(u_n)$ المعرفة على $\N$ بـ: $u_0=\alpha$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=2u_n-1$.
+\begin{itemize}
+\item عيّن قيمة العدد الحقيقي $\alpha$ حتى تكون المتتالية $(u_n)$ ثابتة.
+\end{itemize}
+\textbf{الحل:} $(u_n)$ ثابتة معناه $u_{n+1}=u_n=u_0=\alpha$. نعوّض $u_{n+1}$ و $u_n$ بـ $\alpha$ في العلاقة التراجعية:
+\[\alpha=2\alpha-1\quad\Longleftrightarrow\quad\alpha-2\alpha=-1\quad\Longleftrightarrow\quad-\alpha=-1\quad\Longleftrightarrow\quad\bx{\alpha=1}.\]
+\end{mithal}
+
+% ---------------------------------------------------------------------
+\section{المتتالية الحسابية والمتتالية الهندسية}
+\subsection{المتتالية الحسابية}
+\begin{tarif}
+نقول إن $\LW{(u_n)}$ متتالية \textbf{حسابية} إذا وُجد عدد حقيقي $\LW{r}$ (يسمى \textbf{الأساس}) بحيث من أجل كل عدد طبيعي $\LW{n}$: \ \bx{u_{n+1}=u_n+r}.\\
+\textbf{للبرهان أن $\LW{(u_n)}$ حسابية:} نحسب الفرق $\LW{u_{n+1}-u_n}$ فنجد عدداً حقيقياً ثابتاً (لا يتعلق بـ $\LW{n}$): \ \bx{u_{n+1}-u_n=r}.
+\end{tarif}
+\begin{mithal}
+نعتبر المتتالية العددية $(u_n)$ المعرفة على $\N$ بـ: $u_0=1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac{u_n-4}{u_n+5}$.\\
+ونضع من أجل كل عدد طبيعي $n$: \ $v_n=\dfrac{1}{u_n+2}$ \ (نقبل أن $u_n+2\ne0$).
+\begin{itemize}
+\item برهن أن المتتالية $(v_n)$ حسابية.
+\end{itemize}
+\textbf{الحل:} نحسب أولاً $u_{n+1}+2$ بتوحيد المقامات:
+\[u_{n+1}+2=\frac{u_n-4}{u_n+5}+\frac{2(u_n+5)}{u_n+5}=\frac{u_n-4+2u_n+10}{u_n+5}=\frac{3u_n+6}{u_n+5}=\frac{3(u_n+2)}{u_n+5}.\]
+ومنه من أجل كل عدد طبيعي $n$:
+\begin{align*}
+v_{n+1}-v_n&=\frac{1}{u_{n+1}+2}-\frac{1}{u_n+2}=\frac{u_n+5}{3(u_n+2)}-\frac{3}{3(u_n+2)}\\
+&=\frac{u_n+5-3}{3(u_n+2)}=\frac{u_n+2}{3(u_n+2)}=\frac13
+\end{align*}
+إذن $(v_n)$ متتالية حسابية أساسها \bx{r=\dfrac13} وحدها الأول $v_0=\dfrac{1}{u_0+2}=\dfrac13$.
+\end{mithal}
+
+\begin{khassia}[عبارة الحد العام لمتتالية حسابية]
+إذا كانت $\LW{(u_n)}$ حسابية أساسها $\LW{r}$ فإنه من أجل كل عددين طبيعيين $\LW{n}$ و $\LW{p}$:
+\[\bx{u_n=u_p+(n-p)\,r}\qquad\text{\ar{وبصفة خاصة (الحد الأول $\LW{u_0}$):}}\qquad\bx{u_n=u_0+n\,r}\]
+تستعمل هذه العلاقة لحساب حد معين ، أو لحساب الأساس إذا عُلم حدان: \ \bx{r=\dfrac{u_p-u_q}{p-q}}.
+\end{khassia}
+\begin{mithal}
+$(u_n)$ متتالية حسابية حدها الأول $u_0=2$ ، وتحقق: $u_2+u_5=25$.
+\begin{enumerate}
+\item عيّن أساس المتتالية $(u_n)$.
+\item أكتب عبارة الحد العام $u_n$ بدلالة $n$.
+\end{enumerate}
+\textbf{الحل:}
+\begin{enumerate}
+\item لدينا $u_2=u_0+2r$ و $u_5=u_0+5r$ ، ومنه:
+\[u_2+u_5=2u_0+7r=4+7r.\]
+لكن $u_2+u_5=25$ ، ومنه $4+7r=25$ أي $7r=21$ ، إذن \bx{r=3}.
+\item $u_n=u_0+nr$ ، أي من أجل كل عدد طبيعي $n$: \ \bx{u_n=2+3n}.
+\end{enumerate}
+\end{mithal}
+
+\begin{khassia}[الوسط الحسابي]
+إذا كانت $\LW{a}$ ، $\LW{b}$ و $\LW{c}$ ثلاثة حدود متتابعة من متتالية حسابية فإن: \ \bx{2b=a+c} \ أي \bx{3b=a+b+c}.
+\end{khassia}
+\begin{mithal}
+$(u_n)$ متتالية حسابية معرفة على $\N$ أساسها $r$ ، حيث:
+$\begin{cases}u_2+u_3+u_4=21 & (1)\\ u_4+u_5=20 & (2)\end{cases}$
+\begin{enumerate}
+\item[(أ)] بيّن أن $u_3=7$ و $r=2$ ، ثم استنتج قيمة $u_0$.
+\item[(ب)] أكتب $u_n$ بدلالة $n$.
+\end{enumerate}
+\textbf{الحل:}
+\begin{enumerate}
+\item[(أ)] حسب خاصية الوسط الحسابي: $u_2+u_4=2u_3$ ، فتصبح المعادلة $(1)$: $2u_3+u_3=21$ أي $3u_3=21$ ، إذن \bx{u_3=7}.\\
+من جهة أخرى: $u_4=u_3+r=7+r$ و $u_5=u_3+2r=7+2r$. بالتعويض في $(2)$:
+\[(7+r)+(7+2r)=20\ \Longleftrightarrow\ 14+3r=20\ \Longleftrightarrow\ 3r=6\ \Longleftrightarrow\ \bx{r=2}.\]
+ونعلم أن $u_3=u_0+3r$ ، ومنه: $u_0=u_3-3r=7-3\times2=\bx{1}$.
+\item[(ب)] $u_n=u_0+nr$ ، إذن من أجل كل عدد طبيعي $n$: \ \bx{u_n=1+2n}.
+\end{enumerate}
+\end{mithal}
+
+\begin{khassia}[مجموع حدود متتابعة من متتالية حسابية]
+\[\bx{S=\frac{\text{\ar{عدد الحدود}}}{2}\times\big(\text{\ar{الحد الأول}}+\text{\ar{الحد الأخير}}\big)}\]
+حيث: \ \textbf{عدد الحدود} $\LW{=}$ دليل الحد الأخير $\LW{-}$ دليل الحد الأول $\LW{+1}$.\\
+مثلاً: $\LW{S_n=u_0+u_1+\cdots+u_n=\dfrac{n+1}{2}\big(u_0+u_n\big)}$.
+\end{khassia}
+
+\begin{khassia}[اتجاه تغير متتالية حسابية]
+نستنتج اتجاه تغير متتالية حسابية $\LW{(u_n)}$ حسب إشارة أساسها $\LW{r}$:
+\begin{center}
+\renewcommand{\arraystretch}{1.8}
+\begin{tabular}{|M{0.27\textwidth}|M{0.27\textwidth}|M{0.27\textwidth}|}\hline
+\hl{r>0} & \hl{r<0} & \hl{r=0}\\\hline
+$\LW{(u_n)}$ متزايدة تماماً & $\LW{(u_n)}$ متناقصة تماماً & $\LW{(u_n)}$ ثابتة\\\hline
+\end{tabular}
+\end{center}
+\end{khassia}
+
+% -------------------------------
+\subsection{المتتالية الهندسية}
+\begin{tarif}
+نقول إن $\LW{(v_n)}$ متتالية \textbf{هندسية} إذا وُجد عدد حقيقي $\LW{q}$ (يسمى \textbf{الأساس}) بحيث من أجل كل عدد طبيعي $\LW{n}$: \ \bx{v_{n+1}=q\times v_n}.\\
+\textbf{للبرهان أن $\LW{(v_n)}$ هندسية:} نحسب عبارة $\LW{v_{n+1}}$ فنجدها $\LW{v_n}$ مضروبة في عدد ثابت $\LW{q}$ ، أو (إذا كانت حدودها غير معدومة) نجد $\LW{\dfrac{v_{n+1}}{v_n}=q}$.
+\end{tarif}
+\begin{mithal}
+نعتبر المتتالية العددية $(u_n)$ المعرفة على $\N$ بـ: $u_0=-3$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=2u_n+3$.\\
+ونضع من أجل كل عدد طبيعي $n$: \ $v_n=u_n+3$.
+\begin{itemize}
+\item برهن أن المتتالية $(v_n)$ هندسية.
+\end{itemize}
+\textbf{الحل:} لدينا $v_n=u_n+3$ ومنه $u_n=v_n-3$. من أجل كل عدد طبيعي $n$:
+\begin{align*}
+v_{n+1}&=u_{n+1}+3=(2u_n+3)+3=2u_n+6\\
+&=2(v_n-3)+6=2v_n-6+6=2v_n
+\end{align*}
+إذن $(v_n)$ متتالية هندسية أساسها \bx{q=2} وحدها الأول $v_0=u_0+3=-3+3=0$.
+\end{mithal}
+
+\begin{khassia}[عبارة الحد العام لمتتالية هندسية]
+إذا كانت $\LW{(v_n)}$ هندسية أساسها $\LW{q}$ فإنه من أجل كل عددين طبيعيين $\LW{n}$ و $\LW{p}$:
+\[\bx{v_n=v_p\times q^{\,n-p}}\qquad\text{\ar{وبصفة خاصة (الحد الأول $\LW{v_0}$):}}\qquad\bx{v_n=v_0\times q^{\,n}}\]
+وتستعمل في حساب الأساس إذا عُلم حدان: \ \bx{q^{\,n-p}=\dfrac{v_n}{v_p}}.
+\end{khassia}
+\begin{mithal}
+$(u_n)$ متتالية هندسية أساسها $3$ وحدها الأول $u_0$ بحيث: $u_0+u_3=28$.
+\begin{itemize}
+\item أحسب $u_0$ ، ثم أكتب $u_n$ بدلالة $n$.
+\end{itemize}
+\textbf{الحل:} لدينا $q=3$ و $u_3=u_0\times q^3=27u_0$. ومنه:
+\[u_0+u_3=28\ \Longleftrightarrow\ u_0+27u_0=28\ \Longleftrightarrow\ 28u_0=28\ \Longleftrightarrow\ \bx{u_0=1}.\]
+إذن من أجل كل عدد طبيعي $n$: \ $u_n=u_0\times q^n=\bx{3^n}$.
+\end{mithal}
+
+\begin{khassia}[الوسط الهندسي]
+إذا كانت $\LW{a}$ ، $\LW{b}$ و $\LW{c}$ ثلاثة حدود متتابعة من متتالية هندسية فإن: \ \bx{b^2=a\times c} \ أي \bx{b^3=a\times b\times c}.
+\end{khassia}
+\begin{mithal}
+لتكن $(v_n)$ متتالية هندسية حدودها موجبة ، معرفة على $\N$ بـ: $v_0=2$ و $v_2=18$.
+\begin{itemize}
+\item أحسب $v_1$ ، ثم استنتج أساس المتتالية $(v_n)$.
+\end{itemize}
+\textbf{الحل:} بتطبيق خاصية الوسط الهندسي: $v_1^2=v_0\times v_2=2\times18=36$ ، ومنه $v_1=6$ أو $v_1=-6$.\\
+وبما أن حدود المتتالية موجبة فإن \bx{v_1=6} ($v_1=-6$ مرفوض).\\
+الأساس: $q=\dfrac{v_1}{v_0}=\dfrac62=\bx{3}$.
+\end{mithal}
+
+\begin{khassia}[مجموع حدود متتابعة من متتالية هندسية أساسها $q\ne1$]
+\[\bx{S=\text{\ar{الحد الأول}}\times\frac{1-q^{\,\text{\ar{عدد الحدود}}}}{1-q}}\]
+حيث: \ \textbf{عدد الحدود} $\LW{=}$ دليل الحد الأخير $\LW{-}$ دليل الحد الأول $\LW{+1}$.\\
+مثلاً: $\LW{S_n=v_0+v_1+\cdots+v_n=v_0\times\dfrac{1-q^{\,n+1}}{1-q}}$.
+\end{khassia}
+
+\begin{khassia}[اتجاه تغير متتالية هندسية $v_n=v_0\,q^n$]
+نستنتج اتجاه تغير متتالية هندسية حسب إشارة حدها الأول $\LW{v_0}$ وقيمة أساسها $\LW{q}$:
+\begin{center}
+\renewcommand{\arraystretch}{1.8}
+\begin{tabular}{|M{0.16\textwidth}|M{0.22\textwidth}|M{0.18\textwidth}|M{0.22\textwidth}|}\hline
+ & \hl{0<q<1} & \hl{q=1} & \hl{q>1}\\\hline
+\hl{v_0>0} & متناقصة تماماً & ثابتة & متزايدة تماماً\\\hline
+\hl{v_0<0} & متزايدة تماماً & ثابتة & متناقصة تماماً\\\hline
+\end{tabular}
+\end{center}
+\begin{itemize}
+\item إذا كان $\LW{q<0}$ فإن المتتالية الهندسية $\LW{(v_n)}$ (بحد أول غير معدوم) \textbf{ليست رتيبة} (إشارات حدودها متناوبة).
+\item إذا كان $\LW{q=0}$ فإن المتتالية $\LW{(v_n)}$ ثابتة (معدومة) ابتداءً من الحد $\LW{v_1}$.
+\end{itemize}
+\end{khassia}
+
+\begin{khassia}[نهاية المتتالية $(q^n)$]
+\begin{itemize}
+\item إذا كان $\LW{-1<q<1}$ فإن \bx{\lim_{n\to+\infty}q^n=0}.
+\item إذا كان $\LW{q=1}$ فإن \bx{\lim_{n\to+\infty}q^n=1}.
+\item إذا كان $\LW{q>1}$ فإن \bx{\lim_{n\to+\infty}q^n=+\infty}.
+\item إذا كان $\LW{q\le-1}$ فإن المتتالية $\LW{(q^n)}$ ليس لها نهاية.
+\end{itemize}
+\end{khassia}
+
+% ---------------------------------------------------------------------
+\section{البرهان بالتراجع}
+\begin{tariqa}[مبدأ الاستدلال بالتراجع]
+لتكن $P(n)$ خاصية متعلقة بعدد طبيعي $n$ ، و $n_0$ عدداً طبيعياً.
+للبرهان على صحة الخاصية $P(n)$ من أجل كل عدد طبيعي $n\ge n_0$ يكفي:
+\begin{enumerate}
+\item \textbf{التحقق:} نتأكد من صحة الخاصية من أجل $n_0$ أي صحة $P(n_0)$.
+\item \textbf{الوراثة:} نفرض أن الخاصية صحيحة من أجل عدد طبيعي كيفي $n\ge n_0$ أي $P(n)$ صحيحة ، ونبرهن صحة الخاصية من أجل $n+1$ أي $P(n+1)$.
+\item \textbf{الخلاصة:} من أجل كل عدد طبيعي $n$ أكبر من أو يساوي $n_0$ ، $P(n)$ صحيحة.
+\end{enumerate}
+\begin{center}
+\begin{LTR}
+\begin{tikzpicture}[font=\small]
+\draw[-{Stealth[length=2.5mm]},thick] (0,0)--(11,0);
+\foreach \x/\l in {1.5/{$P(n_0)$},5.2/{$P(n)$},8.8/{$P(n+1)$}}{
+ \fill (\x,0) circle (2pt);
+ \node[above=3pt] at (\x,0){\l};
+ \node[below=3pt,font=\footnotesize] at (\x,0){\ar{صحيحة}};}
+\draw[-{Stealth[length=2mm]},cThm,thick] (5.2,0.8) to[bend left=40] node[above,font=\footnotesize]{\ar{فإن}} (8.8,0.8);
+\node[cThm,font=\footnotesize,left] at (5.0,0.95){\ar{إذا كانت}};
+\node[cDef,font=\footnotesize\bfseries] at (1.5,-1){\ar{المرحلة 1: التحقق}};
+\node[cDef,font=\footnotesize\bfseries] at (7,-1){\ar{المرحلة 2: الوراثة}};
+\end{tikzpicture}
+\end{LTR}
+\end{center}
+\end{tariqa}
+
+\begin{mithal}
+لتكن $(u_n)$ المتتالية المعرفة على $\N$ بـ: $u_0=1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac{3u_n+2}{4}$.
+\begin{itemize}
+\item برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: \ $u_n<2$.
+\end{itemize}
+\textbf{الحل:} لتكن $P(n)$ الخاصية: «$u_n<2$».
+\begin{itemize}
+\item \textbf{التحقق:} من أجل $n=0$: $u_0=1<2$ ، ومنه $P(0)$ صحيحة.
+\item \textbf{الوراثة:} نفرض أن $P(n)$ صحيحة من أجل عدد طبيعي كيفي $n$ (أي $u_n<2$) ونبرهن صحة $P(n+1)$ (أي $u_{n+1}<2$):\\
+لدينا $u_n<2$ ، بضرب الطرفين في العدد الموجب $3$: $3u_n<6$ ، وبإضافة العدد $2$: $3u_n+2<8$ ، وبضرب الطرفين في العدد الموجب $\dfrac14$: $\dfrac{3u_n+2}{4}<2$ ، أي $u_{n+1}<2$ ، ومنه $P(n+1)$ صحيحة.
+\item \textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع فإن $P(n)$ صحيحة من أجل كل عدد طبيعي $n$ ، أي $u_n<2$.
+\end{itemize}
+\end{mithal}
+
+% ---------------------------------------------------------------------
+\section{المتتالية المحدودة من الأعلى ، المحدودة من الأسفل والمحدودة}
+\begin{tarif}
+لتكن $\LW{(u_n)}$ متتالية عددية معرفة على $\LW{\N}$.
+\begin{itemize}
+\item نقول إن $\LW{(u_n)}$ \textbf{محدودة من الأعلى} إذا وُجد عدد حقيقي $\LW{A}$ بحيث من أجل كل عدد طبيعي $\LW{n}$: \ \bx{u_n\le A}.
+\item نقول إن $\LW{(u_n)}$ \textbf{محدودة من الأسفل} إذا وُجد عدد حقيقي $\LW{B}$ بحيث من أجل كل عدد طبيعي $\LW{n}$: \ \bx{u_n\ge B}.
+\item نقول إن $\LW{(u_n)}$ \textbf{محدودة} إذا كانت محدودة من الأعلى ومحدودة من الأسفل.
+\end{itemize}
+\end{tarif}
+
+% ---------------------------------------------------------------------
+\section{المتتالية المتقاربة}
+\begin{tarif}
+نقول إن المتتالية $\LW{(u_n)}$ \textbf{متقاربة} إذا كانت لها نهاية منتهية: \ \bx{\lim_{n\to+\infty}u_n=\ell} \ حيث $\LW{\ell}$ عدد حقيقي.
+وإذا لم تكن متقاربة نقول إنها \textbf{متباعدة}.
+\end{tarif}
+\begin{khassia}[مبرهنة التقارب]
+\begin{itemize}
+\item كل متتالية \textbf{متزايدة} ($\LW{u_{n+1}-u_n\ge0}$) و\textbf{محدودة من الأعلى} ($\LW{u_n\le a}$) هي متتالية متقاربة.
+\item كل متتالية \textbf{متناقصة} ($\LW{u_{n+1}-u_n\le0}$) و\textbf{محدودة من الأسفل} ($\LW{u_n\ge a}$) هي متتالية متقاربة.
+\end{itemize}
+\end{khassia}
+
+% ---------------------------------------------------------------------
+\section{ملاحظات مهمة: المتتاليات في المسائل الاقتصادية}
+لتكن $(u_n)$ متتالية معرفة في مسألة اقتصادية ، حيث $u_n$ هو المقدار القديم و $u_{n+1}$ هو المقدار الجديد (بعد سنة ، شهر ، $\ldots$).
+\begin{khassia}[الزيادة والتخفيض بنسبة مئوية]
+\begin{itemize}
+\item \textbf{الزيادة بـ $\LW{p\%}$}: المقدار الجديد هو المقدار القديم مضروباً في العدد $\LW{\Big(1+\dfrac{p}{100}\Big)}$ ، أي:
+\[\bx{u_{n+1}=\Big(1+\frac{p}{100}\Big)\times u_n}\]
+\item \textbf{التخفيض بـ $\LW{p\%}$}: المقدار الجديد هو المقدار القديم مضروباً في العدد $\LW{\Big(1-\dfrac{p}{100}\Big)}$ ، أي:
+\[\bx{u_{n+1}=\Big(1-\frac{p}{100}\Big)\times u_n}\]
+\item \textbf{الزيادة بـ $\LW{p\%}$ ثم إضافة أو طرح مقدار ثابت $\LW{a}$}: نضرب المقدار القديم في $\LW{\Big(1+\dfrac{p}{100}\Big)}$ ثم نضيف أو نطرح العدد $\LW{a}$ حسب سياق التمرين ، أي:
+\[\bx{u_{n+1}=\Big(1+\frac{p}{100}\Big)\times u_n\pm a}\]
+\item \textbf{التخفيض بـ $\LW{p\%}$ ثم إضافة أو طرح مقدار ثابت $\LW{a}$}: نضرب المقدار القديم في $\LW{\Big(1-\dfrac{p}{100}\Big)}$ ثم نضيف أو نطرح العدد $\LW{a}$ حسب سياق التمرين ، أي:
+\[\bx{u_{n+1}=\Big(1-\frac{p}{100}\Big)\times u_n\pm a}\]
+\end{itemize}
+\end{khassia}
+\begin{mithal}
+\begin{itemize}
+\item زيادة بـ $5\%$: \ $u_{n+1}=1{,}05\,u_n$.
+\item تخفيض بـ $20\%$: \ $u_{n+1}=0{,}8\,u_n$.
+\item ينخفض عدد السكان بـ $4\%$ سنوياً ويستقر $500$ ساكن جديد: \ $u_{n+1}=0{,}96\,u_n+500$.
+\end{itemize}
+\end{mithal}
+
+% ---------------------------------------------------------------------
+\section{مخطط حل التمرين النموذجي في البكالوريا}
+\begin{tariqa}[التمرين النموذجي: $u_{n+1}=a\,u_n+b$ \ مع $a\ne1$]
+\begin{enumerate}
+\item \textbf{النقطة الصامدة:} نحل المعادلة $\ell=a\ell+b$ فنجد $\ell=\dfrac{b}{1-a}$ ، وهي غالباً العدد الذي يُطلب البرهان بالتراجع على أن $u_n\le\ell$ أو $u_n\ge\ell$.
+\item \textbf{الرتابة:} ندرس إشارة الفرق: $u_{n+1}-u_n=(a-1)u_n+b=(a-1)(u_n-\ell)$.
+\item \textbf{التقارب:} متتالية متزايدة ومحدودة من الأعلى (أو متناقصة ومحدودة من الأسفل) هي متتالية متقاربة.
+\item \textbf{المتتالية المساعدة:} $v_n=u_n-\ell$ متتالية هندسية أساسها $a$ ، لأن: $v_{n+1}=a u_n+b-\ell=a(u_n-\ell)=a\,v_n$.
+\item \textbf{العبارة بدلالة $n$:} $v_n=v_0\times a^n$ ، ثم $u_n=v_n+\ell$.
+\item \textbf{النهاية:} إذا كان $-1<a<1$ فإن $\displaystyle\lim_{n\to+\infty}a^n=0$ ومنه $\displaystyle\lim_{n\to+\infty}u_n=\ell$.
+\item \textbf{المجموع:} $u_0+u_1+\cdots+u_n=(v_0+v_1+\cdots+v_n)+(n+1)\,\ell$.
+\end{enumerate}
+\end{tariqa}
+
+\section{التمارين والحلول}
+% ================================================= 1
+\begin{tamrin}{تمرين من بكالوريا 2008 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=\alpha$ حيث $\alpha$ عدد حقيقي ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac23u_n-\dfrac89$.
+\begin{enumerate}
+\item برهن بالتراجع أنه في حالة $\alpha=-\dfrac83$ تكون المتتالية $(u_n)$ ثابتة.
+\item في كل ما يلي نضع $\alpha=2$ ، ونعرّف المتتالية $(v_n)$ كما يلي: من أجل كل عدد طبيعي $n$: \ $v_n=u_n+\dfrac83$.
+\begin{sq}
+\qa أحسب $u_1$ و $u_2$.
+\qb أثبت أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها $q$ وحدها الأول $v_0$.
+\qc أكتب عبارة $v_n$ ثم $u_n$ بدلالة $n$.
+\qd أحسب $\limn u_n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 2
+\begin{tamrin}{تمرين من بكالوريا 2008 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac12u_n-1$.
+\begin{enumerate}
+\item أحسب $u_1$ ، $u_2$ و $u_3$.
+\item \begin{sq}
+\qa أثبت بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n\ge-2$.
+\qb جد اتجاه تغير المتتالية $(u_n)$. ماذا تستنتج؟
+\end{sq}
+\item نعتبر المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=u_n+2$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb عبّر بدلالة $n$ عن $v_n$ ثم عن $u_n$.
+\qc أحسب $\limn u_n$.
+\qd أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 3
+\begin{tamrin}{تمرين من بكالوريا 2009 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=-1$ ، ومن أجل كل عدد طبيعي $n$: \ $3u_{n+1}=u_n+4$.
+\begin{enumerate}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n\le2$.
+\qb بيّن أن المتتالية $(u_n)$ متزايدة.
+\qc استنتج مع التبرير أن المتتالية $(u_n)$ متقاربة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-2$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تحديد حدها الأول وأساسها.
+\qb أكتب $v_n$ ثم $u_n$ بدلالة $n$.
+\qc أحسب $\limn u_n$.
+\qd أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 4
+\begin{tamrin}{تمرين من بكالوريا 2009 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=-1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=3u_n-2$.
+\begin{enumerate}
+\item أحسب $u_1$ و $u_2$.
+\item نعتبر المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=u_n-1$.
+\begin{sq}
+\qa أثبت أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها $q$ وحدها الأول $v_0$.
+\qb أكتب $v_n$ بدلالة $n$ ، ثم استنتج $u_n$ بدلالة $n$.
+\end{sq}
+\item بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=(-4)\times3^n$.
+\item استنتج اتجاه تغير المتتالية $(u_n)$.
+\item عيّن العدد الطبيعي $n$ بحيث: $u_0+u_1+\cdots+u_n=n-79$.
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 5
+\begin{tamrin}{تمرين من بكالوريا 2010 -- الموضوع الأول ($\star\star$ بعد درس الأسية)}
+\begin{enumerate}
+\item $n$ عدد طبيعي. أحسب بدلالة $n$ المجموع: $S_n=1+e+e^2+\cdots+e^n$.
+\item $(w_n)$ متتالية معرفة من أجل كل عدد طبيعي $n$ بـ: $w_n=2n+4+e^n$.\\
+بيّن أن $w_n=u_n+v_n$ حيث $(u_n)$ متتالية حسابية و $(v_n)$ متتالية هندسية ، يطلب تعيين الحد الأول والأساس لكل منهما.
+\item أثبت أنه من أجل كل عدد طبيعي $n$: $4+6+8+\cdots+(2n+4)=(n+1)(n+4)$.
+\item استنتج بدلالة $n$ المجموع: $S'_n=w_0+w_1+\cdots+w_n$.
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 6
+\begin{tamrin}{تمرين من بكالوريا 2010 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac{3u_n+2}{4}$.
+\begin{enumerate}
+\item أحسب $u_1$ ، $u_2$ و $u_3$.
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n<2$.
+\qb بيّن أن المتتالية $(u_n)$ متزايدة تماماً.
+\qc استنتج أن المتتالية $(u_n)$ متقاربة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-2$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb أكتب $v_n$ بدلالة $n$ ، واستنتج أن: $u_n=2-\Big(\dfrac34\Big)^n$.
+\qc ما هي نهاية المتتالية $(u_n)$؟
+\end{sq}
+\item \begin{sq}
+\qa أحسب بدلالة $n$ المجموع: $S_n=v_0+v_1+\cdots+v_n$.
+\qb استنتج أن: $u_0+u_1+\cdots+u_n=3\Big(\dfrac34\Big)^n+2n-2$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 7
+\begin{tamrin}{تمرين من بكالوريا 2011 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=\dfrac12$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac25u_n+\dfrac15$.
+\begin{enumerate}
+\item أحسب $u_1$ و $u_2$.
+\item بيّن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>\dfrac13$.
+\item بيّن أن المتتالية $(u_n)$ متناقصة تماماً ، ثم استنتج أنها متقاربة.
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-\dfrac13$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb أكتب $v_n$ ثم $u_n$ بدلالة $n$.
+\qc أحسب نهاية المتتالية $(u_n)$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 8
+\begin{tamrin}{تمرين من بكالوريا 2012 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac{3u_n+4}{9}$.
+\begin{enumerate}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>\dfrac23$.
+\qb بيّن أن المتتالية $(u_n)$ متناقصة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-\dfrac23$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb أكتب $v_n$ بدلالة $n$ ، واستنتج أن: $u_n=\dfrac13\Big[\Big(\dfrac13\Big)^n+2\Big]$.
+\qc ما هي نهاية المتتالية $(u_n)$؟
+\end{sq}
+\item أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_n$.
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 9
+\begin{tamrin}{تمرين من بكالوريا 2012 -- الموضوع الثاني (مسألة)}
+في بداية جانفي 2008 وضع شخص مبلغاً قدره $50000\,DA$ في صندوق التوفير بفائدة سنوية قدرها $5\%$.
+يسحب هذا الشخص في نهاية كل سنة مبلغاً قدره $5000\,DA$ (بعد حساب الفوائد).
+نرمز بـ $u_n$ إلى المبلغ الذي يملكه في حسابه بداية جانفي من السنة $2008+n$.
+\begin{enumerate}
+\item \begin{sq}
+\qa أحسب $u_0$ ، $u_1$ و $u_2$.
+\qb هل المتتالية $(u_n)$ هندسية؟ هل هي حسابية؟
+\qc بيّن لماذا: من أجل كل عدد طبيعي $n$: $u_{n+1}=1{,}05\,u_n-5000$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-100000$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية.
+\qb أكتب $v_n$ بدلالة $n$ ، واستنتج أن: $u_n=-50000\times(1{,}05)^n+100000$.
+\end{sq}
+\item \begin{sq}
+\qa ما هو المبلغ الذي يكون في حساب هذا الشخص نهاية عام 2015؟
+\qb ابتداءً من أية سنة لا تسمح إدارة الصندوق بسحب المبلغ المعتاد؟
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 10
+\begin{tamrin}{تمرين من بكالوريا 2013 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=3$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\Big(\dfrac{2a+1}{3}\Big)u_n-\dfrac{2a+4}{3}$ \ حيث $a$ وسيط حقيقي.
+\begin{enumerate}
+\item عيّن قيمة $a$ التي من أجلها تكون المتتالية $(u_n)$ ثابتة.
+\item نفرض $a\ne\dfrac52$.
+\begin{sq}
+\qa عيّن قيمة $a$ حتى تكون $(u_n)$ متتالية حسابية.
+\qb أحسب عندئذ $u_n$ بدلالة $n$ ، ومجموع $n$ حداً الأولى.
+\end{sq}
+\item \begin{sq}
+\qa عيّن قيمة $a$ حتى تكون $(u_n)$ متتالية هندسية.
+\qb عيّن عندئذ $u_{50}$ ومجموع $50$ حداً الأولى.
+\end{sq}
+\item نفرض $a=4$.
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n=3^n+2$.
+\qb بيّن أن: $u_0+u_1+\cdots+u_n=\dfrac12\big(3^{n+1}+4n+3\big)$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 11
+\begin{tamrin}{تمرين من بكالوريا 2013 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=6$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=-\dfrac12u_n+6$.
+\begin{enumerate}
+\item \begin{sq}
+\qa أحسب $u_1$ ، $u_2$ ، $u_3$ و $u_4$.
+\qb هل المتتالية $(u_n)$ رتيبة على $\N$؟ برّر إجابتك.
+\end{sq}
+\item \begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-4=-\dfrac12\big(u_n-4\big)$.
+\qb استنتج أن المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=u_n-4$ هندسية.
+\qc أكتب $v_n$ ثم $u_n$ بدلالة $n$.
+\qd بيّن أن المتتالية $(u_n)$ متقاربة.
+\end{sq}
+\item باستعمال عبارة $u_n$ بدلالة $n$ ، تأكد ثانية من نتيجة السؤال 1(ب).
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 12
+\begin{tamrin}{تمرين من بكالوريا 2014 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=3$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac23u_n-1$.
+\begin{enumerate}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>-3$.
+\qb بيّن أن المتتالية $(u_n)$ متناقصة تماماً.
+\qc استنتج أن المتتالية $(u_n)$ متقاربة.
+\end{sq}
+\item $(v_n)$ متتالية هندسية متقاربة أساسها $q$ ، حيث: $v_0=6$ و $\limn\big(v_0+v_1+\cdots+v_n\big)=18$.
+\begin{sq}
+\qa بيّن أن: $\limn\big(v_0+v_1+\cdots+v_n\big)=\dfrac{v_0}{1-q}$.
+\qb أحسب $q$ ، ثم عيّن $v_n$ بدلالة $n$.
+\qc برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n=v_n-3$.
+\qd استنتج عبارة $u_n$ بدلالة $n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 13
+\begin{tamrin}{تمرين من بكالوريا 2015 -- الموضوع الأول (مسألة)}
+بيّنت دراسة أن $5\%$ من عمال إحدى القطاعات الصناعية يحالون على التقاعد سنوياً ، وبالمقابل يوظَّف $3000$ عامل سنوياً ، علماً أنه في سنة 2012 كان عدد العمال $50000$.
+نعتبر الألف هو الوحدة ، ونرمز بـ $u_n$ لعدد العمال سنة $2012+n$ ، أي $u_0=50$.
+\begin{enumerate}
+\item أحسب $u_1$ و $u_2$.
+\item \begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}=0{,}95u_n+3$.
+\qb بيّن أن المتتالية $(u_n)$ ليست حسابية وليست هندسية.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=60-u_n$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb أكتب $v_n$ ثم $u_n$ بدلالة $n$.
+\qc قدّر عدد العمال سنة 2017.
+\qd حدد اتجاه تغير المتتالية $(u_n)$.
+\qe أحسب نهاية $(u_n)$. هل يمكن أن يصل عدد عمال هذا القطاع إلى $60000$ عامل؟
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 14
+\begin{tamrin}{تمرين من بكالوريا 2016 -- الموضوع الأول}
+$(v_n)$ متتالية هندسية حدودها موجبة ، حدها الأول $v_0=18$ ، وتحقق: $v_0+v_1+v_2=38$.
+\begin{enumerate}
+\item بيّن أن أساس المتتالية $(v_n)$ هو $q=\dfrac23$.
+\item \begin{sq}
+\qa أكتب $v_n$ بدلالة $n$.
+\qb أدرس اتجاه تغير المتتالية $(v_n)$.
+\qc أحسب نهاية المتتالية $(v_n)$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي غير معدوم $n$: $S_n=v_0+v_1+\cdots+v_{n-1}$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$ ، ثم أحسب نهايتها.
+\qb جد العدد الطبيعي $n$ بحيث: $S_n=\dfrac{3510}{81}$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 15
+\begin{tamrin}{تمرين من بكالوريا 2016 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة على $\N$ بـ: $u_0=5$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac47u_n+\dfrac37$.
+\begin{enumerate}
+\item أحسب $u_1$ و $u_2$.
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>1$.
+\qb بيّن أن المتتالية $(u_n)$ متناقصة تماماً.
+\qc ماذا تستنتج بالنسبة لتقارب المتتالية $(u_n)$؟
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-1$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb أكتب $v_n$ بدلالة $n$ ، واستنتج أن: $u_n=1+4\Big(\dfrac47\Big)^n$.
+\qc أحسب نهاية المتتالية $(u_n)$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 16
+\begin{tamrin}{تمرين من بكالوريا 2017 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=-1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac13u_n+2$.
+\begin{enumerate}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n<3$.
+\qb بيّن أن المتتالية $(u_n)$ متزايدة تماماً.
+\qc استنتج أن المتتالية $(u_n)$ متقاربة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=3-u_n$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac13$ ، ثم عيّن حدها الأول.
+\qb أكتب $u_n$ بدلالة $n$.
+\qc نضع: $S_n=u_0+u_1+\cdots+u_n$. بيّن أن: $S_n=3(n-1)+2\Big(\dfrac13\Big)^n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 17
+\begin{tamrin}{تمرين من بكالوريا 2017 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=2$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=3u_n-2$.
+\begin{enumerate}
+\item أحسب $u_1$ ، $u_2$ و $u_3$ ، ثم خمّن اتجاه تغير المتتالية $(u_n)$.
+\item نعتبر المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=u_{n+1}-u_n$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $3$ ، يطلب تعيين حدها الأول.
+\qb عيّن $v_n$ بدلالة $n$ ، ثم استنتج أن المتتالية $(u_n)$ متزايدة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي غير معدوم $n$: $S_n=v_0+v_1+\cdots+v_{n-1}$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb بيّن أن $u_n=S_n+u_0$ ، ثم استنتج عبارة $u_n$ بدلالة $n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 18
+\begin{tamrin}{تمرين من بكالوريا 2017 (الدورة الاستثنائية) -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=-2$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac12u_n+1$.
+\begin{enumerate}
+\item \begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $u_n<2$.
+\qb عيّن اتجاه تغير المتتالية $(u_n)$ ، ثم استنتج أنها متقاربة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=2u_n-4$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb أكتب $v_n$ بدلالة $n$ ، ثم استنتج $u_n$ بدلالة $n$.
+\end{sq}
+\item أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_n$.
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 19
+\begin{tamrin}{تمرين من بكالوريا 2017 (الدورة الاستثنائية) -- الموضوع الثاني ($\star\star$ بعد درس الأسية)}
+$(v_n)$ متتالية هندسية أساسها $e^2$ وحدها الأول $v_0=1$.
+\begin{enumerate}
+\item أحسب بدلالة $n$ المجموع: $S_n=v_0+v_1+\cdots+v_n$.
+\item نعتبر المتتاليتين $(w_n)$ و $(u_n)$ المعرفتين من أجل كل عدد طبيعي $n$ بـ: $w_n=2n+4+e^{2n}$ و $u_n=w_n-v_n$.\\
+بيّن أن $(u_n)$ متتالية حسابية يطلب تعيين أساسها $r$ وحدها الأول $u_0$.
+\item بيّن أنه من أجل كل عدد طبيعي $n$: $4+6+8+\cdots+(2n+4)=(n+1)(n+4)$.
+\item استنتج بدلالة $n$ المجموع: $T_n=w_0+w_1+\cdots+w_n$.
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 20
+\begin{tamrin}{تمرين من بكالوريا 2018 -- الموضوع الأول}
+\textbf{الجزء الأول:} $(u_n)$ و $(v_n)$ متتاليتان معرفتان بـ: $u_0=50$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=0{,}7u_n+6$ \ و \ $v_n=u_n-20$.
+\begin{enumerate}
+\item برهن أن $(v_n)$ متتالية هندسية أساسها $0{,}7$ ، يطلب تعيين حدها الأول $v_0$.
+\item أكتب $v_n$ بدلالة $n$.
+\item \begin{sq}
+\qa أكتب $u_n$ بدلالة $n$.
+\qb عيّن اتجاه تغير المتتالية $(u_n)$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\end{enumerate}
+\textbf{الجزء الثاني:} تملك جريدة يومية $5000$ مشترك سنة 2016. بعد كل سنة تفقد $30\%$ من المشتركين وتكتسب $600$ مشترك جديد.
+نعتبر المئة هي الوحدة ، ونرمز بـ $u_n$ لعدد المشتركين سنة $2016+n$ ، أي $u_0=50$.
+\begin{enumerate}
+\item ما هو عدد المشتركين سنة 2017؟ ثم سنة 2018؟
+\item \begin{sq}
+\qa برّر أنه من أجل كل عدد طبيعي $n$: $u_{n+1}=0{,}7u_n+6$.
+\qb ابتداءً من أي سنة يصبح عدد المشتركين أقل من $2400$؟
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 21
+\begin{tamrin}{تمرين من بكالوريا 2018 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=-1$ ، ومن أجل كل عدد طبيعي $n$: \ $2u_{n+1}=u_n+6$.
+\begin{enumerate}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n<6$.
+\qb أدرس اتجاه تغير المتتالية $(u_n)$ ، واستنتج أنها متقاربة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-6$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac12$ ، وعيّن حدها الأول $v_0$.
+\qb أكتب $v_n$ بدلالة $n$ ، ثم استنتج $u_n$ بدلالة $n$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\item \begin{sq}
+\qa أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_n$.
+\qb أحسب بدلالة $n$ الجداء: $P_n=v_0\times v_1\times\cdots\times v_n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 22
+\begin{tamrin}{تمرين من بكالوريا 2019 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=-4$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac34u_n+2$.
+\begin{enumerate}
+\item \begin{sq}
+\qa أحسب $u_1$ و $u_2$.
+\qb برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n<8$.
+\end{sq}
+\item أدرس اتجاه تغير المتتالية $(u_n)$ ، واستنتج أنها متقاربة.
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-\alpha$ ، حيث $\alpha$ عدد حقيقي.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $v_{n+1}=\dfrac34v_n-\dfrac14\alpha+2$.
+\qb عيّن قيمة $\alpha$ حتى تكون $(v_n)$ متتالية هندسية أساسها $\dfrac34$ ، وعيّن حدها الأول $v_0$.
+\qc نضع $\alpha=8$. عبّر عن $v_n$ بدلالة $n$ ، واستنتج أن: $u_n=-12\Big(\dfrac34\Big)^n+8$.
+\end{sq}
+\item أحسب بدلالة $n$ المجموع: $S_n=u_1+u_2+\cdots+u_n$.
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 23
+\begin{tamrin}{تمرين من بكالوريا 2019 -- الموضوع الثاني ($\star\star$ بعد درس الأسية)}
+$(u_n)$ متتالية حسابية معرفة على $\N$ ، تحقق: $u_2+2u_5=27$ \ و \ $u_1=\dfrac92$.
+\begin{enumerate}
+\item أحسب حدها الأول $u_0$ وأساسها $r$.
+\item أكتب $u_n$ بدلالة $n$.
+\item \begin{sq}
+\qa بيّن أن العدد $2019$ حد من حدود المتتالية $(u_n)$ ، وعيّن رتبته.
+\qb أحسب المجموع: $S_1=u_1+u_2+\cdots+u_{1344}$.
+\qc أحسب المجموع: $S_2=u_2+u_4+u_6+\cdots+u_{1344}$.
+\qd استنتج المجموع: $S_3=u_1+u_3+u_5+\cdots+u_{1343}$.
+\end{sq}
+\item نعتبر المتتالية $(v_n)$ المعرفة على $\N$ بـ: $v_n=e^{6-2u_n}$.\\
+أحسب بدلالة $n$ المجموع: $S_n=\dfrac1{v_0}+\dfrac1{v_1}+\cdots+\dfrac1{v_n}$.
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 24
+\begin{tamrin}{تمرين من بكالوريا 2020 -- الموضوع الأول (مسألة)}
+يتقاضى موظف خلال سنة 2019 راتباً شهرياً ثابتاً قدره $70000\,DA$. في شهر جانفي استهلك منه $80\%$ ، وابتداءً من شهر فيفري قرر تخفيض مبلغ الاستهلاك شهرياً بنسبة $5\%$ من المبلغ المستهلك في الشهر الذي قبله.
+\begin{enumerate}
+\item \begin{sq}
+\qa ما هو المبلغ المستهلك في شهر جانفي؟
+\qb حدد المبلغ المستهلك في شهر فيفري.
+\end{sq}
+\item نرمز بـ $u_1$ للمبلغ المستهلك في شهر جانفي ، وبـ $u_n$ للمبلغ المستهلك في الشهر رقم $n$.
+\begin{sq}
+\qa عبّر عن $u_{n+1}$ بدلالة $u_n$.
+\qb استنتج أن $(u_n)$ متتالية هندسية أساسها $0{,}95$.
+\end{sq}
+\item أكتب عبارة الحد العام $u_n$ بدلالة $n$.
+\item \begin{sq}
+\qa أحسب المبلغ المستهلك خلال سنة 2019.
+\qb أوجد المبلغ المدخر خلال هذه السنة.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 25
+\begin{tamrin}{تمرين من بكالوريا 2020 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac23u_n+\dfrac32$.
+\begin{enumerate}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n<\dfrac92$.
+\qb أدرس اتجاه تغير المتتالية $(u_n)$ ، واستنتج أنها متقاربة.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-\dfrac92$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac23$ ، وأحسب حدها الأول $v_0$.
+\qb عبّر عن $v_n$ ثم عن $u_n$ بدلالة $n$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\item أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_n$.
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 26
+\begin{tamrin}{تمرين من بكالوريا 2020 -- الموضوع الثاني ($\star\star$ بعد درس اللوغاريتم)}
+$(v_n)$ متتالية هندسية حدها الأول $v_0$ وأساسها $q$ موجبان تماماً ، وتحقق:
+$\begin{cases}\ln v_5+\ln v_3=8\ln2\\ \ln v_5-\ln v_3=2\ln2\end{cases}$
+\begin{enumerate}
+\item بيّن أن $v_3=8$ و $v_5=32$.
+\item \begin{sq}
+\qa بيّن أن $q=2$ و $v_0=1$.
+\qb أكتب $v_n$ بدلالة $n$.
+\qc هل العدد $1024$ حد من حدود المتتالية $(v_n)$؟
+\end{sq}
+\item نعتبر المتتالية $(w_n)$ المعرفة على $\N$ بـ: $w_n=2n-3+2^n$.
+\begin{sq}
+\qa تحقق أن $w_n=u_n+v_n$ حيث $u_n=2n-3$ ، وعيّن طبيعة المتتالية $(u_n)$.
+\qb نضع: $S_n=w_0+w_1+\cdots+w_n$. بيّن أن: $S_n=(n+1)(n-3)+2^{n+1}-1$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 27
+\begin{tamrin}{تمرين من بكالوريا 2020 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=5$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac57u_n+\dfrac67$.
+\begin{enumerate}
+\item برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>3$.
+\item أدرس اتجاه تغير المتتالية $(u_n)$ ، واستنتج أنها متقاربة.
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-3$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb أكتب $v_n$ بدلالة $n$.
+\qc استنتج أن: $u_n=2\Big(\dfrac57\Big)^n+3$ ، ثم أحسب نهاية المتتالية $(u_n)$.
+\end{sq}
+\item عيّن أصغر قيمة للعدد الطبيعي $n$ التي يكون من أجلها: $u_n<\dfrac72$.
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 28
+\begin{tamrin}{تمرين من بكالوريا 2021 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة من أجل كل عدد طبيعي $n$ بـ: $u_n=2\Big(\dfrac14\Big)^n+1$.
+\begin{enumerate}
+\item \begin{sq}
+\qa أحسب $u_0$ ، $u_1$ و $u_2$.
+\qb تحقق أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=-\dfrac32\Big(\dfrac14\Big)^n$.
+\qc استنتج اتجاه تغير المتتالية $(u_n)$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-1$.
+\begin{sq}
+\qa أحسب $v_0$ ، ثم أكتب $v_n$ بدلالة $n$.
+\qb بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac14$.
+\end{sq}
+\item نضع: $S_n=v_0+v_1+\cdots+v_n$ \ و \ $S'_n=u_0+u_1+\cdots+u_n$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb استنتج أن: $S'_n=n+\dfrac{11}{3}-\dfrac83\Big(\dfrac14\Big)^{n+1}$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 29
+\begin{tamrin}{تمرين من بكالوريا 2021 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة على $\N$ بـ: $u_0=5$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac13u_n+2$.
+\begin{enumerate}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n=2\Big(\dfrac13\Big)^n+3$.
+\qb بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=-\dfrac43\Big(\dfrac13\Big)^n$.
+\qc استنتج اتجاه تغير المتتالية $(u_n)$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-3$.
+\begin{sq}
+\qa أحسب $v_0$ ، ثم أكتب $v_n$ بدلالة $n$.
+\qb بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac13$.
+\end{sq}
+\item نضع: $S_n=v_0+v_1+\cdots+v_n$ \ و \ $S'_n=u_0+u_1+\cdots+u_n$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb استنتج أن: $S'_n=3n+6-\Big(\dfrac13\Big)^n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 30
+\begin{tamrin}{تمرين من بكالوريا 2022 -- الموضوع الأول}
+$(u_n)$ متتالية حسابية معرفة على $\N$ وأساسها $r$ ، حيث: \ $\begin{cases}u_2+u_3+u_4=21\\ u_4+u_5=20\end{cases}$
+\begin{enumerate}
+\item \begin{sq}
+\qa بيّن أن $u_3=7$ و $r=2$ ، ثم استنتج $u_0$.
+\qb أكتب $u_n$ بدلالة $n$.
+\qc أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_{n-1}$.
+\end{sq}
+\item نعتبر المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=3\times2^{2n}$.
+\begin{sq}
+\qa أحسب $\dfrac{v_{n+1}}{v_n}$ ، ثم استنتج طبيعة المتتالية $(v_n)$.
+\qb أحسب بدلالة $n$ المجموع: $S'_n=v_0+v_1+\cdots+v_{n-1}$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $w_n=\dfrac23v_n$.
+\begin{sq}
+\qa تحقق أنه من أجل كل عدد طبيعي $n$: $w_n=2^{u_n}$.
+\qb أحسب بدلالة $n$ الجداء: $P_n=w_0\times w_1\times\cdots\times w_{n-1}$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 31
+\begin{tamrin}{تمرين من بكالوريا 2022 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة على $\N$ بـ: $u_0=-2$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=5u_n+20$.
+\begin{enumerate}
+\item \begin{sq}
+\qa أحسب $u_1$ و $u_2$.
+\qb تحقق أنه من أجل كل عدد طبيعي $n$: $u_{n+1}+5=5\big(u_n+5\big)$.
+\end{sq}
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>-5$.
+\qb أدرس اتجاه تغير المتتالية $(u_n)$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n+5$.
+\begin{sq}
+\qa تحقق أن $(v_n)$ متتالية هندسية أساسها $5$ ، يطلب تعيين حدها الأول.
+\qb أكتب $v_n$ ثم $u_n$ بدلالة $n$.
+\end{sq}
+\item أحسب بدلالة $n$ المجموع: $S_n=u_0+u_1+\cdots+u_n$.
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 32
+\begin{tamrin}{تمرين من بكالوريا 2023 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة على $\N$ بـ: $u_0=2$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac35u_n-\dfrac65$.
+\begin{enumerate}
+\item برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>-3$.
+\item بيّن أن المتتالية $(u_n)$ متناقصة تماماً ، ثم استنتج أنها متقاربة.
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n+3$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac35$ ، يطلب تعيين حدها الأول $v_0$.
+\qb عيّن عبارة $v_n$ بدلالة $n$ ، ثم استنتج أن: $u_n=5\Big(\dfrac35\Big)^n-3$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\item نضع: $S_n=v_0+v_1+\cdots+v_n$ \ و \ $T_n=u_0+u_1+\cdots+u_n$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb بيّن أن: $T_n=\dfrac{19}{2}-3n-\dfrac{15}{2}\Big(\dfrac35\Big)^n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 33
+\begin{tamrin}{تمرين من بكالوريا 2023 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة على $\N$ بـ: $u_0=2$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac14u_n+3$.
+\begin{enumerate}
+\item برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n<4$.
+\item بيّن أن المتتالية $(u_n)$ متزايدة تماماً ، ثم استنتج أنها متقاربة.
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-4$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac14$ ، وعيّن حدها الأول $v_0$.
+\qb عيّن عبارة $v_n$ بدلالة $n$ ، ثم استنتج أن: $u_n=-2\Big(\dfrac14\Big)^n+4$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\item نضع: $S_n=v_0+v_1+\cdots+v_n$ \ و \ $T_n=u_0+u_1+\cdots+u_n$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb بيّن أن: $T_n=4n+\dfrac43+\dfrac23\Big(\dfrac14\Big)^n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 34
+\begin{tamrin}{تمرين من بكالوريا 2024 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=0$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac56u_n-\dfrac13$.
+\begin{enumerate}
+\item أحسب $u_1$ و $u_2$.
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $-2<u_n\le0$.
+\qb بيّن أن المتتالية $(u_n)$ متناقصة تماماً.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n+2$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac56$ ، يطلب تعيين حدها الأول.
+\qb أكتب $v_n$ بدلالة $n$ ، ثم بيّن أن: $u_n=2\Big(\dfrac56\Big)^n-2$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\item نضع: $S_n=v_0+v_1+\cdots+v_n$ \ و \ $T_n=u_0+u_1+\cdots+u_n$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb استنتج $T_n$ بدلالة $n$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 35
+\begin{tamrin}{تمرين من بكالوريا 2024 -- الموضوع الثاني}
+$(u_n)$ متتالية عددية معرفة بـ: $u_0=4$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac34u_n-\dfrac12$.
+\begin{enumerate}
+\item أحسب $u_1$ و $u_2$.
+\item \begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>-2$.
+\qb أثبت أن المتتالية $(u_n)$ متناقصة تماماً.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n+2$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac34$ ، يطلب تعيين حدها الأول.
+\qb أكتب $v_n$ بدلالة $n$ ، ثم بيّن أن: $u_n=6\Big(\dfrac34\Big)^n-2$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\item أحسب بدلالة $n$ كلاً من المجموعين:
+\begin{sq}
+\qa $S_n=v_0+v_1+\cdots+v_n$.
+\qb $T_n=\dfrac{1}{2+u_0}+\dfrac{1}{2+u_1}+\cdots+\dfrac{1}{2+u_n}$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 36
+\begin{tamrin}{تمرين من بكالوريا 2025 -- الموضوع الأول}
+$(u_n)$ متتالية عددية معرفة على $\N$ بـ: $u_0=2$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac35u_n+\dfrac85$.
+\begin{enumerate}
+\item \begin{sq}
+\qa أحسب $u_1$ و $u_2$ ، ثم خمّن اتجاه تغير المتتالية $(u_n)$.
+\qb برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $2\le u_n<4$.
+\qc أدرس اتجاه تغير المتتالية $(u_n)$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-4$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac35$ ، ثم أكتب $v_n$ بدلالة $n$.
+\qb استنتج $u_n$ بدلالة $n$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\item نضع: $S_n=u_0+u_1+\cdots+u_n$. بيّن أن: $S_n=5\Big(\dfrac35\Big)^{n+1}+4n-1$.
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 37
+\begin{tamrin}{تمرين من بكالوريا 2025 -- الموضوع الثاني}
+\begin{enumerate}
+\item $f$ الدالة المعرفة على $\R$ بـ: $f(x)=\dfrac25x+1$.
+\begin{sq}
+\qa حدد اتجاه تغير الدالة $f$ على $\R$.
+\qb حل في $\R$ المعادلة: $f(x)=x$.
+\end{sq}
+\item $(u_n)$ متتالية معرفة على $\N$ بـ: $u_0=1$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=\dfrac25u_n+1$.
+\begin{sq}
+\qa أحسب $u_1$ ، ثم عيّن اتجاه تغير المتتالية $(u_n)$.
+\qb برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $1\le u_n<\dfrac53$.
+\end{sq}
+\item نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-\dfrac53$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac25$ ، ثم أكتب $v_n$ بدلالة $n$.
+\qb استنتج $u_n$ بدلالة $n$ ، ثم أحسب $\limn u_n$.
+\end{sq}
+\item نضع: $S_n=u_0+u_1+\cdots+u_n$. بيّن أن: $S_n=\dfrac49\Big(\dfrac25\Big)^{n}+\dfrac53n+\dfrac59$.
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 38
+\begin{tamrin}{تمرين من بكالوريا 2026 -- الموضوع الأول}
+\begin{enumerate}
+\item حل في $\R$ المعادلة: $x^2+x-6=0$.
+\item $(u_n)$ متتالية هندسية حدودها موجبة ، حدها الأول $u_0=3$ وأساسها $q$ ، وتحقق: $u_1+u_2=18$.
+\begin{sq}
+\qa بيّن أن $q=2$ ، ثم أكتب $u_n$ بدلالة $n$.
+\qb حدد اتجاه تغير المتتالية $(u_n)$.
+\qc بيّن أن العدد $768$ حد من حدود المتتالية $(u_n)$.
+\end{sq}
+\item نضع: $S_n=u_0+u_1+\cdots+u_n$ \ و \ $P_n=u_0\times u_1\times\cdots\times u_n$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb بيّن أن: $P_n=3^{n+1}\times2^{\frac12n(n+1)}$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= 39
+\begin{tamrin}{تمرين من بكالوريا 2026 -- الموضوع الثاني}
+\begin{enumerate}
+\item $(u_n)$ متتالية معرفة بـ: $u_0=3$ ، ومن أجل كل عدد طبيعي $n$: \ $u_{n+1}=3u_n-1$.
+\begin{sq}
+\qa أحسب $u_1$ ، $u_2$ و $u_3$.
+\qb حدد اتجاه تغير الدالة $x\mapsto3x-1$ على $\R$ ، ثم استنتج اتجاه تغير المتتالية $(u_n)$.
+\end{sq}
+\item نعتبر المتتالية $(v_n)$ المعرفة على $\N$ بـ: $v_n=u_n-\dfrac12$.
+\begin{sq}
+\qa أثبت أن $(v_n)$ متتالية هندسية أساسها $3$ ، يطلب تعيين حدها الأول $v_0$.
+\qb عبّر عن $v_n$ بدلالة $n$ ، ثم استنتج أن: $u_n=\dfrac52\times3^n+\dfrac12$.
+\end{sq}
+\item نضع: $S_n=v_0+v_1+\cdots+v_n$ \ و \ $T_n=u_0+u_1+\cdots+u_n$.
+\begin{sq}
+\qa أحسب $S_n$ بدلالة $n$.
+\qb بيّن أن: $T_n=\dfrac54\times3^{n+1}+\dfrac12n-\dfrac34$.
+\qc عيّن قيمة العدد الطبيعي $n$ حتى يكون: $4T_n-2n=1212$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ================================================= إضافي
+\begin{tamrin}{أسئلة إضافية (اختيار من متعدد)}
+اختر الإجابة الصحيحة مع التعليل:
+\begin{enumerate}
+\item $(u_n)$ متتالية حسابية حدها الأول $u_0=3$ وأساسها $r=5$. من أجل كل عدد طبيعي $n$ ، عبارة $u_n$ هي:\\[2pt]
+\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}
+(أ) \ $3\times5^n$ & (ب) \ $5n+3$ & (جـ) \ $3n+5$\end{tabular}
+\item $(u_n)$ متتالية حسابية حدها الأول $u_0$ وأساسها $r$ ، حيث $u_2=5$ و $u_4=9$:\\[2pt]
+\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}
+(أ) \ $u_0=2$ ، $r=1$ & (ب) \ $u_0=1$ ، $r=2$ & (جـ) \ $u_0=1$ ، $r=4$\end{tabular}
+\end{enumerate}
+\end{tamrin}
+
+\vfill
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!6,colframe=cSec,arc=3mm,halign=center,boxrule=0.8pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\Large\bfseries بالتوفيق في شهادة البكالوريا}
+\end{tcolorbox}
+\end{LTR}
+
+\end{document}
