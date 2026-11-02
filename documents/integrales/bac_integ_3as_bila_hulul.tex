@@ -1,0 +1,968 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}تمارين البكالوريا: الدوال الأصلية والحساب التكاملي}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{22}{28}\selectfont\bfseries تمارين البكالوريا في الدوال الأصلية والحساب التكاملي}\\[8pt]
+{\color{white}\large -- بدون حلول (للتدرّب) -- حتى دورة 2026}\\[5pt]
+{\color{white}\large علوم تجريبية -- تقني رياضي -- رياضيات}
+\end{tcolorbox}
+\end{LTR}
+\section{تمارين البكالوريا -- شعبة علوم تجريبية}
+% ===================== 2026 -- 1 =====================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الأول -- علوم تجريبية}
+$f$ الدالة المعرفة على $[0;+\infty[$ بـ: $f(x)=x^2+2x-4x\ln x$ من أجل كل $x>0$ و $f(0)=0$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa باستعمال المكاملة بالتجزئة، بيّن أن: $\displaystyle\int_1^e x\ln x\,dx=\frac{e^2+1}{4}$.
+\qb أحسب $\mathcal{A}$ مساحة الحيز المستوي المحدد بـ $(C_f)$ والمستقيمات التي معادلاتها: $y=0$، $x=1$ و $x=e$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2026 -- 2 =====================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الثاني -- علوم تجريبية}
+$f$ الدالة المعرفة على $\R^*$ بـ: $f(x)=1+\dfrac{5-4e^x}{e^{2x}-1}$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa تحقق أنه: من أجل كل $x$ من $\R^*$، $f(x)=-4+\dfrac12\Big(\dfrac{9e^x}{1+e^x}-\dfrac{e^x}{1-e^x}\Big)$.
+\qb أحسب بدلالة $\lambda$ المساحة $A(\lambda)$ للحيز المستوي المحدد بـ $(C_f)$ والمستقيمات التي معادلاتها: $y=-4$، $x=\lambda$ و $x=-\ln 2$ حيث $\lambda<-\ln 2$. ثم أحسب $\lim\limits_{\lambda\to-\infty}A(\lambda)$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2025 -- 1 =====================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الأول -- علوم تجريبية}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=e^{2x}-e^x-x-2$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ (الوحدة $2\,cm$).
+\QQ{1} أدرس وضعية المنحنى $(C_f)$ بالنسبة إلى المستقيم $(\Delta)$ ذي المعادلة $y=-x-2$.
+\QQ{2} أحسب بالسنتيمتر المربع $A$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=-x-2$، $x=-1$ و $x=0$.
+\end{tamrin}
+
+% ===================== 2025 -- 2 =====================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الثاني -- علوم تجريبية}
+$f$ الدالة المعرفة على $]-4;+\infty[$ بـ: $f(x)=\dfrac{x^2\ln(x+4)}{x+4}$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} $h$ الدالة المعرفة على $]-4;+\infty[$ بـ: $h(x)=\dfrac{(x^2+1)\ln(x+4)}{x+4}$، و $(C_h)$ تمثيلها البياني.
+\begin{sq}
+\qa بيّن أنه: من أجل كل $x$ من $[-3;0]$، $h(x)-f(x)\ge0$.
+\qb أحسب $A$ مساحة الحيز المستوي المحدد بـ $(C_f)$، $(C_h)$ والمستقيمين ذوي المعادلتين: $x=-3$ و $x=0$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2024 -- 1 =====================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الأول -- علوم تجريبية}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=-2x+3-xe^{-x+1}$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ (وحدة الطول $2\,cm$).
+\QQ{1} أدرس الوضع النسبي للمنحنى $(C_f)$ والمستقيم $(\Delta)$ ذي المعادلة $y=-2x+3$.
+\QQ{2}
+\begin{sq}
+\qa باستعمال المكاملة بالتجزئة، بيّن أن: $\displaystyle\int_0^1xe^{-x+1}\,dx=e-2$.
+\qb استنتج بالسنتيمتر المربع $A$ مساحة الحيز المستوي المحدد بـ $(C_f)$ و $(\Delta)$ والمستقيمين اللذين معادلتاهما: $x=0$ و $x=1$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2024 -- 2 =====================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الثاني -- علوم تجريبية}
+$f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=-x-\dfrac{\ln x}{x^2}$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ (وحدة الطول $2\,cm$).
+نقبل أن المعادلة $f(x)=0$ تقبل حلا وحيدا $\alpha$ حيث $0{,}7<\alpha<0{,}71$.
+\QQ{1} أدرس الوضع النسبي للمنحنى $(C_f)$ والمستقيم $(\Delta)$ ذي المعادلة $y=-x$.
+\QQ{2}
+\begin{sq}
+\qa أثبت أن الدالة $H:x\mapsto\dfrac{-1-\ln x}{x}$ هي دالة أصلية للدالة $h:x\mapsto\dfrac{\ln x}{x^2}$ على $]0;+\infty[$.
+\qb $A(\alpha)$ المساحة بالسنتيمتر المربع للحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=-x$، $x=\alpha$ و $x=1$.
+بيّن أن: $A(\alpha)=4\Big(\alpha^2-\dfrac1\alpha+1\Big)\,cm^2$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2023 -- 1 =====================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الأول -- علوم تجريبية}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=(x-1)(e^{2x}-1)$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ (الوحدة $2\,cm$).
+\QQ{1} أدرس وضعية المنحنى $(C_f)$ بالنسبة إلى المستقيم $(\Delta)$ ذي المعادلة $y=-x+1$.
+\QQ{2}
+\begin{sq}
+\qa باستعمال المكاملة بالتجزئة، بيّن أن: $\displaystyle\int_0^{\frac12}(x-1)e^{2x}\,dx=\frac{3-2e}{4}$.
+\qb استنتج بالسنتيمتر المربع مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $x=0$، $x=\dfrac12$ و $y=-x+1$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2023 -- 2 =====================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الثاني -- علوم تجريبية}
+$f$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=\big((\ln x)^2-3\big)\ln x$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} حدد إشارة $f(x)$ على المجال $]0;+\infty[$.
+\QQ{2} $F$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $F(x)=x\big((\ln x)^3-3(\ln x)^2+3\ln x-3\big)$.
+\begin{sq}
+\qa تحقق أن $F$ دالة أصلية للدالة $f$ على المجال $]0;+\infty[$.
+\qb أحسب مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ وحامل محور الفواصل والمستقيمين اللذين معادلتاهما: $x=1$ و $x=e$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2022 -- 1 =====================
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الأول -- علوم تجريبية}
+نعتبر الدالة العددية $f$ المعرفة على $]0;+\infty[$ بـ: $f(x)=\Big(\dfrac1x-2-\ln x\Big)e^{-x}$، و $(C_f)$ تمثيلها البياني.
+\QQ{1} $F$ الدالة المعرفة على $]0;+\infty[$ بـ: $F(x)=e^{-x}(2+\ln x)$.
+\begin{sq}
+\qa تحقق أن الدالة $F$ دالة أصلية للدالة $f$ على المجال $]0;+\infty[$.
+\qb نضع: $S(\lambda)=\displaystyle\int_\lambda^{\frac12}f(x)\,dx$ حيث $\lambda$ عدد حقيقي يحقق: $0<\lambda<\dfrac12$.
+أحسب $S(\lambda)$ ثم فسّر النتيجة بيانيا.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2019 -- 1 =====================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الأول -- علوم تجريبية}
+$f$ الدالة العددية المعرفة على المجال $]0;2[\cup]2;+\infty[$ بـ: $f(x)=\dfrac1{x-2}+\ln x$، و $(C_f)$ تمثيلها البياني.
+\QQ{1} $H$ الدالة المعرفة على المجال $]3;+\infty[$ بـ: $H(x)=\displaystyle\int_3^x\ln(t)\,dt$ حيث $t$ متغير حقيقي موجب تماما.
+\begin{sq}
+\qa باستعمال المكاملة بالتجزئة، عيّن عبارة $H(x)$ بدلالة $x$.
+\qb أحسب $A$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ وحامل محور الفواصل والمستقيمين ذوي المعادلتين: $x=3$ و $x=4$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2019 -- 2 =====================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الثاني -- علوم تجريبية}
+المستوي منسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$. تؤخذ وحدة الطول $2\,cm$.
+$(C_f)$ و $(C_g)$ التمثيلان البيانيان للدالتين $f$ و $g$ المعرفتين على $\R$ كما يلي:
+\[f(x)=e^x-\frac12ex^2\qquad;\qquad g(x)=e^x-ex\]
+\QQ{1} أدرس الوضع النسبي للمنحنيين $(C_f)$ و $(C_g)$ على $\R$.
+\QQ{2} أحسب بالسنتيمتر المربع مساحة الحيز المحدد بالمنحنيين $(C_f)$ و $(C_g)$.
+\end{tamrin}
+
+% ===================== 2018 -- 1 =====================
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الأول -- علوم تجريبية}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=2x+1-xe^{-x}$، و $(C_f)$ تمثيلها البياني.
+\QQ{1} باستعمال المكاملة بالتجزئة، عيّن دالة أصلية للدالة $x\mapsto xe^{-x}$ والتي تنعدم من أجل $x=1$.
+\QQ{2} أحسب العدد $A$ مساحة الحيز المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $x=1$، $x=3$ و $y=2x+1$.
+\end{tamrin}
+
+% ===================== 2018 -- 2 =====================
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الثاني -- علوم تجريبية}
+$f$ الدالة العددية المعرفة على $]0;+\infty[$ بـ: $f(x)=\dfrac{1+\ln x}{1+x\ln x}$، و $(C_f)$ تمثيلها البياني.
+$n$ عدد طبيعي حيث $n>1$، $I_n$ مساحة الحيز من المستوي المحدد بحامل محور الفواصل والمنحنى $(C_f)$ والمستقيمين اللذين معادلتاهما $x=1$ و $x=n$.
+\QQ{1} بيّن أنه من أجل كل عدد طبيعي $n$ حيث $n>1$: $I_n=\ln(1+n\ln n)$.
+\QQ{2} أدرس اتجاه تغير المتتالية $(I_n)$.
+\end{tamrin}
+
+% ===================== 2017 -- استثنائية -- 2 =====================
+\begin{tamrin}{بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الثاني -- علوم تجريبية}
+$f$ الدالة المعرفة على $\R^*$ بـ: $f(x)=e^{-x}-2-\dfrac ex$، و $(C_f)$ تمثيلها البياني.
+$(\gamma)$ المنحنى الذي معادلته: $y=e^{-x}-2$.
+\QQ{1} ليكن $n$ عددا طبيعيا و $A(n)$ مساحة الحيز المستوي المحدد بالمنحنيين $(C_f)$ و $(\gamma)$ والمستقيمين اللذين معادلتاهما: $x=-e^{n+1}$ و $x=-e^n$.
+أحسب العدد الحقيقي $l$ حيث: $l=A(0)+A(1)+\dots+A(2016)$.
+\end{tamrin}
+
+% ===================== 2017 -- 2 =====================
+\begin{tamrin}{بكالوريا 2017 -- الدورة العادية -- الموضوع الثاني -- علوم تجريبية}
+$f$ الدالة العددية المعرفة على $\R$ بـ: $f(x)=2-x^2e^{1-x}$، و $(C_f)$ تمثيلها البياني.
+\QQ{1} $F$ الدالة المعرفة على $\R$ بـ: $F(x)=2x+(x^2+2x+2)e^{1-x}$.
+تحقق أن $F$ دالة أصلية للدالة $f$ على $\R$، ثم أحسب مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$، حامل محور الفواصل والمستقيمين اللذين معادلتاهما: $x=0$ و $x=1$.
+\end{tamrin}
+
+% ===================== 2016 -- 2 -- 1 =====================
+\begin{tamrin}{بكالوريا 2016 -- الدورة الثانية -- الموضوع الأول -- علوم تجريبية}
+$f$ الدالة المعرفة على المجال $]-1;+\infty[$ بـ: $f(x)=\dfrac{e}{x+1}+\dfrac{\ln(x+1)}{(x+1)^2}$، و $(C_f)$ تمثيلها البياني.
+\QQ{1} بيّن أن الدالة $x\mapsto\dfrac{-1}{x+1}\big[1+\ln(x+1)\big]$ هي دالة أصلية للدالة $x\mapsto\dfrac{\ln(x+1)}{(x+1)^2}$ على المجال $]-1;+\infty[$.
+\QQ{2} أحسب مساحة الحيز المستوي المحدد بحامل محور الفواصل والمنحنى $(C_f)$ والمستقيمين اللذين معادلتاهما $x=0$ و $x=1$.
+\end{tamrin}
+
+% ===================== 2016 -- 1 -- 1 =====================
+\begin{tamrin}{بكالوريا 2016 -- الدورة الأولى -- الموضوع الأول -- علوم تجريبية}
+$f$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=\dfrac{\ln x}{x}+x-1$، و $(C_f)$ تمثيلها البياني.
+\QQ{1}
+\begin{sq}
+\qa أوجد دالة أصلية للدالة $x\mapsto\dfrac{\ln x}{x}$ على المجال $]0;+\infty[$.
+\qb أحسب بـ $I_n$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$، المستقيم $(\Delta)$ ذي المعادلة $y=x-1$ والمستقيمين اللذين معادلتاهما $x=1$ و $x=n$ حيث $n$ عدد طبيعي ($n>1$).
+\qc عيّن أصغر عدد طبيعي $n_0$ بحيث إذا كان $n>n_0$ فإن: $I_n>2$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2016 -- 1 -- 2 =====================
+\begin{tamrin}{بكالوريا 2016 -- الدورة الأولى -- الموضوع الثاني -- علوم تجريبية}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=-x+(x^2+3x+2)e^{-x}$، و $(C_f)$ تمثيلها البياني.
+$h$ و $H$ الدالتان المعرفتان على $\R$ كما يلي: $h(x)=x+f(x)$ و $H(x)=(ax^2+bx+c)e^{-x}$.
+\QQ{1} عيّن الأعداد الحقيقية $a$، $b$ و $c$ بحيث تكون الدالة $H$ دالة أصلية للدالة $h$ على $\R$.
+\QQ{2}
+\begin{sq}
+\qa أحسب التكامل التالي: $A(\lambda)=\displaystyle\int_0^\lambda h(x)\,dx$، حيث $\lambda$ عدد حقيقي موجب تماما، وفسّر النتيجة هندسيا.
+\qb أحسب $\lim\limits_{\lambda\to+\infty}A(\lambda)$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2015 -- 1 =====================
+\begin{tamrin}{بكالوريا 2015 -- الموضوع الأول -- علوم تجريبية}
+$f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=\Big(1-\dfrac1x\Big)(\ln x-2)$.
+$F$ الدالة الأصلية للدالة $f$ على المجال $]0;+\infty[$ والتي تحقق: $F(1)=-3$.
+\QQ{1} بيّن أن منحنى الدالة $F$ يقبل مماسين موازيين لحامل محور الفواصل في نقطتين يطلب تعيين فاصلتيهما.
+\QQ{2} بيّن أن $x\mapsto x\ln x-x$ هي دالة أصلية للدالة $x\mapsto\ln x$ على $]0;+\infty[$، ثم استنتج عبارة الدالة $F$.
+\end{tamrin}
+
+% ===================== 2015 -- 2 =====================
+\begin{tamrin}{بكالوريا 2015 -- الموضوع الثاني -- علوم تجريبية}
+$f$ الدالة العددية المعرفة على $\R$ بـ: $f(x)=xe^{2x+2}-x+1$.
+\QQ{1} تحقق أنه من أجل كل $x$ من $\R$: $2f(x)+f'(x)-f''(x)=1-2x-3e^{2x+2}$.
+\QQ{2} استنتج دالة أصلية للدالة $f$ على $\R$.
+\end{tamrin}
+
+% ===================== 2012 -- 1 =====================
+\begin{tamrin}{بكالوريا 2012 -- الموضوع الأول -- علوم تجريبية}
+$f$ الدالة المعرفة على المجال $]-\infty;0[$ كما يلي: $f(x)=x+5+6\ln\Big(\dfrac{x}{x-1}\Big)$، و $(C_f)$ تمثيلها البياني.
+لتكن $g$ الدالة المعرفة على $]-\infty;0[$ كما يلي: $g(x)=\dfrac{x^2}{2}+5x+6x\ln\Big(\dfrac{x}{x-1}\Big)+6\ln(1-x)$.
+بيّن أن $g$ دالة أصلية للدالة $f$ على المجال $]-\infty;0[$.
+\end{tamrin}
+\begin{molahada}
+في نص المصدر: $g(x)=\dfrac{x^2}{2}+5x+6x\ln\Big(\dfrac{x}{x-1}\Big)$، وهذه الدالة ليست دالة أصلية لـ $f$ لأن مشتقتها $f(x)-\dfrac{6}{x-1}$. صحّحنا العبارة بإضافة الحد $6\ln(1-x)$.
+\end{molahada}
+
+% ===================== 2012 -- 2 =====================
+\begin{tamrin}{بكالوريا 2012 -- الموضوع الثاني -- علوم تجريبية}
+$g$ الدالة العددية المعرفة على $\R$ بـ: $g(x)=1-xe^x$.
+\QQ{1} $h$ الدالة المعرفة على $\R$ كما يلي: $h(x)=(ax+b)e^x$.
+\begin{sq}
+\qa عيّن العددين الحقيقيين $a$ و $b$ بحيث تكون $h$ دالة أصلية للدالة $x\mapsto xe^x$ على $\R$.
+\qb استنتج دالة أصلية للدالة $g$ على $\R$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2011 -- 1 =====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الأول -- علوم تجريبية}
+$g$ الدالة المعرفة على $\R-\{-1\}$ بـ: $g(x)=\dfrac{x-1}{x+1}$، و $f$ الدالة المعرفة على المجال $]1;+\infty[$ بـ: $f(x)=\dfrac{x-1}{x+1}+\ln\Big(\dfrac{x-1}{x+1}\Big)$.
+\QQ{1} $\alpha$ عدد حقيقي. بيّن أن الدالة $x\mapsto(x-\alpha)\ln(x-\alpha)-x$ هي دالة أصلية للدالة $x\mapsto\ln(x-\alpha)$ على المجال $]\alpha;+\infty[$.
+\QQ{2} تحقق أنه من أجل كل عدد حقيقي $x$ من المجال $]1;+\infty[$: $g(x)=1-\dfrac{2}{x+1}$، ثم عيّن دالة أصلية للدالة $f$ على المجال $]1;+\infty[$.
+\end{tamrin}
+
+% ===================== 2011 -- 2 =====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الثاني -- علوم تجريبية}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=e^x-ex-1$، و $(C_f)$ تمثيلها البياني. نقبل أن المعادلة $f(x)=0$ تقبل حلين $0$ و $\alpha$ حيث $\alpha\in]1{,}75;1{,}76[$.
+\QQ{1} أحسب بدلالة $\alpha$ المساحة $A(\alpha)$ للحيز المستوي المحدد بالمنحنى $(C_f)$، حامل محور الفواصل والمستقيمين اللذين معادلتاهما: $x=0$، $x=\alpha$.
+\QQ{2} أثبت أن: $A(\alpha)=\Big(\dfrac12e\alpha^2-e\alpha+\alpha\Big)\,ua$ (\,$ua$ هي وحدة المساحات).
+\end{tamrin}
+
+% ===================== 2009 -- 1 =====================
+\begin{tamrin}{بكالوريا 2009 -- الموضوع الأول -- علوم تجريبية}
+$k$ الدالة المعرفة على $\R-\{-1\}$ كما يلي: $k(x)=|x|+\dfrac4{x+1}$، و $(C_k)$ تمثيلها البياني.
+\QQ{1} أحسب مساحة الحيز المستوي المحدد بالمنحنى $(C_k)$ والمستقيمات التي معادلاتها: $y=0$، $x=\dfrac12$، $x=-\dfrac12$.
+\end{tamrin}
+
+% ===================== 2009 -- 2 =====================
+\begin{tamrin}{بكالوريا 2009 -- الموضوع الثاني -- علوم تجريبية}
+$f$ الدالة العددية المعرفة على $]-1;+\infty[$ كما يلي: $f(x)=x-1-\dfrac{\ln(x+1)}{x+1}$، و $(C_f)$ تمثيلها البياني.
+\QQ{1} أحسب مساحة الحيز المستوي المحدود بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=x-1$، $x=0$ و $x=1$.
+\end{tamrin}
+
+% ===================== 2008 -- 1 =====================
+\begin{tamrin}{بكالوريا 2008 -- الموضوع الأول -- علوم تجريبية}
+$g$ الدالة العددية المعرفة على المجال $[-2;+\infty[$ كما يلي: $g(x)=(-x-1)e^{-x}+1$.
+\QQ{1} $H$ الدالة العددية المعرفة على المجال $[-2;+\infty[$ كما يلي: $H(x)=(\alpha x+\beta)e^{-x}$ حيث $\alpha$ و $\beta$ عددان حقيقيان.
+\begin{sq}
+\qa عيّن $\alpha$ و $\beta$ بحيث تكون $H$ دالة أصلية للدالة: $x\mapsto g(x)-1$.
+\qb استنتج الدالة الأصلية للدالة $g$ والتي تنعدم عند القيمة $0$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2008 -- 2 =====================
+\begin{tamrin}{بكالوريا 2008 -- الموضوع الثاني -- علوم تجريبية}
+$f$ الدالة العددية المعرفة على المجال $]-1;+\infty[$ بـ: $f(x)=\dfrac{x^3+3x^2+3x+2}{(x+1)^2}$.
+\QQ{1} أكتب $f(x)$ على الشكل $f(x)=x+a+\dfrac{b}{(x+1)^2}$ حيث $a$ و $b$ عددان حقيقيان.
+\QQ{2} عيّن $F$ الدالة الأصلية للدالة $f$ على المجال $]-1;+\infty[$ والتي تحقق $F(1)=2$.
+\end{tamrin}
+\begin{molahada}
+في نص المصدر كُتب المقام $(x-1)^2$ في السؤال 1، والصواب $(x+1)^2$ (مقام $f$، والدالة معرفة عند $x=1$).
+\end{molahada}
+
+\section{تمارين البكالوريا -- شعبة تقني رياضي}
+% ===================== التمرين: 2026 م1 =====================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الأول -- تقني رياضي}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=1+\left(1-x-x^{2}\right)e^{-x}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+
+\QQ{1}
+\begin{sq}
+\qa تحقق أن الدالة $H:x\mapsto \left(x^{2}+3x+2\right)e^{-x}$ أصلية للدالة $h:x\mapsto\left(1-x-x^{2}\right)e^{-x}$ على $\R$.
+\qb $A(\alpha)$ مساحة الحيز المستوي المحدد بـ $(C_f)$ والمستقيمات التي معادلاتها: $y=0$، $x=\alpha$ و $x=0$.
+
+احسب $A(\alpha)$ ثم بين أن: $A(\alpha)=\dfrac{4+\alpha^{3}}{1-\alpha-\alpha^{2}}$، مقدرة بوحدة المساحة.
+\end{sq}
+($\alpha$ عدد حقيقي يحقق $f(\alpha)=0$ و $-1{,}7<\alpha<-1{,}6$.)
+\end{tamrin}
+
+% ===================== التمرين: 2026 م2 =====================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الثاني -- تقني رياضي}
+$f$ الدالة المعرفة على $]0;e[\,\cup\,]e;+\infty[$ بـ: $f(x)=x+\dfrac{1}{x-x\ln x}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+
+\QQ{1} ادرس وضعية المنحنى $(C_f)$ بالنسبة إلى المستقيم $(\Delta)$ ذي المعادلة $y=x$.
+
+\QQ{2} $h$ الدالة المعرفة على $]0;e[$ بـ: $h(x)=\ln(1-\ln x)$.
+
+احسب $h'(x)$ ثم استنتج حساب $A$ مساحة الحيز المستوي المحدد بـ $(C_f)$ والمستقيمات التي معادلاتها: $y=x$، $x=\dfrac{1}{e}$ و $x=1$.
+\end{tamrin}
+
+% ===================== التمرين: 2025 م1 =====================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الأول -- تقني رياضي}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=x+\left(x^{2}+1\right)e^{-x}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$ (الوحدة $2\,cm$).
+
+\QQ{1}
+\begin{sq}
+\qa عين العددين الحقيقيين $a$ و $b$ حتى تكون الدالة $h:x\mapsto\left(-x^{2}+ax+b\right)e^{-x}$ أصلية للدالة $k:x\mapsto\left(x^{2}+1\right)e^{-x}$ على $\R$.
+\qb استنتج بالسنتيمتر المربع حساب $A$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=x$، $x=0$ و $x=1$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2025 م2 =====================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الثاني -- تقني رياضي}
+$f$ الدالة المعرفة على $]-1;+\infty[$ بـ: $f(x)=x+\dfrac{1+2\ln(x+1)}{x+1}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+
+\QQ{1} ادرس وضعية المنحنى $(C_f)$ بالنسبة إلى المستقيم $(\Delta)$ ذي المعادلة $y=x$.
+
+\QQ{2} احسب $A$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=x$، $x=0$ و $x=e-1$.
+\end{tamrin}
+
+% ===================== التمرين: 2024 م1 =====================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الأول -- تقني رياضي}
+$f$ الدالة العددية المعرفة على $\R$ بـ: $f(x)=-x+(x+1)e^{x}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$ (وحدة الطول $2\,cm$).
+
+\QQ{1} ادرس الوضع النسبي للمنحنى $(C_f)$ والمستقيم $(\Delta)$ ذي المعادلة $y=-x$.
+
+\QQ{2}
+\begin{sq}
+\qa باستعمال المكاملة بالتجزئة، بين أن: $\displaystyle\int_{-1}^{0}xe^{x}dx=\frac{2}{e}-1$.
+\qb استنتج بالسنتيمتر المربع $A$ مساحة الحيز المستوي المحدد بـ $(C_f)$ و $(\Delta)$ والمستقيمين اللذين معادلتاهما: $x=-1$ و $x=0$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2024 م2 =====================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الثاني -- تقني رياضي}
+$f$ الدالة المعرفة على $]-2;+\infty[$ بـ: $f(x)=\left(\dfrac{x+1}{x+2}\right)\left(-1+\ln(x+2)\right)$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$ (وحدة الطول $2\,cm$).
+
+\QQ{1} $h$ الدالة المعرفة على $]-2;+\infty[$ بـ: $h(x)=-1+\ln(x+2)$، و $(C_h)$ منحناها البياني.
+
+ادرس الوضع النسبي للمنحنيين $(C_f)$ و $(C_h)$.
+
+\QQ{2} بين أن: $\displaystyle\int_{-1}^{e-2}\frac{\ln(x+2)}{x+2}dx=\frac12$، ثم احسب بالسنتيمتر المربع $A$ مساحة الحيز المحدد بالمنحنيين $(C_f)$ و $(C_h)$ والمستقيمين ذوي المعادلتين: $x=-1$ و $x=e-2$.
+\end{tamrin}
+
+% ===================== التمرين: 2023 م1 =====================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الأول -- تقني رياضي}
+$f$ الدالة المعرفة على المجال $]-1;+\infty[$ بـ: $f(x)=(2x+3)\ln(x+1)-3x$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$ (الوحدة $2\,cm$).
+
+\QQ{1} $F$ الدالة المعرفة على المجال $]-1;+\infty[$ بـ: $F(x)=\left(x^{2}+3x+2\right)\ln(x+1)-2x^{2}-2x$.
+\begin{sq}
+\qa تحقق أن $F$ أصلية للدالة $f$ على المجال $]-1;+\infty[$.
+\qb استنتج بالسنتيمتر المربع المساحة $A$ للحيز المستوي المحدد بـ $(C_f)$ والمستقيمات التي معادلاتها: $y=0$، $x=\alpha$ و $x=0$.
+\qc تحقق أن: $A=\left(6\alpha^{2}+4\alpha\right)cm^{2}$.
+\end{sq}
+($\alpha$ العدد الحقيقي حيث $-0{,}72<\alpha<-0{,}71$ ويحقق $g(\alpha)=0$ مع $g(x)=2\ln(x+1)-\dfrac{x}{x+1}$.)
+\end{tamrin}
+
+% ===================== التمرين: 2023 م2 =====================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الثاني -- تقني رياضي}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=-x+4+(2x-3)e^{x}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+
+\QQ{1} ادرس وضعية المنحنى $(C_f)$ بالنسبة إلى المستقيم $(\Delta)$ ذي المعادلة $y=-x+4$.
+
+\QQ{2} $F$ الدالة المعرفة على $\R$ بـ: $F(x)=(-2x+5)e^{x}$.
+\begin{sq}
+\qa تحقق أن $F$ أصلية للدالة $x\mapsto(-2x+3)e^{x}$ على $\R$.
+\qb استنتج مساحة الحيز المستوي المحدد بـ $(C_f)$ والمستقيمات التي معادلاتها: $y=-x+4$، $x=-1$ و $x=0$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2022 م1 =====================
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الأول -- تقني رياضي}
+$f$ الدالة العددية المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=1+(x-1)\ln x$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$ (الوحدة $2\,cm$).
+
+\QQ{1}
+\begin{sq}
+\qa بين أنه من أجل كل عدد حقيقي $x$ موجب تماما: $f(x)-x=(x-1)(-1+\ln x)$.
+\qb ادرس حسب قيم العدد الحقيقي $x$ الموجب تماما إشارة $f(x)-x$.
+\end{sq}
+\QQ{2} $K$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $K(x)=-\dfrac34x^{2}+2x+\left(\dfrac12x^{2}-x\right)\ln x$.
+\begin{sq}
+\qa بين أنه من أجل كل عدد حقيقي $x$ موجب تماما: $K'(x)=f(x)-x$.
+\qb احسب مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=x$، $x=1$ و $x=e$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2022 م2 =====================
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الثاني -- تقني رياضي}
+$f$ الدالة العددية المعرفة على $\R$ بـ: $f(x)=e^{-x}-\dfrac{x+1}{x^{2}+1}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$، و $(\Gamma)$ التمثيل البياني للدالة $x\mapsto e^{-x}$.
+
+\QQ{1} علما أنه من أجل كل عدد حقيقي $x$ من المجال $[-1;0]$: $\dfrac12x+1\le\dfrac{1}{x^{2}+1}\le\dfrac{5}{4(1-x)}$،
+\begin{sq}
+\qa عين حصرا للعدد $I$ حيث: $I=\displaystyle\int_{-1}^{0}\frac{1}{x^{2}+1}dx$.
+\qb احسب $J$ حيث: $J=\displaystyle\int_{-1}^{0}\frac{x}{x^{2}+1}dx$، ثم استنتج حصرا لـ $A$ مساحة الحيز المستوي المحدد بالمنحنيين $(C_f)$ و $(\Gamma)$ والمستقيمين اللذين معادلتاهما: $x=-1$ و $x=0$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2019 م1 =====================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الأول -- تقني رياضي}
+نعتبر الدالة العددية $f$ المعرفة على $\R$ كما يلي: $f(x)=(x+2)\left(e^{x}-1\right)$،
+والدالة العددية $g$ المعرفة على $\R$ كما يلي: $g(x)=(x+3)e^{x}-1$.
+
+احسب $f(x)-g(x)$، ثم استنتج دالة أصلية للدالة $f$ على $\R$.
+\end{tamrin}
+
+% ===================== التمرين: 2019 م2 =====================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الثاني -- تقني رياضي}
+$f$ الدالة العددية المعرفة على المجال $]0;+\infty[$ كما يلي: $f(x)=\ln(x+1)+\dfrac{e\ln x}{x+1}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+
+\QQ{1} نقبل أنه من أجل كل $x$ من المجال $]1;+\infty[$: $\ln x<x+1$.
+\begin{sq}
+\qa بين أنه من أجل كل $x$ من المجال $]1;+\infty[$: $\ln2<f(x)<e+\ln(x+1)$.
+\qb تحقق أنه من أجل كل $x$ من المجال $]1;+\infty[$، الدالة $x\mapsto(x+1)\ln(x+1)-x$ هي دالة أصلية للدالة $x\mapsto\ln(x+1)$.
+\qc $S$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ وحامل محور الفواصل والمستقيمين اللذين معادلتاهما: $x=e-1$ و $x=e^{2}-1$.
+
+باستخدام جواب السؤال (أ)، بين أن: $\left(e^{2}-e\right)\ln2<S<e^{3}$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2018 م1 =====================
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الأول -- تقني رياضي}
+$f$ الدالة العددية المعرفة على المجال $]-\infty;1[$ بـ: $f(x)=\dfrac{x}{x-1}e^{-x}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+
+\QQ{1}
+\begin{sq}
+\qa بين أنه من أجل كل $x\in[-1;0]$: $\dfrac{x}{x-1}\le f(x)<e^{-x}$.
+\qb بين أنه من أجل كل $x\in[-1;0]$: $\dfrac{x}{x-1}=1+\dfrac{1}{x-1}$، ثم بين أن: $1-\ln2\le\displaystyle\int_{-1}^{0}f(x)dx<e-1$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2017 استثنائية م1 =====================
+\begin{tamrin}{بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الأول -- تقني رياضي}
+نعتبر الدالة العددية $f$ المعرفة على المجال $]0;+\infty[$ كما يلي: $f(x)=-\dfrac12x+2+\dfrac{-1+\ln x}{x}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$، و $(\Delta)$ المستقيم ذو المعادلة $y=-\dfrac12x+2$.
+
+\QQ{1} ليكن $\lambda$ عددا حقيقيا حيث $1<\lambda\le e$. نرمز بـ $A(\lambda)$ إلى مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيم $(\Delta)$ والمستقيمين اللذين معادلتاهما: $x=1$ و $x=\lambda$.
+\begin{sq}
+\qa احسب $A(\lambda)$ بدلالة $\lambda$.
+\qb عين قيمة $\lambda$ حيث: $A(\lambda)=\dfrac12\,cm^{2}$.
+\end{sq}
+\end{tamrin}
+
+\begin{molahada}
+النص لا يذكر وحدة الطول؛ نعتبرها $1\,cm$ (أي $1\ \text{u.a}=1\,cm^{2}$)، وهو ما يعطي القيمة $\lambda=e$ المنسجمة مع الشرط $\lambda\le e$.
+\end{molahada}
+
+% ===================== التمرين: 2017 استثنائية م2 =====================
+\begin{tamrin}{بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الثاني -- تقني رياضي}
+نعتبر الدالة العددية $f$ المعرفة على $\R$ كما يلي: $f(x)=(x+1)\left(1+2e^{-x}\right)$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+
+\QQ{1} ليكن $\alpha$ عددا حقيقيا موجبا. نرمز بـ $A(\alpha)$ إلى مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=x+1$، $x=-1$ و $x=\alpha$.
+
+احسب $A(\alpha)$ بدلالة $\alpha$، ثم احسب $\displaystyle\lim_{\alpha\to+\infty}A(\alpha)$.
+\end{tamrin}
+
+% ===================== التمرين: 2017 م1 =====================
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الأول -- تقني رياضي}
+$f$ الدالة العددية المعرفة على $D_f$ حيث $D_f=]-\infty;1[\,\cup\,]2;+\infty[$ كما يلي: $f(x)=-2x+3+2\ln\left(\dfrac{x-1}{x-2}\right)$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+
+\QQ{1} بين أن الدالة $h:x\mapsto(x-1)\ln(x-1)-(x-2)\ln(x-2)$ أصلية للدالة $x\mapsto\ln\left(\dfrac{x-1}{x-2}\right)$ على المجال $]2;+\infty[$.
+
+ثم احسب بدلالة $\beta$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=-2x+3$، $x=\beta$ و $x=3$ ($\beta>2$).
+\end{tamrin}
+
+% ===================== التمرين: 2017 م2 =====================
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الثاني -- تقني رياضي}
+نعتبر الدالة العددية $f$ المعرفة على $\R$ كما يلي: $f(x)=\dfrac{x^{3}-6}{x^{2}+2}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+
+\QQ{1} نرمز بـ $S$ إلى مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $x=\alpha$، $x=0$ و $y=0$.
+
+أثبت أنه من أجل كل $x\in[\alpha;0]$: $-3\le f(x)\le f(\alpha)$، ثم بين أن: $\dfrac32\alpha^{2}\le S\le-3\alpha$.
+
+(حيث $-1{,}48<\alpha<-1{,}47$ ويحقق $f(\alpha)=\dfrac32\alpha$ و $f'(\alpha)=0$.)
+\end{tamrin}
+
+% ===================== التمرين: 2016 م1 =====================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الأول -- تقني رياضي}
+$f$ الدالة المعرفة على المجال $]-1;+\infty[$ كما يلي: $f(x)=1+(x-1)\ln(x+1)$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+
+\QQ{1} نعتبر الدالة $H$ المعرفة على المجال $]-1;+\infty[$ بـ: $H(x)=\dfrac12\left(x^{2}-2x-3\right)\ln(x+1)-\dfrac14x^{2}+\dfrac32x$.
+\begin{sq}
+\qa بين أن $H$ دالة أصلية للدالة $x\mapsto(x-1)\ln(x+1)$ على المجال $]-1;+\infty[$.
+\qb احسب مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=0$، $x=1$ و $x=2$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2015 م1 =====================
+\begin{tamrin}{بكالوريا 2015 -- الموضوع الأول -- تقني رياضي}
+$f$ الدالة المعرفة على المجال $]-2;+\infty[$ كما يلي: $f(x)=x+1+\dfrac{2}{x+2}\ln(x+2)$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$ (وحدة الطول $1\,cm$).
+
+\QQ{1} احسب بالسنتيمتر المربع مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=0$، $x=-1$ و $x=1$.
+\end{tamrin}
+
+% ===================== التمرين: 2015 م2 =====================
+\begin{tamrin}{بكالوريا 2015 -- الموضوع الثاني -- تقني رياضي}
+نعتبر الدالة $f$ المعرفة على $\R$ بـ: $f(x)=2x+3-(x+1)e^{x}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+
+\QQ{1}
+\begin{sq}
+\qa بين أن الدالة $x\mapsto xe^{x}$ هي الدالة الأصلية للدالة $x\mapsto(x+1)e^{x}$ على $\R$ التي تنعدم عند $0$.
+\qb احسب $A$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيم $(\Delta):y=2x+3$ والمستقيمين اللذين معادلتاهما: $x=0$ و $x=\alpha$.
+\qc جد حصرا للعدد $A$.
+\end{sq}
+($\alpha$ عدد حقيقي حيث $0{,}92<\alpha<0{,}93$.)
+\end{tamrin}
+
+% ===================== التمرين: 2011 م1 =====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الأول -- تقني رياضي}
+$g$ الدالة العددية المعرفة على المجال $]0;+\infty[$ كما يلي: $g(x)=\dfrac{1+2\ln2x}{4x^{2}}$.
+
+\QQ{1}
+\begin{sq}
+\qa $h$ الدالة العددية المعرفة على المجال $]0;+\infty[$ كما يلي: $h(x)=\dfrac{1+\ln2x}{2x}$. احسب $h'(x)$.
+\qb تحقق أن $g(x)=\dfrac{1}{4x^{2}}+\dfrac{\ln2x}{2x^{2}}$، ثم استنتج دالة أصلية للدالة $g$ على المجال $]0;+\infty[$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2009 م1 =====================
+\begin{tamrin}{بكالوريا 2009 -- الموضوع الأول -- تقني رياضي}
+نعتبر الدالة $f$ المعرفة على $\R$ كما يلي: $f(x)=x+\dfrac{2}{e^{x}+1}$، و $(C_f)$ تمثيلها البياني في المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+
+\QQ{1} بين أنه من أجل كل عدد حقيقي $x$: $f(x)=x+\dfrac{2e^{-x}}{e^{-x}+1}$.
+
+\QQ{2} احسب $A(\alpha)$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=x+2$، $x=0$ و $x=\alpha$.
+
+بين أن $A(\alpha)=2\ln(-\alpha)$، ثم استنتج حصرا للعدد $A(\alpha)$.
+
+($\alpha$ يحقق $-1{,}7<\alpha<-1{,}6$ و $f(\alpha)=0$.)
+\end{tamrin}
+
+\section{تمارين البكالوريا -- شعبة رياضيات}
+% ===================== التمرين: 2026 م1 =====================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة المعرفة على $\R-\{1\}$ بـ: $f(x)=x-2-\dfrac{2+\ln\big((x-1)^2\big)}{x-1}$،
+و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} أدرس وضعية المنحنى $(C_f)$ بالنسبة إلى المستقيم $(\Delta)$ ذي المعادلة $y=x-2$.
+\QQ{2}
+\begin{sq}
+\qa أحسب بدلالة $\lambda$ المساحة $A(\lambda)$ للحيّز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=x-2$، $x=2$ و $x=\lambda$ حيث $\lambda>2$. ($A(\lambda)$ مقدرة بوحدة المساحة.)
+\qb عيّن قيمة $\lambda$ حتى يكون: $A(\lambda)=2\big(\ln(\lambda-1)\big)^2$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2026 م2 =====================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الثاني -- شعبة رياضيات}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=\dfrac{x^2e^x}{e^x+1}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+
+$(u_n)$ المتتالية العددية المعرفة بـ: $u_0=\displaystyle\int_0^1\frac{e^x}{e^x+1}\,dx$، ومن أجل كل $n$ من $\N^*$: $u_n=\displaystyle\int_0^1\frac{x^ne^x}{e^x+1}\,dx$.
+\begin{sq}
+\qa أحسب $u_0$.
+\qb تحقق أنه من أجل كل عدد حقيقي $x$ حيث $0\le x\le 1$: $\dfrac12\le\dfrac{e^x}{e^x+1}\le\dfrac{e}{e+1}$.
+\qc فسّر هندسيا العدد $u_2$ وأعط حصرا له.
+\end{sq}
+\begin{molahada}
+حُذف السؤالان «برّر أن المتتالية $(u_n)$ موجبة، بيّن أنها متناقصة ثم متقاربة» و«حصر $u_n$ من أجل كل $n$ ونهاية $(u_n)$» لأنهما خارج المنهاج الحالي (التوزيع السنوي 2026-2027): المتتاليات التكاملية غير مدرجة. الحصر في (ج) يُستنتج مباشرة من (ب).
+\end{molahada}
+\end{tamrin}
+
+% ===================== التمرين: 2025 م1 =====================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=2x+\dfrac{2-2e^x}{1+xe^x}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ (وحدة الطول $2\,\text{cm}$).
+\QQ{1} أدرس الوضع النسبي للمنحنى $(C_f)$ والمستقيم $(\Delta)$ ذي المعادلة $y=2x+2$.
+\QQ{2}
+\begin{sq}
+\qa تحقق أنه من أجل كل عدد حقيقي $x$: $1-\dfrac{1-e^x}{1+xe^x}=\dfrac{(x+1)e^x}{1+xe^x}$.
+\qb استنتج بالسنتيمتر المربع حساب $A$ مساحة الحيّز المستوي المحدد بـ $(C_f)$ والمستقيمات التي معادلاتها: $y=2x+2$، $x=0$ و $x=1$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2025 م2 =====================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الثاني -- شعبة رياضيات}
+$f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=(-x+2\ln x)\ln x$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\begin{sq}
+\qa بيّن أن الدالة $k:x\mapsto x(\ln x)^2-2x\ln x+2x$ أصلية للدالة $x\mapsto(\ln x)^2$ على $]0;+\infty[$.
+\qb باستعمال المكاملة بالتجزئة، بيّن أن: $\displaystyle\int_1^ex\ln x\,dx=\frac{e^2+1}{4}$.
+\qc استنتج بوحدة المساحة حساب $A$ مساحة الحيّز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=0$، $x=1$ و $x=e$. (نقبل أنه: من أجل كل $x\in[1;e]$، $f(x)\le0$.)
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2024 م1 =====================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=\dfrac{e^x+4x}{e^x+4}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} أدرس الوضع النسبي للمنحنى $(C_f)$ والمستقيم $(\Delta)$ ذي المعادلة $y=x$.
+\QQ{2}
+\begin{sq}
+\qa أثبت أنه من أجل كل $x$ من $[1;+\infty[$: $\dfrac{e^x}{e^x+4}\le f(x)\le x$.
+\qb $A$ مساحة الحيّز المستوي المحدد بـ $(C_f)$ والمستقيمات التي معادلاتها: $y=0$، $x=1$ و $x=2$. بيّن أن: $\ln\Big(\dfrac{e^2+4}{e+4}\Big)\le A\le\dfrac32$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2024 م2 =====================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الثاني -- شعبة رياضيات}
+$f$ الدالة المعرفة على $[0;+\infty[$ بـ: $f(0)=0$ ومن أجل كل $x>0$: $f(x)=\dfrac{x}{1+x^2\ln x}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\begin{sq}
+\qa بيّن أنه: إذا كان $1\le x\le e$ فإن $\dfrac{x}{x^2+1}\le f(x)\le1$. (علما أن الدالة $f$ متناقصة على المجال $[1;e]$.)
+\qb $A$ مساحة الحيّز المستوي المحدد بـ $(C_f)$ والمستقيمات التي معادلاتها: $y=0$، $x=1$ و $x=e$. بيّن أن: $\dfrac12\ln\Big(\dfrac{e^2+1}{2}\Big)\le A\le e-1$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2023 م1 =====================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=x+1-3xe^{2x}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ (الوحدة $2\,\text{cm}$).
+
+نعطي: $\alpha$ العدد الحقيقي حيث $0{,}2<\alpha<0{,}3$ و $g(\alpha)=0$ مع $g(x)=1+(6x-3)e^{-2x}$.
+\QQ{1} أدرس وضعية المنحنى $(C_f)$ بالنسبة إلى المستقيم $(\Delta)$ ذي المعادلة $y=x+1$.
+\QQ{2}
+\begin{sq}
+\qa باستعمال المكاملة بالتجزئة، أحسب العدد الحقيقي $\displaystyle\int_{-\alpha}^0xe^{2x}\,dx$.
+\qb استنتج بالسنتيمتر المربع المساحة $A$ للحيّز المحدد بـ $(C_f)$ والمستقيمات التي معادلاتها: $y=x+1$، $x=-\alpha$ و $x=0$.
+\qc تحقق أن: $A=2\Big(\dfrac{4\alpha-1}{2\alpha-1}\Big)\,\text{cm}^2$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2023 م2 =====================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الثاني -- شعبة رياضيات}
+$f$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=\Big(x-\dfrac32\ln x\Big)\ln x$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ (الوحدة $2\,\text{cm}$).
+
+$F$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $F(x)=\Big(\dfrac12x^2+3x\Big)\ln x-\dfrac32x(\ln x)^2-\dfrac14x^2-3x$.
+\begin{sq}
+\qa تحقق أن $F$ أصلية للدالة $f$ على المجال $]0;+\infty[$.
+\qb استنتج بالسنتيمتر المربع مساحة الحيّز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=0$، $x=1$ و $x=e$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2022 م2 =====================
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الثاني -- شعبة رياضيات}
+$f$ الدالة العددية المعرفة والموجبة على $]-1;+\infty[$ كما يلي: $f(x)=\dfrac{ax}{x+b}+\ln(x+b)$، حيث $a$ و $b$ عددان حقيقيان مع $b$ موجب تماما. تمثيلها البياني $(C)$ في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ يقبل محور الفواصل مماسا له في النقطة $O$.
+\QQ{1} بيّن أنه من أجل كل عدد حقيقي $x$ من $]-1;+\infty[$: $f(x)=-1+\dfrac{1}{x+1}+\ln(x+1)$.
+\QQ{2} $g$ الدالة العددية المعرفة على $]-1;+\infty[$ كما يلي: $g(x)=(x+1)\ln(x+1)$. أحسب $g'(x)$، ثم استنتج دالة أصلية للدالة $f$ على المجال $]-1;+\infty[$.
+\QQ{3} $(u_n)$ المتتالية المعرفة على $\N^*$ بـ: $u_n=\displaystyle\int_{n-1}^nf(x)\,dx$.
+\begin{sq}
+\qa أحسب $u_{2022}$، ثم فسّر النتيجة بيانيا.
+\qb بيّن أنه من أجل كل عدد طبيعي غير معدوم $n$: $u_n=-2+(n+2)\ln(n+1)-(n+1)\ln n$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2019 م1 =====================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة العددية المعرفة على $[0;+\infty[$ بـ: $f(x)=x-x^2\ln x$ إذا كان $x>0$، و $f(0)=0$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ (الوحدة $3\,\text{cm}$).
+
+$\lambda$ عدد حقيقي حيث $0<\lambda<1$، نعتبر: $A(\lambda)=\displaystyle\int_{\lambda}^1-x^2\ln x\,dx$.
+\begin{sq}
+\qa باستعمال المكاملة بالتجزئة، أحسب $A(\lambda)$ بدلالة $\lambda$.
+\qb أحسب $\displaystyle\lim_{\lambda\to0^+}A(\lambda)$، ثم فسّر النتيجة هندسيا.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2019 م2 =====================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الثاني -- شعبة رياضيات}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=(x+1)^2e^{-2x}$. نسمي $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+
+$g$ الدالة المعرفة على $\R$ بـ: $g(x)=(x+1)e^{-2x}$.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ فإن: $g'(x)+2g(x)-e^{-2x}=0$، ثم استنتج دالة أصلية لـ $g$ على $\R$.
+\qb باستعمال المكاملة بالتجزئة، أحسب $A$ مساحة الحيّز المستوي المحدد بالمنحنى $(C_f)$ ومحور الفواصل والمستقيمين اللذين معادلتاهما: $x=-1$ و $x=0$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2018 م1 =====================
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة العددية المعرفة على $[0;1[\cup]1;+\infty[$ بـ: $f(x)=x+1-\dfrac{1}{\ln x}$ إذا كان $x\in\R_+^*-\{1\}$، و $f(0)=1$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+نعطي: $\alpha$ العدد الحقيقي الذي يحقق $1{,}49<\alpha<1{,}5$ و $f(\alpha)=0$.
+\QQ{1} $h$ الدالة العددية المعرفة على المجال $[1;+\infty[$ بـ: $h(x)=1-x+x\ln x$.
+\begin{sq}
+\qa بيّن أن الدالة $h$ متزايدة تماما على المجال $[1;+\infty[$، واستنتج إشارة $h(x)$ على المجال $[1;+\infty[$.
+\qb بيّن أنه من أجل كل $x>1$: $f(x)-x+\dfrac{1}{x\ln x}=\dfrac{h(x)}{x\ln x}$، واستنتج أنه من أجل كل $x>1$: $x-\dfrac{1}{x\ln x}<f(x)<x+1$.
+\end{sq}
+\QQ{2} $A$ مساحة الحيّز المستوي المحدد بالمنحنى $(C_f)$ وحامل محور الفواصل والمستقيمين اللذين معادلتاهما: $x=\alpha$ و $x=e$.
+بيّن أن: $\dfrac12(e^2-\alpha^2)-\ln(\alpha+1)<A<\dfrac12(e-\alpha)(e+\alpha+2)$.
+\end{tamrin}
+
+% ===================== التمرين: 2017 استثنائية م1 =====================
+\begin{tamrin}{بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الأول -- شعبة رياضيات}
+لتكن الدالة $f$ المعرفة على $\R^*$ كما يلي: $f(x)=\dfrac12\Big(-x+e-\dfrac{\ln(x^2)}{x}\Big)$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ (الوحدة $1\,\text{cm}$).
+\QQ{1} أدرس وضعية $(C_f)$ بالنسبة إلى المستقيم $(\Delta)$ ذي المعادلة $y=-\dfrac12x+\dfrac e2$.
+\QQ{2} نرمز بـ $A(\alpha)$ إلى مساحة الحيّز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $x=\alpha$، $x=1$ و $x+2y=e$.
+تحقق أن: $A(\alpha)=\dfrac12(\ln\alpha)^2\ \text{cm}^2$. ($\alpha$ العدد الحقيقي الذي يحقق $2<\alpha<2{,}1$ و $f(\alpha)=0$.)
+\end{tamrin}
+
+% ===================== التمرين: 2017 استثنائية م2 =====================
+\begin{tamrin}{بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الثاني -- شعبة رياضيات}
+المستوي منسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ حيث $\|\vec i\|=1\,\text{cm}$.
+نعتبر الدالة العددية $f$ المعرفة على $\R$ كما يلي: $f(x)=(x+1)^2e^{-x}$، و $(C)$ تمثيلها البياني.
+ليكن $m$ وسيطا حقيقيا، نعتبر الدالة $f_m$ المعرفة على $\R$ كما يلي: $f_m(x)=(x^2+mx+1)e^{-x}$، وليكن $(C_m)$ تمثيلها البياني في المعلم السابق.
+\QQ{1} أدرس حسب قيم الوسيط $m$ حيث $m\neq2$ الوضعية النسبية للمنحنيين $(C)$ و $(C_m)$.
+\QQ{2} أحسب بدلالة العدد الحقيقي الموجب تماما $\alpha$، $A(\alpha)$ مساحة الحيّز المستوي المحدد بالمنحنيين $(C)$ و $(C_3)$ والمستقيمين اللذين معادلتاهما: $x=0$ و $x=\alpha$، ثم أحسب $\displaystyle\lim_{\alpha\to+\infty}A(\alpha)$.
+\end{tamrin}
+
+% ===================== التمرين: 2017 م2 =====================
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الثاني -- شعبة رياضيات}
+$f$ الدالة المعرفة على المجال $[0;+\infty[$ كما يلي: $f(x)=\dfrac{x+1}{x-\ln x}$ إذا كان $x>0$، و $f(0)=0$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} لتكن $h$ الدالة المعرفة على المجال $]0;+\infty[$ كما يلي: $h(x)=x-\ln x$. بيّن أنه من أجل كل عدد حقيقي $x$ موجب تماما، $h(x)>0$.
+\QQ{2} لتكن الدالة $F$ المعرفة على المجال $]0;+\infty[$ كما يلي: $F(x)=\displaystyle\int_1^xf(t)\,dt$.
+\begin{sq}
+\qa بيّن أن: من أجل كل عدد حقيقي $x$ حيث $x\ge1$، $1+\dfrac1x\le f(x)\le f(\alpha)$. (نقبل أن الدالة $f$ متزايدة على المجال $[1;\alpha]$؛ $\alpha$ العدد الحقيقي الذي يحقق $1{,}76<\alpha<1{,}77$ و $f'(\alpha)=0$.)
+\qb أعط تفسيرا هندسيا للعدد $F(e)$ ثم استنتج حصرا له.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2016 م1 =====================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة العددية المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=-x+\dfrac{3+2\ln x}{x}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+من أجل كل عدد طبيعي $n$، نضع: $u_n=\displaystyle\int_{e^n}^{e^{n+1}}\big[f(x)+x\big]dx$.
+\QQ{1} بيّن أنه من أجل كل عدد طبيعي $n$، $u_n>0$.
+\QQ{2} أعط تفسيرا هندسيا للعدد $u_0$.
+\QQ{3} أحسب $u_n$ بدلالة $n$.
+\QQ{4} نضع: $S_n=u_0+u_1+\dots+u_n$. أحسب $S_n$ بدلالة $n$.
+\end{tamrin}
+
+% ===================== التمرين: 2016 م2 =====================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الثاني -- شعبة رياضيات}
+$f$ و $g$ الدالتان المعرفتان على $\R$ كما يلي: $f(x)=(2x-1)e^{-x+1}$ و $g(x)=\dfrac{2x-1}{x^2-x+1}$.
+$(C_f)$ و $(C_g)$ تمثيلاهما البيانيان في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\begin{sq}
+\qa باستعمال المكاملة بالتجزئة، أحسب بدلالة العدد الحقيقي $x$: $\displaystyle\int_1^xf(t)\,dt$.
+\qb أحسب مساحة الحيّز المستوي المحدد بالمنحنيين $(C_f)$ و $(C_g)$ والمستقيمين اللذين معادلتاهما: $x=1$ و $x=2$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2015 م1 =====================
+\begin{tamrin}{بكالوريا 2015 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة المعرفة بـ: $f(0)=1$، ومن أجل كل عدد حقيقي $x$ من المجال $]0;+\infty[$، $f(x)=1-x^2\ln x$. $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+$\alpha$ العدد الحقيقي الذي يحقق: $1{,}531<\alpha<1{,}532$ و $f(\alpha)=0$.
+$g$ الدالة المعرفة على $\R$ بـ: $g(x)=f(|x|)$، و $(C_g)$ المنحنى الممثل للدالة $g$ في نفس المعلم.
+\QQ{1} باستعمال المكاملة بالتجزئة، عيّن الدالة الأصلية للدالة $x\mapsto x^2\ln x$ المعرفة على المجال $]0;+\infty[$ والتي تنعدم من أجل القيمة $1$.
+\QQ{2} $t$ عدد حقيقي ينتمي إلى المجال $]0;\alpha[$. نضع $F(t)=\displaystyle\int_t^\alpha f(x)\,dx$.
+\begin{sq}
+\qa أكتب العبارة $F(t)$ بدلالة $t$ و $\alpha$.
+\qb بيّن أنه من أجل كل عدد حقيقي $t$ من المجال $]0;\alpha[$: $F(t)=\dfrac{-3tf(t)-t^3-6t+\alpha^3+6\alpha}{9}$.
+\qc أحسب $\displaystyle\lim_{t\to0^+}F(t)$.
+\end{sq}
+\QQ{3} $m$ عدد حقيقي ينتمي إلى المجال $]0;\alpha[$. $S(m)$ مساحة الدائرة ذات المركز المبدأ $O$ ونصف القطر $m$.
+نفرض أن مساحة الحيّز المستوي المحدد بالمنحنى $(C_g)$ وحامل محور الفواصل والمستقيمين اللذين معادلتاهما: $x=-\alpha$ و $x=\alpha$، هي $A$ حيث $A=\dfrac29(\alpha^3+6\alpha)\ \text{u.a}$.
+\begin{sq}
+\qa عيّن القيمة المضبوطة للعدد $m$ حتى يكون $S(m)=2A$.
+\qb علما أن $3{,}140<\pi<3{,}142$، أعط حصرا للعدد $m$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2014 م1 =====================
+\begin{tamrin}{بكالوريا 2014 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة العددية المعرفة على $\R$ بـ: $f(x)=\dfrac{e^x-1}{e^x-x}$، و $(C_f)$ المنحنى الممثل للدالة $f$ في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+
+$\lambda$ عدد حقيقي أكبر من أو يساوي $1$.
+\begin{sq}
+\qa أحسب بدلالة $\lambda$ العدد $A(\lambda)$ حيث: $A(\lambda)=\displaystyle\int_1^\lambda\big[f(x)-1\big]dx$.
+\qb أحسب $\displaystyle\lim_{\lambda\to+\infty}A(\lambda)$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2014 م2 =====================
+\begin{tamrin}{بكالوريا 2014 -- الموضوع الثاني -- شعبة رياضيات}
+$f$ الدالة العددية المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=(1+2\ln x)(-1+\ln x)$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+$g$ الدالة العددية المعرفة على المجال $]0;+\infty[$ بـ: $g(x)=1-\ln x$، و $(C_g)$ تمثيلها البياني في المعلم السابق.
+\QQ{1} عيّن الوضع النسبي للمنحنيين $(C_f)$ و $(C_g)$.
+\QQ{2} نعتبر الدالة $h$ المعرفة على المجال $]0;+\infty[$ بـ: $h(x)=x(\ln x)^2-2x\ln x+2x$.
+\begin{sq}
+\qa أحسب $h'(x)$ واستنتج دالة أصلية للدالة $x\mapsto(\ln x)^2$ على المجال $]0;+\infty[$.
+\qb أحسب العدد: $\displaystyle\int_{\frac1e}^e\big[f(x)-g(x)\big]dx$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2013 م1 =====================
+\begin{tamrin}{بكالوريا 2013 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=e^x-ex+\dfrac{\ln x}{x}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$. (نقبل أن الدالة $f$ متزايدة تماما على $]0;+\infty[$.)
+
+أحسب مساحة الحيّز المستوي المحدد بالمنحنى $(C_f)$ وحامل محور الفواصل والمستقيمين اللذين معادلتاهما: $x=\frac12$ و $x=2$.
+\end{tamrin}
+
+% ===================== التمرين: 2013 م2 =====================
+\begin{tamrin}{بكالوريا 2013 -- الموضوع الثاني -- شعبة رياضيات}
+الدالة $f$ معرفة على $\R$ بـ: $f(x)=x-(x+1)^2e^{-x}$، و $(C_f)$ منحنى الدالة $f$ في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ (وحدة الطول $2\,\text{cm}$).
+
+الدالة $H$ معرفة على $\R$ بـ: $H(x)=(-x^2-4x-5)e^{-x}$.
+\begin{sq}
+\qa بيّن أن $H$ دالة أصلية للدالة $x\mapsto(x+1)^2e^{-x}$ على $\R$.
+\qb أحسب بالسنتيمتر المربع مساحة الحيّز المحدد بالمنحنى $(C_f)$ والمستقيم $(\Delta):y=x$ والمستقيمين اللذين معادلتاهما $x=-1$ و $x=0$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2011 م1 =====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الأول -- شعبة رياضيات}
+نعتبر الدالة العددية $f$ المعرفة على $\R$ كما يلي: $f(x)=(3x+4)e^x$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\begin{sq}
+\qa $x$ عدد حقيقي من المجال $]-\infty;0]$، باستعمال المكاملة بالتجزئة جد $\displaystyle\int_{-1}^xte^t\,dt$، ثم استنتج دالة أصلية للدالة $f$ على المجال $]-\infty;0]$.
+\qb $\lambda$ عدد حقيقي أصغر تماما من $-\frac43$. أحسب بدلالة $\lambda$ المساحة $A(\lambda)$ للحيّز المستوي المحدد بالمنحنى $(C_f)$ والمستقيمات التي معادلاتها: $y=0$، $x=-\frac43$ و $x=\lambda$، ثم جد $\displaystyle\lim_{\lambda\to-\infty}A(\lambda)$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين: 2011 م2 =====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الثاني -- شعبة رياضيات}
+$f$ الدالة العددية المعرفة على المجال $]0;+\infty[$ كما يلي: $f(x)=\Big(1-\dfrac{1}{x^2}\Big)\ln x$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+$(\delta)$ المنحنى الممثل للدالة $x\mapsto\ln x$ على المجال $]0;+\infty[$.
+\begin{sq}
+\qa $x$ عدد حقيقي من المجال $[1;+\infty[$، باستعمال التكامل بالتجزئة جد $\displaystyle\int_1^x\frac{1}{t^2}\ln t\,dt$.
+\\- تحقق أن $x\mapsto x\ln x-x$ هي دالة أصلية للدالة $x\mapsto\ln x$ على المجال $[1;+\infty[$.
+\\- استنتج دالة أصلية للدالة $f$ على المجال $[1;+\infty[$.
+\qb $\alpha$ عدد حقيقي أكبر تماما من $1$. أحسب بدلالة $\alpha$ المساحة $A(\alpha)$ للحيّز المستوي المحدد بالمنحنيين $(C_f)$ و $(\delta)$ والمستقيمين اللذين معادلتاهما: $x=1$ و $x=\alpha$، ثم أحسب $\displaystyle\lim_{\alpha\to+\infty}A(\alpha)$.
+\end{sq}
+\end{tamrin}
+
+\end{document}

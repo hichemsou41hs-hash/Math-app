@@ -1,0 +1,666 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}تمارين البكالوريا: الإحصاء}{\small\color{cSec}السنة الثالثة ثانوي -- تسيير واقتصاد}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries تمارين البكالوريا في الإحصاء}\\[8pt]
+{\color{white}\large -- بدون حلول (للتدرّب)}\\[5pt]
+{\color{white}\large شعبة تسيير واقتصاد}
+\end{tcolorbox}
+\end{LTR}
+\section{تمارين البكالوريا -- شعبة تسيير واقتصاد}
+\begin{molahada}
+حسب المنهاج الحالي (التوزيع السنوي 2026-2027) لا تُدرَّس دساتير التباين والتغاير ولا معامل الارتباط الخطي؛ لذلك حُذفت من الحلول. معادلة مستقيم الانحدار المطلوبة في هذه المواضيع تُقرأ \textbf{بالآلة الحاسبة} (الوضع \textbf{STAT}، النمط $A+BX$)، ونتحقق أن المستقيم يشمل النقطة المتوسطة $G$. لم يُحذف أي سؤال لأن كل الأسئلة تبقى ممكنة بهذه الطريقة.
+\end{molahada}
+% ===================== بكالوريا 2008 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2008 -- الموضوع الأول -- تسيير واقتصاد}
+يمثل الجدول الآتي تطور إنتاج معمل الإسمنت خلال 6 سنوات من 2000 إلى 2005.
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\columncolor{cSec!6}}c|*{6}{c|}}\hline
+\rowcolor{cSec!12}\ar{السنة} & 2000 & 2001 & 2002 & 2003 & 2004 & 2005\\\hline
+\ar{ترتيب السنوات $x_i$} & 1 & 2 & 3 & 4 & 5 & 6\\\hline
+\ar{الإنتاج بالمليون طن $y_i$} & $3{,}8$ & $4$ & $4{,}5$ & $4{,}8$ & $5{,}2$ & $5{,}6$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد ومتجانس حيث وحدة الأطوال $2\,cm$.
+\QQ{2} عيّن إحداثيي النقطة المتوسطة $G$.
+\QQ{3}
+\begin{sq}
+\qa بيّن أن $a$ معامل توجيه مستقيم الانحدار $(D)$ مدوّرا إلى $10^{-2}$ هو $a=0{,}37$. علما أن $G$ نقطة من $(D)$، عيّن معادلة مختصرة للمستقيم $(D)$.
+\qb من أهداف المعمل الوصول إلى إنتاج $7{,}3$ مليون طن سنة 2009. بيّن باستعمال التعديل الخطي السابق إذا كان الهدف يمكن أن يتحقق.
+\end{sq}
+\end{tamrin}
+
+\Needspace{30\baselineskip}
+
+% ===================== بكالوريا 2008 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2008 -- الموضوع الثاني -- تسيير واقتصاد}
+الجدول التالي يمثل تطور نسبة البطالة في بلد بين السنوات 1970 و 2005.
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\columncolor{cSec!6}}c|*{8}{c|}}\hline
+\rowcolor{cSec!12}\ar{السنة $a_i$} & 1970 & 1975 & 1980 & 1985 & 1990 & 1995 & 2000 & 2005\\\hline
+\ar{رتبة السنة $x_i=a_i-1970$} & 0 & 5 & 10 & 15 & 20 & 25 & 30 & 35\\\hline
+\ar{النسبة المئوية $y_i$} & $1{,}3$ & $1{,}5$ & $1{,}5$ & $1{,}3$ & $1{,}4$ & $2{,}2$ & $2{,}5$ & $2$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل بيانيا سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد. ($1\,cm$ لكل 5 سنوات على محور الفواصل و $1\,cm$ لكل $0{,}5\%$ على محور التراتيب)
+\QQ{2} جد إحداثيي النقطة المتوسطة $G$ لسحابة النقط ثم علّمها.
+\QQ{3}
+\begin{sq}
+\qa بيّن أن المعادلة المختصرة لـ $(\Delta)$ مستقيم الانحدار بالمربعات الدنيا لهذه السلسلة هي: $y=0{,}03x+1{,}19$ ثم ارسمه.
+\qb ما هي نسبة البطالة المتوقعة في هذا البلد سنة 2009؟
+\qc ابتداء من أي سنة تصبح النسبة المتوقعة للبطالة أكبر من $3\%$؟
+\end{sq}
+\end{tamrin}
+
+\Needspace{30\baselineskip}
+
+% ===================== بكالوريا 2009 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2009 -- الموضوع الثاني -- تسيير واقتصاد}
+يمثل الجدول التالي عدد الزوار (بالآلاف) لأحد الحمامات المعدنية بين سنتي 2000 و 2007.
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\columncolor{cSec!6}}c|*{8}{c|}}\hline
+\rowcolor{cSec!12}\ar{السنة} & 2000 & 2001 & 2002 & 2003 & 2004 & 2005 & 2006 & 2007\\\hline
+\ar{رتبة السنة} & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8\\\hline
+\ar{عدد الزوار $y_i$ (بالآلاف)} & $4{,}5$ & $4{,}9$ & $5{,}5$ & $5{,}2$ & $5{,}7$ & $6$ & $6{,}8$ & $7{,}4$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل سحابة النقط المرفقة بالسلسلة الإحصائية $M_i(x_i;y_i)$ في معلم متعامد. (على محور الفواصل $2\,cm$ تمثل سنة واحدة، على محور التراتيب: $1\,cm$ ألف زائر)
+\QQ{2} عيّن إحداثيي النقطة المتوسطة $G$ لهذه السلسلة ثم علّمها.
+\QQ{3} بيّن أن المعادلة المختصرة لمستقيم الانحدار بالمربعات الدنيا لهذه السلسلة تكتب على الشكل: $y=0{,}38x+4$.
+\QQ{4} باستعمال التعديل الخطي السابق عيّن عدد زوار هذا الحمام في سنة 2010.
+\end{tamrin}
+
+\Needspace{30\baselineskip}
+
+% ===================== بكالوريا 2010 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2010 -- الموضوع الأول -- تسيير واقتصاد}
+يمثل الجدول التالي ضغط الدم $y_i$ بدلالة السن $x_i$ لعينة من الرجال.
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\columncolor{cSec!6}}c|*{7}{c|}}\hline
+\rowcolor{cSec!12}\ar{السن $x_i$} & 35 & 40 & 45 & 50 & 55 & 60 & 65\\\hline
+\ar{ضغط الدم $y_i$} & $12{,}2$ & $12{,}4$ & $12{,}5$ & $13$ & $13{,}3$ & $13{,}6$ & $14$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل بسحابة نقط $M_i(x_i;y_i)$ في معلم متعامد مبدؤه $O'(30;11)$ وبوحدة $1\,cm$ لكل 5 سنوات على محور الفواصل و $2\,cm$ لكل وحدة على محور التراتيب.
+\QQ{2}
+\begin{sq}
+\qa عيّن إحداثيي $G$ النقطة المتوسطة للسحابة.
+\qb مثّل النقطة $G$ في المعلم السابق.
+\end{sq}
+\QQ{3} أوجد معادلة مستقيم الانحدار بالمربعات الدنيا: $y=ax+b$، تعطى $a$ و $b$ مدوّرة إلى $10^{-2}$. ارسم هذا المستقيم في المعلم السابق.
+\QQ{4} رجل عمره 70 سنة وضغط دمه $15{,}2$. هل هذا معقول حسب هذا التعديل؟ علّل.
+\end{tamrin}
+
+\Needspace{30\baselineskip}
+
+% ===================== بكالوريا 2010 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2010 -- الموضوع الثاني -- تسيير واقتصاد}
+يمثل الجدول التالي تطور إنتاج سنوي بالطن لأحد أنواع الأسماك في إحدى المجمعات المائية لتربية الأسماك:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\columncolor{cSec!6}}c|*{6}{c|}}\hline
+\rowcolor{cSec!12}\ar{السنة} & 2004 & 2005 & 2006 & 2007 & 2008 & 2009\\\hline
+\ar{ترتيب السنوات $x_i$} & 1 & 2 & 3 & 4 & 5 & 6\\\hline
+\ar{الإنتاج $y_i$} & 530 & 640 & 770 & 850 & 980 & 1115\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ المرفقة بالسلسلة الإحصائية في معلم متعامد. (على محور الفواصل $2\,cm$ تمثل سنة واحدة، وعلى محور التراتيب $1\,cm$ يمثل 100 طن من السمك)
+\QQ{2} عيّن إحداثيي النقطة المتوسطة $G$ لهذه السحابة.
+\QQ{3} بيّن أن معادلة مستقيم الانحدار بالمربعات الدنيا هي: $y=115x+411{,}67$.
+\QQ{4} عيّن إنتاج هذا المجمع المائي في سنة 2015. (تعطى كل النتائج مدوّرة إلى $10^{-2}$)
+\end{tamrin}
+
+\Needspace{30\baselineskip}
+
+% ===================== بكالوريا 2011 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الأول -- تسيير واقتصاد}
+إليك فيما يلي جدولا يمثل أجور 5 موظفين في مؤسسة وطنية وذلك حسب أقدميتهم في المهنة:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\columncolor{cSec!6}}c|*{5}{c|}}\hline
+\rowcolor{cSec!12}\ar{الأقدمية (بالسنوات) $x_i$} & 2 & 8 & 15 & 19 & 24\\\hline
+\ar{الأجرة (بالدينار) $y_i$} & 32400 & 35400 & 39600 & 41400 & 44700\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1}
+\begin{sq}
+\qa مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد. ($1\,cm$ لكل سنتين على محور الفواصل و $1\,cm$ لكل 1000 دينار على محور التراتيب ويبدأ التدريج على هذا المحور ابتداء من 3000).
+\qb اذكر لماذا يمكننا إجراء تعديل خطي لهذه السحابة.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa عيّن إحداثيي النقطة المتوسطة $G$ لسحابة النقط.
+\qb لتكن $y=ax+b$ معادلة لمستقيم الانحدار بالمربعات الدنيا.
+\begin{itemize}
+\item بيّن أن مدوّر $a$ إلى $10^{-3}$ هو: $556{,}356$.
+\item عيّن مدوّر $b$ إلى $10^{-3}$ باعتبار $a=556{,}356$.
+\end{itemize}
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa باستعمال التعديل الخطي السابق، قدّر أجرة موظف له 30 سنة أقدمية.
+\qb بعد كم سنة من العمل تتجاوز أجرة الموظف 50000 دينار؟
+\end{sq}
+\end{tamrin}
+
+\Needspace{30\baselineskip}
+
+% ===================== بكالوريا 2011 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الثاني -- تسيير واقتصاد}
+يمثل الجدول التالي الكميات المنتجة لسلعة شركة من سنة 2006 إلى سنة 2010. (الكميات مقدرة بالطن)
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\columncolor{cSec!6}}c|*{5}{c|}}\hline
+\rowcolor{cSec!12}\ar{السنة} & 2006 & 2007 & 2008 & 2009 & 2010\\\hline
+\ar{رتبة السنة $x_i$} & 1 & 2 & 3 & 4 & 5\\\hline
+\ar{كمية الإنتاج $y_i$} & $2{,}6$ & $2{,}8$ & $3{,}2$ & $4$ & $4{,}4$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد. ($2\,cm$ يمثل رتبة واحدة على محور الفواصل، $1\,cm$ يمثل $0{,}4$ طن على محور التراتيب).
+\QQ{2} عيّن إحداثيي النقطة المتوسطة $G$ للسحابة ومثّلها في المعلم السابق.
+\QQ{3}
+\begin{sq}
+\qa جد معادلة مستقيم الانحدار بالمربعات الدنيا.
+\qb ارسم هذا المستقيم في المعلم السابق.
+\end{sq}
+\QQ{4} ما هي كمية الإنتاج المتوقعة سنة 2015؟
+\end{tamrin}
+
+\Needspace{30\baselineskip}
+
+% ===================== بكالوريا 2012 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2012 -- الموضوع الأول -- تسيير واقتصاد}
+يعطى الجدول أدناه كميات الحليب، مقدرة بالهكتولتر $hL$، التي تم تجميعها في إحدى ولايات الوطن من سنة 2006 إلى 2011:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\columncolor{cSec!6}}c|*{6}{c|}}\hline
+\rowcolor{cSec!12}\ar{السنة} & 2006 & 2007 & 2008 & 2009 & 2010 & 2011\\\hline
+\ar{رتبة السنة $x_i$} & 1 & 2 & 3 & 4 & 5 & 6\\\hline
+\ar{كمية الحليب المجمعة (بـ $hL$) $y_i$} & 25000 & 26000 & 28500 & 29000 & 31000 & 33498\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد مبدؤه $O'(0;20000)$ وبوحدة $1\,cm$ لكل سنة على محور الفواصل و $1\,cm$ لكل $2000\,hL$ على محور التراتيب.
+\QQ{2}
+\begin{sq}
+\qa عيّن $G$ النقطة المتوسطة لهذه السحابة.
+\qb عيّن معادلة مستقيم الانحدار بالمربعات الدنيا. (تعطى نتائج كل حساب مدوّرة إلى $10^{-2}$)
+\end{sq}
+\QQ{3} قدّر كمية الحليب التي يمكن تجميعها في سنة 2015 باستعمال التعديل الخطي السابق.
+\QQ{4} إذا اعتبرنا أن كمية الحليب المجمعة في السنوات الموالية لسنة 2011 تتم بنفس الوتيرة التي تمت بها من سنة 2006 إلى 2011، فابتداء من أية سنة ستتعدى الكمية المجمعة $50000\,hL$؟
+\end{tamrin}
+
+\Needspace{30\baselineskip}
+
+% ===================== بكالوريا 2013 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2013 -- الموضوع الأول -- تسيير واقتصاد}
+الجدول التالي يعطي تطور النسب المئوية من ميزانية إحدى الجامعات، والمخصصة للإنفاق على البحث العلمي بين سنتي 2005 و 2012.
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\columncolor{cSec!6}}c|*{8}{c|}}\hline
+\rowcolor{cSec!12}\ar{السنة} & 2005 & 2006 & 2007 & 2008 & 2009 & 2010 & 2011 & 2012\\\hline
+\ar{رتبة السنة $x_i$} & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8\\\hline
+\ar{النسبة المئوية $y_i$} & $3{,}3$ & $3{,}8$ & $4{,}5$ & $4{,}7$ & $5$ & $5{,}2$ & $5{,}7$ & $6{,}2$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد.
+\QQ{2} جد إحداثيي النقطة المتوسطة $G$ لسحابة النقط ثم علّمها.
+\QQ{3} بيّن أن المعادلة المختصرة لمستقيم الانحدار بالمربعات الدنيا هي: $y=0{,}38x+3{,}09$، ثم ارسمه.
+\QQ{4} بفرض أن تغيّر النسب المئوية يبقى على هذه الوتيرة في السنوات القادمة.
+\begin{sq}
+\qa قدّر النسبة المئوية لإنفاق هذه الجامعة على البحث العلمي في سنة 2015.
+\qb في أية سنة تصبح النسبة المئوية المتوقعة للإنفاق على البحث العلمي لهذه الجامعة هي $9{,}93\%$؟
+\end{sq}
+\end{tamrin}
+
+\Needspace{30\baselineskip}
+
+% ===================== بكالوريا 2013 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2013 -- الموضوع الثاني -- تسيير واقتصاد}
+الجدول التالي يعطي تطور عدد مستعملي الهاتف النقال في مدينة ما من سنة 2006 إلى سنة 2012:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}\small
+\begin{tabular}{|>{\columncolor{cSec!6}}c|*{7}{c|}}\hline
+\rowcolor{cSec!12}\ar{السنة} & 2006 & 2007 & 2008 & 2009 & 2010 & 2011 & 2012\\\hline
+\ar{رتبة السنة $x_i$} & 1 & 2 & 3 & 4 & 5 & 6 & 7\\\hline
+\ar{عدد المستعملين $y_i$} & 21400 & 32400 & 48000 & 75600 & 121200 & 207000 & 280000\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1}
+\begin{sq}
+\qa مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد. (نأخذ على محور الفواصل $1\,cm$ لكل سنة وعلى محور التراتيب $1\,cm$ لكل 20000 مستعمل)
+\qb هل يمكن تسوية سحابة النقط السابقة بتعديل خطي؟ برّر إجابتك.
+\end{sq}
+\QQ{2} بوضع $z_i=\ln y_i$ من أجل $i\in\{1;2;3;4;5;6;7\}$. (تدوّر النتائج إلى $10^{-2}$)
+\begin{sq}
+\qa انقل الجدول التالي على ورقة الإجابة، ثم أكمله:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\columncolor{cSec!6}}c|*{7}{p{0.9cm}|}}\hline
+\rowcolor{cSec!12}$x_i$ & 1 & 2 & 3 & 4 & 5 & 6 & 7\\\hline
+$z_i=\ln y_i$ &&&&&&&\\\hline
+\end{tabular}\end{LTR}\end{center}
+\qb مثّل سحابة النقط $M'_i(x_i;y_i)$ في معلم متعامد آخر مبدؤه $O'(0;9)$ وبوحدة $1\,cm$ لكل سنة على محور الفواصل و $5\,cm$ لكل وحدة على محور التراتيب.
+\qc جد إحداثيي $G$ النقطة المتوسطة لسحابة النقط $M'_i(x_i;y_i)$.
+\qd بيّن أن معادلة مستقيم الانحدار بالمربعات الدنيا للسلسلة $(x_i;z_i)$ هي: $z=0{,}44x+9{,}51$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa تحقق أن: $y=ke^{0{,}44x}$، حيث $k$ عدد حقيقي يطلب تعيينه. (تدوّر النتيجة إلى الوحدة)
+\qb بفرض أن عدد مستعملي الهاتف النقال بهذه المدينة يتزايد بنفس الوتيرة، قدّر عددهم سنة 2014.
+\end{sq}
+\end{tamrin}
+
+\Needspace{30\baselineskip}
+
+% ===================== بكالوريا 2014 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2014 -- الموضوع الثاني -- تسيير واقتصاد}
+الجدول الآتي يمثل تغيّر سعر الكيلوغرام الواحد من مادة استهلاكية بين السنوات 2008 و 2012.
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\columncolor{cSec!6}}c|*{5}{c|}}\hline
+\rowcolor{cSec!12}\ar{السنة} & 2008 & 2009 & 2010 & 2011 & 2012\\\hline
+\ar{رتبة السنة $x_i$} & 1 & 2 & 3 & 4 & 5\\\hline
+\ar{سعر $1\,kg$ بالدولار $y_i$} & $3{,}64$ & $3{,}76$ & $3{,}81$ & $3{,}95$ & $4{,}39$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} احسب النسبة المئوية لتغيّر سعر الكيلوغرام الواحد من هذه المادة بين سنتي 2008 و 2012.
+\QQ{2} مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد.
+\QQ{3} جد إحداثيي $G$ النقطة المتوسطة لسحابة النقط السابقة.
+\QQ{4} بيّن أن المعادلة المختصرة لمستقيم الانحدار بالمربعات الدنيا هي: $y=0{,}17x+3{,}40$. (النتائج مدوّرة إلى $10^{-2}$)
+\QQ{5} بفرض أن تغيّر سعر الكيلوغرام الواحد من هذه المادة يبقى على نفس الوتيرة في السنوات القادمة.
+\begin{sq}
+\qa قدّر سعر الكيلوغرام الواحد من هذه المادة في سنة 2016.
+\qb في أية سنة سيصبح سعر الكيلوغرام الواحد من هذه المادة الاستهلاكية $5{,}61$ دولارا؟
+\end{sq}
+\end{tamrin}
+
+\Needspace{30\baselineskip}
+
+% ===================== بكالوريا 2015 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2015 -- الموضوع الأول -- تسيير واقتصاد}
+يعطي الجدول التالي الاستهلاك $y_i$ (باللتر $l$ لكل $100\,km$) من الوقود لقاطرة منجمية بدلالة سرعتها $x_i$ مقدرة بـ $km/h$.
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\columncolor{cSec!6}}c|*{5}{c|}}\hline
+\rowcolor{cSec!12}\ar{$x_i$ مقدرة بـ $(km/h)$} & 50 & 60 & 70 & 80 & 90\\\hline
+\ar{$y_i$ مقدرة بـ $(l/100km)$} & $3{,}2$ & $3{,}4$ & $3{,}8$ & $4{,}4$ & $5{,}2$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد.
+\QQ{2} تعطى معادلة مستقيم الانحدار بالمربعات الدنيا لـ $y$ بدلالة $x$ كالآتي: $y=0{,}05x+0{,}5$.
+باستعمال هذا التعديل، ما هو تقديرك لاستهلاك هذه القاطرة من الوقود عندما تسير بسرعة قدرها $130\,km/h$؟
+\QQ{3} نبحث في هذا الجزء عن تعديل آخر.
+\begin{sq}
+\qa أتمم الجدول التالي. (تدوّر كل نتائج الحسابات إلى $10^{-2}$ عند ملء الجدول فقط)
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|>{\columncolor{cSec!6}}c|*{5}{p{0.9cm}|}}\hline
+\rowcolor{cSec!12}\ar{$x_i$ مقدرة بـ $(km/h)$} & 50 & 60 & 70 & 80 & 90\\\hline
+\ar{$y_i$ مقدرة بـ $(l/100km)$} & $3{,}2$ & $3{,}4$ & $3{,}8$ & $4{,}4$ & $5{,}2$\\\hline
+$z_i=\ln y_i$ &&&&&\\\hline
+\end{tabular}\end{LTR}\end{center}
+\qb عيّن $(\bar x;\bar z)$ إحداثيي النقطة المتوسطة للسلسلة الإحصائية $(x_i;z_i)$.
+\qc عيّن معادلة مستقيم الانحدار بالمربعات الدنيا لـ $z$ بدلالة $x$ على الشكل $z=ax+b$.
+\qd عبّر عن $y$ بدلالة $x$، باستعمال هذا التعديل، ما هو تقديرك لاستهلاك القاطرة من الوقود عندما تسير بسرعة قدرها $130\,km/h$؟
+\qe في الواقع أنه ابتداء من السرعة $90\,km/h$، كلما ازدادت هذه الأخيرة بمقدار $10\,km/h$ ارتفع استهلاك القاطرة للوقود بمقدار $0{,}75\,l$.
+من بين التعديلين السابقين، أيهما يعطي أفضل تقدير لاستهلاك القاطرة من الوقود حينما تسير بسرعة $130\,km/h$؟
+\end{sq}
+\end{tamrin}
+
+\Needspace{30\baselineskip}
+% ===================== بكالوريا 2016 -- الموضوع الثاني =====================
+\Needspace{16\baselineskip}
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الثاني -- تسيير واقتصاد}
+الجدول التالي يبيّن كمية الإنتاج السنوي بآلاف الأطنان من البطاطا لتعاونية فلاحية ما بين سنتي $2010$ و $2015$.
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} السنة & $2010$ & $2011$ & $2012$ & $2013$ & $2014$ & $2015$\\\hline
+رتبة السنة $x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\\hline
+كمية المنتوج بآلاف الأطنان $y_i$ & $25$ & $30$ & $33$ & $42$ & $48$ & $55$\\\hline
+\end{tabular}
+\end{center}
+
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد ومتجانس حيث على محور الفواصل كل $1\,\text{cm}$ تمثل سنة واحدة، وعلى محور التراتيب كل $1\,\text{cm}$ يمثل $10$ آلاف طن.
+\QQ{2} عيّن إحداثيي النقطة المتوسطة $G$ ثم علّمها.
+\QQ{3}
+\begin{sq}
+\qa اكتب معادلة من الشكل $y=ax+b$ لمستقيم الانحدار بالمربعات الدنيا. (تدوّر $a$ و $b$ إلى $10^{-2}$)
+\qb أنشئ المستقيم $(\Delta)$.
+\end{sq}
+\QQ{4} باستعمال هذا التعديل:
+\begin{itemize}
+\item احسب كمية إنتاج التعاونية سنة $2020$.
+\item في أي سنة يتجاوز الإنتاج $20$ ألف طن؟
+\end{itemize}
+\end{tamrin}
+
+\Needspace{13cm}
+\begin{molahada}
+السؤال الأخير كما ورد (عتبة $20$ ألف طن) بديهي لأن الإنتاج يفوق $20$ ألف طن منذ $2010$؛ يبدو أن العتبة المقصودة أكبر. مثلا لعتبة $100$ ألف طن: $6{,}09x+17{,}53>100\iff x>\dfrac{82{,}47}{6{,}09}\approx13{,}54$، أي $x=14$ وهي سنة $2009+14=2023$.
+\end{molahada}
+
+% ===================== بكالوريا 2017 -- الموضوع الأول =====================
+\Needspace{16\baselineskip}
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الأول -- تسيير واقتصاد}
+الجدول التالي يمثل تطور ميزانية الإشهار بالمليون دينار لمؤسسة اقتصادية من سنة $2009$ إلى سنة $2016$.
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} السنة & $2009$ & $2010$ & $2011$ & $2012$ & $2013$ & $2014$ & $2015$ & $2016$\\\hline
+ترتيب السنوات $x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$\\\hline
+الميزانية $y_i$ بالمليون دينار & $0{,}4$ & $0{,}45$ & $0{,}5$ & $0{,}56$ & $0{,}63$ & $0{,}68$ & $0{,}75$ & $0{,}83$\\\hline
+\end{tabular}
+\end{center}
+
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد.\\
+(نأخذ $1\,\text{cm}$ لكل سنة على محور الفواصل و $1\,\text{cm}$ لكل $100\,000\,\text{DA}$ على محور التراتيب)
+\QQ{2} جد إحداثيي النقطة المتوسطة $G$ لسحابة النقط ثم علّمها.
+\QQ{3} بيّن أن معادلة مستقيم الانحدار $(\Delta)$ بالمربعات الدنيا هي: $y=0{,}06x+0{,}33$ (النتائج تدوّر إلى $10^{-2}$)، ثم ارسم المستقيم $(\Delta)$ في المعلم السابق.
+\QQ{4}
+\begin{sq}
+\qa باستعمال التعديل الخطي السابق قدّر الميزانية المتوقعة سنة $2020$.
+\qb ابتداءً من أي سنة تتجاوز هذه الميزانية $1\,200\,000\,\text{DA}$؟
+\end{sq}
+\end{tamrin}
+\Needspace{14.5cm}
+
+% ===================== بكالوريا 2017 -- الموضوع الثاني =====================
+\Needspace{16\baselineskip}
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الثاني -- تسيير واقتصاد}
+يمثل الجدول التالي نسب النجاح في امتحان شهادة البكالوريا لشعبة التسيير والاقتصاد بثانوية في الفترة من سنة $2010$ إلى $2014$.
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} السنة & $2010$ & $2011$ & $2012$ & $2013$ & $2014$\\\hline
+رتبة السنة $x_i$ & $1$ & $2$ & $3$ & $4$ & $5$\\\hline
+النسبة المئوية $y_i$ & $33{,}1$ & $36{,}8$ & $41$ & $41{,}1$ & $44{,}1$\\\hline
+$z_i=\ln y_i$ &  &  &  &  & \\\hline
+\end{tabular}
+\end{center}
+
+\QQ{1} عيّن إحداثيي $G$ النقطة المتوسطة لسحابة النقط $M_i(x_i;y_i)$.
+\QQ{2} لتكن $y=ax+b$ معادلة مستقيم الانحدار بالمربعات الدنيا للسلسلة $(x_i;y_i)$. بيّن أن $a=2{,}63$ ثم احسب قيمة $b$.
+\QQ{3}
+\begin{sq}
+\qa أكمل السطر الأخير من الجدول أعلاه. (تدوّر النتائج إلى $10^{-2}$)
+\qb بيّن أن معادلة مستقيم الانحدار بالمربعات الدنيا للسلسلة $(x_i;z_i)$ هي: $z=0{,}07x+3{,}46$.
+\end{sq}
+\QQ{4} من بين التعديلين السابقين، ما هو التعديل الذي يعطي أكبر نسبة نجاح في سنة $2017$؟
+\end{tamrin}
+\Needspace{14cm}
+
+% ===================== بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الأول =====================
+\Needspace{16\baselineskip}
+\begin{tamrin}{بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الأول -- تسيير واقتصاد}
+الجدول التالي يعطي نسبة الأمية في بلد ما، خلال الفترة الممتدة من $1948$ إلى سنة $2008$.
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} السنة & $1948$ & $1958$ & $1968$ & $1978$ & $1988$ & $1998$ & $2008$\\\hline
+الرتبة $x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$\\\hline
+نسبة الأمية $y_i$ & $14$ & $92$ & $74{,}6$ & $60$ & $31$ & $38{,}4$ & $22$\\\hline
+\end{tabular}
+\end{center}
+
+\QQ{1}
+\begin{sq}
+\qa احسب إحداثيي النقطة المتوسطة $G$. (تدوّر النتائج إلى $10^{-2}$)
+\qb مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد. (على محور الفواصل $1\,\text{cm}$ يمثل رتبة واحدة، وعلى حامل محور التراتيب $1\,\text{cm}$ يمثل $10\%$)
+\end{sq}
+\QQ{2} بيّن أن معادلة مستقيم الانحدار بالمربعات الدنيا هي: $y=-4{,}53x+65{,}54$.
+\QQ{3} باستعمال التعديل الخطي السابق، قدّر نسبة الأمية في سنة $2038$.
+\QQ{4} ابتداءً من أي سنة تكون نسبة الأمية في هذا البلد أقل من $5\%$؟
+\end{tamrin}
+\Needspace{15cm}
+\begin{molahada}
+القيمة $y_1=14$ (سنة $1948$) شاذة عن اتجاه السلسلة المتناقص (ربما المقصود $94$)، لكن المعادلة المعطاة $y=-4{,}53x+65{,}54$ محسوبة فعلا بالقيمة $14$، فاحتفظنا بها. بسبب هذه النقطة تبقى السحابة متباعدة عن المستقيم، فالتقديرات أعلاه تقريبية جدا.
+\end{molahada}
+
+% ===================== بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الثاني =====================
+\Needspace{16\baselineskip}
+\begin{tamrin}{بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الثاني -- تسيير واقتصاد}
+يمثل الجدول الآتي تطور إنتاج مصنع الإسمنت خلال الفترة الممتدة من $2010$ إلى $2014$.
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} السنة & $2010$ & $2011$ & $2012$ & $2013$ & $2014$\\\hline
+ترتيب السنوات $x_i$ & $1$ & $2$ & $3$ & $4$ & $5$\\\hline
+الإنتاج بالمليون طن $y_i$ & $4{,}8$ & $5$ & $5{,}5$ & $6{,}2$ & $7$\\\hline
+\end{tabular}
+\end{center}
+
+\QQ{1} عيّن إحداثيي النقطة المتوسطة $G$ ثم مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد. (على محور الفواصل $1\,\text{cm}$ يمثل رتبة واحدة، وعلى حامل محور التراتيب $1\,\text{cm}$ يمثل $1$ مليون طن)
+\QQ{2} لتكن $y=ax+b$ معادلة $(\Delta)$، مستقيم الانحدار بالمربعات الدنيا للسلسلة $(x_i;y_i)$. بيّن أن: $a=0{,}56$، ثم احسب $b$. (تعطى النتيجة مدوّرة إلى $10^{-2}$)
+\QQ{3} من أهداف المصنع الوصول إلى إنتاج يفوق $8{,}45$ مليون طن في سنة $2017$. هل يمكن تحقيق هذا الهدف باستعمال التعديل الخطي السابق؟ مع التبرير.
+\QQ{4} ابتداءً من أي سنة يتعدى إنتاج المصنع $10{,}17$ مليون طن في السنة؟
+\end{tamrin}
+\Needspace{16cm}
+
+% ===================== بكالوريا 2018 -- الموضوع الأول =====================
+\Needspace{16\baselineskip}
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الأول -- تسيير واقتصاد}
+يمثل الجدول التالي تطور النسب المئوية لنتائج شهادة البكالوريا في ثانوية ما، من سنة $2011$ إلى سنة $2017$.
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} السنة & $2011$ & $2012$ & $2013$ & $2014$ & $2015$ & $2016$ & $2017$\\\hline
+رتبة السنة $x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$\\\hline
+النسبة المئوية $y_i$ & $44{,}78$ & $49{,}79$ & $51{,}36$ & $56{,}07$ & $58{,}84$ & $62{,}45$ & $75{,}01$\\\hline
+\end{tabular}
+\end{center}
+
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد. (نأخذ $1\,\text{cm}$ لكل سنة على محور الفواصل و $1\,\text{cm}$ لكل $5\%$ على محور التراتيب)
+\QQ{2} احسب $(\bar x;\bar y)$ إحداثيي $G$، النقطة المتوسطة لسحابة النقط $M_i(x_i;y_i)$.
+\QQ{3} لتكن $y=ax+b$ معادلة مستقيم الانحدار بالمربعات الدنيا للسلسلة $(x_i;y_i)$. بيّن أن $a=4{,}41$ (تدوّر النتيجة إلى $10^{-2}$)، ثم احسب قيمة $b$.
+\QQ{4} باستعمال التعديل الخطي السابق، ابتداءً من أي سنة تتجاوز نسبة النجاح $80\%$؟
+\end{tamrin}
+\Needspace{14cm}
+
+% ===================== بكالوريا 2018 -- الموضوع الثاني =====================
+\Needspace{16\baselineskip}
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الثاني -- تسيير واقتصاد}
+الجدول التالي يمثل تطور عدد المتقاعدين من سنة $2009$ إلى سنة $2014$ بالجزائر. (الديوان الوطني للإحصائيات)
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} السنة & $2010$ & $2011$ & $2012$ & $2013$ & $2014$ & $2015$\\\hline
+رتبة السنة $x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\\hline
+عدد المتقاعدين $y_i$ (بالملايين) & $2{,}17$ & $2{,}19$ & $2{,}32$ & $2{,}48$ & $2{,}63$ & $2{,}77$\\\hline
+\end{tabular}
+\end{center}
+
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد. (نأخذ كوحدة بيانية: $2\,\text{cm}$ لكل سنة على محور الفواصل و $2\,\text{cm}$ لكل مليون متقاعد على محور التراتيب)
+\QQ{2} عيّن إحداثيي النقطة المتوسطة $G$ ثم علّمها.
+\QQ{3} اكتب معادلة مستقيم الانحدار بالمربعات الدنيا.
+\QQ{4} نفرض أن تطور عدد المتقاعدين يبقى على هذه الوتيرة في السنوات الموالية.
+\begin{itemize}
+\item قدّر عدد المتقاعدين في الجزائر سنة $2020$.
+\item ابتداءً من أي سنة يتعدى عدد المتقاعدين في الجزائر $4$ ملايين؟
+\end{itemize}
+\end{tamrin}
+\begin{molahada}
+النص يذكر الفترة «من $2009$ إلى $2014$» بينما سنوات الجدول من $2010$ إلى $2015$. نعتمد الجدول: الرتبة $x$ توافق السنة $2009+x$.
+\end{molahada}
+\Needspace{10.5cm}
+
+% ===================== بكالوريا 2019 -- الموضوع الأول =====================
+\Needspace{16\baselineskip}
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الأول -- تسيير واقتصاد}
+يمثل الجدول التالي تطور الواردات في الجزائر مقدّرة بالمليار دولار من سنة $2009$ إلى سنة $2014$.
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} السنة & $2009$ & $2010$ & $2011$ & $2012$ & $2013$ & $2014$\\\hline
+رتبة السنة $x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\\hline
+الواردات $y_i$ & $39{,}29$ & $40{,}47$ & $47{,}25$ & $47{,}49$ & $54{,}85$ & $58{,}33$\\\hline
+\end{tabular}
+\end{center}
+
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد. (نأخذ $1\,\text{cm}$ لكل سنة على محور الفواصل و $1\,\text{cm}$ لكل $10$ مليار دولار على محور التراتيب)
+\QQ{2} جد إحداثيي النقطة المتوسطة $G$، ثم علّمها.
+\QQ{3} بيّن أن معادلة مستقيم الانحدار $(\Delta)$ بالمربعات الدنيا لهذه السلسلة الإحصائية هي: $y=3{,}96x+34{,}09$، ثم مثّل $(\Delta)$.
+\QQ{4} اعتمادًا على التعديل الخطي السابق، ابتداءً من أي سنة تفوق الواردات $77$ مليار دولار؟
+\end{tamrin}
+\Needspace{12.5cm}
+
+% ===================== بكالوريا 2019 -- الموضوع الثاني =====================
+\Needspace{16\baselineskip}
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الثاني -- تسيير واقتصاد}
+يمثل الجدول التالي تطور الإنتاج السنوي (الوحدة: الطن) لأحد أنواع الأسماك في حوض مائي لتربية الأسماك.
+\begin{center}
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12} السنة & $2013$ & $2014$ & $2015$ & $2016$ & $2017$ & $2018$\\\hline
+رتبة السنة $x_i$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$\\\hline
+الواردات $y_i$ & $490$ & $510$ & $595$ & $630$ & $840$ & $999$\\\hline
+\end{tabular}
+\end{center}
+
+\QQ{1} مثّل سحابة النقط $M_i(x_i;y_i)$ في معلم متعامد. (نأخذ $1\,\text{cm}$ لكل سنة على محور الفواصل و $1\,\text{cm}$ لكل $100$ طن على محور التراتيب)
+\QQ{2} جد إحداثيي النقطة المتوسطة $G$ لهذه السحابة.
+\QQ{3} بيّن أن معادلة لمستقيم الانحدار بالمربعات الدنيا لهذه السلسلة الإحصائية هي: $y=102x+320{,}33$، ومثّله بيانيًا.
+\QQ{4} باعتبار أن كمية الإنتاج تتبع نفس الوتيرة:
+\begin{sq}
+\qa ما هي كمية الإنتاج المتوقعة سنة $2023$؟
+\qb ابتداءً من أي سنة تتجاوز كمية الإنتاج $2000$ طن؟
+\end{sq}
+\end{tamrin}
+\begin{molahada}
+السطر الثالث من الجدول عنوانه «الواردات» وهو خطأ في النص: المقصود \textbf{كمية الإنتاج $y_i$ بالطن}، كما يدل عليه نص التمرين والأسئلة.
+\end{molahada}
+\Needspace{14.5cm}
+\end{document}

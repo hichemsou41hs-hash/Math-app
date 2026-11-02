@@ -1,0 +1,1859 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings,patterns}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}تمارين البكالوريا: الدالة اللوغاريتمية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries تمارين البكالوريا في الدالة اللوغاريتمية}\\[8pt]
+{\color{white}\large -- بدون حلول (للتدرّب)}\\[5pt]
+{\color{white}\large علوم تجريبية -- تقني رياضي -- رياضيات}
+\end{tcolorbox}
+\end{LTR}
+
+\begin{molahada}
+حُذفت من هذه التمارين الأسئلة الخاصة بالدوال الأصلية وحساب المساحات (لم تُدرَس بعد). 
+\end{molahada}
+\section{تمارين البكالوريا -- شعبة علوم تجريبية}
+
+% ===================== التمرين 1 =====================
+\begin{tamrin}{بكالوريا 2009 -- الموضوع الأول}
+\textbf{I)} $h$ دالة عددية معرفة على $]-1;+\infty[$ كما يلي: $h(x)=x^2+2x+\ln(x+1)$.
+\QQ{1} أحسب $\lim\limits_{x\to -1^{+}}h(x)$ و $\lim\limits_{x\to +\infty}h(x)$.
+\QQ{2} بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $]-1;+\infty[$: $h'(x)=\dfrac{1+2(x+1)^2}{x+1}$، واستنتج اتجاه تغيّر الدالة $h$ ثم أنجز جدول تغيّراتها.
+\QQ{3} أحسب $h(0)$ واستنتج إشارة $h(x)$ حسب قيم $x$.
+
+\textbf{II)} لتكن $f$ دالة عددية معرفة على المجال $]-1;+\infty[$ كما يلي: $f(x)=x-1-\dfrac{\ln(x+1)}{x+1}$.
+نرمز بـ $(C_f)$ لتمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to -1^{+}}f(x)$، ثم فسّر هذه النتيجة بيانيا.
+\qb باستخدام النتيجة $\lim\limits_{t\to +\infty}\dfrac{e^{t}}{t}=+\infty$، برهن أن $\lim\limits_{u\to +\infty}\dfrac{\ln u}{u}=0$.
+\qc استنتج $\lim\limits_{x\to +\infty}f(x)$.
+\qd أحسب $\lim\limits_{x\to +\infty}\big[f(x)-(x-1)\big]$ واستنتج وجود مستقيم مقارب مائل للمنحنى $(C_f)$.
+\qe أدرس وضعية المنحنى $(C_f)$ بالنسبة إلى المستقيم المقارب المائل.
+\end{sq}
+\QQ{2} بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $]-1;+\infty[$: $f'(x)=\dfrac{h(x)}{(x+1)^2}$، ثم شكّل جدول تغيّرات الدالة $f$.
+\QQ{3} بيّن أن المنحنى $(C_f)$ يقطع المستقيم ذا المعادلة $y=2$ عند النقطة التي فاصلتها محصورة بين $3{,}3$ و $3{,}4$.
+\QQ{4} أرسم $(C_f)$.
+\end{tamrin}
+
+% ===================== التمرين 2 =====================
+\begin{tamrin}{بكالوريا 2010 -- الموضوع الأول}
+\textbf{I)} $f$ الدالة العددية المعرفة على المجال $I=\left]\frac12;+\infty\right[$ بـ: $f(x)=1+\ln(2x-1)$.
+وليكن $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} أحسب $\lim\limits_{x\to +\infty}f(x)$ و $\lim\limits_{x\to \frac12^{+}}f(x)$.
+\QQ{2} بيّن أن الدالة $f$ متزايدة تماما على المجال $I$، ثم شكّل جدول تغيّراتها.
+\QQ{3} عيّن فاصلة النقطة من $(C_f)$ التي تكون فيها المماس موازيا للمستقيم $(d)$ ذي المعادلة $y=x$.
+\QQ{4}
+\begin{sq}
+\qa أثبت أنه من أجل كل $x$ من $I$ يمكن كتابة $f(x)$ على الشكل: $f(x)=\ln(x+a)+b$ حيث $a$، $b$ عددان حقيقيان يطلب تعيينهما.
+\qb استنتج أنه يمكن رسم $(C_f)$ انطلاقا من $(C)$ منحنى الدالة اللوغاريتمية النيبيرية $\ln$، ثم أرسم $(C)$ و $(C_f)$.
+\end{sq}
+
+\textbf{II)} نعتبر الدالة العددية $g$ المعرفة على المجال $I$ بـ: $g(x)=f(x)-x$.
+\QQ{1} أحسب $\lim\limits_{x\to \frac12^{+}}g(x)$ ثم بيّن أن $\lim\limits_{x\to +\infty}g(x)=-\infty$.
+\QQ{2} أدرس اتجاه تغيّر الدالة $g$ على $I$ ثم شكّل جدول تغيّراتها.
+\QQ{3}
+\begin{sq}
+\qa أحسب $g(1)$ ثم بيّن أن المعادلة $g(x)=0$ تقبل في المجال $\left]\frac32;+\infty\right[$ حلا وحيدا $\alpha$. تحقق أن $2<\alpha<3$.
+\qb أرسم $(C_g)$ منحنى الدالة $g$ على المجال $\left]\frac12;5\right]$ في المعلم السابق.
+\qc استنتج إشارة $g(x)$ على المجال $I$ ثم حدّد وضعية المنحنى $(C_f)$ بالنسبة إلى $(d)$.
+\end{sq}
+\QQ{4} برهن أنه من أجل كل عدد حقيقي $x$ من المجال $]1;\alpha[$ فإن: $f(x)$ ينتمي إلى المجال $]1;\alpha[$.
+
+\textbf{III)} نسمي $(u_n)$ المتتالية العددية المعرفة على $\N^{*}$ كما يأتي: $u_n=f\left(1+\dfrac{1}{2n}\right)$.
+\QQ{1} عيّن قيمة العدد الطبيعي $n$ التي من أجلها يكون: $u_n=1+2\ln 3-3\ln 2$.
+\QQ{2} أحسب بدلالة $n$ المجموع $S_n$ حيث: $S_n=u_1+u_2+\cdots+u_n$.
+\end{tamrin}
+
+% ===================== التمرين 3 =====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الأول}
+\textbf{I)} نعتبر الدالة $g$ المعرفة على $\R-\{-1\}$ بـ: $g(x)=\dfrac{x-1}{x+1}$،
+و $(C_g)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ (الشكل المقابل).
+\begin{GR}{-5}{5}{-3}{4}{0.6}
+ \Ticks{1}{1}
+ \draw[gray,dashed] (-5,1)--(5,1);
+ \draw[gray,dashed] (-1,-3)--(-1,4);
+ \draw[cDef,very thick,domain=-5:-1.45,samples=100,smooth] plot (\x,{(\x-1)/(\x+1)});
+ \draw[cDef,very thick,domain=-0.5:5,samples=100,smooth] plot (\x,{(\x-1)/(\x+1)});
+ \node[cDef] at (-3.6,3.2){$(C_g)$};
+\end{GR}
+\textbf{بقراءة بيانية:}
+\begin{sq}
+\qa شكّل جدول تغيّرات الدالة $g$.
+\qb حلّ بيانيا المتراجحة $g(x)>0$.
+\qc عيّن بيانيا قيم $x$ التي يكون من أجلها $0<g(x)<1$.
+\end{sq}
+
+\textbf{II)} لتكن الدالة $f$ المعرفة على المجال $]1;+\infty[$ بـ: $f(x)=\dfrac{x-1}{x+1}+\ln\left(\dfrac{x-1}{x+1}\right)$،
+و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} أحسب $\lim\limits_{x\to 1^{+}}f(x)$ و $\lim\limits_{x\to +\infty}f(x)$ ثم فسّر النتيجتين هندسيا.
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $]1;+\infty[$: $g'(x)=\dfrac{2}{(x+1)^2}$.
+\qb أحسب $f'(x)$ وأدرس إشارتها ثم شكّل جدول تغيّرات الدالة $f$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa باستعمال الجزء (I) السؤال (جـ)، عيّن إشارة العبارة $\ln\left(\dfrac{x-1}{x+1}\right)$ على المجال $]1;+\infty[$.
+\qb $\alpha$ عدد حقيقي. بيّن أن الدالة $x\mapsto (x-\alpha)\ln(x-\alpha)-x$ هي دالة أصلية للدالة $x\mapsto \ln(x-\alpha)$ على المجال $]\alpha;+\infty[$.
+\qc تحقق أنه من أجل كل عدد حقيقي $x$ من المجال $]1;+\infty[$: $g(x)=1-\dfrac{2}{x+1}$، ثم عيّن دالة أصلية للدالة $f$ على المجال $]1;+\infty[$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين 4 =====================
+\begin{tamrin}{بكالوريا 2012 -- الموضوع الأول}
+نعتبر الدالة $f$ المعرفة على المجال $]-\infty;0[$ كما يلي: $f(x)=x+5+6\ln\left(\dfrac{x}{x-1}\right)$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to 0^{-}}f(x)$، ثم فسّر النتيجة هندسيا.
+\qb أحسب $\lim\limits_{x\to -\infty}f(x)$.
+\end{sq}
+\QQ{2} بيّن أنه من أجل كل $x$ من $]-\infty;0[$: $f'(x)=\dfrac{x^2-x-6}{x(x-1)}$.
+استنتج اتجاه تغيّر الدالة $f$، ثم شكّل جدول تغيّراتها.
+\QQ{3}
+\begin{sq}
+\qa بيّن أن المستقيم $(\Delta)$ الذي معادلة له: $y=x+5$ هو مستقيم مقارب مائل للمنحنى $(C_f)$ عند $-\infty$.
+\qb أدرس وضع المنحنى $(C_f)$ بالنسبة للمستقيم $(\Delta)$.
+\end{sq}
+\QQ{4} بيّن أن المعادلة $f(x)=0$ تقبل حلين $\alpha$ و $\beta$ حيث $-3{,}5<\alpha<-3{,}4$ و $-1{,}1<\beta<-1$.
+\QQ{5} أنشئ المنحنى $(C_f)$ والمستقيم $(\Delta)$.
+\QQ{6}
+\begin{sq}
+\qa نعتبر النقطتين $A\left(-1;3+6\ln\frac34\right)$ و $B\left(-2;\frac52+6\ln\frac34\right)$.
+بيّن أن $y=\dfrac12x+\dfrac72+6\ln\dfrac34$ معادلة ديكارتية للمستقيم $(AB)$.
+\qb بيّن أن المستقيم $(AB)$ يمس المنحنى $(C_f)$ في نقطة $M_0$ يطلب تعيين إحداثيتيها.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين 5 =====================
+\begin{tamrin}{بكالوريا 2013 -- الموضوع الثاني}
+\textbf{I)} $g$ الدالة المعرفة على المجال $]-1;+\infty[$ بـ: $g(x)=x^2+2x+4-2\ln(x+1)$.
+\QQ{1} أدرس تغيّرات الدالة $g$، ثم شكّل جدول تغيّراتها.
+\QQ{2} استنتج أنه من أجل كل $x$ من المجال $]-1;+\infty[$: $g(x)>0$.
+
+\textbf{II)} $f$ الدالة المعرفة على المجال $]-1;+\infty[$ بـ: $f(x)=x-\dfrac{1-2\ln(x+1)}{x+1}$،
+و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ (وحدة الطول $2\,cm$).
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to -1^{+}}f(x)$. فسّر النتيجة بيانيا.
+\qb أحسب $\lim\limits_{x\to +\infty}f(x)$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $]-1;+\infty[$: $f'(x)=\dfrac{g(x)}{(x+1)^2}$.
+\qb أدرس اتجاه تغيّر الدالة $f$ على المجال $]-1;+\infty[$، ثم شكّل جدول تغيّراتها.
+\qc بيّن أن المعادلة $f(x)=0$ تقبل حلا وحيدا $\alpha$ في المجال $]-1;+\infty[$، ثم تحقق أن $0<\alpha<0{,}5$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x$ مقارب مائل للمنحنى $(C_f)$ عند $+\infty$.
+\qb أدرس وضعية المنحنى $(C_f)$ بالنسبة إلى المستقيم $(\Delta)$.
+\end{sq}
+\QQ{4} نقبل أن المستقيم $(T)$ ذا المعادلة $y=x+\dfrac{2}{\sqrt{e^3}}$ مماس للمنحنى $(C_f)$ في نقطة فاصلتها $x_0$.
+\begin{sq}
+\qa أحسب $x_0$.
+\qb أرسم المستقيمين المقاربين والمماس $(T)$ ثم المنحنى $(C_f)$.
+\qc عيّن بيانيا قيم الوسيط الحقيقي $m$ بحيث تقبل المعادلة $f(x)=x+m$ حلين متمايزين.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين 6 =====================
+\begin{tamrin}{بكالوريا 2014 -- الموضوع الأول}
+نعتبر الدالة العددية $f$ المعرفة على المجال $]0;+\infty[$ كما يلي: $f(x)=1+\dfrac{2\ln x}{x}$،
+و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to 0^{+}}f(x)$ و $\lim\limits_{x\to +\infty}f(x)$، فسّر النتيجتين هندسيا.
+\qb أدرس اتجاه تغيّر الدالة $f$ على المجال $]0;+\infty[$ ثم شكّل جدول تغيّراتها.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa أدرس وضعية المنحنى $(C_f)$ بالنسبة إلى المستقيم $(\Delta)$ الذي معادلته: $y=1$.
+\qb أكتب معادلة المماس $(T)$ للمنحنى $(C_f)$ في النقطة ذات الفاصلة $1$.
+\qc بيّن أن المعادلة $f(x)=0$ تقبل في المجال $]0;1[$ حلا وحيدا $\alpha$، حيث $e^{-0{,}4}<\alpha<e^{-0{,}3}$.
+\end{sq}
+\QQ{3} أنشئ $(T)$ و $(C_f)$.
+\QQ{4} لتكن الدالة $h$ المعرفة على $\R-\{0\}$ كما يلي: $h(x)=1+\dfrac{2\ln|x|}{|x|}$،
+وليكن $(C_h)$ تمثيلها البياني في نفس المعلم السابق.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ غير معدوم: $h(x)-h(-x)=0$. ماذا تستنتج؟
+\qb أنشئ المنحنى $(C_h)$ اعتمادا على المنحنى $(C_f)$.
+\qc ناقش بيانيا، حسب قيم الوسيط الحقيقي $m$، عدد حلول المعادلة: $\ln x^2=(m-1)|x|$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين 7 =====================
+\begin{tamrin}{بكالوريا 2015 -- الموضوع الأول}
+المستوي منسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+
+\textbf{I)} $(\gamma)$ التمثيل البياني للدالة $x\mapsto \ln x$ و $(\Delta)$ المستقيم ذو المعادلة $y=-x+3$.
+$\alpha$ هي فاصلة نقطة تقاطع $(\gamma)$ و $(\Delta)$ (الشكل).
+\begin{GR}{-0.5}{5}{-2}{3}{0.8}
+ \Ticks{1}{1}
+ \draw[cThm,thick] (-0.5,3.5)--(5,-2) node[pos=0.12,right]{$(\Delta)$};
+ \draw[cDef,very thick,domain=0.14:5,samples=150,smooth] plot (\x,{ln(\x)});
+ \draw[dashed] (2.208,0)--(2.208,0.792)--(0,0.792);
+ \node[below,font=\scriptsize] at (2.208,0){$\alpha$};
+ \node[cDef] at (4.3,1.9){$(\gamma)$};
+\end{GR}
+\QQ{1} بقراءة بيانية حدّد وضعية $(\gamma)$ بالنسبة إلى $(\Delta)$ على $]0;+\infty[$.
+\QQ{2} $g$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $g(x)=x-3+\ln x$.
+استنتج حسب قيم $x$ إشارة $g(x)$.
+\QQ{3} تحقق أن: $2{,}2<\alpha<2{,}3$.
+
+\textbf{II)} $f$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=\left(1-\dfrac1x\right)(\ln x-2)$، و $(C_f)$ تمثيلها البياني.
+\QQ{1} أحسب $\lim\limits_{x\to 0^{+}}f(x)$ و $\lim\limits_{x\to +\infty}f(x)$.
+\QQ{2} أثبت أنه من أجل كل $x$ من $]0;+\infty[$: $f'(x)=\dfrac{g(x)}{x^2}$، ثم شكّل جدول تغيّرات الدالة $f$.
+\QQ{3} بيّن أن: $f(\alpha)=\dfrac{-(\alpha-1)^2}{\alpha}$، ثم استنتج حصرا للعدد $f(\alpha)$.
+\QQ{4} أدرس وضعية $(C_f)$ بالنسبة إلى حامل محور الفواصل، ثم أنشئ $(C_f)$ على المجال $]0;e^2]$.
+\end{tamrin}
+
+% ===================== التمرين 8 =====================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الأول -- الدورة الأولى}
+\textbf{I)} $g$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $g(x)=x^2+1-\ln x$.
+\QQ{1} أدرس اتجاه تغيّر الدالة $g$.
+\QQ{2} أحسب $g\left(\dfrac{\sqrt2}{2}\right)$ ثم بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $]0;+\infty[$: $g(x)>0$.
+
+\textbf{II)} $f$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=\dfrac{\ln x}{x}+x-1$،
+و $(C)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} أحسب $\lim\limits_{x\to 0^{+}}f(x)$ و $\lim\limits_{x\to +\infty}f(x)$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $]0;+\infty[$: $f'(x)=\dfrac{g(x)}{x^2}$.
+\qb شكّل جدول تغيّرات الدالة $f$.
+\end{sq}
+\QQ{3} أكتب معادلة للمماس $(T)$ للمنحنى $(C)$ في النقطة التي فاصلتها $1$.
+\QQ{4}
+\begin{sq}
+\qa بيّن أن $(C)$ يقبل مستقيما مقاربا مائلا $(\Delta)$ حيث $y=x-1$ معادلة له.
+\qb أدرس الوضع النسبي لـ $(C)$ و $(\Delta)$.
+\end{sq}
+\QQ{5} أرسم المستقيمين $(T)$ و $(\Delta)$ ثم المنحنى $(C)$.
+\QQ{6} $m$ عدد حقيقي. $(\Delta_m)$ المستقيم حيث $y=mx-m$ معادلة له.
+\begin{sq}
+\qa تحقق أنه من أجل كل عدد حقيقي $m$، النقطة $A(1;0)$ تنتمي إلى المستقيم $(\Delta_m)$.
+\qb ناقش بيانيا وحسب قيم الوسيط الحقيقي $m$ عدد حلول المعادلة $f(x)=mx-m$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين 9 =====================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الأول -- الدورة الثانية}
+\textbf{I)} $g$ الدالة المعرفة على $]-1;+\infty[$ بـ: $g(x)=-1+(x+1)e+2\ln(x+1)$ (العدد $e$ هو أساس اللوغاريتم النيبيري).
+\QQ{1} أدرس تغيّرات الدالة $g$، ثم شكّل جدول تغيّراتها.
+\QQ{2} بيّن أن للمعادلة $g(x)=0$ حلا وحيدا $\alpha$ حيث $-0{,}34<\alpha<-0{,}33$.
+\QQ{3} استنتج إشارة $g(x)$ حسب قيم العدد الحقيقي $x$ على المجال $]-1;+\infty[$.
+
+\textbf{II)} $f$ الدالة المعرفة على المجال $]-1;+\infty[$ بـ: $f(x)=\dfrac{e}{x+1}+\dfrac{\ln(x+1)}{(x+1)^2}$،
+و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أن $\lim\limits_{x\to -1^{+}}f(x)=-\infty$ وأحسب $\lim\limits_{x\to +\infty}f(x)$، فسّر النتيجتين هندسيا.
+\qb بيّن أنه من أجل كل $x$ من المجال $]-1;+\infty[$: $f'(x)=\dfrac{-g(x)}{(x+1)^3}$.
+\qc أدرس اتجاه تغيّر الدالة $f$ على المجال $]-1;+\infty[$، ثم شكّل جدول تغيّراتها.
+\qd أرسم المنحنى $(C_f)$ (نقبل أن: $f(\alpha)\approx 3{,}16$).
+\end{sq}
+\QQ{2} نعتبر الدالة العددية $k$ المعرفة على $]-1;1[$ بـ: $k(x)=f(-|x|)$، و $(C_k)$ تمثيلها البياني في المعلم السابق.
+\begin{sq}
+\qa بيّن أن الدالة $k$ زوجية.
+\qb بيّن كيف يمكن استنتاج المنحنى $(C_k)$ انطلاقا من المنحنى $(C_f)$ ثم أرسمه (دون دراسة تغيّرات الدالة $k$).
+\qc ناقش بيانيا وحسب قيم الوسيط الحقيقي $m$ عدد وإشارة حلول المعادلة $k(x)=m$.
+\end{sq}
+\end{tamrin}
+
+% ===================== التمرين 10 =====================
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الأول}
+نعتبر الدالة $f$ المعرفة على $D$ حيث $D=]-\infty;-1[\,\cup\,]1;+\infty[$ بـ: $f(x)=\dfrac23x+\ln\left(\dfrac{x-1}{x+1}\right)$،
+و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} بيّن أن الدالة $f$ فردية ثم فسّر ذلك بيانيا.
+\QQ{2} أحسب النهايات التالية: $\lim\limits_{x\to 1^{+}}f(x)$، $\lim\limits_{x\to -1^{-}}f(x)$، $\lim\limits_{x\to -\infty}f(x)$ و $\lim\limits_{x\to +\infty}f(x)$.
+استنتج أن $(C_f)$ يقبل مستقيمين مقاربين موازيين لحامل محور التراتيب.
+\QQ{3} بيّن أنه من أجل كل عدد حقيقي $x$ من $D$: $f'(x)=\dfrac23\left(\dfrac{x^2+2}{x^2-1}\right)$.
+استنتج اتجاه تغيّر الدالة $f$، ثم شكّل جدول تغيّراتها.
+\QQ{4} بيّن أن المعادلة $f(x)=0$ تقبل في المجال $]1;+\infty[$ حلا وحيدا $\alpha$ حيث $1{,}8<\alpha<1{,}9$.
+\QQ{5} بيّن أن المستقيم $(\Delta)$ ذا المعادلة: $y=\dfrac23x$ هو مستقيم مقارب مائل للمنحنى $(C_f)$ ثم أدرس وضعية المنحنى $(C_f)$ بالنسبة إلى المستقيم $(\Delta)$.
+\QQ{6} أنشئ المنحنى $(C_f)$ والمستقيم $(\Delta)$.
+\QQ{7} $m$ وسيط حقيقي، ناقش بيانيا حسب قيم الوسيط الحقيقي $m$ عدد حلول المعادلة:
+\[(2-3|m|)x+3\ln\left(\frac{x-1}{x+1}\right)=0\]
+\end{tamrin}
+
+\begin{molahada}
+في نص المجلة: «بيّن أن المعادلة $f(x)=0$ تقبل حلا وحيدا $\alpha$» دون ذكر المجال، بينما للمعادلة على $D$ حلان هما $\alpha$ و $-\alpha$ (لأن $f$ فردية). صحّحنا السؤال 4 بإضافة «في المجال $]1;+\infty[$».
+\end{molahada}
+
+% ===================== التمرين: بكالوريا 2017 م1 استثنائية =====================
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الأول -- الدورة الاستثنائية}
+\textbf{I)} نعتبر $f$ الدالة العددية المعرفة على المجال $\left]-\frac12;+\infty\right[$ كما يلي:
+\[f(x)=\frac{1+2\ln(2x+1)}{(2x+1)^2}.\]
+و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} أحسب النهايتين: $\lim\limits_{x\to+\infty}f(x)$ ، $\lim\limits_{x\to-\frac12}f(x)$ ثم فسّر النتيجتين بيانيا.
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $\left]-\frac12;+\infty\right[$: \ $f'(x)=\dfrac{-8\ln(2x+1)}{(2x+1)^3}$.
+\qb أدرس اتجاه تغيّر الدالة $f$ ثم شكّل جدول تغيّراتها.
+\end{sq}
+\QQ{3} حلّ في المجال $\left]-\frac12;+\infty\right[$ المعادلة $f(x)=0$ ، ثم استنتج إشارة $f(x)$.
+\QQ{4} بيّن أن المنحنى $(C_f)$ يقبل نقطة انعطاف $\omega$ يُطلب تعيين إحداثييها، ثم أنشئ $(C_f)$.
+
+\textbf{II)} لتكن الدالة $g$ المعرفة على $\left]-\frac12;+\infty\right[$ كما يلي: \ $g(x)=2\big[-x+\ln(2x+1)\big]$.
+\QQ{1}
+\begin{sq}
+\qa أدرس اتجاه تغيّر الدالة $g$.
+\qb بيّن أن المعادلة $g(x)=0$ تقبل حلّين أحدهما معدوم والآخر $\alpha$ حيث: $1{,}2<\alpha<1{,}3$.
+\qc استنتج إشارة $g(x)$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2018 م2 =====================
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الثاني}
+\textbf{I)} $g$ الدالة العددية ذات المتغير الحقيقي $x$ المعرفة على $]0;+\infty[$ بـ: \ $g(x)=\dfrac1x-(\ln x)^2-\ln x-1$.
+
+$(C_g)$ المنحنى البياني الممثل لها كما هو مبيّن في الشكل المقابل:
+\begin{GR}{-0.5}{3.5}{-2.6}{4.6}{0.75}
+\draw[cDef,thick] plot coordinates {(0.1374,4.3218) (0.1459,4.0728) (0.1544,3.8538) (0.1629,3.6598) (0.1714,3.4867) (0.1799,3.3311) (0.1884,3.1905) (0.1969,3.0627) (0.2054,2.9459) (0.2139,2.8387) (0.2224,2.7398) (0.2309,2.6481) (0.2394,2.5629) (0.2479,2.4834) (0.2564,2.4089) (0.2649,2.3389) (0.2734,2.2728) (0.2819,2.2104) (0.2904,2.1513) (0.2989,2.0950) (0.3074,2.0414) (0.3159,1.9902) (0.3244,1.9412) (0.3329,1.8942) (0.3414,1.8491) (0.3498,1.8056) (0.3583,1.7637) (0.3668,1.7231) (0.3753,1.6839) (0.3838,1.6459) (0.3923,1.6091) (0.4008,1.5733) (0.4093,1.5384) (0.4178,1.5045) (0.4263,1.4714) (0.4348,1.4391) (0.4433,1.4075) (0.4518,1.3766) (0.4603,1.3464) (0.4688,1.3168) (0.4773,1.2877) (0.4858,1.2592) (0.4943,1.2312) (0.5028,1.2037) (0.5113,1.1767) (0.5198,1.1501) (0.5283,1.1239) (0.5368,1.0981) (0.5453,1.0726) (0.5538,1.0476) (0.5623,1.0228) (0.5708,0.9984) (0.5792,0.9743) (0.5877,0.9504) (0.5962,0.9269) (0.6047,0.9036) (0.6132,0.8806) (0.6217,0.8578) (0.6302,0.8353) (0.6387,0.8130) (0.6472,0.7909) (0.6557,0.7690) (0.6642,0.7473) (0.6727,0.7258) (0.6812,0.7045) (0.6897,0.6834) (0.6982,0.6625) (0.7067,0.6417) (0.7152,0.6211) (0.7237,0.6006) (0.7322,0.5803) (0.7407,0.5602) (0.7492,0.5402) (0.7577,0.5203) (0.7662,0.5006) (0.7747,0.4810) (0.7832,0.4616) (0.7917,0.4422) (0.8002,0.4230) (0.8086,0.4039) (0.8171,0.3849) (0.8256,0.3661) (0.8341,0.3473) (0.8426,0.3287) (0.8511,0.3101) (0.8596,0.2917) (0.8681,0.2733) (0.8766,0.2551) (0.8851,0.2369) (0.8936,0.2189) (0.9021,0.2009) (0.9106,0.1831) (0.9191,0.1653) (0.9276,0.1476) (0.9361,0.1300) (0.9446,0.1124) (0.9531,0.0950) (0.9616,0.0776) (0.9701,0.0603) (0.9786,0.0431) (0.9871,0.0259) (0.9956,0.0089) (1.0041,-0.0081) (1.0126,-0.0250) (1.0211,-0.0419) (1.0295,-0.0587) (1.0380,-0.0754) (1.0465,-0.0920) (1.0550,-0.1086) (1.0635,-0.1251) (1.0720,-0.1416) (1.0805,-0.1580) (1.0890,-0.1743) (1.0975,-0.1906) (1.1060,-0.2068) (1.1145,-0.2229) (1.1230,-0.2390) (1.1315,-0.2550) (1.1400,-0.2710) (1.1485,-0.2869) (1.1570,-0.3028) (1.1655,-0.3186) (1.1740,-0.3343) (1.1825,-0.3500) (1.1910,-0.3657) (1.1995,-0.3813) (1.2080,-0.3968) (1.2165,-0.4123) (1.2250,-0.4277) (1.2335,-0.4431) (1.2420,-0.4585) (1.2505,-0.4737) (1.2589,-0.4890) (1.2674,-0.5042) (1.2759,-0.5193) (1.2844,-0.5344) (1.2929,-0.5495) (1.3014,-0.5645) (1.3099,-0.5795) (1.3184,-0.5944) (1.3269,-0.6092) (1.3354,-0.6241) (1.3439,-0.6389) (1.3524,-0.6536) (1.3609,-0.6683) (1.3694,-0.6830) (1.3779,-0.6976) (1.3864,-0.7121) (1.3949,-0.7267) (1.4034,-0.7412) (1.4119,-0.7556) (1.4204,-0.7700) (1.4289,-0.7844) (1.4374,-0.7987) (1.4459,-0.8130) (1.4544,-0.8273) (1.4629,-0.8415) (1.4714,-0.8557) (1.4798,-0.8698) (1.4883,-0.8839) (1.4968,-0.8980) (1.5053,-0.9120) (1.5138,-0.9260) (1.5223,-0.9400) (1.5308,-0.9539) (1.5393,-0.9678) (1.5478,-0.9816) (1.5563,-0.9954) (1.5648,-1.0092) (1.5733,-1.0229) (1.5818,-1.0367) (1.5903,-1.0503) (1.5988,-1.0640) (1.6073,-1.0776) (1.6158,-1.0912) (1.6243,-1.1047) (1.6328,-1.1182) (1.6413,-1.1317) (1.6498,-1.1451) (1.6583,-1.1585) (1.6668,-1.1719) (1.6753,-1.1853) (1.6838,-1.1986) (1.6923,-1.2119) (1.7008,-1.2251) (1.7092,-1.2384) (1.7177,-1.2515) (1.7262,-1.2647) (1.7347,-1.2778) (1.7432,-1.2909) (1.7517,-1.3040) (1.7602,-1.3171) (1.7687,-1.3301) (1.7772,-1.3431) (1.7857,-1.3560) (1.7942,-1.3689) (1.8027,-1.3818) (1.8112,-1.3947) (1.8197,-1.4075) (1.8282,-1.4203) (1.8367,-1.4331) (1.8452,-1.4459) (1.8537,-1.4586) (1.8622,-1.4713) (1.8707,-1.4840) (1.8792,-1.4966) (1.8877,-1.5092) (1.8962,-1.5218) (1.9047,-1.5344) (1.9132,-1.5469) (1.9217,-1.5595) (1.9302,-1.5719) (1.9386,-1.5844) (1.9471,-1.5968) (1.9556,-1.6092) (1.9641,-1.6216) (1.9726,-1.6340) (1.9811,-1.6463) (1.9896,-1.6586) (1.9981,-1.6709) (2.0066,-1.6831) (2.0151,-1.6954) (2.0236,-1.7076) (2.0321,-1.7198) (2.0406,-1.7319) (2.0491,-1.7440) (2.0576,-1.7561) (2.0661,-1.7682) (2.0746,-1.7803) (2.0831,-1.7923) (2.0916,-1.8043) (2.1001,-1.8163) (2.1086,-1.8283) (2.1171,-1.8402) (2.1256,-1.8521) (2.1341,-1.8640) (2.1426,-1.8759) (2.1511,-1.8878) (2.1595,-1.8996) (2.1680,-1.9114) (2.1765,-1.9232) (2.1850,-1.9349) (2.1935,-1.9467) (2.2020,-1.9584) (2.2105,-1.9701) (2.2190,-1.9817) (2.2275,-1.9934) (2.2360,-2.0050) (2.2445,-2.0166) (2.2530,-2.0282) (2.2615,-2.0398) (2.2700,-2.0513) (2.2785,-2.0628) (2.2870,-2.0743) (2.2955,-2.0858) (2.3040,-2.0972) (2.3125,-2.1087) (2.3210,-2.1201) (2.3295,-2.1315) (2.3380,-2.1428) (2.3465,-2.1542) (2.3550,-2.1655) (2.3635,-2.1768) (2.3720,-2.1881) (2.3805,-2.1994) (2.3889,-2.2106) (2.3974,-2.2219) (2.4059,-2.2331) (2.4144,-2.2443) (2.4229,-2.2554) (2.4314,-2.2666) (2.4399,-2.2777) (2.4484,-2.2888) (2.4569,-2.2999) (2.4654,-2.3110) (2.4739,-2.3221) (2.4824,-2.3331) (2.4909,-2.3441) (2.4994,-2.3551) (2.5079,-2.3661) (2.5164,-2.3770) (2.5249,-2.3880) (2.5334,-2.3989) (2.5419,-2.4098) (2.5504,-2.4207) (2.5589,-2.4316) (2.5674,-2.4424) (2.5759,-2.4532) (2.5844,-2.4640) (2.5929,-2.4748) (2.6014,-2.4856) (2.6098,-2.4964) (2.6183,-2.5071) (2.6268,-2.5178) (2.6353,-2.5285) (2.6438,-2.5392) (2.6523,-2.5499) (2.6608,-2.5605) (2.6693,-2.5712) (2.6778,-2.5818) (2.6863,-2.5924)};
+\Ticks{1,2,3}{-2,-1,1,2,3,4}
+\node[cDef] at (0.9,3.6){$(C_g)$};
+\end{GR}
+\par أحسب $g(1)$ ثم استنتج بيانيا إشارة $g(x)$.
+
+\textbf{II)} $f$ الدالة العددية ذات المتغير الحقيقي $x$ المعرفة على $]0;+\infty[$ بـ: \ $f(x)=\dfrac{1+\ln x}{1+x\ln x}$ ،
+و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} أحسب $\lim\limits_{x\to0}f(x)$ وبيّن أن: $\lim\limits_{x\to+\infty}f(x)=0$ ، ثم فسّر النتيجتين بيانيا.
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $]0;+\infty[$: \ $f'(x)=\dfrac{g(x)}{(1+x\ln x)^2}$.
+\qb استنتج اتجاه تغيّر الدالة $f$ وشكّل جدول تغيّراتها.
+\end{sq}
+\QQ{3} بيّن أن $y=\Big(\dfrac{e^2}{e-1}\Big)x-\dfrac{e}{e-1}$ هي معادلة لـ $(T)$ مماس المنحنى $(C_f)$ في نقطة تقاطعه مع حامل محور الفواصل، ثم أرسم المماس $(T)$ والمنحنى $(C_f)$.
+\QQ{4} عيّن بيانيا قيم الوسيط الحقيقي $m$ بحيث تقبل المعادلة $(e-1)f(x)=e^2x-me$ حلّين متمايزين.
+\end{tamrin}
+
+% ===================== بكالوريا 2019 م1 =====================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الأول}
+$f$ الدالة العددية المعرفة على $]0;2[\,\cup\,]2;+\infty[$ بـ: \ $f(x)=\dfrac{1}{x-2}+\ln x$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to0}f(x)$ ، $\lim\limits_{x\to2}f(x)$ (من اليسار) و $\lim\limits_{x\to2}f(x)$ (من اليمين) ثم فسّر النتائج بيانيا.
+\qb أحسب $\lim\limits_{x\to+\infty}f(x)$.
+\end{sq}
+\QQ{2} أدرس اتجاه تغيّر الدالة $f$ على $]0;2[\,\cup\,]2;+\infty[$ ، ثم شكّل جدول تغيّراتها.
+\QQ{3} نسمي $(\Gamma)$ المنحنى البياني للدالة اللوغاريتمية النيبيرية $\ln$ في المعلم السابق.
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to+\infty}\big(f(x)-\ln x\big)$ ثم فسّر النتيجة بيانيا.
+\qb أدرس وضعية $(C_f)$ بالنسبة للمنحنى $(\Gamma)$.
+\end{sq}
+\QQ{4} أرسم بعناية المنحنى $(\Gamma)$ ثم المنحنى $(C_f)$.
+\QQ{5} $g$ الدالة المعرفة على $]-\infty;-1[\,\cup\,]-1;0[$ بـ: $g(x)=f(-2x)$. دون حساب عبارة $g(x)$ حدّد اتجاه تغيّر الدالة $g$.
+\end{tamrin}
+
+% ===================== بكالوريا 2020 م1 =====================
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الأول}
+$f$ الدالة العددية المعرفة على المجال $]0;+\infty[$ بـ: \ $f(x)=x-1-\dfrac{\ln x}{x^2}$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ ، الوحدة $2\text{cm}$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to0}f(x)$ وفسّر النتيجة بيانيا، ثم بيّن أن: $\lim\limits_{x\to+\infty}f(x)=+\infty$.
+\qb بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x-1$ مقارب مائل للمنحنى $(C_f)$ عند $+\infty$.
+\qc أدرس وضعية $(C_f)$ بالنسبة للمستقيم $(\Delta)$.
+\end{sq}
+\QQ{2} $g$ الدالة العددية المعرفة على $]0;+\infty[$ بـ: $g(x)=x^3-1+2\ln x$.
+\begin{sq}
+\qa بيّن أن $g$ متزايدة تماما على $]0;+\infty[$.
+\qb أحسب $g(1)$ ، ثم استنتج إشارة $g(x)$ حسب قيم $x$ من المجال $]0;+\infty[$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $]0;+\infty[$: \ $f'(x)=\dfrac{g(x)}{x^3}$.
+\qb استنتج اتجاه تغيّر الدالة $f$ ثم شكّل جدول تغيّراتها.
+\end{sq}
+\QQ{4} بيّن أن المنحنى $(C_f)$ يقبل مماسا $(T)$ موازيا للمستقيم $(\Delta)$ ، يُطلب تعيين معادلة له.
+\QQ{5} أنشئ $(\Delta)$ ، $(T)$ و $(C_f)$.
+\QQ{6} $h$ الدالة العددية المعرفة على $]-\infty;0[\,\cup\,]0;+\infty[$ بـ: \ $h(x)=-|x|+1+\dfrac{\ln|x|}{x^2}$.
+\begin{sq}
+\qa بيّن أن $h$ دالة زوجية.
+\qb اشرح كيف يتم إنشاء المنحنى $(C_h)$ الممثل للدالة $h$ انطلاقا من $(C_f)$. (لا يُطلب إنشاء $(C_h)$).
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2021 م1 =====================
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الأول}
+\textbf{I)} الدالة $g$ معرفة على $\R$ بـ: \ $g(x)=2x^3-2x^2+3x-2$.
+\QQ{1} بيّن أن الدالة $g$ متزايدة تماما على $\R$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ يحقق: $0{,}7<\alpha<0{,}8$.
+\qb استنتج حسب قيم العدد الحقيقي $x$ إشارة $g(x)$.
+\end{sq}
+
+\textbf{II)} الدالة العددية $f$ معرفة على $]-\infty;0[\,\cup\,]0;+\infty[$ بـ: \ $f(x)=2x-1+\ln\Big(1+\dfrac{1-x}{x^2}\Big)$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أن $\lim\limits_{x\to0}f(x)=+\infty$ ، ثم فسّر النتيجة هندسيا.
+\qb أحسب $\lim\limits_{x\to-\infty}f(x)$ و $\lim\limits_{x\to+\infty}f(x)$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي غير معدوم $x$: \ $f'(x)=\dfrac{g(x)}{x(x^2-x+1)}$.
+\qb استنتج أن $f$ متزايدة تماما على كل من $]-\infty;0[$ و $[\alpha;+\infty[$ ومتناقصة تماما على $]0;\alpha]$.
+\qc شكّل جدول تغيّرات الدالة $f$.
+\end{sq}
+\QQ{3} بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=2x-1$ مقارب مائل لـ $(C_f)$ ، ثم ادرس وضعية $(C_f)$ بالنسبة لـ $(\Delta)$.
+\QQ{4} بيّن أن $(C_f)$ يقبل مماسا $(T)$ موازيا لـ $(\Delta)$ في النقطة $A$ ذات الفاصلة $2$ ، ثم أكتب معادلة له.
+\QQ{5} بيّن أن $(C_f)$ يقطع حامل محور الفواصل في نقطة وحيدة فاصلتها $\beta$ تحقق: $-0{,}5<\beta<-0{,}4$.
+\QQ{6} أرسم $(\Delta)$ ، $(T)$ والمنحنى $(C_f)$. (نأخذ: $f(\alpha)\approx0{,}87$).
+\end{tamrin}
+
+% ===================== بكالوريا 2022 م1 =====================
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الأول}
+\textbf{I)} $g$ الدالة العددية المعرفة على $]0;+\infty[$ بـ: \ $g(x)=\dfrac{2x^2-2x-1}{x^2}+\ln x$.
+\QQ{1} بيّن أن الدالة $g$ متزايدة تماما على $]0;+\infty[$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ حيث: $1{,}2<\alpha<1{,}3$.
+\qb استنتج إشارة $g(x)$ على $]0;+\infty[$.
+\end{sq}
+
+\textbf{II)} نعتبر الدالة العددية $f$ المعرفة على $]0;+\infty[$ بـ: \ $f(x)=\Big(\dfrac1x-2-\ln x\Big)e^{-x}$.
+
+$(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to0}f(x)$ ، ثم بيّن أن: $\lim\limits_{x\to+\infty}f(x)=0$.
+\qb فسّر النتيجتين السابقتين بيانيا.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ موجب تماما: \ $f'(x)=\dfrac{g(x)}{e^x}$.
+\qb استنتج اتجاه تغيّر الدالة $f$ وشكّل جدول تغيّراتها.
+\end{sq}
+\QQ{3} أنشئ المنحنى $(C_f)$. (نأخذ: $f(\alpha)\approx-0{,}4$ و $f(0{,}65)\approx0$).
+\end{tamrin}
+
+% ===================== بكالوريا 2023 م2 =====================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الثاني}
+$f$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: \ $f(x)=\big((\ln x)^2-3\big)\ln x$.
+
+$(C_f)$ تمثيلها البياني في المستوي منسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to0}f(x)$ ، ثم فسّر النتيجة هندسيا.
+\qb أحسب $\lim\limits_{x\to+\infty}f(x)$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من المجال $]0;+\infty[$: \ $f'(x)=\dfrac{3(-1+\ln x)(1+\ln x)}{x}$.
+\qb حلّ في المجال $]0;+\infty[$ المتراجحة ذات المجهول $x$: \ $(-1+\ln x)(1+\ln x)>0$.
+\qc استنتج أن الدالة $f$ متزايدة تماما على كل من المجالين $\left]0;e^{-1}\right]$ و $[e;+\infty[$ ومتناقصة تماما على المجال $\left[e^{-1};e\right]$ ، ثم شكّل جدول تغيّراتها.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa أكتب معادلة لـ $(T)$ مماس $(C_f)$ في النقطة ذات الفاصلة $1$.
+\qb عيّن فواصل نقط تقاطع المنحنى $(C_f)$ مع حامل محور الفواصل.
+\qc أرسم $(T)$ و $(C_f)$ على المجال $\left]0;e^2\right]$.
+\end{sq}
+\QQ{4} $h$ الدالة المعرفة على $]0;+\infty[$ بـ: $h(x)=\big((\ln x)^2-3\big)|\ln x|$ ، و $(C_h)$ تمثيلها البياني في المعلم السابق.
+
+اشرح كيف يمكن رسم $(C_h)$ انطلاقا من $(C_f)$ ، ثم أرسمه على المجال $\left]0;e^2\right]$.
+\end{tamrin}
+
+% ===================== بكالوريا 2024 م2 =====================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الثاني}
+\textbf{I)} $g$ الدالة المعرّفة على $]0;+\infty[$ كما يلي: \ $g(x)=\dfrac12x^3+\dfrac12-\ln x$ ، و $(C_g)$ تمثيلها البياني كما في الشكل.
+\begin{GR}{-0.5}{2}{-0.4}{3.2}{1.4}
+\draw[cDef,thick] plot coordinates {(0.0498,3.4998) (0.0499,3.4978) (0.0549,3.4026) (0.0599,3.3156) (0.0649,3.2356) (0.0698,3.1616) (0.0748,3.0927) (0.0798,3.0282) (0.0848,2.9676) (0.0898,2.9105) (0.0948,2.8565) (0.0998,2.8053) (0.1048,2.7566) (0.1097,2.7102) (0.1147,2.6659) (0.1197,2.6234) (0.1247,2.5827) (0.1297,2.5436) (0.1347,2.5060) (0.1397,2.4698) (0.1447,2.4349) (0.1496,2.4011) (0.1546,2.3685) (0.1596,2.3370) (0.1646,2.3064) (0.1696,2.2768) (0.1746,2.2480) (0.1796,2.2201) (0.1846,2.1929) (0.1895,2.1665) (0.1945,2.1408) (0.1995,2.1158) (0.2045,2.0914) (0.2095,2.0676) (0.2145,2.0444) (0.2195,2.0218) (0.2245,1.9997) (0.2294,1.9781) (0.2344,1.9570) (0.2394,1.9364) (0.2444,1.9162) (0.2494,1.8965) (0.2544,1.8771) (0.2594,1.8582) (0.2644,1.8397) (0.2693,1.8215) (0.2743,1.8037) (0.2793,1.7863) (0.2843,1.7692) (0.2893,1.7524) (0.2943,1.7359) (0.2993,1.7198) (0.3043,1.7040) (0.3092,1.6884) (0.3142,1.6731) (0.3192,1.6581) (0.3242,1.6434) (0.3292,1.6289) (0.3342,1.6147) (0.3392,1.6008) (0.3442,1.5870) (0.3491,1.5735) (0.3541,1.5603) (0.3591,1.5472) (0.3641,1.5344) (0.3691,1.5218) (0.3741,1.5094) (0.3791,1.4973) (0.3841,1.4853) (0.3890,1.4735) (0.3940,1.4619) (0.3990,1.4505) (0.4040,1.4393) (0.4090,1.4283) (0.4140,1.4174) (0.4190,1.4067) (0.4240,1.3962) (0.4289,1.3859) (0.4339,1.3757) (0.4389,1.3657) (0.4439,1.3559) (0.4489,1.3462) (0.4539,1.3367) (0.4589,1.3273) (0.4639,1.3181) (0.4688,1.3090) (0.4738,1.3001) (0.4788,1.2913) (0.4838,1.2827) (0.4888,1.2742) (0.4938,1.2659) (0.4988,1.2576) (0.5038,1.2496) (0.5087,1.2416) (0.5137,1.2338) (0.5187,1.2262) (0.5237,1.2186) (0.5287,1.2112) (0.5337,1.2040) (0.5387,1.1968) (0.5437,1.1898) (0.5486,1.1829) (0.5536,1.1761) (0.5586,1.1694) (0.5636,1.1629) (0.5686,1.1565) (0.5736,1.1502) (0.5786,1.1440) (0.5836,1.1380) (0.5885,1.1320) (0.5935,1.1262) (0.5985,1.1205) (0.6035,1.1149) (0.6085,1.1094) (0.6135,1.1040) (0.6185,1.0988) (0.6235,1.0936) (0.6284,1.0886) (0.6334,1.0837) (0.6384,1.0789) (0.6434,1.0742) (0.6484,1.0696) (0.6534,1.0651) (0.6584,1.0607) (0.6634,1.0564) (0.6683,1.0522) (0.6733,1.0482) (0.6783,1.0442) (0.6833,1.0403) (0.6883,1.0366) (0.6933,1.0329) (0.6983,1.0294) (0.7033,1.0259) (0.7082,1.0226) (0.7132,1.0194) (0.7182,1.0162) (0.7232,1.0132) (0.7282,1.0103) (0.7332,1.0074) (0.7382,1.0047) (0.7432,1.0021) (0.7481,0.9995) (0.7531,0.9971) (0.7581,0.9948) (0.7631,0.9925) (0.7681,0.9904) (0.7731,0.9884) (0.7781,0.9865) (0.7831,0.9846) (0.7880,0.9829) (0.7930,0.9813) (0.7980,0.9797) (0.8030,0.9783) (0.8080,0.9770) (0.8130,0.9757) (0.8180,0.9746) (0.8230,0.9735) (0.8279,0.9726) (0.8329,0.9717) (0.8379,0.9710) (0.8429,0.9703) (0.8479,0.9698) (0.8529,0.9693) (0.8579,0.9690) (0.8629,0.9687) (0.8678,0.9686) (0.8728,0.9685) (0.8778,0.9685) (0.8828,0.9687) (0.8878,0.9689) (0.8928,0.9692) (0.8978,0.9696) (0.9028,0.9702) (0.9077,0.9708) (0.9127,0.9715) (0.9177,0.9723) (0.9227,0.9732) (0.9277,0.9742) (0.9327,0.9754) (0.9377,0.9766) (0.9427,0.9779) (0.9476,0.9793) (0.9526,0.9808) (0.9576,0.9824) (0.9626,0.9841) (0.9676,0.9859) (0.9726,0.9878) (0.9776,0.9898) (0.9826,0.9919) (0.9875,0.9941) (0.9925,0.9964) (0.9975,0.9988) (1.0025,1.0013) (1.0075,1.0039) (1.0125,1.0066) (1.0175,1.0093) (1.0225,1.0122) (1.0274,1.0152) (1.0324,1.0183) (1.0374,1.0215) (1.0424,1.0248) (1.0474,1.0282) (1.0524,1.0317) (1.0574,1.0353) (1.0624,1.0390) (1.0673,1.0428) (1.0723,1.0467) (1.0773,1.0507) (1.0823,1.0548) (1.0873,1.0590) (1.0923,1.0633) (1.0973,1.0677) (1.1023,1.0722) (1.1072,1.0769) (1.1122,1.0816) (1.1172,1.0864) (1.1222,1.0913) (1.1272,1.0964) (1.1322,1.1015) (1.1372,1.1067) (1.1422,1.1121) (1.1471,1.1175) (1.1521,1.1231) (1.1571,1.1287) (1.1621,1.1345) (1.1671,1.1403) (1.1721,1.1463) (1.1771,1.1524) (1.1821,1.1586) (1.1870,1.1648) (1.1920,1.1712) (1.1970,1.1777) (1.2020,1.1843) (1.2070,1.1911) (1.2120,1.1979) (1.2170,1.2048) (1.2220,1.2118) (1.2269,1.2190) (1.2319,1.2262) (1.2369,1.2336) (1.2419,1.2411) (1.2469,1.2486) (1.2519,1.2563) (1.2569,1.2641) (1.2619,1.2720) (1.2668,1.2800) (1.2718,1.2882) (1.2768,1.2964) (1.2818,1.3047) (1.2868,1.3132) (1.2918,1.3218) (1.2968,1.3305) (1.3018,1.3392) (1.3067,1.3481) (1.3117,1.3572) (1.3167,1.3663) (1.3217,1.3755) (1.3267,1.3849) (1.3317,1.3943) (1.3367,1.4039) (1.3417,1.4136) (1.3466,1.4234) (1.3516,1.4333) (1.3566,1.4434) (1.3616,1.4535) (1.3666,1.4638) (1.3716,1.4742) (1.3766,1.4847) (1.3816,1.4953) (1.3865,1.5060) (1.3915,1.5168) (1.3965,1.5278) (1.4015,1.5389) (1.4065,1.5501) (1.4115,1.5614) (1.4165,1.5728) (1.4215,1.5844) (1.4264,1.5960) (1.4314,1.6078) (1.4364,1.6197) (1.4414,1.6317) (1.4464,1.6439) (1.4514,1.6562) (1.4564,1.6685) (1.4614,1.6810) (1.4663,1.6937) (1.4713,1.7064) (1.4763,1.7193) (1.4813,1.7323) (1.4863,1.7454) (1.4913,1.7586) (1.4963,1.7720) (1.5013,1.7854) (1.5062,1.7990) (1.5112,1.8128) (1.5162,1.8266) (1.5212,1.8406) (1.5262,1.8547) (1.5312,1.8689) (1.5362,1.8832) (1.5412,1.8977) (1.5461,1.9123) (1.5511,1.9270) (1.5561,1.9419) (1.5611,1.9568) (1.5661,1.9719) (1.5711,1.9872) (1.5761,2.0025) (1.5811,2.0180) (1.5860,2.0336) (1.5910,2.0494) (1.5960,2.0652) (1.6010,2.0812) (1.6060,2.0973) (1.6110,2.1136) (1.6160,2.1300) (1.6210,2.1465) (1.6259,2.1631) (1.6309,2.1799) (1.6359,2.1968) (1.6409,2.2139) (1.6459,2.2310) (1.6509,2.2483) (1.6559,2.2658) (1.6609,2.2833) (1.6658,2.3010) (1.6708,2.3189) (1.6758,2.3368) (1.6808,2.3549) (1.6858,2.3732) (1.6908,2.3915) (1.6958,2.4101) (1.7008,2.4287) (1.7057,2.4475) (1.7107,2.4664) (1.7157,2.4854) (1.7207,2.5046) (1.7257,2.5239) (1.7307,2.5434) (1.7357,2.5630) (1.7407,2.5827) (1.7456,2.6026) (1.7506,2.6226) (1.7556,2.6427) (1.7606,2.6630) (1.7656,2.6835) (1.7706,2.7040) (1.7756,2.7247) (1.7806,2.7456) (1.7855,2.7666) (1.7905,2.7877) (1.7955,2.8090) (1.8005,2.8304) (1.8055,2.8519) (1.8105,2.8736) (1.8155,2.8955) (1.8205,2.9174) (1.8254,2.9396) (1.8304,2.9618) (1.8354,2.9842) (1.8404,3.0068) (1.8454,3.0295) (1.8504,3.0524) (1.8554,3.0753) (1.8604,3.0985) (1.8653,3.1218) (1.8703,3.1452) (1.8753,3.1688) (1.8803,3.1925) (1.8853,3.2164) (1.8903,3.2404) (1.8953,3.2646) (1.9003,3.2889) (1.9052,3.3133) (1.9102,3.3379) (1.9152,3.3627) (1.9202,3.3876) (1.9252,3.4127) (1.9302,3.4379) (1.9352,3.4633) (1.9402,3.4888)};
+\Ticks{0.5,1,1.5}{1,2,3}
+\node[cDef] at (1.75,2.6){$(C_g)$};
+\end{GR}
+\par بقراءة بيانية، عيّن إشارة $g(x)$.
+
+\textbf{II)} $f$ الدالة المعرّفة على $]0;+\infty[$ بـ: \ $f(x)=-x-\dfrac{\ln x}{x^2}$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$. (وحدة الطول $2\text{cm}$).
+\QQ{1} احسب $\lim\limits_{x\to0}f(x)$ و $\lim\limits_{x\to+\infty}f(x)$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أنّه من أجل كل $x$ من $]0;+\infty[$: \ $f'(x)=\dfrac{-2g(x)}{x^3}$.
+\qb استنتج اتجاه تغيّر الدالة $f$ ثم شكّل جدول تغيّراتها.
+\qc أثبت أن المعادلة $f(x)=0$ تقبل حلا وحيدا $\alpha$ حيث $0{,}70<\alpha<0{,}71$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أن المنحنى $(C_f)$ يقبل مستقيما مقاربا مائلا $(\Delta)$ ، يُطلب تعيين معادلة له.
+\qb أدرس الوضع النسبي للمنحنى $(C_f)$ والمستقيم $(\Delta)$.
+\end{sq}
+\QQ{4} بيّن أن المنحنى $(C_f)$ يقبل مماسا $(T)$ معامل توجيهه $(-1)$ ، يُطلب تعيين معادلة له.
+\QQ{5}
+\begin{sq}
+\qa أرسم كلا من $(\Delta)$ ، $(T)$ و $(C_f)$.
+\qb $m$ وسيط حقيقي، عيّن بيانيا قيم $m$ التي من أجلها تقبل المعادلة $\dfrac{\ln x}{x^2}=m$ حلّين مختلفين.
+\end{sq}
+\end{tamrin}
+
+\begin{molahada}
+في نص المجلة كُتبت الدالة $f(x)=x-\dfrac{\ln x}{x^2}$ ، وهذا لا يتوافق مع المعطى $f'(x)=\dfrac{-2g(x)}{x^3}$ ولا مع وجود مماس معامل توجيهه $(-1)$ ولا مع المجال $]0{,}70;0{,}71[$ للحل $\alpha$. العبارة الصحيحة المتوافقة مع كل الأسئلة هي $f(x)=-x-\dfrac{\ln x}{x^2}$ وقد اعتمدناها. كما أضفنا $\lim\limits_{x\to0}f(x)$ في السؤال 1 (سقطت من النص).
+\end{molahada}
+
+% ===================== بكالوريا 2025 م2 =====================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الثاني}
+\textbf{I)} $g$ الدالة العددية المعرّفة على $]-4;+\infty[$ بـ: \ $g(x)=\dfrac{x^2+(x^2+8x)\ln(x+4)}{(x+4)^2}$.
+
+تمثيلها البياني $(C_g)$ يقطع حامل محور الفواصل في نقطتين فاصلتاهما $\alpha$ و $0$ كما في الشكل المقابل.
+\begin{GR}{-4}{4}{-1.5}{2.4}{0.8}
+\draw[dashed,gray] (-4,-1.5)--(-4,2.4);
+\draw[cDef,thick] plot coordinates {(-2.7160,2.2977) (-2.6959,2.0411) (-2.6759,1.8024) (-2.6558,1.5802) (-2.6358,1.3732) (-2.6157,1.1805) (-2.5957,1.0010) (-2.5756,0.8338) (-2.5556,0.6781) (-2.5355,0.5330) (-2.5155,0.3979) (-2.4954,0.2720) (-2.4754,0.1548) (-2.4553,0.0458) (-2.4353,-0.0558) (-2.4152,-0.1502) (-2.3952,-0.2380) (-2.3751,-0.3196) (-2.3551,-0.3954) (-2.3350,-0.4658) (-2.3150,-0.5310) (-2.2950,-0.5914) (-2.2749,-0.6474) (-2.2549,-0.6991) (-2.2348,-0.7469) (-2.2148,-0.7909) (-2.1947,-0.8314) (-2.1747,-0.8686) (-2.1546,-0.9027) (-2.1346,-0.9339) (-2.1145,-0.9623) (-2.0945,-0.9882) (-2.0744,-1.0116) (-2.0544,-1.0327) (-2.0343,-1.0517) (-2.0143,-1.0686) (-1.9942,-1.0836) (-1.9742,-1.0967) (-1.9541,-1.1082) (-1.9341,-1.1180) (-1.9140,-1.1263) (-1.8940,-1.1332) (-1.8740,-1.1387) (-1.8539,-1.1430) (-1.8339,-1.1460) (-1.8138,-1.1479) (-1.7938,-1.1487) (-1.7737,-1.1485) (-1.7537,-1.1474) (-1.7336,-1.1453) (-1.7136,-1.1424) (-1.6935,-1.1387) (-1.6735,-1.1342) (-1.6534,-1.1290) (-1.6334,-1.1231) (-1.6133,-1.1166) (-1.5933,-1.1095) (-1.5732,-1.1018) (-1.5532,-1.0936) (-1.5331,-1.0849) (-1.5131,-1.0757) (-1.4930,-1.0660) (-1.4730,-1.0560) (-1.4530,-1.0455) (-1.4329,-1.0346) (-1.4129,-1.0235) (-1.3928,-1.0119) (-1.3728,-1.0001) (-1.3527,-0.9880) (-1.3327,-0.9756) (-1.3126,-0.9630) (-1.2926,-0.9501) (-1.2725,-0.9370) (-1.2525,-0.9237) (-1.2324,-0.9102) (-1.2124,-0.8965) (-1.1923,-0.8827) (-1.1723,-0.8686) (-1.1522,-0.8545) (-1.1322,-0.8402) (-1.1121,-0.8258) (-1.0921,-0.8113) (-1.0720,-0.7967) (-1.0520,-0.7819) (-1.0320,-0.7671) (-1.0119,-0.7522) (-0.9919,-0.7373) (-0.9718,-0.7223) (-0.9518,-0.7072) (-0.9317,-0.6920) (-0.9117,-0.6769) (-0.8916,-0.6617) (-0.8716,-0.6464) (-0.8515,-0.6311) (-0.8315,-0.6158) (-0.8114,-0.6005) (-0.7914,-0.5852) (-0.7713,-0.5698) (-0.7513,-0.5545) (-0.7312,-0.5391) (-0.7112,-0.5238) (-0.6911,-0.5085) (-0.6711,-0.4931) (-0.6510,-0.4778) (-0.6310,-0.4625) (-0.6110,-0.4472) (-0.5909,-0.4320) (-0.5709,-0.4167) (-0.5508,-0.4015) (-0.5308,-0.3863) (-0.5107,-0.3712) (-0.4907,-0.3561) (-0.4706,-0.3410) (-0.4506,-0.3259) (-0.4305,-0.3109) (-0.4105,-0.2959) (-0.3904,-0.2810) (-0.3704,-0.2661) (-0.3503,-0.2513) (-0.3303,-0.2365) (-0.3102,-0.2217) (-0.2902,-0.2070) (-0.2701,-0.1923) (-0.2501,-0.1777) (-0.2300,-0.1632) (-0.2100,-0.1487) (-0.1900,-0.1342) (-0.1699,-0.1198) (-0.1499,-0.1055) (-0.1298,-0.0912) (-0.1098,-0.0769) (-0.0897,-0.0628) (-0.0697,-0.0486) (-0.0496,-0.0346) (-0.0296,-0.0206) (-0.0095,-0.0066) (0.0105,0.0073) (0.0306,0.0211) (0.0506,0.0349) (0.0707,0.0486) (0.0907,0.0623) (0.1108,0.0759) (0.1308,0.0894) (0.1509,0.1029) (0.1709,0.1163) (0.1910,0.1297) (0.2110,0.1430) (0.2310,0.1562) (0.2511,0.1694) (0.2711,0.1825) (0.2912,0.1956) (0.3112,0.2086) (0.3313,0.2215) (0.3513,0.2344) (0.3714,0.2472) (0.3914,0.2600) (0.4115,0.2727) (0.4315,0.2853) (0.4516,0.2979) (0.4716,0.3104) (0.4917,0.3229) (0.5117,0.3353) (0.5318,0.3476) (0.5518,0.3599) (0.5719,0.3721) (0.5919,0.3843) (0.6120,0.3964) (0.6320,0.4084) (0.6520,0.4204) (0.6721,0.4323) (0.6921,0.4442) (0.7122,0.4560) (0.7322,0.4678) (0.7523,0.4795) (0.7723,0.4911) (0.7924,0.5027) (0.8124,0.5142) (0.8325,0.5257) (0.8525,0.5371) (0.8726,0.5485) (0.8926,0.5598) (0.9127,0.5710) (0.9327,0.5822) (0.9528,0.5934) (0.9728,0.6044) (0.9929,0.6155) (1.0129,0.6265) (1.0330,0.6374) (1.0530,0.6483) (1.0730,0.6591) (1.0931,0.6698) (1.1131,0.6806) (1.1332,0.6912) (1.1532,0.7018) (1.1733,0.7124) (1.1933,0.7229) (1.2134,0.7333) (1.2334,0.7438) (1.2535,0.7541) (1.2735,0.7644) (1.2936,0.7747) (1.3136,0.7849) (1.3337,0.7950) (1.3537,0.8051) (1.3738,0.8152) (1.3938,0.8252) (1.4139,0.8352) (1.4339,0.8451) (1.4540,0.8550) (1.4740,0.8648) (1.4940,0.8746) (1.5141,0.8843) (1.5341,0.8940) (1.5542,0.9036) (1.5742,0.9132) (1.5943,0.9227) (1.6143,0.9322) (1.6344,0.9417) (1.6544,0.9511) (1.6745,0.9604) (1.6945,0.9698) (1.7146,0.9790) (1.7346,0.9883) (1.7547,0.9975) (1.7747,1.0066) (1.7948,1.0157) (1.8148,1.0248) (1.8349,1.0338) (1.8549,1.0428) (1.8750,1.0517) (1.8950,1.0606) (1.9150,1.0695) (1.9351,1.0783) (1.9551,1.0870) (1.9752,1.0958) (1.9952,1.1045) (2.0153,1.1131) (2.0353,1.1217) (2.0554,1.1303) (2.0754,1.1388) (2.0955,1.1473) (2.1155,1.1558) (2.1356,1.1642) (2.1556,1.1726) (2.1757,1.1809) (2.1957,1.1893) (2.2158,1.1975) (2.2358,1.2058) (2.2559,1.2139) (2.2759,1.2221) (2.2960,1.2302) (2.3160,1.2383) (2.3360,1.2464) (2.3561,1.2544) (2.3761,1.2624) (2.3962,1.2703) (2.4162,1.2782) (2.4363,1.2861) (2.4563,1.2939) (2.4764,1.3017) (2.4964,1.3095) (2.5165,1.3172) (2.5365,1.3249) (2.5566,1.3326) (2.5766,1.3403) (2.5967,1.3479) (2.6167,1.3554) (2.6368,1.3630) (2.6568,1.3705) (2.6769,1.3780) (2.6969,1.3854) (2.7170,1.3928) (2.7370,1.4002) (2.7570,1.4075) (2.7771,1.4149) (2.7971,1.4221) (2.8172,1.4294) (2.8372,1.4366) (2.8573,1.4438) (2.8773,1.4510) (2.8974,1.4581) (2.9174,1.4652) (2.9375,1.4723) (2.9575,1.4793) (2.9776,1.4864) (2.9976,1.4934) (3.0177,1.5003) (3.0377,1.5072) (3.0578,1.5142) (3.0778,1.5210) (3.0979,1.5279) (3.1179,1.5347) (3.1380,1.5415) (3.1580,1.5482) (3.1780,1.5550) (3.1981,1.5617) (3.2181,1.5684) (3.2382,1.5750) (3.2582,1.5817) (3.2783,1.5883) (3.2983,1.5948) (3.3184,1.6014) (3.3384,1.6079) (3.3585,1.6144) (3.3785,1.6209) (3.3986,1.6273) (3.4186,1.6337) (3.4387,1.6401) (3.4587,1.6465) (3.4788,1.6529) (3.4988,1.6592) (3.5189,1.6655) (3.5389,1.6717) (3.5590,1.6780) (3.5790,1.6842) (3.5990,1.6904) (3.6191,1.6966) (3.6391,1.7027) (3.6592,1.7089) (3.6792,1.7150) (3.6993,1.7211) (3.7193,1.7271) (3.7394,1.7332) (3.7594,1.7392) (3.7795,1.7452) (3.7995,1.7511) (3.8196,1.7571) (3.8396,1.7630) (3.8597,1.7689) (3.8797,1.7748) (3.8998,1.7806) (3.9198,1.7865) (3.9399,1.7923) (3.9599,1.7981) (3.9800,1.8038) (4.0000,1.8096)};
+\fill (-2.4465,0) circle (2pt) node[above right]{$\alpha$}; \fill (0,0) circle (2pt);
+\Ticks{-3,-2,-1,1,2,3}{-1,1,2}
+\node[cDef] at (2.2,1.5){$(C_g)$};
+\end{GR}
+\QQ{1} بقراءة بيانية حدّد إشارة $g(x)$ على $]-4;+\infty[$.
+\QQ{2} تحقّق أنّ $-2{,}5<\alpha<-2{,}4$.
+
+\textbf{II)} $f$ الدالة المعرّفة على $]-4;+\infty[$ بـ: \ $f(x)=\dfrac{x^2\ln(x+4)}{x+4}$ ، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} أحسب $\lim\limits_{x\to-4}f(x)$ وبيّن أنّ $\lim\limits_{x\to+\infty}f(x)=+\infty$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أنّه من أجل كلّ $x$ من $]-4;+\infty[$: \ $f'(x)=g(x)$.
+\qb استنتج اتّجاه تغيّر الدالّة $f$ ثمّ شكّل جدول تغيّراتها.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa عيّن فاصلتي نقطتي تقاطع $(C_f)$ مع حامل محور الفواصل.
+\qb أحسب $f(2)$ ، $f(4)$ ثمّ ارسم $(C_f)$. (نأخذ $f(\alpha)\approx1{,}7$).
+\end{sq}
+\QQ{4} عيّن قيم العدد الحقيقي الموجب تماما $m$ حتّى يكون للمعادلة $f(x)=\ln(m)$ ثلاثة حلول مختلفة.
+\QQ{5} $h$ الدالّة المعرّفة على $]-4;+\infty[$ بـ: $h(x)=\dfrac{(x^2+1)\ln(x+4)}{x+4}$ ، و $(C_h)$ تمثيلها البياني.
+\begin{sq}
+\qa بيّن أنّه من أجل كلّ $x$ من $[-3;0]$: \ $h(x)-f(x)\geqslant0$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2026 م1 =====================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الأول}
+\textbf{I)} الدالة $g$ المعرفة على $]0;+\infty[$ بـ: $g(x)=2x-2-4\ln x$.
+\QQ{1} ادرس اتجاه تغيّر الدالة $g$ وشكّل جدول تغيّراتها.
+\QQ{2}
+\begin{sq}
+\qa احسب $g(1)$ ثم بيّن أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ في المجال $[3{,}5;3{,}6]$.
+\qb استنتج حسب قيم $x$ إشارة $g(x)$.
+\end{sq}
+
+\textbf{II)} الدالة $f$ المعرفة على $[0;+\infty[$ بـ: $f(x)=x^2+2x-4x\ln x$ من أجل $x>0$ و $f(0)=0$.
+
+$(C_f)$ تمثيلها البياني في المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} احسب $\lim\limits_{x\to0}\dfrac{f(x)}{x}$ ( $x>0$ ) ، فسّر النتيجة هندسيا واحسب $\lim\limits_{x\to+\infty}f(x)$.
+\QQ{2} بيّن أنه من أجل كل $x>0$: $f'(x)=g(x)$ ، ثم استنتج اتجاه تغيّر الدالة $f$ وشكّل جدول تغيّراتها.
+\QQ{3}
+\begin{sq}
+\qa بيّن أن $(C_f)$ يقبل نقطة انعطاف $A$ ، يُطلب تعيين إحداثييها.
+\qb عيّن معادلة لـ $(T)$ مماس المنحنى $(C_f)$ عند النقطة ذات الفاصلة $2$.
+\qc عيّن بيانيا قيم الوسيط الحقيقي $m$ حتى تقبل المعادلة $f(x)=m$ ثلاثة حلول.
+\end{sq}
+\QQ{4} ارسم $(T)$ و $(C_f)$. (نأخذ $f(\alpha)\simeq1{,}7$).
+\end{tamrin}
+
+\section{تمارين البكالوريا -- شعبة تقني رياضي}
+% graph frame with different units on the axes: {xmin}{xmax}{ymin}{ymax}{x unit}{y unit}{y grid step}
+\newenvironment{GRtm}[7]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#6cm,font=\footnotesize]
+ \draw[gray!25,very thin,xstep=1,ystep=#7] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.2,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.1) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+
+%==================== التمرين 1 ====================
+\begin{tamrin}{بكالوريا 2009 -- الموضوع الثاني -- تقني رياضي}
+\textbf{I)} $g$ دالة معرفة على المجال $[1;+\infty[$ بـ: $g(x)=2x+\ln x$.
+\QQ{1} أحسب نهاية الدالة $g$ عندما يؤول $x$ إلى $+\infty$.
+\QQ{2} أدرس اتجاه تغير الدالة $g$.
+\QQ{3} بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $[1;+\infty[$ فإن: $g(x)\neq 0$.
+
+\textbf{II)} نعتبر الدالة $f$ المعرفة على المجال $[1;+\infty[$ كما يلي: $f(x)=\dfrac{6\ln x}{2x+\ln x}$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أنه يمكن كتابة $f(x)$ على الشكل $f(x)=\dfrac{6\,\frac{\ln x}{x}}{2+\frac{\ln x}{x}}$ من أجل كل $x\in[1;+\infty[$.
+\qb أحسب $\displaystyle\lim_{x\to+\infty}f(x)$. ماذا تستنتج؟
+\end{sq}
+\QQ{2} أدرس اتجاه تغير الدالة $f$، ثم شكّل جدول تغيراتها.
+\QQ{3} ما هي قيم العدد الحقيقي $k$ بحيث تقبل المعادلة $f(x)=k$ حلين متمايزين؟
+\QQ{4} أكتب معادلة لـ $(\Delta_1)$ مماس المنحنى $(C_f)$ في النقطة التي فاصلتها $1$.
+\QQ{5} لتكن الدالة $h$ المعرفة على المجال $[1;+\infty[$ بـ: $h(x)=f\left(e^x\right)$، و$(C_h)$ تمثيلها البياني في المعلم السابق.
+\begin{sq}
+\qa شكّل جدول تغيرات الدالة $h$.
+\qb أكتب معادلة لـ $(\Delta_2)$ مماس المنحنى $(C_h)$ في النقطة التي فاصلتها $1$.
+\end{sq}
+\QQ{6} أرسم كلا من: $(\Delta_1)$، $(\Delta_2)$، $(C_f)$ و$(C_h)$.
+\end{tamrin}
+
+%==================== التمرين 2 ====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الأول -- تقني رياضي}
+$f$ دالة عددية معرفة على المجال $]0;+\infty[$ كما يلي: $f(x)=\dfrac{a+b\ln 2x}{4x^2}$، حيث $a$ و$b$ عددان حقيقيان.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+\QQ{1} عيّن $a$ و$b$ بحيث يكون مماس المنحنى $(C_f)$ في النقطة $A\left(\frac12;1\right)$ موازيا لحامل محور الفواصل.
+\QQ{2} $g$ الدالة العددية المعرفة على المجال $]0;+\infty[$ كما يلي: $g(x)=\dfrac{1+2\ln 2x}{4x^2}$، وليكن $(C_g)$ تمثيلها البياني في المستوي المنسوب إلى المعلم السابق.
+\begin{sq}
+\qa أحسب $\displaystyle\lim_{\substack{x\to0\\x>0}}g(x)$ و$\displaystyle\lim_{x\to+\infty}g(x)$. فسّر النتيجتين هندسيا.
+\qb أدرس اتجاه تغير الدالة $g$، ثم شكّل جدول تغيراتها.
+\qc حلّ في المجال $]0;+\infty[$ المعادلة $g(x)=0$.
+\qd أنشئ $(C_g)$.
+\end{sq}
+\end{tamrin}
+
+%==================== التمرين 3 ====================
+\begin{tamrin}{بكالوريا 2012 -- الموضوع الثاني -- تقني رياضي}
+\textbf{I)} $g$ دالة معرفة على المجال $]0;+\infty[$ كما يلي: $g(x)=x^2+a+b\ln x$، حيث $a$ و$b$ عددان حقيقيان.
+\QQ{1} عيّن $a$ و$b$ علما أن التمثيل البياني للدالة $g$ يقبل في النقطة $A(1;-1)$ مماسا معامل توجيهه $4$.
+\QQ{2} نضع: $a=-2$ و$b=2$.
+\begin{sq}
+\qa أدرس تغيرات الدالة $g$، ثم شكّل جدول تغيراتها.
+\qb بيّن أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ على $]0;+\infty[$، ثم استنتج إشارة $g(x)$ على $]0;+\infty[$.
+\end{sq}
+
+\textbf{II)} $f$ هي الدالة المعرفة على المجال $]0;+\infty[$ كما يلي: $f(x)=x-2-\dfrac{2\ln x}{x}$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$ (وحدة الطول $2cm$).
+\QQ{1}
+\begin{sq}
+\qa أحسب $\displaystyle\lim_{x\to+\infty}f(x)$ و$\displaystyle\lim_{\substack{x\to0\\x>0}}f(x)$.
+\qb أحسب $f'(x)$، ثم تحقق أن: $f'(x)=\dfrac{g(x)}{x^2}$.
+\qc استنتج إشارة $f'(x)$، ثم شكّل جدول تغيرات الدالة $f$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x-2$ مقارب لـ $(C_f)$، ثم أدرس وضعية $(C_f)$ بالنسبة لـ $(\Delta)$.
+\qb بيّن أن $(C_f)$ يقبل مماسا $(T)$ يوازي $(\Delta)$، ثم جد معادلة له.
+\qc نأخذ $\alpha=1{,}25$. بيّن أن المعادلة $f(x)=0$ تقبل حلين $x_1$ و$x_2$ حيث: $0{,}6<x_1<0{,}7$ و$2{,}7<x_2<2{,}8$، ثم أرسم كلا من $(\Delta)$، $(T)$ و$(C_f)$.
+\end{sq}
+\QQ{3} ناقش بيانيا، حسب قيم الوسيط الحقيقي $m$، عدد حلول المعادلة: $(m+2)x+2\ln x=0$.
+\end{tamrin}
+
+%==================== التمرين 4 ====================
+\begin{tamrin}{بكالوريا 2013 -- الموضوع الأول -- تقني رياضي}
+\textbf{I)} الدالة $g$ معرفة على المجال $]-1;+\infty[$ كما يلي: $g(x)=(x+1)^2-2+\ln(x+1)$.
+\QQ{1} أدرس اتجاه تغير الدالة $g$ على المجال $]-1;+\infty[$.
+\QQ{2} بيّن أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ حيث $0{,}31<\alpha<0{,}32$، وأن: $\ln(\alpha+1)=2-(\alpha+1)^2$.
+\QQ{3} استنتج حسب قيم $x$ إشارة $g(x)$.
+
+\textbf{II)} الدالة $f$ معرفة على المجال $]-1;+\infty[$ كما يلي: $f(x)=(x+1)^2+\left(2-\ln(x+1)\right)^2$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+\QQ{1} أحسب $\displaystyle\lim_{x\to+\infty}f(x)$ و$\displaystyle\lim_{\substack{x\to-1\\x>-1}}f(x)$.
+\QQ{2} أثبت أنه من أجل كل $x$ من $]-1;+\infty[$: $f'(x)=\dfrac{2g(x)}{x+1}$.
+\QQ{3} أدرس اتجاه تغير الدالة $f$، ثم شكّل جدول تغيراتها.
+\QQ{4} بيّن أن: $f(\alpha)=(\alpha+1)^2\left(1+(\alpha+1)^2\right)$، ثم استنتج حصرا للعدد $f(\alpha)$.
+\QQ{5} مثّل المنحنى على المجال $]-1;2]$.
+
+\textbf{III)} $(\Gamma)$ المنحنى الممثل للدالة $h$ المعرفة على المجال $]-1;+\infty[$ بـ: $h(x)=\ln(x+1)$.
+
+$A$ النقطة ذات الإحداثيين $(-1;2)$ و$M$ نقطة من $(\Gamma)$ فاصلتها $x$.
+\QQ{1} أثبت أن المسافة $AM$ تعطى بالعبارة: $AM=\sqrt{f(x)}$.
+\QQ{2} الدالة $k$ معرفة على المجال $]-1;+\infty[$ بالعبارة: $k(x)=\sqrt{f(x)}$.
+\begin{sq}
+\qa بيّن أن للدالتين $k$ و$f$ نفس اتجاه التغير على المجال $]-1;+\infty[$.
+\qb عيّن إحداثيي النقطة $B$ من $(\Gamma)$، بحيث تكون المسافة $AM$ أصغر ما يمكن.
+\qc بيّن أن: $AB=(\alpha+1)\sqrt{1+(\alpha+1)^2}$.
+\end{sq}
+\end{tamrin}
+
+%==================== التمرين 5 ====================
+\begin{tamrin}{بكالوريا 2014 -- الموضوع الثاني -- تقني رياضي}
+المستوي منسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+
+\textbf{I)} $g$ الدالة المعرفة على المجال $]0;3]$ بـ: $g(x)=x\ln x+x$.
+\QQ{1} أدرس تغيرات الدالة $g$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أن المعادلة $g(x)=2$ تقبل حلا وحيدا $\alpha$ في $]0;3]$، ثم تحقق أن: $1{,}45<\alpha<1{,}46$.
+\qb استنتج إشارة $g(x)-2$.
+\end{sq}
+
+\textbf{II)} التمثيل المقابل $(C_f)$ هو للدالة $f$ المعرفة على المجال $]0;3]$ بـ: $f(x)=|x-2|\ln x$.
+\begin{GR}{-0.2}{3.3}{-2}{1.4}{2}
+ \draw[cDef,very thick,domain=0.2:2,samples=150] plot(\x,{(2-\x)*ln(\x)});
+ \draw[cDef,very thick,domain=2:3,samples=80] plot(\x,{(\x-2)*ln(\x)});
+ \draw[thick,-{Stealth[length=2mm]}] (2,0)--(3,0.693);
+ \draw[thick,-{Stealth[length=2mm]}] (2,0)--(1,0.693);
+ \node[cDef] at (0.65,-1.5){$(C_f)$};
+ \Ticks{1,2,3}{-1,1}
+\end{GR}
+\QQ{1} باستعمال $(C_f)$ ضع تخمينا حول قابلية اشتقاق الدالة $f$ عند $2$.
+\QQ{2} أثبت صحة تخمينك.
+\QQ{3} أدرس تغيرات الدالة $f$.
+
+\textbf{III)} $h$ الدالة المعرفة على المجال $\left[0;\frac{\pi}{2}\right[$ كما يلي: $h(x)=(2-\cos x)\ln(\cos x)$.
+\QQ{1} بيّن أن المستقيم $(\Delta)$ ذا المعادلة $x=\frac{\pi}{2}$ مقارب للمنحنى $(C_h)$، حيث $(C_h)$ هو المنحنى الممثل للدالة $h$.
+\QQ{2} أدرس اتجاه تغير الدالة $h$، ثم شكّل جدول تغيراتها وأرسم $(\Delta)$ و$(C_h)$.
+\end{tamrin}
+
+%==================== التمرين 6 ====================
+\begin{tamrin}{بكالوريا 2015 -- الموضوع الأول -- تقني رياضي}
+\textbf{I)} $h$ الدالة المعرفة على المجال $]-2;+\infty[$ كما يلي: $h(x)=(x+2)^2+2-2\ln(x+2)$.
+\QQ{1} أحسب $\displaystyle\lim_{x\to+\infty}h(x)$ و$\displaystyle\lim_{\substack{x\to-2\\x>-2}}h(x)$.
+\QQ{2} أدرس اتجاه تغير الدالة $h$، ثم شكّل جدول تغيراتها.
+\QQ{3} استنتج أنه من أجل كل $x$ من $]-2;+\infty[$: $h(x)>0$.
+
+\textbf{II)} $f$ الدالة المعرفة على المجال $]-2;+\infty[$ كما يلي: $f(x)=x+1+\dfrac{2}{x+2}\ln(x+2)$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$ (وحدة الطول $1cm$).
+\QQ{1} أحسب $\displaystyle\lim_{\substack{x\to-2\\x>-2}}f(x)$ وفسّر النتيجة هندسيا، ثم أحسب $\displaystyle\lim_{x\to+\infty}f(x)$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من المجال $]-2;+\infty[$: $f'(x)=\dfrac{h(x)}{(x+2)^2}$.
+\qb أدرس اتجاه تغير الدالة $f$ على المجال $]-2;+\infty[$، ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x+1$ مقارب مائل للمنحنى $(C_f)$ بجوار $+\infty$.
+\qb أدرس وضعية المنحنى $(C_f)$ بالنسبة لـ $(\Delta)$.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa أثبت أن المنحنى $(C_f)$ يقبل نقطة انعطاف $A$ يطلب تعيين إحداثييها.
+\qb أرسم المستقيمين المقاربين والمنحنى $(C_f)$.
+\end{sq}
+
+\textbf{III)} $g$ الدالة المعرفة على المجال $]-2;+\infty[$ بـ: $g(x)=|x+1|+\dfrac{2}{x+2}\left|\ln(x+2)\right|$.
+\QQ{1} أحسب $\displaystyle\lim_{\substack{x\to-1\\x<-1}}\frac{g(x)-g(-1)}{x+1}$ و$\displaystyle\lim_{\substack{x\to-1\\x>-1}}\frac{g(x)-g(-1)}{x+1}$. ماذا تستنتج بالنسبة إلى $g$؟
+\QQ{2} أعط تفسيرا هندسيا لهذه النتيجة.
+\QQ{3} انطلاقا من المنحنى $(C_f)$ أرسم المنحنى $(C_g)$ الممثل للدالة $g$ في نفس المعلم السابق.
+\end{tamrin}
+\begin{molahada}
+في نص المصدر كُتبت عبارة الجزء III على الشكل «$f(x)=|x+1|+\dots$»، والصواب $g(x)=|x+1|+\dfrac{2}{x+2}\left|\ln(x+2)\right|$ لأن الدالة المقصودة هي $g$.
+\end{molahada}
+
+%==================== التمرين 7 ====================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الأول -- تقني رياضي}
+\textbf{I)} $g$ الدالة المعرفة على المجال $]-1;+\infty[$ بـ: $g(x)=\dfrac{x-1}{x+1}+\ln(x+1)$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\displaystyle\lim_{\substack{x\to-1\\x>-1}}g(x)$ و$\displaystyle\lim_{x\to+\infty}g(x)$.
+\qb أدرس اتجاه تغير الدالة $g$ على المجال $]-1;+\infty[$، ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ حيث: $0{,}4<\alpha<0{,}5$.
+\qb استنتج إشارة $g(x)$ على المجال $]-1;+\infty[$.
+\end{sq}
+
+\textbf{II)} $f$ الدالة المعرفة على المجال $]-1;+\infty[$ كما يلي: $f(x)=1+(x-1)\ln(x+1)$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+\QQ{1} أحسب $\displaystyle\lim_{\substack{x\to-1\\x>-1}}f(x)$ وفسّر النتيجة هندسيا، ثم أحسب $\displaystyle\lim_{x\to+\infty}f(x)$.
+\QQ{2}
+\begin{sq}
+\qa أدرس اتجاه تغير الدالة $f$ على المجال $]-1;+\infty[$، ثم شكّل جدول تغيراتها.
+\qb بيّن أن $f(\alpha)=-\alpha+4-\dfrac{4}{\alpha+1}$، ثم أعط حصرا لـ $f(\alpha)$ (تدور النتائج إلى $10^{-2}$).
+\end{sq}
+\QQ{3} ليكن $a$ عددا حقيقيا من المجال $]-1;+\infty[$. نسمي $(T_a)$ مماس المنحنى $(C_f)$ عند النقطة ذات الفاصلة $a$.
+
+نضع من أجل كل عدد حقيقي $x$ من المجال $]-1;+\infty[$: $h(x)=f(x)-\left[f'(a)(x-a)+f(a)\right]$.
+\begin{sq}
+\qa تحقق أنه من أجل كل $x$ من المجال $]-1;+\infty[$: $h'(x)=f'(x)-f'(a)$.
+\qb باستعمال اتجاه تغير الدالة $g$، عيّن إشارة $h'(x)$ حسب قيم $x$ واستنتج اتجاه تغير الدالة $h$ على $]-1;+\infty[$.
+\qc حدد الوضع النسبي للمنحنى $(C_f)$ والمستقيم $(T_a)$.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa بيّن أنه يوجد مماسان $(T_a)$ يشملان النقطة $A(1;0)$ يطلب تعيين معادلتيهما.
+\qb أرسم المماسين والمنحنى $(C_f)$.
+\end{sq}
+\end{tamrin}
+
+%==================== التمرين 8 ====================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الثاني -- تقني رياضي}
+\textbf{I)} نعتبر الدالة $g$ المعرفة على المجال $]0;+\infty[$ بـ: $g(x)=x-x\ln x$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\displaystyle\lim_{\substack{x\to0\\x>0}}g(x)$ و$\displaystyle\lim_{x\to+\infty}g(x)$.
+\qb أدرس اتجاه تغير الدالة $g$ على المجال $]0;+\infty[$، ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{2} بيّن أن المعادلة $g(x)=-1$ تقبل حلا وحيدا $\alpha$ حيث: $3{,}5<\alpha<3{,}6$.
+\QQ{3} استنتج إشارة العبارة $g(x)+1$ على المجال $]0;+\infty[$.
+
+\textbf{II)} $f$ الدالة المعرفة على المجال $]0;+\infty[$ كما يلي: $f(x)=\dfrac{\ln x}{x+1}$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد $(O;\vec{i},\vec{j})$، حيث: $\|\vec{i}\|=2cm$ و$\|\vec{j}\|=4cm$.
+\QQ{1} بيّن أن $(C_f)$ يقبل مستقيمين مقاربين معادلتاهما $x=0$ و$y=0$.
+\QQ{2}
+\begin{sq}
+\qa برهن أنه من أجل كل عدد حقيقي $x$ من المجال $]0;+\infty[$: $f'(x)=\dfrac{g(x)+1}{x(x+1)^2}$.
+\qb بيّن أن الدالة $f$ متزايدة تماما على المجال $]0;\alpha]$ ومتناقصة تماما على المجال $[\alpha;+\infty[$، ثم شكّل جدول تغيراتها.
+\qc أكتب معادلة المماس $(T)$ للمنحنى $(C_f)$ عند النقطة ذات الفاصلة $1$.
+\qd أحسب $\displaystyle\lim_{x\to\alpha}\frac{f(x)-f(\alpha)}{x-\alpha}$، ثم فسّر النتيجة هندسيا.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أن: $f(\alpha)=\dfrac{1}{\alpha}$.
+\qb استنتج حصرا لـ $f(\alpha)$ (تدور النتائج إلى $10^{-2}$).
+\qc أرسم $(C_f)$.
+\end{sq}
+\QQ{4} نعتبر المعادلة ذات المجهول الحقيقي الموجب تماما $x$ و$m$ وسيط حقيقي: $x^2+x-2m(x+1)=\ln\left(x^2\right)\quad\dots(E)$.
+\begin{sq}
+\qa تحقق أن المعادلة $(E)$ يؤول حلها إلى حل المعادلة: $f(x)=\dfrac12x-m$.
+\qb عيّن بيانيا قيم $m$ التي من أجلها تقبل المعادلة $(E)$ حلين متمايزين.
+\end{sq}
+\QQ{5} $h$ هي الدالة المعرفة على $\R^*$ كما يلي: $h(x)=\dfrac{\ln|x|}{-|x|-1}$، و$(C_h)$ تمثيلها البياني.
+\begin{sq}
+\qa بيّن أن الدالة $h$ زوجية.
+\qb أرسم في نفس المعلم المنحنى $(C_h)$ مستعينا بالمنحنى $(C_f)$.
+\end{sq}
+\end{tamrin}
+
+%==================== التمرين 9 ====================
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الأول -- تقني رياضي}
+$f$ الدالة العددية المعرفة على $D_f$ حيث $D_f=]-\infty;1[\cup]2;+\infty[$ كما يلي: $f(x)=-2x+3+2\ln\left(\dfrac{x-1}{x-2}\right)$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+\QQ{1}
+\begin{sq}
+\qa أحسب النهايتين: $\displaystyle\lim_{\substack{x\to1\\x<1}}f(x)$، $\displaystyle\lim_{\substack{x\to2\\x>2}}f(x)$، ثم فسّر النتيجتين بيانيا.
+\qb أحسب: $\displaystyle\lim_{x\to-\infty}f(x)$ و$\displaystyle\lim_{x\to+\infty}f(x)$.
+\end{sq}
+\QQ{2} بيّن أنه من أجل كل $x$ من $D_f$: $f'(x)=-2-\dfrac{2}{(x-1)(x-2)}$، ثم شكّل جدول تغيرات الدالة $f$.
+\QQ{3}
+\begin{sq}
+\qa تحقق أن: من أجل كل عدد حقيقي $x$ من $D_f$: $(3-x)\in D_f$ و$f(3-x)+f(x)=0$.
+\qb استنتج أن $(C_f)$ يقبل مركز تناظر يطلب تعيين إحداثييه.
+\end{sq}
+\QQ{4} أثبت أن المعادلة $f(x)=0$ تقبل حلا وحيدا $\alpha$ على المجال $]0{,}45;0{,}46[$، ثم استنتج أنها تقبل حلا آخر $\beta$ يطلب تعيين حصر له.
+\QQ{5} بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=-2x+3$ مقارب مائل لـ $(C_f)$، ثم أدرس وضعية $(C_f)$ بالنسبة لـ $(\Delta)$.
+\QQ{6} أرسم $(\Delta)$ و$(C_f)$.
+\end{tamrin}
+
+%==================== التمرين 10 ====================
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الأول (الدورة الاستثنائية) -- تقني رياضي}
+\textbf{I)} $g$ الدالة العددية المعرفة على المجال $]0;+\infty[$ كما يلي: $g(x)=-\dfrac12+\dfrac{2-\ln x}{x^2}$.
+\QQ{1} أحسب $\displaystyle\lim_{\substack{x\to0\\x>0}}g(x)$ و$\displaystyle\lim_{x\to+\infty}g(x)$.
+\QQ{2} أدرس اتجاه تغير الدالة $g$، ثم شكّل جدول تغيراتها.
+\QQ{3} بيّن أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ حيث: $1{,}71<\alpha<1{,}72$، ثم استنتج إشارة $g(x)$ حسب قيم $x$.
+
+\textbf{II)} نعتبر الدالة العددية $f$ المعرفة على المجال $]0;+\infty[$ كما يلي: $f(x)=-\dfrac12x+2+\dfrac{-1+\ln x}{x}$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\displaystyle\lim_{\substack{x\to0\\x>0}}f(x)$ و$\displaystyle\lim_{x\to+\infty}f(x)$.
+\qb أدرس اتجاه تغير الدالة $f$، ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=-\frac12x+2$ مقارب مائل للمنحنى $(C_f)$.
+\qb أدرس وضعية المنحنى $(C_f)$ بالنسبة للمستقيم $(\Delta)$.
+\end{sq}
+\QQ{3} نقبل أن $f(\alpha)\approx0{,}87$ و$f(\gamma)=f(\beta)=0$ حيث: $0{,}77<\beta<0{,}78$ و$4{,}19<\gamma<4{,}22$.
+
+أنشئ في المعلم السابق المستقيم $(\Delta)$ والمنحنى $(C_f)$.
+\end{tamrin}
+\begin{molahada}
+في نص المصدر ورد الحصر $1{,}76<\beta<1{,}78$، وهو خطأ: $f(1{,}76)\approx0{,}87\neq0$ (هذه القيمة قريبة من القيمة العظمى $f(\alpha)$). الصواب: $f(0{,}77)\approx-0{,}023<0$ و$f(0{,}78)\approx0{,}009>0$، إذن $0{,}77<\beta<0{,}78$.
+\end{molahada}
+
+% ======================= part4 : pages 89-93 (تقني رياضي) =======================
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الثاني -- تقني رياضي}
+\textbf{I)} $g$ الدالة العددية المعرفة على المجال $]0;1[$ كما يلي: $g(x)=2-x+\ln x$.
+
+\textbf{1)}
+\begin{sq}
+\qa ادرس اتجاه تغير الدالة $g$ على المجال $]0;1[$.
+\qb بيّن أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ حيث: $0{,}15<\alpha<0{,}16$.
+\end{sq}
+\textbf{2)} استنتج حسب قيم $x$ إشارة $g(x)$ على المجال $]0;1[$.
+
+\textbf{II)} نعتبر الدالة العددية $f$ المعرفة على المجال $]1;+\infty[$ بـ: $f(x)=\dfrac{1-2x+\ln x}{x-1}$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+
+\textbf{1)} احسب $\displaystyle\lim_{x\to1^+}f(x)$ و $\displaystyle\lim_{x\to+\infty}f(x)$ (يمكن كتابة $f(x)$ على الشكل $f(x)=\dfrac{1-2x}{x-1}+\dfrac{\ln x}{x-1}$)، ثم فسّر النتيجتين بيانيا.
+
+\textbf{2)}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $]1;+\infty[$: $f'(x)=\dfrac{g\left(\frac1x\right)}{(x-1)^2}$.
+\qb بيّن أن الدالة $f$ متزايدة تماما على المجال $\left]1;\frac1\alpha\right]$ ومتناقصة تماما على المجال $\left[\frac1\alpha;+\infty\right[$، ثم شكّل جدول تغيراتها.
+\end{sq}
+\textbf{3)} ادرس الوضع النسبي للمنحنى $(C_f)$ والمستقيم $(\Delta)$ ذي المعادلة $y=-2$.
+
+\textbf{4)} ارسم المستقيمين المقاربين والمنحنى $(C_f)$. (يعطى $f\left(\frac1\alpha\right)\approx-1{,}8$).
+
+\textbf{5)} عيّن بيانيا قيم الوسيط الحقيقي $m$ حتى تقبل المعادلة $|f(x)|=m$ حلين متمايزين.
+\end{tamrin}
+
+\begin{molahada}
+في نص المجلة كُتب في السؤال II-2-أ: $f(x)=\dfrac{g\left(\frac1x\right)}{(x-1)^2}$، والصواب $f'(x)=\dfrac{g\left(\frac1x\right)}{(x-1)^2}$ (المطلوب هو المشتقة)، وقد صُحّح في النص أعلاه.
+\end{molahada}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الثاني -- تقني رياضي}
+\textbf{I)} $g$ الدالة العددية المعرفة والمتزايدة تماما على $]0;+\infty[$ بـ: $g(x)=(x+1)(x+e)-e(x\ln x)$.
+
+احسب $\displaystyle\lim_{x\to0^+}g(x)$ ثم استنتج إشارة $g(x)$ على المجال $]0;+\infty[$.
+
+\textbf{II)} $f$ الدالة العددية المعرفة على $]0;+\infty[$ كما يلي: $f(x)=\ln(x+1)+\dfrac{e\ln x}{x+1}$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+
+\textbf{1)}
+\begin{sq}
+\qa احسب $\displaystyle\lim_{x\to0^+}f(x)$ ثم بيّن أن: $\displaystyle\lim_{x\to+\infty}f(x)=+\infty$.
+\qb بيّن أنه من أجل كل $x$ من $]0;+\infty[$: $f'(x)=\dfrac{g(x)}{x(x+1)^2}$.
+\qc استنتج اتجاه تغير الدالة $f$، ثم شكّل جدول تغيراتها.
+\end{sq}
+\textbf{2)} اكتب معادلة لـ $(T)$ مماس المنحنى $(C_f)$ في النقطة ذات الفاصلة $1$.
+
+\textbf{3)}
+\begin{sq}
+\qa بيّن أن المنحنى $(C_f)$ يقطع حامل محور الفواصل في نقطة وحيدة $A$ فاصلتها $\alpha$.
+\qb تحقق أن $0{,}7<\alpha<0{,}8$.
+\end{sq}
+\textbf{4)} $(\Gamma)$ التمثيل البياني للدالة $x\mapsto\ln(x+1)$ على المجال $[0;+\infty[$.
+\begin{sq}
+\qa احسب $\displaystyle\lim_{x\to+\infty}\left[f(x)-\ln(x+1)\right]$ ثم فسّر النتيجة بيانيا.
+\qb ادرس الوضع النسبي للمنحنيين $(C_f)$ و $(\Gamma)$.
+\qc ارسم المماس $(T)$ و $(\Gamma)$ و $(C_f)$.
+\end{sq}
+\textbf{5)} $m$ وسيط حقيقي، عيّن قيم $m$ بحيث تقبل المعادلة $f(x)=\dfrac{1+e}{2}x-m$ حلين متمايزين.
+
+\textbf{6)} نقبل أنه من أجل كل $x$ من المجال $]1;+\infty[$: $\ln x<x+1$.
+
+بيّن أنه من أجل كل $x$ من المجال $]1;+\infty[$: $\ln2<f(x)<e+\ln(x+1)$.
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الأول -- تقني رياضي}
+\textbf{I)} $g$ الدالة العددية المعرفة على $]0;+\infty[$ بـ: $g(x)=-1+x+2\ln x$.
+
+\textbf{1)} ادرس اتجاه تغيرات الدالة $g$.
+
+\textbf{2)} احسب $g(1)$ ثم استنتج إشارة $g(x)$ على المجال $]0;+\infty[$.
+
+\textbf{II)} $f$ الدالة العددية المعرفة على المجال $]0;+\infty[$ كما يلي: $f(x)=\dfrac{-1+(x-2)\ln x}{x}$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+
+\textbf{1)}
+\begin{sq}
+\qa احسب $\displaystyle\lim_{x\to0^+}f(x)$ ثم فسّر النتيجة بيانيا.
+\qb احسب $\displaystyle\lim_{x\to+\infty}f(x)$.
+\end{sq}
+\textbf{2)}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $]0;+\infty[$: $f'(x)=\dfrac{g(x)}{x^2}$.
+\qb عيّن اتجاه تغير الدالة $f$، ثم شكّل جدول تغيراتها.
+\end{sq}
+\textbf{3)} ليكن $(\Gamma)$ المنحنى البياني للدالة $x\mapsto\ln x$ على المجال $]0;+\infty[$.
+\begin{sq}
+\qa احسب $\displaystyle\lim_{x\to+\infty}\left[f(x)-\ln x\right]$ ثم فسّر النتيجة بيانيا.
+\qb ادرس وضعية المنحنى $(C_f)$ بالنسبة للمنحنى $(\Gamma)$.
+\end{sq}
+\textbf{4)} بيّن أن المنحنى $(C_f)$ يقطع حامل محور الفواصل في نقطتين فاصلتاهما $\alpha$ و $\beta$، ثم تحقق أن: $0{,}5<\alpha<0{,}6$ و $2{,}9<\beta<3$.
+
+\textbf{5)} ارسم $(\Gamma)$ ثم $(C_f)$.
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الثاني -- تقني رياضي}
+\textbf{I)} الدالة العددية $g$ معرفة على المجال $]0;+\infty[$ بـ: $g(x)=2\ln x-1-\dfrac{1}{x^2}$.
+
+\textbf{1)} بيّن أن الدالة $g$ متزايدة تماما على المجال $]0;+\infty[$.
+
+\textbf{2)}
+\begin{sq}
+\qa بيّن أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ حيث: $1{,}89<\alpha<1{,}90$.
+\qb استنتج حسب قيم العدد الحقيقي الموجب تماما $x$ إشارة $g(x)$.
+\end{sq}
+\textbf{II)} الدالة العددية $f$ معرفة على $]0;+\infty[$ بـ: $f(x)=-x-2+\dfrac{3+2\ln x}{x}$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$. الوحدة $2\,\text{cm}$.
+
+\textbf{1)}
+\begin{sq}
+\qa احسب $\displaystyle\lim_{x\to0^+}f(x)$ ثم فسّر النتيجة هندسيا.
+\qb احسب $\displaystyle\lim_{x\to+\infty}f(x)$.
+\end{sq}
+\textbf{2)}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $]0;+\infty[$: $f'(x)=\dfrac{1}{x^2}\,g\left(\dfrac1x\right)$.
+\qb بيّن أن الدالة $f$ متزايدة تماما على المجال $\left]0;\frac1\alpha\right]$ ومتناقصة تماما على المجال $\left[\frac1\alpha;+\infty\right[$.
+\qc شكّل جدول تغيرات الدالة $f$.
+\end{sq}
+\textbf{3)}
+\begin{sq}
+\qa احسب $\displaystyle\lim_{x\to+\infty}\left[f(x)-(-x-2)\right]$ ثم استنتج أن $(C_f)$ يقبل مستقيما مقاربا $(\Delta)$ يطلب كتابة معادلة له.
+\qb ادرس وضعية المنحنى $(C_f)$ بالنسبة لـ $(\Delta)$.
+\end{sq}
+\textbf{4)} بيّن أن المنحنى $(C_f)$ يقبل نقطة انعطاف $A$ فاصلتها $1$ ثم اكتب معادلة لـ $(T)$ مماس $(C_f)$ عند $A$.
+
+\textbf{5)} ارسم $(T)$ و $(\Delta)$ و $(C_f)$. (نأخذ: $\frac1\alpha\approx0{,}53$ و $f\left(\frac1\alpha\right)\approx0{,}73$).
+
+\textbf{6)} الدالة $h$ معرفة على $\R^*$ بـ: $h(x)=|x|+2-\dfrac{3+\ln(x^2)}{|x|}$، و $(C_h)$ تمثيلها البياني في المعلم السابق.
+\begin{sq}
+\qa بيّن أن الدالة $h$ زوجية.
+\qb تحقق أنه من أجل كل عدد حقيقي $x$ من المجال $]0;+\infty[$: $h(x)=-f(x)$.
+\qc اشرح كيفية رسم $(C_h)$ انطلاقا من $(C_f)$ ثم ارسمه.
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الأول -- تقني رياضي}
+$f$ الدالة العددية المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=1+(x-1)\ln x$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$. الوحدة $2\,\text{cm}$.
+
+\textbf{1)}
+\begin{sq}
+\qa ادرس حسب قيم العدد الحقيقي $x$ الموجب تماما إشارة كلّ من $\dfrac{x-1}{x}$ و $\ln x$.
+\qb استنتج حسب قيم العدد الحقيقي $x$ الموجب تماما إشارة $\ln x+\dfrac{x-1}{x}$.
+\end{sq}
+\textbf{2)}
+\begin{sq}
+\qa احسب $\displaystyle\lim_{x\to0^+}f(x)$ و $\displaystyle\lim_{x\to+\infty}f(x)$.
+\qb ادرس اتجاه تغير الدالة $f$، ثم شكّل جدول تغيراتها.
+\end{sq}
+\textbf{3)} $h$ الدالة العددية المعرفة على المجال $]0;+\infty[$ كما يلي: $h(x)=x-2+\ln x$.
+\begin{sq}
+\qa بيّن أن الدالة $h$ متزايدة تماما على المجال $]0;+\infty[$.
+\qb برهن أن المعادلة $h(x)=0$ تقبل حلا وحيدا $\alpha$ حيث $1{,}5<\alpha<1{,}6$، ثم بيّن أن: $\ln(\alpha)=2-\alpha$.
+\qc بيّن أن $y=\dfrac{-\alpha^2+3\alpha-1}{\alpha}\,x$ هي معادلة لـ $(T)$ مماس المنحنى $(C_f)$ في النقطة ذات الفاصلة $\alpha$.
+\end{sq}
+\textbf{4)} أنشئ $(T)$ و $(C_f)$ على المجال $]0;4]$. (نأخذ $\dfrac{-\alpha^2+3\alpha-1}{\alpha}\approx0{,}8$).
+
+\textbf{5)}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ موجب تماما: $f(x)-x=(x-1)(-1+\ln x)$.
+\qb ادرس حسب قيم العدد الحقيقي $x$ الموجب تماما إشارة $f(x)-x$.
+\end{sq}
+\textbf{6)} $K$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $K(x)=-\dfrac34x^2+2x+\left(\dfrac12x^2-x\right)\ln x$.
+
+بيّن أنه من أجل كل عدد حقيقي $x$ موجب تماما: $K'(x)=f(x)-x$.
+
+\textbf{7)} $g$ الدالة المعرفة على $]-2;+\infty[$ بـ: $g(x)=(x+1)\ln(x+2)$، و $(C_g)$ تمثيلها البياني في المعلم السابق.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ من $]-2;+\infty[$: $g(x)=f(x+2)-1$.
+\qb استنتج أن $(C_g)$ صورة $(C_f)$ بانسحاب يطلب تعيين شعاعه. (لا يطلب إنشاء $(C_g)$).
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الأول -- تقني رياضي}
+\textbf{I)} $g$ الدالة المعرفة على $]-1;+\infty[$ بـ: $g(x)=2\ln(x+1)-\dfrac{x}{x+1}$.
+
+$(C_g)$ تمثيلها البياني، يقطع حامل محور الفواصل في النقطتين اللتين فاصلتاهما $\alpha$ و $0$ (لاحظ الشكل).
+\begin{GR}{-1.2}{3}{-0.6}{2.6}{1.2}
+\Ticks{-1,1,2}{1,2}
+\draw[cDef,very thick,domain=-0.93:3,samples=200,smooth,variable=\x] plot (\x,{2*ln(\x+1)-\x/(\x+1)});
+\fill (-0.7153,0) circle (1.5pt) node[above left]{$\alpha$};
+\node[cDef] at (2.4,1.4){$(C_g)$};
+\end{GR}
+\textbf{1)} بقراءة بيانية، حدّد حسب قيم $x$ إشارة $g(x)$.
+
+\textbf{2)} تحقق أن: $-0{,}72<\alpha<-0{,}71$.
+
+\textbf{II)} $f$ الدالة المعرفة على $]-1;+\infty[$ بـ: $f(x)=(2x+3)\ln(x+1)-3x$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ (الوحدة $2\,\text{cm}$).
+
+\textbf{1)}
+\begin{sq}
+\qa احسب $\displaystyle\lim_{x\to-1^+}f(x)$ ثم فسّر النتيجة هندسيا.
+\qb تحقق أنه من أجل كل عدد حقيقي $x$ غير معدوم من المجال $]-1;+\infty[$: $f(x)=x\left[\left(2+\dfrac3x\right)\ln(x+1)-3\right]$، ثم استنتج أن: $\displaystyle\lim_{x\to+\infty}f(x)=+\infty$.
+\end{sq}
+\textbf{2)}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $]-1;+\infty[$: $f'(x)=g(x)$.
+\qb استنتج أن $f$ متناقصة تماما على $[\alpha;0]$ ومتزايدة تماما على كل من المجالين $]-1;\alpha]$ و $[0;+\infty[$.
+\qc شكّل جدول تغيرات الدالة $f$.
+\end{sq}
+\textbf{3)}
+\begin{sq}
+\qa ارسم $(C_f)$ في المجال $]-1;4]$. (نأخذ: $f(3)\approx3{,}5$، $f(4)\approx5{,}7$ و $f(\alpha)\approx0{,}2$).
+\qb عيّن بيانيا قيم الوسيط الحقيقي $m$ التي من أجلها تقبل المعادلة $f(x)=m$ ثلاثة حلول بالضبط.
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الثاني -- تقني رياضي}
+\textbf{I)} يمثل الجدول المقابل تغيرات الدالة $g$ المعرفة على المجال $]-2;+\infty[$ بـ: $g(x)=x+\ln(x+2)$.
+\begin{TAB}
+\tkzTabInit[lgt=2,espcl=5]{$x$/1,$g'(x)$/1,$g(x)$/2}{$-2$,$+\infty$}
+\tkzTabLine{d,+,}
+\tkzTabVar{D-/$-\infty$,+/$+\infty$}
+\end{TAB}
+\textbf{1)} أثبت أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ حيث $-0{,}45<\alpha<-0{,}44$.
+
+\textbf{2)} استنتج حسب قيم $x$ إشارة $g(x)$.
+
+\textbf{II)} $f$ الدالة المعرفة على $]-2;+\infty[$ بـ: $f(x)=\left(\dfrac{x+1}{x+2}\right)\left(-1+\ln(x+2)\right)$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ (وحدة الطول $2\,\text{cm}$).
+
+\textbf{1)} احسب $\displaystyle\lim_{x\to-2^+}f(x)$ و $\displaystyle\lim_{x\to+\infty}f(x)$.
+
+\textbf{2)}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $]-2;+\infty[$: $f'(x)=\dfrac{g(x)}{(x+2)^2}$.
+\qb استنتج اتجاه تغير الدالة $f$ ثم شكّل جدول تغيراتها.
+\end{sq}
+\textbf{3)} في الشكل المقابل، $(C_h)$ منحنى الدالة $h$ المعرفة على $]-2;+\infty[$ بـ: $h(x)=-1+\ln(x+2)$.
+\begin{GR}{-2.5}{7.5}{-3.5}{1.8}{0.8}
+\Ticks{-2,-1,1,2,3,4,5,6,7}{-3,-2,-1,1}
+\draw[cDef,very thick,domain=-1.97:7.5,samples=200,smooth,variable=\x] plot (\x,{-1+ln(\x+2)});
+\node[cDef] at (6.5,0.8){$(C_h)$};
+\end{GR}
+\begin{sq}
+\qa بيّن أن $(C_h)$ منحن مقارب لـ $(C_f)$ عند $+\infty$.
+\qb ادرس الوضع النسبي للمنحنيين $(C_h)$ و $(C_f)$.
+\end{sq}
+\textbf{4)}
+\begin{sq}
+\qa أعد رسم $(C_h)$ على ورقة الإجابة ثم ارسم $(C_f)$. (نأخذ: $f(\alpha)\approx-0{,}2$).
+\qb ناقش بيانيا حسب قيم الوسيط الحقيقي $m$ عدد حلول المعادلة $f(x)=m$.
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الثاني -- تقني رياضي}
+\textbf{I)} $g$ الدالة المعرفة على $]-1;+\infty[$ بـ: $g(x)=x^2+2x+2-2\ln(x+1)$.
+
+\textbf{1)}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $]-1;+\infty[$: $g'(x)=\dfrac{2x(x+2)}{x+1}$.
+\qb ادرس اتجاه تغير الدالة $g$ ثم شكّل جدول تغيراتها (لا يطلب حساب النهايات).
+\end{sq}
+\textbf{2)} استنتج إشارة $g(x)$.
+
+\textbf{II)} $f$ الدالة المعرفة على $]-1;+\infty[$ بـ: $f(x)=x+\dfrac{1+2\ln(x+1)}{x+1}$.
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+
+\textbf{1)}
+\begin{sq}
+\qa احسب $\displaystyle\lim_{x\to-1^+}f(x)$ و $\displaystyle\lim_{x\to+\infty}f(x)$.
+\qb بيّن أنه من أجل كل $x$ من $]-1;+\infty[$: $f'(x)=\dfrac{g(x)}{(x+1)^2}$.
+\qc استنتج اتجاه تغير الدالة $f$ ثم شكّل جدول تغيراتها.
+\end{sq}
+\textbf{2)}
+\begin{sq}
+\qa بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x$ مقارب مائل للمنحنى $(C_f)$.
+\qb بيّن أن المنحنى $(C_f)$ يقبل مماسا $(T)$ موازيا لـ $(\Delta)$؛ يطلب تعيين معادلة له.
+\end{sq}
+\textbf{3)}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $]-1;+\infty[$: $f''(x)=\dfrac{4\ln(x+1)-4}{(x+1)^3}$.
+\qb استنتج أن للمنحنى $(C_f)$ نقطة انعطاف، يطلب تعيين إحداثييها.
+\end{sq}
+\textbf{4)}
+\begin{sq}
+\qa احسب $f(0)$ ثم ارسم كلا من $(\Delta)$ و $(T)$ و $(C_f)$.
+\qb ناقش بيانيا وحسب قيم العدد الحقيقي $m$ عدد حلول المعادلة: $1+2\ln(x+1)=m(x+1)$.
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الثاني -- تقني رياضي}
+الدالة $f$ المعرفة على $]0;e[\cup]e;+\infty[$ بـ: $f(x)=x+\dfrac{1}{x-x\ln x}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+
+\textbf{1)} احسب النهايات: $\displaystyle\lim_{x\to0^+}f(x)$، $\displaystyle\lim_{x\to e^-}f(x)$، $\displaystyle\lim_{x\to e^+}f(x)$ و $\displaystyle\lim_{x\to+\infty}f(x)$، ثم فسّر النتائج هندسيا.
+
+\textbf{2)}
+\begin{sq}
+\qa بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x$ مقارب مائل لـ $(C_f)$.
+\qb ادرس الوضع النسبي لـ $(C_f)$ و $(\Delta)$.
+\end{sq}
+\textbf{3)}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $]0;e[\cup]e;+\infty[$: $f'(x)=1+\dfrac{\ln x}{(x-x\ln x)^2}$.
+\qb نقبل أن إشارة $f'(x)$ موضحة في الجدول المقابل، تحقق أن $0{,}4<\alpha<0{,}5$.
+\end{sq}
+\begin{TAB}
+\tkzTabInit[lgt=2,espcl=3]{$x$/1,$f'(x)$/1}{$0$,$\alpha$,$e$,$+\infty$}
+\tkzTabLine{d,-,z,+,d,+,}
+\end{TAB}
+\begin{sq}
+\qc شكّل جدول تغيرات الدالة $f$.
+\end{sq}
+\textbf{4)}
+\begin{sq}
+\qa بيّن أن $(C_f)$ يقبل مماسا $(T)$ يوازي $(\Delta)$، يطلب تعيين معادلة له.
+\qb أثبت أن المعادلة $f(x)=0$ تقبل حلا وحيدا في المجال $]3;3{,}1[$.
+\end{sq}
+\textbf{5)}
+\begin{sq}
+\qa ارسم $(\Delta)$ و $(T)$ و $(C_f)$. (نأخذ $f(\alpha)\simeq1{,}7$).
+\qb ناقش بيانيا وحسب قيم العدد الحقيقي $m$ عدد حلول المعادلة: $m(x-x\ln x)=1$.
+\end{sq}
+\end{tamrin}
+
+\section{تمارين البكالوريا -- شعبة رياضيات}
+
+% ===================== 2026 S1 =====================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الأول -- شعبة رياضيات}
+\textbf{I)} $g$ الدالة المعرفة على $\R-\{1\}$ بـ: $g(x)=(x-1)^2+\ln\big((x-1)^2\big)$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $\R-\{1\}$: $g'(x)=\dfrac{2(x-1)^2+2}{x-1}$.
+\qb استنتج اتجاه تغيّر الدالة $g$ ثم شكّل جدول تغيّراتها (لا يطلب حساب النهايات).
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ في المجال $]1{,}7;1{,}8[$.
+\qb تحقق أن $2-\alpha$ حل للمعادلة $g(x)=0$ ثم استنتج حسب قيم $x$ إشارة $g(x)$.
+\end{sq}
+
+\textbf{II)} $f$ الدالة المعرفة على $\R-\{1\}$ بـ: $f(x)=x-2-\dfrac{2+\ln\big((x-1)^2\big)}{x-1}$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} أحسب $\lim\limits_{x\to -\infty}f(x)$ ، $\lim\limits_{x\to 1^{-}}f(x)$ ، $\lim\limits_{x\to 1^{+}}f(x)$ و $\lim\limits_{x\to +\infty}f(x)$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $\R-\{1\}$: $f'(x)=\dfrac{g(x)}{(x-1)^2}$.
+\qb استنتج اتجاه تغيّر الدالة $f$ ثم شكّل جدول تغيّراتها.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x-2$ مقارب مائل للمنحنى $(C_f)$.
+\qb بيّن أنه من أجل كل $x$ من $\R-\{1\}$: $f(2-x)+f(x)=-2$.
+\qc استنتج أن للمنحنى $(C_f)$ مركز تناظر، يطلب تعيين إحداثييه.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa بيّن أن $(C_f)$ يقبل مماسين $(T)$ و $(T')$ يوازيان $(\Delta)$، يطلب تعيين معادلة لكل منهما.
+\qb أرسم $(\Delta)$ ، $(T)$ ، $(T')$ و $(C_f)$. (نأخذ: $f(\alpha)\approx -2{,}2$ و $f(2-\alpha)\approx 0{,}2$)
+\qc عيّن بيانيا قيم الوسيط الحقيقي $m$ حتى تقبل المعادلة $f(x)=x+m$ حلين بالضبط.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2025 S2 =====================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{I)} $h$ و $g$ الدالتان المعرفتان على $]0;+\infty[$ بـ: $g(x)=-x+(4-x)\ln x$ و $h(x)=4-x-4\ln x$.
+$(C_g)$ و $(C_h)$ التمثيلان البيانيان للدالتين $g$ و $h$ على الترتيب. $(C_h)$ يقطع حامل محور الفواصل في النقطة ذات الفاصلة $\alpha$ كما في الشكل المقابل.
+\begin{GR}{-1}{4}{-3}{2}{0.9}
+ \draw[cDef,very thick,smooth,samples=120,domain=0.4:4] plot (\x,{4-\x-4*ln(\x)});
+ \draw[cThm,very thick,smooth,samples=150,domain=0.35:4] plot (\x,{-\x+(4-\x)*ln(\x)});
+ \node[cDef] at (1.05,1.6){$(C_h)$}; \node[cThm] at (3.4,-1.6){$(C_g)$};
+ \fill (1.7535,0) circle (1.4pt) node[above right]{$\alpha$};
+ \Ticks{1,2,3}{-2,-1,1}
+\end{GR}
+بقراءة بيانية، حدد إشارة كل من $g(x)$ و $h(x)$، ثم تحقق أن: $1{,}7<\alpha<1{,}8$.
+
+\textbf{II)} $f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=(-x+2\ln x)\ln x$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to 0^{+}}f(x)$ و $\lim\limits_{x\to +\infty}f(x)$.
+\qb بيّن أنه من أجل كل $x$ من $]0;+\infty[$: $f'(x)=\dfrac{g(x)}{x}$.
+\qc استنتج اتجاه تغيّر الدالة $f$، ثم شكّل جدول تغيّراتها.
+\end{sq}
+\QQ{2} بيّن أن للمنحنى $(C_f)$ مماسين $(T)$ و $(T')$ معامل توجيه كل منهما $-1$، يطلب كتابة معادلة لكل منهما.
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $]0;+\infty[$: $f''(x)=\dfrac{h(x)}{x^2}$.
+\qb استنتج أن للمنحنى $(C_f)$ نقطة انعطاف، يطلب تعيين فاصلتها.
+\end{sq}
+\QQ{4} أحسب $f(e^2)$ ثم أرسم $(T)$ ، $(T')$ و $(C_f)$. (نأخذ: $f(\alpha)\approx -0{,}35$ و $4-8\ln 2+8(\ln 2)^2\approx 2{,}3$)
+\QQ{5} $\varphi$ الدالة المعرفة على $]0;+\infty[$ بـ: $\varphi(x)=f\left(\dfrac1x\right)$.
+دون حساب عبارة $\varphi(x)$، حدد اتجاه تغيّر الدالة $\varphi$ ثم شكّل جدول تغيّراتها.
+\end{tamrin}
+
+% ===================== 2024 S2 =====================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{I)} $g$ الدالة المعرفة على المجال $]0;+\infty[$ كما يلي: $g(x)=1+x^2\ln x$.
+
+أدرس اتجاه تغيّر الدالة $g$ ثم أحسب $g\left(\dfrac{1}{\sqrt e}\right)$ واستنتج إشارة $g(x)$ على $]0;+\infty[$.
+
+\textbf{II)} $f$ الدالة المعرفة على $[0;+\infty[$ بـ: $f(0)=0$ ومن أجل كل $x>0$: $f(x)=\dfrac{x}{1+x^2\ln x}$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to +\infty}f(x)$.
+\qb بيّن أن الدالة $f$ تقبل الاشتقاق عند $0$ على اليمين وفسّر النتيجة هندسيا.
+\qc أدرس الوضع النسبي للمنحنى $(C_f)$ والمستقيم $(T)$ ذي المعادلة $y=x$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa تحقق أنه من أجل كل $x>0$: $f'(x)=\dfrac{1-x^2-x^2\ln x}{(1+x^2\ln x)^2}$.
+\qb أدرس إشارة كل من العبارتين $1-x^2$ و $-x^2\ln x$ على $]0;+\infty[$ ثم استنتج إشارة $f'(x)$.
+\qc شكّل جدول تغيّرات الدالة $f$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa أرسم $(T)$ و $(C_f)$.
+\qb عيّن بيانيا قيم الوسيط الحقيقي $m$ التي من أجلها تقبل المعادلة $f(x)=m^2$ حلا على الأقل.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2023 S2 =====================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{I)} $g$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $g(x)=(x-3)\ln x+x$.
+\QQ{1}
+\begin{sq}
+\qa أحسب من أجل كل $x$ من المجال $]0;+\infty[$: $g'(x)$ و $g''(x)$.
+\qb بيّن أن الدالة $g'$ متزايدة تماما على المجال $]0;+\infty[$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أن المعادلة $g'(x)=0$ تقبل حلا وحيدا $\alpha$ حيث: $1{,}3<\alpha<1{,}4$.
+\qb علما أن $g(\alpha)\approx 0{,}85$، استنتج أنه: من أجل كل $x$ من $]0;+\infty[$، $g(x)>0$.
+\end{sq}
+
+\textbf{II)} $f$ الدالة المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=\left(x-\dfrac32\ln x\right)\ln x$.
+$(C_f)$ تمثيلها البياني في مستو منسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$. (الوحدة $2\,\text{cm}$)
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to 0^{+}}f(x)$، ثم فسّر النتيجة هندسيا.
+\qb بيّن أن: $\lim\limits_{x\to +\infty}f(x)=+\infty$.
+\end{sq}
+\QQ{2} بيّن أنه: من أجل كل عدد حقيقي $x$ من $]0;+\infty[$، $f'(x)=\dfrac{g(x)}{x}$ ثم شكّل جدول تغيّرات الدالة $f$.
+\QQ{3} بيّن أن $(C_f)$ يقبل مماسين $(T)$ و $(T')$ معامل توجيه كل منهما يساوي $1$، يطلب تعيين معادلة لكل منهما.
+\QQ{4}
+\begin{sq}
+\qa أرسم $(T)$ ، $(T')$ و $(C_f)$. (نأخذ: $f(6)\approx 5{,}9$)
+\qb عيّن بيانيا قيم الوسيط الحقيقي $m$ التي من أجلها تقبل المعادلة $f(x)=x+m$ ثلاثة حلول بالضبط.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2022 S2 =====================
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{I)} $h$ الدالة العددية المعرفة على المجال $]0;+\infty[$ بـ: $h(x)=x+\ln x$.
+\QQ{1} أدرس اتجاه تغيّر الدالة $h$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أن المعادلة $h(x)=0$ تقبل حلا وحيدا $\alpha$ حيث: $0{,}5<\alpha<0{,}6$.
+\qb استنتج إشارة $h(x)$ على المجال $]0;+\infty[$.
+\end{sq}
+
+\textbf{II)} $f$ الدالة المعرفة على المجال $]0;+\infty[$ كما يلي: $f(x)=-\dfrac12x^2+3x-x\ln x+(\ln x)^2$.
+$(C)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} أحسب $\lim\limits_{x\to 0^{+}}f(x)$ و $\lim\limits_{x\to +\infty}f(x)$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ موجب تماما: $f'(x)=\dfrac{(2-x)h(x)}{x}$.
+\qb استنتج اتجاه تغيّر الدالة $f$، ثم شكّل جدول تغيّراتها.
+\end{sq}
+\QQ{3} بيّن أن: $f(\alpha)=\dfrac32\alpha(\alpha+2)$، ثم عيّن حصرا لـ $f(\alpha)$.
+\QQ{4} $g$ الدالة العددية المعرفة على المجال $]0;+\infty[$ كما يلي: $g(x)=x^2+x-2+2\ln x$.
+\begin{sq}
+\qa أدرس اتجاه تغيّر الدالة $g$ وأحسب $g(1)$.
+\qb بيّن أن $(C)$ يقبل نقطة انعطاف $A$ يطلب تعيين إحداثييها.
+\qc أكتب معادلة للمستقيم $(T)$ مماس المنحنى $(C)$ في النقطة $A$.
+\end{sq}
+\QQ{5} أنشئ $(T)$ و $(C)$ في المجال $]0;5]$.
+\QQ{6} $k$ الدالة العددية المعرفة على $\R$ كما يلي: $k(x)=f\left(e^{-x}\right)$.
+\begin{sq}
+\qa دون حساب عبارة $k(x)$، أدرس اتجاه تغيّر الدالة $k$ ثم أحسب $\lim\limits_{x\to -\infty}k(x)$ و $\lim\limits_{x\to +\infty}k(x)$.
+\qb شكّل جدول تغيّرات الدالة $k$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2021 S2 =====================
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{I)} المستوي منسوب إلى معلم متعامد ومتجانس.
+في الشكل المقابل $(C)$ و $(\Gamma)$ هما على الترتيب التمثيلان البيانيان للدالتين العدديتين المعرفتين على المجال $]-1;+\infty[$ بـ: $x\mapsto 1+x^2$ و $x\mapsto 2x(1+x)\ln(1+x)$.
+$(C)$ و $(\Gamma)$ يتقاطعان في نقطة وحيدة فاصلتها $\alpha$ تحقق: $0{,}78<\alpha<0{,}79$.
+\begin{GR}{-1}{2}{-0.5}{3.5}{1.2}
+ \draw[cDef,very thick,smooth,samples=100,domain=-1:1.6] plot (\x,{1+\x*\x});
+ \draw[cThm,very thick,smooth,samples=150,domain=-0.999:1.4] plot (\x,{2*\x*(1+\x)*ln(1+\x)});
+ \draw[dashed] (0.7825,0)--(0.7825,1.612)--(0,1.612);
+ \node[below] at (0.7825,0){$\alpha$};
+ \node[cDef] at (-0.75,2.0){$(C)$}; \node[cThm] at (-0.75,0.45){$(\Gamma)$};
+ \Ticks{-1,1}{1,2,3}
+\end{GR}
+$g$ الدالة العددية المعرفة على المجال $]-1;+\infty[$ بـ: $g(x)=1+x^2-2x(1+x)\ln(1+x)$.
+\QQ{1} بقراءة بيانية، حدد حسب قيم $x$ من المجال $]-1;+\infty[$ وضعية $(C)$ بالنسبة إلى $(\Gamma)$.
+\QQ{2} استنتج حسب قيم $x$ من المجال $]-1;+\infty[$ إشارة $g(x)$.
+
+\textbf{II)} $f$ الدالة العددية المعرفة على المجال $]-1;+\infty[$ بـ: $f(x)=\dfrac{\ln(1+x)}{1+x^2}$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$. الوحدة $2\,\text{cm}$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to -1^{+}}f(x)$ وبيّن أن: $\lim\limits_{x\to +\infty}f(x)=0$.
+\qb فسّر النهايتين هندسيا.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $]-1;+\infty[$: $f'(x)=\dfrac{g(x)}{(x+1)(1+x^2)^2}$.
+\qb استنتج اتجاه تغيّر الدالة $f$ ثم شكّل جدول تغيّراتها.
+\qc بيّن أن: $f(\alpha)=\dfrac{1}{2\alpha(1+\alpha)}$، ثم استنتج حصرا لـ $f(\alpha)$.
+\qd أكتب معادلة لـ $(T)$ مماس المنحنى $(C_f)$ عند المبدأ $O$.
+\end{sq}
+\QQ{3} أرسم $(T)$ و $(C_f)$. (نأخذ: $f(\alpha)\approx 0{,}36$)
+\QQ{4} $h$ الدالة العددية المعرفة على $\R$ كما يلي: $h(x)=\dfrac{\ln(1+|x|)}{1+x^2}$. $(C_h)$ تمثيلها البياني في المعلم السابق.
+\begin{sq}
+\qa بيّن أن الدالة $h$ زوجية.
+\qb بيّن أن الدالة $h$ غير قابلة للاشتقاق عند الصفر ثم فسّر ذلك بيانيا.
+\qc إشرح كيفية رسم $(C_h)$ انطلاقا من $(C_f)$ ثم أرسمه.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2020 S2 =====================
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الثاني -- شعبة رياضيات}
+الدالة العددية $f$ معرفة على $\R$ بـ: $f(x)=\ln\left(\sqrt{9x^2+1}+3x\right)$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to +\infty}f(x)$، ثم بيّن أن: $\lim\limits_{x\to -\infty}f(x)=-\infty$.
+\qb بيّن أنه من أجل كل عدد حقيقي $x$ لدينا: $f'(x)=\dfrac{3}{\sqrt{9x^2+1}}$.
+\qc استنتج اتجاه تغيّر الدالة $f$ ثم شكّل جدول تغيّراتها.
+\end{sq}
+\QQ{2} نعتبر الدالة $g$ المعرفة على المجال $[0;+\infty[$ كما يلي: $g(x)=f(x)-x$.
+\begin{sq}
+\qa بيّن أن: $\lim\limits_{x\to +\infty}g(x)=-\infty$.
+\qb بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $[0;+\infty[$: $g'(x)=\dfrac{-9x^2+8}{\left(\sqrt{9x^2+1}\right)\left(3+\sqrt{9x^2+1}\right)}$.
+\qc أدرس اتجاه تغيّر الدالة $g$ على المجال $[0;+\infty[$، ثم شكّل جدول تغيّراتها. (نأخذ: $g\left(\frac{2\sqrt2}{3}\right)\approx 0{,}8$)
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ في المجال $\left[\frac{2\sqrt2}{3};+\infty\right[$ ثم تحقق أن: $2{,}83<\alpha<2{,}84$.
+\qb استنتج إشارة $g(x)$ على المجال $[0;+\infty[$.
+\qc حدد الوضع النسبي للمستقيم $(\Delta)$ ذي المعادلة $y=x$ والمنحنى $(C_f)$ على المجال $[0;+\infty[$.
+\end{sq}
+\QQ{4} نعتبر الدالة $k$ المعرفة على $]0;+\infty[$ بـ: $k(x)=\ln(6x)$. وليكن $(\gamma)$ منحناها البياني في المعلم السابق.
+\begin{sq}
+\qa بيّن أن $(\gamma)$ هو صورة منحنى الدالة $x\mapsto\ln x$ بتحويل نقطي بسيط يطلب تعيينه.
+\qb أحسب $\lim\limits_{x\to +\infty}\big[f(x)-k(x)\big]$، فسّر النتيجة بيانيا.
+\end{sq}
+\QQ{5}
+\begin{sq}
+\qa بيّن أن الدالة $f$ فردية.
+\qb أنشئ كلا من $(\Delta)$ ، $(\gamma)$ و $(C_f)$ على المجال $[0;+\infty[$ ثم استنتج إنشاء المنحنى $(C_f)$ على $\R$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2019 S1 =====================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة العددية المعرفة على $[0;+\infty[$ بـ:
+$\begin{cases} f(x)=x-x^2\ln x\ ;\quad x>0\\ f(0)=0\end{cases}$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$، الوحدة $3\,\text{cm}$.
+\QQ{1} برهن أن:
+\begin{itemize}
+\item إذا كان $x>1$ فإن: $1-x-2x\ln x<0$.
+\item إذا كان $0<x<1$ فإن: $1-x-2x\ln x>0$.
+\end{itemize}
+\QQ{2}
+\begin{sq}
+\qa أثبت أن الدالة $f$ قابلة للاشتقاق عند $0$ من اليمين ثم أكتب معادلة لنصف المماس $(\Delta)$ للمنحنى $(C_f)$ عند مبدأ المعلم.
+\qb أدرس الوضع النسبي لـ $(C_f)$ و $(\Delta)$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to +\infty}f(x)$.
+\qb أدرس اتجاه تغيّر الدالة $f$ ثم شكّل جدول تغيّراتها.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa أكتب معادلة للمماس $(T)$ للمنحنى $(C_f)$ الموازي لـ $(\Delta)$.
+\qb أثبت أن المعادلة $f(x)=0$ تقبل في المجال $[1;+\infty[$ حلا وحيدا $\alpha$ ثم تحقق أن: $1{,}76<\alpha<1{,}77$.
+\qc أكتب معادلة للمستقيم $(d)$ الذي يوازي $(\Delta)$ ويشمل النقطة ذات الإحداثيين $(\alpha;0)$.
+\end{sq}
+\QQ{5} أرسم كلا من $(T)$ ، $(\Delta)$ و $(d)$ ثم المنحنى $(C_f)$ على المجال $[0;\alpha]$.
+\QQ{6} $m$ وسيط حقيقي. ناقش بيانيا حسب قيم $m$ عدد حلول المعادلة $x^2\ln x+m=0$ في المجال $[0;\alpha]$.
+\end{tamrin}
+
+% ===================== بكالوريا 2018 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة العددية المعرفة على $[0;1[\,\cup\,]1;+\infty[$ بـ:
+$\begin{cases} f(x)=x+1-\dfrac{1}{\ln x}\ ;\ x\in\R_+^{*}-\{1\}\\[4pt] f(0)=1\end{cases}$
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أن $f$ مستمرة عند $0$ بقيم أكبر.
+\qb أحسب $\lim\limits_{h\to0^{+}}\dfrac{f(h)-f(0)}{h}$ ثم فسّر النتيجة هندسيا.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to+\infty}f(x)$ ، $\lim\limits_{x\to1^{-}}f(x)$ و $\lim\limits_{x\to1^{+}}f(x)$.
+\qb أدرس اتجاه تغيّر الدالة $f$ ثم شكّل جدول تغيّراتها.
+\end{sq}
+\QQ{3} بيّن أن المنحنى $(C_f)$ يقبل مستقيما مقاربا مائلا $(\Delta)$ يطلب تعيين معادلة له، ثم أدرس وضعية $(C_f)$ بالنسبة إلى $(\Delta)$.
+\QQ{4} بيّن أن المنحنى $(C_f)$ يقطع حامل محور الفواصل في نقطة وحيدة $\omega$ فاصلتها $\alpha$ حيث $1{,}49<\alpha<1{,}5$ ، ثم بيّن أن معادلة المماس للمنحنى $(C_f)$ عند النقطة $\omega$ تكتب على الشكل: $y=\Big(\alpha+3+\dfrac1\alpha\Big)(x-\alpha)$.
+\QQ{5} أرسم المستقيم $(\Delta)$ والمنحنى $(C_f)$.
+\end{tamrin}
+
+% ===================== بكالوريا 2017 استدراكية -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2017 (الدورة الاستدراكية) -- الموضوع الأول -- شعبة رياضيات}
+\textbf{I)} نعتبر الدالة العددية $g$ المعرفة على المجال $]0;+\infty[$ كما يلي: $g(x)=x+2-\ln x$.
+
+أدرس اتجاه تغيّر الدالة $g$ ، ثم استنتج إشارة $g(x)$.
+
+\textbf{II)} لتكن الدالة $f$ المعرفة على $\R^{*}$ كما يلي: $f(x)=\dfrac12\Big(-x+e-\dfrac{\ln(x^2)}{x}\Big)$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} بيّن أنه من أجل كل عدد حقيقي $x$ غير معدوم: $f'(x)=\dfrac{-g(x^2)}{2x^2}$ ، ثم استنتج اتجاه تغيّر الدالة $f$.
+\QQ{2}
+\begin{sq}
+\qa أحسب من أجل كل عدد حقيقي $x$ غير معدوم: $f(-x)+f(x)$ ، ثم فسّر النتيجة بيانيا.
+\qb أحسب $\lim\limits_{x\to0^{+}}f(x)$ و $\lim\limits_{x\to+\infty}f(x)$ ، ثم استنتج $\lim\limits_{x\to-\infty}f(x)$ و $\lim\limits_{x\to0^{-}}f(x)$.
+\qc شكّل جدول تغيّرات الدالة $f$.
+\end{sq}
+\QQ{3} بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=-\dfrac12x+\dfrac e2$ مقارب لـ $(C_f)$ ، ثم أدرس وضعية $(C_f)$ بالنسبة إلى $(\Delta)$.
+\QQ{4}
+\begin{sq}
+\qa أثبت أنه يوجد مماسان للمنحنى $(C_f)$ معامل توجيه كل منهما يساوي $\Big(-\dfrac12\Big)$ ، ثم جد معادلة لكل منهما.
+\qb بيّن أن المنحنى $(C_f)$ يقطع حامل محور الفواصل في نقطتين فاصلتاهما $\alpha$ و $\beta$ حيث: $2<\alpha<2{,}1$ و $-0{,}5<\beta<-0{,}4$.
+\end{sq}
+\QQ{5} أرسم المماسين والمستقيم $(\Delta)$ ثم المنحنى $(C_f)$.
+\QQ{6} باستعمال المنحنى $(C_f)$ ، عيّن قيم الوسيط الحقيقي $m$ حتى تقبل المعادلة $x(e-2m)=\ln(x^2)$ حلا وحيدا.
+\end{tamrin}
+
+% ===================== بكالوريا 2017 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{I)} $g$ الدالة العددية المعرفة على المجال $]0;+\infty[$ بـ: $g(x)=\dfrac1x-\ln x$.
+\QQ{1} أدرس اتجاه تغيّر الدالة $g$.
+\QQ{2} بيّن أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ من المجال $]1{,}76;1{,}77[$ ، ثم استنتج إشارة $g(x)$ على المجال $]0;+\infty[$.
+
+\textbf{II)} $f$ الدالة المعرفة على المجال $[0;+\infty[$ كما يلي:
+$\begin{cases} f(x)=\dfrac{x+1}{x-\ln x}\ ;\ x>0\\[4pt] f(0)=0\end{cases}$
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} أثبت أن الدالة $f$ مستمرة عند العدد $0$ على اليمين، ثم أحسب $\lim\limits_{x\to0^{+}}\dfrac{f(x)}{x}$ وفسّر النتيجة بيانيا.
+\QQ{2} بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $]0;+\infty[$: $f'(x)=\dfrac{g(x)}{(x-\ln x)^2}$.
+\QQ{3} أحسب $\lim\limits_{x\to+\infty}f(x)$ وفسّر النتيجة بيانيا، ثم شكّل جدول تغيّرات الدالة $f$.
+\QQ{4} لتكن $h$ الدالة المعرفة على المجال $]0;+\infty[$ كما يلي: $h(x)=x-\ln x$.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ موجب تماما $h(x)>0$ ، واستنتج وضعية $(C_f)$ بالنسبة للمستقيم $(\Delta)$ ذي المعادلة $y=1$.
+\qb أرسم $(C_f)$. (نأخذ: $f(\alpha)\approx2{,}31$)
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2016 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الأول -- شعبة رياضيات}
+\textbf{I)} $g$ الدالة العددية المعرفة على المجال $]0;+\infty[$ بـ: $g(x)=1+x^2+2\ln x$.
+\QQ{1} أدرس اتجاه تغيّر الدالة $g$.
+\QQ{2} بيّن أن المعادلة $g(x)=0$ تقبل في المجال $]0{,}52;0{,}53[$ حلا وحيدا $\alpha$.
+\QQ{3} استنتج إشارة $g(x)$ على المجال $]0;+\infty[$.
+
+\textbf{II)} $f$ الدالة العددية المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=-x+\dfrac{3+2\ln x}{x}$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} أحسب $\lim\limits_{x\to0^{+}}f(x)$ و $\lim\limits_{x\to+\infty}f(x)$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من المجال $]0;+\infty[$: $f'(x)=\dfrac{-g(x)}{x^2}$.
+\qb شكّل جدول تغيّرات الدالة $f$.
+\qc تحقق أن: $f(\alpha)=2\Big(\dfrac1\alpha-\alpha\Big)$ ، ثم عيّن حصرا للعدد $f(\alpha)$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to+\infty}\big[f(x)+x\big]$ ثم فسّر النتيجة هندسيا.
+\qb أدرس وضعية $(C_f)$ بالنسبة إلى مستقيمه المقارب المائل $(\Delta)$.
+\qc بيّن أن $(C_f)$ يقبل مماسا $(T)$ يوازي $(\Delta)$ يطلب كتابة معادلة ديكارتية له.
+\end{sq}
+\QQ{4} نقبل أن $(C_f)$ يقطع حامل محور الفواصل في نقطتين فاصلتيهما $x_0$ و $x_1$ حيث: $0{,}22<x_0<0{,}23$ و $2{,}11<x_1<2{,}13$.
+أنشئ $(T)$ ، $(\Delta)$ و $(C_f)$.
+\QQ{5} $m$ وسيط حقيقي. ناقش بيانيا وحسب قيم $m$ ، عدد حلول المعادلة: $3+2\ln x-mx=0$.
+\end{tamrin}
+
+% ===================== بكالوريا 2015 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2015 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة المعرفة بـ: $f(0)=1$ ، ومن أجل كل عدد حقيقي $x$ من المجال $]0;+\infty[$ ، $f(x)=1-x^2\ln x$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa أدرس استمرارية الدالة $f$ عند $0$ من اليمين.
+\qb أحسب $\lim\limits_{x\to0^{+}}\dfrac{f(x)-1}{x}$ ، ثم فسّر النتيجة هندسيا.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to+\infty}f(x)$.
+\qb أدرس اتجاه تغيّر الدالة $f$ ، ثم شكّل جدول تغيّراتها.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أن المعادلة $f(x)=0$ تقبل حلا وحيدا $\alpha$ في المجال $]0;+\infty[$.
+\qb تحقق أن: $1{,}531<\alpha<1{,}532$.
+\end{sq}
+\QQ{4} نعتبر الدالة $g$ المعرفة على $\R$ بـ: $g(x)=f(|x|)$. $(C_g)$ المنحنى الممثل للدالة $g$ في نفس المعلم $(O;\vec i,\vec j)$.
+\begin{sq}
+\qa أدرس شفعية الدالة $g$.
+\qb أنشئ المنحنى $(C_g)$ على المجال $[-2;2]$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2014 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2014 -- الموضوع الثاني -- شعبة رياضيات}
+$f$ الدالة العددية المعرفة على المجال $]0;+\infty[$ بـ: $f(x)=(1+2\ln x)(-1+\ln x)$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa أدرس تغيّرات الدالة $f$.
+\qb أكتب معادلة المماس $(\Delta)$ للمنحنى $(C_f)$ في النقطة ذات الفاصلة $e$ (حيث $e$ أساس اللوغاريتم النيبيري).
+\qc عيّن فواصل نقط تقاطع $(C_f)$ مع حامل محور الفواصل، ثم أرسم $(C_f)$ على المجال $]0;e^2]$.
+\end{sq}
+\QQ{2} $g$ الدالة العددية المعرفة على المجال $]0;+\infty[$ بـ: $g(x)=-1+\ln x$. $(C_g)$ تمثيلها البياني في المعلم السابق.
+\begin{sq}
+\qa أدرس تغيّرات الدالة $g$.
+\qb عيّن الوضع النسبي للمنحنيين $(C_f)$ و $(C_g)$ ، ثم أرسم $(C_g)$ على المجال $]0;e^2]$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2013 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2013 -- الموضوع الأول -- شعبة رياضيات}
+\textbf{I)} \QQ{1} $u$ الدالة المعرفة على المجال $]0;+\infty[$ كما يلي: $u(x)=e^x-3x+4-e$.
+\begin{sq}
+\qa أدرس اتجاه تغيّر الدالة $u$.
+\qb بيّن أنه من أجل كل عدد حقيقي $x$ من $]0;+\infty[$: $e^x-e>3x-4$.
+\end{sq}
+\QQ{2} $v$ الدالة المعرفة على $]0;+\infty[$ بـ: $v(x)=-3x^3+4x^2-1+\ln x$.
+\begin{sq}
+\qa بيّن أن: $v'(1)=0$.
+\qb أثبت أنه من أجل كل عدد حقيقي $x$ من $]0;+\infty[$: $v(x)\leq0$.
+\qc استنتج أنه من أجل كل عدد حقيقي $x$ من $]0;+\infty[$: $\dfrac{-1+\ln x}{x^2}\leq3x-4$.
+\end{sq}
+\QQ{3} أثبت أنه من أجل كل عدد حقيقي $x$ من $]0;+\infty[$: $e^x-e+\dfrac{1-\ln x}{x^2}>0$.
+
+\textbf{II)} الدالة $f$ معرفة على المجال $]0;+\infty[$ كما يلي: $f(x)=e^x-ex+\dfrac{\ln x}{x}$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} أحسب: $\lim\limits_{x\to0^{+}}f(x)$ و $\lim\limits_{x\to+\infty}f(x)$.
+\QQ{2} بيّن أن الدالة $f$ متزايدة تماما على المجال $]0;+\infty[$ ، ثم شكّل جدول تغيّراتها.
+\QQ{3} أحسب $f(1)$ ، ثم مثّل المنحنى $(C_f)$ على المجال $\big]0;\frac52\big]$. (نأخذ: $f(2)\approx2{,}3$ ، $f(1{,}64)\approx1$ و $f\big(\frac52\big)\approx5{,}75$)
+\end{tamrin}
+
+% ===================== بكالوريا 2012 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2012 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{I)} $g$ الدالة المعرفة على المجال $]-1;3]$ كما يلي: $g(x)=2\ln(x+1)-\dfrac{x}{x+1}$.
+\QQ{1} أدرس تغيّرات الدالة $g$ ، ثم شكّل جدول تغيّراتها.
+\QQ{2} بيّن أن المعادلة $g(x)=0$ تقبل حلين أحدهما معدوم والآخر $\alpha$ يحقق: $-0{,}8<\alpha<-0{,}7$.
+\QQ{3} عيّن، حسب قيم $x$ ، إشارة $g(x)$.
+\QQ{4} $h$ هي الدالة المعرفة على المجال $]-1;3]$ بـ: $h(x)=\big[g(x)\big]^2$.
+\begin{sq}
+\qa أحسب $h'(x)$ بدلالة كل من $g'(x)$ و $g(x)$.
+\qb عيّن إشارة $h'(x)$ ، ثم شكّل جدول تغيّرات الدالة $h$.
+\end{sq}
+
+\textbf{II)} $f$ الدالة المعرفة على المجال $]-1;3]$ كما يلي:
+$\begin{cases} f(x)=\dfrac{x^2}{\ln(x+1)}\ ;\ x\neq0\\[4pt] f(0)=0\end{cases}$
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1} بيّن أن الدالة $f$ تقبل الاشتقاق عند $0$ ، ثم اكتب معادلة لـ $(T)$ مماس $(C_f)$ في النقطة ذات الفاصلة $0$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $]-1;0[\,\cup\,]0;3]$: $f'(x)=\dfrac{x\,g(x)}{\big[\ln(x+1)\big]^2}$ ، واستنتج اتجاه تغيّر الدالة $f$.
+\qb بيّن أن: $f(\alpha)=2\alpha(\alpha+1)$ ، ثم عيّن حصرا للعدد $f(\alpha)$.
+\qc أحسب $\lim\limits_{x\to-1^{+}}f(x)$ و $f(3)$ ، ثم شكّل جدول تغيّرات الدالة $f$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من المجال $]-1;3]$ فإن: $x-\ln(x+1)\geq0$.
+\qb أدرس وضعية $(C_f)$ بالنسبة إلى المماس $(T)$.
+\end{sq}
+\QQ{4} عيّن معادلة للمستقيم $(T')$ الموازي للمماس $(T)$ والذي يتقاطع مع $(C_f)$ في النقطة ذات الفاصلة $3$.
+\QQ{5} أرسم $(T)$ ، $(T')$ و $(C_f)$.
+\QQ{6} ناقش بيانيا، حسب قيم الوسيط الحقيقي $m$ ، عدد حلول المعادلة: $f(x)=x+m$.
+\end{tamrin}
+
+% ===================== بكالوريا 2011 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الثاني -- شعبة رياضيات}
+\QQ{1} $g$ الدالة المعرفة على المجال $]0;+\infty[$ كما يلي: $g(x)=x^2+\ln x^2-1$.
+\begin{sq}
+\qa أدرس اتجاه تغيّر الدالة $g$ ، ثم شكّل جدول تغيّراتها.
+\qb أحسب $g(1)$ ثم استنتج إشارة $g(x)$ في المجال $]0;+\infty[$.
+\end{sq}
+\QQ{2} $f$ الدالة العددية المعرفة على المجال $]0;+\infty[$ كما يلي: $f(x)=\Big(1-\dfrac1{x^2}\Big)\ln x$.
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\begin{sq}
+\qa بيّن أن $f$ قابلة للاشتقاق على المجال $]0;+\infty[$ وأن: $f'(x)=\dfrac{g(x)}{x^3}$. استنتج اتجاه تغيّر الدالة $f$ ، ثم شكّل جدول تغيّراتها.
+\qb $(\delta)$ المنحنى الممثل للدالة $x\mapsto\ln x$ على المجال $]0;+\infty[$.
+أدرس وضعية $(C_f)$ بالنسبة إلى $(\delta)$ ، ثم جد $\lim\limits_{x\to+\infty}\dfrac{1}{x^2}\ln x$. ماذا تستنتج؟
+أرسم $(\delta)$ و $(C_f)$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2010 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2010 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{I)} $g$ الدالة المعرفة على المجال $]0;+\infty[$ كما يلي: $g(x)=x-1-2\ln x$.
+\QQ{1} أحسب $\lim\limits_{x\to0^{+}}g(x)$ ، ثم بيّن أن $\lim\limits_{x\to+\infty}g(x)=+\infty$.
+\QQ{2} أدرس تغيّرات الدالة $g$.
+\QQ{3}
+\begin{sq}
+\qa أحسب $g(1)$.
+\qb برهن أن المعادلة $g(x)=0$ تقبل حلين مختلفين أحدهما $\alpha$ حيث: $3{,}5<\alpha<3{,}6$.
+\qc استنتج إشارة $g(x)$ ثم إشارة $g\Big(\dfrac1x\Big)$.
+\end{sq}
+
+\textbf{II)} $f$ الدالة المعرفة على المجال $[0;+\infty[$ كما يلي:
+$\begin{cases} f(x)=-x^2+x+x^2\ln x\ ;\ x>0\\ f(0)=0\end{cases}$
+
+$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$. الوحدة $4cm$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to0^{+}}\dfrac{f(x)}{x}$ وفسّر النتيجة هندسيا.
+\qb أحسب نهاية الدالة $f$ عند $+\infty$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ من $]0;+\infty[$: $f'(x)=x\,g\Big(\dfrac1x\Big)$.
+\qb استنتج اتجاه تغيّر الدالة $f$ ، ثم شكّل جدول تغيّراتها.
+\end{sq}
+\QQ{3} بيّن أن: $f\Big(\dfrac1\alpha\Big)=\dfrac{\alpha-1}{2\alpha^2}$ ، واستنتج حصرا للعدد $f\Big(\dfrac1\alpha\Big)$.
+\QQ{4} أرسم المنحنى $(C_f)$ على المجال $[0;3]$.
+\end{tamrin}
+
+\end{document}

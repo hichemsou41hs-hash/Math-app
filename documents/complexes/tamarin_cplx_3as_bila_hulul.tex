@@ -1,0 +1,423 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+% complex plane (O;u,v): \begin{CP}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{CP}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!20,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0);
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3);
+ \draw[-{Stealth[length=2.2mm]},very thick,cSec] (0,0)--(1,0) node[below,pos=0.55]{$\vec u$};
+ \draw[-{Stealth[length=2.2mm]},very thick,cSec] (0,0)--(0,1) node[left,pos=0.55]{$\vec v$};
+ \node[below left] at (0,0){$O$};}
+{\end{tikzpicture}\end{LTR}\end{center}}
+% \Pt{name}{(x,y)}{label}{anchor}: named filled point
+\newcommand{\Pt}[4]{\coordinate (#1) at #2; \fill (#1) circle (1.8pt) node[#4]{$#3$};}
+% right-angle mark at vertex #1 between #2 and #3
+\newcommand{\RA}[3]{\draw[thin] ($(#1)!2.5mm!(#2)$) -- ($(#1)!2.5mm!(#2)+(#1)!2.5mm!(#3)-(#1)$) -- ($(#1)!2.5mm!(#3)$);}
+% equal-length tick on segment
+\newcommand{\TK}[2]{\path (#1) -- (#2) node[midway,sloped,inner sep=0pt,font=\scriptsize]{$|$};}
+\newcommand{\TKK}[2]{\path (#1) -- (#2) node[midway,sloped,inner sep=0pt,font=\scriptsize]{$||$};}
+\thickmuskip=5mu plus 2mu\relax
+\medmuskip=4mu plus 1mu minus 3mu\relax
+\pretocmd{\tamrin}{\Needspace{14\baselineskip}}{}{}
+\SetHeader{\small\bfseries\color{cSec}تمارين تجريبية: الأعداد المركبة والتحويلات النقطية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{24}{30}\selectfont\bfseries تمارين تجريبية في الأعداد المركبة والتحويلات النقطية}\\[8pt]
+{\color{white}\large تمارين متدرجة -- بدون حلول (للتدرّب)}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- الشعب العلمية}
+\end{tcolorbox}
+\end{LTR}
+% ================= تمارين تدريبية: الأعداد المركبة =================
+\begin{molahada}[اصطلاحات]
+في كل التمارين، المستوي المركب منسوب إلى المعلم المتعامد والمتجانس $(O;\vec u,\vec v)$، و$i$ هو العدد المركب الذي يحقق $i^2=-1$. نقول عن النقطة $M$ إن لاحقتها $z$ ونكتب $M(z)$.
+\end{molahada}
+
+\section{الشكل الجبري والمعادلات}
+
+\begin{tamrin}{العمليات على الشكل الجبري}
+نعتبر العددين المركبين $z_1=2-3i$ و$z_2=1+2i$.
+\QQ{1} اكتب على الشكل الجبري كلًّا من: $z_1+z_2$، $z_1z_2$، $z_1^2$ و$\dfrac{z_1}{z_2}$.
+\QQ{2} احسب $|z_1|$ و$|z_2|$، ثم تحقق أن $|z_1z_2|=|z_1|\times|z_2|$.
+\QQ{3} حل في $\mathbb{C}$ المعادلة: $(1+i)z=3-i$.
+\QQ{4} عيّن العدد المركب $z$ الذي يحقق: $2z+i\,\overline{z}=3+3i$.
+\QQ{5} $x$ عدد حقيقي، و$Z=(x+i)(2-i)$.
+\begin{sq}
+\qa اكتب $Z$ على الشكل الجبري.
+\qb عيّن $x$ حتى يكون $Z$ حقيقيًا، ثم حتى يكون $Z$ تخيليًا صرفًا.
+\end{sq}
+\end{tamrin}
+
+\begin{tamrin}{معادلات من الدرجة الثانية والثالثة}
+\QQ{1} حل في $\mathbb{C}$ المعادلات التالية:
+\begin{sq}
+\qa $z^2-4z+13=0$.
+\qb $z^2+z+1=0$.
+\qc $(z^2+4)(z^2-2z+2)=0$.
+\end{sq}
+\QQ{2} نعتبر كثير الحدود $P(z)=z^3-3z^2+7z-5$.
+\begin{sq}
+\qa احسب $P(1)$.
+\qb عيّن العددين الحقيقيين $a$ و$b$ بحيث من أجل كل عدد مركب $z$: $P(z)=(z-1)(z^2+az+b)$.
+\qc حل في $\mathbb{C}$ المعادلة $P(z)=0$.
+\end{sq}
+\QQ{3} حل في $\mathbb{C}$ المعادلة: $\dfrac{z-2i}{z+1}=i$ (مع $z\neq-1$).
+\end{tamrin}
+
+\section{الشكل المثلثي والأسي -- دستور موافر}
+
+\begin{tamrin}{الشكل الأسي واستنتاج قيم مضبوطة}
+نعتبر العددين المركبين $z_1=1+i\sqrt3$ و$z_2=1-i$.
+\QQ{1} عيّن الطويلة وعمدة لكل من $z_1$ و$z_2$، ثم اكتبهما على الشكل الأسي.
+\QQ{2} اكتب على الشكل الأسي كلًّا من $z_1z_2$ و$\dfrac{z_1}{z_2}$.
+\QQ{3} اكتب $\dfrac{z_1}{z_2}$ على الشكل الجبري.
+\QQ{4} استنتج القيمتين المضبوطتين لـ $\cos\dfrac{7\pi}{12}$ و$\sin\dfrac{7\pi}{12}$.
+\QQ{5} احسب $\left(\dfrac{z_1}{z_2}\right)^{12}$.
+\end{tamrin}
+
+\begin{tamrin}{قوى عدد مركب}
+نعتبر العددين المركبين $z=\sqrt3+i$ و$w=1+i$.
+\QQ{1} اكتب $z$ و$w$ على الشكل الأسي.
+\QQ{2} عيّن قيم العدد الطبيعي $n$ التي يكون من أجلها $z^n$:
+\begin{sq}
+\qa عددًا حقيقيًا.
+\qb عددًا تخيليًا صرفًا.
+\end{sq}
+\QQ{3} احسب $z^6$، ثم اكتب $z^{2026}$ على الشكل الجبري.
+\QQ{4} عيّن أصغر عدد طبيعي غير معدوم $n$ يكون من أجله $(zw)^n$ عددًا حقيقيًا، ثم احسب $(zw)^n$ من أجل هذه القيمة.
+\end{tamrin}
+
+\begin{tamrin}{الشكل الأسي لـ $1+e^{i\theta}$ و$1-e^{i\theta}$}
+$\theta$ عدد حقيقي من المجال $]-\pi;\pi[$.
+\QQ{1} بيّن أن: $1+e^{i\theta}=2\cos\dfrac\theta2\,e^{i\frac\theta2}$.
+\QQ{2} استنتج طويلة وعمدة للعدد $1+e^{i\theta}$.
+\QQ{3} تحقق من النتيجة من أجل $\theta=\dfrac{2\pi}{3}$.
+\QQ{4} بيّن أن $1-e^{i\theta}=-2i\sin\dfrac\theta2\,e^{i\frac\theta2}$، ثم استنتج، من أجل $\theta\in]0;\pi[$، طويلة وعمدة للعدد $1-e^{i\theta}$.
+\QQ{5} استنتج أن العدد $\dfrac{1+e^{i\theta}}{1-e^{i\theta}}$ تخيلي صرف من أجل $\theta\in]0;\pi[$.
+\end{tamrin}
+
+\begin{tamrin}{معادلة وحلولها على الشكل الأسي}
+\QQ{1} حل في $\mathbb{C}$ المعادلة: $z^2-2\sqrt3\,z+4=0$. نرمز $z_1$ للحل الذي جزؤه التخيلي موجب و$z_2$ للحل الآخر.
+\QQ{2} اكتب $z_1$ و$z_2$ على الشكل الأسي، ثم $\dfrac{z_1}{z_2}$.
+\QQ{3} عيّن الأعداد الطبيعية $n$ التي تحقق $\left(\dfrac{z_1}{z_2}\right)^n=1$.
+\QQ{4} بيّن أنه من أجل كل عدد طبيعي $n$: $z_1^n+z_2^n=2^{n+1}\cos\dfrac{n\pi}{6}$، ثم احسب $z_1^6+z_2^6$.
+\QQ{5} $A$ و$B$ النقطتان اللتان لاحقتاهما $z_1$ و$z_2$. بيّن أن المثلث $OAB$ متقايس الأضلاع، وارسمه.
+\end{tamrin}
+\section{التفسير الهندسي ومجموعات النقط}
+
+\begin{tamrin}{طبيعة مثلث ومربع ودائرة}
+نعتبر النقط $A$، $B$ و$C$ التي لواحقها على الترتيب: $z_A=1+i$، $z_B=4+2i$ و$z_C=4i$.
+\QQ{1} اكتب العدد $\dfrac{z_C-z_A}{z_B-z_A}$ على الشكل الجبري، ثم استنتج طبيعة المثلث $ABC$.
+\QQ{2} عيّن لاحقة النقطة $D$ بحيث يكون الرباعي $ABDC$ مربعًا.
+\QQ{3} عيّن لاحقة المركز $\Omega$ ونصف قطر الدائرة $(\Gamma)$ المحيطة بالمثلث $ABC$.
+\QQ{4} تحقق أن $D$ تنتمي إلى $(\Gamma)$، ثم أنشئ الشكل.
+\end{tamrin}
+
+\begin{tamrin}{نقط من نفس الدائرة ومثلث متقايس الأضلاع}
+نعتبر النقط $A$، $B$، $C$ و$D$ ذات اللواحق: $z_A=2$، $z_B=1+i\sqrt3$، $z_C=1-i\sqrt3$ و$z_D=-2$.
+\QQ{1} اكتب $z_B$ و$z_C$ على الشكل الأسي، ثم استنتج أن النقط $A$، $B$، $C$ و$D$ تنتمي إلى دائرة يطلب تعيين مركزها ونصف قطرها.
+\QQ{2} احسب $\dfrac{z_B-z_D}{z_C-z_D}$ على الشكل الأسي، واستنتج طبيعة المثلث $BCD$.
+\QQ{3} بيّن أن العدد $\dfrac{z_A-z_B}{z_D-z_B}$ تخيلي صرف. ماذا تستنتج؟
+\QQ{4} $E$ النقطة ذات اللاحقة $z_E=-1-i\sqrt3$. بيّن أن النقط $O$، $B$ و$E$ في استقامية. أنشئ الشكل.
+\end{tamrin}
+
+\begin{tamrin}{مجموعات نقط بسيطة}
+عيّن في كل حالة مجموعة النقط $M$ ذات اللاحقة $z$ التي تحقق:
+\begin{sq}
+\qa $(E_1)$: $|z-1+2i|=2$.
+\qb $(E_2)$: $|z-3|=|z+i|$.
+\qc $(E_3)$: $|iz+2|=4$.
+\qd $(E_4)$: $\arg(z-1-i)=\dfrac\pi4\ [2\pi]$.
+\end{sq}
+ثم مثّلها في المعلم.
+\end{tamrin}
+
+\begin{tamrin}{مجموعات نقط بواسطة عدد مركب}
+نعتبر النقطتين $A(-1)$ و$B(2i)$. من أجل كل عدد مركب $z\neq-1$ نضع: $Z=\dfrac{z-2i}{z+1}$.
+\QQ{1} نضع $z=x+iy$ ($x,y$ حقيقيان). اكتب الجزء الحقيقي والجزء التخيلي لـ $Z$ بدلالة $x$ و$y$.
+\QQ{2} عيّن المجموعة $(\Delta)$ للنقط $M(z)$ بحيث يكون $Z$ حقيقيًا.
+\QQ{3} عيّن المجموعة $(\Gamma)$ للنقط $M(z)$ بحيث يكون $Z$ تخيليًا صرفًا.
+\QQ{4} عيّن المجموعة $(\mathcal D)$ للنقط $M(z)$ بحيث $|Z|=1$.
+\QQ{5} أعط تفسيرًا هندسيًا لعمدة $Z$، وتحقق به من نتيجة السؤال 3. أنشئ المجموعات الثلاث.
+\end{tamrin}
+
+\section{التحويلات النقطية}
+
+\begin{tamrin}{الانسحاب والتحاكي}
+نعتبر التحويلين النقطيين $t$ و$h$ اللذين يرفقان بكل نقطة $M(z)$ النقطة $M'(z')$ حيث:
+\[t:\ z'=z+2-i,\qquad\qquad h:\ z'=-2z+3i.\]
+\QQ{1} عيّن طبيعة كل من $t$ و$h$ وعناصرهما المميزة.
+\QQ{2} $A$ النقطة ذات اللاحقة $1+i$. عيّن لاحقتي $A_1=t(A)$ و$A_2=h(A)$.
+\QQ{3} $(\mathcal C)$ الدائرة التي مركزها $A$ ونصف قطرها $1$. عيّن صورتيها بـ $t$ ثم بـ $h$.
+\QQ{4} عيّن الكتابة المركبة للتحويل $h\circ t$، ثم طبيعته.
+\end{tamrin}
+
+\begin{tamrin}{الدوران}
+\QQ{1} $r$ التحويل النقطي الذي يرفق بكل نقطة $M(z)$ النقطة $M'(z')$ حيث $z'=iz+1+i$.
+\begin{sq}
+\qa بيّن أن $r$ دوران يطلب تعيين مركزه $\Omega$ وزاويته.
+\qb عيّن لاحقة $A'$ صورة النقطة $A(2+i)$ بـ $r$، ثم استنتج طبيعة المثلث $\Omega AA'$.
+\end{sq}
+\QQ{2} $r'$ الدوران الذي مركزه $B(1+i)$ وزاويته $-\dfrac\pi2$.
+\begin{sq}
+\qa عيّن الكتابة المركبة لـ $r'$.
+\qb عيّن لاحقة $C'$ صورة النقطة $C(3+i)$ بـ $r'$.
+\qc عيّن لاحقة النقطة $E$ التي صورتها بـ $r'$ هي $O$.
+\end{sq}
+\end{tamrin}
+
+\begin{tamrin}{تعيين تحويل بمعرفة صورتي نقطتين}
+نعتبر النقط $A(0)$، $B(4)$، $A'\left(1-i\sqrt3\right)$ و$B'\left(3+i\sqrt3\right)$.
+$f$ التحويل النقطي ذو الكتابة المركبة $z'=az+b$ ($a,b$ عددان مركبان) الذي يحول $A$ إلى $A'$ و$B$ إلى $B'$.
+\QQ{1} عيّن $a$ و$b$.
+\QQ{2} اكتب $a$ على الشكل الأسي، ثم استنتج طبيعة $f$ وعناصره المميزة.
+\QQ{3} بيّن أن المثلثين $\Omega AA'$ و$\Omega BB'$ متقايسا الأضلاع، حيث $\Omega$ مركز $f$. أنشئ الشكل.
+\end{tamrin}
+
+\begin{tamrin}{المرجح ومجموعة نقط وصورتها}
+نعتبر النقط $A(4+2i)$، $B(2-2i)$ و$C(-1+2i)$.
+\QQ{1} عيّن لاحقة النقطة $G$ مرجح الجملة $\{(A;1),(B;1),(C;2)\}$.
+\QQ{2} عيّن المجموعة $(\Gamma)$ للنقط $M$ من المستوي التي تحقق: $\left\|\overrightarrow{MA}+\overrightarrow{MB}+2\overrightarrow{MC}\right\|=8$.
+\QQ{3} اكتب هذا الشرط بدلالة لاحقة $M$.
+\QQ{4} عيّن صورة $(\Gamma)$ بالانسحاب $t$ الذي شعاعه $\overrightarrow{AB}$، ثم صورتها بالتحاكي $h$ الذي مركزه $A$ ونسبته $\frac12$. أنشئ الشكل.
+\end{tamrin}
+\section{تمارين للتعمق: التشابهات المباشرة ومسائل}
+\textbf{(للشعب الثلاث: رياضيات، تقني رياضي، علوم تجريبية)}
+
+\begin{tamrin}{التشابه المباشر وعناصره المميزة}
+$S$ التحويل النقطي الذي يرفق بكل نقطة $M(z)$ النقطة $M'(z')$ حيث: $z'=(1+i)z+2-i$.
+\QQ{1} بيّن أن $S$ تشابه مباشر يطلب تعيين مركزه $\Omega$ ونسبته وزاويته.
+\QQ{2} بيّن أنه من أجل كل نقطة $M\neq\Omega$: $\dfrac{z'-z}{\omega-z}=-i$، واستنتج طبيعة المثلث $\Omega MM'$.
+\QQ{3} عيّن لاحقة $A'$ صورة النقطة $A(1)$ بـ $S$، وتحقق من نتيجة السؤال 2 على المثلث $\Omega AA'$.
+\QQ{4} $(\mathcal C)$ الدائرة ذات المركز $A$ ونصف القطر $1$. عيّن صورتها $(\mathcal C')$ بـ $S$.
+\QQ{5} عيّن الكتابة المركبة للتشابه المباشر $T$ الذي يحول $O$ إلى $E(2)$ و$E$ إلى $F(4+2i)$، ثم عناصره المميزة.
+\end{tamrin}
+
+\begin{tamrin}{تركيب دوران وتحاكٍ}
+$r$ الدوران الذي مركزه $A(1)$ وزاويته $\dfrac\pi2$، و$h$ التحاكي الذي مركزه $B(-i)$ ونسبته $2$.
+\QQ{1} عيّن الكتابة المركبة لكل من $r$ و$h$.
+\QQ{2} عيّن الكتابة المركبة لكل من $f=h\circ r$ و$g=r\circ h$.
+\QQ{3} بيّن أن $f$ و$g$ تشابهان مباشران لهما نفس النسبة ونفس الزاوية، وعيّن مركز كل منهما. هل $h\circ r=r\circ h$؟
+\QQ{4} عيّن طبيعة التحويل $f\circ f$ وعناصره المميزة.
+\QQ{5} عيّن لاحقتي $f(O)$ و$g(O)$، ومثّل النقط في المعلم.
+\end{tamrin}
+
+\begin{tamrin}{التحليل القانوني لتشابه مباشر}
+$S$ التحويل النقطي الذي يرفق بكل نقطة $M(z)$ النقطة $M'(z')$ حيث: $z'=(-1+i)z+3+i$.
+\QQ{1} بيّن أن $S$ تشابه مباشر يطلب تعيين مركزه $\Omega$ ونسبته $k$ وزاويته $\theta$.
+\QQ{2} $r$ الدوران الذي مركزه $\Omega$ وزاويته $\theta$، و$h$ التحاكي الذي مركزه $\Omega$ ونسبته $k$.
+\begin{sq}
+\qa اكتب الكتابة المركبة لكل من $r$ و$h$.
+\qb بيّن أن $h\circ r=S$ وأن $r\circ h=S$ (التحليل القانوني لـ $S$).
+\end{sq}
+\QQ{3} $A$ النقطة ذات اللاحقة $2+2i$. عيّن لاحقة $A_1=r(A)$ ثم لاحقة $A'=h(A_1)$، وتحقق أن $A'=S(A)$. أنشئ النقط.
+\QQ{4} $(\mathcal C)$ الدائرة ذات المركز $A$ ونصف القطر $1$. عيّن صورتها $(\mathcal C')$ بـ $S$.
+\QQ{5} عيّن الكتابة المركبة لـ $S\circ S$، ثم عناصره المميزة وتحليله القانوني.
+\end{tamrin}
+
+\begin{tamrin}{مجموعات نقط معرفة وسيطيًا}
+$\theta$ و$t$ و$k$ وسائط حقيقية.
+\QQ{1} عيّن في كل حالة مجموعة النقط $M(z)$:
+\begin{sq}
+\qa $(\Gamma_1)$: $z=-1+i+\sqrt2\,e^{i\theta}$ مع $\theta\in\R$.
+\qb $(\Delta)$: $z=2i+t(1+i)$ مع $t\in\R$.
+\qc $(\Delta')$: $z=k\,e^{i\frac\pi3}$ مع $k\in]0;+\infty[$.
+\qd $(\Gamma_2)$: $z=2+e^{i\theta}$ مع $\theta\in\left[-\frac\pi2;\frac\pi2\right]$.
+\end{sq}
+\QQ{2} عيّن نقطتي تقاطع $(\Gamma_1)$ و$(\Delta)$.
+\QQ{3} نرفق بكل نقطة $M(z)$ النقطة $M'(z')$ حيث $z'=(1+i)z$. عيّن المجموعة $(\Gamma_2')$ التي ترسمها $M'$ لما ترسم $M$ المجموعة $(\Gamma_2)$. ارسم كل المجموعات.
+\end{tamrin}
+
+\begin{tamrin}{دستور موافر ودستورا أولر}
+$\theta$ عدد حقيقي.
+\QQ{1} باستعمال دستور موافر ونشر $(\cos\theta+i\sin\theta)^3$، بيّن أن:
+\[\cos3\theta=4\cos^3\theta-3\cos\theta,\qquad \sin3\theta=3\sin\theta-4\sin^3\theta.\]
+\QQ{2} نعتبر المعادلة $(E)$: $8x^3-6x-1=0$ حيث $x$ عدد حقيقي.
+\begin{sq}
+\qa بوضع $x=\cos\theta$ مع $\theta\in[0;\pi]$، بيّن أن $(E)$ تكافئ $\cos3\theta=\frac12$.
+\qb استنتج حلول $(E)$.
+\qc استنتج قيمتي $\cos\frac\pi9+\cos\frac{5\pi}9+\cos\frac{7\pi}9$ و$\cos\frac\pi9\times\cos\frac{5\pi}9\times\cos\frac{7\pi}9$.
+\end{sq}
+\QQ{3} باستعمال دستوري أولر، اكتب $\cos^4\theta$ خطيًا (بدلالة $\cos4\theta$ و$\cos2\theta$).
+\QQ{4} $n$ عدد طبيعي غير معدوم و$\theta\in]0;2\pi[$. نضع $S=1+e^{i\theta}+e^{2i\theta}+\dots+e^{in\theta}$.
+\begin{sq}
+\qa بيّن أن $S=e^{i\frac{n\theta}2}\,\dfrac{\sin\frac{(n+1)\theta}{2}}{\sin\frac\theta2}$.
+\qb استنتج أن $\displaystyle\sum_{k=0}^n\cos k\theta=\frac{\cos\frac{n\theta}2\,\sin\frac{(n+1)\theta}2}{\sin\frac\theta2}$، ثم أن $\cos\frac{2\pi}5+\cos\frac{4\pi}5=-\frac12$.
+\end{sq}
+\end{tamrin}
+
+\begin{tamrin}{معادلة من الدرجة الثالثة وتشابه}
+نعتبر كثير الحدود $P(z)=z^3-(2+2i)z^2+(2+4i)z-4i$.
+\QQ{1} بيّن أن المعادلة $P(z)=0$ تقبل حلًّا تخيليًا صرفًا $z_0=iy$ ($y$ حقيقي) يطلب تعيينه.
+\QQ{2} عيّن العددين الحقيقيين $\alpha$ و$\beta$ بحيث: $P(z)=(z-2i)(z^2+\alpha z+\beta)$، ثم حل في $\mathbb{C}$ المعادلة $P(z)=0$.
+\QQ{3} $A$، $B$ و$C$ النقط ذات اللواحق $z_A=1+i$، $z_B=1-i$ و$z_C=2i$. بيّن أن المثلث $OAB$ قائم ومتساوي الساقين.
+\QQ{4} $S$ التشابه المباشر الذي مركزه $O$ ويحول $B$ إلى $C$.
+\begin{sq}
+\qa عيّن الكتابة المركبة لـ $S$ وعناصره المميزة.
+\qb عيّن لاحقة $D=S(A)$، واستنتج طبيعة المثلث $OCD$.
+\qc احسب النسبة بين مساحتي المثلثين $OCD$ و$OAB$. أنشئ الشكل.
+\end{sq}
+\end{tamrin}
+\end{document}

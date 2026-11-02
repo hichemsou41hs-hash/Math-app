@@ -1,0 +1,537 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}تمارين تجريبية: المتتاليات العددية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries تمارين تجريبية في المتتاليات العددية}\\[8pt]
+{\color{white}\large تمارين متدرجة -- بدون حلول (للتدرّب)}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- الشعب العلمية}
+\end{tcolorbox}
+\end{LTR}
+\section{توليد متتالية واتجاه تغيرها}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{متتاليات معرفة بحدها العام}
+\QQ{1} نعتبر المتتالية $(u_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $u_n=\dfrac{2n+1}{n+1}$.
+\begin{sq}
+\qa احسب $u_0$ ، $u_1$ ، $u_2$ و $u_3$.
+\qb بيّن أنه من أجل كل عدد طبيعي $n$: $u_n=2-\dfrac{1}{n+1}$.
+\qc ادرس اتجاه تغير المتتالية $(u_n)$.
+\qd بيّن أنه من أجل كل عدد طبيعي $n$: $1\leqslant u_n<2$. ماذا تستنتج؟
+\end{sq}
+\QQ{2} نعتبر المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=n^{2}-4n+1$.
+\begin{sq}
+\qa احسب الحدود الستة الأولى للمتتالية $(v_n)$.
+\qb احسب $v_{n+1}-v_n$ بدلالة $n$، ثم بيّن أن $(v_n)$ ليست رتيبة على $\N$.
+\qc بيّن أن $(v_n)$ متزايدة تماما ابتداء من الرتبة $2$.
+\end{sq}
+\QQ{3} نعتبر المتتالية $(w_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $w_n=\dfrac{2^{n}}{n+1}$.
+\begin{sq}
+\qa بيّن أن حدود المتتالية $(w_n)$ موجبة تماما.
+\qb احسب $\dfrac{w_{n+1}}{w_n}$ ثم قارنه بالعدد $1$. استنتج اتجاه تغير $(w_n)$.
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{متتالية تراجعية وتمثيلها البياني}
+لتكن الدالة $f$ المعرفة على المجال $\left[0;+\infty\right[$ بـ: $f(x)=\dfrac{3x+2}{x+2}$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس.
+
+نعتبر المتتالية $(u_n)$ المعرفة بـ: $u_0=0$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\QQ{1} ادرس اتجاه تغير الدالة $f$ على $\left[0;+\infty\right[$، واحسب $\lim\limits_{x\to+\infty}f(x)$، ثم شكّل جدول تغيراتها.
+\QQ{2} حل في $\left[0;+\infty\right[$ المعادلة $f(x)=x$.
+\QQ{3} احسب $u_1$ ، $u_2$ و $u_3$.
+\QQ{4}
+\begin{sq}
+\qa ارسم $(C_f)$ والمستقيم $(\Delta)$ ذا المعادلة $y=x$.
+\qb مثّل على محور الفواصل الحدود $u_0$ ، $u_1$ ، $u_2$ و $u_3$ دون حسابها (باستعمال $(C_f)$ و $(\Delta)$).
+\qc ضع تخمينا حول اتجاه تغير $(u_n)$ وحول تقاربها.
+\end{sq}
+\QQ{5} نقبل أنه من أجل كل عدد طبيعي $n$: $0\leqslant u_n<2$.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=\dfrac{(2-u_n)(u_n+1)}{u_n+2}$.
+\qb استنتج اتجاه تغير المتتالية $(u_n)$.
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{اتجاه التغير بطرق مختلفة}
+\QQ{1} نعتبر المتتالية $(a_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $a_n=n\,e^{-n}$.
+\begin{sq}
+\qa ادرس اتجاه تغير الدالة $g$ المعرفة على $\left[0;+\infty\right[$ بـ: $g(x)=x\,e^{-x}$.
+\qb استنتج اتجاه تغير المتتالية $(a_n)$ ابتداء من الرتبة $1$.
+\end{sq}
+\QQ{2} نعتبر المتتالية $(b_n)$ المعرفة بـ: $b_0=2$ ومن أجل كل عدد طبيعي $n$: $b_{n+1}=b_n+2n-5$.
+\begin{sq}
+\qa احسب $b_1$ ، $b_2$ ، $b_3$ ، $b_4$ و $b_5$.
+\qb ادرس اتجاه تغير $(b_n)$.
+\end{sq}
+\QQ{3} نعتبر المتتالية $(c_n)$ المعرفة بـ: $c_0=1$ ومن أجل كل عدد طبيعي $n$: $c_{n+1}=c_n\,e^{-c_n}$.
+نقبل أنه من أجل كل عدد طبيعي $n$: $c_n>0$. بيّن أن المتتالية $(c_n)$ متناقصة تماما.
+\end{tamrin}
+
+\section{البرهان بالتراجع}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{إثبات مساواة مجموع}
+\QQ{1} برهن بالتراجع أنه من أجل كل عدد طبيعي غير معدوم $n$:
+\[
+1\times 2+2\times 3+3\times 4+\dots+n(n+1)=\frac{n(n+1)(n+2)}{3} .
+\]
+\QQ{2} برهن بالتراجع أنه من أجل كل عدد طبيعي غير معدوم $n$:
+\[
+\frac{1}{1\times 2}+\frac{1}{2\times 3}+\dots+\frac{1}{n(n+1)}=\frac{n}{n+1} .
+\]
+\QQ{3} استنتج قيمة كل من المجموعين:
+\begin{sq}
+\qa $A=1\times 2+2\times 3+\dots+10\times 11$
+\qb $B=\dfrac{1}{1\times 2}+\dfrac{1}{2\times 3}+\dots+\dfrac{1}{99\times 100}$
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{إثبات متباينات بالتراجع}
+\QQ{1} ليكن $a$ عددا حقيقيا موجبا تماما.
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $(1+a)^{n}\geqslant 1+na$ \ (متباينة برنولي).
+\qb استنتج أنه من أجل كل عدد طبيعي $n$: $3^{n}\geqslant 2n+1$.
+\qc استنتج أن $(1{,}01)^{100}\geqslant 2$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa قارن $2^{n}$ و $n^{2}$ من أجل $n\in\{1;2;3;4;5;6\}$.
+\qb بيّن أنه من أجل كل عدد طبيعي $n\geqslant 3$: $n^{2}-2n-1>0$.
+\qc برهن بالتراجع أنه من أجل كل عدد طبيعي $n\geqslant 4$: $2^{n}\geqslant n^{2}$.
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{حصر متتالية تراجعية واتجاه تغيرها}
+نعتبر المتتالية $(u_n)$ المعرفة بـ: $u_0=1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\sqrt{2u_n+3}$.
+\QQ{1} احسب $u_1$ و $u_2$ (تعطى $u_2$ مدورة إلى $10^{-2}$).
+\QQ{2} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $1\leqslant u_n<3$.
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=\dfrac{(3-u_n)(1+u_n)}{\sqrt{2u_n+3}+u_n}$.
+\qb استنتج أن المتتالية $(u_n)$ متزايدة تماما.
+\end{sq}
+\QQ{4} استنتج أن المتتالية $(u_n)$ متقاربة، ثم عيّن نهايتها $\ell$.
+\end{tamrin}
+
+\section{المتتاليات الحسابية والهندسية}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{تعيين الحد العام}
+\QQ{1} $(u_n)$ متتالية حسابية حدها الأول $u_0$ حيث: $u_3=7$ و $u_8=22$.
+\begin{sq}
+\qa عيّن أساسها $r$ وحدها الأول $u_0$.
+\qb اكتب $u_n$ بدلالة $n$.
+\qc هل العدد $2026$ حد من حدود هذه المتتالية؟ وماذا عن العدد $2027$؟
+\end{sq}
+\QQ{2} $(v_n)$ متتالية هندسية حدودها موجبة تماما، حيث: $v_1=6$ و $v_4=162$.
+\begin{sq}
+\qa عيّن أساسها $q$ وحدها الأول $v_0$.
+\qb اكتب $v_n$ بدلالة $n$، ثم احسب $v_5$.
+\end{sq}
+\QQ{3} ثلاثة أعداد هي حدود متتابعة لمتتالية حسابية، مجموعها $15$ وجداؤها $80$. عيّن هذه الأعداد.
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{حساب المجاميع}
+نعتبر المتتاليتين $(u_n)$ و $(v_n)$ المعرفتين من أجل كل عدد طبيعي $n$ بـ: $u_n=2n+1$ و $v_n=3\times 2^{n}$.
+\QQ{1} بيّن أن $(u_n)$ حسابية وأن $(v_n)$ هندسية، وعيّن الأساس والحد الأول لكل منهما.
+\QQ{2} احسب بدلالة $n$ المجموع $S_n=u_0+u_1+\dots+u_n$.
+\QQ{3} احسب بدلالة $n$ المجموع $T_n=v_0+v_1+\dots+v_n$.
+\QQ{4} احسب المجموع $S'=u_5+u_6+\dots+u_{20}$.
+\QQ{5} عيّن أصغر عدد طبيعي $n$ يحقق $T_n>10000$.
+\QQ{6} بيّن أن المتتالية $\left(\ln v_n\right)$ حسابية، ثم احسب بدلالة $n$ المجموع $L_n=\ln v_0+\ln v_1+\dots+\ln v_n$.
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\Needspace{16\baselineskip}
+\begin{tamrin}{مسألة: اختيار طريقة الادخار}
+يريد أحمد إيداع مبلغ $100000$ دينار في بنك. يقترح عليه البنك صيغتين:
+\begin{itemize}
+\item \textbf{الصيغة الأولى:} فائدة بسيطة: يضاف إلى الرصيد كل سنة مبلغ ثابت يساوي $4\%$ من المبلغ الأصلي.
+\item \textbf{الصيغة الثانية:} فائدة مركبة: يزداد الرصيد كل سنة بنسبة $3{,}5\%$ من رصيد السنة السابقة.
+\end{itemize}
+نرمز بـ $A_n$ و $B_n$ إلى الرصيد (بالدينار) بعد $n$ سنة حسب الصيغة الأولى والثانية على الترتيب، مع $A_0=B_0=100000$.
+\QQ{1} احسب $A_1$ ، $A_2$ ، $B_1$ و $B_2$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أن $(A_n)$ متتالية حسابية، واكتب $A_n$ بدلالة $n$.
+\qb بيّن أن $(B_n)$ متتالية هندسية، واكتب $B_n$ بدلالة $n$.
+\end{sq}
+\QQ{3} احسب الرصيد بعد $10$ سنوات حسب كل صيغة (تدور النتائج إلى $10^{-2}$).
+\QQ{4} بعد كم سنة يتجاوز الرصيد (أو يساوي) $150000$ دينار حسب كل صيغة؟
+\QQ{5} تحقق أن $B_8<A_8$ و $B_9>A_9$، ونقبل أن $B_n>A_n$ من أجل كل $n\geqslant 9$. ما الصيغة التي تنصح بها أحمد؟
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{المتتالية $u_{n+1}=au_n+b$ ومتتالية مساعدة هندسية}
+نعتبر المتتالية $(u_n)$ المعرفة بـ: $u_0=2$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac12u_n+3$.
+\QQ{1} احسب $u_1$ ، $u_2$ و $u_3$، ثم بيّن أن $(u_n)$ ليست حسابية وليست هندسية.
+\QQ{2} نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-6$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدها الأول.
+\qb اكتب $v_n$ ثم $u_n$ بدلالة $n$.
+\end{sq}
+\QQ{3} ادرس اتجاه تغير المتتالية $(u_n)$.
+\QQ{4} احسب $\limn u_n$.
+\QQ{5} احسب بدلالة $n$ المجموع $S_n=u_0+u_1+\dots+u_n$.
+\end{tamrin}
+
+\section{التقارب والنهايات}
+
+\begin{tamrin}{نهايات متتاليات معرّفة بحدها العام}
+احسب نهاية المتتالية $(u_n)$ المعرفة من أجل كل عدد طبيعي $n$ في كل حالة من الحالات التالية:
+\begin{sq}
+\qa $u_n=3\left(\dfrac12\right)^n-4$
+\qb $u_n=\dfrac{4^n-3^n}{4^n+3^n}$
+\qc $u_n=\dfrac{2n^2-n+3}{n^2+1}$
+\qd $u_n=\sqrt{n+1}-\sqrt{n}$
+\qe $u_n=1+\dfrac13+\left(\dfrac13\right)^2+\cdots+\left(\dfrac13\right)^n$
+\item[(و)] $u_n=\dfrac{2^{n+1}+5^n}{5^n}$
+\end{sq}
+\end{tamrin}
+
+\begin{tamrin}{المقارنة والحصر}
+\QQ{1} نعتبر المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=2n+(-1)^n$.
+
+بيّن أنه من أجل كل عدد طبيعي $n$: $v_n\geqslant 2n-1$، ثم استنتج $\limn v_n$.
+\QQ{2} نعتبر المتتالية $(u_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $u_n=\dfrac{3n+(-1)^n}{n+2}$.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $\dfrac{3n-1}{n+2}\leqslant u_n\leqslant\dfrac{3n+1}{n+2}$.
+\qb استنتج $\limn u_n$.
+\qc بيّن أنه من أجل كل عدد طبيعي $n$: $\left|u_n-3\right|\leqslant\dfrac{7}{n+2}$، ثم عيّن عددًا طبيعيًا $n_0$ بحيث من أجل كل $n\geqslant n_0$ يكون: $\left|u_n-3\right|\leqslant10^{-2}$.
+\end{sq}
+\QQ{3} نعتبر المتتالية $(w_n)$ المعرفة من أجل كل عدد طبيعي غير معدوم $n$ بـ:
+\[w_n=\frac{n}{n^2+1}+\frac{n}{n^2+2}+\cdots+\frac{n}{n^2+n}=\sum_{k=1}^{n}\frac{n}{n^2+k}\]
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي غير معدوم $n$: $\dfrac{n^2}{n^2+n}\leqslant w_n\leqslant\dfrac{n^2}{n^2+1}$.
+\qb استنتج $\limn w_n$.
+\end{sq}
+\end{tamrin}
+
+\begin{tamrin}{متتالية رتيبة ومحدودة من الشكل $u_{n+1}=f(u_n)$}
+نعتبر الدالة $f$ المعرفة على المجال $[0;+\infty[$ بـ: $f(x)=\dfrac{4x+2}{x+3}$، والمتتالية $(u_n)$ المعرفة بـ: $u_0=1$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\QQ{1} ادرس اتجاه تغير الدالة $f$ على المجال $[0;+\infty[$.
+\QQ{2} احسب $u_1$ و $u_2$.
+\QQ{3} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $1\leqslant u_n<2$.
+\QQ{4}
+\begin{sq}
+\qa تحقق أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=\dfrac{-(u_n-2)(u_n+1)}{u_n+3}$.
+\qb استنتج اتجاه تغير المتتالية $(u_n)$.
+\end{sq}
+\QQ{5} استنتج أن المتتالية $(u_n)$ متقاربة، ثم عيّن نهايتها $\ell$.
+\QQ{6} نعتبر المتتالية $(v_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $v_n=\dfrac{u_n-2}{u_n+1}$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية يُطلب تعيين أساسها وحدها الأول.
+\qb اكتب $v_n$ بدلالة $n$، ثم بيّن أن $u_n=\dfrac{2+v_n}{1-v_n}$ واستنتج عبارة $u_n$ بدلالة $n$.
+\qc أعد حساب $\limn u_n$.
+\end{sq}
+\end{tamrin}
+
+\begin{tamrin}{متتالية معرّفة باستعمال الدالتين الأسية واللوغاريتمية}
+نعتبر المتتالية $(u_n)$ المعرفة بـ: $u_0=1$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=e\sqrt{u_n}$.
+\QQ{1} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>0$.
+\QQ{2} نضع من أجل كل عدد طبيعي $n$: $v_n=\ln\left(u_n\right)-2$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac12$، يُطلب تعيين حدها الأول.
+\qb اكتب $v_n$ ثم $u_n$ بدلالة $n$.
+\qc احسب $\limn v_n$ ثم $\limn u_n$.
+\end{sq}
+\QQ{3} ادرس اتجاه تغير المتتالية $(u_n)$.
+\QQ{4} نضع من أجل كل عدد طبيعي $n$: $S_n=v_0+v_1+\cdots+v_n$ و $P_n=u_0\times u_1\times\cdots\times u_n$.
+\begin{sq}
+\qa احسب $S_n$ بدلالة $n$.
+\qb بيّن أن $\ln\left(P_n\right)=S_n+2(n+1)$، ثم اكتب $P_n$ بدلالة $n$ واحسب $\limn P_n$.
+\end{sq}
+\end{tamrin}
+
+\section{المتتاليتان المتجاورتان}
+
+\begin{tamrin}{متتاليتان متجاورتان معرّفتان بالتراجع}
+نعتبر المتتاليتين $(u_n)$ و $(v_n)$ المعرفتين بـ: $u_0=1$ و $v_0=12$، ومن أجل كل عدد طبيعي $n$:
+\[u_{n+1}=\frac{u_n+2v_n}{3}\qquad\text{و}\qquad v_{n+1}=\frac{u_n+3v_n}{4}\]
+\QQ{1} نضع من أجل كل عدد طبيعي $n$: $w_n=v_n-u_n$.
+\begin{sq}
+\qa بيّن أن $(w_n)$ متتالية هندسية أساسها $\dfrac1{12}$، ثم اكتب $w_n$ بدلالة $n$.
+\qb استنتج إشارة $w_n$ و $\limn w_n$.
+\end{sq}
+\QQ{2} بيّن أن المتتالية $(u_n)$ متزايدة وأن المتتالية $(v_n)$ متناقصة.
+\QQ{3} استنتج أن المتتاليتين $(u_n)$ و $(v_n)$ متجاورتان.
+\QQ{4} نضع من أجل كل عدد طبيعي $n$: $t_n=3u_n+8v_n$. بيّن أن المتتالية $(t_n)$ ثابتة، ثم استنتج النهاية المشتركة $\ell$ للمتتاليتين $(u_n)$ و $(v_n)$.
+\QQ{5} اكتب $u_n$ و $v_n$ بدلالة $n$.
+\end{tamrin}
+
+\begin{tamrin}{الوسط الحسابي والوسط التوافقي}
+نعتبر المتتاليتين $(u_n)$ و $(v_n)$ المعرفتين بـ: $u_0=1$ و $v_0=4$، ومن أجل كل عدد طبيعي $n$:
+\[u_{n+1}=\frac{2u_nv_n}{u_n+v_n}\qquad\text{و}\qquad v_{n+1}=\frac{u_n+v_n}{2}\]
+\QQ{1} احسب $u_1$ و $v_1$ و $u_2$ و $v_2$.
+\QQ{2} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>0$ و $v_n>0$.
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $v_{n+1}-u_{n+1}=\dfrac{\left(v_n-u_n\right)^2}{2\left(u_n+v_n\right)}$.
+\qb استنتج أنه من أجل كل عدد طبيعي $n$: $u_n\leqslant v_n$.
+\end{sq}
+\QQ{4} بيّن أن المتتالية $(u_n)$ متزايدة وأن المتتالية $(v_n)$ متناقصة.
+\QQ{5}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $v_{n+1}-u_{n+1}\leqslant\dfrac12\left(v_n-u_n\right)$.
+\qb استنتج أنه من أجل كل عدد طبيعي $n$: $0\leqslant v_n-u_n\leqslant3\left(\dfrac12\right)^n$، ثم بيّن أن $(u_n)$ و $(v_n)$ متجاورتان.
+\end{sq}
+\QQ{6} بيّن أنه من أجل كل عدد طبيعي $n$: $u_nv_n=4$، ثم استنتج النهاية المشتركة $\ell$ للمتتاليتين.
+\end{tamrin}
+
+\section{اختيار من متعدد وصحيح أم خطأ}
+
+\begin{tamrin}{اختيار من متعدد}
+في كل سؤال من الأسئلة التالية اختر الإجابة الصحيحة الوحيدة مع التعليل:
+\QQ{1} $\limn\left(-0{,}9\right)^n$ تساوي:
+\ABC{$0$}{$-\infty$}{غير موجودة}
+\QQ{2} المتتالية $(u_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $u_n=(-1)^n$:
+\ABC{متقاربة}{محدودة وليست متقاربة}{نهايتها $+\infty$}
+\QQ{3} إذا كانت $(u_n)$ متزايدة ومن أجل كل عدد طبيعي $n$: $u_n\leqslant5$، فإن $(u_n)$:
+\ABC{متباعدة}{متقاربة ونهايتها حتمًا $5$}{متقاربة نحو عدد $\ell\leqslant5$}
+\QQ{4} $(u_n)$ متتالية متقاربة معرفة بـ: $u_0=0$ و $u_{n+1}=\sqrt{u_n+6}$. نهايتها هي:
+\ABC{$2$}{$3$}{$-2$}
+\QQ{5} نهاية المجموع $S_n=1+\dfrac12+\dfrac14+\cdots+\dfrac1{2^n}$ هي:
+\ABC{$1$}{$+\infty$}{$2$}
+\QQ{6} المتتاليتان $(u_n)$ و $(v_n)$ المعرفتان من أجل كل عدد طبيعي غير معدوم $n$ بـ: $u_n=1-\dfrac1n$ و $v_n=1+\dfrac1{n^2}$:
+\ABC{متجاورتان}{نهايتاهما مختلفتان}{متباعدتان}
+\end{tamrin}
+
+\begin{tamrin}{صحيح أم خطأ}
+أجب بـ «صحيح» أو «خطأ» مع التعليل في كل حالة من الحالات التالية:
+\QQ{1} كل متتالية محدودة هي متتالية متقاربة.
+\QQ{2} كل متتالية متقاربة هي متتالية محدودة.
+\QQ{3} إذا كان من أجل كل عدد طبيعي $n$: $u_n\leqslant v_n$ و $\limn u_n=+\infty$ فإن $\limn v_n=+\infty$.
+\QQ{4} إذا كانت المتتالية $(u_n)$ متزايدة تمامًا فإن $\limn u_n=+\infty$.
+\QQ{5} المتتالية $(u_n)$ المعرفة من أجل كل عدد طبيعي $n$ بـ: $u_n=n\,e^{-n}$ متقاربة نحو $0$.
+\QQ{6} إذا كان $\limn\left(u_{n+1}-u_n\right)=0$ فإن المتتالية $(u_n)$ متقاربة.
+\end{tamrin}
+
+\section{تمارين شعبة رياضيات}
+
+\begin{tamrin}{التقارب نحو حل معادلة -- شعبة رياضيات}
+\textbf{الجزء الأول:} نعتبر الدالة $h$ المعرفة على $\R$ بـ: $h(x)=x-e^{-x}$.
+\QQ{1} احسب $\displaystyle\lim_{x\to-\infty}h(x)$ و $\displaystyle\lim_{x\to+\infty}h(x)$، ثم ادرس اتجاه تغير $h$ وشكّل جدول تغيراتها.
+\QQ{2} بيّن أن المعادلة $h(x)=0$ تقبل حلًا وحيدًا $\alpha$ حيث $0{,}5<\alpha<0{,}6$، ثم تحقق أن $e^{-\alpha}=\alpha$.
+
+\textbf{الجزء الثاني:} نعتبر الدالة $f$ المعرفة على $\R$ بـ: $f(x)=e^{-x}$، والمجال $I=\left[\frac12;\ln2\right]$.
+\QQ{1} علمًا أن $e>\dfrac94$ و $e^2<8$، بيّن أن: $e^{-\frac12}<\dfrac23<\ln2$.
+\QQ{2} بيّن أنه من أجل كل $x$ من $I$: $f(x)\in I$.
+\QQ{3} نعتبر الدالة $\varphi$ المعرفة على $I$ بـ: $\varphi(x)=e^{-x}+\dfrac23x$.
+\begin{sq}
+\qa بيّن أن $\varphi$ متزايدة على $I$.
+\qb استنتج أنه من أجل كل $x$ من $I$: $\left|f(x)-\alpha\right|\leqslant\dfrac23\left|x-\alpha\right|$.
+\end{sq}
+
+\textbf{الجزء الثالث:} نعتبر المتتالية $(u_n)$ المعرفة بـ: $u_0=\dfrac12$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=e^{-u_n}$.
+\QQ{1} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n\in I$.
+\QQ{2} بيّن أنه من أجل كل عدد طبيعي $n$: $\left|u_{n+1}-\alpha\right|\leqslant\dfrac23\left|u_n-\alpha\right|$، ثم استنتج أن: $\left|u_n-\alpha\right|\leqslant\dfrac1{10}\left(\dfrac23\right)^n$.
+\QQ{3} استنتج أن $(u_n)$ متقاربة وعيّن نهايتها.
+\QQ{4} عيّن أصغر عدد طبيعي $n_0$ بحيث $\dfrac1{10}\left(\dfrac23\right)^{n_0}\leqslant10^{-3}$، ثم أعط قيمة مقربة لـ $\alpha$ إلى $10^{-3}$ علمًا أن $u_{12}\approx0{,}5672$.
+\end{tamrin}
+
+\begin{tamrin}{متتاليتان متجاورتان والعدد $e$ -- شعبة رياضيات}
+نذكّر أن $0!=1$ وأنه من أجل كل عدد طبيعي غير معدوم $k$: $k!=1\times2\times\cdots\times k$.
+
+نعتبر المتتاليتين $(u_n)$ و $(v_n)$ المعرفتين من أجل كل عدد طبيعي غير معدوم $n$ بـ:
+\[u_n=\sum_{k=0}^{n}\frac1{k!}=1+\frac1{1!}+\frac1{2!}+\cdots+\frac1{n!}\qquad\text{و}\qquad v_n=u_n+\frac1{n\times n!}\]
+\QQ{1} احسب $u_1$ و $v_1$ و $u_2$ و $v_2$ و $u_3$ و $v_3$.
+\QQ{2} بيّن أن المتتالية $(u_n)$ متزايدة تمامًا.
+\QQ{3} بيّن أنه من أجل كل عدد طبيعي غير معدوم $n$: $v_{n+1}-v_n=\dfrac{-1}{n(n+1)\times(n+1)!}$، ثم استنتج اتجاه تغير $(v_n)$.
+\QQ{4} بيّن أن المتتاليتين $(u_n)$ و $(v_n)$ متجاورتان. نرمز بـ $\ell$ إلى نهايتهما المشتركة (نقبل أن $\ell=e$).
+\QQ{5} بيّن أنه من أجل كل عدد طبيعي غير معدوم $n$: $u_n<\ell<v_n$، ثم أعط حصرًا لـ $\ell$ باستعمال $u_5$ و $v_5$، واستنتج قيمة مقربة لـ $\ell$ إلى $10^{-2}$.
+\QQ{6} نريد أن نبرهن أن $\ell$ عدد غير ناطق. نفرض أن $\ell=\dfrac pq$ حيث $p$ و $q$ عددان طبيعيان غير معدومين.
+\begin{sq}
+\qa بيّن أن العدد $N=q\times q!\times u_q$ عدد طبيعي.
+\qb باستعمال السؤال 5 من أجل $n=q$، بيّن أن $N<p\times q!<N+1$، ثم استنتج تناقضًا.
+\end{sq}
+\end{tamrin}
+
+\Needspace{20\baselineskip}
+\begin{tamrin}{دراسة دالة ومتتالية تراجعية -- شعبة رياضيات}
+\textbf{الجزء الأول:} نعتبر الدالة $g$ المعرفة على $]0;+\infty[$ بـ: $g(x)=x-1-\ln x$.
+\QQ{1} احسب $\displaystyle\lim_{x\to0^+}g(x)$ و $\displaystyle\lim_{x\to+\infty}g(x)$.
+\QQ{2} ادرس اتجاه تغير $g$ وشكّل جدول تغيراتها.
+\QQ{3} استنتج أنه من أجل كل $x>0$: $\ln x\leqslant x-1$، مع المساواة إذا وفقط إذا كان $x=1$.
+
+\textbf{الجزء الثاني:} نعتبر الدالة $f$ المعرفة على $[1;+\infty[$ بـ: $f(x)=1+\ln x$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس، و $(\Delta)$ المستقيم ذو المعادلة $y=x$.
+\QQ{1} ادرس اتجاه تغير $f$، ثم بيّن أنه من أجل كل $x\geqslant1$: $f(x)\geqslant1$.
+\QQ{2} اكتب معادلة للمماس $(T)$ لـ $(C_f)$ في النقطة ذات الفاصلة $1$.
+\QQ{3} ادرس الوضع النسبي لـ $(C_f)$ و $(\Delta)$.
+
+\textbf{الجزء الثالث:} نعتبر المتتالية $(u_n)$ المعرفة بـ: $u_0=e$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\QQ{1} احسب $u_1$ و $u_2$.
+\QQ{2} ارسم $(C_f)$ و $(\Delta)$، ثم مثّل على حامل محور الفواصل الحدود $u_0$ و $u_1$ و $u_2$ و $u_3$ دون حسابها. ضع تخمينًا حول اتجاه تغير $(u_n)$ وتقاربها.
+\QQ{3} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n\geqslant1$.
+\QQ{4} بيّن أن المتتالية $(u_n)$ متناقصة.
+\QQ{5} استنتج أن $(u_n)$ متقاربة، ثم عيّن نهايتها.
+\end{tamrin}
+
+\end{document}

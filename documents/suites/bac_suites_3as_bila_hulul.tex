@@ -1,0 +1,2222 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}تمارين البكالوريا: المتتاليات العددية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries تمارين البكالوريا في المتتاليات العددية}\\[8pt]
+{\color{white}\large -- بدون حلول (للتدرّب) -- حتى دورة 2026}\\[5pt]
+{\color{white}\large علوم تجريبية -- تقني رياضي -- رياضيات}
+\end{tcolorbox}
+\end{LTR}
+\section{تمارين البكالوريا -- شعبة علوم تجريبية}
+% ===================== بكالوريا 2026 -- علوم تجريبية =====================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الأول -- علوم تجريبية}
+\QQ{1} ادرس اتجاه تغيّر الدالة $f$ المعرّفة على المجال $]-2;+\infty[$ بـ: $f(x)=\dfrac{4x}{x+2}$.
+
+\QQ{2} $(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=4$ ومن أجل كلّ عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\begin{sq}
+\qa احسب $u_1$ و$u_2$ ثمّ خمّن اتجاه تغيّر المتتالية $(u_n)$.
+\qb برهن بالتراجع أنّه: من أجل كلّ عدد طبيعي $n$، $u_n>2$.
+\qc ادرس اتجاه تغيّر المتتالية $(u_n)$.
+\end{sq}
+
+\QQ{3} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=\dfrac{u_n-2}{u_n}$.
+\begin{sq}
+\qa أثبت أنّ المتتالية $(v_n)$ هندسية أساسها $\dfrac12$، يُطلب كتابة $v_n$ بدلالة $n$.
+\qb عبّر عن $u_n$ بدلالة $n$ ثمّ احسب نهاية المتتالية $(u_n)$.
+\end{sq}
+
+\QQ{4} نضع: من أجل كلّ $n$ من $\N$: $S_n=v_0+v_1+\cdots+v_n$ و $T_n=\dfrac{1}{u_0}+\dfrac{1}{u_1}+\cdots+\dfrac{1}{u_n}$.
+
+-- احسب $S_n$ بدلالة $n$ ثمّ استنتج أنّ: $T_n=\dfrac12 n+\left(\dfrac12\right)^{n+2}$.
+\end{tamrin}
+
+% -------------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الثاني -- علوم تجريبية}
+$f$ الدالة المعرّفة على $\left]-\infty;\dfrac32\right[$ بـ: $f(x)=\dfrac{-6x+2}{2x-3}$، و$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$، و$(\Delta)$ المستقيم ذو المعادلة $y=x$ (الشكل).
+
+$(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=0$ ومن أجل كلّ عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+
+\begin{GR}{-4}{2}{-3}{3}{0.85}
+\Ticks{-4,-3,-2,-1,1,2}{-3,-2,-1,1,2,3}
+\draw[dashed,thick,gray] (1.5,-3)--(1.5,3);
+\draw[thick,cDef] plot[domain=-4:2,samples=2] (\x,\x);
+\draw[very thick,cThm,domain=-4:1.36,samples=200] plot (\x,{(-6*\x+2)/(2*\x-3)});
+\node[cDef] at (-2.6,-1.6){$(\Delta)$};
+\node[cThm] at (-0.75,-1.3){$(C_f)$};
+\end{GR}
+
+\QQ{1} بقراءة بيانية، حدّد اتجاه تغيّر الدالة $f$ وبرّر أنّه: من أجل كلّ $x$ من $[-2;0]$، $f(x)-x\leq 0$.
+
+\QQ{2}
+\begin{sq}
+\qa انقل الشكل على ورقة الإجابة ثمّ مثّل على حامل محور الفواصل الحدود: $u_0$، $u_1$، $u_2$ و$u_3$ (دون حسابها مبرزًا خطوط التمثيل).
+\qb خمّن اتجاه تغيّر المتتالية $(u_n)$ وتقاربها.
+\end{sq}
+
+\QQ{3}
+\begin{sq}
+\qa برهن بالتراجع أنّه: من أجل كلّ عدد طبيعي $n$، $-2<u_n\leq 0$.
+\qb حدّد اتجاه تغيّر المتتالية $(u_n)$.
+\end{sq}
+
+\QQ{4} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=\dfrac{4+2u_n}{1-2u_n}$.
+\begin{sq}
+\qa أثبت أنّ المتتالية $(v_n)$ هندسية أساسها $\dfrac27$، يُطلب كتابة عبارة $v_n$ بدلالة $n$.
+\qb عبّر عن $u_n$ بدلالة $n$ ثمّ احسب نهاية المتتالية $(u_n)$.
+\end{sq}
+
+\QQ{5} $(w_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $w_n=\ln(v_n)$.
+\begin{sq}
+\qa بيّن أنّ المتتالية $(w_n)$ حسابية، يُطلب تعيين أساسها وحدّها الأول.
+\qb بيّن أنّه: من أجل كلّ $n$ من $\N$، $w_0+w_1+\cdots+w_n=\dfrac12(n+1)\big[(\ln2-\ln7)n+4\ln2\big]$.
+\end{sq}
+\end{tamrin}
+
+% ===================== علوم تجريبية: 2025 -- 2021 =====================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الأول -- علوم تجريبية}
+\QQ{1} $f$ الدالة المعرّفة على $[-1;+\infty[$ بـ: $f(x)=\dfrac{3}{x+2}$، و$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$، و$(\Delta)$ المستقيم الذي معادلته $y=x$ كما في الشكل أدناه.
+
+\begin{GR}{-1.5}{4.5}{-0.5}{3.5}{1.3}
+\Ticks{-1,1,2,3,4}{1,2,3}
+\draw[cThm,thick] (-0.5,-0.5)--(3.5,3.5);
+\draw[cDef,thick,domain=-1:4.5,samples=80] plot(\x,{3/(\x+2)});
+\fill[cDef] (-1,3) circle (1.5pt);
+\node[cDef] at (3.6,1.0){$(C_f)$};
+\node[cThm] at (2.6,3.2){$(\Delta)$};
+\end{GR}
+
+المتتالية العددية $(u_n)$ معرّفة بـ: $u_0=-1$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\begin{sq}
+\qa أنقل الشكل على ورقة الإجابة ثمّ مثّل على حامل محور الفواصل الحدود $u_0$، $u_1$، $u_2$ و$u_3$.
+\qb ضع تخمينا حول اتّجاه تغيّر المتتالية $(u_n)$ وتقاربها.
+\end{sq}
+\QQ{2} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=\dfrac{1-u_n}{3+u_n}$.
+\begin{sq}
+\qa بيّن أنّ المتتالية $(v_n)$ هندسية أساسها $-\dfrac13$، ثمّ اكتب $v_n$ بدلالة $n$.
+\qb استنتج كتابة $u_n$ بدلالة $n$، ثمّ احسب $\limn u_n$.
+\end{sq}
+\QQ{3} احسب بدلالة $n$ كلًّا من $S_n$ و$T_n$ حيث:
+\[S_n=v_0+v_1+\cdots+v_n\qquad;\qquad T_n=\ln|v_0|+\ln|v_1|+\cdots+\ln|v_n|\]
+\end{tamrin}
+
+\begin{molahada}
+في نسخة المصدر كُتب $u_0=1$ ومجال تعريف $f$ مفتوح عند $-1$. مع $u_0=1$ يكون $v_0=0$ فتصبح $(v_n)$ معدومة ولا يُعرَّف $\ln|v_0|$، والشكل يبدأ تمثيل الحدود من الفاصلة $-1$؛ لذا الصحيح: $u_0=-1$ و$f$ معرّفة على $[-1;+\infty[$.
+\end{molahada}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الثاني -- علوم تجريبية}
+\QQ{1} ادرس اتّجاه تغيّر الدالة $f$ المعرّفة على $[0;+\infty[$ بـ: $f(x)=\dfrac{5x}{2x+1}$.
+
+\QQ{2} $(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=3$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\begin{sq}
+\qa احسب الحدّين $u_1$ و$u_2$ ثمّ خمّن اتّجاه تغيّر المتتالية $(u_n)$.
+\qb برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $2<u_n\leqslant 3$.
+\qc ادرس اتّجاه تغيّر المتتالية $(u_n)$.
+\end{sq}
+\QQ{3} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=3^n\left(1-\dfrac{2}{u_n}\right)$.
+\begin{sq}
+\qa بيّن أنّ المتتالية $(v_n)$ هندسية أساسها $\dfrac35$، ثمّ اكتب $v_n$ بدلالة $n$.
+\qb استنتج بدلالة $n$ حساب المجموع $S_n$ حيث: $S_n=v_0+5v_1+5^2v_2+\cdots+5^nv_n$.
+\qc اكتب عبارة $u_n$ بدلالة $n$، ثمّ احسب $\limn u_n$.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa تحقّق أنّه من أجل كل عدد طبيعي $n$: $\dfrac{6}{u_n}=3-\dfrac{1}{5^n}$.
+\qb استنتج بدلالة $n$ حساب المجموع $T_n$ حيث: $T_n=\dfrac{6}{u_0}+\dfrac{6}{u_1}+\cdots+\dfrac{6}{u_n}$.
+\end{sq}
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الأول -- علوم تجريبية}
+$(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=0$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac{4-u_n}{2+u_n}$.
+
+\QQ{1} احسب الحدود $u_1$، $u_2$ و$u_3$، ثمّ برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $0\leqslant u_n\leqslant 2$.
+
+\QQ{2} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=\dfrac{u_n-1}{u_n+4}$.
+\begin{sq}
+\qa أثبت أنّ المتتالية $(v_n)$ هندسية أساسها $-\dfrac23$، ثمّ اكتب عبارة $v_n$ بدلالة $n$.
+\qb بيّن أنّه من أجل كل عدد طبيعي $n$: $u_n=\dfrac{5}{1-v_n}-4$، ثمّ احسب $\limn u_n$.
+\end{sq}
+\QQ{3} من أجل كل عدد طبيعي $n$ نضع:
+\[S_n=v_n+v_{n+1}+\cdots+v_{n+2024}\quad;\quad T_n=\frac{1}{4+u_n}+\frac{1}{4+u_{n+1}}+\cdots+\frac{1}{4+u_{n+2024}}\]
+احسب $S_n$ بدلالة $n$، ثمّ استنتج $T_n$ بدلالة $n$.
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الثاني -- علوم تجريبية}
+\QQ{1} $f$ الدالة العددية المعرّفة على المجال $[2;+\infty[$ كما يلي: $f(x)=\dfrac{x+1}{2x}$.
+
+شكّل جدول تغيّرات الدالة $f$، ثمّ استنتج أنّه من أجل كل $x$ من $[2;+\infty[$ فإنّ: $\dfrac12<f(x)\leqslant\dfrac34$.
+
+\QQ{2} $(u_n)$ المتتالية العددية المعرّفة من أجل كل عدد طبيعي $n\geqslant 2$ بـ: $u_n=\dfrac{n}{2^n}$.
+\begin{sq}
+\qa بيّن أنّه من أجل كل $n$ من $\N$، $n\geqslant 2$: $\dfrac{u_{n+1}}{u_n}\leqslant\dfrac34$.
+\qb أثبت أنّه من أجل كل $n$ من $\N$، $n\geqslant 2$: $u_n\leqslant\dfrac12\times\left(\dfrac34\right)^{n-2}$، ثمّ استنتج $\limn u_n$.
+\qc نضع من أجل كل $n$ من $\N$، $n\geqslant 2$: $S_n=\dfrac{u_2}{2}+\dfrac{u_3}{3}+\cdots+\dfrac{u_n}{n}$.
+
+بيّن أنّ: $S_n=\dfrac12\left(1-\left(\dfrac12\right)^{n-1}\right)$، ثمّ عيّن العدد الطبيعي $n$ حتى يكون $S_n=\dfrac{511}{1024}$.
+\end{sq}
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الأول -- علوم تجريبية}
+$(u_n)$ المتتالية المعرّفة بـ: $u_0=\dfrac12$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=-1+\dfrac{2}{2-u_n}$.
+
+\QQ{1}
+\begin{sq}
+\qa برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $0<u_n\leqslant\dfrac12$.
+\qb بيّن أنّ المتتالية $(u_n)$ متناقصة تماما.
+\end{sq}
+\QQ{2} نضع من أجل كل عدد طبيعي $n$: $v_n=\dfrac{1}{u_n}-1$.
+\begin{sq}
+\qa أثبت أنّ المتتالية $(v_n)$ هندسية أساسها $2$، ثمّ اكتب عبارة $v_n$ بدلالة $n$.
+\qb استنتج أنّه من أجل كل عدد طبيعي $n$: $u_n=\dfrac{1}{2^n+1}$، ثمّ احسب $\limn u_n$.
+\end{sq}
+\QQ{3} نضع من أجل كل عدد طبيعي $n$: $S_n=v_0+v_1+\cdots+v_n$ و$T_n=\dfrac{1}{u_0}+\dfrac{1}{u_1}+\cdots+\dfrac{1}{u_n}$.
+
+احسب $S_n$ بدلالة $n$، ثمّ بيّن أنّه من أجل كل عدد طبيعي $n$: $T_n=2^{n+1}+n$.
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الثاني -- علوم تجريبية}
+$(u_n)$ المتتالية المعرّفة بـ: $u_0=0$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac45u_n+1$.
+
+\QQ{1}
+\begin{sq}
+\qa برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $u_n<5$.
+\qb بيّن أنّ $(u_n)$ متزايدة تماما.
+\end{sq}
+\QQ{2} نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-5$.
+\begin{sq}
+\qa أثبت أنّ المتتالية $(v_n)$ هندسية أساسها $\dfrac45$، يُطلب تعيين حدّها الأول $v_0$.
+\qb اكتب عبارة $v_n$ بدلالة $n$، ثمّ استنتج أنّه من أجل كل عدد طبيعي $n$: $u_n=-5\left(\dfrac45\right)^n+5$.
+\qc احسب $\limn u_n$.
+\end{sq}
+\QQ{3} نضع من أجل كل عدد طبيعي $n$: $S_n=v_0+v_1+\cdots+v_n$ و$T_n=u_0+u_1+\cdots+u_n$.
+
+احسب $S_n$ بدلالة $n$، ثمّ بيّن أنّه من أجل كل عدد طبيعي $n$: $T_n=5n-20\left(1-\left(\dfrac45\right)^n\right)$.
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الأول -- علوم تجريبية}
+المستوي منسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$، $(D)$ و$(\Delta)$ المستقيمان المعرّفان كما يلي:
+\[(\Delta):\ y=-\frac12x+1\qquad;\qquad (D):\ y=x\]
+المتتالية العددية $(u_n)$ معرّفة على $\N$ بـ: $u_0=-4$ و$u_{n+1}=-\dfrac12u_n+1$.
+
+\begin{GR}{-4.5}{3.5}{-2}{4}{0.9}
+\Ticks{-4,-3,-2,-1,1,2,3}{-1,1,2,3}
+\draw[cThm,thick] (-2,-2)--(3.5,3.5);
+\draw[cDef,thick] (-4.5,3.25)--(3.5,-0.75);
+\node[cDef] at (2.6,-1.3){$(\Delta)$};
+\node[cThm] at (2.4,3.2){$(D)$};
+\end{GR}
+
+\QQ{1} أنقل الشكل المقابل على ورقة الإجابة، ثمّ مثّل على حامل محور الفواصل الحدود: $u_0$، $u_1$، $u_2$ و$u_3$ مبرزا خطوط التمثيل.
+\QQ{2}
+\begin{sq}
+\qa هل المتتالية $(u_n)$ رتيبة؟ برّر إجابتك.
+\qb ضع تخمينا حول تقارب المتتالية $(u_n)$.
+\end{sq}
+\QQ{3} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=\left(u_n-\dfrac23\right)^2$.
+\begin{sq}
+\qa بيّن أنّ المتتالية $(v_n)$ هندسية أساسها $\dfrac14$، ثمّ احسب $v_0$.
+\qb عبّر عن $v_n$ بدلالة $n$، ثمّ احسب $\limn v_n$ واستنتج أنّ $(u_n)$ متقاربة.
+\end{sq}
+\QQ{4} بيّن أنّه من أجل كل عدد طبيعي $n$: $v_0\times v_1\times\cdots\times v_{n-1}=\left(\dfrac{14}{3}\right)^{2n}\times\left(\dfrac12\right)^{n^2-n}$.
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الثاني -- علوم تجريبية}
+$(u_n)$ المتتالية الهندسية المعرّفة على $\N$ وحدودها موجبة تماما حيث:
+\[\begin{cases}u_0\times u_2=e^2\\ \ln u_1+\ln u_7=-4\end{cases}\]
+\QQ{1}
+\begin{sq}
+\qa عيّن $u_1$ والأساس $q$ للمتتالية $(u_n)$.
+\qb تحقّق أنّه من أجل كل عدد طبيعي $n$: $u_n=e^{2-n}$.
+\end{sq}
+\QQ{2} احسب بدلالة $n$ المجموع $S_n$ حيث: $S_n=u_0+u_1+\cdots+u_n$.
+\QQ{3} نعتبر المتتالية العددية $(v_n)$ المعرّفة بـ: $v_0=e^3$، ومن أجل كل عدد طبيعي $n$: $v_{n+1}=v_n+u_n$.
+\begin{sq}
+\qa برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $v_n=\dfrac{e^{3-n}-e^4}{1-e}$.
+\qb بيّن أنّ $(v_n)$ متقاربة.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa بيّن أنّه من أجل كل عدد طبيعي $n$: $\dfrac1e\,v_n=\dfrac{1}{1-e}\left(u_n-e^3\right)$.
+\qb نعتبر المجموع $S'_n$ حيث: $S'_n=\dfrac1e\,v_0+\dfrac1e\,v_1+\cdots+\dfrac1e\,v_n$.
+
+تحقّق أنّه من أجل كل عدد طبيعي $n$: $S'_n=\dfrac{1}{1-e}\left[S_n-(n+1)e^3\right]$.
+\end{sq}
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الأول -- علوم تجريبية}
+المتتالية العددية $(u_n)$ معرّفة على $\N$ بـ: $u_n=-4n+3$.
+
+\QQ{1} بيّن أنّ المتتالية $(u_n)$ حسابية يُطلب تعيين أساسها $r$ وحدّها الأول $u_0$.
+\QQ{2} من أجل كل عدد طبيعي $n$ نضع: $S_n=u_0+u_1+\cdots+u_n$.
+\begin{sq}
+\qa بيّن أنّه من أجل كل عدد طبيعي $n$: $S_n=-2n^2+n+3$.
+\qb عيّن قيمة العدد الطبيعي $n$ حيث: $S_n=-30132$.
+\end{sq}
+\QQ{3} $(v_n)$ متتالية عددية حدودها موجبة تماما، ومن أجل كل عدد طبيعي $n$: $u_n=\ln(v_n)$.
+\begin{sq}
+\qa اكتب عبارة الحدّ العام $v_n$ بدلالة $n$.
+\qb بيّن أنّ المتتالية $(v_n)$ هندسية أساسها $e^{-4}$.
+\end{sq}
+\QQ{4} من أجل كل عدد طبيعي $n$ نضع:
+\[S'_n=\ln\left[v_0\left(1-\frac12\right)\right]+\ln\left[v_1\left(1-\frac13\right)\right]+\cdots+\ln\left[v_n\left(1-\frac{1}{n+2}\right)\right]\]
+احسب $S'_n$ بدلالة $n$.
+\end{tamrin}
+
+% ================= تمارين البكالوريا: علوم تجريبية 2021 -- 2017 =================
+
+% ---------------------------------------------------------------- 2021 S2
+\Needspace{14\baselineskip}
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الثاني -- علوم تجريبية}
+$(u_n)$ المتتالية العددية المعرّفة بحدها الأول $u_0=0$ ومن أجل كل عدد طبيعي $n$:
+\[u_{n+1}=\frac{3}{8}\left(u_n+5\right).\]
+\QQ{1} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n<3$.
+\QQ{2} بيّن أن المتتالية $(u_n)$ متزايدة تمامًا، ثم استنتج أنها متقاربة.
+\QQ{3} المتتالية العددية $(v_n)$ معرّفة على $\N$ بـ: $v_n=3\left(3-u_n\right)$.
+\begin{sq}
+\qa احسب $v_0$ ثم بيّن أن المتتالية $(v_n)$ هندسية أساسها $\dfrac{3}{8}$.
+\qb اكتب بدلالة $n$ عبارة الحد العام $v_n$، ثم استنتج أنه من أجل كل عدد طبيعي $n$: $u_n=3-3\left(\dfrac{3}{8}\right)^n$.
+\qc احسب $\limn u_n$.
+\end{sq}
+\QQ{4} نضع من أجل كل عدد طبيعي $n$: $P_n=\left(3-u_0\right)\times\left(3-u_1\right)\times\cdots\times\left(3-u_n\right)$.
+
+احسب $P_n$ بدلالة $n$.
+\end{tamrin}
+
+% ---------------------------------------------------------------- 2020 S1
+\Needspace{14\baselineskip}
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الأول -- علوم تجريبية}
+$(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=\alpha$ ($\alpha$ عدد حقيقي) ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac{3}{4}u_n-1$.
+\QQ{1} نفرض أن $\alpha=-4$. برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n=-4$.
+\QQ{2} نفرض أن $\alpha\neq-4$. نعتبر المتتالية العددية $(v_n)$ المعرّفة على $\N$ بـ: $v_n=u_n+4$.
+\begin{sq}
+\qa أثبت أن المتتالية $(v_n)$ هندسية أساسها $\dfrac{3}{4}$.
+\qb اكتب عبارة الحد العام $u_n$ بدلالة $n$ و$\alpha$، ثم بيّن أن المتتالية $(u_n)$ متقاربة.
+\qc نضع من أجل كل عدد طبيعي $n$: $S_n=u_0+u_1+\cdots+u_n$.
+
+احسب $S_n$ بدلالة $n$ و$\alpha$، ثم احسب $\limn S_n$.
+\end{sq}
+\end{tamrin}
+
+% ---------------------------------------------------------------- 2020 S2
+\Needspace{14\baselineskip}
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الثاني -- علوم تجريبية}
+$(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=0$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=3u_n-2n+3$.
+\QQ{1} احسب كلًا من $u_1$ و$u_2$، ثم خمّن اتجاه تغيّر المتتالية $(u_n)$.
+\QQ{2} لتكن $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=u_n-n+1$.
+\begin{sq}
+\qa بيّن أن المتتالية $(v_n)$ هندسية أساسها $3$، يُطلب حساب حدها الأول.
+\qb اكتب $v_n$ بدلالة $n$، ثم استنتج عبارة الحد العام $u_n$ بدلالة $n$.
+\qc ادرس اتجاه تغيّر المتتالية $(u_n)$.
+\end{sq}
+\QQ{3} من أجل كل عدد طبيعي $n$ نضع: $S_n=u_0+u_1+\cdots+u_n$.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $S_n=\dfrac{1}{2}\left(3^{n+1}+n^2-n-3\right)$.
+\qb احسب $\limn S_n$.
+\end{sq}
+\end{tamrin}
+
+% ---------------------------------------------------------------- 2019 S1
+\Needspace{14\baselineskip}
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الأول -- علوم تجريبية}
+$(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=13$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac{1}{5}u_n+\dfrac{4}{5}$.
+\QQ{1}
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>1$.
+\qb ادرس اتجاه تغيّر المتتالية $(u_n)$ واستنتج أنها متقاربة.
+\end{sq}
+\QQ{2} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=\ln\left(u_n-1\right)$.
+
+أثبت أن المتتالية $(v_n)$ حسابية يُطلب تعيين أساسها وحدها الأول.
+\QQ{3} اكتب $v_n$ بدلالة $n$، ثم بيّن أنه من أجل كل عدد طبيعي $n$: $u_n=1+\dfrac{12}{5^n}$.
+
+احسب عندئذ $\limn u_n$.
+\QQ{4} بيّن أنه من أجل كل عدد طبيعي $n$: $\left(u_0-1\right)\times\left(u_1-1\right)\times\cdots\times\left(u_n-1\right)=\left(\dfrac{12}{5^{\frac{n}{2}}}\right)^{n+1}$.
+\end{tamrin}
+
+% ---------------------------------------------------------------- 2019 S2
+\Needspace{14\baselineskip}
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الثاني -- علوم تجريبية}
+نعتبر الدالة $f$ المعرّفة على المجال $[4;7[$ بـ: $f(x)=\sqrt{x+2}+4$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أن الدالة $f$ متزايدة تمامًا على المجال $[4;7[$.
+\qb استنتج أنه: من أجل كل عدد حقيقي $x$ من المجال $[4;7[$ فإن $f(x)\in[4;7[$.
+\end{sq}
+\QQ{2} برهن أنه: من أجل كل عدد حقيقي $x$ من المجال $[4;7[$ فإن: $f(x)-x=\dfrac{-x^2+9x-14}{x-4+\sqrt{x+2}}$.
+
+ثم استنتج أنه: من أجل كل عدد حقيقي $x$ من المجال $[4;7[$ فإن: $f(x)-x>0$.
+\QQ{3} $(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=4$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f\left(u_n\right)$.
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $4\leq u_n<7$.
+\qb استنتج اتجاه تغيّر المتتالية $(u_n)$، ثم بيّن أنها متقاربة.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa بيّن أنه: من أجل كل عدد طبيعي $n$: $7-u_{n+1}<\dfrac{1}{4}\left(7-u_n\right)$.
+\qb استنتج أنه من أجل كل عدد طبيعي $n$: $0\leq 7-u_n\leq 3\left(\dfrac{1}{4}\right)^n$، ثم احسب نهاية المتتالية $(u_n)$.
+\end{sq}
+\end{tamrin}
+
+% ---------------------------------------------------------------- 2018 S1
+\Needspace{14\baselineskip}
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الأول -- علوم تجريبية}
+$(u_n)$ متتالية عددية معرّفة بحدها الأول $u_0=1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=1-\dfrac{9}{u_n+5}$.
+\QQ{1}
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>-2$.
+\qb بيّن أن $(u_n)$ متتالية متناقصة تمامًا على $\N$ واستنتج أنها متقاربة.
+\end{sq}
+\QQ{2} نضع من أجل كل عدد طبيعي $n$: $v_n=\dfrac{1}{u_n+2}$.
+
+أثبت أن $(v_n)$ حسابية أساسها $\dfrac{1}{3}$ يُطلب تعيين حدها الأول.
+\QQ{3} عبّر بدلالة $n$ عن $v_n$ و$u_n$، واحسب $\limn u_n$.
+\QQ{4} بيّن أنه من أجل كل عدد طبيعي $n$: $u_0v_0+u_1v_1+\cdots+u_nv_n=\dfrac{1}{3}\left(1-n^2\right)$.
+\end{tamrin}
+
+% ---------------------------------------------------------------- 2018 S2
+\Needspace{14\baselineskip}
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الثاني -- علوم تجريبية}
+$(u_n)$ متتالية عددية معرّفة كما يلي: $u_0=0$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=u_n+\ln\left(\dfrac{2n+3}{2n+1}\right)$.
+\QQ{1} احسب كلًا من $u_1$، $u_2$ و$u_3$.
+
+بيّن أنه من أجل كل عدد طبيعي $n$: $\dfrac{2n+3}{2n+1}>1$، ثم استنتج اتجاه تغيّر المتتالية $(u_n)$.
+\QQ{2} $(v_n)$ متتالية عددية معرّفة من أجل كل عدد طبيعي $n$ بـ: $v_n=2n+1$.
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $e^{u_n}=v_n$.
+\qb استنتج عبارة الحد العام للمتتالية $(u_n)$ بدلالة $n$، ثم احسب $\limn u_n$.
+\end{sq}
+\QQ{3} احسب المجموعين $S_n$ و$T$ حيث:
+\[S_n=\ln\left(\frac{v_1}{v_0}\right)+\ln\left(\frac{v_2}{v_1}\right)+\cdots+\ln\left(\frac{v_n}{v_{n-1}}\right)\quad;\quad T=e^{u_{1439}}+e^{u_{1440}}+\cdots+e^{u_{2018}}.\]
+\end{tamrin}
+
+% ---------------------------------------------------------------- 2017 S1
+\Needspace{14\baselineskip}
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الأول -- علوم تجريبية}
+$(u_n)$ و$(v_n)$ متتاليتان معرّفتان على مجموعة الأعداد الطبيعية $\N$ كما يلي:
+\[u_0=\frac{1}{4}\ ,\quad u_{n+1}=3-\frac{10}{u_n+4}\quad\text{;}\quad v_n=\frac{u_n+2}{1-u_n}.\]
+\QQ{1}
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $0<u_n<1$.
+\qb بيّن أن المتتالية $(u_n)$ متزايدة تمامًا، ثم استنتج أنها متقاربة.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أن $(v_n)$ هندسية أساسها $\dfrac{5}{2}$، ثم عبّر عن حدها العام $v_n$ بدلالة $n$.
+\qb أثبت أنه من أجل كل عدد طبيعي $n$: $u_n=1-\dfrac{3}{v_n+1}$، ثم استنتج النهاية $\limn u_n$.
+\end{sq}
+\end{tamrin}
+
+\begin{molahada}
+في نص المصدر كُتب تعريف المتتالية $(v_n)$ على الشكل $v_{n+1}=\dfrac{u_n+2}{1-u_n}$، وهو خطأ مطبعي؛ الصحيح $v_n=\dfrac{u_n+2}{1-u_n}$ (وبه تكون $(v_n)$ هندسية أساسها $\frac{5}{2}$).
+\end{molahada}
+
+% ---------------------------------------------------------------- 2017 S2
+\Needspace{14\baselineskip}
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الثاني -- علوم تجريبية}
+المستوي منسوب إلى المعلم المتعامد والمتجانس $\left(O;\vec{i},\vec{j}\right)$، و$f$ الدالة المعرّفة على المجال $[-4;1]$ كما يلي: $f(x)=\dfrac{3x-16}{x+11}$، و$(C_f)$ المنحنى الممثل لها، و$(\Delta)$ المستقيم ذو المعادلة $y=x$ (الشكل).
+\begin{GR}{-5}{2}{-5}{1}{1.1}
+ \Ticks{-4,-3,-2,-1,1}{-4,-3,-2,-1}
+ \draw[gray!70!black] (-5,-5)--(1.5,1.5) node[pos=0.9,above left]{$(\Delta)$};
+ \draw[cDef,very thick,domain=-4:1,samples=100,smooth] plot (\x,{(3*\x-16)/(\x+11)});
+ \fill[cDef] (-4,-4) circle (1.8pt) (1,-13/12) circle (1.8pt);
+ \node[cDef,below] at (0.3,-1.6){$(C_f)$};
+\end{GR}
+\textbf{(I)} تحقق أن الدالة $f$ متزايدة تمامًا على المجال $[-4;1]$، ثم بيّن أنه: من أجل $x\in[-4;1]$ فإن $f(x)\in[-4;1]$.
+
+\textbf{(II)} $(u_n)$ متتالية عددية معرّفة بحدها الأول $u_0=0$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f\left(u_n\right)$.
+\QQ{1} انقل الشكل المقابل ثم مثّل على حامل محور الفواصل الحدود $u_0$، $u_1$، $u_2$ و$u_3$ دون حسابها.
+
+ثم ضع تخمينًا حول اتجاه تغيّر المتتالية $(u_n)$ وتقاربها.
+\QQ{2} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $-4<u_n\leq0$، ثم بيّن أن المتتالية $(u_n)$ متناقصة تمامًا.
+\QQ{3} لتكن المتتالية العددية $(v_n)$ المعرّفة كما يلي: $v_n\times u_n=1-4v_n$.
+
+أثبت أن المتتالية $(v_n)$ حسابية أساسها $\dfrac{1}{7}$، ثم احسب المجموع $S$ حيث:
+\[S=v_0\times u_0+v_1\times u_1+\cdots+v_{2016}\times u_{2016}.\]
+\end{tamrin}
+
+% ---------------------------------------------------------------- 2017 S1 exceptional
+\Needspace{14\baselineskip}
+\begin{tamrin}{بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الأول -- علوم تجريبية}
+نعتبر المتتاليتين $(u_n)$ و$(v_n)$ المعرّفتين على $\N$ كما يلي:
+\[\begin{cases}u_0=1\\ u_{n+1}=\dfrac{3}{4}u_n+1\end{cases}\qquad\qquad\begin{cases}v_0=6\\ v_{n+1}=\dfrac{3}{4}v_n+1\end{cases}\]
+\QQ{1} احسب الحدين $u_1$ و$v_1$.
+\QQ{2}
+\begin{sq}
+\qa اكتب $u_{n+2}-u_{n+1}$ بدلالة $u_{n+1}-u_n$.
+\qb باستعمال البرهان بالتراجع بيّن أن المتتالية $(u_n)$ متزايدة تمامًا والمتتالية $(v_n)$ متناقصة تمامًا.
+\end{sq}
+\QQ{3} نعتبر المتتالية $(w_n)$ المعرّفة على $\N$ كما يلي: $w_n=u_n-v_n$.
+
+برهن أن المتتالية $(w_n)$ هندسية يُطلب تعيين أساسها $q$ وحدها الأول $w_0$، ثم عبّر عن $w_n$ بدلالة $n$.
+\QQ{4} بيّن أن المتتاليتين $(u_n)$ و$(v_n)$ متجاورتان.
+\end{tamrin}
+
+% ===================== بكالوريا 2017 -- الموضوع الثاني -- الدورة الاستثنائية =====================
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الثاني -- علوم تجريبية -- الدورة الاستثنائية}
+نعتبر الدالة $f$ المعرفة على المجال $[0;+\infty[$ كما يلي: $f(x)=\dfrac{3x+1}{x+3}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$، و $(\Delta)$ المستقيم ذو المعادلة $y=x$.
+
+$\alpha$ عدد حقيقي موجب، $(u_n)$ المتتالية العددية المعرفة على $\N$ بحدّها الأول $u_0=\alpha$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+
+\begin{GR}{-0.5}{5.5}{-0.5}{4.5}{1}
+\Ticks{1,2,3,4,5}{1,2,3,4}
+\draw[thick,cThm] (0,0)--(4.5,4.5) node[pos=0.62,left]{$(\Delta)$};
+\draw[thick,cDef,domain=0:5.5,samples=60] plot (\x,{(3*\x+1)/(\x+3)});
+\node[cDef] at (4.4,2.35){$(C_f)$};
+\end{GR}
+
+\textbf{I)} عيّن قيم $\alpha$ حتى تكون $(u_n)$ متتالية ثابتة.
+
+\textbf{II)} نضع في كل ما يلي: $\alpha=5$.
+\QQ{1}
+\begin{sq}
+\qa أنقل الشكل المقابل، ثم مثّل على محور الفواصل الحدود $u_0$، $u_1$، $u_2$ و $u_3$ (دون حساب الحدود).
+\qb ضع تخمينا حول اتجاه تغيّر المتتالية $(u_n)$ وتقاربها.
+\end{sq}
+\QQ{2} نعتبر المتتالية $(v_n)$ المعرّفة على $\N$ بـ: $v_n=\dfrac{u_n-1}{u_n+1}$.
+\begin{sq}
+\qa برهن أن $(v_n)$ متتالية هندسية أساسها $\dfrac12$ يطلب تعيين حدّها الأول.
+\qb عبّر بدلالة $n$ عن $v_n$ و $u_n$، ثم أحسب $\limn u_n$.
+\end{sq}
+\QQ{3} أحسب بدلالة $n$ المجموع $S_n$ حيث: $S_n=v_n+v_{n+1}+\cdots+v_{n+2016}$.
+
+ثم استنتج بدلالة $n$ المجموع $S'_n$ حيث: $S'_n=\dfrac{1}{u_n+1}+\dfrac{1}{u_{n+1}+1}+\cdots+\dfrac{1}{u_{n+2016}+1}$.
+\end{tamrin}
+
+% ===================== بكالوريا 2016 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الأول -- علوم تجريبية}
+\textbf{I)} $f$ الدالة العددية المعرفة على المجال $[0;+\infty[$ بـ: $f(x)=\sqrt{2x+8}$، و $(C)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to+\infty}f(x)$.
+\qb أدرس اتجاه تغيّر الدالة $f$ ثم شكّل جدول تغيّراتها.
+\end{sq}
+\QQ{2} عيّن إحداثيي نقطة تقاطع المنحنى $(C)$ مع المستقيم $(\Delta)$ الذي $y=x$ معادلة له.
+\QQ{3} أرسم $(C)$ و $(\Delta)$.
+
+\textbf{II)} $(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=0$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\QQ{1} مثّل في الشكل السابق على محور الفواصل الحدود $u_0$، $u_1$، $u_2$ و $u_3$ (دون حسابها) موضّحا خطوط الإنشاء.
+\QQ{2} ضع تخمينا حول اتجاه تغيّر المتتالية $(u_n)$ وتقاربها.
+\QQ{3}
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $0\leqslant u_n<4$.
+\qb أدرس اتجاه تغيّر المتتالية $(u_n)$.
+\qc بيّن أنه من أجل كل عدد طبيعي $n$: $4-u_{n+1}\leqslant\dfrac12(4-u_n)$، ثم استنتج أنه من أجل كل عدد طبيعي $n$: $4-u_n\leqslant\dfrac{1}{2^n}(4-u_0)$.
+\qd استنتج $\limn u_n$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2016 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الثاني -- علوم تجريبية}
+\textbf{I)} $f$ الدالة العددية المعرفة على المجال $[0;+\infty[$ بـ: $f(x)=\dfrac{5x}{x+2}$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $\lim\limits_{x\to+\infty}f(x)$.
+\qb أدرس اتجاه تغيّر الدالة $f$ ثم شكّل جدول تغيّراتها.
+\end{sq}
+\QQ{2} بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $[0;+\infty[$: $f(x)\geqslant 0$.
+
+\textbf{II)} المتتالية $(u_n)$ معرّفة بـ: $u_0=1$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac{5u_n}{u_n+2}$.
+\QQ{1}
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $1\leqslant u_n\leqslant 3$.
+\qb أدرس اتجاه تغيّر المتتالية $(u_n)$، ثم استنتج أنها متقاربة.
+\end{sq}
+\QQ{2} $(v_n)$ المتتالية المعرفة على $\N$ كما يلي: $v_n=1-\dfrac{3}{u_n}$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\dfrac25$ يطلب تعيين حدّها الأول.
+\qb أكتب بدلالة $n$ عبارة $v_n$ ثم استنتج عبارة $u_n$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\QQ{3} أحسب بدلالة $n$ المجموع $S_n$ حيث: $S_n=\dfrac{1}{u_0}+\dfrac{1}{u_1}+\cdots+\dfrac{1}{u_n}$.
+\end{tamrin}
+
+% ===================== بكالوريا 2016 -- الموضوع الأول -- الدورة الثانية =====================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الأول -- علوم تجريبية -- الدورة الثانية}
+نعتبر الدالة $f$ المعرفة على المجال $I=[0;4]$ بـ: $f(x)=\dfrac{13x}{9x+13}$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أن الدالة $f$ متزايدة تماما على المجال $I$.
+\qb بيّن أنه من أجل كل عدد حقيقي $x$ من المجال $I$، $f(x)$ ينتمي إلى المجال $I$.
+\end{sq}
+\QQ{2} لتكن المتتالية العددية $(u_n)$ المعرّفة على $\N$ بحدّها الأول $u_0=4$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $0\leqslant u_n\leqslant 4$.
+\qb أدرس اتجاه تغيّر المتتالية $(u_n)$، ثم استنتج أنها متقاربة.
+\end{sq}
+\QQ{3} بيّن أنه من أجل كل عدد طبيعي $n$: $u_n\neq 0$.
+\QQ{4} لتكن المتتالية $(v_n)$ المعرّفة على $\N$ كما يلي: $v_n=2+\dfrac{13}{u_n}$.
+\begin{sq}
+\qa برهن أن المتتالية $(v_n)$ حسابية يطلب تعيين أساسها وحدّها الأول $v_0$.
+\qb أكتب $v_n$ بدلالة $n$.
+\qc استنتج أن: $u_n=\dfrac{52}{36n+13}$ وذلك من أجل كل عدد طبيعي $n$، ثم أحسب $\limn u_n$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2016 -- الموضوع الثاني -- الدورة الثانية =====================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الثاني -- علوم تجريبية -- الدورة الثانية}
+$(u_n)$ متتالية عددية معرّفة على $\N$ بحدّها الأول $u_0=0$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac{2u_n+2}{u_n+3}$.
+
+ولتكن المتتالية $(v_n)$ المعرّفة من أجل كل عدد طبيعي $n$ بـ: $v_n=\dfrac{u_n-1}{u_n+2}$.
+\QQ{1} بيّن أن المتتالية $(v_n)$ هندسية يطلب تعيين أساسها $q$ وحدّها الأول $v_0$.
+\QQ{2}
+\begin{sq}
+\qa عبّر بدلالة $n$ عن عبارة الحد العام $v_n$.
+\qb استنتج عبارة الحد العام $u_n$ بدلالة $n$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa أحسب بدلالة $n$ المجموع: $S_n=v_0+v_1+\cdots+v_n$.
+\qb تحقّق أن: $\dfrac{1}{u_n+2}=\dfrac13(1-v_n)$، وذلك من أجل كل عدد طبيعي $n$.
+\qc استنتج بدلالة $n$ المجموع: $S'_n=\dfrac{1}{u_0+2}+\dfrac{1}{u_1+2}+\cdots+\dfrac{1}{u_n+2}$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2015 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2015 -- الموضوع الأول -- علوم تجريبية}
+$(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=e^2-1$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=(1+u_n)e^{-2}-1$.
+\QQ{1} أحسب: $u_1$، $u_2$ و $u_3$.
+\QQ{2} أثبت أنه من أجل كل عدد طبيعي $n$: $1+u_n>0$.
+\QQ{3} بيّن أن المتتالية $(u_n)$ متناقصة. هل هي متقاربة؟ علّل.
+\QQ{4} نضع من أجل كل عدد طبيعي $n$: $v_n=3(1+u_n)$.
+\begin{sq}
+\qa أثبت أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدّها الأول.
+\qb أكتب $v_n$ و $u_n$ بدلالة $n$ ثم أحسب $\limn u_n$.
+\qc بيّن أنه من أجل كل $n$ من $\N$: $\ln v_0+\ln v_1+\cdots+\ln v_n=(n+1)(-n+2+\ln 3)$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2015 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2015 -- الموضوع الثاني -- علوم تجريبية}
+المستوي منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+
+\textbf{I)} $f$ الدالة المعرّفة على المجال $[0;+\infty[$ بـ: $f(x)=\dfrac{4x+1}{x+1}$، و $(C_f)$ تمثيلها البياني.
+\QQ{1} عيّن اتجاه تغيّر الدالة $f$ على المجال $[0;+\infty[$.
+\QQ{2} أدرس وضعية $(C_f)$ بالنسبة إلى المستقيم $(D)$ ذي المعادلة $y=x$.
+\QQ{3} مثّل $(C_f)$ و $(D)$ على المجال $[0;6]$.
+
+\textbf{II)} نعتبر المتتاليتين $(u_n)$ و $(v_n)$ المعرّفتين على $\N$ كما يلي:
+\[\begin{cases}u_0=2\\ u_{n+1}=f(u_n)\end{cases}\qquad;\qquad\begin{cases}v_0=5\\ v_{n+1}=f(v_n)\end{cases}\]
+\QQ{1}
+\begin{sq}
+\qa أنشئ على حامل محور الفواصل الحدود $u_0$، $u_1$، $u_2$، $u_3$ و $v_0$، $v_1$، $v_2$، $v_3$ دون حسابها.
+\qb خمّن اتجاه تغيّر وتقارب كل من المتتاليتين $(u_n)$ و $(v_n)$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa أثبت أنه من أجل كل $n$ من $\N$: $2\leqslant u_n<\alpha$ و $\alpha<v_n\leqslant 5$، حيث $\alpha=\dfrac{3+\sqrt{13}}{2}$.
+\qb استنتج اتجاه تغيّر كل من المتتاليتين $(u_n)$ و $(v_n)$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه من أجل كل $n$ من $\N$: $v_{n+1}-u_{n+1}\leqslant\dfrac13(v_n-u_n)$.
+\qb بيّن أنه من أجل كل $n$ من $\N$: $0<v_n-u_n\leqslant\left(\dfrac13\right)^{n-1}$.
+\qc استنتج أن $\limn(v_n-u_n)=0$، ثم أحسب نهاية كل من $(u_n)$ و $(v_n)$.
+\end{sq}
+\end{tamrin}
+
+\begin{molahada}
+السؤال 3 سقط من نص التمرين في المصدر (ورد حلّه فقط)، فأعدنا كتابته وفق ما تقتضيه الإجابة.
+\end{molahada}
+
+% ===================== بكالوريا 2014 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2014 -- الموضوع الأول -- علوم تجريبية}
+لتكن $(u_n)$ المتتالية العددية المعرّفة كما يلي: $u_0=1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac{2}{3}u_n-\dfrac{4}{3}$.
+
+و $(v_n)$ المتتالية العددية المعرّفة كما يلي: من أجل كل عدد طبيعي $n$: $v_n=u_n+4$.
+\QQ{1} بيّن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدّها الأول.
+\QQ{2} أكتب كلًّا من $v_n$ و $u_n$ بدلالة $n$.
+\QQ{3} أدرس اتجاه تغيّر المتتالية $(u_n)$ على $\N$.
+\QQ{4} أحسب بدلالة $n$ المجموع $S_n$ حيث: $S_n=u_0+u_1+\cdots+u_n$.
+\QQ{5} لتكن $(w_n)$ المتتالية العددية المعرّفة على $\N$ كما يلي: $w_n=5\left(\dfrac{1}{v_n+5}-1\right)$.
+\begin{sq}
+\qa بيّن أن المتتالية $(w_n)$ متزايدة تماما على $\N$.
+\qb أحسب: $\lim\limits_{n\to+\infty}(u_n-w_n)$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2014 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2014 -- الموضوع الثاني -- علوم تجريبية}
+\textbf{I)} نعتبر المتتالية العددية $(u_n)$ المعرّفة على $\N$ بحدّها العام: $u_n=e^{\frac{1}{2}-n}$ ($e$ هو أساس اللوغاريتم النيبيري).
+\QQ{1} بيّن أن $(u_n)$ متتالية هندسية يطلب تعيين أساسها وحدّها الأول.
+\QQ{2} أحسب $\lim\limits_{n\to+\infty}u_n$، ماذا تستنتج؟
+\QQ{3} أحسب بدلالة $n$ المجموع $S_n$ حيث: $S_n=u_0+u_1+\cdots+u_n$.
+
+\textbf{II)} نضع من أجل كل عدد طبيعي $n$: $v_n=\ln u_n$ ($\ln$ يرمز إلى اللوغاريتم النيبيري).
+\QQ{1} عبّر عن $v_n$ بدلالة $n$، ثم استنتج نوع المتتالية $(v_n)$.
+\QQ{2}
+\begin{sq}
+\qa أحسب بدلالة $n$ العدد $P_n$ حيث: $P_n=\ln\left(u_0\times u_1\times\cdots\times u_n\right)$.
+\qb عيّن مجموعة قيم العدد الطبيعي $n$ حيث: $P_n+4n>0$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2013 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2013 -- الموضوع الأول -- علوم تجريبية}
+\textbf{I)} المتتالية $(v_n)$ معرّفة على $\N$ بـ: $v_n=\dfrac{5^{n+1}}{6^n}$.
+\QQ{1} بيّن أن $(v_n)$ متتالية هندسية يطلب تحديد أساسها وحدّها الأول.
+\QQ{2} أحسب $\lim\limits_{n\to+\infty}v_n$.
+
+\textbf{II)} المتتالية $(u_n)$ معرّفة بـ: $u_0=1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\sqrt{5u_n+6}$.
+\QQ{1} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $1\le u_n\le 6$.
+\QQ{2} أدرس اتجاه تغيّر المتتالية $(u_n)$.
+\QQ{3}
+\begin{sq}
+\qa برهن أنه من أجل كل عدد طبيعي $n$: $6-u_{n+1}\le\dfrac{5}{6}\left(6-u_n\right)$.
+\qb بيّن أنه من أجل كل عدد طبيعي $n$: $0\le 6-u_n\le v_n$، ثم استنتج $\lim\limits_{n\to+\infty}u_n$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2013 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2013 -- الموضوع الثاني -- علوم تجريبية}
+في الشكل المقابل $(C_f)$ هو التمثيل البياني للدالة $f$ المعرّفة على المجال $[0;1]$ بالعلاقة: $f(x)=\dfrac{2x}{x+1}$، و $(\Delta)$ المستقيم ذو المعادلة $y=x$.
+\begin{GR}{-0.5}{11.5}{-0.5}{11.5}{0.42}
+ \draw[thick,black] (0,0)--(11.5,11.5) node[pos=0.8,above left]{$(\Delta)$};
+ \draw[thick,red,domain=0:10,samples=100] plot(\x,{20*\x/(\x+10)});
+ \node[red] at (2.5,6){$(C_f)$};
+ \draw[dotted] (10,0)--(10,10)--(0,10);
+ \node[below,font=\scriptsize] at (10,0){$1$};
+ \node[left,font=\scriptsize] at (0,10){$1$};
+\end{GR}
+\QQ{1} $(u_n)$ المتتالية العددية المعرّفة بحدّها الأول $u_0=\dfrac{1}{2}$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\begin{sq}
+\qa أعد رسم هذا الشكل، ثم مثّل الحدود $u_0$، $u_1$، $u_2$ و $u_3$ على حامل محور الفواصل دون حسابها مبرزا خطوط التمثيل.
+\qb ضع تخمينا حول اتجاه تغيّر المتتالية $(u_n)$ وتقاربها.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa أثبت أن الدالة $f$ متزايدة تماما على المجال $[0;1]$.
+\qb برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $0<u_n<1$.
+\qc أدرس اتجاه تغيّر المتتالية $(u_n)$.
+\end{sq}
+\QQ{3} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=\dfrac{u_n-1}{u_n}$.
+\begin{sq}
+\qa برهن أن $(v_n)$ متتالية هندسية أساسها $\dfrac{1}{2}$، يطلب حساب حدّها الأول $v_0$.
+\qb أحسب نهاية $(u_n)$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2012 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2012 -- الموضوع الأول -- علوم تجريبية}
+نعتبر المتتالية العددية $(u_n)$ المعرّفة بحدّها الأول $u_0=1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\sqrt{2u_n+3}$.
+\QQ{1} لتكن $h$ الدالة المعرّفة على $\left[-\dfrac{3}{2};+\infty\right[$ كما يلي: $h(x)=\sqrt{2x+3}$، و $(C)$ تمثيلها البياني، و $(\Delta)$ المستقيم ذو المعادلة $y=x$ في المستوي المنسوب إلى معلم متعامد ومتجانس (انظر الشكل).
+\begin{GR}{-2}{5}{-1}{4}{0.9}
+ \draw[thick,red] (-1,-1)--(4.3,4.3);
+ \node[red] at (3.5,4.3){$(\Delta)$};
+ \draw[thick,blue,domain=-1.5:5,samples=200] plot(\x,{sqrt(max(2*\x+3,0))});
+ \node[blue] at (1,2.9){$(C)$};
+ \Ticks{-1,1,2,3,4}{-1,1,2,3}
+\end{GR}
+\begin{sq}
+\qa أعد رسم الشكل على ورقة الإجابة ثم مثّل على محور الفواصل الحدود $u_0$، $u_1$، $u_2$ و $u_3$ (دون حسابها، موضّحا خطوط الإنشاء).
+\qb ضع تخمينا حول اتجاه تغيّر المتتالية $(u_n)$ وتقاربها.
+\end{sq}
+\QQ{2} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $0<u_n<3$.
+\QQ{3}
+\begin{sq}
+\qa أدرس اتجاه تغيّر المتتالية $(u_n)$.
+\qb استنتج أن المتتالية $(u_n)$ متقاربة، ثم أحسب $\lim\limits_{n\to+\infty}u_n$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2012 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2012 -- الموضوع الثاني -- علوم تجريبية}
+$(u_n)$ المتتالية العددية المعرّفة بحدّها الأول $u_0=\dfrac{13}{4}$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=3+\sqrt{u_n-3}$.
+\QQ{1} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $3<u_n<4$.
+\QQ{2} بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=\dfrac{-u_n^2+7u_n-12}{\sqrt{u_n-3}+u_n-3}$، ثم استنتج أن $(u_n)$ متزايدة تماما.
+\QQ{3} برّر لماذا $(u_n)$ متقاربة.
+\QQ{4} $(v_n)$ المتتالية المعرّفة على $\N$ بـ: $v_n=\ln\left(u_n-3\right)$.
+\begin{sq}
+\qa برهن أن $(v_n)$ متتالية هندسية أساسها $\dfrac{1}{2}$، أحسب حدّها الأول.
+\qb أكتب كلًّا من $v_n$ و $u_n$ بدلالة $n$، ثم أحسب $\lim\limits_{n\to+\infty}u_n$.
+\qc نضع من أجل كل عدد طبيعي $n$: $P_n=(u_0-3)(u_1-3)(u_2-3)\times\cdots\times(u_n-3)$.
+
+أكتب $P_n$ بدلالة $n$، ثم بيّن أن $\lim\limits_{n\to+\infty}P_n=\dfrac{1}{16}$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2011 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الأول -- علوم تجريبية}
+$(u_n)$ المتتالية المعرّفة بـ: $u_0=-1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=3u_n+1$.
+
+$(v_n)$ المتتالية العددية المعرّفة من أجل كل عدد طبيعي $n$ بـ: $v_n=u_n+\dfrac{1}{2}$.
+
+في كل حالة من الحالات الثلاث الآتية اقترحت ثلاث إجابات توجد إجابة واحدة منها فقط صحيحة، حدّدها مع التعليل.
+\QQ{1} المتتالية $(v_n)$:
+\ABC{حسابية.}{هندسية.}{لا حسابية ولا هندسية.}
+\QQ{2} نهاية المتتالية $(u_n)$ هي:
+\ABC{$+\infty$}{$-\dfrac{1}{2}$}{$-\infty$}
+\QQ{3} نضع من أجل كل عدد طبيعي $n$: $S_n=-\dfrac{1}{2}\left[1+e^{\ln 3}+e^{2\ln 3}+e^{3\ln 3}+\cdots+e^{n\ln 3}\right]$.
+\ABC{$S_n=\dfrac{3^{n+1}-1}{2}$}{$S_n=\dfrac{1-3^n}{4}$}{$S_n=\dfrac{1-3^{n+1}}{4}$}
+\end{tamrin}
+
+% ===================== بكالوريا 2011 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الثاني -- علوم تجريبية}
+$\alpha$ عدد حقيقي موجب تماما ويختلف عن $1$.
+
+$(u_n)$ متتالية عددية معرّفة على $\N$ بـ: $u_0=6$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\alpha u_n+1$.
+
+$(v_n)$ متتالية عددية معرّفة من أجل كل عدد طبيعي $n$ بـ: $v_n=u_n+\dfrac{1}{\alpha-1}$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أن $(v_n)$ متتالية هندسية أساسها $\alpha$.
+\qb أكتب بدلالة $n$ و $\alpha$ عبارة $v_n$، ثم استنتج بدلالة $n$ و $\alpha$ عبارة $u_n$.
+\qc عيّن قيم العدد الحقيقي $\alpha$ التي تكون من أجلها المتتالية $(u_n)$ متقاربة.
+\end{sq}
+\QQ{2} نضع $\alpha=\dfrac{3}{2}$.
+
+أحسب بدلالة $n$ المجموعين $S_n$ و $T_n$ حيث: $S_n=v_0+v_1+\cdots+v_n$ و $T_n=u_0+u_1+\cdots+u_n$.
+\end{tamrin}
+
+% ===================== بكالوريا 2010 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2010 -- الموضوع الثاني -- علوم تجريبية}
+في المستوي المنسوب إلى معلم متعامد ومتجانس مثّلنا المستقيمين $(\Delta)$ و $(D)$ معادلتاهما على الترتيب: $y=x$ و $y=\dfrac{1}{2}x+\dfrac{1}{3}$.
+\begin{GR}{-0.5}{6.5}{-0.5}{4.5}{0.8}
+ \draw[thick,red] (-0.5,-0.5)--(4.5,4.5) node[pos=0.95,left]{$(\Delta)$};
+ \draw[thick,blue] (-0.5,0.0833)--(6.5,3.5833) node[pos=0.85,below]{$(D)$};
+ \Ticks{1,2,3,4,5,6}{1,2,3,4}
+\end{GR}
+\QQ{1} لتكن المتتالية $(u_n)$ المعرّفة على مجموعة الأعداد الطبيعية $\N$ بـ: $u_0=6$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac{1}{2}u_n+\dfrac{1}{3}$.
+\begin{sq}
+\qa أنقل الشكل ثم مثّل على محور الفواصل الحدود التالية: $u_0$، $u_1$، $u_2$، $u_3$ و $u_4$ دون حسابها مبرزا خطوط الرسم.
+\qb عيّن إحداثيي نقطة تقاطع المستقيمين $(\Delta)$ و $(D)$.
+\qc أعط تخمينا حول اتجاه تغيّر المتتالية $(u_n)$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa باستعمال الاستدلال بالتراجع، أثبت أنه من أجل كل عدد طبيعي $n$: $u_n>\dfrac{2}{3}$.
+\qb استنتج اتجاه تغيّر المتتالية $(u_n)$.
+\end{sq}
+\QQ{3} نعتبر المتتالية $(v_n)$ المعرّفة من أجل كل عدد طبيعي $n$ بالعلاقة: $v_n=u_n-\dfrac{2}{3}$.
+\begin{sq}
+\qa بيّن أن المتتالية $(v_n)$ هندسية يطلب تحديد أساسها وحدّها الأول.
+\qb أكتب بدلالة $n$ عبارة الحد العام $v_n$، واستنتج عبارة $u_n$ بدلالة $n$.
+\qc أحسب بدلالة $n$ المجموع $S_n$ حيث: $S_n=v_0+v_1+v_2+\cdots+v_n$.
+
+واستنتج المجموع $S'_n$ حيث: $S'_n=u_0+u_1+u_2+\cdots+u_n$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2009 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2009 -- الموضوع الأول -- علوم تجريبية}
+$(u_n)$ متتالية معرّفة على $\N$ كما يلي: $u_0=1$ و $u_1=2$ و $u_{n+2}=\dfrac{4}{3}u_{n+1}-\dfrac{1}{3}u_n$.
+
+$(v_n)$ المتتالية المعرّفة على $\N$ كما يلي: $v_n=u_{n+1}-u_n$.
+\QQ{1} أحسب $v_0$ و $v_1$.
+\QQ{2} برهن أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها.
+\QQ{3}
+\begin{sq}
+\qa أحسب بدلالة $n$ المجموع $S_n$ حيث: $S_n=v_0+v_1+\cdots+v_{n-1}$.
+\qb برهن أنه من أجل كل عدد طبيعي $n$: $u_n=\dfrac{3}{2}\left(1-\left(\dfrac{1}{3}\right)^n\right)+1$.
+\qc بيّن أن $(u_n)$ متقاربة.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2009 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2009 -- الموضوع الثاني -- علوم تجريبية}
+$(u_n)$ متتالية هندسية متزايدة تماما حدّها الأول $u_1$ وأساسها $q$ حيث:
+\[\begin{cases}u_1+2u_2+u_3=32\\ u_1\times u_2\times u_3=216\end{cases}\]
+\QQ{1}
+\begin{sq}
+\qa أحسب $u_2$ والأساس $q$ لهذه المتتالية، واستنتج الحد الأول $u_1$.
+\qb أكتب عبارة الحد العام $u_n$ بدلالة $n$.
+\qc أحسب $S_n$ حيث: $S_n=u_1+u_2+\cdots+u_n$ بدلالة $n$، ثم عيّن العدد الطبيعي $n$ بحيث يكون: $S_n=728$.
+\end{sq}
+\QQ{2} $(v_n)$ متتالية عددية معرّفة من أجل كل عدد طبيعي غير معدوم $n$ كما يأتي: $v_1=2$ و $v_{n+1}=\dfrac32v_n+u_n$.
+\begin{sq}
+\qa أحسب $v_2$ و $v_3$.
+\qb نضع من أجل كل عدد طبيعي غير معدوم $n$: $w_n=\dfrac{v_n}{u_n}-\dfrac23$.
+
+بيّن أن $(w_n)$ متتالية هندسية أساسها $\dfrac12$.
+\qc أكتب $w_n$ بدلالة $n$، ثم استنتج $v_n$ بدلالة $n$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2008 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2008 -- الموضوع الأول -- علوم تجريبية}
+\QQ{1} نعتبر الدالة $f$ المعرّفة على $I=[1;2]$ بـ: $f(x)=\dfrac{x+2}{-x+4}$.
+\begin{sq}
+\qa بيّن أن الدالة $f$ متزايدة تماما على $I$.
+\qb بيّن أنه من أجل كل عدد حقيقي $x$ من $I$، $f(x)$ ينتمي إلى $I$.
+\end{sq}
+\QQ{2} $(u_n)$ هي المتتالية العددية المعرّفة على $\N$ كما يأتي: $u_0=\dfrac32$ و $u_{n+1}=f(u_n)$.
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n$ ينتمي إلى $I$.
+\qb أدرس اتجاه تغيّر المتتالية $(u_n)$، ثم استنتج أنها متقاربة.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n=1+\dfrac{1}{\left(\frac32\right)^n+1}$.
+\qb عيّن النهاية $\lim\limits_{n\to+\infty}u_n$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2008 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2008 -- الموضوع الثاني -- علوم تجريبية}
+$(u_n)$ متتالية عددية معرّفة كما يلي: $u_0=\dfrac52$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac23u_n+2$.
+\QQ{1}
+\begin{sq}
+\qa أرسم في معلم متعامد ومتجانس $(O;\vec i,\vec j)$ المستقيم $(\Delta)$ الذي معادلته $y=x$ والمستقيم $(d)$ الممثل للدالة $f$ المعرّفة على $\R$ بـ: $f(x)=\dfrac23x+2$.
+\qb باستعمال الرسم السابق، مثّل على محور الفواصل دون حساب الحدود: $u_0$، $u_1$، $u_2$، $u_3$ و $u_4$.
+\qc ضع تخمينا حول اتجاه تغيّر المتتالية $(u_n)$ وتقاربها.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n\le 6$.
+\qb تحقق أن $(u_n)$ متزايدة.
+\qc هل $(u_n)$ متقاربة؟ برّر إجابتك.
+\end{sq}
+\QQ{3} نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-6$.
+\begin{sq}
+\qa أثبت أن $(v_n)$ متتالية هندسية يطلب تعيين أساسها وحدّها الأول.
+\qb أكتب عبارة $u_n$ بدلالة $n$ ثم استنتج $\lim\limits_{n\to+\infty}u_n$.
+\end{sq}
+\end{tamrin}
+
+\section{تمارين البكالوريا -- شعبة تقني رياضي}
+% ===================== بكالوريا 2026 -- تقني رياضي =====================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الأول -- تقني رياضي}
+\QQ{1} $(u_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $u_0=1$ ومن أجل كلّ عدد طبيعي $n$: $u_{n+1}=2u_n+3n+4$.
+\begin{sq}
+\qa احسب $u_1$ و$u_2$.
+\qb برهن بالتراجع أنّه: من أجل كلّ عدد طبيعي $n$، $u_n\geq 3n+1$، ثمّ استنتج نهاية المتتالية $(u_n)$.
+\qc حدّد اتجاه تغيّر المتتالية $(u_n)$.
+\end{sq}
+
+\QQ{2} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=\ln(u_n+3n+7)$.
+\begin{sq}
+\qa أثبت أنّ المتتالية $(v_n)$ حسابية أساسها $\ln2$، يُطلب حساب حدّها الأول.
+\qb اكتب $v_n$ بدلالة $n$ ثمّ استنتج أنّ: $u_n=8\times2^n-3n-7$.
+\end{sq}
+
+\QQ{3} نضع: من أجل كلّ $n$ من $\N$: $S_n=v_0+v_1+\cdots+v_n$ و $T_n=u_0+u_1+\cdots+u_n$.
+
+-- احسب $S_n$ بدلالة $n$ ثمّ بيّن أنّ: $T_n=2^{n+4}-\dfrac32 n^2-\dfrac{17}{2}n-15$.
+\end{tamrin}
+
+% -------------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الثاني -- تقني رياضي}
+\QQ{1} $(u_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $u_0=1$ ومن أجل كلّ عدد طبيعي $n$: $u_{n+1}=u_n-3\times2^n$.
+
+-- احسب $u_1$، $u_2$ ثمّ حدّد اتجاه تغيّر المتتالية $(u_n)$.
+
+\QQ{2} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=\dfrac{u_n}{2^n}+3$.
+\begin{sq}
+\qa أثبت أنّ المتتالية $(v_n)$ هندسية أساسها $\dfrac12$، يُطلب تعيين حدّها الأول.
+\qb اكتب $v_n$ بدلالة $n$ ثمّ بيّن أنّ: $u_n=4-3\times2^n$.
+\end{sq}
+
+\QQ{3} نضع: من أجل كلّ $n$ من $\N$: $S_n=v_0+v_1+\cdots+v_n$ و $T_n=u_0+u_1+\cdots+u_n$.
+\begin{sq}
+\qa احسب $S_n$ بدلالة $n$ ثمّ استنتج نهاية $S_n$.
+\qb بيّن أنّه: من أجل كلّ $n$ من $\N$، $T_n=4n+7-6\times2^n$.
+\qc احسب بدلالة $n$ المجموع $L_n$ حيث: $L_n=T_0+T_1+\cdots+T_n$.
+\end{sq}
+\end{tamrin}
+
+% ===================== تقني رياضي : 2025 -- 2020 =====================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الأول -- تقني رياضي}
+$(u_n)$ المتتالية المعرّفة بـ: $u_0=e^2$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=2\sqrt{u_n}$.
+
+\textbf{1.}
+\begin{sq}
+\qa احسب الحدّين $u_1$ و $u_2$ ثم خمّن اتجاه تغيّر المتتالية $(u_n)$.
+\qb برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $4<u_n\le e^2$.
+\qc ادرس اتجاه تغيّر المتتالية $(u_n)$.
+\end{sq}
+\textbf{2.} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=\ln u_n-2\ln 2$.
+\begin{sq}
+\qa بيّن أنّ المتتالية $(v_n)$ هندسية أساسها $\frac12$ ثم اكتب $v_n$ بدلالة $n$.
+\qb استنتج كتابة $u_n$ بدلالة $n$ ثم احسب $\limn u_n$.
+\end{sq}
+\textbf{3.}
+\begin{sq}
+\qa احسب بدلالة $n$ المجموع $S_n$ حيث: $S_n=v_0+v_1+\cdots+v_n$.
+\qb استنتج بدلالة $n$ الجداء $P_n$ حيث: $P_n=u_0\times u_1\times\cdots\times u_n$.
+\end{sq}
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الثاني -- تقني رياضي}
+$(u_n)$ المتتالية المعرّفة بـ: $u_0=0$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac{3+5u_n}{3+u_n}$.
+
+\textbf{1.}
+\begin{sq}
+\qa تحقّق أنّه من أجل كل عدد طبيعي $n$: $u_{n+1}=5-\dfrac{12}{3+u_n}$.
+\qb برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $0\le u_n<3$.
+\qc ادرس اتجاه تغيّر المتتالية $(u_n)$.
+\end{sq}
+\textbf{2.} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=\dfrac{-3+u_n}{1+u_n}$.
+\begin{sq}
+\qa بيّن أنّ المتتالية $(v_n)$ هندسية أساسها $\frac13$ ثم اكتب $v_n$ بدلالة $n$.
+\qb استنتج عبارة $u_n$ بدلالة $n$ ثم احسب $\limn u_n$.
+\end{sq}
+\textbf{3.}
+\begin{sq}
+\qa بيّن أنّه من أجل كل عدد طبيعي $n$: $\dfrac{4}{1+u_n}=1-v_n$.
+\qb استنتج بدلالة $n$ المجموع $S_n$ حيث: $S_n=\dfrac{4}{1+u_0}+\dfrac{4}{1+u_1}+\cdots+\dfrac{4}{1+u_n}$.
+\end{sq}
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الأول -- تقني رياضي}
+$(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=0$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac{6+6u_n}{5+u_n}$.
+
+\textbf{1.} احسب $u_1$ و $u_2$ ثم تحقّق أنّه من أجل كل عدد طبيعي $n$: $u_{n+1}=6-\dfrac{24}{5+u_n}$.
+
+\textbf{2.}
+\begin{sq}
+\qa برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $0\le u_n<3$.
+\qb ادرس اتجاه تغيّر المتتالية $(u_n)$.
+\end{sq}
+\textbf{3.} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=\dfrac{u_n+2}{u_n-3}$.
+\begin{sq}
+\qa أثبت أنّ المتتالية $(v_n)$ هندسية أساسها $\frac83$ ثم اكتب عبارة $v_n$ بدلالة $n$.
+\qb بيّن أنّه من أجل كل عدد طبيعي $n$: $u_n=3+\dfrac{5}{v_n-1}$ ثم احسب $\limn u_n$.
+\end{sq}
+\textbf{4.} احسب المجموع $S_n$ بدلالة $n$ حيث: $S_n=v_0+3\times v_1+3^2\times v_2+\cdots+3^n\times v_n$.
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الثاني -- تقني رياضي}
+\textbf{I)} $f$ الدالة المعرّفة على المجال $[2;3]$ بـ: $f(x)=\dfrac{3x+2}{x+2}$.
+
+ادرس اتجاه تغيّر الدالة $f$ ثم بيّن أنّه من أجل كل $x$ من $[2;3]$: $2\le f(x)\le\frac{11}{5}$.
+
+\textbf{II)} $(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=3$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+
+\textbf{1.} برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $2<u_n\le3$.
+
+\textbf{2.} تحقّق أنّه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=\dfrac{(1+u_n)(2-u_n)}{2+u_n}$ ثم استنتج اتجاه تغيّر $(u_n)$.
+
+\textbf{3.}
+\begin{sq}
+\qa بيّن أنّه من أجل كل عدد طبيعي $n$: $u_{n+1}-2\le\frac14\left(u_n-2\right)$.
+\qb برهن أنّه من أجل كل عدد طبيعي $n$: $0<u_n-2\le\left(\frac14\right)^n$ ثم احسب $\limn u_n$.
+\end{sq}
+\textbf{4.} استنتج أنّه من أجل كل عدد طبيعي $n$: $u_0+u_1+\cdots+u_n\le2(n+1)+\dfrac43\left(1-\left(\dfrac14\right)^{n+1}\right)$.
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الأول -- تقني رياضي}
+$(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\frac23u_n+1$.
+
+\textbf{1.} برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $u_n<3$.
+
+\textbf{2.} بيّن أنّ $(u_n)$ متزايدة تمامًا.
+
+\textbf{3.} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=u_n-3$.
+\begin{sq}
+\qa بيّن أنّ المتتالية $(v_n)$ هندسية أساسها $\frac23$ يُطلب تعيين حدّها الأول $v_0$.
+\qb عيّن عبارة الحد العام $v_n$ بدلالة $n$ ثم استنتج أنّه من أجل كل عدد طبيعي $n$: $u_n=-2\left(\frac23\right)^n+3$.
+\qc احسب $\limn u_n$.
+\end{sq}
+\textbf{4.} نضع من أجل كل عدد طبيعي $n$: $S_n=v_0+v_1+\cdots+v_n$ و $T_n=u_0+u_1+\cdots+u_n$.
+
+احسب $S_n$ بدلالة $n$ ثم بيّن أنّه من أجل كل عدد طبيعي $n$: $T_n=3n-3+4\left(\frac23\right)^n$.
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الثاني -- تقني رياضي}
+$(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=1-\dfrac{1}{3u_n+1}$.
+
+\textbf{1.} برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $u_n>\frac23$.
+
+\textbf{2.} بيّن أنّ $(u_n)$ متناقصة تمامًا.
+
+\textbf{3.} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=3-\dfrac{2}{u_n}$.
+\begin{sq}
+\qa بيّن أنّ المتتالية $(v_n)$ هندسية أساسها $\frac13$ يُطلب تعيين حدّها الأول $v_0$.
+\qb عيّن عبارة الحد العام $v_n$ بدلالة $n$ ثم استنتج أنّه من أجل كل عدد طبيعي $n$: $u_n=\dfrac{2}{3-\left(\frac13\right)^n}$.
+\qc احسب $\limn u_n$.
+\end{sq}
+\textbf{4.} نضع من أجل كل عدد طبيعي $n$: $S_n=v_0+v_1+\cdots+v_n$ و $T_n=\dfrac{2}{u_0}+\dfrac{2}{u_1}+\cdots+\dfrac{2}{u_n}$.
+
+احسب $S_n$ بدلالة $n$ ثم بيّن أنّه من أجل كل عدد طبيعي $n$: $T_n=3n+\frac12\left[3+\left(\frac13\right)^n\right]$.
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الأول -- تقني رياضي}
+$(u_n)$ و $(v_n)$ المتتاليتان العدديتان المعرّفتان على $\N^*$ كما يلي: $u_1=2$، ومن أجل كل عدد طبيعي غير معدوم $n$:
+\[u_{n+1}=\frac{n}{2n+2}\,u_n-\frac{1}{n+1}\qquad\text{و}\qquad v_n=nu_n+2\]
+\textbf{1.} احسب $u_2$ و $u_3$.
+
+\textbf{2.}
+\begin{sq}
+\qa برهن أنّ المتتالية $(v_n)$ هندسية أساسها $\frac12$.
+\qb اكتب $v_n$ بدلالة $n$ ثم استنتج $u_n$ بدلالة $n$.
+\end{sq}
+\textbf{3.} احسب، بدلالة $n$، المجموع $S_n$ حيث: $S_n=v_1+v_2+\cdots+v_n$.
+
+\textbf{4.} نضع من أجل كل عدد طبيعي غير معدوم $n$: $w_n=\dfrac{4n}{v_n-nu_n}$.
+احسب بدلالة $n$ المجموع $S'_n$ حيث: $S'_n=w_1+w_2+\cdots+w_n$.
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الثاني -- تقني رياضي}
+$(u_n)$ المتتالية العددية المعرّفة بحدّها الأول $u_0=0$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\frac12\left(u_n-2\right)$.
+
+\textbf{1.} برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $u_n>-2$.
+
+\textbf{2.} ادرس اتجاه تغيّر المتتالية $(u_n)$ ثم استنتج أنّ $(u_n)$ متقاربة.
+
+\textbf{3.} $(v_n)$ المتتالية العددية المعرّفة على $\N$ كما يلي: $v_n=\dfrac{1}{u_{n+1}-u_n}$.
+\begin{sq}
+\qa برهن أنّ المتتالية $(v_n)$ هندسية أساسها $2$ ثم اكتب $v_n$ بدلالة $n$.
+\qb احسب، بدلالة $n$، المجموع $S_n$ حيث: $S_n=\dfrac{1}{v_0}+\dfrac{1}{v_1}+\cdots+\dfrac{1}{v_n}$.
+\end{sq}
+\textbf{4.}
+\begin{sq}
+\qa بيّن أنّه من أجل كل عدد طبيعي $n$: $u_n=2\left(\dfrac{1}{2^n}-1\right)$ ثم احسب $\limn u_n$.
+\qb احسب بدلالة $n$ المجموع $S'_n$ حيث: $S'_n=u_0+u_1+\cdots+u_n$.
+\end{sq}
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الأول -- تقني رياضي}
+المتتالية العددية $(u_n)$ معرّفة بحدّها الأول $u_0=3$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\frac79u_n+1$.
+
+\textbf{1.}
+\begin{sq}
+\qa برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $u_n<\frac92$.
+\qb بيّن أنّ المتتالية $(u_n)$ متزايدة تمامًا ثم استنتج أنّها متقاربة.
+\end{sq}
+\textbf{2.} المتتالية العددية $(v_n)$ معرّفة على $\N$ بـ: $v_n=\frac13u_n-\frac32$.
+\begin{sq}
+\qa بيّن أنّ المتتالية $(v_n)$ هندسية أساسها $\frac79$ ثم احسب حدّها الأول.
+\qb اكتب عبارة الحد العام $v_n$ بدلالة $n$.
+\qc استنتج أنّه من أجل كل عدد طبيعي $n$: $u_n=-\frac32\left(\frac79\right)^n+\frac92$ ثم احسب $\limn u_n$.
+\end{sq}
+\textbf{3.} احسب بدلالة العدد الطبيعي $n$ المجموع $S_n$ حيث: $S_n=\frac13u_0+\frac13u_1+\cdots+\frac13u_n$.
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الثاني -- تقني رياضي}
+المتتالية العددية $(u_n)$ معرّفة بـ: $u_0=3+e^{-2}$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=u_n^2-6u_n+12$.
+
+\textbf{1.}
+\begin{sq}
+\qa تحقّق أنّه من أجل كل عدد طبيعي $n$: $u_{n+1}=\left(u_n-3\right)^2+3$.
+\qb برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $3<u_n<4$.
+\end{sq}
+\textbf{2.}
+\begin{sq}
+\qa ادرس اتجاه تغيّر المتتالية $(u_n)$.
+\qb استنتج أنّ $(u_n)$ متقاربة.
+\end{sq}
+\textbf{3.} المتتالية العددية $(v_n)$ معرّفة على $\N$ بـ: $v_n=\ln\left(u_n-3\right)$.
+\begin{sq}
+\qa بيّن أنّ المتتالية $(v_n)$ هندسية أساسها $2$ يُطلب حساب حدّها الأول.
+\qb اكتب $v_n$ بدلالة $n$ ثم استنتج أنّه من أجل كل عدد طبيعي $n$: $u_n=3+e^{\left(-2^{n+1}\right)}$.
+\qc احسب $\limn u_n$.
+\end{sq}
+\textbf{4.} نضع من أجل كل عدد طبيعي $n$: $P_n=\left(u_0-3\right)\times\left(u_1-3\right)\times\cdots\times\left(u_n-3\right)$. احسب $P_n$ بدلالة $n$.
+\end{tamrin}
+
+% ---------------------------------------------------------------
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الأول -- تقني رياضي}
+الدالة العددية $f$ معرّفة ومتزايدة تمامًا على المجال $[0;+\infty[$ بـ: $f(x)=\dfrac{3x}{\sqrt{4x^2+5}}$. $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $\left(O;\vec i,\vec j\right)$ و $(D)$ المستقيم ذو المعادلة $y=x$.
+
+المتتالية العددية $(u_n)$ معرّفة بحدّها الأول $u_0=\frac12$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+
+\textbf{1.}
+\begin{sq}
+\qa أعد رسم الشكل (المنحنى $(C_f)$ والمستقيم $(D)$) ثم مثّل على حامل محور الفواصل الحدود $u_0$ ، $u_1$ ، $u_2$ و $u_3$ مبرزًا خطوط الإنشاء.
+\qb ضع تخمينًا حول اتجاه تغيّر المتتالية $(u_n)$ وتقاربها.
+\end{sq}
+\textbf{2.}
+\begin{sq}
+\qa برهن أنّه من أجل كل عدد طبيعي $n$: $\frac12\le u_n<1$.
+\qb بيّن أنّ المتتالية $(u_n)$ متزايدة تمامًا، ثم استنتج أنّها متقاربة.
+\end{sq}
+\textbf{3.} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=\dfrac{u_n^2}{1-u_n^2}$.
+
+برهن أنّ المتتالية $(v_n)$ هندسية أساسها $\frac95$ يُطلب تعيين حدّها الأول $v_0$.
+
+\textbf{4.}
+\begin{sq}
+\qa اكتب عبارة $v_n$ بدلالة $n$ ثم استنتج عبارة $u_n$ بدلالة $n$.
+\qb احسب نهاية المتتالية $(u_n)$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2020 م2 تقني رياضي =================
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الثاني -- تقني رياضي}
+المتتالية العددية $(u_n)$ معرّفة بحدها الأول $u_0=\dfrac12$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=3-\dfrac{4}{u_n+2}$.
+
+\QQ{1} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $-1<u_n<2$.
+
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=\dfrac{(2-u_n)(1+u_n)}{u_n+2}$.
+\qb حدّد اتجاه تغير المتتالية $(u_n)$ ثم استنتج أنها متقاربة.
+\end{sq}
+
+\QQ{3} المتتالية العددية $(v_n)$ معرّفة على $\N$ بـ: $v_n=\dfrac{u_n+\alpha}{u_n+1}$، حيث $\alpha$ عدد حقيقي.
+\begin{sq}
+\qa أوجد $\alpha$ حتى تكون المتتالية $(v_n)$ هندسية أساسها $\dfrac14$، ثم احسب حدها الأول $v_0$.
+\qb بيّن عندئذ أنه من أجل كل عدد طبيعي $n$: $u_n=\dfrac{2\times4^n-1}{4^n+1}$، ثم احسب $\limn u_n$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2019 م1 تقني رياضي =================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الأول -- تقني رياضي}
+$(u_n)$ و $(v_n)$ المتتاليتان العدديتان المعرّفتان على $\N$ كما يلي:
+\[\begin{cases}u_0=0\\ u_{n+1}=7u_n-18n+9\end{cases}\qquad\text{و}\qquad v_n=u_n-3n+1.\]
+
+\QQ{1} أثبت أن المتتالية $(v_n)$ هندسية يطلب تعيين أساسها وحدها الأول.
+
+\QQ{2} اكتب $v_n$ بدلالة $n$ ثم استنتج $u_n$ بدلالة $n$.
+
+\QQ{3} احسب بدلالة $n$ المجموع $S_n$ حيث: $S_n=u_0+u_1+\cdots+u_n$.
+
+\QQ{4}
+\begin{sq}
+\qa ادرس حسب قيم العدد الطبيعي $n$ بواقي القسمة الإقليدية لـ $7^n$ على $9$.
+\qb ما هو باقي القسمة الإقليدية على $9$ للعدد $1954^{1962}+1962^{1954}+1442^{2019}$؟
+\qc أثبت أنه من أجل كل عدد طبيعي $n$: $6S_n-7u_n\equiv0\,[9]$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2018 م1 تقني رياضي =================
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الأول -- تقني رياضي}
+الدالة العددية المعرّفة والمتزايدة تماما على المجال $]0;+\infty[$ بـ: $f(x)=\dfrac{2x}{e\,x+1}$ ($e$ أساس اللوغاريتم النيبيري)،
+و $(u_n)$ المتتالية العددية المعرّفة بحدها الأول $u_0=\dfrac{5}{4e}$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+
+\QQ{1}
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>\dfrac1e$.
+\qb بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=\dfrac{e\,u_n\left(\frac1e-u_n\right)}{e\,u_n+1}$، ثم استنتج اتجاه تغير المتتالية $(u_n)$ وبرّر أنها متقاربة.
+\end{sq}
+
+\QQ{2} لتكن المتتالية $(v_n)$ المعرّفة من أجل كل عدد طبيعي $n$ كما يلي: $v_n=\dfrac{e\,u_n}{e\,u_n-1}$.
+
+أثبت أن $(v_n)$ متتالية هندسية أساسها $2$، يطلب تعيين حدها الأول $v_0$ وعبارة $v_n$ بدلالة $n$.
+
+\QQ{3}
+\begin{sq}
+\qa تحقق أنه من أجل كل $n$ من $\N$: $v_n=1+\dfrac{1}{e\,u_n-1}$ واستنتج عبارة $u_n$ بدلالة $n$، ثم احسب $\limn u_n$.
+\qb احسب بدلالة $n$ المجموع $S_n$ حيث: $S_n=v_0+v_1+\cdots+v_n$.
+\end{sq}
+
+\QQ{4}
+\begin{sq}
+\qa ادرس حسب قيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $2^n$ على $7$.
+\qb عيّن قيم العدد الطبيعي $n$ التي من أجلها $S_n$ يقبل القسمة على $7$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2018 م2 تقني رياضي =================
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الثاني -- تقني رياضي}
+لتكن $(u_n)$ متتالية عددية معرّفة على $\N$ بحدها العام كما يلي: $u_n=2\times3^n$.
+
+و $(v_n)$ متتالية عددية معرّفة بحدها الأول $v_0=4$ ومن أجل كل $n$ من $\N$: $v_{n+1}=5v_n+u_n$.
+
+\QQ{1} نضع من أجل كل $n$ من $\N$: $w_n=\dfrac{v_n}{u_n}+\dfrac12$.
+
+أثبت أن $(w_n)$ متتالية هندسية أساسها $\dfrac53$، يطلب تعيين حدها الأول.
+
+\QQ{2} اكتب عبارة الحد العام $w_n$ بدلالة $n$ ثم استنتج أنه من أجل كل $n$ من $\N$: $v_n=5^{n+1}-3^n$.
+
+\QQ{3} ادرس حسب قيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعددين $3^n$ و $5^n$ على $8$، ثم استنتج حسب قيم $n$ بواقي القسمة الإقليدية للعدد $v_n$ على $8$.
+\end{tamrin}
+
+% ================= بكالوريا 2017 م1 تقني رياضي =================
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الأول -- تقني رياضي}
+نعتبر الدالة العددية $f$ المعرّفة على المجال $]-\infty;1[$ بـ: $f(x)=\dfrac{1}{2-x}$. $(C)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد المتجانس $(O;\vec i,\vec j)$، وليكن $(\Delta)$ المستقيم ذا المعادلة $y=x$.
+
+$(u_n)$ المتتالية العددية المعرّفة بحدها الأول $u_0=-1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+
+\begin{GR}{-1.2}{1.2}{-0.6}{1.2}{3}
+\draw[cDef,thick,domain=-1.2:0.97,samples=80] plot(\x,{1/(2-\x)});
+\draw[cThm,thick] (-0.6,-0.6)--(1.2,1.2);
+\node[cDef] at (-0.8,0.55){$(C)$};
+\node[cThm] at (0.75,0.45){$(\Delta)$};
+\end{GR}
+
+\QQ{1} أعد رسم الشكل المقابل ثم مثّل على حامل محور الفواصل الحدود $u_0$، $u_1$، $u_2$ و $u_3$ مبرزا خطوط التمثيل، ثم ضع تخمينا حول اتجاه تغير المتتالية $(u_n)$ وتقاربها.
+
+\QQ{2} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n<1$.
+
+\QQ{3} ادرس اتجاه تغير المتتالية $(u_n)$ ثم استنتج أنها متقاربة.
+
+\QQ{4} نعتبر المتتالية $(v_n)$ المعرّفة كما يلي: من أجل كل عدد طبيعي $n$: $v_n=\dfrac{2}{1-u_n}$.
+\begin{sq}
+\qa برهن أن المتتالية $(v_n)$ حسابية أساسها $2$ ثم عيّن عبارة حدها العام $v_n$ بدلالة $n$.
+\qb استنتج عبارة الحد العام $u_n$ بدلالة $n$ واحسب $\limn u_n$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2017 م2 الدورة الاستثنائية تقني رياضي =================
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الثاني -- تقني رياضي -- الدورة الاستثنائية}
+نعتبر المتتالية $(u_n)$ المعرّفة بـ: $u_1=\dfrac1a$ ومن أجل كل عدد طبيعي $n$ غير معدوم: $u_{n+1}=\dfrac{n+1}{a\,n}\,u_n$، حيث $a$ عدد حقيقي أكبر تماما من $2$.
+
+\QQ{1}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$ غير معدوم: $u_n>0$.
+\qb بيّن أن المتتالية $(u_n)$ متناقصة تماما ثم استنتج أنها متقاربة.
+\end{sq}
+
+\QQ{2} نعتبر المتتالية $(v_n)$ المعرّفة كما يلي: من أجل كل عدد طبيعي $n$ غير معدوم: $v_n=\dfrac{1}{a\,n}\,u_n$.
+\begin{sq}
+\qa بيّن أن المتتالية $(v_n)$ هندسية أساسها $\dfrac1a$ وعيّن حدها الأول $v_1$ بدلالة $a$.
+\qb جد بدلالة $n$ و $a$ عبارة الحد العام $v_n$، ثم استنتج عبارة $u_n$ واحسب $\limn u_n$.
+\end{sq}
+
+\QQ{3} احسب بدلالة $n$ و $a$ المجموع $S_n$ حيث: $S_n=u_1+\dfrac12u_2+\dfrac13u_3+\cdots+\dfrac1n u_n$، ثم عيّن قيمة $a$ حيث $\limn S_n=\dfrac{1}{2016}$.
+\end{tamrin}
+
+\begin{molahada}[ملاحظة حول نص التمرين]
+في النص المنقول: «$a$ عدد حقيقي أكبر من أو يساوي $2$». من أجل $a=2$ نجد $u_2=\dfrac{2}{2\times1}u_1=u_1=\dfrac12$، فالمتتالية لا تكون متناقصة \emph{تماما}. لذلك صحّحنا الشرط إلى $a>2$ (والقيمة المطلوبة في السؤال 3 هي $a=2017$ فلا يتأثر باقي التمرين).
+\end{molahada}
+
+% ================= بكالوريا 2016 م2 تقني رياضي =================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الثاني -- تقني رياضي}
+نعتبر الدالة العددية $f$ المعرّفة على المجال $[1;+\infty[$ بـ: $f(x)=\dfrac{x^2}{2x-1}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد المتجانس $(O;\vec i,\vec j)$ (الشكل المقابل).
+
+\begin{GR}{0}{7}{0}{4}{0.9}
+\draw[cDef,thick,domain=1:7,samples=80] plot(\x,{\x*\x/(2*\x-1)});
+\fill[cDef] (1,1) circle (1.5pt);
+\Ticks{1,2,3,4,5,6}{1,2,3}
+\node[cDef] at (5.2,3.4){$(C_f)$};
+\end{GR}
+
+\QQ{1} بيّن أن الدالة $f$ متزايدة تماما على المجال $[1;+\infty[$.
+
+\QQ{2} لتكن المتتالية العددية $(u_n)$ المعرّفة على $\N$ بـ: $u_0=6$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\begin{sq}
+\qa انقل المنحنى المقابل ثم مثّل الحدود الأربعة الأولى للمتتالية $(u_n)$ على حامل محور الفواصل (دون حسابها) موضّحا خطوط الإنشاء.
+\qb أعط تخمينا حول اتجاه تغير المتتالية $(u_n)$ وتقاربها.
+\qc برهن أنه من أجل كل عدد طبيعي $n$: $1\leq u_n\leq6$.
+\qd ادرس اتجاه تغير المتتالية $(u_n)$.
+\qe برّر تقارب المتتالية $(u_n)$.
+\end{sq}
+
+\QQ{3} نعتبر المتتاليتين العدديتين $(v_n)$ و $(w_n)$ المعرّفتين على $\N$ بـ: $v_n=\dfrac{u_n-1}{u_n}$ و $w_n=\ln(v_n)$.
+\begin{sq}
+\qa برهن أن $(w_n)$ متتالية هندسية أساسها $2$، يطلب تعيين حدها الأول.
+\qb اكتب $w_n$ بدلالة $n$ ثم $v_n$ بدلالة $n$.
+\qc بيّن أن: $u_n=\dfrac{1}{1-\left(\frac56\right)^{2^n}}$، ثم احسب $\limn u_n$.
+\end{sq}
+
+\QQ{4} احسب بدلالة $n$ المجموع التالي: $S_n=\dfrac{1}{w_0}+\dfrac{1}{w_1}+\cdots+\dfrac{1}{w_n}$.
+\end{tamrin}
+
+% ================= بكالوريا 2015 م1 تقني رياضي =================
+\begin{tamrin}{بكالوريا 2015 -- الموضوع الأول -- تقني رياضي}
+نعتبر المتتالية $(u_n)$ المعرّفة بحدها الأول $u_0=0$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\sqrt{6u_n+16}$.
+
+\QQ{1} $h$ الدالة المعرّفة على المجال $\left[-\dfrac83;+\infty\right[$ بما يلي: $h(x)=\sqrt{6x+16}$، و $(C)$ تمثيلها البياني في المستوي المنسوب إلى معلم متعامد ومتجانس، و $(\Delta)$ المستقيم ذو المعادلة $y=x$ (أنظر الشكل).
+\begin{GR}{-3}{9}{-1}{9}{0.6}
+\draw[cDef,thick,domain=-2.6667:9,samples=150] plot(\x,{sqrt(max(6*\x+16,0))});
+\draw[cThm,thick] (-1,-1)--(9,9);
+\Ticks{-2,2,4,6,8}{2,4,6,8}
+\node[cDef] at (2.2,6.6){$(C)$};
+\node[cThm] at (6.3,4.8){$(\Delta)$};
+\end{GR}
+\begin{sq}
+\qa أعد رسم الشكل المقابل على ورقة الإجابة ثم مثّل على حامل محور الفواصل الحدود $u_0$، $u_1$، $u_2$ و $u_3$ (دون حسابها) موضّحا خطوط الإنشاء.
+\qb ضع تخمينا حول اتجاه تغير $(u_n)$ وتقاربها.
+\end{sq}
+
+\QQ{2}
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $0\leq u_n<8$.
+\qb بيّن أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-u_n=\dfrac{(8-u_n)(u_n+2)}{\sqrt{6u_n+16}+u_n}$.
+\qc استنتج اتجاه تغير $(u_n)$.
+\end{sq}
+
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $0<8-u_{n+1}\leq\dfrac12(8-u_n)$.
+\qb بيّن أنه من أجل كل عدد طبيعي $n$: $0<8-u_n\leq8\left(\dfrac12\right)^n$، ثم استنتج $\limn u_n$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2014 م1 تقني رياضي =================
+\begin{tamrin}{بكالوريا 2014 -- الموضوع الأول -- تقني رياضي}
+\textbf{I)} $f$ هي الدالة المعرّفة على المجال $]1;+\infty[$ بـ: $f(x)=x-\ln(x-1)$.
+
+\QQ{1} حدّد حسب قيم $x$ إشارة $f(x)-x$.
+
+\QQ{2}
+\begin{sq}
+\qa عيّن اتجاه تغير الدالة $f$.
+\qb بيّن أنه إذا كان $x\in[2;e+1]$ فإن: $f(x)\in[2;e+1]$.
+\end{sq}
+
+\textbf{II)} $(u_n)$ المتتالية المعرّفة على $\N$ بـ: $u_0=e+1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=u_n-\ln(u_n-1)$.
+
+\QQ{1} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n\in[2;e+1]$.
+
+\QQ{2} ادرس اتجاه تغير المتتالية $(u_n)$.
+
+\QQ{3} برّر تقارب المتتالية $(u_n)$، ثم احسب نهايتها.
+\end{tamrin}
+
+% ================= بكالوريا 2014 م2 تقني رياضي =================
+
+\subsection{مسائل نموذجية -- تقني رياضي}
+\begin{tamrin}{بكالوريا 2014 -- الموضوع الثاني -- تقني رياضي}
+$n$ و $p$ عددان طبيعيان.
+
+\QQ{1} ادرس حسب قيم $n$ بواقي القسمة الإقليدية على $16$ للعدد $5^n$.
+
+\QQ{2} نضع: $C_n=16n+9$ و $D_p=5^p$.
+\begin{sq}
+\qa بيّن أنه إذا كان $p=4k+2$ حيث $k$ عدد طبيعي، فإنه يوجد عدد طبيعي $n$ يحقق $C_n=D_p$.
+\qb عيّن $n$ من أجل $p=6$.
+\end{sq}
+
+\QQ{3} $f$ هي الدالة المعرّفة على المجال $[0;+\infty[$ بـ: $f(x)=5^{4x+2}-9$.
+
+ادرس تغيرات الدالة $f$، ثم استنتج إشارة $f(x)$.
+
+\QQ{4} $(u_n)$ المتتالية المعرّفة على $\N$ بـ: $u_0=1$ ومن أجل كل $n$ من $\N$: $u_{n+1}=5^4\left(u_n+\dfrac{9}{16}\right)-\dfrac{9}{16}$.
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n=\dfrac{5^{4n+2}-9}{16}$.
+\qb برهن أنه من أجل كل عدد طبيعي $n$، فإن $u_n$ عدد طبيعي.
+\end{sq}
+
+\QQ{5} استنتج اتجاه تغير المتتالية $(u_n)$.
+\end{tamrin}
+
+% ================= مسألة نموذجية =================
+\begin{tamrin}{مسألة نموذجية -- تقني رياضي}
+نعتبر الدالة $f$ المعرّفة على المجال $[0;+\infty[$ بـ: $f(x)=6-\dfrac{5}{x+1}$، و $(C)$ تمثيلها البياني (انظر الوثيقة المرفقة).
+\begin{GR}{-1}{8}{-1}{7}{0.8}
+\draw[cDef,thick,domain=0:8,samples=100] plot(\x,{6-5/(\x+1)});
+\draw[cThm,thick] (-1,-1)--(7,7);
+\Ticks{1,2,3,4,5,6,7}{1,2,3,4,5,6}
+\node[cDef] at (6.8,5.8){$(C)$};
+\node[cThm] at (2.6,3.4){$(d)$};
+\end{GR}
+
+\QQ{1}
+\begin{sq}
+\qa ادرس تغيرات الدالة $f$ على المجال $[0;+\infty[$.
+\qb حل في المجال $[0;+\infty[$ المعادلة $f(x)=x$. نرمز إلى الحل بالرمز $\alpha$.
+\qc برهن أنه إذا كان $x\in[0;\alpha]$ فإن $f(x)\in[0;\alpha]$، وبالمثل إذا كان $x\in[\alpha;+\infty[$ فإن $f(x)\in[\alpha;+\infty[$.
+\end{sq}
+
+\QQ{2} نعتبر المتتالية العددية $(u_n)$ المعرّفة بحدها الأول $u_0=0$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=6-\dfrac{5}{u_n+1}$.
+\begin{sq}
+\qa باستعمال المنحنى $(C)$ والمستقيم $(d)$ ذي المعادلة $y=x$ مثّل الحدود $u_0$، $u_1$، $u_2$، $u_3$ و $u_4$ على محور الفواصل دون حسابها.
+\qb ضع تخمينا حول اتجاه تغير المتتالية $(u_n)$ وتقاربها.
+\qc برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $0\leq u_n\leq u_{n+1}\leq\alpha$.
+\qd استنتج أن المتتالية $(u_n)$ متقاربة ثم عيّن نهايتها.
+\end{sq}
+
+\QQ{3} نعرّف الآن المتتالية $(u_n)$ بحد أول $u_0$ موجب أو معدوم كيفي، و $u_{n+1}=f(u_n)$. ماذا يمكن القول عن اتجاه تغير وتقارب المتتالية $(u_n)$ تبعا لقيم الحد الأول $u_0$؟
+\end{tamrin}
+
+\begin{molahada}[ملاحظة حول نص التمرين]
+في النص المنقول جاء السؤال 3: «تبعا لقيم العدد الحقيقي الموجب أو المعدوم $\alpha$»، لكن $\alpha$ عدد ثابت (حل المعادلة $f(x)=x$)؛ المقصود هو الحد الأول $u_0\geq0$، فصحّحنا السؤال على هذا الأساس.
+\end{molahada}
+
+% ================= مسألة نموذجية =================
+\begin{tamrin}{مسألة نموذجية -- تقني رياضي}
+لتكن $(u_n)$ متتالية عددية معرّفة بحدها الأول $u_0=0$ ومهما يكن $n$ من $\N$: $u_{n+1}=\dfrac{(2n+1)u_n+2}{2n+3}$.
+
+\QQ{1}
+\begin{sq}
+\qa برهن بالتراجع على أنه من أجل كل عدد طبيعي $n$ فإن $u_n<1$.
+\qb ادرس اتجاه تغير المتتالية $(u_n)$ واستنتج أنها متقاربة.
+\end{sq}
+
+\QQ{2} نضع من أجل كل عدد طبيعي $n$: $v_n=(2n+1)u_n$.
+
+برهن أن المتتالية $(v_n)$ حسابية يطلب تعيين أساسها وحدها الأول.
+
+\QQ{3} عبّر عن $v_n$ ثم $u_n$ بدلالة $n$ واحسب $\limn u_n$.
+
+\QQ{4} نعتبر العدد $p$ حيث: $p=(1-u_0)\times(1-u_1)\times\cdots\times(1-u_n)$. بيّن أن: $p=\dfrac{2^n\,n!}{(2n+1)!}$.
+\end{tamrin}
+
+% ================= مسائل نموذجية -- تقني رياضي (t3) =================
+\begin{tamrin}{مسألة نموذجية -- تقني رياضي}
+لتكن المتتالية العددية $(u_n)_{n\in\N}$ المعرفة كما يلي:
+\[\begin{cases} u_0=\dfrac12\\[4pt] u_{n+1}=\sqrt{2u_n+3}\end{cases}\]
+\QQ{1} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$ فإن: $\dfrac12\le u_n<3$.
+
+\QQ{2} أثبت أن المتتالية $(u_n)$ متزايدة تمامًا ثم استنتج أنها متقاربة محددًا نهايتها.
+
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$ فإن: $|u_{n+1}-3|\le \dfrac25|u_n-3|$.
+\qb استنتج أنه من أجل كل عدد طبيعي $n$ فإن: $3-u_n\le\left(\dfrac25\right)^n(3-u_0)$.
+\qc استنتج من جديد نهاية المتتالية $(u_n)$.
+\end{sq}
+\QQ{4} نعتبر المتتالية $(v_n)_{n\in\N^*}$ المعرفة من أجل كل عدد طبيعي غير معدوم $n$ بـ: $v_n=n(3-u_n)$.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي غير معدوم $n$ فإن: $\dfrac{v_{n+1}}{v_n}\le\dfrac45$.
+\qb استنتج أنه من أجل كل عدد طبيعي غير معدوم $n$ فإن: $v_n\le\left(\dfrac45\right)^{n-1}$.
+\qc استنتج نهاية المتتالية $(v_n)$.
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مسألة نموذجية -- تقني رياضي}
+\QQ{1} نعتبر المتتالية $(u_n)_{n\in\N}$ المعرفة بـ $u_0=\dfrac23$ ومن أجل كل عدد طبيعي $n$:
+\[u_{n+1}=\frac{1}{\left(\frac{1}{u_n}-1\right)^2+1}\]
+\begin{sq}
+\qa احسب $u_1$ و $u_2$.
+\qb برهن بالتراجع أنه من أجل كل عدد طبيعي $n$ فإن: $\dfrac12<u_n<1$.
+\qc ادرس اتجاه تغير المتتالية $(u_n)$ ثم استنتج أنها متقاربة.
+\end{sq}
+\QQ{2} لتكن $(v_n)_{n\in\N}$ متتالية معرفة على $\N$ كما يلي: $v_n=\ln\left(\dfrac{1}{u_n}-1\right)$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ هندسية يطلب تعيين أساسها وحدها الأول.
+\qb اكتب عبارة $v_n$ بدلالة $n$ واستنتج عبارة $u_n$ بدلالة $n$.
+\qc احسب بدلالة $n$ المجموع $S_n$ حيث: $S_n=\displaystyle\sum_{k=0}^{n}v_k=v_0+v_1+\dots+v_n$.
+\qd احسب بدلالة $n$ الجداء $P_n$ حيث: $P_n=\displaystyle\prod_{k=0}^{n}\left(\frac{1-u_k}{u_k}\right)=\left(\frac{1-u_0}{u_0}\right)\left(\frac{1-u_1}{u_1}\right)\dots\left(\frac{1-u_n}{u_n}\right)$.
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مسألة نموذجية -- تقني رياضي}
+نعتبر المتتالية $(u_n)$ المعرفة على $\N$ كما يلي: $u_0=1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac{3u_n}{u_n+1}$.
+
+$f$ دالة عددية معرفة على $]-1;+\infty[$ كما يلي: $f(x)=\dfrac{3x}{x+1}$، و$(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس $(O;\vec i,\vec j)$ (الوثيقة المرفقة).
+\begin{GR}{-1}{3.5}{-1}{3}{2}
+ \Ticks{1,2,3}{1,2}
+ \draw[thick,cDef,domain=-0.6:3.5,samples=120,smooth] plot (\x,{3*\x/(\x+1)});
+ \draw[thick,cThm] (-1,-1)--(3.5,3.5);
+ \node[cDef] at (3,2.6){$(C_f)$};
+ \node[cThm] at (2.9,3.3){$y=x$};
+\end{GR}
+\QQ{1}
+\begin{sq}
+\qa مثّل على الوثيقة المرفقة وعلى محور الفواصل الحدود: $u_0$، $u_1$، $u_2$ و $u_3$ مظهرًا خطوط الرسم.
+\qb ضع تخمينًا حول اتجاه تغير المتتالية $(u_n)$ وتقاربها.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $0<u_n<2$.
+\qb أثبت أن المتتالية $(u_n)$ متزايدة تمامًا.
+\qc استنتج أنها متقاربة محددًا نهايتها.
+\end{sq}
+\QQ{3} نعتبر المتتالية $(v_n)$ المعرفة على $\N$ بـ: $v_n=1-\dfrac{2}{u_n}$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ هندسية، عيّن أساسها وحدها الأول.
+\qb اكتب $v_n$ بدلالة $n$ ثم استنتج $u_n$ بدلالة $n$.
+\qc تحقق من نهاية $u_n$ المحسوبة في السؤال 2-(جـ).
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مسألة نموذجية -- تقني رياضي}
+\textbf{I.} نعرّف على $\N^*$ المتتالية $(u_n)$ حيث:
+\[\begin{cases}u_1=e^2\\[2pt] u_{n+1}=e^{-\frac12}\sqrt{u_n}\end{cases}\]
+\QQ{1} احسب كلًّا من $u_2$ و $u_3$.
+
+\QQ{2} أثبت بالتراجع أنه من أجل كل عدد طبيعي غير معدوم $n$ فإن: $u_n>\dfrac1e$.
+
+\QQ{3} برهن أنه من أجل كل عدد طبيعي غير معدوم $n$ فإن: $\dfrac{u_{n+1}}{u_n}<1$، ثم استنتج تقارب المتتالية $(u_n)$.
+
+\textbf{II.} نضع من أجل كل $n$ من $\N^*$: $w_n=\dfrac12+\dfrac12\ln u_n$.
+
+\QQ{1} أثبت أن $(w_n)$ متتالية هندسية أساسها $\dfrac12$.
+
+\QQ{2} عبّر عن $w_n$ بدلالة $n$ ثم استنتج أن: $u_n=e^{3\left(\frac12\right)^{n-1}-1}$، ثم احسب $\limn u_n$.
+
+\QQ{3} احسب بدلالة $n$ الجداء: $\pi_n=u_1\times u_2\times u_3\times\dots\times u_n$.
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مسألة نموذجية -- تقني رياضي}
+لتكن المتتالية العددية $(u_n)$ المعرفة بما يلي: $u_0=1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac{4u_n}{u_n+2}$.
+
+\QQ{1} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $1\le u_n<2$.
+
+\QQ{2} ادرس رتابة المتتالية $(u_n)$. هل المتتالية $(u_n)$ متقاربة؟
+
+\QQ{3} نضع من أجل كل عدد طبيعي $n$: $v_n=1-\dfrac{2}{u_n}$.
+\begin{sq}
+\qa بيّن أن المتتالية $(v_n)$ هندسية يطلب تعيين أساسها وحدها الأول، ثم عبّر عن $v_n$ بدلالة $n$.
+\qb استنتج عبارة $u_n$ بدلالة $n$ ثم احسب $\limn u_n$.
+\qc نضع من أجل كل عدد طبيعي $n$: $S_n=\dfrac1{u_0}+\dfrac1{u_1}+\dots+\dfrac1{u_n}$. احسب $S_n$ بدلالة $n$.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa بيّن أن: $|u_{n+1}-2|\le\dfrac23|u_n-2|$ من أجل كل عدد طبيعي $n$.
+\qb برهن أنه من أجل كل عدد طبيعي $n$: $|u_n-2|\le\left(\dfrac23\right)^n$، ثم استنتج $\limn u_n$.
+\end{sq}
+\end{tamrin}
+
+\begin{molahada}
+في نص المجلة كتب المجموع $S_n=\frac1{u_0}+\frac1{u_2}+\dots+\frac1{u_n}$ (سقط الحد $\frac1{u_1}$)، وهو خطأ مطبعي؛ صُحّح إلى $S_n=\frac1{u_0}+\frac1{u_1}+\dots+\frac1{u_n}$.
+\end{molahada}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مسألة نموذجية -- تقني رياضي}
+نعتبر الدالة $f$ المعرفة على المجال $[0;+\infty[$ كما يلي: $f(x)=\ln(x^2+4)$.
+
+\textbf{الجزء A:}
+
+\QQ{1} ادرس تغيرات الدالة $f$ على المجال $[0;+\infty[$.
+
+\QQ{2} نعتبر الدالة $g$ المعرفة على $[0;+\infty[$ كما يلي: $g(x)=f(x)-x$.
+\begin{sq}
+\qa ادرس اتجاه تغير الدالة $g$ على المجال $[0;+\infty[$.
+\qb بيّن أن المعادلة $g(x)=0$ تقبل حلًّا وحيدًا $\alpha$ من المجال $[2;3]$. احصر العدد $\alpha$ بالتقريب إلى $10^{-1}$.
+\qc برّر وجود عدد حقيقي وحيد $\alpha$ (نفسه في السؤال ب) حلًّا للمعادلة $f(x)=x$.
+\end{sq}
+\textbf{الجزء B:} نعتبر المتتالية $(u_n)$ المعرفة بـ: $u_0=1$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+
+\QQ{1} في الورقة المرفقة مثّلنا الدالة $f$ بالمنحنى $(C)$ والمستقيم $(\Delta)$ ذا المعادلة $y=x$. مثّل على محور الفواصل الحدود $u_0$، $u_1$، $u_2$، $u_3$ (دون حسابها)، موضّحًا خطوط التمثيل.
+
+\QQ{2} علّم النقطة $I$ ذات الفاصلة $\alpha$ (نأخذ $\alpha\approx2{,}2$).
+
+\QQ{3}
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $1\le u_n\le\alpha$.
+\qb بيّن أن $(u_n)$ متقاربة، ثم عيّن نهاية المتتالية $(u_n)$.
+\end{sq}
+\begin{GR}{-1}{6}{-1}{4}{1.5}
+ \Ticks{1,2,3,4,5}{1,2,3}
+ \draw[thick,cDef,domain=0:6,samples=100,smooth] plot (\x,{ln(\x*\x+4)});
+ \draw[thick,cThm,dashed] (-1,-1)--(4.5,4.5);
+ \node[cDef] at (5.4,3.75){$(C)$};
+ \node[cThm] at (3.3,3.7){$(\Delta)$};
+\end{GR}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مسألة نموذجية -- تقني رياضي}
+\textbf{I.} لتكن المتتالية $(u_n)$ المعرفة على $\N$ بـ: $u_0=\dfrac13$ ومن أجل كل عدد طبيعي $n$:
+\[u_{n+1}=\frac32\left[1-\frac{1}{1+2u_n}\right]\]
+\QQ{1} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $0<u_n<1$.
+
+\QQ{2}
+\begin{sq}
+\qa تحقق أن: $u_{n+1}-u_n=\dfrac{2u_n(1-u_n)}{1+2u_n}$ من أجل كل عدد طبيعي $n$، ثم استنتج اتجاه تغير المتتالية $(u_n)$.
+\qb بيّن أن $(u_n)$ متقاربة، ثم احسب نهايتها.
+\end{sq}
+\textbf{II.} لتكن $(v_n)$ متتالية عددية معرفة على $\N$ كما يلي: $v_n=-\dfrac{u_n-1}{2u_n}$.
+\begin{sq}
+\qa بيّن أن المتتالية $(v_n)$ هندسية يطلب تعيين أساسها وحدها الأول.
+\qb اكتب $v_n$ بدلالة $n$ واستنتج $u_n$ بدلالة $n$، ثم احسب من جديد نهاية المتتالية $(u_n)$.
+\qc احسب بدلالة $n$ المجموعين: $S_n=v_0+v_1+\dots+v_n$ و $T_n=\dfrac{1}{u_0}+\dfrac{3}{u_1}+\dfrac{9}{u_2}+\dots+\dfrac{3^n}{u_n}$.
+\end{sq}
+\end{tamrin}
+
+\begin{molahada}
+في نص المجلة: $T_n=u_0+3u_1+9u_2+\dots+3^nu_n$. هذا المجموع لا يُكتب بعبارة مغلقة بسيطة بدلالة $n$ (حده العام $\frac{9^k}{3^k+2}$)، فهو خطأ في النص. صُحّح إلى $T_n=\frac{1}{u_0}+\frac{3}{u_1}+\dots+\frac{3^n}{u_n}$ الذي حده العام $3^k+2$.
+\end{molahada}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مسألة نموذجية -- تقني رياضي}
+نعتبر الدالة $f$ المعرفة على $\left[\dfrac12;+\infty\right[$ كما يلي: $f(x)=\dfrac{3x-1}{2x}$، وليكن $(C)$ تمثيلها البياني في المستوي المنسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+
+\QQ{1} ادرس اتجاه تغير الدالة $f$ ثم أنشئ المنحنى $(C)$.
+
+\QQ{2} $(u_n)$ متتالية عددية معرفة على $\N$ بـ $u_0=2$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\begin{sq}
+\qa مثّل الحدود $u_0$، $u_1$، $u_2$ و $u_3$ على محور الفواصل مبرزًا خطوط الإنشاء.
+\qb برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n>1$.
+\qc بيّن أن المتتالية $(u_n)$ متناقصة تمامًا. ماذا تستنتج؟
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa أثبت أنه من أجل كل عدد طبيعي $n$: $u_{n+1}-1\le\dfrac12(u_n-1)$.
+\qb بيّن أنه من أجل كل عدد طبيعي $n$: $u_n-1\le\left(\dfrac12\right)^n$، ثم استنتج نهاية المتتالية $(u_n)$.
+\end{sq}
+\QQ{4} لتكن $(v_n)$ المتتالية المعرفة على $\N$ كما يلي: $v_n=\dfrac{u_n-1}{2u_n-1}$.
+\begin{sq}
+\qa بيّن أن $(v_n)$ هندسية يطلب تعيين أساسها وحدها الأول ثم اكتب عبارة $v_n$ بدلالة $n$.
+\qb احسب المجموع $S_n$ حيث: $S_n=\dfrac{v_0-1}{u_0}+\dfrac{v_1-1}{u_1}+\dfrac{v_2-1}{u_2}+\dots+\dfrac{v_n-1}{u_n}$.
+\end{sq}
+\end{tamrin}
+
+\begin{molahada}
+في نص المجلة طُلب في السؤال 2-(ب) البرهان على $u_n>0$. هذا الحصر لا يكفي لإثبات التناقص في 2-(جـ) (لأن $u_{n+1}-u_n=\frac{-(2u_n-1)(u_n-1)}{2u_n}$ يتطلب $u_n>1$) ولا لحساب النهاية بالحصر في 3-(ب). صُحّح إلى $u_n>1$.
+\end{molahada}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مسألة نموذجية -- تقني رياضي}
+نعتبر المتتالية $(u_n)$ المعرفة على $\N$ كما يلي: $u_0=-1$ و $u_1=\dfrac12$ ومن أجل كل عدد طبيعي $n$:
+\[u_{n+2}=u_{n+1}-\frac14u_n\]
+\QQ{1} احسب $u_2$ ثم استنتج أن المتتالية $(u_n)$ لا حسابية ولا هندسية.
+
+\QQ{2} نعرّف المتتالية $(v_n)$ من أجل كل عدد طبيعي $n$ كما يلي: $v_n=u_{n+1}-\dfrac12u_n$.
+\begin{sq}
+\qa احسب $v_0$ ثم عبّر عن $v_{n+1}$ بدلالة $v_n$.
+\qb استنتج أن المتتالية $(v_n)$ هندسية يطلب تعيين أساسها، ثم اكتب عبارة $v_n$ بدلالة $n$.
+\end{sq}
+\QQ{3} نعرّف المتتالية $(w_n)$ كما يلي: من أجل كل عدد طبيعي $n$: $w_n=\dfrac{u_n}{v_n}$.
+\begin{sq}
+\qa احسب $w_0$ ثم باستعمال المساواة $u_{n+1}=v_n+\dfrac12u_n$، عبّر عن $w_{n+1}$ بدلالة $v_n$ و $u_n$.
+\qb استنتج أنه من أجل كل عدد طبيعي $n$ فإن: $w_{n+1}=w_n+2$، ثم عبّر عن $w_n$ بدلالة $n$.
+\end{sq}
+\QQ{4} بيّن أنه من أجل كل عدد طبيعي $n$ فإن: $u_n=\dfrac{2n-1}{2^n}$.
+
+\QQ{5} نضع من أجل كل عدد طبيعي $n$: $S_n=u_0+u_1+\dots+u_n$. برهن بالتراجع أنه من أجل كل عدد طبيعي $n$ فإن: $S_n=2-\dfrac{2n+3}{2^n}$.
+\end{tamrin}
+
+\section{تمارين البكالوريا -- شعبة رياضيات}
+% ===================== بكالوريا 2026 -- شعبة رياضيات =====================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{I)} $g$ الدالة المعرّفة على $\R$ بـ: $g(x)=(x^2+2x)e^x+2xe^{2x}$.
+
+التمثيل البياني $(C_g)$ للدالة $g$ يشمل النقطة $A(\alpha;0)$ كما هو موضّح في الشكل:
+\begin{GR}{-5}{1}{-1}{3}{0.9}
+\Ticks{-5,-4,-3,-2,-1,1}{-1,1,2,3}
+\draw[very thick,cDef,domain=-5:0.45,samples=200] plot (\x,{(\x*\x+2*\x)*exp(\x)+2*\x*exp(2*\x)});
+\fill (-2.2177,0) circle (2pt) node[above,font=\small]{$A$};
+\node[cDef] at (-3.8,0.5){$(C_g)$};
+\end{GR}
+
+\QQ{1} تحقّق أنّ: $-2{,}3<\alpha<-2{,}2$.
+
+\QQ{2} بقراءة بيانية، حدّد حسب قيم العدد الحقيقي $x$ إشارة $g(x)$.
+
+\medskip
+\textbf{II)} $f$ الدالة المعرّفة على $\R$ بـ: $f(x)=\dfrac{x^2e^x}{e^x+1}$، و$(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+
+\QQ{1} احسب $\displaystyle\lim_{x\to-\infty}f(x)$ وبيّن أنّ: $\displaystyle\lim_{x\to+\infty}f(x)=+\infty$.
+
+\QQ{2} بيّن أنّه: من أجل كلّ $x$ من $\R$، $f'(x)=\dfrac{g(x)}{(e^x+1)^2}$ ثمّ شكّل جدول تغيّرات الدالة $f$.
+
+\QQ{3}
+\begin{sq}
+\qa بيّن أنّ المنحني $(P)$ ذا المعادلة $y=x^2$ مقارب للمنحني $(C_f)$ عند $+\infty$.
+\qb ادرس الوضع النسبي للمنحنيين $(C_f)$ و$(P)$ ثمّ ارسم $(P)$ و$(C_f)$ (نأخذ: $f(\alpha)\simeq0{,}5$).
+\end{sq}
+
+\QQ{4} $(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=\displaystyle\int_0^1\frac{e^x}{e^x+1}\,dx$ ومن أجل كلّ $n$ من $\N^*$: $u_n=\displaystyle\int_0^1\frac{x^ne^x}{e^x+1}\,dx$.
+\begin{sq}
+\qa احسب $u_0$ ثمّ برّر أنّ المتتالية $(u_n)$ موجبة.
+\qb بيّن أنّ $(u_n)$ متناقصة ثمّ استنتج أنّها متقاربة.
+\qc تحقّق أنّه من أجل كلّ عدد حقيقي $x$ حيث $0\leq x\leq1$: $\dfrac12\leq\dfrac{e^x}{e^x+1}\leq\dfrac{e}{e+1}$.
+\qd استنتج أنّه من أجل كلّ $n$ من $\N^*$: $\dfrac{1}{2(n+1)}\leq u_n\leq\dfrac{e}{(e+1)(n+1)}$ ثمّ احسب نهاية المتتالية $(u_n)$.
+
+-- فسّر هندسيًّا العدد $u_2$ وأعط حصرًا له.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2025 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الثاني -- شعبة رياضيات}
+\QQ{1} $f$ الدالة المعرّفة على $\left[-1;-\frac12\right]$ بـ: $f(x)=\dfrac{-x^2+x}{x^2+1}$.
+بيّن أنّ الدالة $f$ متزايدة تماما.
+
+\QQ{2} $(u_n)$ المتتالية المعرّفة بـ: $u_0=-\dfrac12$ ومن أجل كلّ عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\begin{sq}
+\qa برهن بالتراجع أنّه من أجل كلّ عدد طبيعي $n$: $-1<u_n\le -\dfrac12$.
+\qb أدرس اتّجاه تغيّر المتتالية $(u_n)$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أنّه من أجل كلّ عدد طبيعي $n$: $u_{n+1}+1\le \dfrac45\,(u_n+1)$.
+\qb استنتج أنّه من أجل كلّ عدد طبيعي $n$: $0<u_n+1\le \dfrac12\left(\dfrac45\right)^{n}$، ثمّ احسب $\limn u_n$.
+\end{sq}
+\QQ{4} من أجل كلّ عدد طبيعي $n$ نضع: $S_n=u_0+u_1+\dots+u_n$.
+بيّن أنّ: $S_n\le -2\left(\dfrac45\right)^{n}-n+\dfrac32$، ثمّ احسب $\limn S_n$.
+\end{tamrin}
+
+\begin{molahada}
+صُحّحت في نص المصدر الأخطاء التالية: المقام $x^x+1$ صوابه $x^2+1$؛ الحصر $-1<u_n<-\frac12$ لا يتحقق من أجل $n=0$ لأن $u_0=-\frac12$، فصار $-1<u_n\le-\frac12$؛ في السؤال 4 الأساس $\frac43$ صوابه $\frac45$ (مع $\frac43$ تكون المتباينة خاطئة، مثلا من أجل $n=1$)؛ و$x\to+\infty$ صوابها $n\to+\infty$.
+\end{molahada}
+
+% ===================== بكالوريا 2023 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة العددية المعرّفة على $[0;+\infty[$ بـ: $f(x)=\dfrac{x+4}{x+1}$، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$، و $(D)$ المستقيم ذو المعادلة $y=x$ (الشكل).
+
+$(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=0$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\begin{GR}{0}{5.5}{0}{4.5}{1}
+\Ticks{1,2,3,4,5}{1,2,3,4}
+\draw[blue,thick,domain=0:5.5,samples=120] plot(\x,{(\x+4)/(\x+1)});
+\draw[red,thick] (0,0)--(4.5,4.5);
+\node[blue] at (4.8,1.9){$(C_f)$};
+\node[red] at (3.9,4.3){$(D)$};
+\end{GR}
+\QQ{1} أعد رسم الشكل على ورقة الإجابة، ثمّ مثّل على حامل محور الفواصل الحدود $u_0$، $u_1$، $u_2$ و $u_3$ دون حسابها مبرزا خطوط التمثيل.
+\QQ{2} ضع تخمينا حول اتجاه تغيّر المتتالية $(u_n)$ وتقاربها.
+\QQ{3} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=\dfrac{u_n-2}{u_n+2}$.
+\begin{sq}
+\qa بيّن أنّ $(v_n)$ هندسية أساسها $-\dfrac13$، يُطلب تعيين حدّها الأول $v_0$.
+\qb عيّن عبارة $v_n$ بدلالة $n$، ثمّ استنتج أنّه من أجل كل عدد طبيعي $n$: $u_n=-2+\dfrac{4}{1+\left(-\frac13\right)^n}$.
+\qc احسب $\limn u_n$.
+\end{sq}
+\QQ{4} نضع من أجل كل عدد طبيعي $n$: $S_n=v_0+v_1+\dots+v_n$ و $T_n=\dfrac{1}{u_0+2}+\dfrac{1}{u_1+2}+\dots+\dfrac{1}{u_n+2}$.
+احسب $S_n$ بدلالة $n$، ثمّ بيّن أنّه من أجل كل عدد طبيعي $n$: $T_n=\dfrac{1}{16}\left[4n+7+\left(-\dfrac13\right)^n\right]$.
+\end{tamrin}
+
+% ===================== بكالوريا 2022 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة العددية المعرّفة على $[0;+\infty[$ بـ: $f(x)=\dfrac{2x^2+5}{2x+1}$، و $(C)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ كما هو مبيّن في الشكل المرفق.
+
+$(u_n)$ المتتالية العددية المعرّفة على $\N$ كما يلي: $u_0=2$ و $u_{n+1}=f(u_n)$.
+\begin{GR}{0}{7}{0}{7}{0.75}
+\Ticks{1,2,3,4,5,6}{1,2,3,4,5,6}
+\draw[blue,thick,domain=0:7,samples=150] plot(\x,{(2*\x*\x+5)/(2*\x+1)});
+\draw[red,thick] (0,0)--(7,7);
+\node[blue] at (0.6,5.6){$(C)$};
+\node[red] at (6.3,5.6){$(\Delta)$};
+\end{GR}
+\QQ{1}
+\begin{sq}
+\qa أدرس وضعية $(C)$ بالنسبة إلى المستقيم $(\Delta)$ ذي المعادلة $y=x$.
+\qb أنقل الشكل ثمّ مثّل على حامل محور الفواصل الحدود $u_0$، $u_1$ و $u_2$، وضع تخمينا حول اتجاه تغيّر $(u_n)$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $2\le u_n\le 5$.
+\qb أدرس اتجاه تغيّر المتتالية $(u_n)$ ثمّ استنتج أنها متقاربة.
+\end{sq}
+\QQ{3} أثبت أنّه من أجل كل عدد طبيعي $n$: $5-u_{n+1}=\dfrac{2u_n}{2u_n+1}(5-u_n)$.
+\QQ{4}
+\begin{sq}
+\qa بيّن أنّه من أجل كل عدد طبيعي $n$: $\dfrac{2u_n}{2u_n+1}\le \dfrac{10}{11}$.
+\qb استنتج أنّ: $0<5-u_n\le 3\left(\dfrac{10}{11}\right)^n$، ثمّ أحسب $\limn u_n$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2022 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الثاني -- شعبة رياضيات}
+$(u_n)$ و $(v_n)$ المتتاليتان العدديتان المعرّفتان على $\N$ بـ: $u_0=0$، $u_{n+1}=-\dfrac13u_n^2+\dfrac23u_n+\dfrac23$ و $v_n=u_n-1$.
+\QQ{1} بيّن أنّه من أجل كل عدد طبيعي $n$: $v_{n+1}=-\dfrac13(v_n)^2$.
+\QQ{2} برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $-3\le v_n<0$.
+\QQ{3} أدرس اتجاه تغيّر المتتالية $(v_n)$ ثمّ استنتج أنّ $(v_n)$ متقاربة.
+\QQ{4} $(w_n)$ المتتالية العددية المعرّفة من أجل كل عدد طبيعي $n$ بـ: $w_n=\ln\left(-\dfrac{3}{v_n}\right)$.
+\begin{sq}
+\qa بيّن أنّ المتتالية $(w_n)$ هندسية أساسها $2$، يُطلب حساب حدها الأول $w_0$.
+\qb أكتب $w_n$ بدلالة $n$، ثمّ استنتج $v_n$ و $u_n$ بدلالة $n$، واحسب $\limn u_n$.
+\end{sq}
+\QQ{5} أحسب بدلالة $n$ الجداء $P_n$ حيث: $P_n=\dfrac{1}{v_0}\times\dfrac{1}{v_1}\times\dots\times\dfrac{1}{v_n}$.
+\end{tamrin}
+
+% ===================== بكالوريا 2021 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الأول -- شعبة رياضيات}
+المتتالية العددية $(u_n)$ معرّفة بـ: $u_0=-\dfrac32$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac{11u_n+4}{-4u_n+1}$.
+\QQ{1}
+\begin{sq}
+\qa تحقق أنّه من أجل كل عدد طبيعي $n$: $u_{n+1}=-\dfrac{11}{4}+\dfrac{27}{4(-4u_n+1)}$.
+\qb برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $-2<u_n<-1$.
+\qc بيّن أنّ المتتالية $(u_n)$ متناقصة تماما ثمّ استنتج أنها متقاربة.
+\end{sq}
+\QQ{2} $(v_n)$ المتتالية العددية المعرّفة من أجل كل عدد طبيعي $n$ بـ: $v_n=\dfrac{2u_n+1}{u_n+2}$.
+\begin{sq}
+\qa بيّن أنّ المتتالية $(v_n)$ هندسية أساسها $3$ ثمّ أحسب حدها الأول.
+\qb أكتب $v_n$ بدلالة $n$، ثمّ استنتج أنّه من أجل كل عدد طبيعي $n$: $u_n=\dfrac{3}{2+4\times 3^n}-2$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa تحقق أنّه من أجل كل عدد طبيعي $n$: $\dfrac{3}{u_n+2}-2=-v_n$.
+\qb نضع من أجل كل عدد طبيعي $n$: $S_n=\ln\left(\dfrac{3}{u_0+2}-2\right)+\ln\left(\dfrac{3}{u_1+2}-2\right)+\dots+\ln\left(\dfrac{3}{u_n+2}-2\right)$. أحسب $S_n$ بدلالة $n$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2021 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الثاني -- شعبة رياضيات}
+المتتالية العددية $(u_n)$ معرّفة بـ: $u_0=1$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\sqrt{2+\dfrac12u_n^2}$.
+\QQ{1}
+\begin{sq}
+\qa برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $0<u_n<2$.
+\qb بيّن أنّ المتتالية $(u_n)$ متزايدة تماما ثمّ استنتج أنها متقاربة.
+\end{sq}
+\QQ{2} $(v_n)$ المتتالية العددية المعرّفة على $\N$ بـ: $v_n=u_n^2-4$.
+\begin{sq}
+\qa بيّن أنّ المتتالية $(v_n)$ هندسية أساسها $\dfrac12$ ثمّ أحسب حدها الأول.
+\qb أكتب $v_n$ بدلالة $n$، ثمّ استنتج أنّه من أجل كل عدد طبيعي $n$: $u_n=\sqrt{4-3\times\left(\dfrac12\right)^n}$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\QQ{3} نضع من أجل كل عدد طبيعي $n$: $S_n=u_0^2+u_1^2+\dots+u_n^2$.
+بيّن أنّه من أجل كل عدد طبيعي $n$: $S_n=\dfrac{n\times 2^{n+2}+3}{2^n}-2$.
+\end{tamrin}
+
+% ===================== بكالوريا 2020 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الأول -- شعبة رياضيات}
+الدالة العددية $f$ معرّفة على المجال $[1;4]$ بـ: $f(x)=\dfrac{4x+4}{9-x}$.
+\QQ{1}
+\begin{sq}
+\qa أدرس اتجاه تغيّر الدالة $f$ على المجال $[1;4]$.
+\qb أثبت أنّه من أجل كل عدد حقيقي $x$ من المجال $[1;4]$ فإنّ: $f(x)\in[1;4]$.
+\end{sq}
+\QQ{2} المتتالية العددية $(u_n)$ معرّفة بحدها الأول $u_0$ بحيث: $u_0=2$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+\begin{sq}
+\qa برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $1<u_n<4$.
+\qb أدرس اتجاه تغيّر المتتالية $(u_n)$ واستنتج أنها متقاربة.
+\end{sq}
+\QQ{3} المتتالية العددية $(v_n)$ معرّفة من أجل كل عدد طبيعي $n$ كما يلي: $v_n=\dfrac{u_n-1}{u_n-4}$.
+\begin{sq}
+\qa برهن أنّ المتتالية $(v_n)$ هندسية يُطلب تعيين أساسها وحدها الأول $v_0$.
+\qb أكتب عبارة $v_n$ بدلالة $n$، ثمّ استنتج $u_n$ بدلالة $n$ وأحسب $\limn u_n$.
+\end{sq}
+\QQ{4} المجموع $S_n$ معرّف بـ: $S_n=v_0+8v_1+8^2v_2+\dots+8^nv_n$. أحسب $S_n$ بدلالة $n$.
+\end{tamrin}
+
+% ===================== بكالوريا 2020 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الثاني -- شعبة رياضيات}
+$\alpha$ عدد حقيقي. المتتاليتان العدديتان $(u_n)$ و $(v_n)$ معرّفتان على $\N$ بـ:
+\[\begin{cases}u_0=-1\\ u_{n+1}=3\alpha u_n+(1-3\alpha)v_n\end{cases}\qquad\text{\ar{و}}\qquad\begin{cases}v_0=3\\ v_{n+1}=3\alpha v_n+(1-3\alpha)u_n\end{cases}\]
+المتتالية العددية $(w_n)$ معرّفة على $\N$ بـ: $w_n=v_n-u_n$.
+\QQ{1}
+\begin{sq}
+\qa أحسب $w_0$ ثمّ أحسب $w_1$ بدلالة $\alpha$.
+\qb بيّن أنّ $(w_n)$ متتالية هندسية أساسها $(6\alpha-1)$.
+\qc أكتب عبارة $w_n$ بدلالة $n$ و $\alpha$، ثمّ عيّن قيم $\alpha$ حتى تكون $\limn w_n=0$.
+\end{sq}
+نفرض في كل ما يلي: $\dfrac16<\alpha<\dfrac13$.
+\QQ{2}
+\begin{sq}
+\qa أثبت أنّ المتتالية $(u_n)$ متزايدة تماما وأنّ $(v_n)$ متناقصة تماما.
+\qb استنتج أنّ $(u_n)$ و $(v_n)$ متقاربتان نحو نفس النهاية $\ell$.
+\qc بيّن أنّه من أجل كل عدد طبيعي $n$: $u_n+v_n=2$، واستنتج قيمة $\ell$.
+\end{sq}
+\QQ{3} أحسب بدلالة $\alpha$ المجموع $S$ بحيث: $S=u_0+u_1+u_2+\dots+u_{2020}$.
+\end{tamrin}
+
+% ===================== بكالوريا 2018 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الأول -- شعبة رياضيات}
+$f$ الدالة العددية المعرّفة على $]-\infty;1[$ بـ: $f(x)=\dfrac{x^2+1}{x-1}$.
+$(u_n)$ متتالية عددية معرّفة على $\N$ بحدها الأول $u_0=-3$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$.
+وليكن $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$، وليكن $(\Delta)$ المستقيم ذو المعادلة $y=x$ (الشكل).
+\begin{GR}{-4}{1}{-4}{1}{1}
+\Ticks{-4,-3,-2,-1}{-4,-3,-2,-1}
+\draw[blue,thick,domain=-4:0.8,samples=150] plot(\x,{(\x*\x+1)/(\x-1)});
+\draw[red,thick] (-4,-4)--(1,1);
+\node[blue] at (0.45,-2.5){$(C_f)$};
+\node[red] at (-3.3,-3.75){$(\Delta)$};
+\end{GR}
+\QQ{1} أعد رسم الشكل على ورقة الإجابة ثمّ مثّل الحدود $u_0$، $u_1$، $u_2$ و $u_3$ على حامل محور الفواصل دون حسابها مبرزا خطوط التمثيل، أعط تخمينا حول اتجاه تغيّر المتتالية $(u_n)$ وتقاربها.
+\QQ{2} برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $-3\le u_n<-1$.
+\QQ{3}
+\begin{sq}
+\qa بيّن أنّه من أجل كل عدد طبيعي $n$: $u_{n+1}+1\ge \dfrac34(u_n+1)$.
+\qb استنتج أنّه من أجل كل عدد طبيعي $n$: $u_n+1\ge -2\left(\dfrac34\right)^n$، ثمّ $\limn u_n$.
+\end{sq}
+\QQ{4} نضع: $S_n=u_0+u_1+u_2+\dots+u_n$.
+بيّن أنّه من أجل كل عدد طبيعي $n$: $8\left[\left(\dfrac34\right)^{n+1}-1\right]\le (u_0+1)+(u_1+1)+\dots+(u_n+1)<0$، واستنتج $\limn S_n$.
+\end{tamrin}
+
+% ===================== بكالوريا 2017 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الثاني -- شعبة رياضيات}
+نعتبر المتتالية $(u_n)$ المعرّفة بحدها الأول $u_0=0$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=4u_n+1$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أنّه من أجل كل عدد طبيعي $n$: $u_n=\dfrac13\left(4^n-1\right)$.
+\qb تحقق أنّه من أجل كل عدد طبيعي $n$: العددان الطبيعيان $u_n$ و $u_{n+1}$ أوليان فيما بينهما.
+\end{sq}
+\QQ{2} لتكن المتتالية $(v_n)$ حيث من أجل كل عدد طبيعي $n$: $v_n=u_n+\dfrac13$.
+\begin{sq}
+\qa أثبت أنّ المتتالية $(v_n)$ هندسية يُطلب تعيين أساسها وحدها الأول $v_0$.
+\qb عبّر بدلالة $n$ عن المجموع $S_n$: $S_n=v_0+v_1+v_2+\dots+v_{3n}$.
+\end{sq}
+\end{tamrin}
+
+\begin{molahada}
+يتضمن التمرين الأصلي جزءا آخر خاصا بالحساب (الموافقات) لم يرد في المصدر، فاقتصرنا على جزء المتتاليات.
+\end{molahada}
+
+% ===================== بكالوريا 2017 -- الموضوع الثاني -- الاستثنائية =====================
+\begin{tamrin}{بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الثاني -- شعبة رياضيات}
+نعتبر المتتالية العددية $(u_n)$ المعرّفة على $\N$ بحدها الأول $u_0=1$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=7u_n+8$.
+\QQ{1} برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $3u_n=7^{n+1}-4$.
+\QQ{2} نضع من أجل كل عدد طبيعي $n$: $S_n=1+7+7^2+\dots+7^n$ و $S'_n=u_0+u_1+\dots+u_n$.
+\begin{sq}
+\qa أحسب بدلالة $n$ المجموع $S_n$ ثمّ جد علاقة بين $S_n$ و $S'_n$.
+\qb استنتج أنّه من أجل كل عدد طبيعي $n$: $18\times S'_n=7^{n+2}-24n-31$.
+\end{sq}
+\end{tamrin}
+
+\begin{molahada}
+يتضمن التمرين الأصلي جزءا آخر خاصا بالحساب لم يرد في المصدر، فاقتصرنا على جزء المتتاليات.
+\end{molahada}
+
+% ===================== بكالوريا 2016 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الأول -- شعبة رياضيات}
+$(u_n)$ متتالية هندسية متزايدة تماما، حدودها موجبة تماما، حدها الأول $u_0$ وأساسها $q$ حيث:
+\[\begin{cases}\ln(u_1)+\ln(u_2)=11\\ u_1+u_2=e^4\left(1+e^3\right)\end{cases}\]
+\QQ{1} أحسب $u_1$ و $u_2$ ثمّ استنتج قيمة الأساس $q$.
+\QQ{2} نضع: $u_1=e^4$ و $q=e^3$.
+\begin{sq}
+\qa عبّر عن $u_n$ بدلالة $n$.
+\qb نضع: $S_n=\ln(u_0)+\ln(u_1)+\ln(u_2)+\dots+\ln(u_n)$. أحسب $S_n$ بدلالة $n$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2014 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2014 -- الموضوع الثاني -- شعبة رياضيات}
+الدالة العددية $f$ معرّفة على المجال $[0;+\infty[$ كما يلي: $f(x)=\dfrac{2x^2}{x+4}$، و $(C_f)$ المنحنى الممثل للدالة $f$ في المستوي المنسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$ (أنظر الشكل).
+\begin{GR}{0}{4.5}{0}{4.5}{1}
+\Ticks{1,2,3,4}{1,2,3,4}
+\draw[blue,thick,domain=0:4.5,samples=120] plot(\x,{2*\x*\x/(\x+4)});
+\node[blue] at (2.9,2.6){$(C_f)$};
+\end{GR}
+\QQ{1} بيّن أنّ الدالة $f$ متزايدة تماما.
+\QQ{2} $(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=3$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=f(u_n)$، و $(\Delta)$ المستقيم الذي معادلته $y=x$.
+\begin{sq}
+\qa باستعمال المنحنى $(C_f)$ والمستقيم $(\Delta)$ مثّل على حامل محور الفواصل الحدود: $u_0$، $u_1$، $u_2$، $u_3$ و $u_4$ دون حسابها.
+\qb ضع تخمينا حول اتجاه تغيّر المتتالية $(u_n)$ وتقاربها.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa برهن بالتراجع أنّه من أجل كل عدد طبيعي $n$: $0\le u_n\le 3$.
+\qb بيّن أنّ المتتالية $(u_n)$ متناقصة.
+\qc استنتج أنّ $(u_n)$ متقاربة.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa أدرس إشارة العدد $7u_{n+1}-6u_n$ واستنتج أنّه من أجل كل عدد طبيعي $n$: $0\le u_{n+1}\le \dfrac67u_n$.
+\qb برهن بالتراجع أنّه مهما يكن العدد الطبيعي $n$: $0\le u_n\le 3\left(\dfrac67\right)^n$.
+\qc أحسب $\limn u_n$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2009 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2009 -- الموضوع الأول -- شعبة رياضيات}
+\textbf{1)} نعرّف الدالة $f$ على المجال $[1;5]$ بـ: $f(x)=\dfrac{1}{2}\left(x+\dfrac{5}{x}\right)$.
+
+وليكن $(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$ (الوحدة $3\,\text{cm}$).
+\begin{sq}
+\qa أدرس تغيّرات الدالة $f$.
+\qb أنشئ $(C_f)$ والمستقيم $(\Delta)$ الذي معادلته $y=x$ في نفس المعلم.
+\end{sq}
+\textbf{2)} نعتبر المتتالية العددية $(u_n)$ المعرّفة على $\N$ بحدها الأول $u_0=5$ وبالعبارة: $u_{n+1}=\dfrac{1}{2}\left(u_n+\dfrac{5}{u_n}\right)$.
+\begin{sq}
+\qa أحسب $u_1$ و $u_2$.
+\qb باستعمال $(\Delta)$ و $(C_f)$ مثّل $u_0$، $u_1$ و $u_2$ على حامل محور الفواصل.
+\end{sq}
+\textbf{3)}
+\begin{sq}
+\qa برهن أنه من أجل كل عدد طبيعي $n$: $u_n\geqslant\sqrt5$.
+\qb بيّن أن $(u_n)$ متناقصة تمامًا. ماذا تستنتج بالنسبة لتقاربها؟
+\end{sq}
+\textbf{4)}
+\begin{sq}
+\qa برهن أنه مهما يكن العدد الطبيعي $n$: $u_{n+1}-\sqrt5\leqslant\dfrac{1}{2}\left(u_n-\sqrt5\right)$.
+\qb استنتج أن: $u_n-\sqrt5\leqslant\left(\dfrac{1}{2}\right)^{n}\left(u_0-\sqrt5\right)$. ما هي $\limn u_n$؟
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2009 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2009 -- الموضوع الثاني -- شعبة رياضيات}
+$(u_n)$ المتتالية العددية المعرّفة بـ: $u_0=0$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=3u_n+2n+1$.
+
+$(v_n)$ المتتالية المعرّفة من أجل كل عدد طبيعي $n$ كما يلي: $v_n=u_n+\alpha n+\beta$، حيث $\alpha$ و $\beta$ عددان حقيقيان.
+
+\textbf{1)} عيّن $\alpha$ و $\beta$ بحيث تكون المتتالية $(v_n)$ متتالية هندسية، يطلب حساب أساسها وحدها الأول.
+
+\textbf{2)} أحسب كلًّا من $u_n$ و $v_n$ بدلالة $n$.
+
+\textbf{3)} أحسب المجموعين $S_n$ و $S'_n$ بحيث: $S_n=v_0+v_1+\cdots+v_n$ و $S'_n=u_0+u_1+\cdots+u_n$.
+\end{tamrin}
+
+% ===================== بكالوريا 2008 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2008 -- الموضوع الأول -- شعبة رياضيات}
+لتكن $f$ الدالة المعرّفة على $[1;+\infty[$ كما يلي: $f(x)=3+\sqrt{x-1}$.
+
+وليكن $(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى المعلم المتعامد والمتجانس $(O;\vec{i},\vec{j})$ (الوحدة $2\,\text{cm}$).
+
+\textbf{1)} أحسب $\displaystyle\lim_{\substack{x\to1\\x>1}}\frac{f(x)-f(1)}{x-1}$ وفسّر النتيجة هندسيًا.
+\begin{itemize}
+\item أدرس تغيّرات الدالة $f$.
+\item باستعمال منحنى دالة «الجذر التربيعي» أنشئ $(C_f)$.
+\item أرسم في نفس المعلم المستقيم $(D)$ الذي معادلته $y=x$.
+\end{itemize}
+\textbf{2)} نعرّف المتتالية $(u_n)$ على المجموعة $\N$ كالآتي: $\begin{cases}u_0=2\\u_{n+1}=f(u_n)\end{cases}$.
+\begin{sq}
+\qa باستعمال $(D)$ و $(C_f)$ مثّل $u_0$، $u_1$ و $u_2$ على حامل محور الفواصل.
+\qb ضع تخمينًا حول اتجاه تغيّر المتتالية $(u_n)$ وتقاربها.
+\end{sq}
+\textbf{3)}
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$ لدينا: $2\leqslant u_n\leqslant5$ و $u_{n+1}>u_n$.
+\qb استنتج أن $(u_n)$ متقاربة. أحسب $\limn u_n$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2008 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2008 -- الموضوع الثاني -- شعبة رياضيات}
+$(u_n)$ المتتالية المعرّفة بحدها الأول $u_0=2$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=\dfrac{2}{3}u_n+1$.
+
+\textbf{1)} أحسب $u_1$، $u_2$ و $u_3$.
+
+\textbf{2)} $(v_n)$ المتتالية المعرّفة من أجل كل عدد طبيعي $n$ بـ: $v_n=u_n+\left(\dfrac{2}{3}\right)^{n}$.
+\begin{itemize}
+\item برهن بالتراجع أن $(v_n)$ ثابتة.
+\item استنتج عبارة $u_n$ بدلالة $n$.
+\item أحسب $\limn u_n$.
+\end{itemize}
+\textbf{3)} $(w_n)$ المتتالية المعرّفة من أجل كل عدد طبيعي $n$ بـ: $w_n=\dfrac{2}{3}n-\left(\dfrac{2}{3}\right)^{n}$.
+
+أحسب المجموع: $S_n=w_0+w_1+w_2+\cdots+w_n$.
+\end{tamrin}
+\begin{molahada}
+في نص المصدر كُتب في السؤال 3: «$(w_n)$ المتتالية المعرّفة بـ: $v_n=\frac23n-\left(\frac23\right)^n$»، وهو خطأ مطبعي (لأن $v_n$ معرّفة في السؤال 2)؛ صحّحناه إلى $w_n=\frac23n-\left(\frac23\right)^n$.
+\end{molahada}
+
+\end{document}

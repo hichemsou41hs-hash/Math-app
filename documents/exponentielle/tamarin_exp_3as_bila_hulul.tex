@@ -1,0 +1,962 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}تمارين تجريبية: الدالة الأسية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{24}{30}\selectfont\bfseries تمارين تجريبية في الدالة الأسية}\\[8pt]
+{\color{white}\large تمارين متدرجة ومسائل شاملة -- بدون حلول (للتدرّب)}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- الشعب العلمية}
+\end{tcolorbox}
+\end{LTR}
+\section{تمارين تطبيقية وتمارين شاملة}
+% ================= تمارين تطبيقية قصيرة: الدالة الأسية =================
+\begin{tamrin}{خواص جبرية: التحقق من مساويات}
+تحقق أنه من أجل كل عدد حقيقي $x$:
+\begin{sq}
+\qa $\dfrac{e^{x}}{x+e^{x}}=\dfrac{1}{1+xe^{-x}}$
+\qb $\dfrac{4}{1+e^{-x}}-1=\dfrac{3e^{x}-1}{1+e^{x}}$
+\qc $\dfrac{e^{-x}+2}{3x+e^{x}}\times\dfrac{6xe^{x}+2e^{2x}}{1+2e^{x}}=2$
+\qd $\dfrac{1-e^{-2x}}{1+e^{-2x}}=\dfrac{e^{2x}-1}{e^{2x}+1}$
+\qe $e^{-x}-e^{-2x}=\dfrac{e^{x}-1}{e^{2x}}$
+\item[(و)] $\left(e^{x}+e^{-x}\right)^{2}=\dfrac{e^{4x}+1}{e^{2x}}+2$
+\item[(ز)] $\dfrac{e^{x}-e^{-x}}{e^{x}+e^{-x}}=\dfrac{e^{2x}-1}{e^{2x}+1}$
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{تبسيط عبارات أسية}
+اكتب على أبسط شكل ممكن ما يلي (حيث $x$ عدد حقيقي):
+\begin{sq}
+\qa $A=\dfrac{e^{4x}}{e^{x}\left(e^{-x}\right)^{5}}$
+\qb $B=\dfrac{\left(e^{x-1}\right)^{2}\times e^{4x-1}}{\left(e^{2x}\right)^{3}\times e^{-x+3}}$
+\qc $C=\left(e^{2x}-3\right)^{2}-e^{2x}\left(e^{2x}+9e^{-2x}\right)$
+\qd $D=\dfrac{1+4e^{-x}}{1+e^{-x}}-\dfrac{3}{e^{x}+1}$
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مركز تناظر منحنى}
+$f$ دالة عددية معرفة على $\R$ كما يلي: $f(x)=\dfrac{e^{x}}{1+e^{x}}$، و $(C_f)$ تمثيلها البياني.
+\QQ{1} تحقق أنه من أجل كل $x$ من $\R$: $f(-x)=\dfrac{1}{1+e^{x}}$.
+\QQ{2} بيّن أنه من أجل كل $x$ من $\R$: $f(x)+f(-x)=1$، ثم فسّر النتيجة هندسيا.
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{كتابة عبارة على شكل آخر}
+\QQ{1} عيّن الأعداد الحقيقية $a$ و $b$ و $c$ بحيث من أجل كل $x$ من $\R$: \ $\dfrac{e^{2x}}{e^{x}+2}=ae^{x}+b+\dfrac{c}{e^{x}+2}$.
+\QQ{2} عيّن العددين الحقيقيين $\alpha$ و $\beta$ بحيث من أجل كل $x$ من $\R$: \ $\dfrac{e^{x}-1}{3e^{x}+1}=\alpha+\dfrac{\beta}{3+e^{-x}}$.
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{حل معادلات أسية}
+حل في $\R$ المعادلات التالية:
+\begin{sq}
+\qa $e^{4x}+3=0$
+\qb $e^{-2x+10}=1$
+\qc $e^{5x-3}=\dfrac{1}{e^{11-3x}}$
+\qd $e^{x^{2}}=\dfrac{\left(e^{x}\right)^{5}}{\left(e^{2}\right)^{3}}$
+\qe $e^{2x}+6e^{x}-7=0$
+\item[(و)] $7e^{x}-5-2e^{-x}=0$
+\item[(ز)] $-2e^{x-4}+7e^{-x+4}-5=0$
+\item[(ح)] $e^{\frac{x^{2}}{x-2}}-\left[e^{\frac{x+1}{3(x-2)}}\right]^{4}=0$
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{حل جمل معادلات}
+حل في $\R\times\R$ الجمل التالية:
+\begin{sq}
+\qa $\left\{\begin{array}{l}\left(e^{x}\right)^{2}\cdot e^{y-1}=e^{9}\\[4pt] \dfrac{e^{x-2}}{e^{y}}=1\end{array}\right.$
+\qb $\left\{\begin{array}{l}e^{4x}\times e^{y}=\dfrac{1}{e^{2}}\\[4pt] x\times y=-2\end{array}\right.$
+\qc $\left\{\begin{array}{l}e^{x}\cdot e^{y}=e^{3}\\[2pt] e^{x-3}\times\left(e^{y}\right)^{2}=e^{2}\end{array}\right.$
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{حل متراجحات أسية}
+حل في $\R$ المتراجحات التالية:
+\begin{sq}
+\qa $3e^{x}+5>0$
+\qb $e^{x+2}+4\leqslant0$
+\qc $-3e^{-4x+8}+3\geqslant0$
+\qd $e^{x^{2}}\geqslant\dfrac{\left(e^{x}\right)^{2}}{e^{-3}}$
+\qe $e^{x^{2}}\leqslant\left[e^{2x-3}\right]^{3}$
+\item[(و)] $2e^{2(x-3)}+5e^{x-3}-7\leqslant0$
+\item[(ز)] $e^{2x}-e^{x}+4-4e^{-x}\leqslant0$
+\item[(ح)] $(-x+3)\left(2e^{x}-2\right)\geqslant0$
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{حساب النهايات}
+احسب النهايات التالية:
+\RL{0.48}{%
+\textbf{1.}\ $\displaystyle\lim_{x\to+\infty}\left(e^{x}-x+1\right)$\par\smallskip
+\textbf{2.}\ $\displaystyle\lim_{x\to+\infty}\left(e^{x+1}-2x+3\right)$\par\smallskip
+\textbf{3.}\ $\displaystyle\lim_{x\to+\infty}\frac{e^{x+2}}{x}$\par\smallskip
+\textbf{4.}\ $\displaystyle\lim_{x\to+\infty}\frac{e^{x}-2}{x+3}$\par\smallskip
+\textbf{5.}\ $\displaystyle\lim_{x\to+\infty}\frac{e^{x}-2x}{2-2x}$\par\smallskip
+\textbf{6.}\ $\displaystyle\lim_{x\to-\infty}\frac{e^{x}-2x}{2-2x}$\par\smallskip
+\textbf{7.}\ $\displaystyle\lim_{x\to-\infty}(x-3)e^{x}$\par\smallskip
+\textbf{8.}\ $\displaystyle\lim_{x\to-\infty}\left(x^{2}-2x+1\right)e^{x}$\par\smallskip
+\textbf{9.}\ $\displaystyle\lim_{x\to+\infty}(2x-1)e^{-x}$\par\smallskip
+\textbf{10.}\ $\displaystyle\lim_{x\to+\infty}\left(x^{2}+2x-1\right)e^{-x}$\par\smallskip
+\textbf{11.}\ $\displaystyle\lim_{x\to+\infty}\frac{e^{x}-x}{2e^{x}+x}$\par\smallskip
+\textbf{12.}\ $\displaystyle\lim_{x\to+\infty}\frac{x^{2}}{e^{x}-1}$\par\smallskip
+}{0.48}{%
+\textbf{13.}\ $\displaystyle\lim_{x\to-\infty}(1+2x)e^{3x}$\par\smallskip
+\textbf{14.}\ $\displaystyle\lim_{x\to+\infty}\left(x^{3}+2x^{2}\right)e^{-x+1}$\par\smallskip
+\textbf{15.}\ $\displaystyle\lim_{x\to+\infty}\left(2-x^{2}e^{1-x}\right)$\par\smallskip
+\textbf{16.}\ $\displaystyle\lim_{x\to-\infty}\left(e^{1-x}-x^{2}+1\right)$\par\smallskip
+\textbf{17.}\ $\displaystyle\lim_{x\to+\infty}\left[(2x+3)e^{x}-e^{2x}\right]$\par\smallskip
+\textbf{18.}\ $\displaystyle\lim_{x\to-\infty}(2x+3)e^{\frac12x}$\par\smallskip
+\textbf{19.}\ $\displaystyle\lim_{x\to+\infty}\left[x-(2x+3)e^{\frac12x}\right]$\par\smallskip
+\textbf{20.}\ $\displaystyle\lim_{x\to0}\frac{e^{2x}-e^{x}}{x}$\par\smallskip
+\textbf{21.}\ $\displaystyle\lim_{x\to0}\frac{x^{2}}{e^{x}-1}$\par\smallskip
+\textbf{22.}\ $\displaystyle\lim_{x\to0}\frac{e^{x}-1}{\sin x}$\par\smallskip
+\textbf{23.}\ $\displaystyle\lim_{x\to0^{-}}\frac{(x-1)e^{\frac1x}}{x}$\par\smallskip
+\textbf{24.}\ $\displaystyle\lim_{x\to-\infty}\left[(x-1)e^{\frac1x}-x\right]$\par\smallskip
+}
+\end{tamrin}
+% ================= تمارين شاملة نموذجية: الدالة الأسية =================
+\begin{tamrin}{دراسة دالة أسية ومناقشة بيانية -- شعبة رياضيات}
+\QQ{1} $g$ دالة معرفة على $\R$ كما يلي: $g(x)=e^{x}-x+2$.
+\begin{sq}
+\qa ادرس تغيرات الدالة $g$.
+\qb استنتج إشارة $g(x)$ على $\R$.
+\end{sq}
+\QQ{2} نعتبر الدالة $f$ المعرفة على $\R$ كما يلي: $f(x)=e^{-x}(x-1)+x+1$، وليكن $(C_f)$ المنحنى الممثل للدالة $f$ في المستوي المنسوب إلى المعلم المتعامد والمتجانس $\left(O;\vec i,\vec j\right)$.
+\begin{sq}
+\qa احسب نهايتي الدالة $f$ عند $+\infty$ و $-\infty$.
+\qb \textbf{i.} بيّن أنه من أجل كل $x$ من $\R$: $f'(x)=\dfrac{g(x)}{e^{x}}$. \quad \textbf{ii.} استنتج اتجاه تغير الدالة $f$، ثم شكّل جدول تغيراتها.
+\qc \textbf{i.} بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x+1$ مقارب مائل لـ $(C_f)$ عند $+\infty$. \quad \textbf{ii.} ادرس الوضع النسبي لـ $(C_f)$ مع $(\Delta)$.
+\qd بيّن أن المنحنى $(C_f)$ يقبل نقطة انعطاف $\omega$ يطلب تعيين إحداثييها.
+\qe ليكن $(T_\alpha)$ مستقيما معادلته $y=x+\alpha$ حيث $\alpha\in\R$. عيّن قيمة $\alpha$ حتى يكون $(T_\alpha)$ مماسا لـ $(C_f)$.
+\item[(و)] احسب $f(0)$، ثم أنشئ المنحنى $(C_f)$.
+\item[(ز)] نعتبر المعادلة: $(1-m)e^{x}+x-1=0\ \ldots(I)$ حيث $m$ وسيط حقيقي. عيّن قيم العدد الحقيقي $m$ بحيث تقبل المعادلة $(I)$ حلين متمايزين.
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مبرهنة القيم المتوسطة وحصر العدد $f(\alpha)$}
+\QQ{1} لتكن $g$ الدالة العددية المعرفة على $\R$ بـ: $g(x)=(1-x)e^{x}+1$.
+\begin{sq}
+\qa ادرس تغيرات الدالة $g$.
+\qb بيّن أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ من المجال $]1{,}27;1{,}28[$.
+\qc استنتج إشارة $g(x)$ على $\R$.
+\end{sq}
+\QQ{2} نعتبر الدالة $f$ المعرفة على $\R$ بـ: $f(x)=\dfrac{x}{e^{x}+1}+2$، وليكن $(C_f)$ التمثيل البياني الممثل للدالة $f$ في معلم متعامد ومتجانس $\left(O;\vec i,\vec j\right)$.
+\begin{sq}
+\qa احسب نهايتي الدالة $f$ عند $+\infty$ و $-\infty$.
+\qb \textbf{i.} بيّن أنه من أجل كل $x$ من $\R$ فإن: $f'(x)=\dfrac{g(x)}{\left(e^{x}+1\right)^{2}}$. \quad \textbf{ii.} استنتج اتجاه تغير الدالة $f$ ثم شكّل جدول تغيراتها.
+\qc \textbf{i.} بيّن أن المستقيم $(d)$ ذا المعادلة $y=x+2$ مقارب مائل لـ $(C_f)$ عند $-\infty$. \quad \textbf{ii.} ادرس الوضع النسبي لـ $(C_f)$ مع $(d)$.
+\qd بيّن أن $f(\alpha)=\alpha+1$، ثم جد حصرا لـ $f(\alpha)$.
+\qe أنشئ المنحنى $(C_f)$.
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{دراسة دالة كسرية أسية ووضعية منحنى بالنسبة لمماس}
+\textbf{I-} لتكن الدالة $g$ المعرفة على $\R$ بـ: $g(x)=x+2-e^{x}$.
+\QQ{1} أدرس تغيرات الدالة $g$.
+\QQ{2} بيّن أن المعادلة $g(x)=0$ تقبل حلين $\alpha$ و $\beta$ حيث: $\alpha\in\,]1{,}1;1{,}2[$ و $\beta\in\,]-1{,}9;-1{,}8[$.
+\QQ{3} استنتج إشارة $g(x)$ على $\R$.
+
+\textbf{II-} نعتبر الدالة $h$ المعرفة على $\R$ بـ: $h(x)=xe^{x}+1$.
+\QQ{1} أدرس تغيرات الدالة $h$.
+\QQ{2} استنتج إشارة $h(x)$ على $\R$.
+
+\textbf{III-} لتكن $f$ الدالة المعرفة كما يلي: $f(x)=\dfrac{e^{x}-1}{xe^{x}+1}$، وليكن $(C_f)$ المنحنى الممثل للدالة $f$ في المستوي المنسوب إلى معلم متعامد ومتجانس $\left(O;\vec i,\vec j\right)$.
+\QQ{1} برّر أن الدالة $f$ معرفة على $\R$.
+\QQ{2} احسب نهايتي الدالة $f$ عند $+\infty$ و $-\infty$، وفسّر النتيجتين هندسيا.
+\QQ{3} \begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $\R$: $f'(x)=\dfrac{e^{x}g(x)}{\left(xe^{x}+1\right)^{2}}$.
+\qb استنتج اتجاه تغير الدالة $f$ ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{4} أثبت أن $f(\alpha)=\dfrac{1}{\alpha+1}$، ثم جد حصرا للعدد $f(\alpha)$.
+\QQ{5} اكتب معادلة المماس $(T)$ للمنحنى $(C_f)$ عند النقطة ذات الفاصلة $0$.
+\QQ{6} \begin{sq}
+\qa أدرس تغيرات الدالة $K$ المعرفة على $\R$ بـ: $K(x)=(1-x)e^{x}-1$.
+\qb استنتج إشارة $K(x)$ على $\R$.
+\qc بيّن أنه من أجل كل $x$ من $\R$ فإن: $f(x)-x=\dfrac{(1+x)K(x)}{xe^{x}+1}$.
+\qd استنتج الوضع النسبي للمنحنى $(C_f)$ مع المماس $(T)$.
+\end{sq}
+\QQ{7} أنشئ $(T)$ و $(C_f)$. \ (تعطى $f(\beta)\approx-1{,}2$)
+\begin{molahada}
+في نص المجلة أعطيت القيمة $f(\beta)\approx1{,}2$، والصحيح $f(\beta)\approx-1{,}2$: بنفس حساب السؤال 4 نجد $f(\beta)=\dfrac{1}{\beta+1}$، و $\beta+1\in\,]-0{,}9;-0{,}8[$ سالب، ومنه $f(\beta)\in\,]-1{,}25;-1{,}11[$.
+\end{molahada}
+\end{tamrin}
+% ------------------------------------------------------------------
+\begin{tamrin}{مماس يوازي مستقيما مقاربا ومناقشة بيانية -- شعبة رياضيات}
+\textbf{I-} $g$ دالة معرفة على $\R$ بـ: $g(x)=1-xe^{x}$.
+\QQ{1} أدرس تغيرات الدالة $g$.
+\QQ{2} بيّن أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ في $\R$، ثم تحقق أن $0{,}5<\alpha<0{,}6$.
+\QQ{3} استنتج إشارة $g(x)$ على $\R$.
+
+\textbf{II-} نعتبر الدالة $f$ المعرفة على $\R$ بـ: $f(x)=\dfrac{e^{x}+x+2}{e^{x}+1}$، وليكن $(C_f)$ منحناها في مستو منسوب إلى معلم متعامد ومتجانس $\left(O;\vec i,\vec j\right)$.
+\QQ{1} احسب نهايتي الدالة $f$ عند $-\infty$ و $+\infty$، ثم فسّر النتيجة الأخيرة بيانيا.
+\QQ{2} \begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $\R$: $f(x)=x+2-\dfrac{xe^{x}+e^{x}}{e^{x}+1}$.
+\qb استنتج أن المنحنى $(C_f)$ يقبل مستقيما مقاربا مائلا $(\Delta)$ عند $-\infty$.
+\qc ادرس وضعية المنحنى $(C_f)$ بالنسبة للمستقيم $(\Delta)$.
+\end{sq}
+\QQ{3} \begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $\R$: $f'(x)=\dfrac{g(x)}{\left(e^{x}+1\right)^{2}}$.
+\qb استنتج اتجاه تغير الدالة $f$ ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{4} بيّن أن $f(\alpha)=\alpha+1$ ثم جد حصرا للعدد $f(\alpha)$.
+\QQ{5} $h$ دالة معرفة على $\R$ بـ: $h(x)=e^{x}+x+2$. بيّن أن المعادلة $h(x)=0$ تقبل حلا وحيدا $\beta$ حيث $-2{,}2<\beta<-2{,}1$.
+\QQ{6} برهن أن المنحنى $(C_f)$ يقبل مماسا واحدا $(T)$ يوازي $(\Delta)$ في نقطة منه، يطلب كتابة معادلة $(T)$.
+\QQ{7} أنشئ $(\Delta)$ و $(T)$ و $(C_f)$.
+\QQ{8} ناقش حسب قيم الوسيط الحقيقي $m$ عدد وإشارة حلول المعادلة: $(1-x-m)e^{x}=m-2\ \ldots(E)$.
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{دراسة دالة وإنشاء منحنى دالة بالقيمة المطلقة}
+\textbf{I-} نعتبر الدالة $g$ المعرفة على $\R$ بـ: $g(x)=2e^{x}+2x-7$.
+\QQ{1} أدرس تغيرات الدالة $g$.
+\QQ{2} أثبت أن المعادلة $g(x)=0$ تقبل حلا وحيدا $\alpha$ حيث $0{,}94<\alpha<0{,}95$.
+\QQ{3} استنتج إشارة $g(x)$ على $\R$.
+
+\textbf{II-} لتكن الدالة $f$ المعرفة على $\R$ بـ: $f(x)=(2x-5)\left(1-e^{-x}\right)$، وليكن $(C_f)$ التمثيل البياني للدالة $f$ في مستو منسوب إلى معلم متعامد ومتجانس $\left(O;\vec i,\vec j\right)$.
+\QQ{1} احسب نهايتي الدالة $f$ عند $+\infty$ و $-\infty$.
+\QQ{2} \begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $\R$: $f'(x)=e^{-x}\cdot g(x)$.
+\qb استنتج اتجاه تغير الدالة $f$، ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{3} أثبت أن $f(\alpha)=\dfrac{(2\alpha-5)^{2}}{2\alpha-7}$، ثم جد حصرا للعدد $f(\alpha)$.
+\QQ{4} \begin{sq}
+\qa أثبت أن المستقيم $(\Delta)$ ذا المعادلة $y=2x-5$ مقارب مائل لـ $(C_f)$.
+\qb ادرس الوضع النسبي لـ $(C_f)$ مع $(\Delta)$.
+\end{sq}
+\QQ{5} ادرس الوضع النسبي للمنحنى $(C_f)$ مع حامل محور الفواصل.
+\QQ{6} أنشئ $(\Delta)$ و $(C_f)$.
+\QQ{7} نعتبر الدالة $K$ المعرفة على $\R$ بـ: $K(x)=\left(2|x|+5\right)\left(-e^{|x|}+1\right)$.
+\begin{sq}
+\qa بيّن أن الدالة $K$ زوجية.
+\qb اكتب $K(x)$ دون رمز القيمة المطلقة.
+\qc اشرح كيف يتم رسم المنحنى $(C_K)$ الممثل للدالة $K$، ثم أرسمه في معلم آخر.
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مستقيمان مقاربان مائلان ومركز تناظر -- شعبة رياضيات}
+نعتبر الدالة $f$ المعرفة على $\R^{*}$ بـ: $f(x)=x-\dfrac{4}{3\left(e^{x}-1\right)}$، وليكن $(C_f)$ تمثيلها البياني في مستو منسوب إلى معلم متعامد ومتجانس $\left(O;\vec i,\vec j\right)$.
+\QQ{1} احسب نهايات الدالة $f$ عند حدود مجموعة تعريفها.
+\QQ{2} ادرس اتجاه تغير الدالة $f$، ثم شكّل جدول تغيراتها.
+\QQ{3} \begin{sq}
+\qa بيّن أن المستقيمين $(\Delta):\ y=x$ و $(\Delta'):\ y=x+\dfrac43$ مقاربان مائلان للمنحنى $(C_f)$.
+\qb حدّد وضعية المنحنى $(C_f)$ بالنسبة لكل من $(\Delta)$ و $(\Delta')$.
+\end{sq}
+\QQ{4} \begin{sq}
+\qa بيّن أن المعادلة $f(x)=0$ تقبل حلين $\alpha$ و $\beta$ حيث: $0{,}9<\alpha<1$ و $-1{,}7<\beta<-1{,}6$.
+\qb استنتج إشارة $f(x)$ على $\R^{*}$.
+\end{sq}
+\QQ{5} بيّن أنه من أجل كل $x$ من $\R^{*}$ فإن $f(x)+f(-x)=\dfrac43$، ثم أعط تفسيرا هندسيا لهذه النتيجة.
+\QQ{6} أنشئ $(\Delta)$ و $(\Delta')$ و $(C_f)$.
+\QQ{7} ناقش بيانيا عدد وإشارة حلول المعادلة $(E)$ التالية: $\dfrac{4}{3\left(e^{x}-1\right)}+m=0$، حيث $m$ وسيط حقيقي.
+\QQ{8} نعتبر الدالة $h$ المعرفة على $\R^{*}$ بـ: $h(x)=\left[f(x)\right]^{2}$. شكّل جدول تغيرات الدالة $h$.
+\end{tamrin}
+% ------------------------------------------------------------------
+\begin{tamrin}{نقطة انعطاف ومناقشة بيانية وانسحاب -- شعبة رياضيات}
+\textbf{I-} نعتبر الدالة $g$ المعرفة على $\R$ بـ: $g(x)=e^{x-2}+1-x$.
+\QQ{1} أدرس تغيرات الدالة $g$.
+\QQ{2} استنتج إشارة $g(x)$ على $\R$.
+
+\textbf{II-} لتكن الدالة $f$ المعرفة على $\R$ بـ: $f(x)=x-1+\dfrac{x}{e^{x-2}}$، وليكن $(C_f)$ التمثيل البياني للدالة $f$ في مستو منسوب إلى معلم متعامد ومتجانس $\left(O;\vec i,\vec j\right)$.
+\QQ{1} احسب نهايتي الدالة $f$ عند $-\infty$ و $+\infty$.
+\QQ{2} \begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $\R$: $f'(x)=\dfrac{g(x)}{e^{x-2}}$.
+\qb استنتج اتجاه تغير الدالة $f$، ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{3} \begin{sq}
+\qa احسب $\displaystyle\lim_{x\to+\infty}\left[f(x)-x+1\right]$ ثم فسّر النتيجة بيانيا.
+\qb ادرس الوضع النسبي لـ $(C_f)$ مع المستقيم $(\Delta):\ y=x-1$.
+\end{sq}
+\QQ{4} بيّن أن المنحنى $(C_f)$ يقبل نقطة انعطاف يطلب تعيينها.
+\QQ{5} بيّن أنه يوجد مماس واحد $(T)$ للمنحنى $(C_f)$ يوازي المستقيم $(\Delta)$، ثم اكتب معادلة $(T)$.
+\QQ{6} أنشئ $(T)$ و $(\Delta)$ و $(C_f)$.
+\QQ{7} ناقش حسب قيم الوسيط الحقيقي $m$ عدد وإشارة حلول المعادلة: $\dfrac{x}{e^{x-2}}=m+1\ \ldots(E)$.
+\QQ{8} $h$ دالة معرفة على $\R$ كما يلي: $h(x)=(x-1)\left(1+e^{3-x}\right)$.
+\begin{sq}
+\qa تحقق أنه من أجل كل $x$ من $\R$: $h(x)-1=f(x-1)$.
+\qb استنتج كيفية إنشاء المنحنى $(C_h)$ بالاعتماد على $(C_f)$.
+\qc أنشئ $(C_h)$ في معلم آخر.
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{تعيين دالة ومناقشة بيانية ودالة بالقيمة المطلقة -- شعبة رياضيات}
+نعتبر الدالة العددية $f$ للمتغير الحقيقي $x$ المعرفة على $\R$ كما يلي: $f(x)=\left(ax^{2}+bx+c\right)e^{x}$، حيث $a$ و $b$ و $c$ أعداد حقيقية، وليكن $(C_f)$ التمثيل البياني للدالة $f$ في مستو منسوب إلى معلم متعامد ومتجانس $\left(O;\vec i,\vec j\right)$.
+\QQ{1} عيّن الأعداد الحقيقية $a$ و $b$ و $c$ إذا علمت أن $(C_f)$ يقبل مماسا في النقطة ذات الفاصلة $0$ معادلته $y=-2x+5$، ويقطع حامل محور الفواصل في النقطة ذات الفاصلة $1$.
+\QQ{2} نفرض أن: $f(x)=\left(2x^{2}-7x+5\right)e^{x}$.
+\begin{sq}
+\qa بيّن أن $\displaystyle\lim_{x\to-\infty}x^{2}e^{x}=0$.
+\qb احسب نهايتي الدالة $f$ عند $+\infty$ و $-\infty$.
+\qc أدرس اتجاه تغير الدالة $f$، ثم شكّل جدول تغيراتها.
+\qd عيّن إحداثيي نقط تقاطع $(C_f)$ مع حاملي محوري الإحداثيات.
+\qe أنشئ $(C_f)$.
+\item[(و)] ناقش بيانيا وحسب قيم الوسيط الحقيقي $m$ عدد وإشارة حلول المعادلة: $f(x)=m\ \ldots(E)$.
+\end{sq}
+\QQ{3} نعتبر الدالة $g$ المعرفة على $\R$ بـ: $g(x)=\left|f(x)\right|$.
+\begin{sq}
+\qa اشرح كيف يتم رسم المنحنى $(C_g)$ بالاعتماد على $(C_f)$.
+\qb أنشئ $(C_g)$ في معلم آخر.
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{مستقيمان مقاربان مائلان ومماس ومركز تناظر}
+نعتبر الدالة $f$ المعرفة على $\R$ بـ: $f(x)=2x+1+\dfrac{3-e^{x}}{1+e^{x}}$، وليكن $(C_f)$ تمثيلها البياني في مستو منسوب إلى معلم متعامد ومتجانس.
+\QQ{1} أدرس تغيرات الدالة $f$.
+\QQ{2} \begin{sq}
+\qa بيّن أن المستقيمين $(\Delta):\ y=2x$ و $(\Delta'):\ y=2x+4$ مقاربان مائلان للمنحنى $(C_f)$.
+\qb ادرس وضعية $(C_f)$ بالنسبة للمستقيمين $(\Delta)$ و $(\Delta')$.
+\end{sq}
+\QQ{3} اكتب معادلة المماس $(T)$ للمنحنى $(C_f)$ عند النقطة ذات الفاصلة $0$.
+\QQ{4} نعتبر الدالة $h$ المعرفة على $\R$ بـ: $h(x)=f(x)-x-2$.
+\begin{sq}
+\qa ادرس تغيرات الدالة $h$، ثم شكّل جدول تغيراتها.
+\qb احسب $h(0)$، ثم استنتج إشارة $h(x)$.
+\qc استنتج وضعية $(C_f)$ بالنسبة للمماس $(T)$.
+\end{sq}
+\QQ{5} ماذا تمثل النقطة $\Omega(0;2)$ بالنسبة لـ $(C_f)$؟
+\QQ{6} بيّن أن النقطة $\Omega(0;2)$ هي مركز تناظر لـ $(C_f)$.
+\QQ{7} أنشئ $(T)$ و $(C_f)$.
+\end{tamrin}
+% ------------------------------------------------------------------
+\begin{tamrin}{تعيين دالة انطلاقا من تمثيلها البياني}
+\textbf{I-} $f$ دالة معرفة على $\R$ كما يلي: $f(x)=(ax+b)e^{x-1}+c$، حيث $a$ و $b$ و $c$ أعداد حقيقية، وليكن $(C_f)$ التمثيل البياني للدالة $f$ كما هو مبيّن في الشكل التالي، حيث $(C_f)$ يقبل مماسا موازيا لحامل محور الفواصل عند النقطة ذات الفاصلة $-\dfrac12$، ويقبل مماسا $(T)$ عند النقطة $A(1;5)$ والذي يشمل النقطة $B(0;2)$.
+\begin{GR}{-5}{3}{-1}{8}{0.6}
+ \Ticks{-4,-3,-2,-1,1,2}{1,2,3,4,5,6,7}
+ \draw[cThm,thick,domain=-1:2.1] plot (\x,{3*\x+2});
+ \draw[cDef,very thick,domain=-5:1.75,samples=200] plot (\x,{(2*\x-1)*exp(\x-1)+4});
+ \draw[cEx,thick] (-1.2,3.554)--(0.2,3.554);
+ \fill[cDef] (1,5) circle (2pt) node[left]{$A$};
+ \fill[cThm] (0,2) circle (2pt) node[right]{$B$};
+ \node[cThm] at (2.3,6.5){$(T)$};
+ \node[cDef] at (-3.5,4.5){$(C_f)$};
+\end{GR}
+\QQ{1} حدّد قيم $f(1)$ و $f'\left(-\frac12\right)$ و $f'(1)$، ثم اكتب معادلة المماس $(T)$.
+\QQ{2} احسب $f'(x)$، ثم عيّن الأعداد الحقيقية $a$ و $b$ و $c$.
+
+\textbf{II-} نعتبر فيما يلي الدالة $f$ المعرفة على $\R$ بـ: $f(x)=(2x-1)e^{x-1}+4$.
+\QQ{1} احسب $\displaystyle\lim_{x\to+\infty}f(x)$.
+\QQ{2} \begin{sq}
+\qa تحقق أنه من أجل كل $x$ من $\R$ فإن: $f(x)=\dfrac2e\,xe^{x}-\dfrac1e\,e^{x}+4$.
+\qb احسب $\displaystyle\lim_{x\to-\infty}f(x)$، ثم فسّر النتيجة هندسيا.
+\end{sq}
+\QQ{3} أدرس اتجاه تغير الدالة $f$، ثم شكّل جدول تغيراتها.
+\QQ{4} بيّن أن المعادلة $f(x)=6$ تقبل حلا وحيدا $\alpha$ حيث $1<\alpha<1{,}5$، ثم جد حصرا للعدد $\alpha$ سعته $0{,}1$.
+\QQ{5} هل توجد مماسات للمنحنى $(C_f)$ تشمل النقطة $I(0;4)$؟
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{الاستمرارية وقابلية الاشتقاق عند $0$}
+\textbf{I-} $g$ دالة معرفة على $\R$ بـ: $g(x)=(2-x)e^{x}-2$.
+\QQ{1} أدرس تغيرات الدالة $g$.
+\QQ{2} بيّن أن المعادلة $g(x)=0$ تقبل حلين في $\R$: أحدهما معدوم والآخر $\alpha$ حيث $1{,}5<\alpha<1{,}6$.
+\QQ{3} استنتج إشارة $g(x)$ على $\R$.
+
+\textbf{II-} نعتبر الدالة $f$ المعرفة على $\R$ بـ: $\left\{\begin{array}{ll}f(x)=\dfrac{x^{2}}{e^{x}-1}&;\ x\neq0\\[6pt] f(0)=0&\end{array}\right.$، وليكن $(C_f)$ تمثيلها البياني في مستو منسوب إلى معلم متعامد ومتجانس.
+\QQ{1} ادرس استمرارية الدالة $f$ عند $0$.
+\QQ{2} احسب نهايتي الدالة $f$ عند $+\infty$ و $-\infty$.
+\QQ{3} ادرس قابلية اشتقاق الدالة $f$ عند $0$ وفسّر النتيجة بيانيا.
+\QQ{4} بيّن أنه من أجل كل $x$ من $\R^{*}$: $f'(x)=\dfrac{x\cdot g(x)}{\left(e^{x}-1\right)^{2}}$.
+\QQ{5} استنتج اتجاه تغير الدالة $f$، ثم شكّل جدول تغيراتها.
+\QQ{6} بيّن أن $f(\alpha)=\alpha(2-\alpha)$، ثم جد حصرا للعدد $f(\alpha)$.
+\QQ{7} اكتب معادلة المماس $(T)$ للمنحنى $(C_f)$ عند مبدأ المعلم، ثم أنشئ $(T)$ و $(C_f)$.
+\end{tamrin}
+
+% ------------------------------------------------------------------
+\begin{tamrin}{تمرين شامل في المعادلات التفاضلية}
+نعتبر المعادلة التفاضلية التالية: $y'=-2y+2e^{-2x}\ \ldots(E)$.
+\QQ{1} عيّن العدد الحقيقي $\alpha$ حتى تكون الدالة $g$ المعرفة على $\R$ كما يلي: $g(x)=\alpha xe^{-2x}$ حلا للمعادلة $(E)$.
+\QQ{2} بيّن أن الدالة $f$ تكون حلا للمعادلة $(E)$ إذا وفقط إذا كانت الدالة $h$ حيث $h=f-g$ حلا للمعادلة التفاضلية: $y'=-2y\ \ldots(E')$.
+\QQ{3} حل في $\R$ المعادلة $(E')$، ثم استنتج حلول المعادلة $(E)$.
+\QQ{4} عيّن حل المعادلة $(E)$ الذي تمثيله البياني يشمل النقطة $A(0;1)$.
+\end{tamrin}
+\section{مسائل شاملة}
+% ===================== المسألة 01 =====================
+\begin{tamrin}{مسألة شاملة}
+\textbf{I)} $g$ دالة معرفة على $\R$ بـ: $g(x)=-x+2+e^{x}$.
+\QQ{1} ادرس تغيرات الدالة $g$ ثم شكّل جدول تغيراتها.
+\QQ{2} استنتج من أجل كل عدد حقيقي $x$ إشارة $g(x)$.
+
+\textbf{II)} $f$ دالة معرفة على $\R$ بـ: $f(x)=x+(x-1)e^{-x}$، و$(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1} احسب كلًّا من $\lim\limits_{x\to-\infty}f(x)$ و$\lim\limits_{x\to+\infty}f(x)$.
+\QQ{2} أثبت أنه من أجل كل عدد حقيقي $x$: $f'(x)=e^{-x}g(x)$، ثم استنتج اتجاه تغير الدالة $f$ وشكّل جدول تغيراتها.
+\QQ{3} بيّن أن المنحنى $(C_f)$ يقبل مستقيمًا مقاربًا $(\Delta)$ بجوار $+\infty$ معادلته $y=x$.
+\QQ{4} ادرس الوضع النسبي لـ $(C_f)$ والمستقيم $(\Delta)$.
+\QQ{5} تحقق أن المعادلة $f(x)=0$ تقبل حلًّا وحيدًا $\alpha$ حيث: $0{,}3<\alpha<0{,}5$.
+\QQ{6}
+\begin{sq}
+\qa بيّن أن $(C_f)$ يقبل نقطة انعطاف $A$ يطلب تعيين إحداثياتها.
+\qb اكتب معادلة المماس $(T)$ لـ $(C_f)$ عند النقطة $A$.
+\end{sq}
+\QQ{7} أنشئ $(\Delta)$ و$(C_f)$.
+\end{tamrin}
+
+% ===================== المسألة 02 =====================
+\begin{tamrin}{مسألة شاملة -- شعبة رياضيات}
+$f$ دالة معرفة على $\R$ بـ: $f(x)=x-(x^2+1)e^{-x+1}$، و$(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa احسب $\lim\limits_{x\to-\infty}f(x)$، ثم بيّن أن $\lim\limits_{x\to+\infty}f(x)=+\infty$.
+\qb أثبت أنه من أجل كل عدد حقيقي $x$: $f'(x)=1+(x-1)^2e^{-x+1}$.
+\qc استنتج اتجاه تغير الدالة $f$ وشكّل جدول تغيراتها.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أن المنحنى $(C_f)$ يقبل مستقيمًا مقاربًا $(\Delta)$ معادلته $y=x$.
+\qb ادرس الوضع النسبي لـ $(C_f)$ والمستقيم $(\Delta)$.
+\end{sq}
+\QQ{3} بيّن أن المعادلة $f(x)=0$ تقبل حلًّا وحيدًا $\alpha$ حيث: $1{,}8<\alpha<1{,}9$.
+\QQ{4}
+\begin{sq}
+\qa اكتب معادلة المماس $(T)$ لـ $(C_f)$ عند النقطة ذات الفاصلة $1$.
+\qb بيّن أن $(C_f)$ يقبل نقطتي انعطاف يطلب تعيين إحداثياتهما.
+\end{sq}
+\QQ{5} احسب $f(3)$، $f(0)$ ثم أنشئ $(\Delta)$، $(T)$ ثم $(C_f)$.
+\QQ{6} ناقش بيانيًا حسب قيم الوسيط الحقيقي $m$ عدد وإشارة حلول المعادلة $f(x)=x+m$.
+\end{tamrin}
+\begin{molahada}[تصحيح نص المسألة]
+في النص الأصلي كُتبت الدالة $f(x)=x-(x^2-1)e^{-x+1}$، ومشتقتها حينئذ $1+(x^2-2x-1)e^{-x+1}$ لا توافق المطلوب في السؤال 1(ب)، كما أن المعادلة $f(x)=0$ لا تقبل حينئذ حلًّا في $]1{,}8;1{,}9[$. الصواب (وهو ما تتوافق معه كل الأسئلة) هو $f(x)=x-(x^2+1)e^{-x+1}$.
+\end{molahada}
+
+% ===================== المسألة 03 =====================
+\begin{tamrin}{مسألة شاملة -- شعبة رياضيات}
+$f$ دالة معرفة على $\R$ بـ: $f(x)=\left(ax^2+bx+c\right)e^{-x}$ حيث $a$، $b$ و$c$ أعداد حقيقية، و$(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1} عيّن الأعداد الحقيقية $a$، $b$ و$c$ بحيث يقبل المنحنى $(C_f)$ عند النقطة $A(0;-3)$ مماسًا معامل توجيهه $3$، والعدد $\sqrt3$ حل للمعادلة $f(x)=0$.
+\QQ{2} نضع: $a=1$، $b=0$، $c=-3$.
+\begin{sq}
+\qa احسب كلًّا من $\lim\limits_{x\to-\infty}f(x)$ و$\lim\limits_{x\to+\infty}f(x)$.
+\qb استنتج اتجاه تغير الدالة $f$ وشكّل جدول تغيراتها.
+\qc اكتب معادلة للمماس $(T)$ لـ $(C_f)$ عند النقطة ذات الفاصلة $0$، ثم عيّن إحداثيات نقط تقاطع $(C_f)$ مع محور الفواصل.
+\end{sq}
+\QQ{3} أرسم $(T)$ و$(C_f)$.
+\QQ{4} ناقش بيانيًا حسب قيم الوسيط الحقيقي $m$ عدد وإشارة حلول المعادلة: $x^2-3+m\,e^{x}=0$.
+\end{tamrin}
+\begin{molahada}[تصحيح نص المسألة]
+في السؤال 4 من النص الأصلي كُتبت المعادلة $f(x)=x+m$، بينما الحل المرافق يناقش المعادلة $x^2-3+me^{x}=0$ (أي $f(x)=-m$)، وهي التي تُناقش بيانيًا بمستقيمات أفقية؛ فاعتمدناها. كما حُذف «$=+\infty$» المكتوب خطأً بجانب النهاية في السؤال 2(أ) (النهاية عند $+\infty$ تساوي $0$).
+\end{molahada}
+
+% ===================== المسألة 04 =====================
+\begin{tamrin}{معادلة تفاضلية}
+نعتبر في مجموعة الأعداد الحقيقية $\R$ المعادلة التفاضلية $(E)$: $y'+3y=2e^{-x}$.
+\QQ{1} عيّن قيمة العدد الحقيقي $a$ بحيث تكون الدالة $g$ المعرفة على $\R$ كما يلي: $g(x)=a\times e^{-x}$ حلًّا للمعادلة $(E)$.
+\QQ{2} نعتبر المعادلة التفاضلية $(E')$: $y'+3y=0$. حلّ المعادلة $(E')$.
+\QQ{3} بيّن أن الدالة $f$ حل للمعادلة $(E)$ إذا وفقط إذا كانت الدالة $f-g$ حلًّا للمعادلة $(E')$.
+\QQ{4} استنتج حلول المعادلة $(E)$.
+\QQ{5} عيّن حلًّا خاصًّا $f$ للمعادلة $(E)$ بحيث يكون معامل توجيه المماس للمنحنى $(C_f)$ الممثل للدالة $f$ في النقطة ذات الفاصلة $0$ يساوي $-4$.
+\end{tamrin}
+% ===================== المسألة 05 =====================
+\begin{tamrin}{اختيار من متعدد}
+لكل سؤال مما يلي إجابة واحدة صحيحة، حدّدها مع التعليل.
+\QQ{1} إذا كان $\lim\limits_{x\to1}v(x)=0$ فإن $\lim\limits_{x\to+\infty}v\left(e^{-3x}+1\right)$ تساوي:
+\ABC{$+\infty$}{$1$}{$0$}
+\QQ{2} إذا كانت $h$ دالة تحقق من أجل كل عدد حقيقي $x$ موجب تمامًا: $e^{-x}\leqslant h(x)\leqslant2e^{-x}$، و$f$ دالة معرفة على $]0;+\infty[$ بـ: $f(x)=xe^{x}h(x)$، فإن:
+\ABC{$\lim\limits_{x\to+\infty}f(x)=0$}{$\lim\limits_{x\to+\infty}f(x)=2$}{$\lim\limits_{x\to+\infty}f(x)=+\infty$}
+\QQ{3} إذا كانت الدالة $f$ قابلة للاشتقاق عند $2$ فإن $\lim\limits_{h\to0}\dfrac{f(2)-f(2-2h)}{2h}$ تساوي:
+\ABC{$f'(2)$}{$-f'(2)$}{$+\infty$}
+\QQ{4} حل المعادلة التفاضلية $y'+2y-2=0$ والذي يحقق $f(0)=0$ هو $f$ حيث:
+\ABC{$f(x)=e^{-2x}-1$}{$f(x)=-e^{-2x}-1$}{$f(x)=-e^{-2x}+1$}
+\QQ{5} مجموعة حلول المتراجحة $e^{x}-e^{-x}\leqslant0$ هي:
+\ABC{$]{-}\infty;0]$}{$[1;+\infty[$}{$\R$}
+\end{tamrin}
+\begin{molahada}[تصحيح نص المسألة]
+في السؤال 5 من النص الأصلي سقط الطرف الثاني للمتراجحة؛ أكملناها بـ «$\leqslant0$» وفق الحل المرافق.
+\end{molahada}
+
+% ===================== المسألة 06 =====================
+\begin{tamrin}{اختيار من متعدد}
+لكل سؤال مما يلي إجابة واحدة صحيحة، حدّدها مع التعليل.
+\QQ{1} إذا كانت $\lim\limits_{x\to+\infty}f(x)=0$ فإن $\lim\limits_{x\to-\infty}f\left(\dfrac{1}{e^{x}}\right)$ تساوي:
+\ABC{$+\infty$}{$-\infty$}{$0$}
+\QQ{2} إذا كانت $f$ دالة تحقق من أجل كل عدد حقيقي $x$ موجب تمامًا: $x\leqslant f(x)\leqslant x^2$، و$g$ دالة معرفة على $]0;+\infty[$ بـ: $g(x)=\dfrac{f(x)}{e^{x}}$، فإن:
+\ABC{$\lim\limits_{x\to+\infty}g(x)=0$}{$\lim\limits_{x\to+\infty}g(x)=2$}{$\lim\limits_{x\to+\infty}g(x)=+\infty$}
+\QQ{3} إذا كانت الدالة $f$ قابلة للاشتقاق عند $1$ فإن $\lim\limits_{h\to0}\dfrac{f(1)-f(1+2h)}{2h}$ تساوي:
+\ABC{$f'(1)$}{$-f'(1)$}{$+\infty$}
+\QQ{4} حل المعادلة التفاضلية $y'=2y-2$ والذي يحقق $u(0)=0$ هو $u$ حيث:
+\ABC{$u(x)=-e^{-2x}-1$}{$u(x)=-e^{2x}+1$}{$u(x)=e^{-2x}+1$}
+\QQ{5} مجموعة حلول المتراجحة $e^{-3x+2}\leqslant1$ هي:
+\ABC{$\left]{-}\infty;\frac23\right]$}{$\left[\frac23;+\infty\right[$}{$\R$}
+\end{tamrin}
+\begin{molahada}[تصحيح نص المسألة]
+في السؤال 1 من النص الأصلي كُتبت النهاية عند $+\infty$، ولما $x\to+\infty$ يكون $\dfrac1{e^{x}}\to0$ وهي نهاية غير معطاة؛ الصواب (وفق الحل المرافق) $\lim\limits_{x\to-\infty}f\left(\dfrac1{e^{x}}\right)$. وفي السؤال 2 اختلطت الرموز $h$ و$f$ و$g$؛ أعدنا كتابته منسجمًا مع الحل المرافق.
+\end{molahada}
+
+% ===================== المسألة 07 =====================
+\begin{tamrin}{مسألة شاملة}
+\textbf{I)} $g$ دالة معرفة على $\R$ بـ: $g(x)=2x+1+e^{2x}$.
+\QQ{1} ادرس تغيرات الدالة $g$ ثم شكّل جدول تغيراتها.
+\QQ{2} بيّن أن المعادلة $g(x)=0$ تقبل حلًّا وحيدًا $\alpha$ في المجال $]-0{,}7;-0{,}6[$.
+\QQ{3} استنتج من أجل كل عدد حقيقي $x$ إشارة $g(x)$.
+
+\textbf{II)} $f$ دالة معرفة على $\R$ بـ: $f(x)=1-x+(x+1)e^{-2x}$، و$(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa احسب كلًّا من $\lim\limits_{x\to-\infty}f(x)$ و$\lim\limits_{x\to+\infty}f(x)$.
+\qb بيّن أن المنحنى $(C_f)$ يقبل مستقيمًا مقاربًا $(\Delta)$ بجوار $+\infty$ يطلب تعيين معادلته.
+\qc ادرس الوضع النسبي لـ $(C_f)$ والمستقيم $(\Delta)$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa أثبت أنه من أجل كل عدد حقيقي $x$: $f'(x)=-g(x)e^{-2x}$.
+\qb استنتج اتجاه تغير الدالة $f$ وشكّل جدول تغيراتها.
+\qc بيّن أن المعادلة $f(x)=0$ تقبل حلين $x_1$ و$x_2$ حيث: $-1{,}2<x_1<-1{,}1$ و$1{,}1<x_2<1{,}2$.
+\end{sq}
+\QQ{3} عيّن دون حساب: $\lim\limits_{x\to\alpha}\dfrac{f(x)-f(\alpha)}{x-\alpha}$، ثم فسّر النتيجة بيانيًا.
+\QQ{4} أنشئ $(\Delta)$ و$(C_f)$ (يعطى $f(\alpha)\approx2{,}9$).
+\end{tamrin}
+
+% ===================== المسألة 08 =====================
+\begin{tamrin}{مسألة شاملة -- شعبة رياضيات}
+\textbf{I)} $g$ دالة معرفة على $\R$ بـ: $g(x)=1-x+e^{x}$.
+\QQ{1} ادرس تغيرات الدالة $g$ ثم شكّل جدول تغيراتها.
+\QQ{2} استنتج من أجل كل عدد حقيقي $x$ إشارة $g(x)$.
+
+\textbf{II)} $f$ دالة معرفة على $\R$ بـ: $f(x)=x+1+xe^{-x}$، و$(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1} احسب كلًّا من $\lim\limits_{x\to-\infty}f(x)$ و$\lim\limits_{x\to+\infty}f(x)$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أن المنحنى $(C_f)$ يقبل مستقيمًا مقاربًا مائلًا $(\Delta)$ بجوار $+\infty$ معادلته $y=x+1$.
+\qb ادرس الوضع النسبي لـ $(C_f)$ والمستقيم $(\Delta)$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa أثبت أنه من أجل كل عدد حقيقي $x$: $f'(x)=g(x)e^{-x}$.
+\qb استنتج اتجاه تغير الدالة $f$ وشكّل جدول تغيراتها.
+\qc بيّن أن منحنى الدالة $f$ يقطع محور الفواصل في نقطة وحيدة فاصلتها $\alpha$ حيث $-0{,}5<\alpha<-0{,}4$.
+\end{sq}
+\QQ{4} اكتب معادلة للمماس $(T)$ للمنحنى $(C_f)$ عند النقطة ذات الفاصلة $0$، ثم ادرس الوضع النسبي لـ $(C_f)$ و$(T)$.
+\QQ{5} أنشئ $(T)$، $(\Delta)$ و$(C_f)$.
+\QQ{6} عيّن حسب قيم الوسيط الحقيقي $m$ حتى تقبل المعادلة $f(x)=mx+1$ حلين متمايزين.
+\end{tamrin}
+% ===================== المسألة 09 =====================
+\begin{tamrin}{مسألة شاملة -- شعبة رياضيات}
+\textbf{I)} $g$ دالة معرفة على $\R$ بـ: $g(x)=(x+1)e^{x}-e$.
+\QQ{1} ادرس تغيرات الدالة $g$ ثم شكّل جدول تغيراتها.
+\QQ{2} بيّن أن المعادلة $g(x)=0$ تقبل حلًّا وحيدًا $\alpha$ في $\R$، ثم تحقق أن $0{,}5<\alpha<0{,}6$.
+\QQ{3} استنتج من أجل كل عدد حقيقي $x$ إشارة $g(x)$.
+
+\textbf{II)} $f$ دالة معرفة على $\R$ بـ: $f(x)=xe^{x}-ex+e-2$، و$(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1} احسب كلًّا من $\lim\limits_{x\to-\infty}f(x)$ و$\lim\limits_{x\to+\infty}f(x)$.
+\QQ{2} ادرس اتجاه تغير الدالة $f$ ثم شكّل جدول تغيراتها.
+\QQ{3}
+\begin{sq}
+\qa بيّن أن المستقيم $(\Delta)$ الذي معادلته $y=-ex+e-2$ مستقيم مقارب مائل للمنحنى $(C_f)$.
+\qb ادرس الوضع النسبي لـ $(C_f)$ والمستقيم $(\Delta)$.
+\qc بيّن أنه يوجد مماس $(T)$ للمنحنى $(C_f)$ يوازي المستقيم $(\Delta)$، يطلب تعيين معادلته.
+\end{sq}
+\QQ{4} أنشئ $(T)$، $(\Delta)$ و$(C_f)$ (يعطى $f(\alpha)\approx0{,}2$).
+\QQ{5} ناقش حسب قيم الوسيط الحقيقي $m$ عدد وإشارة حلول المعادلة: $(m+2-e)e^{-x}=x$.
+
+\textbf{III)} $h$ دالة معرفة على $\R$ بـ: $h(x)=e\left[(x+1)e^{x}-x\right]$، و$(C_h)$ تمثيلها البياني في المعلم السابق.
+\QQ{1} عيّن العددين الحقيقيين $a$ و$b$ بحيث يكون من أجل كل عدد حقيقي $x$: $h(x)=f(x+a)+b$.
+\QQ{2} اشرح كيفية رسم $(C_h)$ انطلاقًا من $(C_f)$، ثم ارسمه في نفس المعلم السابق.
+\end{tamrin}
+
+% ===================== المسألة 10 =====================
+\begin{tamrin}{مسألة شاملة -- شعبة رياضيات}
+\textbf{I)} $k$ دالة معرفة على $\R$ بـ: $k(x)=(-x+1)e^{x}-1$، جدول تغيراتها موضح في الشكل الآتي:
+\begin{TAB}
+\tkzTabInit[lgt=2,espcl=3]{$x$/1,$k'(x)$/1,$k(x)$/2}{$-\infty$,$0$,$+\infty$}
+\tkzTabLine{,+,z,-,}
+\tkzTabVar{-/$-1$,+/$0$,-/$-\infty$}
+\end{TAB}
+\QQ{1} شكّل جدول إشارة الدالة $k$.
+\QQ{2} استنتج أنه من أجل كل عدد حقيقي $x$: $k(x)\leqslant0$.
+
+\textbf{II)} $f$ دالة معرفة على $\R$ بـ: $f(x)=(-x+2)\left(e^{x}+1\right)$، و$(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1} احسب كلًّا من $\lim\limits_{x\to-\infty}f(x)$ و$\lim\limits_{x\to+\infty}f(x)$.
+\QQ{2} بيّن أنه من أجل كل عدد حقيقي $x$: $f'(x)=k(x)$، ثم استنتج اتجاه تغير الدالة $f$ وشكّل جدول تغيراتها.
+\QQ{3}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$: $f(x)-(-x+2)=(-x+2)e^{x}$.
+\qb بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=-x+2$ مستقيم مقارب مائل للمنحنى $(C_f)$ بجوار $-\infty$ (يعطى $\lim\limits_{x\to-\infty}xe^{x}=0$).
+\qc ادرس الوضع النسبي لـ $(C_f)$ والمستقيم $(\Delta)$.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa بيّن أنه يوجد مماس $(T')$ للمنحنى $(C_f)$ معامل توجيهه $-1$.
+\qb اكتب معادلة للمماسين $(T)$ و$(T')$ للمنحنى $(C_f)$ عند النقطتين ذواتي الفاصلتين $0$ و$1$ على الترتيب.
+\end{sq}
+\QQ{5} حل في $\R$ المعادلة $f(x)=0$، ثم استنتج نقط تقاطع $(C_f)$ مع محور الفواصل.
+\QQ{6} ارسم $(\Delta)$، $(T)$، $(T')$ و$(C_f)$.
+\QQ{7} ناقش بيانيًا حسب قيم الوسيط الحقيقي $m$ عدد وإشارة حلول المعادلة ذات المجهول $x$: $f(x)=-x+m$.
+\end{tamrin}
+\begin{molahada}[تصحيح نص المسألة]
+في السؤال 4(أ) من النص الأصلي سُمّي المماس الذي معامل توجيهه $-1$ بـ $(T)$، بينما $(T)$ في السؤال 4(ب) هو المماس عند النقطة ذات الفاصلة $0$ (معامل توجيهه $0$)؛ المماس الذي معامل توجيهه $-1$ هو $(T')$ عند الفاصلة $1$، فصحّحنا التسمية.
+\end{molahada}
+
+% ===================== المسألة 11 =====================
+\begin{tamrin}{مسألة شاملة}
+\textbf{I)} $g$ دالة معرفة على $\R$ بـ: $g(x)=a+\left(x^2+2x-b\right)e^{-x}$، و$(C_g)$ تمثيلها البياني في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$ (الشكل الآتي):
+\begin{GR}{-3}{8}{-8}{3}{0.5}
+ \Ticks{-2,-1,1,2,3,4,5,6,7}{-7,-6,-5,-4,-3,-2,-1,1,2}
+ \draw[cDef,very thick,domain=-2.7:8,samples=200,smooth] plot (\x,{1+(\x*\x+2*\x-1)*exp(-\x)});
+ \draw[gray,dashed] (-3,1)--(8,1);
+ \node[cDef] at (3,2.4){$(C_g)$};
+\end{GR}
+\QQ{1} عيّن كلًّا من $a$ و$b$ إذا علمت أن $(C_g)$ يقبل مستقيمًا مقاربًا معادلته $y=1$ بجوار $+\infty$، ويقبل مماسًا عند المبدأ معامل توجيهه $3$.
+\QQ{2} فيما يلي نضع: $a=b=1$.
+\begin{sq}
+\qa بيّن أن المعادلة $g(x)=0$ تقبل حلين أحدهما معدوم والآخر $\alpha$ حيث $-2{,}5<\alpha<-2$.
+\qb استنتج من أجل كل عدد حقيقي $x$ إشارة $g(x)$.
+\end{sq}
+
+\textbf{II)} $f$ دالة معرفة على $\R$ بـ: $f(x)=x-\left(x^2+4x+3\right)e^{-x}$، و$(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1} احسب كلًّا من $\lim\limits_{x\to-\infty}f(x)$ و$\lim\limits_{x\to+\infty}f(x)$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$: $f'(x)=g(x)$.
+\qb استنتج اتجاه تغير الدالة $f$ ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x$ مستقيم مقارب مائل للمنحنى $(C_f)$ بجوار $+\infty$.
+\qb ادرس الوضع النسبي لـ $(C_f)$ والمستقيم $(\Delta)$.
+\end{sq}
+\QQ{4} ارسم $(\Delta)$ و$(C_f)$.
+\end{tamrin}
+\begin{molahada}[تصحيح نص المسألة]
+في السؤال II-3(أ) من النص الأصلي كُتب «بجوار $-\infty$»، والصواب «بجوار $+\infty$»: لأن $f(x)-x=-(x^2+4x+3)e^{-x}$ تؤول إلى $0$ عند $+\infty$ وإلى $-\infty$ عند $-\infty$.
+\end{molahada}
+
+% ===================== المسألة 12 =====================
+\begin{tamrin}{مسألة شاملة}
+\textbf{I)} $g$ و$h$ دالتان معرفتان على $\R$ بـ: $g(x)=\left(2-x^2\right)e^{x}$ و$h(x)=x^2$، و$(C_g)$ و$(C_h)$ تمثيلاهما البيانيان في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$ (الشكل الآتي). نقبل أن المعادلة $g(x)=h(x)$ تقبل حلين متمايزين $\alpha$ و$\beta$ بحيث: $-0{,}8<\alpha<-0{,}7$ و$1{,}2<\beta<1{,}3$.
+\begin{GR}{-7}{3}{-3}{6}{0.55}
+ \Ticks{-6,-5,-4,-3,-2,-1,1,2}{-2,-1,1,2,3,4,5}
+ \draw[cThm,very thick,domain=-2.5:2.5,samples=100,smooth] plot (\x,{\x*\x});
+ \draw[cDef,very thick,domain=-7:1.6,samples=200,smooth] plot (\x,{(2-\x*\x)*exp(\x)});
+ \node[cThm] at (2.4,4.5){$(C_h)$};
+ \node[cDef] at (-3,-0.9){$(C_g)$};
+\end{GR}
+اعتمادًا على الشكل:
+\QQ{1} ادرس الوضع النسبي لـ $(C_g)$ و$(C_h)$.
+\QQ{2} استنتج إشارة $g(x)-h(x)$.
+
+\textbf{II)} $f$ دالة معرفة على $\R$ بـ: $f(x)=\dfrac{e^{x}+x^2+x}{e^{x}-x}$، و$(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1} احسب كلًّا من $\lim\limits_{x\to-\infty}f(x)$ و$\lim\limits_{x\to+\infty}f(x)$، ثم فسّر النتائج بيانيًا.
+\QQ{2} بيّن أنه من أجل كل عدد حقيقي $x$: $f'(x)=\dfrac{g(x)-h(x)}{\left(e^{x}-x\right)^2}$.
+\QQ{3} استنتج اتجاه تغير الدالة $f$ ثم شكّل جدول تغيراتها.
+\QQ{4} أنشئ $(C_f)$ (يعطى $f(\alpha)\approx0{,}23$، $f(\beta)\approx2{,}81$).
+\end{tamrin}
+% ===================== المسألة 13 =====================
+\begin{tamrin}{مسألة شاملة -- شعبة رياضيات}
+\textbf{I)} $g$ دالة معرفة على $\R$ بـ: $g(x)=(2x+1)e^{x}-1$.
+\QQ{1} ادرس تغيرات الدالة $g$ ثم شكّل جدول تغيراتها.
+\QQ{2} احسب $g(0)$ ثم استنتج من أجل كل عدد حقيقي $x$ إشارة $g(x)$ على $\R$.
+
+\textbf{II)} $f$ دالة معرفة على $\R$ بـ: $f(x)=x\left(e^{x}-1\right)^2$، و$(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1} احسب كلًّا من $\lim\limits_{x\to-\infty}f(x)$ و$\lim\limits_{x\to+\infty}f(x)$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$: $f'(x)=\left(e^{x}-1\right)g(x)$.
+\qb ادرس اتجاه تغير الدالة $f$ ثم شكّل جدول تغيراتها.
+\qc اكتب معادلة للمماس $(T)$ للمنحنى $(C_f)$ المار بمبدأ المعلم.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أن المستقيم $(\Delta)$ الذي معادلته $y=x$ مستقيم مقارب مائل للمنحنى $(C_f)$ بجوار $-\infty$.
+\qb ادرس الوضع النسبي لـ $(C_f)$ والمستقيم $(\Delta)$.
+\end{sq}
+\QQ{4} أنشئ $(T)$، $(\Delta)$ و$(C_f)$.
+\QQ{5} ناقش بيانيًا حسب قيم الوسيط الحقيقي $m$ عدد وإشارة حلول المعادلة $f(x)=mx$.
+
+\textbf{III)} $h$ دالة معرفة على $\R^{*}$ بـ: $h(x)=f\left(\dfrac1x\right)$، و$(C_h)$ تمثيلها البياني.
+\QQ{1} دون حساب عبارة $h(x)$، حدّد اتجاه تغير الدالة $h$ على مجموعة تعريفها.
+\end{tamrin}
+
+% ===================== المسألة 14 =====================
+\begin{tamrin}{مسألة شاملة -- شعبة رياضيات}
+\textbf{I)} $f$ دالة معرفة على $\R$ بـ: $f(x)=xe^{-x^2}+ax+b$ حيث $a$ و$b$ عددان حقيقيان مع $a\neq0$، و$(\Delta)$ مستقيم مقارب مائل لـ $(C_f)$ (الشكل الآتي).
+\begin{GR}{-3}{3}{-4}{5.5}{0.7}
+ \Ticks{-2,-1,1,2}{-3,-2,-1,1,2,3,4,5}
+ \draw[cRem,thick,dashed] (-2.25,5.5)--(2.5,-4) node[pos=0.1,left]{$(\Delta)$};
+ \draw[cDef,very thick,domain=-3:3,samples=200,smooth] plot (\x,{\x*exp(-\x*\x)-2*\x+1});
+ \node[cDef] at (-1.8,2.6){$(C_f)$};
+\end{GR}
+\QQ{1} اكتب معادلة للمستقيم $(\Delta)$، ثم استنتج أن $a=-2$ و$b=1$، إذا علمت أن $\lim\limits_{x\to-\infty}xe^{-x^2}=\lim\limits_{x\to+\infty}xe^{-x^2}=0$.
+\QQ{2} أثبت أن $(C_f)$ يقبل مماسين $(T)$ و$(T')$ موازيين للمستقيم $(\Delta)$، يطلب تعيين معادلة لكل منهما.
+\QQ{3} عيّن بيانيًا قيم الوسيط الحقيقي $m$ بحيث تقبل المعادلة $f(x)=-2x+m$ حلين سالبين.
+
+\textbf{II)} $h$ دالة معرفة على $\R^{*}$ بـ: $h(x)=f\left(\dfrac1x\right)$، و$(C_h)$ تمثيلها البياني.
+\QQ{1} احسب نهايات الدالة $h$ عند أطراف مجموعة تعريفها.
+\QQ{2} احسب $h'(x)$ ثم استنتج اتجاه تغير الدالة $h$ على مجموعة تعريفها.
+\end{tamrin}
+
+% ===================== المسألة 15 =====================
+\begin{tamrin}{مسألة شاملة -- شعبة رياضيات}
+\textbf{I)} $f$ دالة معرفة على $\R$ بـ: $f(x)=(ax+b)e^{-x}+1$ حيث $a$ و$b$ عددان حقيقيان، و$(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$ (الشكل الآتي: المستقيم الأحمر والمستقيم الأخضر مماسان لـ $(C_f)$ عند النقطتين ذواتي الفاصلتين $0$ و$-1$).
+\begin{GR}{-4}{7}{-4}{4}{0.55}
+ \Ticks{-3,-2,-1,1,2,3,4,5,6}{-3,-2,-1,1,2,3}
+ \draw[cThm,thick] (-3,2)--(3,2);
+ \draw[cRem,thick,domain=-2.5:0.2] plot (\x,{2.71828*(\x+1)+1});
+ \draw[cDef,very thick,domain=-1.75:7,samples=200,smooth] plot (\x,{(\x+1)*exp(-\x)+1});
+ \node[cDef] at (4,1.6){$(C_f)$};
+\end{GR}
+\QQ{1} بقراءة بيانية:
+\begin{sq}
+\qa عيّن كلًّا من $\lim\limits_{x\to-\infty}f(x)$ و$\lim\limits_{x\to+\infty}f(x)$، ثم فسّر هذه الأخيرة بيانيًا.
+\qb عيّن كلًّا من $f(0)$، $f(-1)$، $f'(0)$ و$f'(-1)$.
+\qc اعتمادًا على ما سبق جد قيمة كلٍّ من $a$ و$b$، ثم استنتج عبارة $f(x)$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أن المعادلة $f(x)=0$ تقبل حلًّا وحيدًا $\alpha$ حيث $-1{,}4<\alpha<-1{,}2$.
+\qb استنتج إشارة $f(x)$ على $\R$.
+\end{sq}
+\QQ{3} نعتبر الدالة $h$ المعرفة على $\R$ بـ: $h(x)=\left(|x|+1\right)e^{-x}+1$.
+
+احسب كلًّا من: $\lim\limits_{x\to0^{-}}\dfrac{h(x)-2}{x}$ و$\lim\limits_{x\to0^{+}}\dfrac{h(x)-2}{x}$ ثم فسّر النتيجة بيانيًا (نقبل أن $\lim\limits_{x\to0}\dfrac{e^{-x}-1}{x}=-1$).
+
+\textbf{II)} نضع فيما يلي: $f(x)=(x+1)e^{-x}+1$، ونعتبر الدالة $g$ المعرفة على $\R$ بـ: $g(x)=x-\dfrac{x+2}{e^{x}}$، و$(C_g)$ تمثيلها البياني في المعلم $(O;\vec i,\vec j)$ ($\|\vec i\|=\|\vec j\|=1\,\text{cm}$).
+\QQ{1}
+\begin{sq}
+\qa احسب نهايات الدالة $g$ عند أطراف مجموعة تعريفها.
+\qb بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x$ مستقيم مقارب مائل لـ $(C_g)$ بجوار $+\infty$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$: $g'(x)=f(x)$.
+\qb استنتج اتجاه تغير الدالة $g$ ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{3} اكتب معادلة للمماس $(T)$ للمنحنى $(C_g)$ في النقطة التي فاصلتها $-1$.
+\QQ{4} بيّن أن $g(\alpha)=\alpha+1+\dfrac{1}{\alpha+1}$ ثم استنتج إشارة $g(\alpha)$.
+\QQ{5}
+\begin{sq}
+\qa احسب $g(0)$ ثم أنشئ كلًّا من $(C_f)$، $(\Delta)$ والمنحنى $(C_g)$.
+\qb $m$ وسيط حقيقي، ناقش حسب قيم $m$ عدد وإشارة حلول المعادلة $g(x)=x+m$.
+\end{sq}
+\end{tamrin}
+\begin{molahada}[تصحيح نص المسألة]
+\begin{itemize}
+\item في السؤال I-3 كُتبت الدالة $h(x)=f\left(|x|+1\right)e^{-x}+1$، والصواب المنسجم مع المعطى $\lim\limits_{x\to0}\frac{e^{-x}-1}{x}=-1$ ومع $h(0)=2$ هو $h(x)=\left(|x|+1\right)e^{-x}+1$ (أي $f$ بعد تعويض $x$ بـ $|x|$ داخل القوس).
+\item في السؤال II-2(ب) كُتب «اتجاه تغير الدالة $f$» والصواب «الدالة $g$».
+\item في السؤال II-4 ظهرت العبارة مشوّهة؛ الصواب $g(\alpha)=\alpha+1+\frac{1}{\alpha+1}$.
+\end{itemize}
+\end{molahada}
+
+% ===================== المسألة 16 =====================
+\begin{tamrin}{مسألة شاملة}
+$f$ دالة معرفة على $\R$ بـ: $f(x)=x^2e^{x-1}-\dfrac{x^2}{2}$، و$(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1} احسب $f'(x)$ من أجل كل عدد حقيقي $x$، ثم عبّر عن $f'(x)$ بدلالة $g(x)$ حيث $g$ دالة معرفة على $\R$ بـ: $g(x)=(x+2)e^{x-1}-1$.
+\QQ{2}
+\begin{sq}
+\qa احسب كلًّا من $\lim\limits_{x\to-\infty}g(x)$ و$\lim\limits_{x\to+\infty}g(x)$.
+\qb ادرس اتجاه تغير الدالة $g$ ثم شكّل جدول تغيراتها.
+\qc بيّن أن المعادلة $g(x)=0$ تقبل حلًّا وحيدًا $\alpha$ في $\R$ ثم تأكد أن: $0{,}20<\alpha<0{,}21$.
+\qd عيّن إشارة $g(x)$ على $\R$.
+\end{sq}
+\QQ{3} احسب كلًّا من $\lim\limits_{x\to-\infty}f(x)$ و$\lim\limits_{x\to+\infty}f(x)$.
+\QQ{4} ادرس اتجاه تغير الدالة $f$ ثم شكّل جدول تغيراتها.
+\QQ{5} بيّن أن: $f(\alpha)=\dfrac{-\alpha^3}{2(\alpha+2)}$.
+\QQ{6} نعتبر الدالة $h$ المعرفة على المجال $[0;1]$ بـ: $h(x)=\dfrac{-x^3}{2(x+2)}$.
+\begin{sq}
+\qa احسب $h'(x)$ ثم عيّن اتجاه تغير الدالة $h$ على المجال $[0;1]$.
+\qb استنتج حصرًا للعدد $f(\alpha)$.
+\end{sq}
+\QQ{7} عيّن فواصل نقط تقاطع $(C_f)$ مع محوري الإحداثيات.
+\end{tamrin}
+
+% ===================== المسألة 17 =====================
+\begin{tamrin}{مسألة شاملة}
+\textbf{I)} $g$ دالة معرفة على $\R$ بـ: $g(x)=(x+a)e^{x}+b$ حيث $a$ و$b$ عددان حقيقيان، و$(C_g)$ تمثيلها البياني في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1} عيّن قيمتي كلٍّ من $a$ و$b$ علمًا أن $(C_g)$ يقبل مماسًا في النقطة التي فاصلتها $1$ موازيًا لحامل محور الفواصل، ويشمل النقطة $A(0;-1)$.
+\QQ{2} نضع فيما يلي: $g(x)=(x-2)e^{x}+1$.
+\begin{sq}
+\qa احسب نهايات الدالة $g$ عند أطراف مجموعة تعريفها.
+\qb ادرس اتجاه تغير الدالة $g$ ثم شكّل جدول تغيراتها.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa بيّن أن المعادلة $g(x)=0$ تقبل حلين $\alpha$ و$\beta$ حيث: $-1{,}2<\alpha<-1{,}1$ و$1{,}8<\beta<1{,}9$.
+\qb استنتج من أجل كل عدد حقيقي $x$ إشارة $g(x)$.
+\end{sq}
+
+\textbf{II)} $f$ دالة معرفة على $\R-\{0\}$ بـ: $f(x)=\dfrac{x-1}{1-e^{x}}$، و$(C_f)$ تمثيلها البياني في مستوٍ منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1} احسب كلًّا من $\lim\limits_{x\to-\infty}f(x)$ و$\lim\limits_{x\to+\infty}f(x)$.
+\QQ{2} احسب كلًّا من $\lim\limits_{x\to0^{-}}f(x)$ و$\lim\limits_{x\to0^{+}}f(x)$ ثم فسّر النتائج بيانيًا.
+\QQ{3}
+\begin{sq}
+\qa أثبت أنه من أجل كل عدد حقيقي $x\neq0$: $f'(x)=\dfrac{g(x)}{\left(1-e^{x}\right)^2}$.
+\qb استنتج اتجاه تغير الدالة $f$ وشكّل جدول تغيراتها.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa بيّن أن المنحنى $(C_f)$ يقبل مستقيمًا مقاربًا $(\Delta)$ بجوار $-\infty$ معادلته $y=x-1$.
+\qb ادرس الوضع النسبي لـ $(C_f)$ والمستقيم $(\Delta)$.
+\end{sq}
+\QQ{5} بيّن أن $f(\alpha)=\alpha-2$، $f(\beta)=\beta-2$ ثم عيّن حصرًا لكلٍّ من $f(\alpha)$ و$f(\beta)$.
+\QQ{6} احسب $f(1)$ ثم أنشئ $(C_f)$ و$(\Delta)$.
+\end{tamrin}
+\begin{molahada}[تصحيح نص المسألة]
+في النص الأصلي أُعطي الحصر $-1{,}3<\alpha<-1{,}2$، وهو خاطئ: $g(-1{,}3)\approx0{,}10$ و$g(-1{,}2)\approx0{,}04$ موجبان معًا؛ بينما $g(-1{,}1)\approx-0{,}03<0$، فالصواب $-1{,}2<\alpha<-1{,}1$ ($\alpha\approx-1{,}146$). كما أُعيد ترقيم أسئلة الجزء الثاني (كان ترقيمها مضطربًا).
+\end{molahada}
+\end{document}

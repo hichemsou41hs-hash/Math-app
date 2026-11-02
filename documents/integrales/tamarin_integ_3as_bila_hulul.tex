@@ -1,0 +1,418 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}تمارين تجريبية: الدوال الأصلية والحساب التكاملي}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{24}{30}\selectfont\bfseries تمارين تجريبية في الدوال الأصلية والحساب التكاملي}\\[8pt]
+{\color{white}\large تمارين متدرجة -- بدون حلول (للتدرّب)}\\[5pt]
+{\color{white}\large السنة الثالثة ثانوي -- الشعب العلمية}
+\end{tcolorbox}
+\end{LTR}
+\section{الدوال الأصلية}
+
+% ===================== 1 =====================
+\begin{tamrin}{دوال أصلية مباشرة}
+في كل حالة من الحالات التالية، عيّن دالة أصلية $F$ للدالة $f$ على المجال $I$:
+\begin{sq}
+\qa $f(x)=3x^{2}-4x+5$ \quad ، \quad $I=\R$.
+\qb $f(x)=\dfrac{1}{x^{2}}+\dfrac{2}{\sqrt{x}}$ \quad ، \quad $I=]0;+\infty[$.
+\qc $f(x)=(2x+1)\left(x^{2}+x+3\right)^{3}$ \quad ، \quad $I=\R$.
+\qd $f(x)=\dfrac{x}{x^{2}+1}$ \quad ، \quad $I=\R$.
+\qe $f(x)=e^{2x-1}$ \quad ، \quad $I=\R$.
+\item[(و)] $f(x)=\dfrac{3}{(2x+1)^{2}}$ \quad ، \quad $I=\left]-\dfrac12;+\infty\right[$.
+\item[(ز)] $f(x)=\dfrac{\ln x}{x}$ \quad ، \quad $I=]0;+\infty[$.
+\item[(ح)] $f(x)=\dfrac{x}{\sqrt{x^{2}+4}}$ \quad ، \quad $I=\R$.
+\item[(ط)] $f(x)=\cos(2x)-\sin x$ \quad ، \quad $I=\R$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2 =====================
+\begin{tamrin}{الدالة الأصلية التي تأخذ قيمة معلومة}
+\QQ{1} $f$ الدالة المعرفة على المجال $]-1;+\infty[$ بـ: $f(x)=\dfrac{2x+3}{x+1}$.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$ من $]-1;+\infty[$: $f(x)=2+\dfrac{1}{x+1}$.
+\qb عيّن الدالة الأصلية $F$ للدالة $f$ على $]-1;+\infty[$ التي تحقق $F(0)=1$.
+\end{sq}
+\QQ{2} $g$ الدالة المعرفة على $\R$ بـ: $g(x)=\dfrac{e^{x}}{\left(e^{x}+1\right)^{2}}$.
+\begin{sq}
+\qa عيّن الدوال الأصلية للدالة $g$ على $\R$.
+\qb عيّن الدالة الأصلية $G$ للدالة $g$ على $\R$ التي تنعدم عند $0$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 3 =====================
+\begin{tamrin}{تعيين دالة أصلية بالمطابقة}
+\QQ{1} $f$ الدالة المعرفة على $\R$ بـ: $f(x)=\left(-x^{2}+3x-1\right)e^{-x}$.
+\begin{sq}
+\qa عيّن الأعداد الحقيقية $a$ و $b$ و $c$ بحيث تكون الدالة $F:x\mapsto\left(ax^{2}+bx+c\right)e^{-x}$ دالة أصلية للدالة $f$ على $\R$.
+\qb استنتج الدالة الأصلية للدالة $f$ على $\R$ التي تأخذ القيمة $2$ عند $0$.
+\end{sq}
+\QQ{2} $g$ الدالة المعرفة على $]-1;+\infty[$ بـ: $g(x)=\dfrac{x^{2}+2x+3}{(x+1)^{2}}$.
+\begin{sq}
+\qa عيّن العددين الحقيقيين $\alpha$ و $\beta$ بحيث من أجل كل $x$ من $]-1;+\infty[$: $g(x)=\alpha+\dfrac{\beta}{(x+1)^{2}}$.
+\qb استنتج دالة أصلية للدالة $g$ على $]-1;+\infty[$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 4 =====================
+\begin{tamrin}{دوال أصلية بعد تحويل العبارة}
+\QQ{1} $f$ الدالة المعرفة على $\R$ بـ: $f(x)=\dfrac{e^{2x}}{e^{x}+1}$.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x$: $f(x)=e^{x}-\dfrac{e^{x}}{e^{x}+1}$.
+\qb استنتج الدالة الأصلية $F$ للدالة $f$ على $\R$ التي تنعدم عند $0$.
+\end{sq}
+\QQ{2} $h$ الدالة المعرفة على $]0;+\infty[$ بـ: $h(x)=\dfrac{1}{x(x+1)}$.
+\begin{sq}
+\qa تحقق أنه من أجل كل $x$ من $]0;+\infty[$: $h(x)=\dfrac1x-\dfrac{1}{x+1}$.
+\qb استنتج الدالة الأصلية $H$ للدالة $h$ على $]0;+\infty[$ التي تنعدم عند $1$، ثم اكتبها على شكل $\ln$ عبارة واحدة.
+\qc أحسب $\lim\limits_{x\to+\infty}H(x)$.
+\end{sq}
+\end{tamrin}
+
+\section{حساب التكاملات وخواصها}
+
+% ===================== 5 =====================
+\begin{tamrin}{حساب تكاملات مباشرة}
+أحسب كل تكامل من التكاملات التالية:
+\begin{sq}
+\qa $I_1=\displaystyle\int_{0}^{1}\left(x^{3}-2x+1\right)dx$
+\qb $I_2=\displaystyle\int_{1}^{e}\left(\frac1x+x\right)dx$
+\qc $I_3=\displaystyle\int_{0}^{\ln2}e^{2x}\,dx$
+\qd $I_4=\displaystyle\int_{0}^{1}\frac{x}{x^{2}+1}\,dx$
+\qe $I_5=\displaystyle\int_{0}^{\frac{\pi}{2}}\cos x\,\sin^{2}x\,dx$
+\item[(و)] $I_6=\displaystyle\int_{1}^{4}\frac{1}{\sqrt{x}}\,dx$
+\end{sq}
+\end{tamrin}
+
+% ===================== 6 =====================
+\begin{tamrin}{الخطية وعلاقة شال}
+\QQ{1} باستعمال علاقة شال، أحسب $K=\displaystyle\int_{0}^{3}|x-1|\,dx$، ثم فسّر النتيجة بيانيا.
+\QQ{2} نعتبر التكاملين: $I=\displaystyle\int_{0}^{1}\frac{e^{x}}{e^{x}+1}\,dx$ \ و \ $J=\displaystyle\int_{0}^{1}\frac{1}{e^{x}+1}\,dx$.
+\begin{sq}
+\qa أحسب $I$.
+\qb أحسب $I+J$.
+\qc استنتج قيمة $J$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 7 =====================
+\begin{tamrin}{القيمة المتوسطة وحصر تكامل}
+\QQ{1} أحسب القيمة المتوسطة $\mu$ للدالة $f:x\mapsto3x^{2}-2x$ على المجال $[0;2]$.
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $[0;1]$: $\dfrac12\leqslant\dfrac{1}{1+x^{2}}\leqslant1$.
+\qb استنتج حصرا للتكامل $A=\displaystyle\int_0^1\frac{1}{1+x^{2}}\,dx$.
+\end{sq}
+\QQ{3} نقبل أنه من أجل كل عدد حقيقي $t$: $e^{t}\geqslant1+t$.
+\begin{sq}
+\qa بيّن أنه من أجل كل $x$ من $[0;1]$: $1-x^{2}\leqslant e^{-x^{2}}\leqslant1$.
+\qb استنتج أن: $\dfrac23\leqslant\displaystyle\int_0^1e^{-x^{2}}\,dx\leqslant1$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 8 =====================
+\begin{tamrin}{استعمال الزوجية والفردية}
+نقبل الخاصيتين التاليتين (لدالة $f$ مستمرة على $[-a;a]$):
+إذا كانت $f$ فردية فإن $\displaystyle\int_{-a}^{a}f(x)\,dx=0$، وإذا كانت $f$ زوجية فإن $\displaystyle\int_{-a}^{a}f(x)\,dx=2\int_{0}^{a}f(x)\,dx$.
+\QQ{1} أحسب $I=\displaystyle\int_{-1}^{1}x^{3}e^{x^{2}}\,dx$ دون حساب دالة أصلية.
+\QQ{2} أحسب $J=\displaystyle\int_{-1}^{1}\left(x^{4}+x^{5}+\sin x\right)dx$.
+\QQ{3} أحسب $K=\displaystyle\int_{-2}^{2}\left(|x|+x^{3}\right)dx$.
+\QQ{4} $g$ الدالة المعرفة على $]-1;1[$ بـ: $g(x)=\ln\left(\dfrac{1+x}{1-x}\right)$. بيّن أن $g$ فردية، ثم استنتج $\displaystyle\int_{-\frac12}^{\frac12}g(x)\,dx$.
+\end{tamrin}
+
+\section{التكامل بالتجزئة}
+
+% ===================== 9 =====================
+\begin{tamrin}{تكامل بالتجزئة مرة واحدة}
+باستعمال التكامل بالتجزئة، أحسب:
+\begin{sq}
+\qa $I=\displaystyle\int_0^1xe^{x}\,dx$
+\qb $J=\displaystyle\int_1^e\ln x\,dx$
+\qc $K=\displaystyle\int_0^{\frac{\pi}{2}}x\cos x\,dx$
+\end{sq}
+\end{tamrin}
+
+% ===================== 10 =====================
+\begin{tamrin}{التكامل بالتجزئة ودالة أصلية}
+\QQ{1} أحسب $I=\displaystyle\int_1^ex\ln x\,dx$.
+\QQ{2} أحسب $J=\displaystyle\int_0^1(2x+1)e^{-x}\,dx$.
+\QQ{3} باستعمال التكامل بالتجزئة، عيّن الدالة الأصلية للدالة $x\mapsto(x+2)e^{x}$ على $\R$ التي تنعدم عند $0$.
+\end{tamrin}
+
+% ===================== 11 =====================
+\begin{tamrin}{التكامل بالتجزئة مرتين}
+\QQ{1} أحسب $I=\displaystyle\int_0^1x^{2}e^{x}\,dx$ (يمكن استعمال $\displaystyle\int_0^1xe^{x}\,dx=1$).
+\QQ{2} أحسب $J=\displaystyle\int_1^e(\ln x)^{2}\,dx$، ثم قارن $I$ و $J$.
+\QQ{3} أحسب $K=\displaystyle\int_1^ex^{2}\ln x\,dx$.
+\end{tamrin}
+
+\section{حساب المساحات}
+
+% ===================== 12 =====================
+\begin{tamrin}{مساحة حيز بين منحن ومحور الفواصل}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=x^{2}-2x$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس $\left(O;\vec i,\vec j\right)$ حيث $\|\vec i\|=2\,\text{cm}$.
+\QQ{1} أدرس إشارة $f(x)$ على المجال $[0;3]$.
+\QQ{2} أحسب بـ $\text{cm}^{2}$ مساحة الحيز المستوي المحدد بالمنحنى $(C_f)$ ومحور الفواصل والمستقيمين اللذين معادلتاهما $x=0$ و $x=3$.
+\end{tamrin}
+
+% ===================== 13 =====================
+\begin{tamrin}{مساحة حيز بين منحنيين}
+$f$ و $g$ الدالتان المعرفتان على $\R$ بـ: $f(x)=x^{2}$ و $g(x)=x+2$، و $(C_f)$ و $(C_g)$ تمثيلاهما البيانيان في معلم متعامد ومتجانس (وحدة الطول $1\,\text{cm}$).
+\QQ{1} عيّن فاصلتي نقطتي تقاطع $(C_f)$ و $(C_g)$، ثم أدرس الوضع النسبي للمنحنيين.
+\QQ{2} أحسب مساحة الحيز المستوي المحدد بالمنحنيين $(C_f)$ و $(C_g)$.
+\end{tamrin}
+
+% ===================== 14 =====================
+\begin{tamrin}{مساحة بين منحن ومستقيم مقارب}
+$f$ الدالة المعرفة على $]0;+\infty[$ بـ: $f(x)=x-1+\dfrac{\ln x}{x}$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس حيث $\|\vec i\|=2\,\text{cm}$.
+\QQ{1} بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x-1$ مقارب مائل للمنحنى $(C_f)$ عند $+\infty$، وأدرس الوضع النسبي لـ $(C_f)$ و $(\Delta)$.
+\QQ{2} أحسب بـ $\text{cm}^{2}$ مساحة الحيز المستوي المحدد بـ $(C_f)$ و $(\Delta)$ والمستقيمين اللذين معادلتاهما $x=1$ و $x=e$.
+\end{tamrin}
+
+% ===================== 15 =====================
+\begin{tamrin}{مساحة باستعمال التكامل بالتجزئة}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=(x-1)e^{x}$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس حيث $\|\vec i\|=2\,\text{cm}$.
+\QQ{1} أدرس إشارة $f(x)$ على $\R$.
+\QQ{2} باستعمال التكامل بالتجزئة، عيّن دالة أصلية للدالة $f$ على $\R$.
+\QQ{3} أحسب بوحدة المساحة ثم بـ $\text{cm}^{2}$ مساحة الحيز المستوي المحدد بـ $(C_f)$ ومحور الفواصل والمستقيمين اللذين معادلتاهما $x=0$ و $x=2$.
+\end{tamrin}
+
+\section{اختيار من متعدد وصحيح أم خطأ}
+
+% ===================== 16 =====================
+\begin{tamrin}{اختيار من متعدد}
+في كل حالة من الحالات التالية، اختر الجواب الصحيح الوحيد من بين الأجوبة الثلاثة المقترحة مع التعليل.
+
+\QQ{1} دالة أصلية للدالة $x\mapsto2xe^{x^{2}}$ على $\R$ هي:
+\ABC{$x\mapsto e^{x^{2}}$}{$x\mapsto x^{2}e^{x^{2}}$}{$x\mapsto2e^{x^{2}}$}
+
+\QQ{2} $\displaystyle\int_0^1(2x+1)\,dx$ يساوي:
+\ABC{$1$}{$2$}{$3$}
+
+\QQ{3} $\displaystyle\int_1^e\frac{1}{x}\,dx$ يساوي:
+\ABC{$e$}{$0$}{$1$}
+
+\QQ{4} القيمة المتوسطة للدالة $x\mapsto x^{2}$ على المجال $[0;3]$ هي:
+\ABC{$3$}{$9$}{$1$}
+
+\QQ{5} $\displaystyle\int_{-1}^{1}\left(x^{3}+1\right)dx$ يساوي:
+\ABC{$0$}{$2$}{$1$}
+
+\QQ{6} $\displaystyle\int_0^{\ln3}e^{x}\,dx$ يساوي:
+\ABC{$3$}{$\ln 3$}{$2$}
+\end{tamrin}
+
+% ===================== 17 =====================
+\begin{tamrin}{صحيح أم خطأ}
+أجب بـ «صحيح» أو «خطأ» مع التعليل: برّر كل عبارة صحيحة، وانقض كل عبارة خاطئة بمثال مضاد.
+\QQ{1} كل دالة مستمرة على مجال $I$ تقبل دوالا أصلية على $I$.
+\QQ{2} إذا كانت $F$ و $G$ دالتين أصليتين لنفس الدالة $f$ على مجال $I$ فإن $F-G$ دالة ثابتة على $I$.
+\QQ{3} $\displaystyle\int_0^1xe^{x}\,dx=\left(\int_0^1x\,dx\right)\times\left(\int_0^1e^{x}\,dx\right)$.
+\QQ{4} إذا كانت $f$ و $g$ مستمرتين على $[a;b]$ مع $a<b$، و $f(x)\leqslant g(x)$ من أجل كل $x$ من $[a;b]$، فإن $\displaystyle\int_a^bf(x)\,dx\leqslant\int_a^bg(x)\,dx$.
+\QQ{5} الدالة $x\mapsto\ln\left(x^{2}+1\right)$ دالة أصلية للدالة $x\mapsto\dfrac{1}{x^{2}+1}$ على $\R$.
+\QQ{6} إذا كانت $f$ مستمرة على $[a;b]$ و $\displaystyle\int_a^bf(x)\,dx\geqslant0$ فإن $f(x)\geqslant0$ من أجل كل $x$ من $[a;b]$.
+\end{tamrin}
+
+\section{تمارين للتعمق}
+
+% ===================== 18 =====================
+\begin{tamrin}{مساحة بدلالة وسيط ونهايتها}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=x-1+\dfrac{2}{e^{x}+1}$، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس حيث $\|\vec i\|=2\,\text{cm}$.
+\QQ{1} بيّن أن $f$ فردية، وأن $f$ متزايدة تماما على $\R$.
+\QQ{2} بيّن أن المستقيم $(\Delta):y=x-1$ مقارب مائل لـ $(C_f)$ عند $+\infty$، وأن $(\Delta'):y=x+1$ مقارب مائل عند $-\infty$، ثم أدرس الوضع النسبي لـ $(C_f)$ و $(\Delta)$.
+\QQ{3} تحقق أنه من أجل كل عدد حقيقي $x$: $\dfrac{2}{e^{x}+1}=\dfrac{2e^{-x}}{1+e^{-x}}$.
+\QQ{4} $\lambda$ عدد حقيقي موجب تماما. نسمي $\mathcal{A}(\lambda)$ مساحة الحيز المستوي المحدد بـ $(C_f)$ و $(\Delta)$ والمستقيمين اللذين معادلتاهما $x=0$ و $x=\lambda$.
+\begin{sq}
+\qa أحسب $\mathcal{A}(\lambda)$ بوحدة المساحة ثم بـ $\text{cm}^{2}$.
+\qb أحسب $\lim\limits_{\lambda\to+\infty}\mathcal{A}(\lambda)$ وفسّر النتيجة.
+\qc عيّن قيمة $\lambda$ التي يكون من أجلها $\mathcal{A}(\lambda)=\ln2\ \mathrm{u.a}$.
+\end{sq}
+\end{tamrin}
+
+\section{المعادلات التفاضلية $y'=f(x)$ وحساب الحجوم}
+
+% ===================== 19 =====================
+\begin{tamrin}{المعادلات التفاضلية $y'=f(x)$}
+\QQ{1} حل على المجال $I$ كل معادلة تفاضلية مما يلي:
+\begin{sq}
+\qa $y'=4x^{3}-6x+1$ \quad ، \quad $I=\R$.
+\qb $y'=\dfrac{1}{2x+1}$ \quad ، \quad $I=\left]-\dfrac12;+\infty\right[$.
+\qc $y'=xe^{x^{2}}$ \quad ، \quad $I=\R$.
+\end{sq}
+\QQ{2} عيّن الحل $g$ للمعادلة التفاضلية $y'=\dfrac{\ln x}{x}$ على $]0;+\infty[$ الذي يحقق $g(e)=1$.
+\QQ{3} تتحرك نقطة على مستقيم، وموضعها $x(t)$ (بالمتر) عند اللحظة $t$ (بالثانية) يحقق $x'(t)=3t^{2}+2t$ و $x(0)=5$. عيّن $x(t)$ ثم أحسب موضع النقطة عند $t=2$.
+\end{tamrin}
+
+% ===================== 20 =====================
+\begin{tamrin}{حجم مجسم دوراني}
+المستوي منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$. نذكّر أن دوران الحيز المحدد بـ $(C_f)$ ومحور الفواصل والمستقيمين $x=a$ و $x=b$ حول محور الفواصل يولّد مجسما حجمه $V=\pi\displaystyle\int_a^b\big[f(x)\big]^{2}dx$ (وحدة حجوم).
+\QQ{1} $f(x)=\dfrac{x}{2}$ على $[0;4]$. أحسب حجم المجسم المولَّد، وتعرّف على طبيعته، ثم تحقق بدستور حجمه.
+\QQ{2} $g(x)=e^{-x}$ على $[0;1]$. أحسب حجم المجسم المولَّد، وأعط قيمة مقربة إلى $10^{-2}$.
+\QQ{3} $r>0$ و $h(x)=\sqrt{r^{2}-x^{2}}$ على $[-r;r]$. ما هو المجسم المولَّد؟ أثبت أن حجمه $\dfrac43\pi r^{3}$.
+\end{tamrin}
+
+\end{document}

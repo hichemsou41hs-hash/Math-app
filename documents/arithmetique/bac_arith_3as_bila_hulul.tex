@@ -1,0 +1,1321 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\SetHeader{\small\bfseries\color{cSec}تمارين البكالوريا: الأعداد والحساب}{\small\color{cSec}السنة الثالثة ثانوي -- رياضيات وتقني رياضي}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries تمارين البكالوريا في الأعداد والحساب}\\[8pt]
+{\color{white}\large -- بدون حلول (للتدرّب) -- حتى دورة 2026}\\[5pt]
+{\color{white}\large شعبة رياضيات -- شعبة تقني رياضي}
+\end{tcolorbox}
+\end{LTR}
+\section{تمارين البكالوريا -- شعبة رياضيات}
+% ================= التمرين: بكالوريا 2026 م1 =================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الأول -- شعبة رياضيات}
+نعتبر المعادلة $(E)$: \quad $675x-525y=\alpha$ حيث $x$ و $y$ عددان صحيحان و $\alpha$ عدد صحيح غير معدوم.
+
+\textbf{1)} عيّن القاسم المشترك الأكبر للعددين $675$ و $525$ ثم استنتج قيم $\alpha$ التي تقبل من أجلها المعادلة $(E)$ حلولا.
+
+\textbf{2)} نضع: $\alpha=825$.
+\begin{sq}
+\qa حلّ المعادلة $(E)$ علما أن الثنائية $(2;1)$ حل لها.
+\qb عيّن كل الثنائيات $(x;y)$ حلول المعادلة $(E)$ التي من أجلها يكون: $\pgcd(x;y)=11$.
+\end{sq}
+\textbf{3)}
+\begin{sq}
+\qa أثبت أنه من أجل كل عدد طبيعي $n$ فإن العددين $7n+4$ و $9n+5$ أوليان فيما بينهما.
+\qb أحسب بدلالة العدد الطبيعي غير المعدوم $n$ القاسم المشترك الأكبر والمضاعف المشترك الأصغر للعددين $a$ و $b$ حيث: $a=77n^2+44n$ و $b=99n^2+55n$.
+\end{sq}
+\textbf{4)}
+\begin{sq}
+\qa أدرس تبعا لقيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $4^n$ على $7$.
+\qb استنتج باقي القسمة الإقليدية للعدد $L$ على $7$ حيث: $L=1+2+2^2+\cdots+2^{2025}$.
+\end{sq}
+\textbf{5)} عيّن قيم العدد الطبيعي $n$ التي من أجلها يكون: $L+b-a+3\equiv 0\,[7]$.
+\end{tamrin}
+
+% ================= بكالوريا 2026 م2 =================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الثاني -- شعبة رياضيات}
+المستوي منسوب إلى المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$.
+$ABC$ مثلث قائم في $A$ حيث: $A(6;9)$، $B(\alpha;0)$ و $C(0;\beta)$، $\alpha$ و $\beta$ عددان صحيحان.
+
+\textbf{1)} بيّن أن الثنائية $(\alpha;\beta)$ تحقق المعادلة: $(E)$:\quad $2x+3y=39$، حيث $x$ و $y$ عددان صحيحان.
+
+\textbf{2)}
+\begin{sq}
+\qa تحقق أن الثنائية $(6;9)$ حل للمعادلة $(E)$، ثم عيّن كل الثنائيات $(x;y)$ حلول المعادلة $(E)$.
+\qb استنتج كل الثنائيات $(x;y)$ حلول المعادلة $(E)$ حيث: $\pgcd(x;y)=39$.
+\end{sq}
+\textbf{3)}
+\begin{sq}
+\qa أدرس حسب قيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $4^n$ على $9$.
+\qb استنتج باقي القسمة الإقليدية للعدد $1447^{2026}$ على $9$.
+\end{sq}
+\textbf{4)} عيّن كل الثنائيات $(x;y)$ حلول المعادلة $(E)$ حتى يكون: $4^{y+30}\equiv1\,[9]$ و $-21\le y\le -15$.
+\end{tamrin}
+
+% ================= بكالوريا 2025 م1 =================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الأول -- شعبة رياضيات}
+\textbf{1)} نعتبر المعادلة $(E)$:\quad $13x-2y=35$ ذات المجهولين الصحيحين $x$ و $y$.
+\begin{sq}
+\qa بيّن أنه إذا كانت الثنائية $(x;y)$ حلا للمعادلة $(E)$ فإن $y\equiv2\,[13]$، ثم حلّ المعادلة $(E)$.
+\qb جد كل الثنائيات $(x;y)$ حلول المعادلة $(E)$ حيث: $\pgcd(x;y)=35$.
+\end{sq}
+\textbf{2)}
+\begin{sq}
+\qa أدرس حسب قيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $5^n$ على $11$.
+\qb عيّن قيم العدد الطبيعي $n$ التي من أجلها يكون العدد $6n^2+1446^{x+y}$ قابلا للقسمة على $11$ والثنائية $(x;y)$ حل للمعادلة $(E)$.
+\end{sq}
+\textbf{3)} $\lambda$ عدد طبيعي يكتب $\overline{1\alpha\alpha\beta\beta1}$ في نظام التعداد ذي الأساس $4$ ويكتب $\overline{1\alpha\beta13}$ في نظام التعداد ذي الأساس $6$.
+عيّن $\alpha$ و $\beta$ ثم أكتب $\lambda$ في النظام العشري.
+
+\textbf{4)} $a$ و $b$ عددان طبيعيان و $d$ قاسمهما المشترك الأكبر.
+حلّل العدد $2025$ إلى جداء عوامل أولية ثم عيّن كل الثنائيات $(a;b)$ حيث: $7(ab)^2-3d^4=2025$.
+\end{tamrin}
+
+% ================= بكالوريا 2025 م2 =================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{1)} نعتبر المعادلة $(E)$:\quad $116x-81y=2$ ذات المجهولين الصحيحين $x$ و $y$.
+\begin{sq}
+\qa بيّن أن العددين $81$ و $116$ أوليان فيما بينهما.
+\qb حلّ المعادلة $(E)$ علما أن الثنائية $(7;10)$ حل لها.
+\end{sq}
+\textbf{2)}
+\begin{sq}
+\qa أدرس حسب قيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $7^n$ على $9$.
+\qb استنتج حسب قيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $7^{2n+1}$ على $9$.
+\qc عيّن الثنائيات الطبيعية $(x;y)$ حلول المعادلة $(E)$ والتي تحقق: $x^y\equiv4\,[9]$.
+\end{sq}
+\textbf{3)} $\alpha$، $\beta$ عددان طبيعيان أوليان فيما بينهما و $a$، $b$ عددان طبيعيان حيث: $a=7\alpha+3\beta$ و $b=5\alpha+2\beta$.
+\begin{sq}
+\qa بيّن أن العددين $a$، $b$ أوليان فيما بينهما.
+\qb عيّن العددين $\alpha$، $\beta$ حتى يكون: $a=116$ و $b=81$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2024 م1 =================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الأول -- شعبة رياضيات}
+\textbf{1)} نعتبر المعادلة $(E)$:\quad $7x-13y=29$ ذات المجهولين الصحيحين $x$ و $y$.
+\begin{sq}
+\qa عيّن الحل الخاص $(x_0;y_0)$ للمعادلة $(E)$ الذي يحقق: $x_0-3y_0=3$.
+\qb استنتج حلول المعادلة $(E)$.
+\qc عيّن الثنائيات $(x;y)$ حلول المعادلة $(E)$ والتي من أجلها يكون $|x-y-5|\le6$.
+\end{sq}
+\textbf{2)}
+\begin{sq}
+\qa أدرس تبعا لقيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $3^n$ على $5$.
+\qb بيّن أن العدد $2024\times3^{1445}+2023^{4n+2}+9^{2n+3}$ يقبل القسمة على $5$.
+\end{sq}
+\textbf{3)} عيّن الأعداد الطبيعية $n$ بحيث:
+$\begin{cases} n\equiv0\,[4]\\ 3^{x+y}+19\times3^n-2n\equiv0\,[5]\end{cases}$
+و $(x;y)$ حل طبيعي للمعادلة $(E)$.
+
+\textbf{4)} $A$ عدد طبيعي يكتب $\overline{5\alpha2\beta}$ في نظام التعداد ذي الأساس $7$ حيث $\alpha$ و $\beta$ عددان طبيعيان و $0<\beta<\alpha$.
+جد $\alpha$ و $\beta$ حتى يكون: $A\equiv4\,[5]$ ثم أكتب $A$ في النظام العشري.
+\end{tamrin}
+
+% ================= بكالوريا 2024 م2 =================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{1)} نعتبر المعادلة $(E)$:\quad $7x-8y=2$ ذات المجهولين الصحيحين $x$ و $y$.
+\begin{sq}
+\qa حلّ المعادلة $(E)$ علما أن الثنائية $(6;5)$ حل لها.
+\qb نضع: $d=\pgcd(x;y)$ و $m=\ppcm(x;y)$ حيث $(x;y)$ حل للمعادلة $(E)$.
+جد القيم الممكنة للعدد $d$ ثم عيّن الثنائيات $(x;y)$ بحيث يكون: $d=2$ و $m=510$.
+\end{sq}
+\textbf{2)} نضع من أجل كل عدد طبيعي $n$: $a=8n+6$ و $b=8n^2-18n-10$.
+\begin{sq}
+\qa تحقق أن: $b=(n-3)a+8$ ثم بيّن أن: $\pgcd(a;b)=\pgcd(a;8)$.
+\qb استنتج أنه من أجل كل عدد طبيعي $n$: $\pgcd(a;b)=2$.
+\end{sq}
+\textbf{3)} $A$ و $B$ عددان طبيعيان يكتبان $\overline{7676}$ و $\overline{101}$ على الترتيب في نظام التعداد ذي الأساس $\alpha$، و $C$ عدد طبيعي يكتب $\overline{88}$ في نظام التعداد ذي الأساس $\beta$.
+\begin{sq}
+\qa بيّن أن: $A=B\times C$ تكافئ $(\alpha^2+1)(7\alpha-8\beta-2)=0$.
+\qb عيّن أصغر قيمة للعددين $\alpha$ و $\beta$ حتى يكون $A=B\times C$ ثم أكتب $B$ في النظام العشري.
+\qc أكتب العدد $197$ في نظام التعداد ذي الأساس $12$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2023 م1 =================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الأول -- شعبة رياضيات}
+\textbf{1)} نعتبر المعادلة $(E)$:\quad $16x+361y=818$ ذات المجهولين الصحيحين $x$ و $y$.
+\begin{sq}
+\qa تحقق أن الثنائية $(6;2)$ حل للمعادلة $(E)$ ثم استنتج مجموعة حلولها.
+\qb عيّن كل الثنائيات $(x;y)$ حلول المعادلة $(E)$ التي تحقق: $|x+23y|\le4$.
+\end{sq}
+\textbf{2)} $P$ عدد طبيعي يكتب $\overline{5\alpha\beta0}$ في نظام التعداد الذي أساسه $7$ ويكتب $\overline{\beta\alpha87}$ في نظام التعداد الذي أساسه $9$ حيث $\alpha$ و $\beta$ عددان طبيعيان.
+عيّن $\alpha$ و $\beta$ ثم أكتب $P$ في النظام العشري.
+
+\textbf{3)}
+\begin{sq}
+\qa حلّل العدد $2023$ إلى جداء عوامل أولية ثم عيّن الأعداد الطبيعية التي مربع كل منها يقسم $2023$.
+\qb نضع: $d=\pgcd(a;b)$ و $m=\ppcm(a;b)$.
+عيّن كل الثنائيات $(a;b)$ من الأعداد الطبيعية التي تحقق: $m^2+3d^2=2023$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2023 م2 =================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{1)}
+\begin{sq}
+\qa عيّن حسب قيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $9^n$ على $11$، ثم استنتج باقي القسمة الإقليدية للعدد $1945^{2023}$ على $11$.
+\qb عيّن مجموعة قيم العدد الطبيعي $n$ التي تحقق الجملة:
+$\begin{cases}n\equiv2023\,[5]\\ 3n+9^n\equiv1444\,[11]\end{cases}$
+\end{sq}
+\textbf{2)} $(u_n)$ المتتالية العددية المعرفة بـ: $u_0=\frac32$ ومن أجل كل عدد طبيعي $n$: $u_{n+1}=9u_n-16n+6$.
+$(v_n)$ المتتالية العددية المعرفة على $\N$ بـ: $v_n=4u_n-8n+2$.
+\begin{sq}
+\qa بيّن أن المتتالية $(v_n)$ هندسية أساسها $9$ ويطلب تعيين حدها الأول $v_0$.
+\qb عيّن عبارة $v_n$ بدلالة $n$ ثم استنتج أنه من أجل كل عدد طبيعي $n$: $u_n=2\times9^n+2n-\frac12$.
+\end{sq}
+\textbf{3)} نضع من أجل كل عدد طبيعي $n$: $S_n=v_0+v_1+\cdots+v_n$ و $T_n=u_0+u_1+\cdots+u_n$.
+أحسب $S_n$ بدلالة $n$ ثم استنتج أنه من أجل كل عدد طبيعي $n$: $T_n=\frac14\left(9^{n+1}+4n^2+2n-3\right)$.
+
+\textbf{4)} بيّن أنه من أجل كل عدد طبيعي $n$: $4T_{5n}-n^2+n+5\equiv0\,[11]$.
+\end{tamrin}
+
+% ================= بكالوريا 2022 م1 =================
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الأول -- شعبة رياضيات}
+\textbf{1)}
+\begin{sq}
+\qa عيّن حسب قيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $2^n$ على $7$.
+\qb بيّن أنه من أجل كل عدد طبيعي $n$: $6^{2n}\equiv1\,[7]$ ثم استنتج بواقي القسمة الإقليدية للعدد $6^n$ على $7$.
+\end{sq}
+\textbf{2)} بيّن أن العدد $\left(2021^{2022}+1962^{1443}\right)^{1954}-2$ يقبل القسمة على $7$.
+
+\textbf{3)} نضع من أجل كل عدد طبيعي $n$: $a_n=2^n+6^n$ و $S_n=a_0+a_1+\cdots+a_n$.
+\begin{sq}
+\qa استنتج حسب قيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $a_n$ على $7$.
+\qb بيّن أنه من أجل كل عدد طبيعي $n$: $S_{n+6}\equiv S_n\,[7]$.
+\qc أثبت أنه من أجل كل عدد طبيعي $n$: $S_n\equiv2^{n+1}+3\times6^{n+1}+3\,[7]$ ثم استنتج قيم $n$ بحيث: $S_n\equiv0\,[7]$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2022 م2 =================
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الثاني -- شعبة رياضيات}
+$n$ عدد طبيعي. نضع: $A_n=n^3+5n^2+7n+9$ و $B_n=n+2$.
+
+\textbf{1)}
+\begin{sq}
+\qa بيّن أن: $\pgcd(A_n;B_n)=\pgcd(B_n;7)$.
+\qb استنتج القيم الممكنة لـ $\pgcd(A_n;B_n)$.
+\qc عيّن قيم العدد الطبيعي $n$ حتى يكون $A_n$ و $B_n$ أوليين فيما بينهما.
+\end{sq}
+\textbf{2)} نعتبر المعادلة $(E)$:\quad $A_2x-B_2y=29$ ذات المجهولين الصحيحين $x$ و $y$.
+\begin{sq}
+\qa بيّن أنه إذا كانت الثنائية $(x;y)$ حلا للمعادلة $(E)$ فإن $x\equiv3\,[4]$.
+\qb عيّن حلول المعادلة $(E)$.
+\end{sq}
+\textbf{3)}
+\begin{sq}
+\qa استنتج حلول المعادلة $(E')$:\quad $51x-4y=45$.
+\qb عيّن الثنائيات $(x;y)$ حلول المعادلة $(E')$ حيث: $|y-12x|\le3$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2021 م1 =================
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الأول -- شعبة رياضيات}
+\textbf{1)} نعتبر المعادلة $(E)$:\quad $42x-y=38$ ذات المجهول $(x;y)$ حيث $x$ و $y$ عددان صحيحان.
+حلّ المعادلة $(E)$ علما أن الثنائية $(1;4)$ حل لها.
+
+\textbf{2)} $a$، $b$ و $c$ أعداد طبيعية حيث $a$ غير معدوم.
+العدد الطبيعي $N$ يكتب $\overline{ab0cb}$ في نظام تعداد أساسه $5$ ويكتب $\overline{a7c5}$ في نظام تعداد أساسه $8$.
+\begin{sq}
+\qa بيّن أن الأعداد $a$، $b$ و $c$ تحقق: $113a=3(c-42b+151)$ ثم استنتج أن: $a=3$.
+\qb جد العددين $b$ و $c$ ثم أكتب $N$ في النظام العشري.
+\end{sq}
+\textbf{3)}
+\begin{sq}
+\qa أدرس تبعا لقيم العدد الطبيعي $n$ باقي القسمة الإقليدية للعدد $5^n$ على $6$.
+\qb بيّن أنه من أجل كل عدد طبيعي $n$: $2021^{2n}+1441^n+4$ مضاعف للعدد $6$.
+\qc نضع: $A_n=2021^{2n}+1441^n+2\times1442^n$. جد قيم العدد الطبيعي $n$ التي من أجلها يكون: $A_n\equiv0\,[6]$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2021 م2 =================
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{1)} نعتبر المعادلة $(E)$:\quad $7x-6y=1$ ذات المجهول $(x;y)$ حيث $x$ و $y$ عددان صحيحان.
+\begin{sq}
+\qa حلّ المعادلة $(E)$ علما أن الثنائية $(1;1)$ حل لها.
+\qb تحقق أنه إذا كانت الثنائية $(x;y)$ حلا للمعادلة $(E)$ فإن $xy$ عدد طبيعي غير معدوم.
+\end{sq}
+\textbf{2)}
+\begin{sq}
+\qa أدرس تبعا لقيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $4^n$ على $7$.
+\qb بيّن أن العدد $4\times2019^{2021}+2022^{2022}$ يقبل القسمة على $7$.
+\end{sq}
+\textbf{3)} برهن بالتراجع أنه من أجل كل عدد طبيعي غير معدوم $n$: $4^n\equiv4\,[6]$.
+
+\textbf{4)} نفرض أن الثنائية $(a;b)$ حل للمعادلة $(E)$.
+$A$ عدد طبيعي يكتب في نظام التعداد ذي الأساس $4$ على الشكل $\overline{333\ldots330}$ (عدد أرقامه $a\times b$).
+\begin{sq}
+\qa بيّن أن $A=4^{ab}-4$.
+\qb تحقق أن: $A\equiv0\,[6]$، ثم عيّن كل الثنائيات $(a;b)$ التي من أجلها يكون $A$ قابلا للقسمة على $42$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2020 م1 =================
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الأول -- شعبة رياضيات}
+ليكن $n$ عددا طبيعيا أكبر تماما من $1$.
+نعتبر الأعداد الطبيعية $a$، $b$ و $c$ حيث: $a=4n+1$، $b=6n+1$ و $c=3n+2$.
+
+\textbf{1)} أثبت أن العددين $a$ و $b$ أوليان فيما بينهما.
+
+\textbf{2)} نسمي $\alpha$ القاسم المشترك الأكبر للعددين $a$ و $c$.
+أثبت أن $\alpha$ يقسم $5$، ثم عيّن الأعداد الطبيعية $n$ بحيث يكون: $\alpha=5$.
+
+\textbf{3)} نسمي $\beta$ القاسم المشترك الأكبر للعددين $a$ و $bc$.
+\begin{sq}
+\qa أثبت أن $\alpha$ يقسم $\beta$.
+\qb بيّن أن العددين $\beta$ و $b$ أوليان فيما بينهما ثم استنتج أن: $\alpha=\beta$.
+\end{sq}
+\textbf{4)} نعتبر العددين الطبيعيين $A$ و $B$ حيث: $A=4n^2-3n-1$ و $B=18n^3-3n^2-13n-2$.
+\begin{sq}
+\qa بيّن أن كلا من العددين $A$ و $B$ مضاعف للعدد $(n-1)$.
+\qb نضع: $d=\pgcd(A;B)$. عبّر حسب قيم $\alpha$ عن $d$ بدلالة $n$. (لاحظ أن: $bc=18n^2+15n+2$)
+\end{sq}
+\end{tamrin}
+\begin{molahada}
+ورد في نص الموضوع المتوفر $A=4n^2-3n+1$، وهو خطأ مطبعي: هذا العدد ليس مضاعفا لـ $n-1$ (مثلا من أجل $n=4$: $A=53$ لا يقبل القسمة على $3$). الصواب: $A=4n^2-3n-1=(n-1)(4n+1)$.
+\end{molahada}
+
+% ================= بكالوريا 2020 م2 =================
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{1)} حلّ المعادلة ذات المجهول $(x;y)$: $3x-5y=2$ حيث $x$ و $y$ عددان صحيحان.
+
+\textbf{2)}
+\begin{sq}
+\qa أدرس تبعا لقيم العدد الطبيعي $n$ باقي القسمة الإقليدية للعدد $9^n$ على $7$.
+\qb أدرس تبعا لقيم العدد الطبيعي $n$ باقي القسمة الإقليدية للعدد $4^n$ على $11$.
+\end{sq}
+\textbf{3)} عيّن الأعداد الطبيعية $n$ بحيث يكون: $14\times4^n+11\times9^n-4\equiv0\,[77]$.
+
+\textbf{4)} ليكن $n$ عددا طبيعيا غير معدوم. نضع: $u_n=3\times4^n+4\times9^n$ و $S_n=u_1+u_2+\cdots+u_{15n}$.
+\begin{sq}
+\qa عبّر عن $S_n$ بدلالة $n$.
+\qb أثبت أن $S_n$ مضاعف للعدد $77$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2019 م1 =================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الأول -- شعبة رياضيات}
+\textbf{1)} حلّ المعادلة $(E)$:\quad $505x-673y=1$ ذات المجهول $(x;y)$ حيث $x$ و $y$ عددان صحيحان.
+(لاحظ أن: $2019=3\times673$ و $2020=4\times505$)
+
+\textbf{2)} بيّن أنه من أجل ثنائية $(x;y)$ حل للمعادلة $(E)$ فإن: $x$ و $y$ من نفس الإشارة.
+
+\textbf{3)} نعتبر المتتاليتين $(u_n)$ و $(v_n)$ المعرفتين على $\N$ بـ:
+$\begin{cases}u_0=3\\u_{n+1}=u_n+505\end{cases}$ و $\begin{cases}v_0=4\\v_{n+1}=v_n+673\end{cases}$.
+أكتب $u_\alpha$ بدلالة $\alpha$ و $v_\beta$ بدلالة $\beta$ حيث $\alpha$ و $\beta$ عددان طبيعيان.
+
+\textbf{4)}
+\begin{sq}
+\qa عيّن الحدود المشتركة للمتتاليتين $(u_n)$ و $(v_n)$ ثم بيّن أن هذه الحدود المشتركة تشكل متتالية حسابية $(w_n)$ يطلب تعيين أساسها وحدها الأول.
+\qb نضع من أجل كل عدد طبيعي $n$: $X_n=\dfrac{1}{505}\left(w_n-2023\right)$.
+أحسب بدلالة $n$ الجداء $X_1\times X_2\times X_3\times\cdots\times X_n$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2019 م2 =================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الثاني -- شعبة رياضيات}
+$(u_n)$ متتالية عددية حدودها موجبة معرفة بحدها الأول $u_1=0$ ومن أجل كل عدد طبيعي غير معدوم $n$: $u_{n+1}=u_n+2\sqrt{u_n}+1$.
+
+\textbf{1)}
+\begin{sq}
+\qa تحقق أنه من أجل كل عدد طبيعي غير معدوم $n$: $\sqrt{u_{n+1}}-\sqrt{u_n}=1$.
+\qb استنتج كتابة الحد العام $u_n$ بدلالة $n$.
+\end{sq}
+\textbf{2)} تحقق أنه من أجل كل عدد طبيعي غير معدوم $n$: $u_n=n(n-2)+1$.
+
+\textbf{3)} عيّن قيم العدد الطبيعي $n$ التي من أجلها: $n-2$ يقسم $n-5$.
+
+\textbf{4)}
+\begin{sq}
+\qa من أجل كل عدد طبيعي $n$ حيث $n\ge2$، بيّن أن: $\pgcd(n-2;u_n)=1$.
+\qb عيّن قيم العدد الطبيعي $n$ التي من أجلها: $(n-2)(n^2+1)$ يقسم $(n-5)u_n$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2018 م2 =================
+\begin{tamrin}{بكالوريا 2018 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{1)} $\alpha$ و $\beta$ عددان طبيعيان بحيث: $\begin{cases}\alpha+\beta=4035\\\alpha-\beta=1\end{cases}$.
+عيّن العددين $\alpha$ و $\beta$ ثم بيّن أن العددين $\frac{\alpha}{2}$ و $\beta$ أوليان فيما بينهما.
+
+\textbf{2)} عيّن كل الثنائيات الصحيحة $(x;y)$ التي تحقق المعادلة: $1009x-2017y=1$.
+
+\textbf{3)} عيّن الأعداد الصحيحة $a$ التي تحقق الجملة: $\begin{cases}a\equiv2019\,[2017]\\a\equiv2019\,[1009]\end{cases}$.
+
+\textbf{4)}
+\begin{sq}
+\qa $n$ عدد طبيعي، أدرس تبعا لقيم $n$ بواقي القسمة الإقليدية للعدد $7^n$ على $9$.
+\qb $L$ عدد طبيعي يكتب في النظام ذي الأساس $7$ كما يلي: $L=\overline{\underbrace{11\ldots1}_{2018\ \text{\ar{مرة}}}}$.
+عيّن باقي القسمة الإقليدية للعدد $42L$ على $9$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2017 استثنائية م1 =================
+\begin{tamrin}{بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الأول -- شعبة رياضيات}
+نعتبر المعادلة $(E)$ ذات المجهولين الصحيحين $x$ و $y$ حيث: $(E)$:\quad $63x+5y=159$.
+
+\textbf{1)} تحقق أن العددين $5$ و $63$ أوليان فيما بينهما ثم بيّن أن المعادلة $(E)$ تقبل حلولا.
+
+\textbf{2)} برهن أنه إذا كانت $(x;y)$ حلا للمعادلة $(E)$ فإن $x\equiv3\,[5]$، ثم استنتج حلول المعادلة $(E)$.
+
+\textbf{3)} $\lambda$ عدد طبيعي يكتب $\overline{5\alpha0\alpha}$ في النظام ذي الأساس $7$ ويكتب $\overline{\beta10\beta0}$ في النظام ذي الأساس $5$.
+جد العددين الطبيعيين $\alpha$ و $\beta$ ثم أكتب العدد $\lambda+2$ في النظام العشري.
+
+\textbf{4)}
+\begin{sq}
+\qa أدرس حسب قيم العدد الطبيعي $n$ باقي القسمة الإقليدية للعدد $3^n$ على $5$.
+\qb عيّن قيم العدد الطبيعي $n$ حتى يقبل العدد $3^{x-y}+4n+1438^{2017}$ القسمة على $5$ حيث $(x;y)$ حلول للمعادلة $(E)$ و $x$ عدد طبيعي.
+\end{sq}
+\end{tamrin}
+% ===================== 2017 استثنائية م2 =====================
+\begin{tamrin}{بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الثاني -- شعبة رياضيات}
+نعتبر المتتالية $(u_n)$ المعرفة بحدها الأول $u_0$ حيث $u_0=0$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=4u_n+1$.
+
+\textbf{1.}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $u_n=\dfrac13\left(4^n-1\right)$.
+\qb تحقق أنه من أجل كل عدد طبيعي غير معدوم $n$، العددان $u_n$ و $u_{n+1}$ أوليان فيما بينهما.
+\end{sq}
+\textbf{2.} لتكن المتتالية $(v_n)$ المعرفة كما يلي: من أجل كل عدد طبيعي $n$، $v_n=u_n+\dfrac13$.
+\begin{sq}
+\qa أثبت أن المتتالية $(v_n)$ هندسية يُطلب تعيين أساسها وحدها الأول $v_0$.
+\qb عبّر بدلالة $n$ عن المجموع $S_n$ حيث $S_n=v_0+v_1+v_2+\cdots+v_{3n}$.
+\end{sq}
+\textbf{3.} عيّن من أجل كل عدد طبيعي غير معدوم $n$، القاسم المشترك الأكبر للعددين $4^{n+1}-1$ و $4^n-1$.
+
+\textbf{4.}
+\begin{sq}
+\qa ادرس حسب قيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $4^n$ على $7$.
+\qb عيّن قيم العدد الطبيعي $n$ حتى يقبل العدد $A_n$ المعرف بـ: $A_n=9S_n-6n-3^{6n+4}$ القسمة على $7$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2017 م1 =====================
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الأول -- شعبة رياضيات}
+\textbf{1.} نعتبر المعادلة $(E):\ 104x-20y=272$ ذات المجهول $(x;y)$ حيث $x$ و $y$ عددان صحيحان.
+\begin{sq}
+\qa أحسب القاسم المشترك الأكبر للعددين $104$ و $20$، ثم بيّن أن المعادلة $(E)$ تقبل حلولًا.
+\qb بيّن أنه إذا كانت الثنائية $(x;y)$ حلًّا للمعادلة $(E)$ فإن $x\equiv3\,[5]$، ثم استنتج حلول المعادلة $(E)$.
+\end{sq}
+\textbf{2.} $\lambda$ عدد طبيعي يُكتب $\overline{1\alpha\alpha\beta01}$ في النظام الذي أساسه $4$، ويُكتب $\overline{1\alpha\beta01}$ في النظام الذي أساسه $6$، حيث $\alpha$ و $\beta$ عددان طبيعيان.
+
+عيّن $\alpha$ و $\beta$، ثم اكتب $\lambda$ في النظام العشري.
+
+\textbf{3.} تحقق أن كلًّا من $2017$ و $1009$ عدد أولي، ثم عيّن الثنائيات $(a;b)$ من الأعداد الطبيعية التي تحقق: $2m-d=2017$ حيث $d=\pgcd(a;b)$ و $m=\ppcm(a;b)$.
+\end{tamrin}
+
+% ===================== 2017 م2 =====================
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الثاني -- شعبة رياضيات}
+نعتبر المتتالية العددية $(u_n)$ المعرفة على $\N$ بحدها الأول $u_0=1$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=7u_n+8$.
+
+\textbf{1.} برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $3u_n=7^{n+1}-4$.
+
+\textbf{2.} نضع من أجل كل عدد طبيعي $n$: $S_n=1+7+7^2+\cdots+7^n$ و $S'_n=u_0+u_1+\cdots+u_n$.
+
+\textbf{3.}
+\begin{sq}
+\qa أحسب بدلالة $n$ المجموع $S_n$، ثم جد علاقة بين $S_n$ و $S'_n$.
+\qb استنتج أنه من أجل كل عدد طبيعي $n$: $18\times S'_n=7^{n+2}-24n-31$.
+\end{sq}
+\textbf{4.}
+\begin{sq}
+\qa ادرس حسب قيم العدد الطبيعي $n$ بواقي قسمة العدد $7^n$ على $5$.
+\qb عيّن قيم العدد الطبيعي $n$ حتى يكون $S'_n$ قابلًا للقسمة على $5$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2016 م1 =====================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الأول -- شعبة رياضيات}
+$(u_n)$ متتالية هندسية متزايدة تماما حدها الأول $u_0$ وأساسها $q$ حيث:
+$\begin{cases}\ln(u_1)+\ln(u_2)=11\\ u_1+u_2=e^4\left(1+e^3\right)\end{cases}$
+
+\textbf{1.} أحسب $u_1$ و $u_2$ ثم استنتج قيمة الأساس $q$.
+
+\textbf{2.} نضع: $q=e^3$ و $u_1=e^4$.
+\begin{sq}
+\qa عبّر عن $u_n$ بدلالة $n$.
+\qb نضع: $S_n=\ln(u_0)+\ln(u_1)+\cdots+\ln(u_n)$. أحسب $S_n$ بدلالة $n$.
+\end{sq}
+\textbf{3.} نضع من أجل كل عدد طبيعي $n$: $a_n=n+3$.
+\begin{sq}
+\qa بيّن أن: $\pgcd(2S_n;a_n)=\pgcd(a_n;14)$.
+\qb عيّن القيم الممكنة لـ $\pgcd(2S_n;a_n)$.
+\qc عيّن قيم العدد الطبيعي $n$ بحيث: $\pgcd(2S_n;a_n)=7$.
+\end{sq}
+\textbf{4.} ادرس تبعًا لقيم العدد الطبيعي $n$ باقي القسمة الإقليدية للعدد $2^n$ على $7$.
+
+\textbf{5.} نضع: $b_n=3na_n-2S_n+1437^{2016}+1$. عيّن قيم العدد الطبيعي $n$ والتي من أجلها يكون: $\begin{cases}b_n\equiv0\,[7]\\ n\equiv0\,[5]\end{cases}$.
+
+\textbf{6.} بيّن أنه من أجل كل عدد طبيعي $n$، العدد $\left(1437^{9n+1}-3\times4^{12n+1}+52\right)$ يقبل القسمة على $7$.
+\end{tamrin}
+
+% ===================== 2016 م2 =====================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{1.}
+\begin{sq}
+\qa ادرس بواقي القسمة الإقليدية لكل من العددين $3^n$ و $7^n$ على $11$.
+\qb برهن أنه من أجل كل عدد طبيعي $n$، العدد $2\times2016^{5n+4}+1437^{10n+4}$ مضاعف لـ $11$.
+\end{sq}
+\textbf{2.} نعتبر المعادلة $(E)$ ذات المجهول $(x;y)$: $7x-3y=8$ حيث $x$ و $y$ عددان طبيعيان.
+\begin{sq}
+\qa حل المعادلة $(E)$.
+\qb $d$ هو القاسم المشترك الأكبر للعددين $x$ و $y$ حيث الثنائية $(x;y)$ حل للمعادلة $(E)$.
+\begin{itemize}
+\item ما هي القيم الممكنة للعدد $d$؟
+\item عيّن الثنائيات $(x;y)$ حلول المعادلة $(E)$ من أجل $d=4$.
+\end{itemize}
+\qc جد الثنائيات $(x;y)$ حلول المعادلة $(E)$ التي تحقق: $2016^{7x}+1437^{3y}\equiv0\,[11]$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2015 م1 =====================
+\begin{tamrin}{بكالوريا 2015 -- الموضوع الأول -- شعبة رياضيات}
+\textbf{1.}
+\begin{sq}
+\qa عيّن حسب قيم العدد الطبيعي $n$، باقي القسمة الإقليدية للعدد $2^n$ على $7$.
+\qb استنتج باقي القسمة الإقليدية للعدد $\left[1962^{1954}-1954^{1962}+2015^{53}\right]$ على $7$.
+\end{sq}
+\textbf{2.}
+\begin{sq}
+\qa بيّن أن العدد $89$ أولي.
+\qb عيّن كل القواسم الطبيعية للعدد $7832$.
+\qc بيّن أن العددين $981$ و $977$ أوليان فيما بينهما.
+\end{sq}
+\textbf{3.} $x$ و $y$ عددان طبيعيان غير معدومين قاسمهما المشترك الأكبر هو $2$.
+عيّن $x$ و $y$ علمًا أن: $\begin{cases}x^2-y^2=31328\\ x-y\equiv8\,[22]\end{cases}$
+
+\textbf{4.} $a$ ، $b$ و $c$ أعداد طبيعية غير معدومة حيث $a$ أولي مع $b$ و $a$ أولي مع $c$.
+\begin{sq}
+\qa باستعمال مبرهنة بيزو، برهن أن $a$ أولي مع $b\times c$.
+\qb باستعمال الاستدلال بالتراجع، أثبت أنه من أجل كل عدد طبيعي غير معدوم $n$: $\pgcd\left(a;b^n\right)=1$.
+\qc استنتج القاسم المشترك الأكبر للعددين $1962^{1954}$ و $1954^{1962}$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2014 م1 =====================
+\begin{tamrin}{بكالوريا 2014 -- الموضوع الأول -- شعبة رياضيات}
+\textbf{1.} نعتبر المعادلة $(E):\ 2013x-1962y=54$ حيث $x$ و $y$ عددان صحيحان.
+\begin{sq}
+\qa أحسب $\pgcd(2013;1962)$.
+\qb استنتج أن المعادلة $(E)$ تقبل حلولًا.
+\qc بيّن أنه إذا كانت الثنائية $(x;y)$ حلًّا للمعادلة $(E)$ فإن $x\equiv0\,[6]$.
+\qd استنتج حلًّا خاصًا $(x_0;y_0)$ حيث $74<x_0<80$، ثم حل المعادلة $(E)$.
+\end{sq}
+\textbf{2.} نرمز بالرمز $d$ إلى القاسم المشترك الأكبر للعددين $x$ و $y$ حيث $(x;y)$ حل للمعادلة $(E)$.
+\begin{sq}
+\qa ما هي القيم الممكنة للعدد $d$؟
+\qb عيّن قيم العددين الطبيعيين $a$ و $b$ حيث: $671a-654b=18$ و $\pgcd(a;b)=18$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2013 م1 =====================
+\begin{tamrin}{بكالوريا 2013 -- الموضوع الأول -- شعبة رياضيات}
+\textbf{1.} $n$ عدد طبيعي. نعتبر العددين الصحيحين $\alpha$ و $\beta$ حيث: $\alpha=2n^3-14n+2$ و $\beta=n+3$.
+\begin{sq}
+\qa بيّن أن: $\pgcd(\alpha;\beta)=\pgcd(\beta;10)$.
+\qb ما هي القيم الممكنة للعدد $\pgcd(\alpha;\beta)$؟
+\qc عيّن مجموعة قيم العدد الطبيعي $n$ بحيث يكون: $\pgcd(\alpha;\beta)=5$.
+\end{sq}
+\textbf{2.}
+\begin{sq}
+\qa ادرس حسب قيم العدد الطبيعي $n$، بواقي القسمة الإقليدية للعدد $4^n$ على $11$.
+\qb عيّن مجموعة قيم العدد الطبيعي $n$ التي تحقق الجملة التالية: $\begin{cases}4^{5n}+4^n+n\equiv0\,[11]\\ n\equiv2\,[10]\end{cases}$
+\end{sq}
+\end{tamrin}
+
+% ===================== 2013 م2 =====================
+\begin{tamrin}{بكالوريا 2013 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{1.}
+\begin{sq}
+\qa عيّن الأعداد الطبيعية $n$ التي تحقق: $2n+27\equiv0\,[n+1]$.
+\qb عيّن الثنائيات $(a;b)$ من الأعداد الطبيعية، حيث: $(b-a)(a+b)=24$.
+\qc استنتج طريقة لرسم قطعة مستقيمة طولها $\sqrt{24}$.
+\end{sq}
+\textbf{2.} $\alpha$ و $\beta$ عددان طبيعيان مكتوبان في النظام ذي الأساس $5$ على الشكل: $\alpha=\overline{10141}$ و $\beta=\overline{3403}$.
+\begin{sq}
+\qa اكتب العددين $\alpha$ و $\beta$ في النظام العشري.
+\qb عيّن الثنائية $(a;b)$ من $\N^2$ حيث: $\begin{cases}b^2-a^2=24\\ \alpha a-\beta b=9\end{cases}$
+\end{sq}
+\textbf{3.}
+\begin{sq}
+\qa عيّن القاسم المشترك الأكبر للعددين $2013$ و $1434$، ثم استنتج القاسم المشترك الأكبر للعددين $671$ و $478$.
+\qb حل في $\Z^2$ المعادلة ذات المجهول $(x;y)$ التالية: $2013x-1434y=27$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2012 م1 =====================
+\begin{tamrin}{بكالوريا 2012 -- الموضوع الأول -- شعبة رياضيات}
+نعتبر في $\Z^2$ المعادلة ذات المجهول $(x;y)$ التالية: $2011x-1432y=31\ \ldots(1)$.
+
+\textbf{1.}
+\begin{sq}
+\qa بيّن أن العدد $2011$ أولي.
+\qb باستعمال خوارزمية إقليدس، عيّن حلًّا خاصًا $(x_0;y_0)$ للمعادلة $(1)$، ثم حل المعادلة $(1)$.
+\end{sq}
+\textbf{2.}
+\begin{sq}
+\qa عيّن تبعًا لقيم العدد الطبيعي $n$، باقي القسمة الإقليدية للعدد $2^n$ على $7$، ثم جد باقي القسمة الإقليدية للعدد $2011^{1432^{2012}}$ على $7$.
+\qb عيّن قيم العدد الطبيعي $n$ والتي من أجلها يكون: $2010^n+2011^n+1432^n\equiv0\,[7]$.
+\end{sq}
+\textbf{3.} $N$ عدد طبيعي يُكتب $\overline{2\gamma\alpha\beta}$ في نظام التعداد ذي الأساس $9$ حيث: $\alpha$ ، $\beta$ و $\gamma$ بهذا الترتيب تشكل حدودًا متتابعة من متتالية حسابية متزايدة تماما، و $(\beta;\gamma)$ حل للمعادلة $(1)$.
+عيّن $\alpha$ ، $\beta$ و $\gamma$ ثم اكتب $N$ في النظام العشري.
+\end{tamrin}
+
+% ===================== 2012 م2 =====================
+\begin{tamrin}{بكالوريا 2012 -- الموضوع الثاني -- شعبة رياضيات}
+$(u_n)$ هي المتتالية العددية المعرفة على $\N$ كما يلي: $u_0=16$، ومن أجل كل عدد طبيعي $n$: $u_{n+1}=6u_n-9$.
+
+\textbf{1.}
+\begin{sq}
+\qa أحسب بواقي قسمة كل من الحدود $u_0$ ، $u_1$ ، $u_2$ ، $u_3$ و $u_4$ على $7$.
+\qb خمّن قيمة العدد $a$ وقيمة العدد $b$ بحيث: $u_{2k}\equiv a\,[7]$ و $u_{2k+1}\equiv b\,[7]$.
+\end{sq}
+\textbf{2.}
+\begin{sq}
+\qa برهن أنه، من أجل كل عدد طبيعي $n$: $u_{n+2}\equiv u_n\,[7]$.
+\qb برهن بالتراجع أنه من أجل كل عدد طبيعي $k$: $u_{2k}\equiv2\,[7]$، ثم استنتج أن: $u_{2k+1}\equiv3\,[7]$.
+\end{sq}
+\textbf{3.} نضع من أجل كل عدد طبيعي $n$: $v_n=u_n-\dfrac95$.
+\begin{sq}
+\qa بيّن أن المتتالية $(v_n)$ هندسية، يُطلب تعيين أساسها وحدها الأول.
+\qb أحسب بدلالة $n$ كلًّا من $u_n$ و $S_n$ حيث: $S_n=u_0+u_1+\cdots+u_n$.
+\end{sq}
+\textbf{4.} $n$ عدد طبيعي غير معدوم.
+\begin{sq}
+\qa أحسب بدلالة $n$ المجموع $S$ بحيث: $S=u_0+u_1+u_2+\cdots+u_{2n}$.
+\qb استنتج بدلالة $n$ المجموعين $S_1$ و $S_2$ حيث: $S_1=u_0+u_2+u_4+\cdots+u_{2n}$ و $S_2=u_1+u_3+u_5+\cdots+u_{2n-1}$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2011 م1 =====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الأول -- شعبة رياضيات}
+$(u_n)$ متتالية حسابية متزايدة تماما حدودها أعداد طبيعية تحقق: $\begin{cases}u_4=15\\ m+d=42\end{cases}$ حيث $\begin{cases}m=\ppcm(u_3;u_5)\\ d=\pgcd(u_3;u_5)\end{cases}$
+
+\textbf{1.} عيّن الحدين $u_3$ و $u_5$ ثم استنتج $u_0$.
+
+\textbf{2.} اكتب $u_n$ بدلالة $n$، ثم بيّن أن $2010$ حد من حدود المتتالية $(u_n)$ وعيّن رتبته.
+
+\textbf{3.} عيّن الحد الذي ابتداءً منه يكون مجموع $5$ حدود متعاقبة من $(u_n)$ يساوي $10080$.
+
+\textbf{4.} $n$ عدد طبيعي غير معدوم.
+\begin{sq}
+\qa أحسب بدلالة $n$ المجموع $S$ بحيث: $S=u_0+u_1+u_2+\cdots+u_{2n}$.
+\qb استنتج بدلالة $n$ المجموعين $S_1$ و $S_2$ حيث: $S_1=u_0+u_2+u_4+\cdots+u_{2n}$ و $S_2=u_1+u_3+u_5+\cdots+u_{2n-1}$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2011 م2 =====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{1.} نعتبر المعادلة $(E):\ 13x-7y=-1$ حيث $x$ و $y$ عددان صحيحان. حل المعادلة $(E)$.
+
+\textbf{2.} عيّن الأعداد الصحيحة النسبية $a$ بحيث: $\begin{cases}a\equiv-1\,[7]\\ a\equiv0\,[13]\end{cases}$
+
+\textbf{3.} ادرس، حسب قيم العدد الطبيعي $n$، بواقي قسمة $9^n$ على كل من $7$ و $13$.
+
+\textbf{4.} ليكن العدد الطبيعي $b$ المكتوب في نظام التعداد ذي الأساس $9$ كما يلي: $b=\overline{\alpha00\beta086}$، حيث $\alpha$ و $\beta$ عددان طبيعيان و $\alpha\neq0$.
+
+عيّن $\alpha$ و $\beta$ حتى يكون $b$ قابلًا للقسمة على $91$.
+\end{tamrin}
+
+% ===================== 2010 م1 =====================
+\begin{tamrin}{بكالوريا 2010 -- الموضوع الأول -- شعبة رياضيات}
+\textbf{1.} نعتبر في $\Z^2$ المعادلة: $7x+65y=2009\ \ldots(1)$.
+\begin{sq}
+\qa بيّن أنه إذا كانت الثنائية $(x;y)$ حلًّا للمعادلة $(1)$ فإن $y$ مضاعف للعدد $7$.
+\qb حل المعادلة $(1)$.
+\end{sq}
+\textbf{2.} ادرس، حسب قيم العدد الطبيعي $n$، بواقي القسمة الإقليدية للعدد $2^n$ على $9$.
+
+\textbf{3.} عيّن قيم العدد الطبيعي $n$، بحيث يقبل العدد $2^{6n}+3n+2$ القسمة على $9$.
+
+\textbf{4.} نضع من أجل كل عدد طبيعي $n$: $u_n=2^{6n}-1$.
+\begin{sq}
+\qa تحقق أن $u_n$ يقبل القسمة على $9$.
+\qb حل المعادلة $(2):\ (7u_1)x+(u_2)y=126567$ ذات المجهول $(x;y)$ حيث $x$ و $y$ عددان صحيحان.
+\qc عيّن الثنائية $(x_0;y_0)$ حل المعادلة $(2)$ حيث $x_0$ و $y_0$ عددان طبيعيان مع $y_0\ge25$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2010 م2 =====================
+\begin{tamrin}{بكالوريا 2010 -- الموضوع الثاني -- شعبة رياضيات}
+\textbf{1.} برهن أنه من أجل كل عدد طبيعي $n$، العدد $3^{3n}-1$ يقبل القسمة على $13$.
+
+\textbf{2.} استنتج أنه من أجل كل عدد طبيعي $n$، يقبل كل من العددين $3^{3n+1}-3$ و $3^{3n+2}-9$ القسمة على $13$.
+
+\textbf{3.} عيّن، حسب قيم $n$، باقي القسمة الإقليدية للعدد $3^n$ على $13$، واستنتج باقي قسمة $2005^{2010}$ على $13$.
+
+\textbf{4.} نضع من أجل كل عدد طبيعي $p$: $A_p=3^p+3^{2p}+3^{3p}$.
+\begin{sq}
+\qa من أجل $p=3n$، عيّن باقي القسمة الإقليدية للعدد $A_p$ على $13$.
+\qb برهن أنه من أجل $p=3n+1$، فإن $A_p$ يقبل القسمة على $13$.
+\qc عيّن باقي القسمة الإقليدية لـ $A_p$ على $13$ من أجل $p=3n+2$.
+\end{sq}
+\textbf{5.} يُكتب العددان $a$ و $b$ في نظام العد ذي الأساس $3$ كما يلي: $a=\overline{1001001000}$ و $b=\overline{1000100010000}$.
+\begin{sq}
+\qa تحقق أن $a$ و $b$ يُكتبان على الشكل $A_p$ في النظام العشري.
+\qb استنتج باقي القسمة الإقليدية لكل من $a$ و $b$ على $13$.
+\end{sq}
+\end{tamrin}
+
+% ===================== 2009 م1 =====================
+\begin{tamrin}{بكالوريا 2009 -- الموضوع الأول -- شعبة رياضيات}
+$x$ عدد طبيعي أكبر تماما من $1$ و $y$ عدد طبيعي. $A$ عدد طبيعي يُكتب في النظام ذي الأساس $x$ بالشكل: $A=\overline{5566}$.
+
+\textbf{1.}
+\begin{sq}
+\qa انشر العبارة $\left(5x^2+6\right)(x+1)$، ثم جد علاقة تربط بين $x$ و $y$ إذا علمت أن: $A=\left(5x^2+6\right)(2+2y)$.
+\qb أحسب $x$ و $y$ إذا علمت أن $x$ عدد أولي أصغر من $12$، ثم اكتب تبعًا لذلك العدد $A$ في نظام التعداد العشري.
+\end{sq}
+\textbf{2.}
+\begin{sq}
+\qa عيّن الأعداد الطبيعية التي مربعاتها تقسم العدد $584$.
+\qb عيّن الأعداد الطبيعية $a$ و $b$ حيث $a>b$ التي تحقق: $\begin{cases}a+b=32\\ a^2+b^2=584\end{cases}$
+\end{sq}
+\end{tamrin}
+
+% ===================== 2008 م1 =====================
+\begin{tamrin}{بكالوريا 2008 -- الموضوع الأول -- شعبة رياضيات}
+نعتبر المعادلة $(E)$ ذات المجهولين الصحيحين $x$ و $y$ حيث: $3x-21y=78$.
+
+\textbf{1.}
+\begin{sq}
+\qa بيّن أن المعادلة $(E)$ تقبل حلولًا في $\Z^2$.
+\qb أثبت أنه إذا كانت الثنائية $(x;y)$ من $\Z^2$ حلًّا للمعادلة $(E)$ فإن $x\equiv5\,[7]$. استنتج حلول المعادلة $(E)$.
+\end{sq}
+\textbf{2.}
+\begin{sq}
+\qa ادرس، حسب قيم العدد الطبيعي $n$، بواقي القسمة الإقليدية للعدد $5^n$ على $7$.
+\qb عيّن الثنائيات $(x;y)$ من $\N^2$ التي هي حلول المعادلة $(E)$ وتحقق: $5^x+5^y\equiv3\,[7]$.
+\end{sq}
+\end{tamrin}
+
+\section{تمارين البكالوريا -- شعبة تقني رياضي}
+% ================= التمرين: بكالوريا 2026 م1 =================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الأول -- تقني رياضي}
+\QQ{1} نعتبر المعادلة $(E)$: \ $11x-5y=7$ \ ذات المجهولين الصحيحين $x$ و$y$.
+\begin{sq}
+\qa بيّن أنه إذا كانت الثنائية $(x;y)$ حلًّا للمعادلة $(E)$ فإن $y\equiv 3\ [11]$، ثم حل المعادلة $(E)$.
+\qb عيّن الثنائيات $(x;y)$ حلول المعادلة $(E)$ التي تحقق: $|y-x|\le 5$.
+\end{sq}
+\QQ{2} من أجل كل عدد طبيعي $n$، نضع: $a=11n+3$ و$b=5n+2$ و$d=\pgcd(a;b)$.
+\begin{sq}
+\qa ما هي القيم الممكنة لـ $d$؟
+\qb عيّن الثنائيات $(a;b)$ التي من أجلها يكون: $d=7$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa ادرس، حسب قيم العدد الطبيعي $n$، بواقي القسمة الإقليدية للعدد $3^n$ على $11$.
+\qb استنتج أنه: من أجل كل عدد طبيعي $n$، $a^b\equiv 9\ [11]$.
+\qc عيّن قيمة العدد الطبيعي $n$ حتى يكون: $a^{1447}+a^b+a-b-9\equiv 0\ [11]$ و$2015<n<2037$.
+\end{sq}
+\QQ{4} $\lambda$ عدد طبيعي يُكتب $\overline{5623}$ في نظام التعداد ذي الأساس $7$. اكتب $\lambda$ في نظام التعداد ذي الأساس $6$.
+\end{tamrin}
+
+% ================= بكالوريا 2026 م2 =================
+\begin{tamrin}{بكالوريا 2026 -- الموضوع الثاني -- تقني رياضي}
+\QQ{1}
+\begin{sq}
+\qa عيّن باقي القسمة الإقليدية للعدد $1447$ على $7$، وباقي القسمة الإقليدية للعدد $2687$ على $13$.
+\qb برّر أن العدد $1447$ أولي، ثم عيّن القواسم الطبيعية للعدد $2894$.
+\qc جد الثنائيات $(x;y)$ من الأعداد الطبيعية التي تحقق: $x(x+y)=2894$.
+\end{sq}
+\QQ{2} من أجل كل عدد طبيعي $n$، نضع: $a=7n+5$، $b=13n+9$ و$\pgcd(a;b)=d$.
+
+عيّن القيم الممكنة للعدد $d$، ثم حدّد قيم $n$ التي من أجلها يكون $d=2$.
+
+\QQ{3} من أجل كل عدد طبيعي $n$، نضع: $A=14n^2+17n+5$ و$B=26n^2+31n+9$.
+\begin{sq}
+\qa بيّن أن العدد $(2n+1)$ يقسم كلًّا من $A$ و$B$.
+\qb استنتج بدلالة $n$، وحسب قيم $n$، القاسم المشترك الأكبر للعددين $A$ و$B$.
+\end{sq}
+\QQ{4} من أجل $d=1$، احسب بدلالة $n$ المضاعف المشترك الأصغر للعددين $A$ و$B$.
+\end{tamrin}
+
+% ================= بكالوريا 2025 م1 =================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الأول -- تقني رياضي}
+\QQ{1} نعتبر المعادلة $(E)$: \ $7x-5y=9$ \ ذات المجهولين الصحيحين $x$ و$y$.
+\begin{sq}
+\qa عيّن الأعداد الصحيحة $x$ التي تحقق: $7x\equiv 9\ [5]$، ثم حل المعادلة $(E)$.
+\qb نضع $d=\pgcd(x;y)$ حيث الثنائية $(x;y)$ تحقق المعادلة $(E)$.
+
+عيّن القيم الممكنة للعدد $d$، ثم جد كل الثنائيات $(x;y)$ حلول المعادلة $(E)$ حيث $d=9$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa ادرس، حسب قيم العدد الطبيعي $n$، بواقي القسمة الإقليدية للعدد $3^n$ على $7$.
+\qb عيّن الأعداد الطبيعية $n$ التي من أجلها يكون العدد $1446^{2025}+5n+2$ قابلًا للقسمة على $7$.
+\end{sq}
+\QQ{3} عيّن كل الثنائيات الطبيعية $(x;y)$ حلول المعادلة $(E)$ والتي تحقق: $3^{y-x}\equiv 5\ [7]$.
+\end{tamrin}
+
+% ================= بكالوريا 2025 م2 =================
+\begin{tamrin}{بكالوريا 2025 -- الموضوع الثاني -- تقني رياضي}
+\QQ{1} $a$ و$b$ العددان الطبيعيان المكتوبان في نظام التعداد ذي الأساس $7$ كما يلي: $a=\overline{4134}$ و$b=\overline{4630}$.
+
+اكتب كلًّا من $a$ و$b$ في النظام العشري.
+\QQ{2} نعتبر المعادلة $(E)$: \ $1446x-1687y=241$ \ ذات المجهولين الصحيحين $x$ و$y$.
+\begin{sq}
+\qa بيّن أن: $\pgcd(1446;1687)=241$، ثم حل المعادلة $(E)$.
+\qb جد الثنائية $(x_0;y_0)$ حل المعادلة $(E)$ والتي تحقق: $\ppcm(x_0;y_0)=340$.
+\end{sq}
+\QQ{3} عيّن الأعداد الصحيحة $\alpha$ التي تحقق الجملة: $\begin{cases}\alpha\equiv 5\ [6]\\ \alpha\equiv 6\ [7]\end{cases}$
+\QQ{4} $A$ و$B$ عددان حيث: $A=7n^2+13n+6$ و$B=6n^2+11n+5$ مع $n$ عدد طبيعي.
+
+بيّن أن $A$ و$B$ يقبلان القسمة على $n+1$، ثم استنتج بدلالة $n$ القاسم المشترك للعددين $A$ و$B$.
+\end{tamrin}
+
+% ================= بكالوريا 2024 م1 =================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الأول -- تقني رياضي}
+\QQ{1}
+\begin{sq}
+\qa ادرس تبعًا لقيم العدد الطبيعي $n$ بواقي القسمة الإقليدية لكل من العددين $3^n$ و$5^n$ على $7$.
+\qb استنتج باقي القسمة الإقليدية للعدد $\left(5^{1445}\right)^{2024}$ على $7$.
+\end{sq}
+\QQ{2} بيّن أنه: من أجل كل عدد طبيعي $n$، العدد $61^{6n+1}+52^{6n+3}+1445$ مضاعف للعدد $7$.
+\QQ{3} جد الأعداد الطبيعية $n$ التي تحقق: $1445^{6n+1}+2024^n+2n\equiv 0\ [7]$.
+\QQ{4} عيّن الأعداد الطبيعية $n$ التي من أجلها يقبل العدد $5^n+2^n$ القسمة على $7$.
+\end{tamrin}
+
+% ================= بكالوريا 2024 م2 =================
+\begin{tamrin}{بكالوريا 2024 -- الموضوع الثاني -- تقني رياضي}
+\QQ{1} نعتبر المعادلة $(E)$: \ $3179x-1156y=1445$ \ ذات المجهولين الصحيحين $x$ و$y$.
+\begin{sq}
+\qa جد القاسم المشترك الأكبر للعددين $3179$ و$1156$.
+\qb حل المعادلة $(E)$ علمًا أن الثنائية $(3;7)$ حل لها.
+\end{sq}
+\QQ{2} $x$ و$y$ عددان صحيحان و$d$ عدد طبيعي حيث: $(x;y)$ حل للمعادلة $(E)$ و$\pgcd(x;y)=d$.
+\begin{sq}
+\qa عيّن القيم الممكنة للعدد $d$.
+\qb جد كل الثنائيات $(x;y)$ التي تحقق: $d=5$.
+\end{sq}
+\QQ{3} $a$ و$b$ عددان طبيعيان و$\pgcd(a;b)=5$.
+\begin{sq}
+\qa جد الثنائيات $(a;b)$ التي تحقق: $ab=600$.
+\qb عيّن الثنائية $(a;b)$ حل المعادلة $(E)$ التي تحقق: $ab=600$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2023 م1 =================
+\begin{tamrin}{بكالوريا 2023 -- الموضوع الأول -- تقني رياضي}
+\QQ{1}
+\begin{sq}
+\qa عيّن، حسب قيم العدد الطبيعي $n$، بواقي القسمة الإقليدية للعدد $2^n$ على $7$.
+\qb استنتج باقي القسمة الإقليدية للعدد $1444^{2023}$ على $7$.
+\qc عيّن قيم العدد الطبيعي $n$ التي من أجلها يكون: $1962n+1444^{3n+1}\equiv 0\ [7]$.
+\end{sq}
+\QQ{2} نعتبر المعادلة $(E)$: \ $7x-6y=4$ \ ذات المجهولين الصحيحين $x$ و$y$.
+
+تحقّق أن الثنائية $(4;4)$ حل للمعادلة $(E)$، ثم استنتج مجموعة حلولها.
+\QQ{3} عيّن الثنائيات $(x;y)$ من الأعداد الطبيعية حلول المعادلة $(E)$ والتي تحقق: $2^{3x}+2^y\equiv 3\ [7]$.
+\end{tamrin}
+
+% ================= بكالوريا 2022 م1 =================
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الأول -- تقني رياضي}
+$a$ و$b$ عددان طبيعيان حيث: $a=2022$ و$b=124$.
+\QQ{1} عيّن باقي القسمة الإقليدية لكل من العددين $a$ و$b$ على $7$.
+\QQ{2} ادرس، حسب قيم العدد الطبيعي $n$، بواقي القسمة الإقليدية للعدد $5^n$ على $7$.
+\QQ{3} بيّن أن العدد $a^a+b^b+4$ يقبل القسمة على $7$.
+\QQ{4} نضع من أجل كل عدد طبيعي غير معدوم $n$: $A_n=2021^n+2022^n+2023^n+2024^n$.
+
+بيّن أن: $A_n\equiv 1+5^n+6^n\ [7]$، ثم عيّن قيم العدد الطبيعي $n$ حتى يكون $A_n+1$ مضاعفًا للعدد $7$.
+\end{tamrin}
+
+% ================= بكالوريا 2022 م2 =================
+\begin{tamrin}{بكالوريا 2022 -- الموضوع الثاني -- تقني رياضي}
+نضع من أجل كل عدد طبيعي $n$: $a=5n+2$، $b=n+1$، $c=9n+2$، $d=\pgcd(a;b)$ و$d'=\pgcd(b;c)$.
+\QQ{1} عيّن القيم الممكنة لكل من $d$ و$d'$، ثم استنتج $\pgcd(a;b;c)$.
+\QQ{2} عيّن قيم العدد الطبيعي $n$ حتى يكون العدد $b$ قاسمًا لـ $a$.
+\QQ{3} نعتبر المعادلة $(E)$: \ $17x-4y=29$ \ حيث $x$ و$y$ عددان صحيحان.
+
+بيّن أنه إذا كانت الثنائية $(x;y)$ حلًّا للمعادلة $(E)$ فإن: $x\equiv 1\ [4]$، ثم حل المعادلة $(E)$.
+
+عيّن الثنائيات $(x;y)$ حلول المعادلة $(E)$ والتي تحقق: $xy<279$.
+\end{tamrin}
+
+% ================= بكالوريا 2021 م1 =================
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الأول -- تقني رياضي}
+\QQ{1} ادرس تبعًا لقيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $5^n$ على $9$.
+\QQ{2} عيّن باقي القسمة الإقليدية للعدد $2021^{1442}$ على $9$.
+\QQ{3} بيّن أن العدد $2021^{1442}+1691^{1954}-8$ مضاعف للعدد $9$.
+\QQ{4} برهن أنه من أجل كل عدد طبيعي $n$، العدد $5^{6n}+2021^{6n+1}+1443$ مضاعف للعدد $9$.
+\QQ{5} من أجل كل عدد طبيعي $n$ نضع: $A_n=2021^{1442}+1691^{1954}+5n$.
+
+عيّن الأعداد الطبيعية $n$ التي من أجلها يكون $A_n\equiv 0\ [9]$.
+\end{tamrin}
+
+% ================= بكالوريا 2021 م2 =================
+\begin{tamrin}{بكالوريا 2021 -- الموضوع الثاني -- تقني رياضي}
+نعتبر المعادلة $(E)$: \ $13x-9y=1$ \ ذات المجهول $(x;y)$ حيث $x$ و$y$ عددان صحيحان.
+\QQ{1}
+\begin{sq}
+\qa تحقّق أنه إذا كانت الثنائية $(x;y)$ حلًّا للمعادلة $(E)$ فإن: $x\equiv 7\ [9]$.
+\qb استنتج حلول المعادلة $(E)$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa ادرس تبعًا لقيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $3^n$ على $5$.
+\qb نضع: $A_n=3^{4n}+3^{4n+1}+3^{4n+2}-3$ حيث $n$ عدد طبيعي.
+
+بيّن أنه من أجل كل عدد طبيعي $n$، $A_n$ يقبل القسمة على $5$.
+\end{sq}
+\QQ{3} بفرض أن $(x;y)$ حل للمعادلة $(E)$ حيث $x$ و$y$ عددان طبيعيان.
+
+عيّن قيم العدد الطبيعي $n$ حتى يقبل العدد $n+3^{y-x}+2023^{2022}$ القسمة على $5$.
+\end{tamrin}
+
+% ================= بكالوريا 2020 م1 =================
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الأول -- تقني رياضي}
+نعتبر المعادلتين $(E_1)$: \ $693x-216y=738$ \ و$(E_2)$: \ $77x-24y=82$، حيث $x$ و$y$ عددان صحيحان.
+\QQ{1} جد $\pgcd(693;216)$ واستنتج أن المعادلتين $(E_1)$ و$(E_2)$ متكافئتان.
+\QQ{2} تحقّق أن الثنائية $(2;3)$ حل للمعادلة $(E_2)$، ثم أوجد حلولها في $\Z\times\Z$.
+\QQ{3} جد الثنائيات $(x;y)$ حلول المعادلة $(E_2)$ التي تحقق: $|y-x|\le 54$.
+\QQ{4} ليكن $N$ عددًا طبيعيًّا يُكتب $\overline{\beta 68\alpha}$ في النظام ذي الأساس $9$، ويُكتب $\overline{1\alpha\beta 0\alpha}$ في النظام ذي الأساس $6$، حيث $\alpha$ و$\beta$ عددان طبيعيان.
+
+جد العددين $\alpha$ و$\beta$، ثم اكتب العدد $N$ في النظام العشري.
+\end{tamrin}
+
+% ================= بكالوريا 2020 م2 =================
+\begin{tamrin}{بكالوريا 2020 -- الموضوع الثاني -- تقني رياضي}
+\QQ{1}
+\begin{sq}
+\qa ادرس حسب قيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $3^n$ على $5$.
+\qb استنتج باقي القسمة الإقليدية للعدد $8^{2020}-2\times 3^{1441}-1$ على $5$.
+\end{sq}
+\QQ{2} من أجل كل عدد طبيعي $n$، نعتبر العدد الطبيعي $a_n$ حيث: $a_n=3^{n+1}+4$.
+
+عيّن الأعداد الطبيعية $n$ التي من أجلها يكون: $a_n\equiv 0\ [5]$.
+\QQ{3} نعتبر العدد الطبيعي $b_n$ بحيث: $b_n=7a_n+5$.
+\begin{sq}
+\qa عيّن القيم الممكنة للقاسم المشترك الأكبر للعددين $a_n$ و$b_n$.
+\qb بيّن أن $a_n\equiv 0\ [5]$ إذا وفقط إذا كان $b_n\equiv 0\ [5]$.
+\qc استنتج الأعداد الطبيعية $n$ التي من أجلها يكون $a_n$ و$b_n$ أوليين فيما بينهما.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2019 م1 =================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الأول -- تقني رياضي}
+$(u_n)$ و$(v_n)$ المتتاليتان العدديتان المعرفتان على $\N$ كما يلي: $\begin{cases}u_0=0\\ u_{n+1}=7u_n-18n+9\end{cases}$ \ و\ $v_n=u_n-3n+1$.
+\QQ{1} أثبت أن المتتالية $(v_n)$ هندسية يُطلب تعيين أساسها وحدها الأول.
+\QQ{2} اكتب $v_n$ بدلالة $n$، ثم استنتج $u_n$ بدلالة $n$.
+\QQ{3} احسب بدلالة $n$ المجموع $S_n$ بحيث: $S_n=u_0+u_1+\dots+u_n$.
+\QQ{4}
+\begin{sq}
+\qa ادرس حسب قيم العدد الطبيعي $n$ بواقي القسمة الإقليدية لـ $7^n$ على $9$.
+\qb ما هو باقي القسمة الإقليدية على $9$ للعدد $1442^{2019}+1962^{1954}+1954^{1962}$؟
+\qc أثبت أنه من أجل كل عدد طبيعي $n$: $6S_n-7u_n\equiv 0\ [9]$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2019 م2 =================
+\begin{tamrin}{بكالوريا 2019 -- الموضوع الثاني -- تقني رياضي}
+\QQ{1} نعتبر المعادلة ذات المجهول $(x;y)$: \ $5x-3y=1$ \ $(E)$، حيث $x$ و$y$ عددان صحيحان.
+\begin{sq}
+\qa تحقّق أن الثنائية $(6n+2\,;\,10n+3)$ حل للمعادلة $(E)$ حيث $n$ عدد طبيعي.
+\qb استنتج أن العددين $6n+2$ و$10n+3$ أوليان فيما بينهما.
+\end{sq}
+\QQ{2} نضع: $a=10n+3$ و$b=3n+5$، وليكن $d$ القاسم المشترك الأكبر للعددين $a$ و$b$.
+\begin{sq}
+\qa بيّن أن $d=1$ أو $d=41$.
+\qb بيّن أنه إذا كان $d=41$ فإن $n\equiv 12\ [41]$.
+\end{sq}
+\QQ{3} ليكن العددان الطبيعيان: $A=20n^2+36n+9$ و$B=6n^2+19n+15$.
+\begin{sq}
+\qa بيّن أن العددين $A$ و$B$ يقبلان القسمة على $2n+3$.
+\qb جد بدلالة $n$ وحسب قيم $n$ القاسم المشترك الأكبر للعددين $A$ و$B$.
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2017 استثنائية م1 =================
+\begin{tamrin}{بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الأول -- تقني رياضي}
+\QQ{1} عيّن، حسب قيم العدد الطبيعي $n$، باقي القسمة الإقليدية للعدد $3^n$ على $5$.
+\QQ{2} استنتج باقي القسمة الإقليدية للعدد $1437^{2017}$ على $5$.
+\QQ{3} برهن أن: من أجل كل عدد طبيعي $n$، العدد $\left(48^{4n+3}-2\times 9^{2n+1}+1\right)$ مضاعف للعدد $5$.
+\QQ{4} عيّن قيم العدد الطبيعي $n$ حتى يكون العدد $\left(3^{4n}+27^n-4\right)$ قابلًا للقسمة على $5$.
+\end{tamrin}
+
+% ================= بكالوريا 2017 م2 =================
+\begin{tamrin}{بكالوريا 2017 -- الموضوع الثاني -- تقني رياضي}
+\QQ{1} بيّن أن: من أجل كل عدد طبيعي $k$، $4^{5k}\equiv 1\ [11]$.
+\QQ{2} استنتج حسب قيم العدد الطبيعي $n$ بواقي القسمة الإقليدية للعدد $4^n$ على $11$.
+\QQ{3} بيّن أنه من أجل كل عدد طبيعي $n$، العدد $\left(2\times 2017^{5n+3}+3\times 1438^{10n}+1\right)$ يقبل القسمة على $11$.
+\QQ{4} عيّن قيم العدد الطبيعي $n$ التي من أجلها يكون العدد $\left(2\times 2017^{5n+2}+n-3\right)$ قابلًا للقسمة على $11$.
+\end{tamrin}
+
+% ================= بكالوريا 2016 م1 =================
+\begin{tamrin}{بكالوريا 2016 -- الموضوع الأول -- تقني رياضي}
+نعتبر المعادلة $(E)$ ذات المجهول $(x;y)$: \ $6x-7y=19$، حيث $x$ و$y$ عددان صحيحان.
+\QQ{1} جد الحل الخاص $(x_0;y_0)$ للمعادلة $(E)$ حيث $x_0=y_0$، ثم حل المعادلة $(E)$.
+\QQ{2} استنتج قيم العدد الصحيح $\lambda$ التي تحقق $\begin{cases}\lambda\equiv 24\ [7]\\ \lambda\equiv 5\ [6]\end{cases}$، ثم عيّن باقي قسمة العدد $\lambda$ على $42$.
+\QQ{3} عيّن جميع الثنائيات $(x;y)$ حلول المعادلة $(E)$ حيث: $|x+y-1|\le 13$.
+\QQ{4}
+\begin{sq}
+\qa ادرس بواقي القسمة الإقليدية للعدد $5^n$ على $7$.
+\qb عيّن مجموعة قيم العدد الطبيعي $n$ التي تحقق الجملة: $\begin{cases}n-5^n\equiv 2020\ [7]\\ n\equiv 1437\ [6]\end{cases}$
+\end{sq}
+\end{tamrin}
+
+% ================= بكالوريا 2015 م1 =================
+\begin{tamrin}{بكالوريا 2015 -- الموضوع الأول -- تقني رياضي}
+\QQ{1}
+\begin{sq}
+\qa عيّن، حسب قيم العدد الطبيعي $n$، باقي القسمة الإقليدية للعدد $8^n$ على $13$.
+\qb استنتج باقي القسمة الإقليدية للعدد: $42\times 138^{2015}+2014^{2037}-3$ على $13$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد طبيعي $n$: $(5n+1)\times 64^n-5^{2n+3}\equiv (5n+6)\,8^{2n}\ [13]$.
+\qb عيّن مجموعة قيم العدد الطبيعي $n$ حتى يكون: $(5n+1)\times 64^n-5^{2n+3}\equiv 0\ [13]$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2014 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2014 -- الموضوع الثاني -- تقني رياضي}
+$n$ و $p$ عددان طبيعيان.
+
+\textbf{1.} أدرس، حسب قيم العدد الطبيعي $n$، بواقي القسمة الإقليدية للعدد $5^n$ على $16$.
+
+\textbf{2.} نضع: $D_p=5^p$ و $C_n=16n+9$.
+\begin{sq}
+\qa بيّن أنه إذا كان $p=4k+2$ حيث $k$ عدد طبيعي، فإنه يوجد عدد طبيعي $n$ يحقق $D_p=C_n$.
+\qb عيّن $n$ من أجل $p=6$.
+\end{sq}
+
+\textbf{3.} $f$ هي الدالة المعرفة على المجال $[0;+\infty[$ بـ: $f(x)=5^{4x+2}-9$.
+
+أدرس تغيرات الدالة $f$، ثم استنتج إشارة $f(x)$.
+
+\textbf{4.} $(u_n)$ المتتالية العددية المعرفة على $\N$ كما يلي: $u_0=1$ ومن أجل كل عدد طبيعي $n$:
+$u_{n+1}=5^4\left(u_n+\dfrac{9}{16}\right)-\dfrac{9}{16}$.
+\begin{sq}
+\qa برهن بالتراجع أنه من أجل كل عدد طبيعي $n$: $u_n=\dfrac{5^{4n+2}-9}{16}$.
+\qb برهن أنه من أجل كل عدد طبيعي $n$، $u_n$ عدد طبيعي.
+\end{sq}
+
+\textbf{5.} استنتج اتجاه تغير المتتالية $(u_n)$.
+\end{tamrin}
+
+% ===================== بكالوريا 2013 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2013 -- الموضوع الثاني -- تقني رياضي}
+$x$ و $y$ عددان صحيحان و $(E)$ المعادلة ذات المجهول $(x;y)$ التالية: $11x+7y=1$.
+
+\textbf{1.}
+\begin{sq}
+\qa عيّن $(x_0;y_0)$، حل المعادلة $(E)$ الذي يحقق: $x_0+y_0=-1$.
+\qb استنتج حلول المعادلة $(E)$.
+\end{sq}
+
+\textbf{2.} $a$ و $b$ عددان طبيعيان و $S$ العدد الذي يحقق: $\begin{cases}S=11a+1\\ S=7b+2\end{cases}$.
+\begin{sq}
+\qa بيّن أن $(a;-b)$ حل للمعادلة $(E)$.
+\qb ما هو باقي القسمة الإقليدية للعدد $S$ على $77$؟
+\end{sq}
+
+\textbf{3.} $n$ عدد طبيعي باقي قسمته على $11$ هو $1$ وباقي قسمته على $7$ هو $2$.
+
+عيّن أكبر قيمة للعدد $n$ حتى يكون $n<2013$.
+\end{tamrin}
+
+% ===================== بكالوريا 2012 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2012 -- الموضوع الأول -- تقني رياضي}
+\textbf{1.} أدرس، حسب قيم العدد الطبيعي $n$، بواقي قسمة $9^n$ على $11$.
+
+\textbf{2.} ما هو باقي قسمة العدد $2011^{2012}$ على $11$؟
+
+\textbf{3.} برهن أنه من أجل كل عدد طبيعي $n$، العدد $\left(4\times9^{15n+1}+4\times2011^{10n}+2011^{2012}\right)$ يقبل القسمة على $11$.
+
+\textbf{4.} عيّن الأعداد الطبيعية $n$ بحيث يكون العدد $\left(2011^{2012}+2n+2\right)$ مضاعفًا للعدد $11$.
+\end{tamrin}
+
+% ===================== بكالوريا 2012 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2012 -- الموضوع الثاني -- تقني رياضي}
+نسمي $(S)$ الجملة التالية: $\begin{cases}x\equiv3\,[15]\\ x\equiv6\,[7]\end{cases}$، حيث $x$ عدد صحيح.
+
+\textbf{1.} بيّن أن العدد $153$ حل للجملة $(S)$.
+
+\textbf{2.} إذا كان $x_0$ حلًّا لـ $(S)$، بيّن أن: ($x$ حل لـ $(S)$) يكافئ $\begin{cases}x-x_0\equiv0\,[15]\\ x-x_0\equiv0\,[7]\end{cases}$.
+
+\textbf{3.} حل الجملة $(S)$.
+
+\textbf{4.} يريد مكتبي وضع عدد من الكتب في علب، فإذا استعمل علبًا تتسع لـ $15$ كتابًا بقي لديه $3$ كتب، وإذا استعمل علبًا تتسع لـ $7$ كتب بقي لديه $6$ كتب.
+
+إذا علمت أن عدد الكتب التي بحوزته محصورة بين $500$ و $600$ كتابًا، ما عدد هذه الكتب؟
+\end{tamrin}
+
+% ===================== بكالوريا 2011 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الأول -- تقني رياضي}
+أجب بصحيح أو خطأ مع التبرير في كل حالة مما يلي:
+
+\textbf{1.} المعادلة $21x+14y=40$ لا تقبل حلولًا في مجموعة الأعداد الصحيحة.
+
+\textbf{2.} في نظام التعداد ذي الأساس $7$ يكون: $\overline{3421}+\overline{1562}=\overline{5413}$.
+
+\textbf{3.} باقي القسمة الإقليدية للعدد $1+3+3^2+\dots+3^{2011}$ على $7$ هو $6$.
+\end{tamrin}
+
+% ===================== بكالوريا 2011 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2011 -- الموضوع الثاني -- تقني رياضي}
+من أجل كل عدد طبيعي $n$ نضع: $A_n=2^n+3^n+4^n+5^n+6^n$.
+
+\textbf{1.} تحقق أن: $4\equiv-3\,[7]$، ثم بيّن أن: $A_3\equiv6\,[7]$.
+
+\textbf{2.} أدرس، حسب قيم العدد الطبيعي $n$، بواقي قسمة $2^n$ و $3^n$ على $7$.
+
+\textbf{3.} بيّن أنه إذا كان $n$ فرديًّا فإن: $A_n+1$ يقبل القسمة على $7$، واستنتج باقي القسمة الإقليدية للعدد $A_{2011}$ على $7$.
+
+\textbf{4.} ما هو باقي القسمة الإقليدية للعدد $A_{1432}$ على $7$؟
+\end{tamrin}
+
+% ===================== بكالوريا 2010 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2010 -- الموضوع الأول -- تقني رياضي}
+نعتبر العدد الطبيعي $n$ الذي يكتب في نظام العد ذي الأساس $7$ كما يلي: $n=\overline{11\alpha00}$، حيث $\alpha$ عدد طبيعي.
+
+\textbf{1.} عيّن العدد $\alpha$ حتى يكون $n$ قابلًا للقسمة على $3$.
+
+\textbf{2.} عيّن العدد $\alpha$ حتى يكون $n$ قابلًا للقسمة على $5$.
+
+استنتج العدد $\alpha$ حتى يكون $n$ قابلًا للقسمة على $15$.
+
+\textbf{3.} نأخذ: $\alpha=4$، أكتب العدد $n$ في النظام العشري.
+\end{tamrin}
+
+% ===================== بكالوريا 2010 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2010 -- الموضوع الثاني -- تقني رياضي}
+\textbf{1.} عيّن، حسب قيم العدد الطبيعي $n$، بواقي القسمة الإقليدية للعدد $10^n$ على $13$.
+
+\textbf{2.} تحقق أن: $\left(10^{2008}\right)^2+10^{2008}+1\equiv0\,[13]$.
+
+\textbf{3.} عيّن قيم العدد الطبيعي $n$ بحيث: $10^{2n}+10^n+1\equiv0\,[13]$.
+\end{tamrin}
+
+% ===================== بكالوريا 2009 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2009 -- الموضوع الأول -- تقني رياضي}
+\textbf{1.}
+\begin{sq}
+\qa عيّن الأعداد الطبيعية التي مربع كل منها يقسم $2009$.
+
+$u_0$ و $a$ عددان طبيعيان غير معدومين. $(u_n)$ متتالية هندسية أساسها $a$ وحدها الأول $u_0$ بحيث: $u_1^{\,2}+u_2+35a^2=2009$.
+\qb أحسب $a$ و $u_0$.
+\end{sq}
+
+\textbf{2.} نضع: $a=7$ و $u_0=2$. أكتب $u_n$ بدلالة $n$.
+
+\textbf{3.} نضع: $S_n=u_0+u_1+\dots+u_n$.
+\begin{sq}
+\qa عبّر عن $S_n$ بدلالة $n$.
+\qb عيّن العدد الطبيعي $n$ حتى يكون $S_n=800$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2009 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2009 -- الموضوع الثاني -- تقني رياضي}
+\textbf{1.} حل المعادلة التفاضلية: $y'=(\ln2)\,y$.
+
+\textbf{2.} نسمي $f$ الحل الخاص لهذه المعادلة الذي يحقق $f(0)=1$، عيّن عبارة $f(x)$.
+
+\textbf{3.} $n$ عدد طبيعي.
+\begin{sq}
+\qa أدرس بواقي القسمة الإقليدية على $7$ للعدد $2^n$.
+\qb استنتج باقي القسمة الإقليدية للعدد $f(2009)-4$ على $7$.
+\end{sq}
+
+\textbf{4.}
+\begin{sq}
+\qa أحسب بدلالة $n$ المجموع $S_n$ حيث: $S_n=f(0)+f(1)+\dots+f(n)$.
+\qb عيّن قيم العدد الطبيعي $n$ التي من أجلها $S_n$ يقبل القسمة على $7$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2008 -- الموضوع الأول =====================
+\begin{tamrin}{بكالوريا 2008 -- الموضوع الأول -- تقني رياضي}
+$n$ عدد طبيعي أكبر من $5$.
+
+\textbf{1.} $a$ و $b$ عددان طبيعيان حيث: $a=n-2$ و $b=2n+3$.
+\begin{sq}
+\qa ما هي القيم الممكنة للقاسم المشترك الأكبر للعددين $a$ و $b$؟
+\qb بيّن أن العددين $a$ و $b$ من مضاعفات $7$ إذا وفقط إذا كان $n+5$ مضاعفًا للعدد $7$.
+\qc عيّن قيم $n$ التي من أجلها $\pgcd(a;b)=7$.
+\end{sq}
+
+\textbf{2.} نعتبر العددين الطبيعيين $p$ و $q$ حيث: $p=2n^2-7n-15$ و $q=n^2-7n+10$.
+\begin{sq}
+\qa بيّن أن كلًّا من العددين $p$ و $q$ يقبل القسمة على $n-5$.
+\qb عيّن تبعًا لقيم $n$ وبدلالة $n$: $\pgcd(p;q)$.
+\end{sq}
+\end{tamrin}
+
+% ===================== بكالوريا 2008 -- الموضوع الثاني =====================
+\begin{tamrin}{بكالوريا 2008 -- الموضوع الثاني -- تقني رياضي}
+نعتبر المعادلة ذات المجهولين الصحيحين $x$ و $y$: \quad $4x-9y=319\quad\dots(1)$.
+
+\textbf{1.} تأكد أن الثنائية $(82;1)$ حل للمعادلة $(1)$، ثم حل المعادلة $(1)$.
+
+\textbf{2.} عيّن الثنائيات الصحيحة $(a;b)$، حلول المعادلة: $4a^2-9b^2=319\quad\dots(2)$.
+
+\textbf{3.} استنتج الثنائيات $(x_0;y_0)$ حلول المعادلة $(1)$ بحيث $x_0$ و $y_0$ مربعين تامين.
+\end{tamrin}
+
+\end{document}
