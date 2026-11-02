@@ -1,0 +1,625 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+% أعمدة جداول تُكتب خلاياها بالعربية في الاتجاه الصحيح
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+% تجنب عنوان يتيم في أسفل الصفحة
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+% ---------- الألوان ----------
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+% ---------- العناوين ----------
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+% ---------- الصناديق (تُرسم في سياق LTR ويُكتب محتواها بالعربية) ----------
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+% ---------- التمارين والحلول ----------
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+% رسومات TikZ تُوضع في سياق LTR
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+% ---------- رموز ----------
+% نقاط الحذف داخل الرياضيات (\dots يسبب خللاً في الاتجاه مع babel)
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% ---------- تمثيل مجال على مستقيم عددي ----------
+% \NLseg{a}{b}{[}{]}  مجال محدود
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+% \NLright{a}{[}  مجال نحو +∞
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+% \NLleft{b}{]}  مجال نحو −∞
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- أيقونات مواقع التواصل (مرسومة بـ TikZ، لا تحتاج أي حزمة) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% سطر مواقع التواصل أسفل كل صفحة
+% (يُكتب السطر بترتيب بصري من اليسار إلى اليمين: الأيقونة يمين كل اسم)
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+% ---------- رأس وتذييل الصفحة ----------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{يمين الرأس}{يسار الرأس}{يمين التذييل}{يسار التذييل}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% جدول تغيرات / إشارة (يُرسم في سياق LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% معلم بشبكة: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \def\xmn{#1}\def\xmx{#2}\def\ymn{#3}\def\ymx{#4}
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \draw[very thick,-{Stealth[length=1.6mm]}] (0,0)--(1,0) node[below,pos=.55]{$\vec i$};
+ \draw[very thick,-{Stealth[length=1.6mm]}] (0,0)--(0,1) node[left,pos=.55]{$\vec j$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\hl}[1]{\ensuremath{\colorbox{cEx!20}{$\displaystyle #1$}}}
+\newcommand{\Lim}[1]{\displaystyle\lim_{x\to #1}}
+\newcommand{\Cf}{(C_f)}
+\newenvironment{qst}{\begin{enumerate}[label=\protect\circled{\arabic*},leftmargin=*]}{\end{enumerate}}
+\newcommand{\circled}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[circle,fill=cDef,text=white,inner sep=1.2pt,font=\scriptsize\bfseries](c){#1};}}
+% عمودان: \TwoCol{عرض اليسار}{محتوى اليسار}{عرض اليمين}{محتوى اليمين}  (آمن مع TikZ)
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\un}{(u_n)}\newcommand{\vn}{(v_n)}
+% برهان بالتراجع: \Rec{الخاصية P(n)}{التحقق من P(0)}{البرهان على الوراثة}
+\newcommand{\Rec}[3]{\textbf{برهان بالتراجع:} نسمي $P(n)$ الخاصية: «#1».
+\begin{itemize}
+\item \textbf{التحقق:} #2
+\item \textbf{الوراثة:} نفرض أن $P(n)$ صحيحة ونبرهن صحة $P(n+1)$: #3
+\item \textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع، $P(n)$ صحيحة من أجل كل عدد طبيعي $n$.
+\end{itemize}}
+\newcommand{\src}[1]{{\footnotesize\textbf{#1}}\par}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% أسئلة فرعية (أ) (ب) (جـ) كل سؤال في سطر
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\ccl}[1]{\par\textbf{الخلاصة:} #1}
+
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}
+\renewcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\newtcbox{\bxtbox}{on line,coltext=cThm,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\newcommand{\LW}[1]{{\color{cDef}#1}}
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\newcommand{\yes}{{\color{cRem}\checkmark}}
+\newcommand{\no}{{\color{cThm}$\times$}}
+\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\SetHeader{\small\bfseries\color{cSec}تمارين الوحدة الأولى: الأعداد والحساب}{\small\color{cSec}السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\fontsize{25}{31}\selectfont\bfseries سلسلة تمارين: الأعداد والحساب}\\[8pt]
+{\color{cSec!80!black}\large الوحدة الأولى: المجموعات ، الحساب ، الترتيب في $\mathbb{R}$ والقيمة المطلقة -- -- بدون حلول (للتدرّب)}\\[5pt]
+{\color{cSec!80!black}\large السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا}
+\end{tcolorbox}
+\end{LTR}
+
+% =====================================================================
+\section{مجموعات الأعداد والكتابة الكسرية}
+\begin{tamrin}{مجموعات الأعداد}
+\begin{enumerate}
+\item انقل الجدول ثم أكمله بوضع العلامة \yes\ إذا كان العدد ينتمي إلى المجموعة ، والعلامة \no\ إذا كان لا ينتمي إليها.
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$\dfrac{22}7$ & $\pi$ & $10^{-2}$ & $-\sqrt5$ & $\dfrac23$ & $\sqrt{16}$ & $\dfrac74$ & $-3$ & \ar{العدد}\\\hline
+ & & & & & & & & $\N$\\\hline
+ & & & & & & & & $\Z$\\\hline
+ & & & & & & & & $\D$\\\hline
+ & & & & & & & & $\Q$\\\hline
+ & & & & & & & & $\R$\\\hline
+\end{tabular}
+\end{center}
+\item بيّن أن $\dfrac3{40}$ عدد عشري ، وأن $\dfrac13$ ليس عددًا عشريًا.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{من الكتابة الدورية إلى الكتابة الكسرية}
+اكتب كل عدد من الأعداد التالية على شكل كسر غير قابل للاختزال:
+\[a=0{,}777\dots=0{,}\overline{7}\qquad;\qquad b=2{,}1515\dots=2{,}\overline{15}\qquad;\qquad c=0{,}12727\dots=0{,}1\overline{27}\]
+\end{tamrin}
+
+\begin{tamrin}{أصغر مجموعة ينتمي إليها عدد}
+عيّن أصغر مجموعة من بين $\N$ ، $\Z$ ، $\D$ ، $\Q$ ، $\R$ ينتمي إليها كل عدد:
+\[a=\sqrt{49}-10\quad;\quad b=\frac3{40}\quad;\quad c=\frac{14}{21}\quad;\quad d=\frac{\left(\sqrt5-1\right)\left(\sqrt5+1\right)}8\]
+\[e=\sqrt2\left(1+\frac1{1+\sqrt2}\right)\quad;\quad f=-\frac\pi4\]
+\end{tamrin}
+
+% =====================================================================
+\section{الأعداد الأولية ، PGCD و PPCM}
+\begin{tamrin}{الأعداد الأولية والتحليل}
+\begin{enumerate}
+\item هل العدد $437$ أولي؟ هل العدد $419$ أولي؟ علّل.
+\item حلّل العددين $a=1260$ و $b=756$ إلى جداء عوامل أولية.
+\item استنتج $\pgcd(a;b)$ و $\ppcm(a;b)$ ، ثم تحقق باستعمال خوارزمية إقليدس.
+\item اكتب الكسر $\dfrac{756}{1260}$ على شكل كسر غير قابل للاختزال.
+\item ما هو عدد قواسم $1260$؟ وما هو أصغر عدد طبيعي غير معدوم $n$ يجعل $n\times1260$ مربعًا تامًا؟
+\item \textbf{مسألة:} نريد تبليط أرضية قاعة مستطيلة بعداها $12{,}60\ \text{m}$ و $7{,}56\ \text{m}$ ببلاطات مربعة متماثلة دون قص ، بأكبر طول ممكن للبلاطة. ما طول ضلع البلاطة؟ وكم بلاطة نحتاج؟
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{مسألة حول PPCM}
+يدق جرس كل $12$ دقيقة ، ويدق جرس آخر كل $18$ دقيقة. دقّ الجرسان معًا على الساعة $8{:}00$. متى يدقان معًا للمرة الموالية؟ وكم مرة يدقان معًا بين $8{:}00$ و $12{:}00$ (بما في ذلك $8{:}00$ و $12{:}00$)؟
+\end{tamrin}
+
+\begin{tamrin}{التحليل: اختزال كسر وتبسيط جذر}
+\begin{enumerate}
+\item هل العدد $257$ أولي؟ علّل.
+\item حلّل العددين $2520$ و $1848$ إلى جداء عوامل أولية.
+\item اكتب $\dfrac{1848}{2520}$ على شكل كسر غير قابل للاختزال.
+\item اكتب $\sqrt{2520}$ على الشكل $a\sqrt b$ حيث $a$ و $b$ عددان طبيعيان و $b$ أصغر ما يمكن.
+\end{enumerate}
+\end{tamrin}
+
+% =====================================================================
+\section{القوى والجذور التربيعية}
+\begin{tamrin}{القوى}
+\begin{enumerate}
+\item اكتب على أبسط شكل ممكن:
+\[A=\frac{2^5\times3^{-2}\times6^3}{4^3\times9^{-1}}\qquad;\qquad B=\frac{(-2)^3\times10^{-4}\times15^2}{25\times6\times10^{-6}}\]
+\item $a$ و $b$ عددان حقيقيان غير معدومين. بسّط: $C=\left(a^2b^{-3}\right)^2\times\left(a^{-1}b\right)^3$.
+\item بيّن أنه من أجل كل عدد طبيعي $n$: $\dfrac{3^{n+2}-3^n}{8\times3^n}=1$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{الجذور التربيعية}
+\begin{enumerate}
+\item اكتب على الشكل $a\sqrt b$ حيث $b$ أصغر عدد طبيعي ممكن: $D=\sqrt{50}+3\sqrt8-\sqrt{18}$.
+\item احسب: $E=\sqrt{12}\times\sqrt{27}$ و $F=\left(2+\sqrt3\right)\left(2-\sqrt3\right)$ ، ثم استنتج كتابة $\dfrac1{2+\sqrt3}$ دون جذر في المقام.
+\item اكتب دون جذر في المقام: $\dfrac3{2\sqrt3}$ و $\dfrac1{\sqrt5-2}$.
+\item انشر $\left(\sqrt3-1\right)^2$ ثم استنتج تبسيطًا للعدد $\sqrt{4-2\sqrt3}$.
+\item هل $\sqrt2+\sqrt3=\sqrt5$؟ علّل.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{الحساب على الجذور}
+\begin{enumerate}
+\item بيّن أن $4+2\sqrt3=\left(\sqrt3+1\right)^2$ و $4-2\sqrt3=\left(\sqrt3-1\right)^2$.
+\item استنتج أن $\sqrt{4+2\sqrt3}-\sqrt{4-2\sqrt3}=2$.
+\end{enumerate}
+\end{tamrin}
+
+% =====================================================================
+\section{الكتابة العلمية ، رتبة المقدار والتدوير}
+\begin{tamrin}{الكتابة العلمية ورتبة المقدار}
+\begin{enumerate}
+\item أعط الكتابة العلمية لكل من:
+\[A=\frac{0{,}0006\times15\times10^3}{0{,}03\times10^{-2}}\qquad;\qquad B=\frac{4{,}8\times10^{-3}\times2{,}5\times10^7}{6\times10^2}\]
+\item أعط رتبة مقدار الجداء $0{,}00072\times39\,800$ ، ثم قارنها بالقيمة المضبوطة.
+\item علمًا أن $\sqrt3=1{,}7320508\dots$ ، أعط مدوّر $\sqrt3$ إلى الوحدة ، إلى $10^{-1}$ ، إلى $10^{-2}$ وإلى $10^{-3}$.
+\end{enumerate}
+\end{tamrin}
+
+% =====================================================================
+\section{البرهان}
+\begin{tamrin}{البرهان بالخلف}
+\begin{enumerate}
+\item ليكن $p$ عددًا صحيحًا. بيّن أنه إذا كان $p$ لا يقبل القسمة على $3$ فإن $p^2$ لا يقبل القسمة على $3$.\par
+\textbf{إرشاد:} اكتب $p=3k+1$ أو $p=3k+2$. ثم استنتج أنه إذا كان $p^2$ مضاعفًا لـ $3$ فإن $p$ مضاعف لـ $3$.
+\item برهن بالخلف أن $\sqrt3$ عدد أصم.
+\item استنتج أن $1+\sqrt3$ عدد أصم.
+\item بيّن أنه من أجل كل عدد طبيعي $n$ ، العدد $n^2+n$ زوجي.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{البرهان على صحة مساواة}
+\begin{enumerate}
+\item بيّن أنه من أجل كل عدد حقيقي $x$: $(x+1)^2-(x-1)^2=4x$.
+\item بيّن أنه من أجل كل عددين حقيقيين $a$ و $b$: $(a+b)^2+(a-b)^2=2\left(a^2+b^2\right)$.
+\item بيّن أنه من أجل كل عدد حقيقي $x\neq-1$: $x-1+\dfrac2{x+1}=\dfrac{x^2+1}{x+1}$.
+\item حلّل إلى جداء عوامل: $9x^2-4$ \ ، \ $x^2-6x+9$ \ و \ $(x+2)^2-(2x-1)^2$.
+\end{enumerate}
+\end{tamrin}
+
+% =====================================================================
+\section{المقارنة والترتيب في $\mathbb{R}$}
+\begin{tamrin}{المقارنة}
+\begin{enumerate}
+\item قارن بين العددين $\dfrac79$ و $\dfrac{11}{14}$.
+\item بيّن أن $\sqrt{8+2\sqrt7}=\sqrt7+1$.
+\item قارن بين العددين $\sqrt3+\sqrt5$ و $\sqrt2+\sqrt6$.
+\item $x$ عدد حقيقي حيث $0<x<1$. رتّب تصاعديًا الأعداد: $x$ ، $x^2$ ، $\sqrt x$ ، $\dfrac1x$ و $1$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{متباينات مشهورة}
+$a$ و $b$ عددان حقيقيان موجبان تمامًا.
+\begin{enumerate}
+\item بيّن أن: $\dfrac{a+b}2\geqslant\sqrt{ab}$ \quad (الوسط الحسابي أكبر من الوسط الهندسي).
+\item استنتج أنه من أجل كل $a>0$: $a+\dfrac1a\geqslant2$.
+\item بيّن أن: $\dfrac{a^2+b^2}2\geqslant\left(\dfrac{a+b}2\right)^2$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{المقارنة بدراسة إشارة الفرق}
+\begin{enumerate}
+\item قارن بين العددين $a=\sqrt7+\sqrt5$ و $b=2\sqrt6$.
+\item $x$ عدد حقيقي. قارن بين $x^2+4$ و $4x$.
+\item بيّن أنه من أجل كل عدد حقيقي $x>0$: $x+\dfrac1x\geqslant2$.
+\item قارن بين $\dfrac{2023}{2024}$ و $\dfrac{2024}{2025}$ دون حاسبة.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{تمرين من اختبار الفصل الأول: صحيح أم خطأ}
+أذكر صحة أو خطأ العبارات التالية مع التعليل:
+\begin{enumerate}
+\item $a<b$ يكافئ $\left(1-\sqrt2\right)a<\left(1-\sqrt2\right)b$.
+\item الكتابة العلمية للعدد $5\times10^{-3}\times3\times10^8$ هي $15\times10^5$.
+\item $\dfrac{\left(\sqrt2-3\right)\left(\sqrt2+3\right)}{700}$ هو عدد عشري.
+\item $[-2;2]\cap\,]-2;+\infty[\,=[-2;2]$.
+\item $x$ عدد حقيقي ، $x\geqslant1$ يكافئ $(3x+1)^2\geqslant16$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{تمرين من اختبار الفصل الأول: صحيح أم خطأ}
+أجب بصحيح أو خطأ مع التبرير:
+\begin{enumerate}
+\item أصغر مجموعة ينتمي إليها العدد $-\dfrac\pi4$ هي $\Q$.
+\item أصغر مجموعة ينتمي إليها العدد $\sqrt2\left(1+\dfrac1{1+\sqrt2}\right)$ هي $\N$.
+\item العدد $\dfrac{2973}{2023}$ غير قابل للاختزال.
+\item $\sqrt{4+2\sqrt3}-\sqrt{4-2\sqrt3}=2$.
+\item $a$ و $b$ عددان حقيقيان موجبان تمامًا ، لدينا: $\sqrt{\dfrac{a^2+b^2}2}\leqslant\dfrac{a+b}2$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{تمرين من اختبار الفصل الأول}
+$x$ عدد حقيقي موجب. نضع: $A=\dfrac{x+1}2$ ، $B=\sqrt x$ و $C=\dfrac{2x}{x+1}$.
+\begin{enumerate}
+\item أنشر وبسّط $\left(\sqrt x-1\right)^2$ ، ثم استنتج أن $A\geqslant B$.
+\item بيّن أن: $C-B=\dfrac{-\sqrt x\left(\sqrt x-1\right)^2}{x+1}$ ، ثم استنتج مقارنة بين $B$ و $C$.
+\item استنتج أن: $\dfrac{2x}{x+1}\leqslant\sqrt x\leqslant\dfrac{x+1}2$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{تمرين من اختبار الفصل الأول}
+\textbf{I)} نعتبر العدد الحقيقي $x$ حيث: $\dfrac2{19}\leqslant\dfrac2{2x-3}\leqslant\dfrac2{17}$.
+\begin{enumerate}
+\item بيّن أن: $10\leqslant x\leqslant11$.
+\item عيّن حصرًا للعدد $11-x$.
+\item قارن بين: $(11-x)^{1954}$ ، $(11-x)^{1962}$ و $(11-x)^{2024}$.
+\end{enumerate}
+\textbf{II)} $x$ عدد حقيقي موجب تمامًا. نضع: $X=\dfrac{x-1}x$ و $Y=\dfrac x{x+1}$.
+\begin{enumerate}
+\item أحسب الفرق $X-Y$ واستنتج إشارته ، ثم قارن بين $X$ و $Y$.
+\item استنتج مقارنة بين العددين $\sqrt{\dfrac{2023}{2024}}$ و $\sqrt{\dfrac{2024}{2025}}$ (لا تستعمل الآلة الحاسبة).
+\end{enumerate}
+\end{tamrin}
+
+% =====================================================================
+\section{الحصر والقيم المقربة}
+\begin{tamrin}{الحصر}
+$x$ و $y$ عددان حقيقيان حيث: $2\leqslant x\leqslant3$ و $1\leqslant y\leqslant2$.\par
+أعط حصرًا لكل من: $x+y$ ، $x-y$ ، $xy$ ، $\dfrac xy$ ، $x^2+y^2$ و $\dfrac1{x+y}$.
+\end{tamrin}
+
+\begin{tamrin}{الحصر بعدد سالب}
+$x$ و $y$ عددان حقيقيان حيث: $2\leqslant x\leqslant5$ و $-3\leqslant y\leqslant-1$.
+\begin{enumerate}
+\item أعط حصرًا لكل من: $x+y$ ، $x-y$ ، $xy$ ، $\dfrac xy$ ، $x^2$ ، $\dfrac1x$ و $2x-3y$.
+\item علمًا أن $2{,}2^2=4{,}84$ و $2{,}3^2=5{,}29$ ، أعط حصرًا للعدد $\sqrt5$ ثم للعدد $\varphi=\dfrac{1+\sqrt5}2$ (العدد الذهبي).
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{القيم المقربة}
+نعلم أن: $1{,}414<\sqrt2<1{,}415$.
+\begin{enumerate}
+\item أعط حصرًا للعدد $3\sqrt2-1$.
+\item بيّن أن $\dfrac1{\sqrt2+1}=\sqrt2-1$ ، ثم أعط حصرًا له.
+\item استنتج قيمة مقربة بالنقصان وأخرى بالزيادة إلى $10^{-2}$ للعدد $3\sqrt2-1$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{وضعية من الحياة}
+قاس تلميذ طول قطعة أرض مستطيلة الشكل $L$ وعرضها $\ell$ (بالمتر) ، فوجد: $12{,}3\leqslant L\leqslant12{,}4$ و $5{,}6\leqslant\ell\leqslant5{,}7$.
+\begin{enumerate}
+\item أعط حصرًا لمحيط القطعة $P$.
+\item أعط حصرًا لمساحتها $S$.
+\item يريد إحاطتها بسياج سعر المتر منه $850\ DA$. ما هو أقصى مبلغ يلزمه؟
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{تمرين من اختبار الفصل الأول}
+$a$ و $b$ عددان حقيقيان حيث: $1<a<2$ و $-3<b<-2$.
+\begin{enumerate}
+\item أعط حصرًا لكل من: $3a+b$ ، $1+b^2$ و $\dfrac{3a+b}{1+b^2}$.
+\item قارن بين العددين $(a-1)^{2025}$ و $(a-1)^{2024}$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{تمرين من اختبار الفصل الأول}
+$a$ و $b$ عددان حقيقيان حيث: $0<a<b$ ، $1<ab<2$ و $7<a^2+b^2<12$.
+\begin{enumerate}
+\item برهن أن: $3<a+b<4$ و $\sqrt3<b-a<\sqrt{10}$.
+\item استنتج أن: $\dfrac{3+\sqrt3}2<b<2+\dfrac{\sqrt{10}}2$ و $\dfrac{3-\sqrt{10}}2<a<\dfrac{4-\sqrt3}2$.
+\end{enumerate}
+\end{tamrin}
+
+% =====================================================================
+\section{المجالات}
+\begin{tamrin}{المجالات}
+نعتبر المجالات: $I=[-2;5[$ ، $J=\,]1;+\infty[$ و $K=\,]-\infty;0]$.
+\begin{enumerate}
+\item مثّل المجالات $I$ ، $J$ و $K$ على مستقيم عددي.
+\item عيّن: $I\cap J$ ، $I\cup J$ ، $I\cap K$ ، $J\cap K$ و $I\cup K$.
+\item اكتب على شكل مجال مجموعة الأعداد الحقيقية $x$ التي تحقق: $x\geqslant-3$ و $x<2$.
+\item اكتب كلًا من المجالين $[-1;7]$ و $]2;6[$ باستعمال القيمة المطلقة.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{تمرين من اختبار الفصل الأول}
+نعتبر المجالين $I=[-6;2]$ و $J=\,]-1;7[$.
+\begin{enumerate}
+\item مثّل المجالين على مستقيم عددي.
+\item عيّن: $I\cap J$ ، $I\cup J$ ، $I\cup\R_-$ و $J\cap\R_+$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{تمرين من اختبار الفصل الأول: أكمل الجدول}
+أكمل الجدول التالي مع التوضيح:
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{|>{\centering\arraybackslash}p{0.2\textwidth}|>{\centering\arraybackslash}p{0.2\textwidth}|>{\centering\arraybackslash}p{0.2\textwidth}|>{\centering\arraybackslash}p{0.2\textwidth}|}\hline
+\rowcolor{cSec!12}\textbf{القيمة المطلقة} & \textbf{المسافة} & \textbf{الحصر} & \textbf{المجال}\\\hline
+$\dots$ & $\dots$ & $\dots$ & $x\in\,]1;3[$\\\hline
+$|x+5|<3$ & $\dots$ & $\dots$ & $\dots$\\\hline
+$\dots$ & $\dots$ & $\dots$ & $[-3;1]$\\\hline
+$\dots$ & $d(x;-3)\leqslant1$ & $\dots$ & $\dots$\\\hline
+$\dots$ & $\dots$ & $1\leqslant x\leqslant5$ & $\dots$\\\hline
+$\dots$ & $\dots$ & $\dots$ & $[4;8]$\\\hline
+$\dots$ & $d\left(x;\frac12\right)<4$ & $\dots$ & $\dots$\\\hline
+$\dots$ & $\dots$ & $7\leqslant x\leqslant\frac{15}2$ & $\dots$\\\hline
+\end{tabular}
+\end{center}
+\end{tamrin}
+
+% =====================================================================
+\section{القيمة المطلقة والمسافة}
+\begin{tamrin}{القيمة المطلقة}
+\begin{enumerate}
+\item أكتب دون رمز القيمة المطلقة: $A=\left|\sqrt3-2\right|+\left|2\sqrt3-1\right|-\left|\sqrt3-3\right|$.
+\item أكتب دون رمز القيمة المطلقة: $B=\left|2-\sqrt5\right|-\left|2\sqrt5-3\right|+\left|7-3\sqrt5\right|$.
+\item أكتب دون رمز القيمة المطلقة: $C=\sqrt{\left(\sqrt5-3\right)^2}+\sqrt{\left(\sqrt5-1\right)^2}$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{القيمة المطلقة والمسافة}
+\begin{enumerate}
+\item اكتب دون رمز القيمة المطلقة: $|\pi-4|$ ، $\left|\sqrt3-2\right|$ ، ثم بسّط $A=\left|\sqrt5-2\right|+\left|\sqrt5-3\right|$.
+\item حل في $\R$ المعادلات والمتراجحات التالية:\par
+(أ) $|x-2|=5$ \qquad (ب) $|2x+1|=3$ \qquad (جـ) $|x+1|\leqslant3$ \qquad (د) $|x-3|>1$ \qquad (هـ) $|x-1|=|x+3|$
+\item نضع $f(x)=|x-1|+|x+2|$. اكتب $f(x)$ دون رمز القيمة المطلقة ، ثم حل المعادلة $f(x)=5$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{معادلات ومتراجحات تتضمن قيمة مطلقة}
+حل في $\R$ المعادلات والمتراجحات التالية:\par
+\RL{0.48}{\textbf{1.} $|2x-1|=3$\par \textbf{2.} $|x-4|\leqslant\dfrac52$}{0.48}{\textbf{3.} $|3-x|>1$\par \textbf{4.} $|x+2|\geqslant|x-6|$}
+\end{tamrin}
+
+\begin{tamrin}{تمارين من اختبارات الفصل الأول}
+حل في $\R$ المعادلات والمتراجحات التالية:\par
+\RL{0.48}{\textbf{1.} $|x-1|=|x+2|$\par \textbf{2.} $|-x+3|\geqslant4$\par \textbf{3.} $|2x-3|<7$\par \textbf{4.} $|x-2|=5$}{0.48}{\textbf{5.} $|x+3|\leqslant5$\par \textbf{6.} $|x+5|=|x-1|$\par \textbf{7.} $\big||x|-3\big|=|x|-3$\par \textbf{8.} $|x-6|=|x+3|$ (بيانيًا)}
+\end{tamrin}
+
+\begin{tamrin}{تمرين من اختبار الفصل الأول}
+حل جبريًا في $\R$ المعادلة: $|2x+5|+|x-9|=12$ (شكّل جدولًا).
+\end{tamrin}
+
+% =====================================================================
+\section{تمارين شاملة}
+\begin{tamrin}{تمرين من اختبار الفصل الأول}
+\textbf{I)} نعتبر العدد الحقيقي $a$ حيث: $a=\sqrt{50}-\sqrt8\left(\sqrt2+1\right)$.
+\begin{enumerate}
+\item بيّن أن: $a=3\sqrt2-4$ ، ثم استنتج إشارة العدد $a$.
+\item نعتبر العددين $x$ و $y$ حيث: $x=\dfrac7{\sqrt2+1}$ و $y=\dfrac1{\sqrt2-1}$.
+\begin{sq}
+\qa بيّن أن: $x-y=2a$.
+\qb استنتج مقارنة العددين $x$ و $y$.
+\qc أكتب دون رمز القيمة المطلقة: $|a|$ ، $|y-x|$ و $\left|\dfrac{x-y}2\right|$.
+\end{sq}
+\end{enumerate}
+\textbf{II)} ليكن $z$ عددًا حقيقيًا حيث: $\left|z-\dfrac52\right|\leqslant\dfrac32$.
+\begin{enumerate}
+\item أثبت أن: $1\leqslant z\leqslant4$.
+\item عيّن حصرًا لكل من العددين $\dfrac{\sqrt z}{z+2}$ و $z^2+2z-3$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{تمرين من اختبار الفصل الأول}
+لتكن العبارة $P(x)$ حيث: $P(x)=\dfrac12\sqrt{(2x-6)^2}+1$.
+\begin{enumerate}
+\item بيّن أن: $P(x)=|x-3|+1$.
+\item حل في $\R$ المعادلة: $P(x)=2$.
+\item أكتب عبارة $P(x)$ دون رمز القيمة المطلقة.
+\item
+\begin{sq}
+\qa تحقق أن: $P\left(\sqrt7\right)=4-\sqrt7$ و $P\left(\sqrt{11}\right)=\sqrt{11}-2$.
+\qb استنتج حصرًا لكل من العددين $P\left(\sqrt7\right)$ و $P\left(\sqrt{11}\right)$ إذا علمت أن: $2{,}64<\sqrt7<2{,}65$ و $3{,}31<\sqrt{11}<3{,}32$.
+\qc استنتج إشارة الفرق: $P\left(\sqrt{11}\right)-P\left(\sqrt7\right)$.
+\end{sq}
+\item بيّن أن: $P(x)\leqslant5$ يكافئ $-1\leqslant x\leqslant7$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{تمرين من اختبار الفصل الأول}
+\begin{enumerate}
+\item لتكن العبارة: $A(x)=|x-6|-2x+7$.
+\begin{sq}
+\qa أكتب $A(x)$ دون رمز القيمة المطلقة.
+\qb عيّن قيم العدد الحقيقي $x$ التي تحقق $A(x)=0$.
+\end{sq}
+\item نعتبر المستقيم $(d)$ المزود بالمعلم $(O;\vec i)$ ، و $B$ و $C$ نقطتان من $(d)$ فاصلتاهما $-1$ و $5$ ، و $M$ نقطة متحركة فاصلتها $x$.
+\begin{sq}
+\qa علّم النقطتين $B$ و $C$.
+\qb عيّن موضع النقطة $M$ عندما تحقق فاصلتها المعادلة: $|x+1|=|x-5|$.
+\end{sq}
+\item نعتبر المجموعات: $I=\,]-5;5[$ ، و $J$ مجموعة الأعداد الحقيقية $x$ التي تحقق $|x-5|\leqslant|x+1|$ ، و $K$ مجموعة الأعداد الحقيقية التي تحقق $-6<3x<9$.\par
+جد كلًا من $J$ و $K$ ، ثم عيّن: $I\cup(J\cap K)$ ، $I\cap K$ و $J\cup K$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{تمرين من اختبار الفصل الأول}
+نعتبر العبارة: $H(x)=3|x+2|+|2x-4|$.
+\begin{enumerate}
+\item أحسب كلًا من: $H(2)$ و $H\left(\sqrt6\right)$.
+\item أكتب $H(x)$ دون رمز القيمة المطلقة.
+\item عيّن قيم $x$ بحيث: $-2\leqslant x\leqslant3$ و $H(x)\geqslant5$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{تمرين نموذجي شامل}
+نعتبر العبارة: $E(x)=|x-1|+|x+2|$.
+\begin{enumerate}
+\item أكتب $E(x)$ دون رمز القيمة المطلقة.
+\item حل في $\R$ المعادلة: $E(x)=5$.
+\item حل في $\R$ المتراجحة: $E(x)\leqslant3$ ، ثم فسّر النتيجة بيانيًا باستعمال المسافة.
+\item ليكن $a\in\left[\sqrt2;\sqrt3\right[$ و $b\in\left[1;\dfrac32\right[$. أعط حصرًا لـ $2a^2-4b$ و $\dfrac{a^2-1}{2b+1}$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{تمرين شامل (1)}
+نعتبر العددين: $A=\sqrt{45}-\sqrt{20}+\sqrt5$ و $B=\left(1+\sqrt5\right)^2-6$.
+\begin{enumerate}
+\item اكتب $A$ على الشكل $a\sqrt5$ ، ثم بيّن أن $A=B$.
+\item قارن بين $A$ و $4{,}5$ دون استعمال الحاسبة.
+\item علمًا أن $2{,}23\leqslant\sqrt5\leqslant2{,}24$ ، أعط حصرًا للعدد $A$ ، ثم مدوّره إلى $10^{-1}$.
+\item نضع $C=\dfrac1{A-4}$. اكتب $C$ دون جذر في المقام ، ثم أعط حصرًا له.
+\item هل $A$ عدد ناطق؟ علّل.
+\end{enumerate}
+\end{tamrin}
+
+\begin{tamrin}{تمرين شامل (2)}
+$x$ عدد حقيقي من المجال $[1;3]$.
+\begin{enumerate}
+\item أعط حصرًا للعدد $2x-1$ ثم للعدد $\dfrac1{2x-1}$.
+\item عبّر عن الشرط $x\in[1;3]$ باستعمال القيمة المطلقة.
+\item بسّط العبارة: $E=|x-1|+|x-3|$.
+\item نضع: $f(x)=x^2-4x+3$.
+\begin{sq}
+\qa تحقق أن $f(x)=(x-1)(x-3)$ وأن $f(x)=(x-2)^2-1$.
+\qb استنتج أن $-1\leqslant f(x)\leqslant0$ من أجل كل $x\in[1;3]$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\Large\bfseries بالتوفيق والنجاح}
+\end{tcolorbox}
+\end{LTR}
+\end{document}
