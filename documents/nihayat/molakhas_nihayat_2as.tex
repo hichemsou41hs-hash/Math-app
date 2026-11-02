@@ -1,0 +1,559 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings,patterns}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\newtcbox{\bxtbox}{on line,coltext=cThm,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
+\renewcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\newcommand{\LW}[1]{{\color{cDef}#1}}
+\newcommand{\Car}[1]{\left\{\begin{array}{l}#1\end{array}\right.}
+\newcommand{\Lm}[1]{\displaystyle\lim_{x\to#1}}
+\newcommand{\LDx}[3]{لدينا: $\Lm{#2}#1=\bx{#3}$ لأنّ: \quad}
+\newcommand{\LD}{\par\LDx}
+\newcommand{\E}{\par\smallskip}
+\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\SetHeader{\small\bfseries\color{cSec}ملخص: النهايات}{\small\color{cSec}السنة الثانية ثانوي -- الشعب العلمية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\fontsize{28}{34}\selectfont\bfseries النهايات}\\[8pt]
+{\color{cSec!80!black}\large ملخص شامل مع أمثلة ومنحنيات وتمارين محلولة خطوة بخطوة}\\[5pt]
+{\color{cSec!80!black}\large السنة الثانية ثانوي -- الشعب العلمية (رياضيات ، تقني رياضي ، علوم تجريبية)}
+\end{tcolorbox}
+\end{LTR}
+
+\begin{BOX}{cSec}{محتوى الملخص (حسب ترتيب التوزيع السنوي)}
+\RL{0.48}{\textbf{1.}\ نهاية غير منتهية عند عدد حقيقي\par \textbf{2.}\ النهاية من اليمين ومن اليسار\par \textbf{3.}\ المستقيم المقارب الموازي لمحور التراتيب\par \textbf{4.}\ النهاية عند $+\infty$ وعند $-\infty$\par \textbf{5.}\ المستقيم المقارب الموازي لمحور الفواصل}{0.48}{\textbf{6.}\ العمليات على النهايات وحالات عدم التعيين\par \textbf{7.}\ نهاية كثير حدود ودالة ناطقة عند $\pm\infty$\par \textbf{8.}\ طرق إزالة حالات عدم التعيين\par \textbf{9.}\ المستقيم المقارب المائل والوضع النسبي\par \textbf{10.}\ مخطط دراسة دالة وخلاصة الطرائق}
+\end{BOX}
+
+% =====================================================
+\section{نهاية غير منتهية عند عدد حقيقي}
+\begin{mithal}[نشاط تمهيدي]
+الدالة $f(x)=\dfrac1{(x-3)^2}$ معرفة على $\R-\{3\}$. نحسب بعض القيم:
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x$ & $2{,}9$ & $2{,}99$ & $2{,}999$ & $3{,}001$ & $3{,}01$ & $3{,}1$\\\hline
+$f(x)$ & $10^2$ & $10^4$ & $10^6$ & $10^6$ & $10^4$ & $10^2$\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+كلما اقترب $x$ من $3$ أخذت $f(x)$ قيمًا كبيرة جدًا: نقول إن نهاية $f$ عند $3$ هي $+\infty$.
+\end{mithal}
+
+\begin{tarif}
+$\LW{f}$ دالة معرفة على مجال من الشكل $\LW{]a-r;a[\cup]a;a+r[}$.\par
+القول إن نهاية $\LW{f}$ عند $\LW{a}$ هي $\LW{+\infty}$ يعني أن $\LW{f(x)}$ يصبح أكبر من أي عدد موجب $\LW{A}$ (مهما كان كبيرًا) بشرط أن يكون $\LW{x}$ قريبًا بالقدر الكافي من $\LW{a}$. نكتب:
+\[\LW{\Lm{a}f(x)=+\infty}\]
+وبالمثل نعرّف $\LW{\Lm{a}f(x)=-\infty}$.
+\end{tarif}
+
+\begin{khassia}[نتائج أساسية (تقبل دون برهان)]
+من أجل كل عدد حقيقي $\LW{a}$ ومن أجل كل عدد طبيعي $\LW{n\geq1}$:
+\[\LW{\Lm{0}\frac1{x^2}=+\infty \qquad;\qquad \Lm{a}\frac1{(x-a)^2}=+\infty \qquad;\qquad \Lm{a}\frac1{(x-a)^{2n}}=+\infty}\]
+\end{khassia}
+
+% =====================================================
+\section{النهاية من اليمين ومن اليسار}
+\begin{tarif}
+\begin{itemize}
+\item \textbf{النهاية من اليمين} عند $\LW{a}$: نقرّب $\LW{x}$ من $\LW{a}$ بقيم أكبر من $\LW{a}$ ، ونكتب $\LW{\Lm{a^+}f(x)}$ أو $\LW{\displaystyle\lim_{\substack{x\to a\\x>a}}f(x)}$.
+\item \textbf{النهاية من اليسار} عند $\LW{a}$: نقرّب $\LW{x}$ من $\LW{a}$ بقيم أصغر من $\LW{a}$ ، ونكتب $\LW{\Lm{a^-}f(x)}$ أو $\LW{\displaystyle\lim_{\substack{x\to a\\x<a}}f(x)}$.
+\end{itemize}
+\end{tarif}
+
+\RL{0.56}{%
+\begin{khassia}[مبرهنة]
+\[\LW{\Lm{a^+}\frac1{x-a}=+\infty \qquad;\qquad \Lm{a^-}\frac1{x-a}=-\infty}\]
+وبالخصوص:
+\[\LW{\Lm{0^+}\frac1x=+\infty \qquad;\qquad \Lm{0^-}\frac1x=-\infty}\]
+\end{khassia}
+\begin{molahada}[الرمزان $0^+$ و $0^-$]
+نكتب $0^+$ لعبارة تؤول إلى $0$ وهي موجبة ، و $0^-$ لعبارة تؤول إلى $0$ وهي سالبة.
+\end{molahada}}{0.4}{%
+\begin{GR}{-3.2}{3.2}{-3.2}{3.2}{0.6}
+\Ticks{-2,-1,1,2}{-2,-1,1,2}
+\draw[cDef,very thick,domain=0.31:3.2,samples=80] plot(\x,{1/\x});
+\draw[cDef,very thick,domain=-3.2:-0.31,samples=80] plot(\x,{1/\x});
+\node[cDef] at (2,1.2){$y=\frac1x$};
+\node[cThm] at (0.75,2.8){$+\infty$};
+\node[cThm] at (-0.75,-2.8){$-\infty$};
+\end{GR}}
+
+\begin{tariqa}[حساب نهاية دالة ناطقة عند قيمة يعدم فيها المقام]
+\begin{enumerate}
+\item نحسب نهاية البسط (عدد غير معدوم $l$).
+\item ندرس \textbf{إشارة المقام} بجوار $a$ (جدول إشارة) لنعرف هل يؤول إلى $0^+$ أم إلى $0^-$.
+\item نطبق قاعدة الإشارات: $\dfrac{l}{0^+}$ و $\dfrac{l}{0^-}$ تساوي $+\infty$ أو $-\infty$ حسب إشارة $l$.
+\end{enumerate}
+\end{tariqa}
+
+\begin{mithal}
+$f(x)=\dfrac1{x^2+x-2}$ على $\R-\{-2;1\}$ ، ولدينا $x^2+x-2=(x+2)(x-1)$.
+\begin{TAB}
+\tkzTabInit[lgt=2.2,espcl=2.4]{$x$/1,$x^2+x-2$/1}{$-\infty$,$-2$,$1$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\end{TAB}
+\LD{f(x)}{-2^-}{+\infty} $\Car{\Lm{-2}1=1\\ \Lm{-2^-}\left(x^2+x-2\right)=0^+}$
+\LD{f(x)}{-2^+}{-\infty} $\Car{\Lm{-2}1=1\\ \Lm{-2^+}\left(x^2+x-2\right)=0^-}$
+\LD{f(x)}{1^-}{-\infty} $\Car{\Lm{1}1=1\\ \Lm{1^-}\left(x^2+x-2\right)=0^-}$
+\LD{f(x)}{1^+}{+\infty} $\Car{\Lm{1}1=1\\ \Lm{1^+}\left(x^2+x-2\right)=0^+}$
+\end{mithal}
+
+% =====================================================
+\section{المستقيم المقارب الموازي لمحور التراتيب}
+\begin{tarif}
+إذا كانت نهاية $\LW{f}$ عند $\LW{a}$ (أو من اليمين أو من اليسار) هي $\LW{+\infty}$ أو $\LW{-\infty}$ ، نقول إن المستقيم ذا المعادلة $\LW{x=a}$ \textbf{مستقيم مقارب} للمنحنى $\LW{(C_f)}$ \textbf{يوازي محور التراتيب} (مقارب عمودي).
+\end{tarif}
+
+\begin{mithal}[تفسير بياني للمثال السابق]
+\RL{0.5}{$f(x)=\dfrac1{x^2+x-2}$\E
+المستقيمان ذوا المعادلتين \bx{x=-2} و \bx{x=1} مقاربان للمنحنى $(C_f)$ يوازيان محور التراتيب.\E
+ونلاحظ أيضًا أن: $\Lm{\pm\infty}f(x)=0$ ، إذن المستقيم ذو المعادلة \bx{y=0} مقارب أفقي (الفقرة 5).}{0.46}{%
+\begin{GR}{-4.2}{3.2}{-3.2}{3.2}{0.55}
+\Ticks{-4,-3,-1,2,3}{-2,-1,1,2}
+\draw[cThm,dashed] (-2,-3.2)--(-2,3.2) (1,-3.2)--(1,3.2);
+\node[cThm,font=\scriptsize] at (-3,2.8){$x=-2$}; \node[cThm,font=\scriptsize] at (1.9,2.8){$x=1$};
+\draw[cDef,very thick,domain=-4.2:-2.14,samples=80] plot(\x,{1/(\x*\x+\x-2)});
+\draw[cDef,very thick,domain=-1.88:0.88,samples=80] plot(\x,{1/(\x*\x+\x-2)});
+\draw[cDef,very thick,domain=1.1:3.2,samples=80] plot(\x,{1/(\x*\x+\x-2)});
+\end{GR}}
+\end{mithal}
+
+% =====================================================
+\section{النهاية عند $+\infty$ وعند $-\infty$}
+\subsection{نهاية غير منتهية}
+\begin{tarif}
+القول إن نهاية $\LW{f}$ عند $\LW{+\infty}$ هي $\LW{+\infty}$ يعني أن $\LW{f(x)}$ يصبح أكبر من أي عدد موجب $\LW{A}$ بشرط أن يكون $\LW{x}$ كبيرًا بالقدر الكافي. نكتب $\LW{\Lm{+\infty}f(x)=+\infty}$ (وبالمثل لباقي الحالات).
+\end{tarif}
+
+\begin{khassia}[نهايات الدوال المرجعية]
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{الدالة} & $\LW{x}$ & $\LW{x^2}$ & $\LW{x^3}$ & $\LW{\sqrt x}$ & $\LW{x^n\ (n\geq1)}$\\\hline
+\ar{النهاية عند $\LW{+\infty}$} & $\LW{+\infty}$ & $\LW{+\infty}$ & $\LW{+\infty}$ & $\LW{+\infty}$ & $\LW{+\infty}$\\\hline
+\ar{النهاية عند $\LW{-\infty}$} & $\LW{-\infty}$ & $\LW{+\infty}$ & $\LW{-\infty}$ & \ar{غير معرفة} & \ar{$\LW{+\infty}$ إذا كان $\LW{n}$ زوجيًا ، $\LW{-\infty}$ إذا كان $\LW{n}$ فرديًا}\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+\end{khassia}
+
+\subsection{نهاية منتهية}
+\begin{tarif}
+القول إن نهاية $\LW{f}$ عند $\LW{+\infty}$ هي العدد $\LW{b}$ يعني أن $\LW{f(x)}$ يقترب من $\LW{b}$ بالقدر الذي نريد بشرط أن يكون $\LW{x}$ كبيرًا بالقدر الكافي. نكتب: $\LW{\Lm{+\infty}f(x)=b}$.
+\end{tarif}
+
+\begin{khassia}
+\[\LW{\Lm{\pm\infty}\frac1x=0 \qquad;\qquad \Lm{\pm\infty}\frac1{x^n}=0 \qquad;\qquad \Lm{+\infty}\frac1{\sqrt x}=0 \qquad;\qquad \Lm{\pm\infty}\frac1{x+a}=0}\]
+\end{khassia}
+
+% =====================================================
+\section{المستقيم المقارب الموازي لمحور الفواصل}
+\begin{tarif}
+إذا كانت $\LW{\Lm{+\infty}f(x)=b}$ (أو $\LW{\Lm{-\infty}f(x)=b}$) حيث $\LW{b}$ عدد حقيقي ، نقول إن المستقيم ذا المعادلة $\LW{y=b}$ \textbf{مستقيم مقارب} للمنحنى $\LW{(C_f)}$ \textbf{يوازي محور الفواصل} بجوار $\LW{+\infty}$ (أو $\LW{-\infty}$).
+\end{tarif}
+
+\begin{mithal}
+$f(x)=\dfrac{2x-1}{x+1}$ على $\R-\{-1\}$.\E
+لدينا: $\Lm{\pm\infty}f(x)=\Lm{\pm\infty}\dfrac{2x}{x}=\bx{2}$\E
+إذن المستقيم ذو المعادلة \bx{y=2} مقارب أفقي.
+\LD{f(x)}{-1^-}{+\infty} $\Car{\Lm{-1}(2x-1)=-3\\ \Lm{-1^-}(x+1)=0^-}$
+\LD{f(x)}{-1^+}{-\infty} $\Car{\Lm{-1}(2x-1)=-3\\ \Lm{-1^+}(x+1)=0^+}$
+\E إذن المستقيم ذو المعادلة \bx{x=-1} مقارب عمودي.
+\begin{GR}{-5.2}{4.2}{-3.2}{7.2}{0.42}
+\Ticks{-4,-2,2,4}{-2,2,4,6}
+\draw[cThm,dashed] (-1,-3.2)--(-1,7.2) (-5.2,2)--(4.2,2);
+\node[cThm,font=\scriptsize] at (-2.4,6.6){$x=-1$}; \node[cThm,font=\scriptsize,above] at (3,2){$y=2$};
+\draw[cDef,very thick,domain=-5.2:-1.6,samples=80] plot(\x,{(2*\x-1)/(\x+1)});
+\draw[cDef,very thick,domain=-0.4:4.2,samples=80] plot(\x,{(2*\x-1)/(\x+1)});
+\end{GR}
+\end{mithal}
+
+% =====================================================
+\section{العمليات على النهايات وحالات عدم التعيين}
+$l$ و $l'$ عددان حقيقيان ، و $\alpha$ يرمز إلى عدد حقيقي أو $+\infty$ أو $-\infty$. نقبل المبرهنات التالية (ح.ع.ت = حالة عدم تعيين):
+
+\begin{khassia}[نهاية مجموع]
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$\LW{\lim\limits_{x\to\alpha}f(x)}$ & $\LW{l}$ & $\LW{l}$ & $\LW{l}$ & $\LW{+\infty}$ & $\LW{-\infty}$ & $\LW{+\infty}$\\\hline
+$\LW{\lim\limits_{x\to\alpha}g(x)}$ & $\LW{l'}$ & $\LW{+\infty}$ & $\LW{-\infty}$ & $\LW{+\infty}$ & $\LW{-\infty}$ & $\LW{-\infty}$\\\hline
+$\LW{\lim\limits_{x\to\alpha}\big(f(x)+g(x)\big)}$ & $\LW{l+l'}$ & $\LW{+\infty}$ & $\LW{-\infty}$ & $\LW{+\infty}$ & $\LW{-\infty}$ & \cellcolor{cThm!15}\ar{ح.ع.ت}\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+\end{khassia}
+
+\begin{khassia}[نهاية جداء]
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$\LW{\lim\limits_{x\to\alpha}f(x)}$ & $\LW{l}$ & $\LW{l>0}$ & $\LW{l>0}$ & $\LW{l<0}$ & $\LW{l<0}$ & $\LW{\pm\infty}$ & $\LW{0}$\\\hline
+$\LW{\lim\limits_{x\to\alpha}g(x)}$ & $\LW{l'}$ & $\LW{+\infty}$ & $\LW{-\infty}$ & $\LW{+\infty}$ & $\LW{-\infty}$ & $\LW{\pm\infty}$ & $\LW{\pm\infty}$\\\hline
+$\LW{\lim\limits_{x\to\alpha}\big(f(x)\times g(x)\big)}$ & $\LW{l\times l'}$ & $\LW{+\infty}$ & $\LW{-\infty}$ & $\LW{-\infty}$ & $\LW{+\infty}$ & \ar{قاعدة الإشارات} & \cellcolor{cThm!15}\ar{ح.ع.ت}\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+\end{khassia}
+
+\begin{khassia}[نهاية مقلوب وحاصل قسمة]
+\begin{center}
+\begin{LTR}\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$\LW{\lim\limits_{x\to\alpha}g(x)}$ & $\LW{l'\neq0}$ & $\LW{\pm\infty}$ & $\LW{0^+}$ & $\LW{0^-}$\\\hline
+$\LW{\lim\limits_{x\to\alpha}\dfrac1{g(x)}}$ & $\LW{\dfrac1{l'}}$ & $\LW{0}$ & $\LW{+\infty}$ & $\LW{-\infty}$\\\hline
+\end{tabular}\par\medskip
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$\LW{\lim\limits_{x\to\alpha}f(x)}$ & $\LW{l}$ & $\LW{l}$ & $\LW{l\neq0}$ & $\LW{\pm\infty}$ & $\LW{0}$ & $\LW{\pm\infty}$\\\hline
+$\LW{\lim\limits_{x\to\alpha}g(x)}$ & $\LW{l'\neq0}$ & $\LW{\pm\infty}$ & $\LW{0^\pm}$ & $\LW{l'\neq0}$ & $\LW{0}$ & $\LW{\pm\infty}$\\\hline
+$\LW{\lim\limits_{x\to\alpha}\dfrac{f(x)}{g(x)}}$ & $\LW{\dfrac{l}{l'}}$ & $\LW{0}$ & $\LW{\pm\infty}$ & $\LW{\pm\infty}$ & \cellcolor{cThm!15}\ar{ح.ع.ت} & \cellcolor{cThm!15}\ar{ح.ع.ت}\\\hline
+\end{tabular}\end{LTR}
+\end{center}
+(إشارة النتيجة $\LW{\pm\infty}$ تُعيَّن بقاعدة الإشارات.)
+\end{khassia}
+
+\begin{khassia}[حالات عدم التعيين الأربع]
+\[\LW{\frac00 \qquad\qquad \frac\infty\infty \qquad\qquad 0\times\infty \qquad\qquad +\infty-\infty}\]
+في هذه الحالات لا تسمح المبرهنات بالاستنتاج المباشر ، فيجب \textbf{تحويل عبارة الدالة} (الفقرة 8).
+\end{khassia}
+
+\begin{mithal}
+\textbf{1.} \LDx{\dfrac{x^2-1}{\sqrt x}}{0^+}{-\infty} $\Car{\Lm{0}\left(x^2-1\right)=-1\\ \Lm{0^+}\sqrt x=0^+}$
+\E\textbf{2.} \LDx{\left(x+\dfrac1{x+1}\right)}{-\infty}{-\infty} $\Car{\Lm{-\infty}x=-\infty\\ \Lm{-\infty}\dfrac1{x+1}=0}$
+\E\textbf{3.} $\Lm{+\infty}\left(-x^3+2x-2\right)$: حالة عدم تعيين من الشكل $-\infty+\infty$ ، نستعمل الفقرة 7.
+\end{mithal}
+
+% =====================================================
+\section{نهاية كثير حدود ودالة ناطقة عند $+\infty$ و $-\infty$}
+\begin{khassia}[قاعدتان]
+\begin{enumerate}
+\item نهاية \textbf{كثير حدود} عند $\LW{+\infty}$ أو $\LW{-\infty}$ هي نهاية \textbf{حدّه الأعلى درجة}.
+\item نهاية \textbf{دالة ناطقة} عند $\LW{+\infty}$ أو $\LW{-\infty}$ هي نهاية \textbf{حاصل قسمة الحدين الأعلى درجة} في البسط والمقام.
+\end{enumerate}
+\textbf{تنبيه:} هاتان القاعدتان صالحتان \textbf{فقط} عند $\LW{\pm\infty}$ ، وليس عند عدد حقيقي.
+\end{khassia}
+
+\begin{mithal}
+\begin{enumerate}
+\item $\Lm{+\infty}\left(-x^3+2x-2\right)=\Lm{+\infty}\left(-x^3\right)=\bx{-\infty}$
+\item $\Lm{-\infty}\left(3x^2+x+2\right)=\Lm{-\infty}3x^2=\bx{+\infty}$
+\item $\Lm{+\infty}\dfrac{2x^2+3x+1}{x^2-1}=\Lm{+\infty}\dfrac{2x^2}{x^2}=\bx{2}$
+\item $\Lm{-\infty}\dfrac{1+x-x^2}{x^3-1}=\Lm{-\infty}\dfrac{-x^2}{x^3}=\Lm{-\infty}\dfrac{-1}{x}=\bx{0}$
+\item $\Lm{-\infty}\dfrac{x^3+x-2}{x-1}=\Lm{-\infty}\dfrac{x^3}{x}=\Lm{-\infty}x^2=\bx{+\infty}$
+\end{enumerate}
+\end{mithal}
+
+% =====================================================
+\section{طرق إزالة حالات عدم التعيين}
+\subsection{الحالة $\frac\infty\infty$}
+\begin{tariqa}
+\begin{itemize}
+\item \textbf{دالة ناطقة:} نطبق قاعدة الحدين الأعلى درجة.
+\item \textbf{دالة صمّاء (بها جذر):} نخرج الحد الأعلى درجة عاملًا مشتركًا ، مع الانتباه إلى أن $\sqrt{x^2}=|x|$:\E
+$\sqrt{x^2}=x$ عند $+\infty$ ، و $\sqrt{x^2}=-x$ عند $-\infty$.
+\end{itemize}
+\end{tariqa}
+
+\begin{mithal}
+نحسب $\Lm{-\infty}\dfrac{\sqrt{2x^2-3}}{x+2}$ (حالة $\frac\infty\infty$). من أجل $x<0$ نكتب:
+\[\frac{\sqrt{2x^2-3}}{x+2}=\frac{|x|\sqrt{2-\frac3{x^2}}}{x\left(1+\frac2x\right)}=\frac{-x\sqrt{2-\frac3{x^2}}}{x\left(1+\frac2x\right)}=\frac{-\sqrt{2-\frac3{x^2}}}{1+\frac2x}\]
+\LD{\dfrac{\sqrt{2x^2-3}}{x+2}}{-\infty}{-\sqrt2} $\Car{\Lm{-\infty}\left(-\sqrt{2-\frac3{x^2}}\right)=-\sqrt2\\ \Lm{-\infty}\left(1+\frac2x\right)=1}$
+\end{mithal}
+
+\subsection{الحالة $+\infty-\infty$}
+\begin{tariqa}
+\begin{itemize}
+\item \textbf{كثير حدود:} نهاية الحد الأعلى درجة.
+\item \textbf{عبارة بها جذر:} نستعمل العامل المشترك أو الضرب في المرافق: \quad $\sqrt A-B=\dfrac{A-B^2}{\sqrt A+B}$.
+\end{itemize}
+\end{tariqa}
+
+\begin{mithal}
+\textbf{1. بالمرافق:} نحسب $\Lm{+\infty}\left(\sqrt{x^2+1}-x\right)$ (حالة $+\infty-\infty$). نكتب:
+\[\sqrt{x^2+1}-x=\frac{\left(x^2+1\right)-x^2}{\sqrt{x^2+1}+x}=\frac1{\sqrt{x^2+1}+x}\]
+\LD{\left(\sqrt{x^2+1}-x\right)}{+\infty}{0} $\Car{\Lm{+\infty}1=1\\ \Lm{+\infty}\left(\sqrt{x^2+1}+x\right)=+\infty}$
+\E
+\textbf{2. بالعامل المشترك:} نحسب $\Lm{+\infty}\left(\sqrt{2x-3}-3x+2\right)$. من أجل $x>0$ نكتب:
+\[\sqrt{2x-3}-3x+2=x\left(\sqrt{\frac2x-\frac3{x^2}}-3+\frac2x\right)\]
+\LD{\left(\sqrt{2x-3}-3x+2\right)}{+\infty}{-\infty} $\Car{\Lm{+\infty}x=+\infty\\ \Lm{+\infty}\left(\sqrt{\frac2x-\frac3{x^2}}-3+\frac2x\right)=-3}$
+\end{mithal}
+
+\subsection{الحالة $\frac00$ (عند عدد حقيقي $x_0$)}
+\begin{tariqa}
+البسط والمقام ينعدمان عند $x_0$ ، إذن كلاهما يقبل القسمة على $(x-x_0)$. نستعمل:
+\begin{itemize}
+\item \textbf{التحليل} (الجداءات الشهيرة ، القسمة الإقليدية) ثم الاختزال على $(x-x_0)$.
+\item \textbf{الضرب في المرافق} إذا وُجد جذر.
+\item \textbf{العدد المشتق:} $\Lm{x_0}\dfrac{f(x)-f(x_0)}{x-x_0}=f'(x_0)$ \quad (مثلًا: $\Lm{0}\dfrac{\sin x}{x}=\sin'(0)=\cos0=1$).
+\end{itemize}
+\end{tariqa}
+
+\begin{mithal}
+\textbf{1.} $\Lm{2}\dfrac{x^3-8}{x^2-4}$ (حالة $\frac00$). نكتب:
+\[\frac{x^3-8}{x^2-4}=\frac{(x-2)\left(x^2+2x+4\right)}{(x-2)(x+2)}=\frac{x^2+2x+4}{x+2}\]
+\LD{\dfrac{x^3-8}{x^2-4}}{2}{3} $\Car{\Lm{2}\left(x^2+2x+4\right)=12\\ \Lm{2}(x+2)=4}$
+\E
+\textbf{2.} $\Lm{1}\dfrac{\sqrt{x+3}-2}{x-1}$ (حالة $\frac00$). نكتب:
+\[\frac{\sqrt{x+3}-2}{x-1}=\frac{(x+3)-4}{(x-1)\left(\sqrt{x+3}+2\right)}=\frac1{\sqrt{x+3}+2}\]
+\LD{\dfrac{\sqrt{x+3}-2}{x-1}}{1}{\frac14} $\Car{\Lm{1}1=1\\ \Lm{1}\left(\sqrt{x+3}+2\right)=4}$
+\end{mithal}
+
+% =====================================================
+\section{المستقيم المقارب المائل والوضع النسبي}
+\begin{tarif}
+$\LW{(\Delta)}$ المستقيم ذو المعادلة $\LW{y=ax+b}$ ($\LW{a\neq0}$). نقول إن $\LW{(\Delta)}$ \textbf{مستقيم مقارب مائل} للمنحنى $\LW{(C_f)}$ بجوار $\LW{+\infty}$ (على الترتيب $\LW{-\infty}$) إذا كان:
+\[\LW{\Lm{+\infty}\big[f(x)-(ax+b)\big]=0}\]
+(على الترتيب: \ $\LW{\Lm{-\infty}\big[f(x)-(ax+b)\big]=0}$).
+\end{tarif}
+
+\begin{khassia}[حالة شائعة]
+إذا أمكن كتابة $\LW{f(x)=ax+b+g(x)}$ حيث $\LW{\Lm{\pm\infty}g(x)=0}$ ، فإن المستقيم $\LW{y=ax+b}$ مقارب مائل لـ $\LW{(C_f)}$ بجوار $\LW{\pm\infty}$.\E
+\textbf{مثال:} $\LW{f(x)=ax+b+\dfrac{c}{x-d}}$ \quad و \quad $\LW{\Lm{\pm\infty}\dfrac{c}{x-d}=0}$ ، إذن $\LW{y=ax+b}$ مقارب مائل.
+\end{khassia}
+
+\begin{tariqa}[الوضع النسبي لـ $(C_f)$ والمستقيم المقارب المائل]
+ندرس إشارة الفرق $d(x)=f(x)-(ax+b)$ ونلخصها في \textbf{جدول الوضع النسبي}:
+\begin{itemize}
+\item $d(x)>0$: $(C_f)$ \textbf{فوق} $(\Delta)$ \quad؛\quad $d(x)<0$: $(C_f)$ \textbf{تحت} $(\Delta)$ \quad؛\quad $d(x)=0$: $(C_f)$ \textbf{يقطع} $(\Delta)$.
+\end{itemize}
+\end{tariqa}
+
+\begin{tariqa}[كتابة $f(x)=ax+b+\frac{c}{x-d}$]
+\textbf{بالمطابقة:} نوحد المقامات في $ax+b+\dfrac{c}{x-d}$ ، ثم نطابق معاملات البسط مع بسط $f$. \textbf{أو بالقسمة الإقليدية} لبسط $f$ على $(x-d)$.
+\end{tariqa}
+
+\begin{tmr}
+$f$ الدالة المعرفة على $\R-\{1\}$ بـ: $f(x)=x+1+\dfrac5{1-x}$.
+\begin{enumerate}
+\item احسب نهايات $f$ عند حدود مجموعة التعريف وفسّر النتائج بيانيًا.
+\item أثبت أن المستقيم $(\Delta):\ y=x+1$ مقارب مائل لـ $(C_f)$ بجوار $+\infty$ و $-\infty$.
+\item ادرس وضعية $(C_f)$ بالنسبة إلى $(\Delta)$.
+\end{enumerate}
+\end{tmr}
+
+\begin{hal}
+\textbf{1.} \LDx{f(x)}{-\infty}{-\infty} $\Car{\Lm{-\infty}(x+1)=-\infty\\ \Lm{-\infty}\dfrac5{1-x}=0}$
+\LD{f(x)}{+\infty}{+\infty} $\Car{\Lm{+\infty}(x+1)=+\infty\\ \Lm{+\infty}\dfrac5{1-x}=0}$
+\E عند $1$: إذا كان $x<1$ فإن $1-x\to0^+$ ، وإذا كان $x>1$ فإن $1-x\to0^-$:
+\LD{f(x)}{1^-}{+\infty} $\Car{\Lm{1}(x+1)=2\\ \Lm{1^-}\dfrac5{1-x}=+\infty}$
+\LD{f(x)}{1^+}{-\infty} $\Car{\Lm{1}(x+1)=2\\ \Lm{1^+}\dfrac5{1-x}=-\infty}$
+\E\textbf{التفسير:} المستقيم ذو المعادلة \bx{x=1} مقارب للمنحنى $(C_f)$ يوازي محور التراتيب.
+\E\textbf{2.} $f(x)-(x+1)=\dfrac5{1-x}$ \quad و \quad $\Lm{\pm\infty}\dfrac5{1-x}=0$
+\E إذن \bxt{المستقيم $(\Delta):\ y=x+1$ مقارب مائل بجوار $\pm\infty$}.
+\E\textbf{3.} إشارة $f(x)-(x+1)=\dfrac5{1-x}$ هي إشارة $1-x$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{5}{1-x}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (6.175,-1.35){$+$};
+\node[align=center,font=\small] at (6.175,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (11.925,-1.35){$-$};
+\node[align=center,font=\small] at (11.925,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\draw[double,thick] (9.05,-0.9)--(9.05,-4.6);
+\end{tikzpicture}
+\end{FIG}
+\begin{GR}{-5.2}{7.2}{-7.2}{8.2}{0.38}
+\Ticks{-4,-2,2,4,6}{-6,-4,-2,2,4,6}
+\draw[cThm,dashed] (1,-7.2)--(1,8.2); \node[cThm,font=\scriptsize,right] at (1,7.6){$x=1$};
+\draw[cRem,thick,domain=-5.2:7.2] plot(\x,{\x+1}); \node[cRem,font=\scriptsize] at (6,5.2){$(\Delta)$};
+\draw[cDef,very thick,domain=-5.2:0.3,samples=80] plot(\x,{\x+1+5/(1-\x)});
+\draw[cDef,very thick,domain=1.75:7.2,samples=80] plot(\x,{\x+1+5/(1-\x)});
+\node[cDef,font=\scriptsize] at (-3,1.5){$(C_f)$};
+\end{GR}
+\end{hal}
+
+% =====================================================
+\section{مخطط دراسة دالة وخلاصة الطرائق}
+\begin{tariqa}[مخطط دراسة دالة]
+\begin{enumerate}
+\item \textbf{مجموعة التعريف} ، ودراسة الشفعية أو مراكز ومحاور التناظر إن أمكن (لتقليص مجال الدراسة).
+\item \textbf{النهايات} عند حدود مجموعة التعريف وتفسيرها (المستقيمات المقاربة).
+\item \textbf{اتجاه التغير:} حساب $f'(x)$ ودراسة إشارتها ، والقيم الحدية.
+\item \textbf{جدول التغيرات} (نضع فيه النهايات والقيم الحدية).
+\item \textbf{المستقيمات المقاربة} المائلة والوضع النسبي (جدول الوضع النسبي).
+\item \textbf{التمثيل البياني:} المستقيمات المقاربة ، نقط التقاطع مع المحورين ، المماسات المطلوبة ، ثم المنحنى.
+\end{enumerate}
+\end{tariqa}
+
+\begin{BOX}{cMeth}{ماذا أفعل عندما يُطلب مني ...؟}
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{|p{0.6\textwidth}|p{0.27\textwidth}|}\hline
+\rowcolor{cMeth!12}\textbf{الطريقة} & \textbf{المطلوب}\\\hline
+الحد الأعلى درجة (كثير حدود) أو حاصل قسمة الحدين الأعلى درجة (ناطقة). & نهاية عند $\pm\infty$\\\hline
+نهاية البسط ، ثم إشارة المقام بجوار $a$ ($0^+$ أو $0^-$) ، ونكتب النهاية مع الحاضنة. & نهاية ناطقة عند قيمة تعدم المقام\\\hline
+تحليل واختزال ، أو المرافق ، أو العدد المشتق. & ح.ع.ت $\frac00$\\\hline
+عامل مشترك ، أو المرافق ، مع $\sqrt{x^2}=|x|$. & ح.ع.ت مع جذر\\\hline
+$\LW{\Lm{a}f(x)=\pm\infty}$ \quad إذن \quad $\LW{x=a}$ & مقارب عمودي\\\hline
+$\LW{\Lm{\pm\infty}f(x)=b}$ \quad إذن \quad $\LW{y=b}$ & مقارب أفقي\\\hline
+$\LW{\Lm{\pm\infty}\big[f(x)-(ax+b)\big]=0}$ & مقارب مائل\\\hline
+إشارة $f(x)-(ax+b)$ في جدول الوضع النسبي. & الوضع النسبي\\\hline
+\end{tabular}
+\end{center}
+\end{BOX}
+\end{document}

@@ -1,0 +1,943 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings,patterns}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\newtcbox{\bxtbox}{on line,coltext=cThm,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
+\renewcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\newcommand{\LW}[1]{{\color{cDef}#1}}
+\newcommand{\Car}[1]{\left\{\begin{array}{l}#1\end{array}\right.}
+\newcommand{\Lm}[1]{\displaystyle\lim_{x\to#1}}
+\newcommand{\LDx}[3]{لدينا: $\Lm{#2}#1=\bx{#3}$ لأنّ: \quad}
+\newcommand{\LD}{\par\LDx}
+\newcommand{\E}{\par\smallskip}
+\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\SetHeader{\small\bfseries\color{cSec}تمارين: النهايات}{\small\color{cSec}السنة الثانية ثانوي -- الشعب العلمية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\fontsize{28}{34}\selectfont\bfseries سلسلة تمارين: النهايات}\\[8pt]
+{\color{cSec!80!black}\large تمارين متنوعة ومسائل شاملة مع الحلول المفصلة خطوة بخطوة}\\[5pt]
+{\color{cSec!80!black}\large السنة الثانية ثانوي -- الشعب العلمية}
+\end{tcolorbox}
+\end{LTR}
+
+% =====================================================
+\section{النهاية عند عدد حقيقي والمستقيمات المقاربة العمودية}
+\begin{tamrin}{النهاية من اليمين ومن اليسار}
+احسب النهايات التالية ، ثم فسّر كل نتيجة بيانيًا:
+\begin{enumerate}
+\item $f(x)=\dfrac3{x-1}$: \quad $\Lm{1^-}f(x)$ و $\Lm{1^+}f(x)$.
+\item $g(x)=\dfrac{2x+1}{x+2}$: \quad $\Lm{-2^-}g(x)$ و $\Lm{-2^+}g(x)$.
+\item $h(x)=\dfrac{-x+3}{(x-2)^2}$: \quad $\Lm{2}h(x)$.
+\item $k(x)=\dfrac{x^2+1}{x^2-4}$: \quad النهايات عند $-2$ وعند $2$ من اليمين ومن اليسار.
+\end{enumerate}
+\end{tamrin}
+
+\begin{hal}
+\textbf{1.} إذا كان $x<1$ فإن $x-1\to0^-$ ، وإذا كان $x>1$ فإن $x-1\to0^+$:
+\LD{f(x)}{1^-}{-\infty} $\Car{\Lm{1}3=3\\ \Lm{1^-}(x-1)=0^-}$
+\LD{f(x)}{1^+}{+\infty} $\Car{\Lm{1}3=3\\ \Lm{1^+}(x-1)=0^+}$
+\E\textbf{التفسير:} المستقيم ذو المعادلة \bx{x=1} مقارب لـ $(C_f)$ يوازي محور التراتيب.
+\E\textbf{2.} إذا كان $x<-2$ فإن $x+2\to0^-$ ، وإذا كان $x>-2$ فإن $x+2\to0^+$:
+\LD{g(x)}{-2^-}{+\infty} $\Car{\Lm{-2}(2x+1)=-3\\ \Lm{-2^-}(x+2)=0^-}$
+\LD{g(x)}{-2^+}{-\infty} $\Car{\Lm{-2}(2x+1)=-3\\ \Lm{-2^+}(x+2)=0^+}$
+\E\textbf{التفسير:} المستقيم ذو المعادلة \bx{x=-2} مقارب عمودي لـ $(C_g)$.
+\E\textbf{3.} المقام $(x-2)^2$ مربع فهو موجب دائمًا:
+\LD{h(x)}{2}{+\infty} $\Car{\Lm{2}(-x+3)=1\\ \Lm{2}(x-2)^2=0^+}$
+\E\textbf{التفسير:} المستقيم ذو المعادلة \bx{x=2} مقارب عمودي لـ $(C_h)$.
+\E\textbf{4.} $x^2-4=(x-2)(x+2)$ ، وإشارة المقام:
+\begin{TAB}
+\tkzTabInit[lgt=2,espcl=2.4]{$x$/1,$x^2-4$/1}{$-\infty$,$-2$,$2$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\end{TAB}
+\LD{k(x)}{-2^-}{+\infty} $\Car{\Lm{-2}\left(x^2+1\right)=5\\ \Lm{-2^-}\left(x^2-4\right)=0^+}$
+\LD{k(x)}{-2^+}{-\infty} $\Car{\Lm{-2}\left(x^2+1\right)=5\\ \Lm{-2^+}\left(x^2-4\right)=0^-}$
+\LD{k(x)}{2^-}{-\infty} $\Car{\Lm{2}\left(x^2+1\right)=5\\ \Lm{2^-}\left(x^2-4\right)=0^-}$
+\LD{k(x)}{2^+}{+\infty} $\Car{\Lm{2}\left(x^2+1\right)=5\\ \Lm{2^+}\left(x^2-4\right)=0^+}$
+\E\textbf{التفسير:} المستقيمان ذوا المعادلتين \bx{x=-2} و \bx{x=2} مقاربان لـ $(C_k)$ يوازيان محور التراتيب.
+\end{hal}
+
+% =====================================================
+\section{حساب النهايات وإزالة حالات عدم التعيين}
+\begin{tamrin}{النهايات عند $\pm\infty$}
+احسب النهايات التالية:\par
+\RL{0.48}{\textbf{1.} $\Lm{-\infty}\left(3x^2+x+2\right)$\par \textbf{2.} $\Lm{+\infty}\left(-x^3+2x-2\right)$\par \textbf{3.} $\Lm{+\infty}\dfrac{1+x-x^2}{x^3-1}$\par \textbf{4.} $\Lm{-\infty}\dfrac{x^3+x-2}{x-1}$}{0.48}{\textbf{5.} $\Lm{+\infty}\dfrac{2x+1}{x+1}$\par \textbf{6.} $\Lm{+\infty}\dfrac{x^2+3}{x^3-2x^2+3x}$\par \textbf{7.} $\Lm{+\infty}\dfrac{-4x^2+5}{2x^2+x}$\par \textbf{8.} $\Lm{-\infty}\left(x+\dfrac1{x+1}\right)$}
+\end{tamrin}
+
+\begin{hal}
+\textbf{1.} كثير حدود: نهاية الحد الأعلى درجة: \quad $\Lm{-\infty}\left(3x^2+x+2\right)=\Lm{-\infty}3x^2=\bx{+\infty}$
+\E\textbf{2.} حالة عدم تعيين من الشكل $-\infty+\infty$ ، نأخذ الحد الأعلى درجة:\E $\Lm{+\infty}\left(-x^3+2x-2\right)=\Lm{+\infty}\left(-x^3\right)=\bx{-\infty}$
+\E\textbf{3.} دالة ناطقة: \quad $\Lm{+\infty}\dfrac{1+x-x^2}{x^3-1}=\Lm{+\infty}\dfrac{-x^2}{x^3}=\Lm{+\infty}\dfrac{-1}{x}=\bx{0}$
+\E\textbf{4.} $\Lm{-\infty}\dfrac{x^3+x-2}{x-1}=\Lm{-\infty}\dfrac{x^3}{x}=\Lm{-\infty}x^2=\bx{+\infty}$
+\E\textbf{5.} $\Lm{+\infty}\dfrac{2x+1}{x+1}=\Lm{+\infty}\dfrac{2x}{x}=\bx{2}$
+\E\textbf{6.} $\Lm{+\infty}\dfrac{x^2+3}{x^3-2x^2+3x}=\Lm{+\infty}\dfrac{x^2}{x^3}=\Lm{+\infty}\dfrac1x=\bx{0}$
+\E\textbf{7.} $\Lm{+\infty}\dfrac{-4x^2+5}{2x^2+x}=\Lm{+\infty}\dfrac{-4x^2}{2x^2}=\bx{-2}$
+\E\textbf{8.} \LDx{\left(x+\dfrac1{x+1}\right)}{-\infty}{-\infty} $\Car{\Lm{-\infty}x=-\infty\\ \Lm{-\infty}\dfrac1{x+1}=0}$
+\end{hal}
+
+\begin{tamrin}{حالات عدم التعيين مع الجذور}
+احسب النهايات التالية:\par
+\RL{0.48}{\textbf{1.} $\Lm{-\infty}\dfrac{\sqrt{2x^2-3}}{x+2}$\par \textbf{2.} $\Lm{-\infty}\dfrac{\sqrt{3x^2+7}}{2-x}$\par \textbf{3.} $\Lm{-\infty}\dfrac{x}{\sqrt{x^2-1}}$\par \textbf{4.} $\Lm{+\infty}\left(\sqrt{x^2+1}-x\right)$}{0.48}{\textbf{5.} $\Lm{+\infty}\left(\sqrt{x^2+x+1}-x\right)$\par \textbf{6.} $\Lm{-\infty}\left(\sqrt{4x^2-3}+2x-2\right)$\par \textbf{7.} $\Lm{+\infty}\left(\sqrt{2x-3}-3x+2\right)$\par \textbf{8.} $\Lm{+\infty}\left(\sqrt{9x^2+x}-3x\right)$}
+\end{tamrin}
+
+\begin{hal}
+\textbf{تذكير:} $\LW{\sqrt{x^2}=|x|}$ ، أي $\LW{\sqrt{x^2}=-x}$ عندما $x\to-\infty$.
+\E\textbf{1.} حالة $\frac\infty\infty$. من أجل $x<0$ نكتب:
+\[\frac{\sqrt{2x^2-3}}{x+2}=\frac{-x\sqrt{2-\frac3{x^2}}}{x\left(1+\frac2x\right)}=\frac{-\sqrt{2-\frac3{x^2}}}{1+\frac2x}\]
+\LD{\dfrac{\sqrt{2x^2-3}}{x+2}}{-\infty}{-\sqrt2} $\Car{\Lm{-\infty}\left(-\sqrt{2-\frac3{x^2}}\right)=-\sqrt2\\ \Lm{-\infty}\left(1+\frac2x\right)=1}$
+\E\textbf{2.} حالة $\frac\infty\infty$. من أجل $x<0$ نكتب:
+\[\frac{\sqrt{3x^2+7}}{2-x}=\frac{-x\sqrt{3+\frac7{x^2}}}{-x\left(1-\frac2x\right)}=\frac{\sqrt{3+\frac7{x^2}}}{1-\frac2x}\]
+\LD{\dfrac{\sqrt{3x^2+7}}{2-x}}{-\infty}{\sqrt3} $\Car{\Lm{-\infty}\sqrt{3+\frac7{x^2}}=\sqrt3\\ \Lm{-\infty}\left(1-\frac2x\right)=1}$
+\E\textbf{3.} حالة $\frac\infty\infty$. من أجل $x<-1$ نكتب:
+\[\frac{x}{\sqrt{x^2-1}}=\frac{x}{-x\sqrt{1-\frac1{x^2}}}=\frac{-1}{\sqrt{1-\frac1{x^2}}}\]
+\LD{\dfrac{x}{\sqrt{x^2-1}}}{-\infty}{-1} $\Car{\Lm{-\infty}(-1)=-1\\ \Lm{-\infty}\sqrt{1-\frac1{x^2}}=1}$
+\E\textbf{4.} حالة $+\infty-\infty$. نضرب في المرافق ونكتب:
+\[\sqrt{x^2+1}-x=\frac{\left(x^2+1\right)-x^2}{\sqrt{x^2+1}+x}=\frac1{\sqrt{x^2+1}+x}\]
+\LD{\left(\sqrt{x^2+1}-x\right)}{+\infty}{0} $\Car{\Lm{+\infty}1=1\\ \Lm{+\infty}\left(\sqrt{x^2+1}+x\right)=+\infty}$
+\E\textbf{5.} حالة $+\infty-\infty$. بالمرافق ، ومن أجل $x>0$ نكتب:
+\[\sqrt{x^2+x+1}-x=\frac{x^2+x+1-x^2}{\sqrt{x^2+x+1}+x}=\frac{x\left(1+\frac1x\right)}{x\left(\sqrt{1+\frac1x+\frac1{x^2}}+1\right)}=\frac{1+\frac1x}{\sqrt{1+\frac1x+\frac1{x^2}}+1}\]
+\LD{\left(\sqrt{x^2+x+1}-x\right)}{+\infty}{\frac12} $\Car{\Lm{+\infty}\left(1+\frac1x\right)=1\\ \Lm{+\infty}\left(\sqrt{1+\frac1x+\frac1{x^2}}+1\right)=2}$
+\E\textbf{6.} حالة $+\infty-\infty$ (لأن $\Lm{-\infty}(2x-2)=-\infty$). بالمرافق ، ومن أجل $x<0$ نكتب:
+\[\sqrt{4x^2-3}+(2x-2)=\frac{\left(4x^2-3\right)-(2x-2)^2}{\sqrt{4x^2-3}-(2x-2)}=\frac{8x-7}{\sqrt{4x^2-3}-2x+2}\]
+\[\sqrt{4x^2-3}+(2x-2)=\frac{x\left(8-\frac7x\right)}{-x\left(\sqrt{4-\frac3{x^2}}+2-\frac2x\right)}=\frac{8-\frac7x}{-\left(\sqrt{4-\frac3{x^2}}+2-\frac2x\right)}\]
+\LD{\left(\sqrt{4x^2-3}+2x-2\right)}{-\infty}{-2} $\Car{\Lm{-\infty}\left(8-\frac7x\right)=8\\ \Lm{-\infty}\left(-\sqrt{4-\frac3{x^2}}-2+\frac2x\right)=-4}$
+\E\textbf{7.} بالعامل المشترك ، ومن أجل $x>0$ نكتب:
+\[\sqrt{2x-3}-3x+2=x\left(\sqrt{\frac2x-\frac3{x^2}}-3+\frac2x\right)\]
+\LD{\left(\sqrt{2x-3}-3x+2\right)}{+\infty}{-\infty} $\Car{\Lm{+\infty}x=+\infty\\ \Lm{+\infty}\left(\sqrt{\frac2x-\frac3{x^2}}-3+\frac2x\right)=-3}$
+\E\textbf{8.} حالة $+\infty-\infty$. بالمرافق ، ومن أجل $x>0$ نكتب:
+\[\sqrt{9x^2+x}-3x=\frac{9x^2+x-9x^2}{\sqrt{9x^2+x}+3x}=\frac{x}{x\left(\sqrt{9+\frac1x}+3\right)}=\frac1{\sqrt{9+\frac1x}+3}\]
+\LD{\left(\sqrt{9x^2+x}-3x\right)}{+\infty}{\frac16} $\Car{\Lm{+\infty}1=1\\ \Lm{+\infty}\left(\sqrt{9+\frac1x}+3\right)=6}$
+\end{hal}
+
+\begin{tamrin}{حالة عدم التعيين $\frac00$}
+احسب النهايات التالية:\par
+\RL{0.48}{\textbf{1.} $\Lm{-1}\dfrac{x^2-1}{x+1}$\par \textbf{2.} $\Lm{2}\dfrac{x^3-8}{x^2-4}$\par \textbf{3.} $\Lm{1}\dfrac{2x^2+x-3}{x-1}$\par \textbf{4.} $\Lm{2}\dfrac{x^2-5x+6}{x^2-x-2}$}{0.48}{\textbf{5.} $\Lm{1}\dfrac{\sqrt{x+3}-2}{x-1}$\par \textbf{6.} $\Lm{1}\dfrac{x^2+x-2}{\sqrt{x+3}-2}$\par \textbf{7.} $\Lm{0}\dfrac{\sqrt{x+1}-1}{x}$\par \textbf{8.} $\Lm{0}\dfrac{\sin x}{x}$}
+\end{tamrin}
+
+\begin{hal}
+كل النهايات من الشكل $\frac00$. نحلل ونختزل ثم نحسب.
+\E\textbf{1.} نكتب: \quad $\dfrac{x^2-1}{x+1}=\dfrac{(x-1)(x+1)}{x+1}=x-1$ \quad إذن: \quad $\Lm{-1}\dfrac{x^2-1}{x+1}=\Lm{-1}(x-1)=\bx{-2}$
+\E\textbf{2.} نكتب: \quad $\dfrac{x^3-8}{x^2-4}=\dfrac{(x-2)\left(x^2+2x+4\right)}{(x-2)(x+2)}=\dfrac{x^2+2x+4}{x+2}$
+\LD{\dfrac{x^3-8}{x^2-4}}{2}{3} $\Car{\Lm{2}\left(x^2+2x+4\right)=12\\ \Lm{2}(x+2)=4}$
+\E\textbf{3.} $1$ جذر للبسط: \quad $2x^2+x-3=(x-1)(2x+3)$ \quad إذن: \quad $\Lm{1}\dfrac{2x^2+x-3}{x-1}=\Lm{1}(2x+3)=\bx{5}$
+\E\textbf{4.} $x^2-5x+6=(x-2)(x-3)$ \quad و \quad $x^2-x-2=(x-2)(x+1)$ \quad نكتب: \quad $\dfrac{x^2-5x+6}{x^2-x-2}=\dfrac{x-3}{x+1}$
+\LD{\dfrac{x^2-5x+6}{x^2-x-2}}{2}{-\frac13} $\Car{\Lm{2}(x-3)=-1\\ \Lm{2}(x+1)=3}$
+\E\textbf{5.} بالمرافق نكتب: \quad $\dfrac{\sqrt{x+3}-2}{x-1}=\dfrac{(x+3)-4}{(x-1)\left(\sqrt{x+3}+2\right)}=\dfrac1{\sqrt{x+3}+2}$
+\LD{\dfrac{\sqrt{x+3}-2}{x-1}}{1}{\frac14} $\Car{\Lm{1}1=1\\ \Lm{1}\left(\sqrt{x+3}+2\right)=4}$
+\E\textbf{6.} بالمرافق نكتب:
+\[\frac{x^2+x-2}{\sqrt{x+3}-2}=\frac{(x-1)(x+2)\left(\sqrt{x+3}+2\right)}{(x+3)-4}\]
+\[\frac{x^2+x-2}{\sqrt{x+3}-2}=\frac{(x-1)(x+2)\left(\sqrt{x+3}+2\right)}{x-1}=(x+2)\left(\sqrt{x+3}+2\right)\]
+\LD{\dfrac{x^2+x-2}{\sqrt{x+3}-2}}{1}{12} $\Car{\Lm{1}(x+2)=3\\ \Lm{1}\left(\sqrt{x+3}+2\right)=4}$
+\E\textbf{7.} بالعدد المشتق: نضع $u(x)=\sqrt{x+1}$ ، فإن $u(0)=1$ و $u'(x)=\dfrac1{2\sqrt{x+1}}$.\E
+$\Lm{0}\dfrac{\sqrt{x+1}-1}{x}=\Lm{0}\dfrac{u(x)-u(0)}{x-0}=u'(0)=\bx{\frac12}$
+\E\textbf{8.} بالعدد المشتق: $\sin0=0$ ، إذن: \quad $\Lm{0}\dfrac{\sin x}{x}=\Lm{0}\dfrac{\sin x-\sin0}{x-0}=\sin'(0)=\cos0=\bx{1}$
+\end{hal}
+
+% =====================================================
+\section{القراءة البيانية والمستقيمات المقاربة}
+\begin{tamrin}{قراءة بيانية}
+في الشكل التالي $(C_f)$ التمثيل البياني لدالة عددية $f$ في معلم متعامد ومتجانس. المستقيمان $x=-1$ و $(D):\ y=x+1$ مقاربان للمنحنى ، و $f(x)=x+1+\dfrac1{x+1}$.
+\begin{GR}{-5.2}{5.2}{-6.2}{7.2}{0.42}
+\Ticks{-4,-2,2,4}{-4,-2,2,4,6}
+\draw[cThm,dashed] (-1,-6.2)--(-1,7.2);
+\draw[cRem,thick,domain=-5.2:5.2] plot(\x,{\x+1}); \node[cRem,font=\scriptsize] at (4.3,3.6){$(D)$};
+\draw[cDef,very thick,domain=-5.2:-1.18,samples=80] plot(\x,{\x+1+1/(\x+1)});
+\draw[cDef,very thick,domain=-0.83:5.2,samples=80] plot(\x,{\x+1+1/(\x+1)});
+\fill[cDef] (0,2) circle (2pt) (-2,-2) circle (2pt);
+\node[cDef,font=\scriptsize] at (2.5,6){$(C_f)$};
+\end{GR}
+\textbf{بقراءة بيانية:}
+\begin{enumerate}
+\item عيّن مجموعة تعريف الدالة $f$.
+\item عيّن النهايات: $\Lm{-\infty}f(x)$ ، $\Lm{+\infty}f(x)$ ، $\Lm{-1^-}f(x)$ ، $\Lm{-1^+}f(x)$.
+\item اكتب معادلة لكل مستقيم مقارب لـ $(C_f)$.
+\item عيّن الوضع النسبي بين $(C_f)$ والمستقيم المقارب المائل له.
+\item شكّل جدول تغيرات الدالة $f$.
+\item ناقش حسب قيم الوسيط الحقيقي $m$ عدد حلول المعادلة $f(x)=m$.
+\end{enumerate}
+\textbf{ثم أكّد حسابيًا النتائج 2 ، 3 و 4.}
+\end{tamrin}
+
+\begin{hal}
+\textbf{1.} $D_f=\R-\{-1\}=\bx{]-\infty;-1[\cup]-1;+\infty[}$
+\E\textbf{2.} $\Lm{-\infty}f(x)=\bx{-\infty}$ \quad ، \quad $\Lm{+\infty}f(x)=\bx{+\infty}$\E $\Lm{-1^-}f(x)=\bx{-\infty}$ \quad ، \quad $\Lm{-1^+}f(x)=\bx{+\infty}$
+\E\textbf{تأكيد حسابي:}
+\LD{f(x)}{-\infty}{-\infty} $\Car{\Lm{-\infty}(x+1)=-\infty\\ \Lm{-\infty}\dfrac1{x+1}=0}$
+\LD{f(x)}{+\infty}{+\infty} $\Car{\Lm{+\infty}(x+1)=+\infty\\ \Lm{+\infty}\dfrac1{x+1}=0}$
+\LD{f(x)}{-1^-}{-\infty} $\Car{\Lm{-1}(x+1)=0\\ \Lm{-1^-}\dfrac1{x+1}=-\infty}$
+\LD{f(x)}{-1^+}{+\infty} $\Car{\Lm{-1}(x+1)=0\\ \Lm{-1^+}\dfrac1{x+1}=+\infty}$
+\E\textbf{3.} مقارب عمودي: \bx{x=-1} \quad ؛ \quad مقارب مائل بجوار $\pm\infty$: \bx{y=x+1}
+\E لأن: \quad $f(x)-(x+1)=\dfrac1{x+1}$ \quad و \quad $\Lm{\pm\infty}\dfrac1{x+1}=0$
+\E\textbf{4.} من الشكل وبالحساب: إشارة $f(x)-(x+1)=\dfrac1{x+1}$ هي إشارة $x+1$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{1}{x+1}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$-1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (6.175,-1.35){$-$};
+\node[align=center,font=\small] at (6.175,-3.2){$(C_f)$\\ \ar{تحت}\\ $(D)$};
+\node at (11.925,-1.35){$+$};
+\node[align=center,font=\small] at (11.925,-3.2){$(C_f)$\\ \ar{فوق}\\ $(D)$};
+\draw[double,thick] (9.05,-0.9)--(9.05,-4.6);
+\end{tikzpicture}
+\end{FIG}
+\textbf{5.} من الشكل: قيمة حدية عظمى محلية $f(-2)=-2$ ، وصغرى محلية $f(0)=2$:
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.2]{$x$/1,$f(x)$/2}{$-\infty$,$-2$,$-1$,$0$,$+\infty$}
+\tkzTabVar{-/$-\infty$,+/$-2$,-D+/$-\infty$/$+\infty$,-/$2$,+/$+\infty$}
+\end{TAB}
+\textbf{6.} حلول $f(x)=m$ هي فواصل نقط تقاطع $(C_f)$ مع المستقيم الأفقي $y=m$:
+\begin{itemize}
+\item $m<-2$: حلان (كلاهما في $]-\infty;-1[$).
+\item $m=-2$: حل مضاعف $x=-2$.
+\item $-2<m<2$: لا توجد حلول.
+\item $m=2$: حل مضاعف $x=0$.
+\item $m>2$: حلان (كلاهما في $]-1;+\infty[$).
+\end{itemize}
+\end{hal}
+
+\begin{tamrin}{تعيين وسطاء من المستقيمات المقاربة}
+\begin{enumerate}
+\item $g$ الدالة المعرفة على $\R$ بـ: $g(x)=\dfrac{\alpha x^2+\beta x+1}{x^2+1}$ حيث $\alpha$ و $\beta$ عددان حقيقيان. أوجد $\alpha$ و $\beta$ إذا علمت أن $(C_g)$ يشمل النقطة $A(1;2)$ ويقبل مستقيمًا مقاربًا معادلته $y=1$ عند $-\infty$.
+\item $f$ الدالة المعرفة على $\R-\{1\}$ بـ: $f(x)=ax+b+\dfrac{c}{x-1}$. أوجد $a$ ، $b$ و $c$ حتى يشمل $(C_f)$ النقطة $B(0;4)$ ، ويقبل مستقيمًا مقاربًا مائلًا معادلته $y=2x+3$ عند $+\infty$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{hal}
+\textbf{1.} إذا كان $\alpha\neq0$: \quad $\Lm{-\infty}g(x)=\Lm{-\infty}\dfrac{\alpha x^2}{x^2}=\alpha$. المستقيم $y=1$ مقارب ، إذن \bx{\alpha=1}.
+\E $A\in(C_g)$: \quad $g(1)=\dfrac{1+\beta+1}{2}=2$ \quad أي \quad $\beta+2=4$ \quad إذن \quad \bx{\beta=2}
+\E ومنه: \quad $g(x)=\bx{\dfrac{x^2+2x+1}{x^2+1}}$
+\E\textbf{2.} $f(x)-(ax+b)=\dfrac{c}{x-1}$ \quad و \quad $\Lm{+\infty}\dfrac{c}{x-1}=0$\E فالمستقيم $y=ax+b$ مقارب مائل. وهو $y=2x+3$ ، إذن \bx{a=2} و \bx{b=3}.
+\E $B\in(C_f)$: \quad $f(0)=3+\dfrac{c}{-1}=3-c=4$ \quad إذن \quad \bx{c=-1}
+\E ومنه: \quad $f(x)=\bx{2x+3-\dfrac1{x-1}}$
+\end{hal}
+
+% =====================================================
+\section{الاختيار من متعدد وصحيح أم خطأ}
+\begin{tamrin}{اختيار من متعدد}
+عيّن الاقتراح الصحيح الوحيد في كل حالة مع التعليل:
+\begin{enumerate}
+\item $\Lm{+\infty}\dfrac{3x^2-x}{1-2x^2}$ تساوي: \ABC{$3$}{$-\dfrac32$}{$+\infty$}
+\item $\Lm{2^-}\dfrac{x}{x-2}$ تساوي: \ABC{$+\infty$}{$-\infty$}{$0$}
+\item $\Lm{+\infty}\left(\sqrt{x+1}-\sqrt x\right)$ تساوي: \ABC{$0$}{$1$}{$+\infty$}
+\item المنحنى الممثل للدالة $x\mapsto\dfrac{3x-2}{x+4}$ يقبل مستقيمًا مقاربًا أفقيًا معادلته: \ABC{$y=-\dfrac12$}{$y=3$}{$x=-4$}
+\item المستقيم المقارب المائل للمنحنى الممثل للدالة $x\mapsto\dfrac{x^2+3x+6}{x+2}$ هو: \ABC{$y=x+1$}{$y=x+3$}{$y=x$}
+\item $\Lm{3}\dfrac{x^2-9}{x-3}$ تساوي: \ABC{$0$}{$6$}{\ar{غير موجودة}}
+\end{enumerate}
+\end{tamrin}
+
+\begin{hal}
+\textbf{1. (ب):} \quad $\Lm{+\infty}\dfrac{3x^2-x}{1-2x^2}=\Lm{+\infty}\dfrac{3x^2}{-2x^2}=\bx{-\frac32}$
+\E\textbf{2. (ب):} \LDx{\dfrac{x}{x-2}}{2^-}{-\infty} $\Car{\Lm{2}x=2\\ \Lm{2^-}(x-2)=0^-}$
+\E\textbf{3. (أ):} بالمرافق نكتب: \quad $\sqrt{x+1}-\sqrt x=\dfrac{(x+1)-x}{\sqrt{x+1}+\sqrt x}=\dfrac1{\sqrt{x+1}+\sqrt x}$
+\LD{\left(\sqrt{x+1}-\sqrt x\right)}{+\infty}{0} $\Car{\Lm{+\infty}1=1\\ \Lm{+\infty}\left(\sqrt{x+1}+\sqrt x\right)=+\infty}$
+\E\textbf{4. (ب):} \quad $\Lm{\pm\infty}\dfrac{3x-2}{x+4}=\Lm{\pm\infty}\dfrac{3x}{x}=3$ \quad إذن \quad \bx{y=3} \quad ($x=-4$ مقارب عمودي وليس أفقيًا).
+\E\textbf{5. (أ):} \quad $x^2+3x+6=(x+2)(x+1)+4$ \quad إذن \quad $f(x)=x+1+\dfrac4{x+2}$ \quad ومنه \quad \bx{y=x+1}
+\E\textbf{6. (ب):} \quad $\dfrac{x^2-9}{x-3}=\dfrac{(x-3)(x+3)}{x-3}=x+3$ \quad إذن \quad $\Lm{3}\dfrac{x^2-9}{x-3}=\Lm{3}(x+3)=\bx{6}$
+\end{hal}
+
+\begin{tamrin}{صحيح أم خطأ}
+أجب بصحيح أو خطأ مع التبرير:
+\begin{enumerate}
+\item إذا كان $\Lm{+\infty}f(x)=+\infty$ و $\Lm{+\infty}g(x)=-\infty$ فإن $\Lm{+\infty}\big(f(x)+g(x)\big)=0$.
+\item $\Lm{+\infty}\dfrac{2x^3+1}{x^2-5}=+\infty$.
+\item $\Lm{-\infty}\sqrt{x^2+1}=-\infty$.
+\item إذا كانت $f(x)=-x+1-\dfrac1{x-1}$ فإن المستقيم $y=-x+1$ مقارب مائل لـ $(C_f)$.
+\item $\Lm{0}\dfrac1x=+\infty$.
+\item الدالة $x\mapsto\dfrac{x^2}{x^2+1}$ يقبل منحناها مستقيمًا مقاربًا عموديًا.
+\end{enumerate}
+\end{tamrin}
+
+\begin{hal}
+\textbf{1. \bxt{خطأ}:} $+\infty-\infty$ حالة عدم تعيين. مثال مضاد: $f(x)=2x$ و $g(x)=-x$:\E $\Lm{+\infty}\big(f(x)+g(x)\big)=\Lm{+\infty}x=+\infty$.
+\E\textbf{2. \bxt{صحيح}:} \quad $\Lm{+\infty}\dfrac{2x^3+1}{x^2-5}=\Lm{+\infty}\dfrac{2x^3}{x^2}=\Lm{+\infty}2x=+\infty$
+\E\textbf{3. \bxt{خطأ}:} الجذر التربيعي موجب دائمًا: \quad $\Lm{-\infty}\sqrt{x^2+1}=+\infty$.
+\E\textbf{4. \bxt{صحيح}:} \quad $f(x)-(-x+1)=-\dfrac1{x-1}$ \quad و \quad $\Lm{\pm\infty}\left(-\dfrac1{x-1}\right)=0$.
+\E\textbf{5. \bxt{خطأ}:} \quad $\Lm{0^+}\dfrac1x=+\infty$ \quad لكن \quad $\Lm{0^-}\dfrac1x=-\infty$ ، فالنهاية عند $0$ غير موجودة (النهايتان من الجهتين مختلفتان).
+\E\textbf{6. \bxt{خطأ}:} المقام $x^2+1\geq1$ لا ينعدم أبدًا ، فالدالة معرفة على $\R$ ولا يوجد مقارب عمودي (لها مقارب أفقي $y=1$).
+\end{hal}
+
+% =====================================================
+\section{مسائل: دراسة دوال ناطقة}
+\begin{tamrin}{مسألة 1: مقارب مائل ومركز تناظر}
+نعتبر الدالة $f$ المعرفة على $\R-\{2\}$ بالعبارة: $f(x)=\dfrac{x^2-3x+3}{x-2}$ ، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\begin{enumerate}
+\item ادرس نهايات الدالة $f$ عند حدود مجموعة التعريف ، واستنتج أن $(C_f)$ يقبل مستقيمًا مقاربًا يطلب تعيين معادلته.
+\item تحقق أنه من أجل كل $x$ من $\R-\{2\}$: $f'(x)=\dfrac{(x-1)(x-3)}{(x-2)^2}$.
+\item استنتج اتجاه تغير الدالة $f$ ثم شكّل جدول تغيراتها.
+\item أثبت أنه من أجل كل $x$ من $\R-\{2\}$: $f(x)=ax+b+\dfrac{c}{x-2}$ حيث $a$ ، $b$ و $c$ أعداد حقيقية يطلب تعيينها.
+\item استنتج أن $(C_f)$ يقبل مستقيمًا مقاربًا مائلًا $(\Delta)$ يطلب تعيين معادلته ، وادرس الوضع النسبي لـ $(C_f)$ و $(\Delta)$.
+\item بيّن أن النقطة $\Omega(2;1)$ مركز تناظر للمنحنى $(C_f)$.
+\item اكتب معادلة المماس $(T)$ عند النقطة ذات الفاصلة $0$ ، وعيّن نقطة تقاطعه مع $(\Delta)$.
+\item احسب $f(0)$ ثم أنشئ $(\Delta)$ ، $(T)$ و $(C_f)$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{hal}
+\textbf{1.} عند $\pm\infty$: \quad $\Lm{-\infty}f(x)=\Lm{-\infty}\dfrac{x^2}{x}=\Lm{-\infty}x=\bx{-\infty}$ \quad و \quad $\Lm{+\infty}f(x)=\Lm{+\infty}x=\bx{+\infty}$
+\E عند $2$: إذا كان $x<2$ فإن $x-2\to0^-$ ، وإذا كان $x>2$ فإن $x-2\to0^+$:
+\LD{f(x)}{2^-}{-\infty} $\Car{\Lm{2}\left(x^2-3x+3\right)=1\\ \Lm{2^-}(x-2)=0^-}$
+\LD{f(x)}{2^+}{+\infty} $\Car{\Lm{2}\left(x^2-3x+3\right)=1\\ \Lm{2^+}(x-2)=0^+}$
+\E إذن المستقيم ذو المعادلة \bx{x=2} مقارب لـ $(C_f)$ يوازي محور التراتيب.
+\E\textbf{2.} $\LW{\left(\dfrac uv\right)'=\dfrac{u'v-uv'}{v^2}}$:
+\[f'(x)=\frac{(2x-3)(x-2)-\left(x^2-3x+3\right)}{(x-2)^2}=\frac{2x^2-7x+6-x^2+3x-3}{(x-2)^2}\]
+\[f'(x)=\frac{x^2-4x+3}{(x-2)^2}=\bx{\frac{(x-1)(x-3)}{(x-2)^2}}\]
+\textbf{3.} $(x-2)^2>0$ ، فإشارة $f'(x)$ هي إشارة $(x-1)(x-3)$. \quad $f(1)=\dfrac1{-1}=-1$ \quad و \quad $f(3)=\dfrac31=3$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.2]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$1$,$2$,$3$,$+\infty$}
+\tkzTabLine{,+,z,-,d,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$-1$,-D+/$-\infty$/$+\infty$,-/$3$,+/$+\infty$}
+\end{TAB}
+\bxt{$f$ متزايدة تمامًا على $]-\infty;1]$ وعلى $[3;+\infty[$} ، \bxt{ومتناقصة تمامًا على $[1;2[$ وعلى $]2;3]$}.
+\E\textbf{4.} $ax+b+\dfrac{c}{x-2}=\dfrac{(ax+b)(x-2)+c}{x-2}=\dfrac{ax^2+(b-2a)x-2b+c}{x-2}$
+\E بالمطابقة مع $x^2-3x+3$: \quad $a=1$ \quad ؛ \quad $b-2a=-3\Rightarrow b=-1$ \quad ؛ \quad $-2b+c=3\Rightarrow c=1$
+\E إذن: \quad $f(x)=\bx{x-1+\dfrac1{x-2}}$
+\E\textbf{5.} $f(x)-(x-1)=\dfrac1{x-2}$ \quad و \quad $\Lm{\pm\infty}\dfrac1{x-2}=0$
+\E إذن: \bx{(\Delta):\ y=x-1} \quad مقارب مائل بجوار $\pm\infty$.
+\E إشارة الفرق هي إشارة $x-2$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{1}{x-2}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$2$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (6.175,-1.35){$-$};
+\node[align=center,font=\small] at (6.175,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (11.925,-1.35){$+$};
+\node[align=center,font=\small] at (11.925,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (9.05,-0.9)--(9.05,-4.6);
+\end{tikzpicture}
+\end{FIG}
+\textbf{6.} من أجل كل $x\neq2$: $(4-x)\neq2$ ، و:
+\[f(4-x)+f(x)=(4-x)-1+\frac1{2-x}+x-1+\frac1{x-2}=2-\frac1{x-2}+\frac1{x-2}=2=2\times1\]
+إذن \bxt{$\Omega(2;1)$ مركز تناظر لـ $(C_f)$} (وهي نقطة تقاطع المستقيمين المقاربين).
+\E\textbf{7.} $f(0)=-\dfrac32$ \quad ، \quad $f'(0)=\dfrac34$ \quad إذن \quad \bx{(T):\ y=\frac34x-\frac32}
+\E التقاطع مع $(\Delta)$: \quad $x-1=\dfrac34x-\dfrac32\iff\dfrac x4=-\dfrac12\iff x=-2$ \quad والنقطة \bx{(-2;-3)}
+\E\textbf{8.} $f(0)=-\dfrac32$.
+\begin{GR}{-4.2}{7.2}{-7.2}{8.2}{0.42}
+\Ticks{-4,-2,4,6}{-6,-4,-2,2,4,6}
+\draw[cThm,dashed] (2,-7.2)--(2,8.2); \node[cThm,font=\scriptsize,right] at (2,7.6){$x=2$};
+\draw[cRem,thick,domain=-4.2:7.2] plot(\x,{\x-1}); \node[cRem,font=\scriptsize] at (6.3,4.4){$(\Delta)$};
+\draw[cEx,thick,domain=-4.2:3] plot(\x,{0.75*\x-1.5}); \node[cEx,font=\scriptsize] at (-3.2,-3){$(T)$};
+\draw[cDef,very thick,domain=-4.2:1.85,samples=80] plot(\x,{\x-1+1/(\x-2)});
+\draw[cDef,very thick,domain=2.12:7.2,samples=80] plot(\x,{\x-1+1/(\x-2)});
+\fill[cDef] (1,-1) circle (2pt) (3,3) circle (2pt) (0,-1.5) circle (2pt);
+\fill[black] (2,1) circle (2pt) node[right,font=\scriptsize]{$\Omega$};
+\node[cDef,font=\scriptsize] at (3.4,7){$(C_f)$};
+\end{GR}
+\end{hal}
+
+\begin{tamrin}{مسألة 2: مناقشة بيانية}
+لتكن الدالة $f$ المعرفة على $\R-\{1\}$ كما يلي: $f(x)=\dfrac{-x^2+2x-2}{x-1}$ ، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس.
+\begin{enumerate}
+\item بيّن أنه من أجل كل $x$ من $\R-\{1\}$: $f(x)=-x+1-\dfrac1{x-1}$.
+\item احسب نهايات الدالة $f$ عند أطراف مجالي تعريفها.
+\item بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=-x+1$ مستقيم مقارب مائل لـ $(C_f)$.
+\item ادرس وضعية المنحنى $(C_f)$ بالنسبة للمستقيم $(\Delta)$.
+\item بيّن أنه من أجل كل $x$ من $\R-\{1\}$: $f'(x)=\dfrac{-x^2+2x}{(x-1)^2}$.
+\item ادرس اتجاه تغير الدالة $f$ ثم شكّل جدول تغيراتها.
+\item ارسم $(\Delta)$ و $(C_f)$.
+\item عيّن بيانيًا قيم الوسيط الحقيقي $m$ بحيث تقبل المعادلة $f(x)=m$ حلين مختلفين في الإشارة.
+\end{enumerate}
+\end{tamrin}
+
+\begin{hal}
+\textbf{1.} $-x+1-\dfrac1{x-1}=\dfrac{(-x+1)(x-1)-1}{x-1}=\dfrac{-x^2+2x-1-1}{x-1}=\dfrac{-x^2+2x-2}{x-1}=f(x)$ \ok
+\E\textbf{2.} $\Lm{-\infty}f(x)=\Lm{-\infty}\dfrac{-x^2}{x}=\Lm{-\infty}(-x)=\bx{+\infty}$ \quad ؛ \quad $\Lm{+\infty}f(x)=\Lm{+\infty}(-x)=\bx{-\infty}$
+\E عند $1$:
+\LD{f(x)}{1^-}{+\infty} $\Car{\Lm{1}\left(-x^2+2x-2\right)=-1\\ \Lm{1^-}(x-1)=0^-}$
+\LD{f(x)}{1^+}{-\infty} $\Car{\Lm{1}\left(-x^2+2x-2\right)=-1\\ \Lm{1^+}(x-1)=0^+}$
+\E المستقيم ذو المعادلة \bx{x=1} مقارب عمودي.
+\E\textbf{3.} $f(x)-(-x+1)=-\dfrac1{x-1}$ \quad و \quad $\Lm{\pm\infty}\left(-\dfrac1{x-1}\right)=0$
+\E إذن: \bx{(\Delta):\ y=-x+1} \quad مقارب مائل.
+\E\textbf{4.} إشارة $-\dfrac1{x-1}$ عكس إشارة $x-1$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{-1}{x-1}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (6.175,-1.35){$+$};
+\node[align=center,font=\small] at (6.175,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (11.925,-1.35){$-$};
+\node[align=center,font=\small] at (11.925,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\draw[double,thick] (9.05,-0.9)--(9.05,-4.6);
+\end{tikzpicture}
+\end{FIG}
+\textbf{5.} $f'(x)=-1+\dfrac1{(x-1)^2}=\dfrac{-(x-1)^2+1}{(x-1)^2}=\dfrac{-x^2+2x-1+1}{(x-1)^2}=\bx{\dfrac{-x^2+2x}{(x-1)^2}}$
+\E\textbf{6.} إشارة $f'(x)$ هي إشارة $-x(x-2)$: سالبة خارج الجذرين $0$ و $2$ ، موجبة بينهما. \quad $f(0)=2$ \quad و \quad $f(2)=-2$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.2]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$0$,$1$,$2$,$+\infty$}
+\tkzTabLine{,-,z,+,d,+,z,-,}
+\tkzTabVar{+/$+\infty$,-/$2$,+D-/$+\infty$/$-\infty$,+/$-2$,-/$-\infty$}
+\end{TAB}
+\textbf{7.}
+\begin{GR}{-4.2}{6.2}{-6.2}{6.2}{0.45}
+\Ticks{-4,-2,2,4}{-4,-2,2,4}
+\draw[cThm,dashed] (1,-6.2)--(1,6.2); \node[cThm,font=\scriptsize,right] at (1,5.6){$x=1$};
+\draw[cRem,thick,domain=-4.2:6.2] plot(\x,{-\x+1}); \node[cRem,font=\scriptsize] at (5.6,-3.8){$(\Delta)$};
+\draw[cEx,dashed] (-4.2,4)--(6.2,4); \node[cEx,font=\scriptsize,above] at (5,4){$y=m$};
+\draw[cDef,very thick,domain=-4.2:0.83,samples=80] plot(\x,{-\x+1-1/(\x-1)});
+\draw[cDef,very thick,domain=1.17:6.2,samples=80] plot(\x,{-\x+1-1/(\x-1)});
+\fill[cDef] (0,2) circle (2pt) (2,-2) circle (2pt);
+\node[cDef,font=\scriptsize] at (-3,5.5){$(C_f)$};
+\end{GR}
+\textbf{8.} حلول $f(x)=m$ هي فواصل نقط تقاطع $(C_f)$ مع المستقيم الأفقي $y=m$:
+\begin{itemize}
+\item $m>2$: حلان: أحدهما في $]-\infty;0[$ (سالب) والآخر في $]0;1[$ (موجب): \textbf{مختلفان في الإشارة}.
+\item $m=2$: حل مضاعف $x=0$ \quad ؛ \quad $-2<m<2$: لا حلول \quad ؛ \quad $m=-2$: حل مضاعف $x=2$.
+\item $m<-2$: حلان في $]1;2[$ و $]2;+\infty[$ (كلاهما موجب).
+\end{itemize}
+إذن: المعادلة تقبل حلين مختلفين في الإشارة \quad $\iff$ \quad \bx{m\in]2;+\infty[}
+\end{hal}
+
+\begin{tamrin}{مسألة 3: مقاربان ومركز تناظر}
+لتكن الدالة العددية $f$ المعرفة على $\R-\{-2\}$ بـ: $f(x)=\dfrac{x^2+3x+6}{x+2}$ ، و $(C_f)$ تمثيلها البياني.
+\begin{enumerate}
+\item عيّن الأعداد الحقيقية $a$ ، $b$ و $c$ بحيث يكون من أجل كل $x$ من $\R-\{-2\}$: $f(x)=ax+b+\dfrac{c}{x+2}$.
+\item احسب نهايات الدالة $f$ عند أطراف مجموعة تعريفها.
+\item بيّن أنه من أجل كل $x$ من $\R-\{-2\}$: $f'(x)=\dfrac{x(x+4)}{(x+2)^2}$ ، ثم استنتج اتجاه تغير $f$ وشكّل جدول تغيراتها.
+\item \pa بيّن أن $(C_f)$ يقبل مستقيمين مقاربين أحدهما $(\Delta)$ ذو المعادلة $y=x+1$.
+\pb ادرس وضعية المنحنى $(C_f)$ بالنسبة إلى المستقيم $(\Delta)$.
+\item تحقق أن النقطة $A(-2;-1)$ هي نقطة تقاطع المستقيمين المقاربين ، ثم بيّن أنها مركز تناظر لـ $(C_f)$.
+\item ارسم المستقيمات المقاربة والمنحنى $(C_f)$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{hal}
+\textbf{1.} $\dfrac{(ax+b)(x+2)+c}{x+2}=\dfrac{ax^2+(2a+b)x+2b+c}{x+2}$
+\E بالمطابقة: \quad $a=1$ \quad ؛ \quad $2a+b=3\Rightarrow b=1$ \quad ؛ \quad $2b+c=6\Rightarrow c=4$ \quad إذن: \quad $f(x)=\bx{x+1+\dfrac4{x+2}}$
+\E\textbf{2.} \LDx{f(x)}{-\infty}{-\infty} $\Car{\Lm{-\infty}(x+1)=-\infty\\ \Lm{-\infty}\dfrac4{x+2}=0}$
+\LD{f(x)}{+\infty}{+\infty} $\Car{\Lm{+\infty}(x+1)=+\infty\\ \Lm{+\infty}\dfrac4{x+2}=0}$
+\E عند $-2$:
+\LD{f(x)}{-2^-}{-\infty} $\Car{\Lm{-2}(x+1)=-1\\ \Lm{-2^-}\dfrac4{x+2}=-\infty}$
+\LD{f(x)}{-2^+}{+\infty} $\Car{\Lm{-2}(x+1)=-1\\ \Lm{-2^+}\dfrac4{x+2}=+\infty}$
+\E\textbf{3.} $f'(x)=1-\dfrac4{(x+2)^2}=\dfrac{(x+2)^2-4}{(x+2)^2}=\dfrac{(x+2-2)(x+2+2)}{(x+2)^2}=\bx{\dfrac{x(x+4)}{(x+2)^2}}$
+\E $f(-4)=-4+1+\dfrac4{-2}=-5$ \quad و \quad $f(0)=1+2=3$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.2]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$-4$,$-2$,$0$,$+\infty$}
+\tkzTabLine{,+,z,-,d,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$-5$,-D+/$-\infty$/$+\infty$,-/$3$,+/$+\infty$}
+\end{TAB}
+\textbf{4.} \pa المستقيم ذو المعادلة \bx{x=-2} مقارب عمودي (السؤال 2).
+\E $f(x)-(x+1)=\dfrac4{x+2}$ \quad و \quad $\Lm{\pm\infty}\dfrac4{x+2}=0$
+\E إذن: \bx{(\Delta):\ y=x+1} \quad مقارب مائل.
+\pb إشارة $\dfrac4{x+2}$ هي إشارة $x+2$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{4}{x+2}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$-2$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (6.175,-1.35){$-$};
+\node[align=center,font=\small] at (6.175,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (11.925,-1.35){$+$};
+\node[align=center,font=\small] at (11.925,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (9.05,-0.9)--(9.05,-4.6);
+\end{tikzpicture}
+\end{FIG}
+\textbf{5.} من أجل $x=-2$: $y=-2+1=-1$ ، إذن $A(-2;-1)$ تقع على المقاربين. من أجل $x\neq-2$:
+\[f(-4-x)+f(x)=(-4-x)+1+\frac4{-2-x}+x+1+\frac4{x+2}=-2=2\times(-1)\]
+إذن \bxt{$A(-2;-1)$ مركز تناظر لـ $(C_f)$}.
+\E\textbf{6.}
+\begin{GR}{-7.2}{3.2}{-8.2}{6.2}{0.42}
+\Ticks{-6,-4,2}{-6,-4,-2,2,4}
+\draw[cThm,dashed] (-2,-8.2)--(-2,6.2); \node[cThm,font=\scriptsize,left] at (-2,5.6){$x=-2$};
+\draw[cRem,thick,domain=-7.2:3.2] plot(\x,{\x+1}); \node[cRem,font=\scriptsize] at (2.6,2.6){$(\Delta)$};
+\draw[cDef,very thick,domain=-7.2:-2.6,samples=80] plot(\x,{\x+1+4/(\x+2)});
+\draw[cDef,very thick,domain=-1.45:3.2,samples=80] plot(\x,{\x+1+4/(\x+2)});
+\fill[cDef] (-4,-5) circle (2pt) (0,3) circle (2pt);
+\fill[black] (-2,-1) circle (2pt) node[left,font=\scriptsize]{$A$};
+\node[cDef,font=\scriptsize] at (-0.8,5.6){$(C_f)$};
+\end{GR}
+\end{hal}
+
+\begin{tamrin}{مسألة 4: مماسان وقيمة مطلقة}
+لتكن $f$ الدالة المعرفة على $\R-\{-1\}$ بـ: $f(x)=\dfrac{2x^2+x+7}{x+1}$ ، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس.
+\begin{enumerate}
+\item عيّن الأعداد الحقيقية $a$ ، $b$ و $c$ حيث: $f(x)=ax+b+\dfrac{c}{x+1}$.
+\item احسب نهايات الدالة $f$ عند أطراف مجموعة التعريف وفسّر النتائج بيانيًا.
+\item بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=2x-1$ مقارب مائل لـ $(C_f)$ ، وادرس الوضع النسبي بينهما.
+\item ادرس اتجاه تغير $f$ وشكّل جدول تغيراتها.
+\item بيّن أن النقطة $A(-1;-3)$ مركز تناظر لـ $(C_f)$.
+\item اكتب معادلتي المماسين $(T)$ و $(T')$ للمنحنى $(C_f)$ عند النقطتين ذواتي الفاصلتين $-3$ و $1$.
+\item لتكن الدالة $g$ المعرفة على $\R-\{-1\}$ بـ: $g(x)=\dfrac{2x^2+x+7}{|x+1|}$.
+\pa اكتب عبارة $g(x)$ دون رمز القيمة المطلقة.
+\pb بيّن كيف يمكن إنشاء $(C_g)$ انطلاقًا من $(C_f)$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{hal}
+\textbf{1.} $\dfrac{(ax+b)(x+1)+c}{x+1}=\dfrac{ax^2+(a+b)x+b+c}{x+1}$
+\E بالمطابقة: \quad $a=2$ \quad ؛ \quad $a+b=1\Rightarrow b=-1$ \quad ؛ \quad $b+c=7\Rightarrow c=8$ \quad إذن: \quad $f(x)=\bx{2x-1+\dfrac8{x+1}}$
+\E\textbf{2.} $\Lm{-\infty}f(x)=\Lm{-\infty}\dfrac{2x^2}{x}=\Lm{-\infty}2x=\bx{-\infty}$ \quad ؛ \quad $\Lm{+\infty}f(x)=\Lm{+\infty}2x=\bx{+\infty}$
+\E عند $-1$:
+\LD{f(x)}{-1^-}{-\infty} $\Car{\Lm{-1}\left(2x^2+x+7\right)=8\\ \Lm{-1^-}(x+1)=0^-}$
+\LD{f(x)}{-1^+}{+\infty} $\Car{\Lm{-1}\left(2x^2+x+7\right)=8\\ \Lm{-1^+}(x+1)=0^+}$
+\E\textbf{التفسير:} المستقيم ذو المعادلة \bx{x=-1} مقارب لـ $(C_f)$ يوازي محور التراتيب.
+\E\textbf{3.} $f(x)-(2x-1)=\dfrac8{x+1}$ \quad و \quad $\Lm{\pm\infty}\dfrac8{x+1}=0$
+\E إذن: \bx{(\Delta):\ y=2x-1} \quad مقارب مائل.
+\E إشارة الفرق هي إشارة $x+1$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{8}{x+1}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$-1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (6.175,-1.35){$-$};
+\node[align=center,font=\small] at (6.175,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (11.925,-1.35){$+$};
+\node[align=center,font=\small] at (11.925,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (9.05,-0.9)--(9.05,-4.6);
+\end{tikzpicture}
+\end{FIG}
+\textbf{4.} $f'(x)=2-\dfrac8{(x+1)^2}=\dfrac{2\left[(x+1)^2-4\right]}{(x+1)^2}=\bx{\dfrac{2(x-1)(x+3)}{(x+1)^2}}$
+\E $f(-3)=-6-1-4=-11$ \quad و \quad $f(1)=2-1+4=5$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.2]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$-3$,$-1$,$1$,$+\infty$}
+\tkzTabLine{,+,z,-,d,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$-11$,-D+/$-\infty$/$+\infty$,-/$5$,+/$+\infty$}
+\end{TAB}
+\textbf{5.} من أجل $x\neq-1$:
+\[f(-2-x)+f(x)=2(-2-x)-1+\frac8{-1-x}+2x-1+\frac8{x+1}=-6=2\times(-3)\]
+إذن \bxt{$A(-1;-3)$ مركز تناظر لـ $(C_f)$}.
+\E\textbf{6.} $f'(-3)=0$ و $f'(1)=0$: المماسان أفقيان: \quad \bx{(T):\ y=-11} \quad و \quad \bx{(T'):\ y=5}
+\E\textbf{7.} \pa إذا كان $x>-1$: $|x+1|=x+1$ \quad إذن \quad \bx{g(x)=f(x)}
+\E إذا كان $x<-1$: $|x+1|=-(x+1)$ \quad إذن \quad \bx{g(x)=-f(x)}
+\pb على $]-1;+\infty[$: $(C_g)$ ينطبق على $(C_f)$ ؛ وعلى $]-\infty;-1[$: $(C_g)$ هو \textbf{نظير} $(C_f)$ بالنسبة لمحور الفواصل.
+\end{hal}
+
+\begin{tamrin}{مسألة 5: دالة مساعدة من الدرجة الثالثة}
+\textbf{I)} لتكن $g$ الدالة المعرفة على $\R$ بـ: $g(x)=x^3-6x^2+13x-8$.
+\begin{enumerate}
+\item بيّن أن $g$ متزايدة تمامًا على $\R$.
+\item احسب $g(1)$ ، ثم استنتج إشارة $g(x)$.
+\end{enumerate}
+\textbf{II)} نعتبر الدالة $f$ المعرفة على $\R-\{2\}$ بـ: $f(x)=\dfrac{x^3-5x^2+7x-3}{(x-2)^2}$.
+\begin{enumerate}[resume]
+\item احسب نهايات $f$ وفسّر النتيجة هندسيًا.
+\item بيّن أنه من أجل كل $x$ من $\R-\{2\}$: $f'(x)=\dfrac{g(x)}{(x-2)^3}$ ، ثم استنتج اتجاه تغير $f$ وشكّل جدول تغيراتها.
+\item بيّن أنه من أجل كل $x$ من $\R-\{2\}$: $f(x)=x-1+\dfrac{1-x}{(x-2)^2}$.
+\item بيّن أن المستقيم $(\Delta)$ ذا المعادلة $y=x-1$ مقارب مائل لـ $(C_f)$ ، وادرس وضعية $(C_f)$ بالنسبة لـ $(\Delta)$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{hal}
+\textbf{I) 1.} $g'(x)=3x^2-12x+13$: \quad $\Delta=144-156=-12<0$ ، فـ $g'(x)>0$ دائمًا: \bxt{$g$ متزايدة تمامًا على $\R$}.
+\E\textbf{2.} $g(1)=1-6+13-8=\bx{0}$. $g$ متزايدة تمامًا ، إذن:
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3]{$x$/1,$g(x)$/1}{$-\infty$,$1$,$+\infty$}
+\tkzTabLine{,-,z,+,}
+\end{TAB}
+\textbf{II) 3.} $\Lm{-\infty}f(x)=\Lm{-\infty}\dfrac{x^3}{x^2}=\Lm{-\infty}x=\bx{-\infty}$ \quad ؛ \quad $\Lm{+\infty}f(x)=\Lm{+\infty}x=\bx{+\infty}$
+\E عند $2$: المقام $(x-2)^2$ موجب دائمًا:
+\LD{f(x)}{2}{-\infty} $\Car{\Lm{2}\left(x^3-5x^2+7x-3\right)=-1\\ \Lm{2}(x-2)^2=0^+}$
+\E\textbf{التفسير:} المستقيم ذو المعادلة \bx{x=2} مقارب عمودي لـ $(C_f)$.
+\E\textbf{4.} نضع $u=x^3-5x^2+7x-3$ و $v=(x-2)^2$:
+\[f'(x)=\frac{\left(3x^2-10x+7\right)(x-2)^2-\left(x^3-5x^2+7x-3\right)\cdot2(x-2)}{(x-2)^4}\]
+\[f'(x)=\frac{\left(3x^2-10x+7\right)(x-2)-2\left(x^3-5x^2+7x-3\right)}{(x-2)^3}\]
+\[f'(x)=\frac{3x^3-16x^2+27x-14-2x^3+10x^2-14x+6}{(x-2)^3}=\frac{x^3-6x^2+13x-8}{(x-2)^3}=\bx{\frac{g(x)}{(x-2)^3}}\]
+$f(1)=\dfrac{1-5+7-3}{1}=0$.
+\begin{TAB}
+\tkzTabInit[lgt=1.8,espcl=2.6]{$x$/1,$g(x)$/1,$(x-2)^3$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$1$,$2$,$+\infty$}
+\tkzTabLine{,-,z,+,t,+,}
+\tkzTabLine{,-,t,-,z,+,}
+\tkzTabLine{,+,z,-,d,+,}
+\tkzTabVar{-/$-\infty$,+/$0$,-D-/$-\infty$/$-\infty$,+/$+\infty$}
+\end{TAB}
+\bxt{$f$ متزايدة تمامًا على $]-\infty;1]$ وعلى $]2;+\infty[$ ، ومتناقصة تمامًا على $[1;2[$}.
+\E\textbf{5.} نتحقق:
+\[(x-1)(x-2)^2+(1-x)=(x-1)\left(x^2-4x+4\right)-x+1=x^3-5x^2+8x-4-x+1=x^3-5x^2+7x-3\]
+\E\textbf{6.} $f(x)-(x-1)=\dfrac{1-x}{(x-2)^2}$ \quad و \quad $\Lm{\pm\infty}\dfrac{1-x}{(x-2)^2}=0$
+\E إذن: \bx{(\Delta):\ y=x-1} \quad مقارب مائل.
+\E إشارة الفرق هي إشارة $1-x$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{1-x}{(x-2)^2}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (7.69706,-0.45){$1$};
+\node at (12.0941,-0.45){$2$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (4.74853,-1.35){$+$};
+\node[align=center,font=\small] at (4.74853,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (10.6456,-1.35){$-$};
+\node[align=center,font=\small] at (10.6456,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (13.4471,-1.35){$-$};
+\node[align=center,font=\small] at (13.4471,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\draw[double,thick] (12.0941,-0.9)--(12.0941,-4.6);
+\node at (7.69706,-1.35){$0$};
+\draw[densely dotted] (7.69706,-0.9)--(7.69706,-1.13) (7.69706,-1.57)--(7.69706,-1.8);
+\draw (6.19706,-4.6) .. controls (6.27206,-3.06) and (7.24706,-2.136) .. (7.69706,-1.8) .. controls (8.14706,-2.136) and (9.12206,-3.06) .. (9.19706,-4.6);
+\node[align=center,font=\footnotesize,inner sep=0pt] at (7.69706,-3.65){\ar{$(C_f)$ يقطع}\\ $(\Delta)$\\ \ar{في النقطة}\\ $(1;0)$};
+\end{tikzpicture}
+\end{FIG}
+\end{hal}
+
+\begin{tamrin}{مسألة 6: لا يوجد مماس يوازي المقارب}
+$f$ الدالة المعرفة على $\R-\{-1\}$ بـ: $f(x)=\dfrac{2x^3+3x^2}{(x+1)^2}$ ، و $(C_f)$ تمثيلها البياني.
+\begin{enumerate}
+\item احسب نهايات $f$ عند أطراف مجموعة التعريف ، وفسّر النتيجة بيانيًا عند $-1$.
+\item بيّن أنه من أجل كل $x$ من $\R-\{-1\}$: $f'(x)=\dfrac{2x\left(x^2+3x+3\right)}{(x+1)^3}$ ، ثم ادرس تغيرات $f$.
+\item \pa تحقق أن: $f(x)=2x-1+\dfrac1{(x+1)^2}$.
+\pb بيّن أن $(\Delta):\ y=2x-1$ مقارب لـ $(C_f)$ عند $-\infty$ و $+\infty$ ، وادرس الوضع النسبي.
+\item أثبت أنه لا يوجد أي مماس لـ $(C_f)$ يوازي المستقيم $(\Delta)$.
+\item أوجد إحداثيات نقط تقاطع $(C_f)$ مع محور الفواصل.
+\end{enumerate}
+\end{tamrin}
+
+\begin{hal}
+\textbf{1.} $\Lm{-\infty}f(x)=\Lm{-\infty}\dfrac{2x^3}{x^2}=\Lm{-\infty}2x=\bx{-\infty}$ \quad ؛ \quad $\Lm{+\infty}f(x)=\Lm{+\infty}2x=\bx{+\infty}$
+\E عند $-1$: المقام $(x+1)^2$ موجب دائمًا:
+\LD{f(x)}{-1}{+\infty} $\Car{\Lm{-1}\left(2x^3+3x^2\right)=1\\ \Lm{-1}(x+1)^2=0^+}$
+\E\textbf{التفسير:} المستقيم ذو المعادلة \bx{x=-1} مقارب عمودي.
+\E\textbf{2.} من 3(أ): \quad $f'(x)=2-\dfrac2{(x+1)^3}=\dfrac{2\left[(x+1)^3-1\right]}{(x+1)^3}$ \E و: \quad $(x+1)^3-1=x^3+3x^2+3x=x\left(x^2+3x+3\right)$
+\E إذن: \quad $f'(x)=\bx{\dfrac{2x\left(x^2+3x+3\right)}{(x+1)^3}}$
+\E $x^2+3x+3$: $\Delta=9-12<0$ ، موجب دائمًا. إشارة $f'$ هي إشارة $\dfrac{x}{(x+1)^3}$ ، و $f(0)=0$:
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.8]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$-1$,$0$,$+\infty$}
+\tkzTabLine{,+,d,-,z,+,}
+\tkzTabVar{-/$-\infty$,+D+/$+\infty$/$+\infty$,-/$0$,+/$+\infty$}
+\end{TAB}
+\textbf{3.} \pa $(2x-1)(x+1)^2+1=(2x-1)\left(x^2+2x+1\right)+1=2x^3+3x^2-1+1=2x^3+3x^2$ \ok
+\pb $f(x)-(2x-1)=\dfrac1{(x+1)^2}$ \quad و \quad $\Lm{\pm\infty}\dfrac1{(x+1)^2}=0$
+\E إذن: \bx{(\Delta):\ y=2x-1} \quad مقارب مائل.
+\E الفرق موجب تمامًا على $D_f$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{1}{(x+1)^2}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$-1$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (6.175,-1.35){$+$};
+\node[align=center,font=\small] at (6.175,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\node at (11.925,-1.35){$+$};
+\node[align=center,font=\small] at (11.925,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (9.05,-0.9)--(9.05,-4.6);
+\end{tikzpicture}
+\end{FIG}
+\textbf{4.} المماس يوازي $(\Delta)$ \quad $\iff$ \quad $f'(x)=2$ \quad $\iff$ \quad $-\dfrac2{(x+1)^3}=0$: مستحيل. إذن \bxt{لا يوجد مماس يوازي $(\Delta)$}.
+\E\textbf{5.} $f(x)=0\iff x^2(2x+3)=0\iff x=0$ أو $x=-\dfrac32$: \quad النقطتان \bx{(0;0)} و \bx{\left(-\frac32;0\right)}
+\end{hal}
+
+% =====================================================
+\section{تمارين نموذجية}
+\begin{tamrin}{مسألة نموذجية: مماسان متوازيان ومناقشة}
+$f$ دالة معرفة على $\R-\{-2\}$ بـ: $f(x)=\dfrac{x^2+4x+8}{2x+4}$ ، و $(C_f)$ تمثيلها البياني في معلم متعامد ومتجانس.
+\begin{enumerate}
+\item احسب النهايات عند حدود مجالي تعريف الدالة $f$.
+\item عيّن الأعداد الحقيقية $a$ ، $b$ و $c$ بحيث من أجل كل $x$ من $\R-\{-2\}$: $f(x)=ax+b+\dfrac{c}{x+2}$.
+\item بيّن أن $(C_f)$ يقبل مستقيمين مقاربين أحدهما مائل $(\Delta)$ معادلته $y=\frac12x+1$ ، وادرس الوضع النسبي.
+\item بيّن أنه من أجل كل $x$ من $\R-\{-2\}$: $f'(x)=\dfrac{x^2+4x}{2(x+2)^2}$ ، ثم ادرس تغيرات $f$.
+\item بيّن أن $(C_f)$ يقبل مماسين $(T_1)$ و $(T_2)$ ميل كل منهما يساوي $-\frac32$ ، يطلب كتابة معادلة كل منهما.
+\item عيّن نقطة تقاطع المستقيمين المقاربين ثم بيّن أنها مركز تناظر لـ $(C_f)$.
+\item ناقش بيانيًا حسب قيم الوسيط $m$ عدد وإشارة حلول المعادلة: $x^2+x(4-2m)+8-4m=0$.
+\end{enumerate}
+\end{tamrin}
+
+\begin{hal}
+\textbf{1.} $\Lm{-\infty}f(x)=\Lm{-\infty}\dfrac{x^2}{2x}=\Lm{-\infty}\dfrac x2=\bx{-\infty}$ \quad ؛ \quad $\Lm{+\infty}f(x)=\Lm{+\infty}\dfrac x2=\bx{+\infty}$
+\E عند $-2$:
+\LD{f(x)}{-2^-}{-\infty} $\Car{\Lm{-2}\left(x^2+4x+8\right)=4\\ \Lm{-2^-}(2x+4)=0^-}$
+\LD{f(x)}{-2^+}{+\infty} $\Car{\Lm{-2}\left(x^2+4x+8\right)=4\\ \Lm{-2^+}(2x+4)=0^+}$
+\E\textbf{2.} $x^2+4x+8=(x+2)^2+4$ ، فـ: \quad $f(x)=\dfrac{(x+2)^2}{2(x+2)}+\dfrac4{2(x+2)}=\bx{\dfrac12x+1+\dfrac2{x+2}}$\E ($a=\frac12$ ، $b=1$ ، $c=2$).
+\E\textbf{3.} \bx{x=-2} مقارب عمودي.\E $f(x)-\left(\dfrac12x+1\right)=\dfrac2{x+2}$ \quad و \quad $\Lm{\pm\infty}\dfrac2{x+2}=0$
+\E إذن: \bx{(\Delta):\ y=\frac12x+1} \quad مقارب مائل.
+\E إشارة الفرق هي إشارة $x+2$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{2}{x+2}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (9.05,-0.45){$-2$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (6.175,-1.35){$-$};
+\node[align=center,font=\small] at (6.175,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\node at (11.925,-1.35){$+$};
+\node[align=center,font=\small] at (11.925,-3.2){$(C_f)$\\ \ar{فوق}\\ $(\Delta)$};
+\draw[double,thick] (9.05,-0.9)--(9.05,-4.6);
+\end{tikzpicture}
+\end{FIG}
+\textbf{4.} $f'(x)=\dfrac12-\dfrac2{(x+2)^2}=\dfrac{(x+2)^2-4}{2(x+2)^2}=\bx{\dfrac{x^2+4x}{2(x+2)^2}}=\dfrac{x(x+4)}{2(x+2)^2}$
+\E $f(0)=\dfrac84=2$ \quad و \quad $f(-4)=\dfrac8{-4}=-2$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.2]{$x$/1,$f'(x)$/1,$f(x)$/2}{$-\infty$,$-4$,$-2$,$0$,$+\infty$}
+\tkzTabLine{,+,z,-,d,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$-2$,-D+/$-\infty$/$+\infty$,-/$2$,+/$+\infty$}
+\end{TAB}
+\textbf{5.} $f'(x)=-\dfrac32\iff\dfrac12-\dfrac2{(x+2)^2}=-\dfrac32\iff\dfrac2{(x+2)^2}=2\iff(x+2)^2=1\iff x=-1$ أو $x=-3$.
+\begin{itemize}
+\item $x=-1$: $f(-1)=\dfrac52$: \quad $(T_1):\ y=-\dfrac32(x+1)+\dfrac52$ \quad أي \quad \bx{y=-\frac32x+1}
+\item $x=-3$: $f(-3)=-\dfrac52$: \quad $(T_2):\ y=-\dfrac32(x+3)-\dfrac52$ \quad أي \quad \bx{y=-\frac32x-7}
+\end{itemize}
+\textbf{6.} عند $x=-2$: $y=\frac12(-2)+1=0$ ، إذن نقطة التقاطع $\Omega(-2;0)$. من أجل $x\neq-2$:
+\[f(-4-x)+f(x)=\frac{-4-x}2+1+\frac2{-2-x}+\frac x2+1+\frac2{x+2}=0=2\times0\]
+إذن \bxt{$\Omega(-2;0)$ مركز تناظر لـ $(C_f)$}.
+\E\textbf{7.} من أجل $x\neq-2$: \quad $x^2+x(4-2m)+8-4m=0\iff x^2+4x+8=m(2x+4)\iff f(x)=m$
+\E ($x=-2$ ليس حلًا لأن $4\neq0$). حلول المعادلة هي فواصل نقط تقاطع $(C_f)$ مع المستقيم $y=m$:
+\begin{itemize}
+\item $m<-2$: حلان سالبان (في $]-\infty;-2[$).
+\item $m=-2$: حل مضاعف $x=-4$ \quad ؛ \quad $-2<m<2$: لا حلول \quad ؛ \quad $m=2$: حل مضاعف $x=0$.
+\item $m>2$: حلان مختلفان في الإشارة (أحدهما في $]-2;0[$ والآخر في $]0;+\infty[$).
+\end{itemize}
+\end{hal}
+
+\begin{tamrin}{مسألة نموذجية من الواقع: الكلفة المتوسطة}
+تنتج مؤسسة $x$ طنًا من مادة غذائية ($x>0$). الكلفة الإجمالية (بآلاف الدنانير) هي $C(x)=x^2+2x+100$. الكلفة المتوسطة للطن الواحد هي: $C_M(x)=\dfrac{C(x)}{x}$.
+\begin{enumerate}
+\item بيّن أن: $C_M(x)=x+2+\dfrac{100}x$.
+\item احسب $\Lm{0^+}C_M(x)$ و $\Lm{+\infty}C_M(x)$ ، وفسّر النتيجتين اقتصاديًا وبيانيًا.
+\item بيّن أن المستقيم $(\Delta):\ y=x+2$ مقارب مائل لمنحنى $C_M$ ، وحدد الوضع النسبي.
+\item ادرس تغيرات $C_M$ على $]0;+\infty[$.
+\item ما هي الكمية التي يجب إنتاجها حتى تكون الكلفة المتوسطة أصغر ما يمكن؟ ما قيمتها؟
+\end{enumerate}
+\end{tamrin}
+
+\begin{hal}
+\textbf{1.} $C_M(x)=\dfrac{x^2+2x+100}{x}=\dfrac{x^2}x+\dfrac{2x}x+\dfrac{100}x=\bx{x+2+\dfrac{100}x}$
+\E\textbf{2.} \LDx{C_M(x)}{0^+}{+\infty} $\Car{\Lm{0}(x+2)=2\\ \Lm{0^+}\dfrac{100}x=+\infty}$
+\E إنتاج كمية صغيرة جدًا يجعل كلفة الطن ضخمة (بسبب الكلفة الثابتة $100$) ، والمستقيم \bx{x=0} مقارب عمودي.
+\LD{C_M(x)}{+\infty}{+\infty} $\Car{\Lm{+\infty}(x+2)=+\infty\\ \Lm{+\infty}\dfrac{100}x=0}$
+\E إنتاج كميات كبيرة جدًا يرفع أيضًا كلفة الطن.
+\E\textbf{3.} $C_M(x)-(x+2)=\dfrac{100}x$ \quad و \quad $\Lm{+\infty}\dfrac{100}x=0$
+\E إذن: \bx{(\Delta):\ y=x+2} \quad مقارب مائل عند $+\infty$.
+\E و $\dfrac{100}x>0$ على $]0;+\infty[$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (15.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (15.5,-4.6);
+\draw[thick] (0,0) rectangle (15.5,-4.6); \draw (0,-0.9)--(15.5,-0.9) (0,-1.8)--(15.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$\frac{100}{x}$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$0$};
+\node at (14.8,-0.45){$+\infty$};
+\node at (9.05,-1.35){$+$};
+\node[align=center,font=\small] at (9.05,-3.2){$(C_M)$\\ \ar{فوق}\\ $(\Delta)$};
+\end{tikzpicture}
+\end{FIG}
+\textbf{4.} $C_M'(x)=1-\dfrac{100}{x^2}=\dfrac{x^2-100}{x^2}=\bx{\dfrac{(x-10)(x+10)}{x^2}}$ ، وعلى $]0;+\infty[$ إشارتها إشارة $x-10$.
+\begin{TAB}
+\tkzTabInit[lgt=1.8,espcl=3]{$x$/1,$C_M'(x)$/1,$C_M(x)$/2}{$0$,$10$,$+\infty$}
+\tkzTabLine{d,-,z,+,}
+\tkzTabVar{D+/ /$+\infty$,-/$22$,+/$+\infty$}
+\end{TAB}
+\textbf{5.} الكلفة المتوسطة أصغر ما يمكن عند إنتاج \bxt{$10$ أطنان} ، وقيمتها $C_M(10)=10+2+10=\bx{22}$ ألف دينار للطن.
+\end{hal}
+\end{document}
