@@ -1,0 +1,504 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+% أعمدة جداول تُكتب خلاياها بالعربية في الاتجاه الصحيح
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+% تجنب عنوان يتيم في أسفل الصفحة
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+% ---------- الألوان ----------
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+% ---------- العناوين ----------
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+% ---------- الصناديق (تُرسم في سياق LTR ويُكتب محتواها بالعربية) ----------
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+% ---------- التمارين والحلول ----------
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+% رسومات TikZ تُوضع في سياق LTR
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+% ---------- رموز ----------
+% نقاط الحذف داخل الرياضيات (\dots يسبب خللاً في الاتجاه مع babel)
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% ---------- تمثيل مجال على مستقيم عددي ----------
+% \NLseg{a}{b}{[}{]}  مجال محدود
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+% \NLright{a}{[}  مجال نحو +∞
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+% \NLleft{b}{]}  مجال نحو −∞
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- أيقونات مواقع التواصل (مرسومة بـ TikZ، لا تحتاج أي حزمة) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% سطر مواقع التواصل أسفل كل صفحة
+% (يُكتب السطر بترتيب بصري من اليسار إلى اليمين: الأيقونة يمين كل اسم)
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+% ---------- رأس وتذييل الصفحة ----------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{يمين الرأس}{يسار الرأس}{يمين التذييل}{يسار التذييل}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% جدول تغيرات / إشارة (يُرسم في سياق LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% معلم بشبكة: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \def\xmn{#1}\def\xmx{#2}\def\ymn{#3}\def\ymx{#4}
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \draw[very thick,-{Stealth[length=1.6mm]}] (0,0)--(1,0) node[below,pos=.55]{$\vec i$};
+ \draw[very thick,-{Stealth[length=1.6mm]}] (0,0)--(0,1) node[left,pos=.55]{$\vec j$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\hl}[1]{\ensuremath{\colorbox{cEx!20}{$\displaystyle #1$}}}
+\newcommand{\Lim}[1]{\displaystyle\lim_{x\to #1}}
+\newcommand{\Cf}{(C_f)}
+\newenvironment{qst}{\begin{enumerate}[label=\protect\circled{\arabic*},leftmargin=*]}{\end{enumerate}}
+\newcommand{\circled}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[circle,fill=cDef,text=white,inner sep=1.2pt,font=\scriptsize\bfseries](c){#1};}}
+% عمودان: \TwoCol{عرض اليسار}{محتوى اليسار}{عرض اليمين}{محتوى اليمين}  (آمن مع TikZ)
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\un}{(u_n)}\newcommand{\vn}{(v_n)}
+% برهان بالتراجع: \Rec{الخاصية P(n)}{التحقق من P(0)}{البرهان على الوراثة}
+\newcommand{\Rec}[3]{\textbf{برهان بالتراجع:} نسمي $P(n)$ الخاصية: «#1».
+\begin{itemize}
+\item \textbf{التحقق:} #2
+\item \textbf{الوراثة:} نفرض أن $P(n)$ صحيحة ونبرهن صحة $P(n+1)$: #3
+\item \textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع، $P(n)$ صحيحة من أجل كل عدد طبيعي $n$.
+\end{itemize}}
+\newcommand{\src}[1]{{\footnotesize\textbf{#1}}\par}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% أسئلة فرعية (أ) (ب) (جـ) كل سؤال في سطر
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\ccl}[1]{\par\textbf{الخلاصة:} #1}
+
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\SetHeader{\small\bfseries\color{cSec}تمارين: الجداء السلمي في المستوي}{\small\color{cSec}السنة الثانية ثانوي -- الشعب العلمية}
+\begin{document}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}p{#1}}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newcommand{\V}[1]{\overrightarrow{#1}}
+\newcommand{\nV}[1]{\big\|#1\big\|}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries سلسلة تمارين: الجداء السلمي في المستوي}\\[8pt]
+{\color{white}\large تمارين متنوعة ومسائل شاملة -- بدون حلول (للتدرّب)}\\[5pt]
+{\color{white}\large السنة الثانية ثانوي -- الشعب العلمية}
+\end{tcolorbox}
+\end{LTR}
+
+% =====================================================================
+\section{حساب الجداء السلمي والعلاقات المترية}
+% ------------------------------------------------- 1
+\begin{tamrin}{مثلث متقايس الأضلاع}
+$ABC$ مثلث متقايس الأضلاع طول ضلعه $4$ ، و $I$ منتصف القطعة $[BC]$.
+\begin{enumerate}
+\item احسب الجداءات السلمية:
+\begin{sq}
+\qa $\V{AB}\cdot\V{AC}$
+\qb $\V{BA}\cdot\V{BC}$
+\qc $\V{AI}\cdot\V{BC}$
+\qd $\V{AB}\cdot\V{AI}$
+\end{sq}
+\item احسب $\nV{\V{AB}+\V{AC}}$ ، ثم استنتج الطول $AI$.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 2
+\begin{tamrin}{مبرهنة الكاشي وقانون الجيوب}
+$ABC$ مثلث حيث: $AB=5$ ، $AC=8$ و $\widehat{BAC}=\dfrac{\pi}{3}$. \ $I$ منتصف $[BC]$.
+\begin{enumerate}
+\item احسب $\V{AB}\cdot\V{AC}$ ، ثم الطول $BC$.
+\item احسب مساحة المثلث $ABC$.
+\item احسب $\cos\widehat{ABC}$ ثم $\sin\widehat{ABC}$.
+\item تحقق من قانون الجيوب ، ثم استنتج نصف قطر الدائرة المحيطة بالمثلث $ABC$.
+\item احسب طول المتوسط $AI$.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 3
+\begin{tamrin}{مجموعات نقط على قطعة}
+لتكن $A$ و $B$ نقطتين متمايزتين من المستوي حيث $AB=5$ ، و $I$ منتصف $[AB]$.
+\begin{enumerate}
+\item نعتبر النقطة $C$ حيث $3\V{CA}+2\V{CB}=\vec0$.
+\begin{sq}
+\qa اكتب $\V{AC}$ بدلالة $\V{AB}$.
+\qb لتكن $(E)$ مجموعة النقط $M$ من المستوي التي تحقق $\V{AM}\cdot\V{AB}=10$. \ بيّن أن $C\in(E)$ ، ثم عيّن وأنشئ $(E)$.
+\end{sq}
+\item $(F)$ مجموعة النقط $M$ التي تحقق $MA^2+MB^2=7$. \ عيّن $(F)$.
+\item $(\Gamma)$ مجموعة النقط $M$ التي تحقق $\big(\V{MA}+\V{MB}\big)\cdot\V{MA}=0$. \ عيّن ثم أنشئ $(\Gamma)$.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 4
+\begin{tamrin}{مجموعة النقط $MB=2MA$}
+لتكن $A$ و $B$ نقطتين متمايزتين حيث $AB=6$ ، و $(E)$ مجموعة النقط $M$ من المستوي التي تحقق: $MB=2MA$.
+\begin{enumerate}
+\item برهن أنه من أجل كل نقطة $M$: \ $MB=2MA\iff\big(\V{MB}+2\V{MA}\big)\cdot\big(\V{MB}-2\V{MA}\big)=0$.
+\item لتكن $I$ و $J$ نقطتين حيث: $2\V{IA}+\V{IB}=\vec0$ و $-2\V{JA}+\V{JB}=\vec0$.
+\begin{sq}
+\qa أنشئ النقطتين $I$ و $J$.
+\qb أثبت أنه من أجل كل نقطة $M$: \ $\big(\V{MB}+2\V{MA}\big)\cdot\big(\V{MB}-2\V{MA}\big)=-3\,\V{MI}\cdot\V{MJ}$.
+\end{sq}
+\item عيّن ثم أنشئ المجموعة $(E)$.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 5
+\begin{tamrin}{مجموعة النقط $MA^2-MB^2=k$}
+في معلم متعامد ومتجانس نعتبر النقطتين $A(1;0)$ و $B(4;0)$ ، فيكون $AB=3$.
+\begin{enumerate}
+\item بيّن أنه من أجل كل نقطة $M$: \ $MA^2-MB^2=2\,\V{AM}\cdot\V{AB}-9$.
+\item عيّن مجموعة النقط $M$ التي تحقق: $MA^2-MB^2=-3$ ، ثم اكتب معادلة لها.
+\end{enumerate}
+\end{tamrin}
+
+% =====================================================================
+\section{المستقيمات والدوائر في معلم متعامد ومتجانس}
+% ------------------------------------------------- 6
+\begin{tamrin}{دائرة ومماس}
+المستوي منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$. نعتبر النقط: $A(1;-1)$ ، $B(1;3)$ ، $C(5;2)$ و $D(0;-2)$.
+\begin{enumerate}
+\item احسب مركبات الشعاعين $\V{AB}$ و $\V{AC}$ ، ثم احسب $\V{AB}\cdot\V{AC}$.
+\item احسب $AB$ و $AC$ ثم استنتج $\cos\big(\V{AB};\V{AC}\big)$.
+\item لتكن $(c)$ مجموعة النقط $M(x;y)$ التي تحقق: $x^2+y^2-2x-6y-3=0$. \ بيّن أن $(c)$ دائرة يطلب تعيين مركزها $\Omega$ ونصف قطرها $r$.
+\item جد معادلة للمستقيم $(\Delta)$ الذي يشمل $D$ و $\vec n(3;2)$ شعاع ناظمي له.
+\item
+\begin{sq}
+\qa بيّن أن المسافة بين $\Omega$ والمستقيم $(\Delta)$ هي $\sqrt{13}$.
+\qb هل المستقيم $(\Delta)$ مماس للدائرة $(c)$؟ برّر.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 7
+\begin{tamrin}{مثلث قائم ودائرة}
+المستوي منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$. لتكن النقط $A(-1;1)$ ، $B(-2;1)$ و $C(-1;-1)$.
+\begin{enumerate}
+\item احسب الجداء السلمي $\V{AB}\cdot\V{AC}$ ، ثم استنتج طبيعة المثلث $ABC$.
+\item أوجد معادلة للمستقيم $(\Delta)$ الذي يشمل $A$ و $\V{BC}$ شعاع ناظمي له.
+\item أوجد معادلة الدائرة $(c)$ التي مركزها $w(-1;3)$ ونصف قطرها $r=\sqrt5$.
+\item تحقق أن $B$ تنتمي إلى الدائرة $(c)$.
+\item احسب المسافة بين مركز الدائرة $(c)$ والمستقيم $(\Delta)$ ، ثم استنتج الوضع النسبي لـ $(c)$ و $(\Delta)$.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 8
+\begin{tamrin}{الدائرة المحيطة بمثلث قائم وصورتها بتحاكٍ}
+في معلم متعامد ومتجانس نعتبر النقط $A(2;0)$ ، $B(4;2)$ ، $C(-1;3)$ والمستقيم $(d):x+5y-21=0$.
+\begin{enumerate}
+\item احسب الجداء السلمي $\V{AB}\cdot\V{AC}$ ثم استنتج طبيعة المثلث $ABC$.
+\item عيّن إحداثيي النقطة $D$ مركز الدائرة $(C)$ المحيطة بالمثلث $ABC$.
+\item اكتب معادلة ديكارتية للدائرة $(C)$.
+\item اكتب معادلة ديكارتية للمستقيم $(\Delta)$ المماس للدائرة $(C)$ في النقطة $B$ ، ثم تحقق أن $(\Delta)\perp(d)$.
+\item احسب المسافة بين $D$ والمستقيم $(d)$ ، ثم ادرس وضعية $(d)$ بالنسبة إلى $(C)$.
+\item عيّن صورة الدائرة $(C)$ بالتحاكي $h$ الذي مركزه $B$ ونسبته $2$.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 9
+\begin{tamrin}{تقاطع مستقيم ودائرة ومساحة مثلث}
+في معلم متعامد ومتجانس نعتبر النقطتين $A(1;2)$ ، $B(0;5)$ والدائرة $(C):x^2+y^2-2x-3=0$.
+\begin{enumerate}
+\item اكتب معادلة ديكارتية للمستقيم $(D)$ الذي يشمل $I(-1;1)$ و $\vec u(2;1)$ شعاع توجيه له.
+\item حدّد المركز $\Omega$ ونصف القطر $r$ للدائرة $(C)$ ، ثم تحقق أن $A\in(C)$.
+\item اكتب معادلة ديكارتية للمستقيم $(\Delta)$ المار من $B$ و $\vec n(3;4)$ شعاع ناظمي له.
+\item بيّن أن تقاطع $(\Delta)$ مع $(C)$ مجموعة خالية.
+\item تحقق أن $(C)$ و $(D)$ يتقاطعان في نقطتين ، الأولى هي $A$ والثانية نرمز لها بـ $F$.
+\item احسب مساحة المثلث $A\Omega F$ إذا علمت أن $\sin\widehat{A\Omega F}=0{,}8$.
+\item احسب المسافة بين $\Omega$ والمستقيم $(D)$ بطريقتين.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 10
+\begin{tamrin}{دائرة ومماسان متوازيان}
+المستوي منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$. نعتبر النقط $B\big(0;\sqrt3\big)$ ، $C\big(0;-\sqrt3\big)$ و $M(x;y)$.
+\begin{enumerate}
+\item بيّن أن مجموعة النقط $M$ من المستوي التي تحقق $\V{MB}\cdot\V{MC}=0$ هي الدائرة $(C)$ ، يطلب تحديد مركزها ونصف قطرها.
+\item اكتب معادلة المستقيمين $(T_1)$ و $(T_2)$ مماسي الدائرة $(C)$ في النقطتين $C$ و $B$ على الترتيب.
+\item بيّن أن $(T_1)$ يوازي $(T_2)$.
+\item ارسم الدائرة $(C)$ والمستقيمين $(T_1)$ و $(T_2)$.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 11
+\begin{tamrin}{مستقيمان متعامدان ومجموعة نقط}
+في معلم متعامد ومتجانس $(O;\vec i,\vec j)$ ، ليكن $(D)$ المستقيم الذي معادلته: $3x+3y-5=0$.
+\begin{enumerate}
+\item اكتب معادلة للمستقيم $(\Delta)$ الذي يشمل $A(-1;2)$ ويعامد $(D)$.
+\item عيّن إحداثيي النقطة $B$ نقطة تقاطع المستقيمين $(D)$ و $(\Delta)$ ، ثم احسب $AB$.
+\item عيّن مجموعة النقط $M(x;y)$ من المستوي التي تحقق: $\V{MA}\cdot\V{MB}=AB$.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 12
+\begin{tamrin}{دائرة ، مماس ونظيرة}
+المستوي منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$. لتكن $(C)$ مجموعة النقط $M(x;y)$ المعرّفة بـ: $\dfrac12\big(x^2+y^2\big)-3x+y+\dfrac52=0$.
+\begin{enumerate}
+\item
+\begin{sq}
+\qa بيّن أن $(C)$ دائرة يطلب تحديد إحداثيي مركزها $\Omega$ ونصف قطرها.
+\qb أثبت أن النقطة $A(1;-2)$ من $(C)$.
+\end{sq}
+\item اكتب معادلة المستقيم $(T)$ مماس الدائرة $(C)$ عند النقطة $A$.
+\item لتكن $B$ نظيرة $\Omega$ بالنسبة إلى $A$.
+\begin{sq}
+\qa عيّن إحداثيي النقطة $B$.
+\qb اكتب معادلة الدائرة $(C')$ التي مركزها $B$ والمماسة لـ $(C)$ عند النقطة $A$.
+\end{sq}
+\item ادرس الوضع النسبي بين المستقيم $(D):6x+2y-5=0$ والدائرة $(C)$.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 13
+\begin{tamrin}{مسألة شاملة: مماس ، جداء سلمي ومجموعات نقط}
+المستوي منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$ حيث $\nV{\vec i}=\nV{\vec j}=1\,cm$. \ لتكن النقط $A(2;1)$ ، $B(5;-1)$ و $C(8;3)$ ، و $H$ منتصف القطعة $[AC]$.
+\begin{enumerate}
+\item علّم النقط $A$ ، $B$ ، $C$ و $H$ ، ثم اكتب معادلة ديكارتية للمستقيم $(\Delta)$ الذي يشمل $A$ و $\vec v(3;-2)$ ناظمي له.
+\item لتكن $(\gamma)$ مجموعة النقط $M(x;y)$ حيث: $x^2+y^2-10x+2y+13=0$.
+\begin{sq}
+\qa أثبت أن $(\gamma)$ دائرة مركزها $B$ ونصف قطرها $R$ يطلب تعيينه.
+\qb أنشئ المستقيم $(\Delta)$ والدائرة $(\gamma)$.
+\qc تحقق حسابياً أن $A\in(\gamma)$ ، ثم حدّد بدقة المسافة $d(B;\Delta)$.
+\qd استنتج الوضعية النسبية لـ $(\Delta)$ و $(\gamma)$.
+\end{sq}
+\item احسب الجداء السلمي $\V{BA}\cdot\V{BC}$ بطريقتين ، واستنتج قيمة مقرّبة بالدرجات لقيس الزاوية $\widehat{ABC}$.
+\item احسب الطول $BH$ بطريقتين مختلفتين.
+\item حدّد طبيعة وعناصر $(E)$ مجموعة النقط $N$ من المستوي التي تحقق: $NA^2+NC^2=21$.
+\item حدّد طبيعة وعناصر $(F)$ مجموعة النقط $M$ التي تحقق: $\V{MA}\cdot\V{MC}=0$ ، واكتب معادلة ديكارتية لها.
+\item ليكن $h$ التحاكي الذي مركزه $O(0;0)$ ونسبته $-\dfrac12$ ، و $(\gamma')$ صورة الدائرة $(\gamma)$ بالتحاكي $h$.
+\begin{sq}
+\qa اكتب معادلة ديكارتية للدائرة $(\gamma')$.
+\qb استنتج محيط ومساحة الدائرة $(\gamma')$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% =====================================================================
+\section{دساتير الجمع والمعادلات المثلثية}
+% ------------------------------------------------- 14
+\begin{tamrin}{حساب قيم مضبوطة}
+\begin{enumerate}
+\item إذا علمت أن $\sin\Big(\dfrac{7\pi}{12}\Big)=\dfrac{\sqrt2+\sqrt6}{4}$ ، احسب $\sin\Big(\dfrac{5\pi}{12}\Big)$ بطريقتين مختلفتين.
+\item احسب $\cos\Big(\dfrac{5\pi}{12}\Big)$ ، ثم استنتج أن $\tan\Big(\dfrac{5\pi}{12}\Big)=2+\sqrt3$.
+\item باستعمال دستور التضعيف ، احسب $\cos\Big(\dfrac{\pi}{8}\Big)$ و $\sin\Big(\dfrac{\pi}{8}\Big)$.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 15
+\begin{tamrin}{متطابقات مثلثية}
+برهن أنه من أجل كل عدد حقيقي $x$:
+\begin{sq}
+\qa $\cos^4x-\sin^4x=\cos2x$
+\qb $\big(\sin x+\cos x\big)^2=1+\sin2x$
+\qc $\sin3x=3\sin x-4\sin^3x$
+\qd $\cos3x=4\cos^3x-3\cos x$
+\end{sq}
+\end{tamrin}
+
+% ------------------------------------------------- 16
+\begin{tamrin}{معادلات من الشكل $a\cos x+b\sin x=c$}
+\begin{enumerate}
+\item حل في المجال $]-\pi;\pi]$ المعادلة: $\cos x+\sin x=1$.
+\item حل في $\R$ المعادلة: $\sqrt3\cos x-\sin x=\sqrt2$.
+\item حل في $\R$ المعادلة: $\cos4x=\dfrac{1}{\sqrt2}$.
+\end{enumerate}
+\end{tamrin}
+
+% =====================================================================
+\section{اختيار من متعدد ، صحيح أم خطأ}
+% ------------------------------------------------- 17
+\begin{tamrin}{اختيار من متعدد}
+اختر الإجابة الصحيحة الوحيدة مع التعليل (المعلم متعامد ومتجانس):
+\begin{enumerate}
+\item إذا كان $\vec u(2;-1)$ و $\vec v(3;4)$ فإن $\vec u\cdot\vec v$ يساوي:
+\ABC{$2$}{$10$}{$-2$}
+\item $\nV{\vec u}=3$ ، $\nV{\vec v}=2$ و $(\vec u;\vec v)=\dfrac{2\pi}{3}$ ، إذن $\vec u\cdot\vec v$ يساوي:
+\ABC{$3$}{$-3$}{$-3\sqrt3$}
+\item المسافة بين المبدأ $O$ والمستقيم $3x-4y+10=0$ هي:
+\ABC{$10$}{$2$}{$\dfrac{10}{7}$}
+\item الدائرة $x^2+y^2+4x-6y+4=0$ مركزها ونصف قطرها:
+\ABC{$(2;-3)$ ، $3$}{$(-2;3)$ ، $9$}{$(-2;3)$ ، $3$}
+\item $\cos\dfrac{\pi}{12}$ يساوي:
+\ABC{$\dfrac{\sqrt6+\sqrt2}{4}$}{$\dfrac{\sqrt6-\sqrt2}{4}$}{$\dfrac{\sqrt3}{4}$}
+\item $A$ و $B$ نقطتان متمايزتان. مجموعة النقط $M$ حيث $\V{MA}\cdot\V{MB}=0$ هي:
+\ABC{محور $[AB]$}{المستقيم $(AB)$}{الدائرة ذات القطر $[AB]$}
+\item $ABC$ مثلث فيه $AB=5$ ، $AC=3$ و $\widehat{A}=\dfrac{2\pi}{3}$ ، إذن $BC$ يساوي:
+\ABC{$7$}{$\sqrt{19}$}{$49$}
+\item المستقيم الذي يشمل $A(1;1)$ و $\vec n(2;-3)$ ناظمي له معادلته:
+\ABC{$3x+2y-5=0$}{$2x-3y+1=0$}{$2x-3y-1=0$}
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 18
+\begin{tamrin}{صحيح أم خطأ}
+أجب بصحيح أو خطأ مع التعليل:
+\begin{enumerate}
+\item إذا كان $\vec u\cdot\vec v=0$ فإن $\vec u=\vec0$ أو $\vec v=\vec0$.
+\item $\nV{\vec u+\vec v}^2=\nV{\vec u}^2+\nV{\vec v}^2$ إذا وفقط إذا كان $\vec u\perp\vec v$.
+\item المستقيمان $2x-y+1=0$ و $x+2y-3=0$ متعامدان.
+\item المعادلة $x^2+y^2-2x+4y+6=0$ هي معادلة دائرة.
+\item من أجل كل عدد حقيقي $x$: \ $\cos2x=1-2\cos^2x$.
+\item من أجل كل عدد حقيقي $x$: \ $\sqrt3\cos x+\sin x=2\cos\Big(x-\dfrac\pi6\Big)$.
+\item إذا كان $\V{AB}\cdot\V{AC}<0$ فإن الزاوية $\widehat{BAC}$ منفرجة.
+\item النقطة $A(1;2)$ تنتمي إلى الدائرة التي مركزها $O$ ونصف قطرها $\sqrt5$.
+\end{enumerate}
+\end{tamrin}
+
+% =====================================================================
+\section{تمارين نموذجية}
+% ------------------------------------------------- 19
+\begin{tamrin}{تمرين نموذجي 1: عناصر مثلث في معلم}
+في معلم متعامد ومتجانس $(O;\vec i,\vec j)$ نعتبر النقط: $A(1;4)$ ، $B(-2;-2)$ و $C(4;1)$.
+\begin{enumerate}
+\item احسب $AB$ ، $BC$ و $AC$ ، ثم استنتج طبيعة المثلث $ABC$.
+\item احسب $\V{AB}\cdot\V{AC}$ ، ثم $\cos\widehat{BAC}$ وقيمة مقرّبة لـ $\widehat{BAC}$ بالدرجات.
+\item
+\begin{sq}
+\qa اكتب معادلة للمستقيم $(BC)$.
+\qb احسب المسافة بين $A$ والمستقيم $(BC)$ ، ثم استنتج مساحة المثلث $ABC$.
+\end{sq}
+\item
+\begin{sq}
+\qa اكتب معادلتي الارتفاعين المتعلقين بالرأسين $A$ و $C$.
+\qb استنتج إحداثيي $H$ نقطة تلاقي ارتفاعات المثلث $ABC$.
+\end{sq}
+\item
+\begin{sq}
+\qa عيّن إحداثيي $\Omega$ مركز الدائرة $(\mathcal C)$ المحيطة بالمثلث $ABC$ ، ثم اكتب معادلة لها.
+\qb ليكن $G$ مركز ثقل المثلث $ABC$. \ بيّن أن $\V{\Omega H}=3\V{\Omega G}$.
+\end{sq}
+\item اكتب معادلة المماس $(T)$ للدائرة $(\mathcal C)$ في النقطة $A$.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 20
+\begin{tamrin}{تمرين نموذجي 2: عبارة مثلثية}
+من أجل كل عدد حقيقي $x$ نضع: $A(x)=\cos x-\sqrt3\sin x$.
+\begin{enumerate}
+\item بيّن أنه من أجل كل عدد حقيقي $x$: \ $A(x)=2\cos\Big(x+\dfrac\pi3\Big)$.
+\item حل في المجال $[0;2\pi[$ المعادلة $A(x)=1$.
+\item عيّن القيمة الحدية العظمى والقيمة الحدية الصغرى لـ $A(x)$ ، وقيم $x$ التي تحققهما.
+\item احسب $A\Big(\dfrac\pi4\Big)$ بطريقتين ، ثم استنتج القيمة المضبوطة لـ $\cos\dfrac{7\pi}{12}$.
+\end{enumerate}
+\end{tamrin}
+
+\end{document}

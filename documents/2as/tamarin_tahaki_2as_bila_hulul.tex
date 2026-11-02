@@ -1,0 +1,377 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+% أعمدة جداول تُكتب خلاياها بالعربية في الاتجاه الصحيح
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+% تجنب عنوان يتيم في أسفل الصفحة
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+% ---------- الألوان ----------
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+% ---------- العناوين ----------
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+% ---------- الصناديق (تُرسم في سياق LTR ويُكتب محتواها بالعربية) ----------
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+% ---------- التمارين والحلول ----------
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+% رسومات TikZ تُوضع في سياق LTR
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+% ---------- رموز ----------
+% نقاط الحذف داخل الرياضيات (\dots يسبب خللاً في الاتجاه مع babel)
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% ---------- تمثيل مجال على مستقيم عددي ----------
+% \NLseg{a}{b}{[}{]}  مجال محدود
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+% \NLright{a}{[}  مجال نحو +∞
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+% \NLleft{b}{]}  مجال نحو −∞
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- أيقونات مواقع التواصل (مرسومة بـ TikZ، لا تحتاج أي حزمة) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% سطر مواقع التواصل أسفل كل صفحة
+% (يُكتب السطر بترتيب بصري من اليسار إلى اليمين: الأيقونة يمين كل اسم)
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+% ---------- رأس وتذييل الصفحة ----------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{يمين الرأس}{يسار الرأس}{يمين التذييل}{يسار التذييل}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% جدول تغيرات / إشارة (يُرسم في سياق LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% معلم بشبكة: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \def\xmn{#1}\def\xmx{#2}\def\ymn{#3}\def\ymx{#4}
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \draw[very thick,-{Stealth[length=1.6mm]}] (0,0)--(1,0) node[below,pos=.55]{$\vec i$};
+ \draw[very thick,-{Stealth[length=1.6mm]}] (0,0)--(0,1) node[left,pos=.55]{$\vec j$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\hl}[1]{\ensuremath{\colorbox{cEx!20}{$\displaystyle #1$}}}
+\newcommand{\Lim}[1]{\displaystyle\lim_{x\to #1}}
+\newcommand{\Cf}{(C_f)}
+\newenvironment{qst}{\begin{enumerate}[label=\protect\circled{\arabic*},leftmargin=*]}{\end{enumerate}}
+\newcommand{\circled}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[circle,fill=cDef,text=white,inner sep=1.2pt,font=\scriptsize\bfseries](c){#1};}}
+% عمودان: \TwoCol{عرض اليسار}{محتوى اليسار}{عرض اليمين}{محتوى اليمين}  (آمن مع TikZ)
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\un}{(u_n)}\newcommand{\vn}{(v_n)}
+% برهان بالتراجع: \Rec{الخاصية P(n)}{التحقق من P(0)}{البرهان على الوراثة}
+\newcommand{\Rec}[3]{\textbf{برهان بالتراجع:} نسمي $P(n)$ الخاصية: «#1».
+\begin{itemize}
+\item \textbf{التحقق:} #2
+\item \textbf{الوراثة:} نفرض أن $P(n)$ صحيحة ونبرهن صحة $P(n+1)$: #3
+\item \textbf{الخلاصة:} حسب مبدأ الاستدلال بالتراجع، $P(n)$ صحيحة من أجل كل عدد طبيعي $n$.
+\end{itemize}}
+\newcommand{\src}[1]{{\footnotesize\textbf{#1}}\par}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% أسئلة فرعية (أ) (ب) (جـ) كل سؤال في سطر
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\ccl}[1]{\par\textbf{الخلاصة:} #1}
+
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\SetHeader{\small\bfseries\color{cSec}تمارين: التحاكي}{\small\color{cSec}السنة الثانية ثانوي -- الشعب العلمية}
+\begin{document}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}p{#1}}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newcommand{\V}[1]{\overrightarrow{#1}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{white}\fontsize{26}{32}\selectfont\bfseries سلسلة تمارين: التحاكي}\\[8pt]
+{\color{white}\large تمارين متنوعة ومسائل شاملة -- بدون حلول (للتدرّب)}\\[5pt]
+{\color{white}\large السنة الثانية ثانوي -- الشعب العلمية}
+\end{tcolorbox}
+\end{LTR}
+
+% =====================================================================
+\section{التعريف والخاصية المميزة}
+% ------------------------------------------------- 1
+\begin{tamrin}{تعيين تحاكيات}
+\begin{enumerate}
+\item $A$ و $B$ نقطتان متمايزتان ، و $I$ نقطة حيث $\V{IB}=-\dfrac12\V{IA}$. \ عيّن تحاكياً يحوّل $A$ إلى $B$.
+\item $O$ ، $P$ و $Q$ نقط حيث $\V{OQ}=3\V{OP}$. عيّن تحاكياً يحوّل $P$ إلى $Q$.
+\item $ABCD$ متوازي أضلاع. هل يوجد تحاكٍ يحوّل $A$ إلى $C$ و $B$ إلى $D$؟ عيّنه.
+\item $A$ ، $B$ نقطتان و $f$ التحويل النقطي الذي يرفق بكل نقطة $M$ النقطة $M'$ حيث: $\V{MM'}=2\V{MA}+\V{MB}$.\par
+أنشئ النقطة $G$ مرجح الجملة $\{(A;2);(B;1)\}$ ، وأثبت أن $\V{GM'}=-2\V{GM}$ ، ثم استنتج طبيعة $f$.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 2
+\begin{tamrin}{مثلث قائم ومساحات}
+$ABC$ مثلث قائم في $A$ حيث $AB=2$ و $AC=3$. \ $D$ نقطة من المستوي تحقق: $2\V{AD}=\V{DB}$.
+\begin{enumerate}
+\item بيّن أن النقطة $D$ هي صورة النقطة $B$ بالتحاكي $h$ الذي مركزه $A$ يطلب تعيين نسبته.
+\item $E$ صورة $C$ بالتحاكي $h$. حدّد طبيعة المثلث $ADE$ واحسب مساحته.
+\item لتكن النقطة $F$ مرجح النقطتين $A$ و $C$ المرفقتين بالمعاملين $2$ و $-3$ على الترتيب. \ بيّن أن النقطة $F$ هي صورة $A$ بالتحاكي $h'$ الذي مركزه $C$ يطلب تعيين نسبته.
+\item نعتبر النقطتين $I$ و $H$ صورتي النقطتين $D$ و $E$ بالتحاكي $h'$ على الترتيب. حدّد طبيعة المثلث $FHI$ ثم استنتج مساحته.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 3
+\begin{tamrin}{صحيح أم خطأ}
+أجب بصحيح أو خطأ مع التعليل:
+\begin{enumerate}
+\item النقطة $C$ مرجح الجملة $\{(A;2);(B;-3)\}$ معناه $C$ هي صورة $B$ بالتحاكي $h$ ذي المركز $A$ والنسبة $k=3$.
+\item $ABC$ مثلث حيث $\widehat{BAC}=60^\circ$ ، $AB=5\ \text{cm}$ و $AC=7\ \text{cm}$:
+\begin{sq}
+\qa $BC=\sqrt{39}\ \text{cm}$.
+\qb مساحة المثلث $A'B'C'$ صورة $ABC$ بالتحاكي الذي نسبته $k=-\dfrac13$ هي $S=\dfrac{35\sqrt3}{36}\ \text{cm}^2$.
+\end{sq}
+\item صورة مستقيم بتحاكٍ هي دائماً مستقيم يختلف عنه.
+\item التحاكي الذي نسبته $-1$ هو تناظر مركزي.
+\item إذا كان $h(A)=A'$ و $h(B)=B'$ حيث $AB=4$ و $A'B'=2$ فإن نسبة $h$ هي حتماً $\dfrac12$.
+\end{enumerate}
+\end{tamrin}
+
+% =====================================================================
+\section{الصور ، الأطوال والمساحات}
+% ------------------------------------------------- 4
+\begin{tamrin}{صورة مستطيل}
+$ABCD$ مستطيل مركزه $O$ ، و $I$ منتصف القطعة $[AB]$ ، و $G$ نقطة تقاطع المستقيمين $(IC)$ و $(BD)$. \ نرمز بـ $h$ إلى التحاكي الذي مركزه $G$ ونسبته $-\dfrac12$.
+\begin{enumerate}
+\item بيّن أن $G$ مركز ثقل المثلث $ABC$.
+\item عيّن صور النقط $A$ ، $B$ ، $C$ و $D$ بالتحاكي $h$ ، ثم أرسم صورة المستطيل $ABCD$.
+\item احسب محيط ومساحة صورة المستطيل $ABCD$ إذا علمت أن $AD=4\ \text{cm}$ و $AB=10\ \text{cm}$.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 5
+\begin{tamrin}{تحاكيان متتابعان في مثلث}
+$ABC$ مثلث مركز ثقله $G$ ، و $A'$ ، $B'$ ، $C'$ منتصفات $[BC]$ ، $[CA]$ و $[AB]$ على الترتيب. \ ليكن $h$ التحاكي الذي مركزه $G$ ويحوّل $A$ إلى $A'$ ، ولنضع $M=h(A')$ ، $N=h(B')$ و $P=h(C')$.
+\begin{enumerate}
+\item عيّن نسبة التحاكي $h$.
+\item بيّن أن $h(B)=B'$ و $h(C)=C'$ ، ثم عيّن صورة المثلث $ABC$.
+\item قارن بين مساحتي المثلثين $MNP$ و $ABC$.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 6
+\begin{tamrin}{دوائر في معلم}
+المستوي منسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\begin{enumerate}
+\item $(C)$ الدائرة التي مركزها $A(2;3)$ ونصف قطرها $2$ ، و $h$ التحاكي الذي مركزه $O$ ونسبته $-\dfrac12$. \ عيّن ثم أرسم $(C')=h(C)$.
+\item $(\Gamma)$ مجموعة النقط $M(x;y)$ حيث: $x^2+y^2-2x-6y+5=0$.
+\begin{sq}
+\qa بيّن أن $(\Gamma)$ دائرة يطلب تعيين مركزها ونصف قطرها.
+\qb عيّن معادلة الدائرة $(C_1)$ صورة $(\Gamma)$ بالتحاكي الذي مركزه $B(0;2)$ ونسبته $3$.
+\end{sq}
+\item $(E)$ مجموعة النقط $M(x;y)$ حيث: $x^2+y^2+4x-2y-31=0$. \ عيّن صورة $(E)$ بالتحاكي الذي مركزه $O$ ونسبته $3$.
+\end{enumerate}
+\end{tamrin}
+
+% =====================================================================
+\section{مسائل شاملة: الاستقامية والتوازي}
+% ------------------------------------------------- 7
+\begin{tamrin}{تحويل نقطي وتحاكيان}
+$ABCD$ متوازي أضلاع ، و $G$ مرجح الجملة المثقلة $\{(A;3);(B;1)\}$.\par
+\textbf{الجزء الأول:} نسمي $f$ التحويل النقطي الذي يرفق بكل نقطة $M$ من المستوي النقطة $M'$ حيث: $\V{MM'}-3\V{MA}-\V{MB}=\vec0$.
+\begin{enumerate}
+\item حدّد صورة النقطة $A$ بواسطة $f$.
+\item
+\begin{sq}
+\qa أثبت أن التحويل $f$ يقبل نقطة صامدة وحيدة يطلب تعيينها.
+\qb أثبت أن $f$ هو تحاكٍ يطلب تعيين مركزه ونسبته.
+\end{sq}
+\end{enumerate}
+\textbf{الجزء الثاني:} ليكن $h$ التحاكي الذي مركزه $G$ ونسبته $-3$.
+\begin{enumerate}[resume]
+\item عيّن صورة المستقيم $(AD)$ بواسطة $h$ معللاً إجابتك.
+\item المستقيم $(GD)$ يقطع المستقيم $(BC)$ في $E$. \ أثبت أن $E=h(D)$.
+\item نعتبر $(C)$ الدائرة التي مركزها $G$ وتشمل $A$.
+\begin{sq}
+\qa حدّد ثم أنشئ $(C')$ صورة $(C)$ بواسطة التحاكي $h$.
+\qb نصف المستقيم $[GD)$ يقطع $(C)$ في $M$ ، ونصف المستقيم $[GE)$ يقطع $(C')$ في $N$. \ أثبت أن المستقيمين $(AM)$ و $(BN)$ متوازيان.
+\end{sq}
+\item ليكن $h'$ التحاكي حيث: $h'(A)=N$ و $h'(M)=B$.
+\begin{sq}
+\qa حدّد نسبة التحاكي $h'$.
+\qb أنشئ $J$ مركز التحاكي $h'$.
+\qc عيّن $G'$ صورة $G$ وفق التحاكي $h'$.
+\end{sq}
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 8
+\begin{tamrin}{دائرة وتحاكٍ نسبته سالبة}
+في المستوي ، $(\mathcal C)$ الدائرة التي مركزها $O$ وقطرها $[AB]$. \ نرمز بـ $h$ للتحاكي الذي مركزه $A$ ونسبته $k=-\dfrac32$.
+\begin{enumerate}
+\item أنشئ النقطة $B'$ صورة $B$ بالتحاكي $h$.
+\item $M$ نقطة من $(\mathcal C)$ مختلفة عن $A$ و $B$. \ المستقيم $(\Delta)$ يشمل $B'$ ويوازي $(BM)$ ويقطع $(AM)$ في $M'$.
+\begin{sq}
+\qa عيّن صورة كل من المستقيمين $(BM)$ و $(AM)$ بالتحاكي $h$.
+\qb استنتج أن $h(M)=M'$.
+\end{sq}
+\item نفرض أن $M$ تتغير على $(\mathcal C)$. بيّن أن $M'$ تتغير على دائرة $(\mathcal C')$ يطلب تعيينها.
+\item $E$ منتصف $[BM]$ و $F$ منتصف $[B'M']$. بيّن أن $A$ ، $E$ و $F$ على استقامة واحدة.
+\item المستقيم $(EF)$ يقطع $(\mathcal C)$ في $C$ و $(\mathcal C')$ في $D$ (غير $A$). بيّن أن $(CM)\parallel(DM')$.
+\end{enumerate}
+\end{tamrin}
+
+% =====================================================================
+\section{المحلات الهندسية والإنشاءات}
+% ------------------------------------------------- 9
+\begin{tamrin}{محل هندسي لنقطة تقاطع}
+$(C)$ دائرة مركزها $O$ و $[AB]$ أحد أقطارها. \ $I$ النقطة التي تحقق $\V{AI}=-\V{AO}$ ، و $M$ نقطة متغيرة من $(C)$ تختلف عن $A$ و $B$ ، و $M'$ نظيرة $M$ بالنسبة لـ $O$. \ $N$ نقطة تقاطع المستقيمين $(IM)$ و $(BM')$.
+\begin{enumerate}
+\item بيّن أن $(AM)\parallel(BM')$.
+\item بيّن أن $N$ صورة $M$ بتحاكٍ $h$ مركزه $I$ يطلب تعيين نسبته.
+\item عيّن المحل الهندسي للنقطة $N$ عندما تمسح $M$ الدائرة $(C)$ ماعدا النقطتين $A$ و $B$.
+\end{enumerate}
+\end{tamrin}
+
+% ------------------------------------------------- 10
+\begin{tamrin}{محل منتصف قطعة}
+$(\Delta)$ مستقيم ثابت و $A$ نقطة ثابتة لا تنتمي إلى $(\Delta)$. \ من أجل كل نقطة $M$ من $(\Delta)$ نرسم النقطة $N$ منتصف القطعة $[AM]$.\par
+ما هو المحل الهندسي للنقطة $N$ لما تتغير النقطة $M$ على المستقيم $(\Delta)$؟
+\end{tamrin}
+
+% ------------------------------------------------- 11
+\begin{tamrin}{إنشاء مربع داخل مثلث (تمرين نموذجي)}
+$ABC$ مثلث زواياه حادة. \ نريد إنشاء مربع $PQRS$ حيث $P$ و $Q$ على $[BC]$ ، $R$ على $[AC]$ و $S$ على $[AB]$.
+\begin{enumerate}
+\item نختار نقطة $S_1$ من $[AB]$ ، ونرسم المربع $P_1Q_1R_1S_1$ حيث $P_1$ و $Q_1$ على $(BC)$ ($P_1$ المسقط العمودي لـ $S_1$). \ بيّن أن المربع المطلوب صورة هذا المربع بتحاكٍ مركزه $B$.
+\item استنتج طريقة لإنشاء المربع $PQRS$.
+\end{enumerate}
+\end{tamrin}
+
+% =====================================================================
+\section{الاختيار من متعدد}
+% ------------------------------------------------- 12
+\begin{tamrin}{اختيار من متعدد}
+عيّن الاقتراح الصحيح الوحيد في كل حالة مع التعليل:
+\begin{enumerate}
+\item إذا كان $\V{\Omega M'}=-2\V{\Omega M}$ فإن $M'$ صورة $M$ بالتحاكي:
+\ABC{$h(\Omega;2)$}{$h(\Omega;-2)$}{$h\Big(\Omega;-\dfrac12\Big)$}
+\item صورة دائرة نصف قطرها $6$ بتحاكٍ نسبته $-\dfrac23$ دائرة نصف قطرها:
+\ABC{$-4$}{$4$}{$9$}
+\item مثلث مساحته $18\ \text{cm}^2$. مساحة صورته بتحاكٍ نسبته $\dfrac13$ هي:
+\ABC{$6\ \text{cm}^2$}{$2\ \text{cm}^2$}{$54\ \text{cm}^2$}
+\item في معلم ، صورة $M(4;-2)$ بالتحاكي الذي مركزه $\Omega(1;1)$ ونسبته $2$ هي:
+\ABC{$(8;-4)$}{$(7;-5)$}{$(9;-3)$}
+\item التحاكي الذي يحوّل $A$ إلى $B$ ومركزه $I$ منتصف $[AB]$ نسبته:
+\ABC{$-1$}{$1$}{$2$}
+\end{enumerate}
+\end{tamrin}
+
+\end{document}
