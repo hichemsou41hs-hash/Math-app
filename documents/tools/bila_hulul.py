@@ -11,6 +11,7 @@ for a, b in [(r'سلسلة تمارين مع الحلول المفصلة', r'س�
              (r'،? ?مع الحلول المفصلة', r' -- بدون حلول (للتدرّب)'),
              (r'مع الحلول', r'بدون حلول')]:
     body = re.sub(a, b, body)
+body = re.sub(r'--[ ]+--', '--', body)
 head = head.replace('{تمرين محلول \\theexo}', '{تمرين \\theexo}')
 body = re.sub(r'\n{3,}', '\n\n', body)
 open(out, 'w').write(head + r'\begin{document}' + body)
