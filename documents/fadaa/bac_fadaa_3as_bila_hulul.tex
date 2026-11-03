@@ -1,0 +1,544 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\renewcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\renewcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{\color{cThm}#1}}}}
+\newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
+\newcommand{\LW}[1]{{\color{cDef}#1}}
+\newcommand{\V}[1]{\overrightarrow{#1}}
+\newcommand{\Rep}{(O;\vec i,\vec j,\vec k)}
+\newcommand{\Sys}[1]{\left\{\begin{array}{l}#1\end{array}\right.}
+\SetHeader{\small\bfseries\color{cSec}تمارين البكالوريا: الهندسة في الفضاء}{\small\color{cSec}السنة الثالثة ثانوي -- علوم تجريبية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\fontsize{24}{30}\selectfont\bfseries تمارين البكالوريا في الهندسة في الفضاء}\\[8pt]
+{\color{cSec!80!black}\large 25 تمرينًا من دورات 2008 إلى 2018 -- بدون حلول (للتدرّب)}\\[5pt]
+{\color{cSec!80!black}\large السنة الثالثة ثانوي -- شعبة علوم تجريبية}
+\end{tcolorbox}
+\end{LTR}
+\begin{BOX}{cMeth}{قوانين مفيدة}
+\ck\ الجداء السلمي والتعامد والمسافة:
+\[\LW{\vec u\cdot\vec v=xx'+yy'+zz'}\qquad\LW{\vec u\perp\vec v\iff\vec u\cdot\vec v=0}\]
+\[\LW{AB=\sqrt{(x_B-x_A)^2+(y_B-y_A)^2+(z_B-z_A)^2}}\]
+\ck\ المستوي الذي يشمل $A(x_0;y_0;z_0)$ وشعاعه الناظمي $\vec n(a;b;c)$:
+\[\LW{a(x-x_0)+b(y-y_0)+c(z-z_0)=0}\]
+\ck\ المسافة بين النقطة $M(x_0;y_0;z_0)$ والمستوي $ax+by+cz+d=0$:
+\[\LW{d=\frac{|ax_0+by_0+cz_0+d|}{\sqrt{a^2+b^2+c^2}}}\]
+\ck\ حجم رباعي الوجوه: $\LW{V=\dfrac13\,S\times h}$ حيث $S$ مساحة القاعدة و $h$ الارتفاع.
+\end{BOX}
+\section{تمارين البكالوريا -- شعبة علوم تجريبية}
+% ===================== 1 =====================
+\begin{tamrin}{تمرين من بكالوريا 2008 -- الموضوع الأول}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر المستوي $(P)$ الذي معادلته: $x+2y-z+7=0$ ، والنقط: $A(2;0;1)$ ، $B(3;2;0)$ ، $C(-1;-2;2)$.
+\QQ{1} تحقق أن النقط $A$ ، $B$ و $C$ ليست على استقامية ، ثم بيّن أن المعادلة الديكارتية للمستوي $(ABC)$ هي: $y+2z-2=0$.
+\QQ{2}
+\begin{sq}
+\qa تحقق أن المستويين $(P)$ و $(ABC)$ متعامدان ، ثم عيّن تمثيلًا وسيطيًا للمستقيم $(\Delta)$ مستقيم تقاطع $(P)$ و $(ABC)$.
+\qb احسب المسافة بين النقطة $A$ والمستقيم $(\Delta)$.
+\end{sq}
+\QQ{3} لتكن $G$ مرجح الجملة $\{(A;1),(B;\alpha),(C;\beta)\}$ حيث $\alpha$ و $\beta$ عددان حقيقيان يحققان $\alpha+\beta+1\neq0$.
+\QQ{4} عيّن $\alpha$ حتى تنتمي النقطة $G$ إلى المستقيم $(\Delta)$.
+\end{tamrin}
+% ===================== 2 =====================
+\begin{tamrin}{تمرين من بكالوريا 2008 -- الموضوع الثاني}
+لكل سؤال من الأسئلة التالية جواب واحد فقط صحيح ، عيّن الجواب الصحيح معلّلًا اختيارك.
+\par نعتبر في الفضاء المنسوب إلى معلم متعامد ومتجانس $\Rep$ النقط $A(1;3;-1)$ ، $B(4;1;0)$ ، $C(-2;0;-2)$ و $D(3;2;1)$ ، والمستوي $(P)$ الذي معادلته $x-3z-4=0$.
+\QQ{1} المستوي $(P)$ هو: \ABC{$(BCD)$}{$(ABC)$}{$(ABD)$}
+\QQ{2} شعاع ناظمي للمستوي $(P)$ هو: \ABC{$\vec n_1(1;2;1)$}{$\vec n_2(-2;0;6)$}{$\vec n_3(2;0;-1)$}
+\QQ{3} المسافة بين النقطة $D$ والمستوي $(P)$ هي: \ABC{$\dfrac{\sqrt{10}}5$}{$\dfrac{\sqrt{10}}{10}$}{$\dfrac{2\sqrt{10}}5$}
+\end{tamrin}
+% ===================== 3 =====================
+\begin{tamrin}{تمرين من بكالوريا 2009 -- الموضوع الأول}
+الفضاء مزود بمعلم متعامد ومتجانس $\Rep$. نعتبر النقط: $A(1;0;2)$ ، $B(0;2;1)$ ، $C(2;1;3)$.
+\QQ{1} $(P)$ مستوٍ معادلة له من الشكل: $x-z+1=0$.
+\begin{sq}
+\qa بيّن أن المستوي $(P)$ هو المستوي $(ABC)$.
+\qb ما طبيعة المثلث $ABC$ ؟
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa تحقق من أن النقطة $D(2;3;4)$ لا تنتمي إلى المستوي $(ABC)$.
+\qb ما طبيعة $ABCD$ ؟
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa احسب المسافة بين النقطة $D$ والمستوي $(ABC)$.
+\qb احسب حجم $ABCD$.
+\end{sq}
+\end{tamrin}
+% ===================== 4 =====================
+\begin{tamrin}{تمرين من بكالوريا 2009 -- الموضوع الثاني}
+في الفضاء المنسوب إلى معلم متعامد ومتجانس $\Rep$ نعتبر النقط: $A(2;3;-1)$ ، $B(1;-2;4)$ ، $C(3;0;-2)$ ، $D(1;-1;-2)$ ، وليكن $(\pi)$ المستوي المعرف بمعادلته الديكارتية: $2x-y+2z+1=0$.
+\par\textbf{المطلوب:} أجب بصحيح أو خطأ مع تبرير الإجابة في كل حالة من الحالات التالية:
+\QQ{1} النقط $A$ ، $B$ و $C$ في استقامية.
+\QQ{2} $(ABD)$ مستوٍ معادلة ديكارتية له: $25x-6y-z-33=0$.
+\QQ{3} المستقيم $(CD)$ عمودي على المستوي $(\pi)$.
+\QQ{4} المسقط العمودي للنقطة $B$ على $(\pi)$ هو النقطة $H(1;1;-1)$.
+\end{tamrin}
+% ===================== 5 =====================
+\begin{tamrin}{تمرين من بكالوريا 2010 -- الموضوع الأول}
+نعتبر في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ النقط: $A(1;1;0)$ ، $B(2;1;1)$ و $C(-1;2;-1)$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أن النقط $A$ ، $B$ و $C$ ليست في استقامية.
+\qb بيّن أن المعادلة الديكارتية للمستوي $(ABC)$ هي: $x+y-z-2=0$.
+\end{sq}
+\QQ{2} نعتبر المستويين $(P)$ و $(Q)$ اللذين معادلتاهما على الترتيب: $(P):\ x+2y-3z+1=0$ ، $(Q):\ 2x+y-z-1=0$ ، والمستقيم $(D)$ الذي يشمل النقطة $F(0;4;3)$ و $\vec u(-1;5;3)$ شعاع توجيه له.
+\begin{sq}
+\qa اكتب تمثيلًا وسيطيًا للمستقيم $(D)$.
+\qb تحقق أن تقاطع المستويين $(P)$ و $(Q)$ هو المستقيم $(D)$.
+\end{sq}
+\QQ{3} عيّن تقاطع المستويات الثلاثة $(ABC)$ ، $(P)$ و $(Q)$.
+\end{tamrin}
+% ===================== 6 =====================
+\begin{tamrin}{تمرين من بكالوريا 2010 -- الموضوع الثاني}
+في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ نعتبر المستوي $(P)$ الذي معادلته: $x-2y+z+3=0$.
+\QQ{1} نذكّر أن حامل محور الفواصل $(O;\vec i)$ يعرّف بالجملة $\Sys{y=0\\z=0}$. عيّن إحداثيات $A$ نقطة تقاطع حامل $(O;\vec i)$ مع المستوي $(P)$.
+\QQ{2} $B$ و $C$ النقطتان من الفضاء حيث: $B(0;0;-3)$ و $C(-1;-4;2)$.
+\begin{sq}
+\qa تحقق أن النقطة $B$ تنتمي إلى المستوي $(P)$.
+\qb احسب الطول $AB$.
+\qc احسب المسافة بين النقطة $C$ والمستوي $(P)$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa اكتب تمثيلًا وسيطيًا للمستقيم $(\Delta)$ المار بالنقطة $C$ والعمودي على المستوي $(P)$.
+\qb تحقق أن النقطة $A$ تنتمي إلى المستقيم $(\Delta)$.
+\qc احسب مساحة المثلث $ABC$.
+\end{sq}
+\end{tamrin}
+% ===================== 7 =====================
+\begin{tamrin}{تمرين من بكالوريا 2011 -- الموضوع الأول}
+نعتبر في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ المستوي $(P)$ الذي يشمل النقطة $A(1;-2;1)$ ، و $\vec n(-2;1;5)$ شعاع ناظمي له ، وليكن $(Q)$ المستوي ذو المعادلة $x+2y-7=0$.
+\QQ{1} اكتب معادلة ديكارتية للمستوي $(P)$.
+\QQ{2}
+\begin{sq}
+\qa تحقق أن النقطة $B(-1;4;-1)$ مشتركة بين المستويين $(P)$ و $(Q)$.
+\qb بيّن أن المستويين $(P)$ و $(Q)$ متقاطعان وفق مستقيم $(\Delta)$ يطلب تعيين تمثيل وسيطي له.
+\end{sq}
+\QQ{3} لتكن النقطة $C(5;-2;-1)$.
+\begin{sq}
+\qa احسب المسافة بين النقطة $C$ والمستوي $(P)$ ، ثم المسافة بين النقطة $C$ والمستوي $(Q)$.
+\qb أثبت أن المستويين $(P)$ و $(Q)$ متعامدان.
+\qc استنتج المسافة بين النقطة $C$ والمستقيم $(\Delta)$.
+\end{sq}
+\end{tamrin}
+% ===================== 8 =====================
+\begin{tamrin}{تمرين من بكالوريا 2011 -- الموضوع الثاني}
+نعتبر في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ النقط: $A(0;1;5)$ ، $B(2;1;7)$ و $C(3;-3;6)$.
+\QQ{1}
+\begin{sq}
+\qa اكتب تمثيلًا وسيطيًا للمستقيم $(\Delta)$ الذي يشمل النقطة $B$ و $\vec u(1;-4;-1)$ شعاع توجيه له.
+\qb تحقق أن النقطة $C$ تنتمي إلى المستقيم $(\Delta)$.
+\qc بيّن أن الشعاعين $\V{AB}$ و $\V{BC}$ متعامدان.
+\qd استنتج المسافة بين النقطة $A$ والمستقيم $(\Delta)$.
+\end{sq}
+\QQ{2} نعتبر النقطة $M(2+t;1-4t;7-t)$ حيث $t$ عدد حقيقي ، ولتكن الدالة $h$ المعرفة على $\R$ بـ: $h(t)=AM$.
+\begin{sq}
+\qa اكتب عبارة $h(t)$ بدلالة $t$.
+\qb بيّن أنه من أجل كل عدد حقيقي $t$: $h'(t)=\dfrac{18t}{\sqrt{18t^2+8}}$.
+\qc استنتج قيمة العدد الحقيقي $t$ التي من أجلها تكون المسافة $AM$ أصغر ما يمكن. قارن بين القيمة الصغرى للدالة $h$ والمسافة بين النقطة $A$ والمستقيم $(\Delta)$.
+\end{sq}
+\end{tamrin}
+% ===================== 9 =====================
+\begin{tamrin}{تمرين من بكالوريا 2012 -- الموضوع الأول}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر المستوي $(P)$ ذا المعادلة: $14x+16y+13z-47=0$ ، والنقط $A(1;-2;5)$ ، $B(2;2;-1)$ و $C(-1;3;1)$.
+\QQ{1}
+\begin{sq}
+\qa تحقق أن النقط $A$ ، $B$ و $C$ ليست في استقامية.
+\qb بيّن أن المستوي $(ABC)$ هو $(P)$.
+\end{sq}
+\QQ{2} جد تمثيلًا وسيطيًا للمستقيم $(AB)$.
+\QQ{3}
+\begin{sq}
+\qa اكتب معادلة ديكارتية للمستوي المحوري $(Q)$ للقطعة $[AB]$.
+\qb تحقق أن النقطة $D\left(-1;-2;\frac14\right)$ تنتمي إلى $(Q)$.
+\qc احسب المسافة بين النقطة $D$ والمستقيم $(AB)$.
+\end{sq}
+\end{tamrin}
+% ===================== 10 =====================
+\begin{tamrin}{تمرين من بكالوريا 2012 -- الموضوع الثاني}
+في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ نعتبر النقط: $A(-1;0;1)$ ، $B(2;1;0)$ و $C(1;-1;0)$.
+\QQ{1} بيّن أن النقط $A$ ، $B$ و $C$ تعيّن مستويًا.
+\QQ{2} بيّن أن: $2x-y+5z-3=0$ هي معادلة ديكارتية للمستوي $(ABC)$.
+\QQ{3} $D$ و $H$ نقطتان من الفضاء حيث: $D(2;-1;3)$ و $H\left(\frac{13}{15};-\frac{13}{30};\frac16\right)$.
+\begin{sq}
+\qa تحقق أن النقطة $D$ لا تنتمي إلى المستوي $(ABC)$.
+\qb بيّن أن $H$ هي المسقط العمودي للنقطة $D$ على المستوي $(ABC)$.
+\qc استنتج أن المستويين $(ADH)$ و $(ABC)$ متعامدان ، ثم جد تمثيلًا وسيطيًا لمستقيم تقاطعهما.
+\end{sq}
+\end{tamrin}
+% ===================== 11 =====================
+\begin{tamrin}{تمرين من بكالوريا 2013 -- الموضوع الأول}
+نعتبر في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ النقط: $A(-1;1;3)$ ، $B(1;0;-1)$ ، $C(2;-1;1)$ و $D(2;0;-1)$ ، والمستوي $(P)$ ذا المعادلة: $2y+z+1=0$. \ وليكن $(\Delta)$ المستقيم الذي تمثيل وسيطي له: $\Sys{x=-1\\y=2+\beta\\z=1-2\beta}$ حيث $\beta$ وسيط حقيقي.
+\QQ{1} اكتب تمثيلًا وسيطيًا للمستقيم $(BC)$ ، ثم تحقق أن المستقيم $(BC)$ محتوى في المستوي $(P)$.
+\QQ{2} بيّن أن المستقيمين $(\Delta)$ و $(BC)$ ليسا من نفس المستوي.
+\QQ{3}
+\begin{sq}
+\qa احسب المسافة بين النقطة $A$ والمستوي $(P)$.
+\qb بيّن أن $D$ نقطة من $(P)$ ، وأن المثلث $BCD$ قائم.
+\end{sq}
+\QQ{4} بيّن أن $ABCD$ رباعي وجوه ، ثم احسب حجمه.
+\end{tamrin}
+% ===================== 12 =====================
+\begin{tamrin}{تمرين من بكالوريا 2013 -- الموضوع الثاني}
+نعتبر في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ النقط: $A(2;1;-1)$ ، $B(1;-1;3)$ ، $C\left(-\frac32;-2;1\right)$ و $D\left(\frac72;-3;0\right)$ ، ولتكن $I$ منتصف القطعة $[AB]$.
+\QQ{1}
+\begin{sq}
+\qa احسب إحداثيات النقطة $I$.
+\qb بيّن أن: $2x+4y-8z+5=0$ معادلة ديكارتية لـ $(P)$ ، المستوي المحوري لـ $[AB]$.
+\end{sq}
+\QQ{2} اكتب تمثيلًا وسيطيًا للمستقيم $(\Delta)$ الذي يشمل النقطة $C$ و $\vec u(1;2;-4)$ شعاع توجيه له.
+\QQ{3}
+\begin{sq}
+\qa جد إحداثيات $E$ نقطة تقاطع المستوي $(P)$ والمستقيم $(\Delta)$.
+\qb بيّن أن $(\Delta)$ و $(AB)$ من نفس المستوي ، ثم استنتج أن المثلث $IEC$ قائم.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa بيّن أن المستقيم $(ID)$ عمودي على كل من المستقيم $(AB)$ والمستقيم $(IE)$.
+\qb احسب حجم رباعي الوجوه $DIEC$.
+\end{sq}
+\end{tamrin}
+% ===================== 13 =====================
+\begin{tamrin}{تمرين من بكالوريا 2014 -- الموضوع الأول}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقط: $A(2;-1;1)$ ، $B(-1;2;1)$ ، $C(1;-1;2)$ و $D(1;1;1)$.
+\QQ{1}
+\begin{sq}
+\qa تحقق أن النقط $A$ ، $B$ و $C$ تعيّن مستويًا.
+\qb بيّن أن $\vec n(1;1;1)$ هو شعاع ناظمي للمستوي $(ABC)$.
+\qc اكتب معادلة ديكارتية للمستوي $(ABC)$.
+\end{sq}
+\QQ{2} لتكن النقطة $G$ مرجح الجملة المثقلة $\{(A;1),(B;2),(C;-1)\}$.
+\begin{sq}
+\qa احسب إحداثيات $G$.
+\qb لتكن $(\Gamma)$ مجموعة النقط $M$ من الفضاء التي تحقق: $\big\|\V{MA}+2\V{MB}-\V{MC}\big\|=2\big\|\V{MD}\big\|$. بيّن أن $(\Gamma)$ هي المستوي المحوري للقطعة المستقيمة $[GD]$.
+\qc أثبت أن معادلة $(\Gamma)$ هي: $6x-4y+2z+3=0$.
+\end{sq}
+\QQ{3} بيّن أن المستويين $(ABC)$ و $(\Gamma)$ يتقاطعان وفق مستقيم $(\Delta)$ يطلب تعيين تمثيل وسيطي له.
+\end{tamrin}
+% ===================== 14 =====================
+\begin{tamrin}{تمرين من بكالوريا 2014 -- الموضوع الثاني}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقط: $A(1;-1;-2)$ ، $B(1;-2;-3)$ و $C(2;0;0)$.
+\QQ{1}
+\begin{sq}
+\qa برهن أن $A$ ، $B$ و $C$ ليست في استقامية.
+\qb اكتب تمثيلًا وسيطيًا للمستوي $(ABC)$.
+\qc تحقق أن $x+y-z-2=0$ هي معادلة ديكارتية للمستوي $(ABC)$.
+\end{sq}
+\QQ{2} نعتبر المستويين $(P)$ و $(Q)$ المعرفين بمعادلتيهما كما يلي: $(P):\ x-y-2z+5=0$ و $(Q):\ 3x+2y-z+10=0$.
+\par برهن أن $(P)$ و $(Q)$ يتقاطعان وفق المستقيم $(\Delta)$ ذي التمثيل الوسيطي: $\Sys{x=t-3\\y=-t\\z=t+1}\ (t\in\R)$.
+\QQ{3} عيّن تقاطع المستويات $(ABC)$ ، $(P)$ و $(Q)$.
+\QQ{4} لتكن $M(x;y;z)$ نقطة من الفضاء. نسمي $d\big(M,(P)\big)$ المسافة بين $M$ و $(P)$ ، و $d\big(M,(Q)\big)$ المسافة بين $M$ و $(Q)$. عيّن المجموعة $(\Gamma)$ للنقط $M$ بحيث: $\sqrt6\times d\big(M,(P)\big)=\sqrt{14}\times d\big(M,(Q)\big)$.
+\end{tamrin}
+% ===================== 15 =====================
+\begin{tamrin}{تمرين من بكالوريا 2015 -- الموضوع الأول}
+في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ نعتبر النقط: $A(2;1;0)$ ، $B(1;2;2)$ ، $C(3;3;1)$ و $D(1;1;4)$.
+\QQ{1} تحقق أن النقط $A$ ، $B$ و $C$ تعيّن مستويًا وأن $x-y+z-1=0$ معادلة ديكارتية له.
+\QQ{2} بيّن أن المثلث $ABC$ متقايس الأضلاع ، ثم تحقق أن مساحته هي $\dfrac{3\sqrt3}2$ وحدة مساحة.
+\QQ{3} عيّن تمثيلًا وسيطيًا للمستقيم $(\Delta)$ العمودي على المستوي $(ABC)$ والذي يشمل النقطة $D$.
+\QQ{4} النقطة $E$ هي المسقط العمودي للنقطة $D$ على المستوي $(ABC)$.
+\begin{sq}
+\qa عيّن إحداثيات النقطة $E$ ، ثم احسب المسافة بين النقطة $D$ والمستوي $(ABC)$.
+\qb عيّن مركزي سطحي الكرتين اللذين يمسان $(ABC)$ في النقطة $E$ ونصف قطر كل منهما $\sqrt3$.
+\end{sq}
+\QQ{5} احسب حجم رباعي الوجوه $ABCD$.
+\end{tamrin}
+% ===================== 16 =====================
+\begin{tamrin}{تمرين من بكالوريا 2015 -- الموضوع الثاني}
+في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ نعتبر النقط: $A(2;4;1)$ ، $B(0;4;-3)$ ، $C(3;1;-3)$ و $D(1;0;-2)$.
+\par أجب بصحيح أو خطأ مع التعليل في كل حالة من الحالات الآتية:
+\QQ{1} النقط $A$ ، $B$ و $C$ ليست في استقامية.
+\QQ{2} $2x+2y-z-11=0$ معادلة ديكارتية للمستوي $(ABC)$.
+\QQ{3} النقطة $E(3;2;-1)$ هي المسقط العمودي للنقطة $D$ على المستوي $(ABC)$.
+\QQ{4} المستقيمان $(AB)$ و $(CD)$ من نفس المستوي.
+\QQ{5} $\Sys{x=2t-1\\y=t-1\\z=-t-1}\ (t\in\R)$ تمثيل وسيطي للمستقيم $(CD)$.
+\QQ{6} يوجد عددان حقيقيان $\alpha$ و $\beta$ حيث النقطة $I\left(\frac35;4;-\frac95\right)$ مرجح الجملة $\{(A;\alpha),(B;\beta)\}$.
+\end{tamrin}
+% ===================== 17 =====================
+\begin{tamrin}{تمرين من بكالوريا 2016 -- الدورة الأولى -- الموضوع الأول}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر المستويين $(P)$ و $(P')$ معادلتاهما على الترتيب: $x-2y+z-2=0$ و $2x+y-z+1=0$.
+\QQ{1} بيّن أن المستويين $(P)$ و $(P')$ متقاطعان.
+\QQ{2} عيّن $(\Gamma)$ مجموعة النقط $M(x;y;z)$ من الفضاء التي تحقق: $d\big(M,(P)\big)=d\big(M,(P')\big)$.
+\QQ{3} تحقق أن النقطة $A(1;2;0)$ تنتمي إلى المجموعة $(\Gamma)$.
+\QQ{4} $H$ و $H'$ المسقطان العموديان للنقطة $A$ على المستويين $(P)$ و $(P')$ على الترتيب.
+\begin{sq}
+\qa جد تمثيلًا وسيطيًا لكل من المستقيمين $(AH)$ و $(AH')$.
+\qb استنتج إحداثيات كل من النقطتين $H$ و $H'$.
+\end{sq}
+\QQ{5} عيّن إحداثيات النقطة $I$ منتصف القطعة $[HH']$ ، ثم احسب مساحة المثلث $AHH'$.
+\end{tamrin}
+% ===================== 18 =====================
+\begin{tamrin}{تمرين من بكالوريا 2016 -- الدورة الأولى -- الموضوع الثاني}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقطتين $A(5;-1;-2)$ و $B(3;12;-7)$ ، و $(\Delta)$ المستقيم المعرف بالتمثيل الوسيطي: $\Sys{x=1+3k\\y=1+2k\\z=4k}\ (k\in\R)$.
+\QQ{1}
+\begin{sq}
+\qa عيّن تمثيلًا وسيطيًا للمستقيم $(\Delta')$ الذي يشمل النقطة $A$ و $\vec u(-2;1;1)$ شعاع توجيه له.
+\qb بيّن أن المستقيمين $(\Delta)$ و $(\Delta')$ متعامدان وأن النقطة $C(1;1;0)$ نقطة تقاطعهما.
+\end{sq}
+\QQ{2} $(P)$ المستوي المعيّن بالمستقيمين $(\Delta)$ و $(\Delta')$.
+\begin{sq}
+\qa بيّن أن الشعاع $\vec n(2;11;-7)$ ناظمي للمستوي $(P)$ ، ثم جد معادلة ديكارتية له.
+\qb بيّن أن النقطة $C$ هي المسقط العمودي للنقطة $B$ على المستوي $(P)$.
+\end{sq}
+\QQ{3} $\alpha$ و $\beta$ عددان حقيقيان ، و $(P')$ مجموعة النقط $M(x;y;z)$ من الفضاء المعرفة بـ: $\Sys{x=3-\beta\\y=12+12\alpha+9\beta\\z=-7-6\alpha-11\beta}$.
+\begin{sq}
+\qa أثبت أن المجموعة $(P')$ هي مستوٍ ، ثم تحقق أن $13x-y-2z-41=0$ هي معادلة ديكارتية له.
+\qb عيّن إحداثيات $D$ و $E$ نقطتي تقاطع المستوي $(P')$ مع المستقيمين $(\Delta)$ و $(\Delta')$ على الترتيب.
+\qc احسب حجم رباعي الوجوه $BCDE$.
+\end{sq}
+\end{tamrin}
+% ===================== 19 =====================
+\begin{tamrin}{تمرين من بكالوريا 2016 -- الدورة الثانية -- الموضوع الأول}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. $(\Delta)$ المستقيم الذي يشمل النقطة $A(1;0;2)$ و $\vec u(2;1;-1)$ شعاع توجيه له ، وليكن $(\Delta')$ المستقيم المعرف بالتمثيل الوسيطي: $\Sys{x=\lambda\\y=4+\lambda\\z=2+\lambda}\ (\lambda\in\R)$.
+\QQ{1}
+\begin{sq}
+\qa اكتب تمثيلًا وسيطيًا للمستقيم $(\Delta)$.
+\qb بيّن أن المستقيمين $(\Delta)$ و $(\Delta')$ ليسا من نفس المستوي.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أن النقطة $B(-1;3;1)$ هي المسقط العمودي للنقطة $A$ على المستقيم $(\Delta')$.
+\qb تحقق أن المستقيم $(AB)$ عمودي على كل من المستقيمين $(\Delta)$ و $(\Delta')$.
+\qc استنتج المسافة بين المستقيمين $(\Delta)$ و $(\Delta')$.
+\end{sq}
+\QQ{3} لتكن $N$ نقطة إحداثياتها $(-2+t;2+t;t)$ حيث $t\in\R$ ، ولتكن $h$ الدالة المعرفة على $\R$ بـ: $h(t)=AN^2$.
+\begin{sq}
+\qa بيّن أن النقطة $N$ تنتمي إلى المستقيم $(\Delta')$ ، ثم اكتب عبارة $h(t)$ بدلالة $t$.
+\qb استنتج قيمة العدد الحقيقي $t$ التي تكون من أجلها المسافة $AN$ أصغر ما يمكن ، ثم قارن بين القيمة الصغرى للدالة $h$ والمسافة $AB$.
+\end{sq}
+\end{tamrin}
+% ===================== 20 =====================
+\begin{tamrin}{تمرين من بكالوريا 2016 -- الدورة الثانية -- الموضوع الثاني}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقط $A(2;1;-3)$ ، $B(0;-1;2)$ و $C(-3;-1;-1)$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أن النقط $A$ ، $B$ و $C$ تعيّن مستويًا.
+\qb بيّن أن المعادلة: $2x-7y-2z-3=0$ معادلة ديكارتية للمستوي $(ABC)$.
+\end{sq}
+\QQ{2} اكتب معادلة ديكارتية للمستوي $(P)$ الذي يشمل $A$ ويعامد المستقيم $(BC)$.
+\begin{sq}
+\qa جد تمثيلًا وسيطيًا للمستقيم $(D)$ تقاطع المستويين $(ABC)$ و $(P)$.
+\qb بيّن أن المستقيم $(D)$ عمود في المثلث $ABC$.
+\end{sq}
+\QQ{3} ليكن $(\Delta)$ المتوسط المتعلق بالضلع $[AC]$ في المثلث $ABC$.
+\begin{sq}
+\qa بيّن أن الجملة $\Sys{x=-\frac12-\frac12k\\y=k\\z=-2-4k}\ (k\in\R)$ تمثيل وسيطي للمستقيم $(\Delta)$.
+\qb بيّن أن المستقيمين $(\Delta)$ و $(D)$ يتقاطعان في نقطة $G$ يطلب تعيين إحداثياتها.
+\qc بيّن أن المثلث $ABC$ متساوي الساقين.
+\qd ماذا تمثل النقطة $G$ بالنسبة للمثلث $ABC$ ؟
+\end{sq}
+\QQ{4} عيّن طبيعة وعناصر المجموعة $(E)$ للنقط $M$ من الفضاء والتي تحقق: $\big\|\V{MA}+\V{MB}+\V{MC}\big\|=3$.
+\end{tamrin}
+% ===================== 21 =====================
+\begin{tamrin}{تمرين من بكالوريا 2017 -- الموضوع الأول}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقطة $A(1;-1;2)$ والمستوي $(P)$ ذا المعادلة $x-y+z+2=0$ ، والمستقيم $(D)$ المعرف بـ: $\Sys{x+y-9=0\\y+z-4=0}$.
+\QQ{1} عيّن تمثيلًا وسيطيًا للمستقيم $(D)$.
+\QQ{2} جد معادلة ديكارتية للمستوي $(P')$ الذي يشمل $A$ ويوازي $(P)$.
+\QQ{3} أثبت أن $(D)$ يقطع $(P')$ في النقطة $A'$ حيث $A'(6;3;1)$.
+\QQ{4} عيّن تمثيلًا وسيطيًا للمستقيم $(\Delta)$ الذي يشمل $A$ ويوازي $(P)$ ويقطع $(D)$.
+\end{tamrin}
+% ===================== 22 =====================
+\begin{tamrin}{تمرين من بكالوريا 2017 -- الموضوع الثاني}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقط $A(3;0;0)$ ، $B(0;2;0)$ و $C(0;0;1)$.
+\QQ{1} بيّن أن النقط $A$ ، $B$ و $C$ تعيّن مستويًا ، ثم تحقق أن: $2x+3y+6z-6=0$ معادلة للمستوي $(ABC)$.
+\QQ{2} اكتب تمثيلًا وسيطيًا للمستقيم $(\Delta)$ العمودي على المستوي $(ABC)$ والذي يشمل المبدأ $O$.
+\QQ{3} جد إحداثيات $H$ نقطة تقاطع $(\Delta)$ و $(ABC)$.
+\QQ{4} بيّن أن $(BH)$ عمودي على $(AC)$ ، ثم استنتج أن $H$ هي نقطة تلاقي أعمدة المثلث $ABC$.
+\end{tamrin}
+% ===================== 23 =====================
+\begin{tamrin}{تمرين من بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الأول}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقط $A(1;1;-1)$ ، $B(2;-1;-1)$ و $C(4;-4;-2)$ ، والمستوي $(P)$ ذا المعادلة الديكارتية $x-2y+2z-3=0$.
+\QQ{1} بيّن أن النقط $A$ ، $B$ و $C$ تعيّن مستويًا.
+\QQ{2} بيّن أن المستويين $(P)$ و $(ABC)$ غير متوازيين.
+\QQ{3} تحقق أن الجملة $\Sys{x=-2+\alpha-3\beta\\y=6-2\alpha+5\beta\\z=\beta}\ (\alpha\in\R,\ \beta\in\R)$ تمثيل وسيطي للمستوي $(ABC)$.
+\QQ{4} جد تمثيلًا وسيطيًا لـ $(\Delta)$ مستقيم تقاطع المستويين $(P)$ و $(ABC)$.
+\end{tamrin}
+% ===================== 24 =====================
+\begin{tamrin}{تمرين من بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الثاني}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقط $A(-8;0;-2)$ ، $B(1;2;1)$ ، $C(2;3;-1)$ و $E(1;1;4)$ ، والمستوي $(P)$ ذا المعادلة $2x+y-3=0$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أن النقط $A$ ، $B$ و $C$ تعيّن مستويًا.
+\qb عيّن قيمة العدد الحقيقي $\alpha$ حتى يكون $\vec n(1;\alpha;-1)$ شعاعًا ناظميًا للمستوي $(ABC)$ ، ثم عيّن معادلة ديكارتية له.
+\end{sq}
+\QQ{2} بيّن أن المستويين $(P)$ و $(ABC)$ يتقاطعان وفق مستقيم $(\Delta)$ ، ثم تحقق أن $E$ تنتمي إلى $(\Delta)$ و $\vec u(1;-2;7)$ شعاع توجيه له.
+\QQ{3} لتكن $G$ مرجح الجملة $\{(A;1),(B;-2),(C;3)\}$ ، نرمز بـ $(\Gamma)$ إلى مجموعة النقط $M$ من الفضاء التي تحقق: $\big(\V{MA}-2\V{MB}+3\V{MC}\big)\cdot\big(\V{MB}-\V{MC}\big)=0$.
+\par عيّن إحداثيات النقطة $G$ ، ثم حدد طبيعة المجموعة $(\Gamma)$ واكتب معادلة ديكارتية لها.
+\QQ{4} عيّن إحداثيات نقطة تقاطع $(P)$ ، $(ABC)$ و $(\Gamma)$.
+\end{tamrin}
+% ===================== 25 =====================
+\begin{tamrin}{تمرين من بكالوريا 2018 -- الموضوع الثاني}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقطة $A(1;-2;1)$ والمستويين $(P_1)$ و $(P_2)$ اللذين معادلتاهما على الترتيب: $-x+y+2z+1=0$ و $-3x+y+z+4=0$.
+\QQ{1} اكتب تمثيلًا وسيطيًا للمستقيم $(\Delta)$ الذي يشمل النقطة $A$ و $\vec u(1;5;-2)$ شعاع توجيه له.
+\QQ{2} بيّن أن المستويين $(P_1)$ و $(P_2)$ متقاطعان ، ثم تحقق أن تقاطعهما هو المستقيم $(\Delta)$.
+\QQ{3} اكتب معادلة ديكارتية للمستوي $(Q)$ الذي يشمل $B(-1;4;0)$ ويعامد كلًا من $(P_1)$ و $(P_2)$ ، ثم استنتج تقاطع المستويات الثلاثة $(P_1)$ ، $(P_2)$ و $(Q)$.
+\QQ{4} لتكن $E(2;3;-1)$ و $H(0;3;-2)$ نقطتين من الفضاء.
+\begin{sq}
+\qa تحقق أن $H$ هي المسقط العمودي للنقطة $B$ على المستوي $(P_1)$.
+\qb حدد طبيعة المثلث $EBH$ ، ثم احسب $V$ حجم رباعي الوجوه $AEBH$.
+\end{sq}
+\end{tamrin}
+\end{document}

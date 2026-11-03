@@ -1,0 +1,823 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\renewcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\renewcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{\color{cThm}#1}}}}
+\newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
+\newcommand{\LW}[1]{{\color{cDef}#1}}
+\newcommand{\V}[1]{\overrightarrow{#1}}
+\newcommand{\Rep}{(O;\vec i,\vec j,\vec k)}
+\newcommand{\Sys}[1]{\left\{\begin{array}{l}#1\end{array}\right.}
+\SetHeader{\small\bfseries\color{cSec}تمارين البكالوريا: الهندسة في الفضاء}{\small\color{cSec}السنة الثالثة ثانوي -- علوم تجريبية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\fontsize{24}{30}\selectfont\bfseries تمارين البكالوريا في الهندسة في الفضاء}\\[8pt]
+{\color{cSec!80!black}\large 25 تمرينًا من دورات 2008 إلى 2018 مع الحلول المفصلة}\\[5pt]
+{\color{cSec!80!black}\large السنة الثالثة ثانوي -- شعبة علوم تجريبية}
+\end{tcolorbox}
+\end{LTR}
+\begin{BOX}{cMeth}{قوانين نستعملها في الحلول}
+\ck\ الجداء السلمي والتعامد والمسافة:
+\[\LW{\vec u\cdot\vec v=xx'+yy'+zz'}\qquad\LW{\vec u\perp\vec v\iff\vec u\cdot\vec v=0}\]
+\[\LW{AB=\sqrt{(x_B-x_A)^2+(y_B-y_A)^2+(z_B-z_A)^2}}\]
+\ck\ المستوي الذي يشمل $A(x_0;y_0;z_0)$ وشعاعه الناظمي $\vec n(a;b;c)$:
+\[\LW{a(x-x_0)+b(y-y_0)+c(z-z_0)=0}\]
+\ck\ المسافة بين النقطة $M(x_0;y_0;z_0)$ والمستوي $ax+by+cz+d=0$:
+\[\LW{d=\frac{|ax_0+by_0+cz_0+d|}{\sqrt{a^2+b^2+c^2}}}\]
+\ck\ حجم رباعي الوجوه: $\LW{V=\dfrac13\,S\times h}$ حيث $S$ مساحة القاعدة و $h$ الارتفاع.
+\end{BOX}
+\section{تمارين البكالوريا -- شعبة علوم تجريبية}
+% ===================== 1 =====================
+\begin{tamrin}{تمرين من بكالوريا 2008 -- الموضوع الأول}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر المستوي $(P)$ الذي معادلته: $x+2y-z+7=0$ ، والنقط: $A(2;0;1)$ ، $B(3;2;0)$ ، $C(-1;-2;2)$.
+\QQ{1} تحقق أن النقط $A$ ، $B$ و $C$ ليست على استقامية ، ثم بيّن أن المعادلة الديكارتية للمستوي $(ABC)$ هي: $y+2z-2=0$.
+\QQ{2}
+\begin{sq}
+\qa تحقق أن المستويين $(P)$ و $(ABC)$ متعامدان ، ثم عيّن تمثيلًا وسيطيًا للمستقيم $(\Delta)$ مستقيم تقاطع $(P)$ و $(ABC)$.
+\qb احسب المسافة بين النقطة $A$ والمستقيم $(\Delta)$.
+\end{sq}
+\QQ{3} لتكن $G$ مرجح الجملة $\{(A;1),(B;\alpha),(C;\beta)\}$ حيث $\alpha$ و $\beta$ عددان حقيقيان يحققان $\alpha+\beta+1\neq0$.
+\QQ{4} عيّن $\alpha$ حتى تنتمي النقطة $G$ إلى المستقيم $(\Delta)$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\V{AB}(1;2;-1)$ و $\V{AC}(-3;-2;1)$: \ $\dfrac{-3}1\neq\dfrac{-2}2$ ، إذن الشعاعان غير مرتبطين خطيًا و \bxt{$A$ ، $B$ ، $C$ ليست على استقامية}.
+\par نعوض في $y+2z-2$: \ $A$: $0+2-2=0$ ، \ $B$: $2+0-2=0$ ، \ $C$: $-2+4-2=0$ ، إذن \bx{(ABC):\ y+2z-2=0}.
+\QQ{2}
+\pa $\vec n_P(1;2;-1)$ و $\vec n(0;1;2)$: \ $\vec n_P\cdot\vec n=0+2-2=0$ ، إذن \bxt{$(P)\perp(ABC)$}.
+\par نحل الجملة: من $y+2z-2=0$: $y=2-2z$ ، ونعوض في $(P)$: $x+4-4z-z+7=0$ ، أي $x=-11+5z$. نضع $z=t$:
+\[(\Delta):\ \bx{\Sys{x=-11+5t\\y=2-2t\\z=t}}\qquad(t\in\R)\]
+\pb $A\in(ABC)$ و $(ABC)\perp(P)$ ، إذن المسقط العمودي لـ $A$ على $(P)$ يقع على $(\Delta)$ ، والمسافة بين $A$ و $(\Delta)$ هي المسافة بين $A$ و $(P)$:
+\[d\big(A;(\Delta)\big)=\frac{|2+0-1+7|}{\sqrt{1+4+1}}=\frac8{\sqrt6}=\bx{\frac{4\sqrt6}3}\]
+\QQ{3} $G$ موجودة لأن $1+\alpha+\beta\neq0$ ، و $G$ مرجح $A$ ، $B$ ، $C$ ، إذن $G\in(ABC)$.
+\QQ{4} نضع $f(M)=x+2y-z+7$. بما أن $G\in(ABC)$ فإن $G\in(\Delta)\iff G\in(P)$. \ $f(A)=8$ ، $f(B)=14$ ، $f(C)=-1-4-2+7=0$ ، و:
+\[f(G)=\frac{f(A)+\alpha f(B)+\beta f(C)}{1+\alpha+\beta}=\frac{8+14\alpha}{1+\alpha+\beta}=0\iff\bx{\alpha=-\frac47}\qquad\Big(\beta\neq-\frac37\Big)\]
+\end{hal}
+% ===================== 2 =====================
+\begin{tamrin}{تمرين من بكالوريا 2008 -- الموضوع الثاني}
+لكل سؤال من الأسئلة التالية جواب واحد فقط صحيح ، عيّن الجواب الصحيح معلّلًا اختيارك.
+\par نعتبر في الفضاء المنسوب إلى معلم متعامد ومتجانس $\Rep$ النقط $A(1;3;-1)$ ، $B(4;1;0)$ ، $C(-2;0;-2)$ و $D(3;2;1)$ ، والمستوي $(P)$ الذي معادلته $x-3z-4=0$.
+\QQ{1} المستوي $(P)$ هو: \ABC{$(BCD)$}{$(ABC)$}{$(ABD)$}
+\QQ{2} شعاع ناظمي للمستوي $(P)$ هو: \ABC{$\vec n_1(1;2;1)$}{$\vec n_2(-2;0;6)$}{$\vec n_3(2;0;-1)$}
+\QQ{3} المسافة بين النقطة $D$ والمستوي $(P)$ هي: \ABC{$\dfrac{\sqrt{10}}5$}{$\dfrac{\sqrt{10}}{10}$}{$\dfrac{2\sqrt{10}}5$}
+\end{tamrin}
+\begin{hal}
+\QQ{1} $A$: $1+3-4=0$ ، $B$: $4-0-4=0$ ، $C$: $-2+6-4=0$ ، و $D$: $3-3-4=-4\neq0$ ، و $\V{AB}(3;-2;1)$ ، $\V{AC}(-3;-3;-1)$ غير مرتبطين خطيًا ، إذن \bxt{الجواب (ب): $(P)=(ABC)$}.
+\QQ{2} $\vec n(1;0;-3)$ و $\vec n_2=-2\vec n$ ، إذن \bxt{الجواب (ب): $\vec n_2(-2;0;6)$}.
+\QQ{3} $d\big(D;(P)\big)=\dfrac{|3-3-4|}{\sqrt{1+9}}=\dfrac4{\sqrt{10}}=\dfrac{4\sqrt{10}}{10}=\dfrac{2\sqrt{10}}5$ ، إذن \bxt{الجواب (جـ)}.
+\end{hal}
+% ===================== 3 =====================
+\begin{tamrin}{تمرين من بكالوريا 2009 -- الموضوع الأول}
+الفضاء مزود بمعلم متعامد ومتجانس $\Rep$. نعتبر النقط: $A(1;0;2)$ ، $B(0;2;1)$ ، $C(2;1;3)$.
+\QQ{1} $(P)$ مستوٍ معادلة له من الشكل: $x-z+1=0$.
+\begin{sq}
+\qa بيّن أن المستوي $(P)$ هو المستوي $(ABC)$.
+\qb ما طبيعة المثلث $ABC$ ؟
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa تحقق من أن النقطة $D(2;3;4)$ لا تنتمي إلى المستوي $(ABC)$.
+\qb ما طبيعة $ABCD$ ؟
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa احسب المسافة بين النقطة $D$ والمستوي $(ABC)$.
+\qb احسب حجم $ABCD$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa $\V{AB}(-1;2;-1)$ و $\V{AC}(1;1;1)$ غير مرتبطين خطيًا. \ $A$: $1-2+1=0$ ، $B$: $0-1+1=0$ ، $C$: $2-3+1=0$ ، إذن \bx{(P)=(ABC)}.
+\pb $AB=\sqrt6$ ، $AC=\sqrt3$ ، $\V{BC}(2;-1;2)$: $BC=3$. \ $\V{AB}\cdot\V{AC}=-1+2-1=0$ (و $AB^2+AC^2=9=BC^2$) ، إذن \bxt{$ABC$ قائم في $A$}.
+\QQ{2}
+\pa $2-4+1=-1\neq0$ ، إذن \bxt{$D\notin(ABC)$}.
+\pb النقط $A$ ، $B$ ، $C$ ، $D$ ليست من نفس المستوي: \bxt{$ABCD$ رباعي وجوه}.
+\QQ{3}
+\pa $d\big(D;(ABC)\big)=\dfrac{|2-4+1|}{\sqrt{1+0+1}}=\dfrac1{\sqrt2}=\bx{\frac{\sqrt2}2}$
+\pb مساحة القاعدة: $S=\dfrac12\,AB\times AC=\dfrac12\sqrt6\times\sqrt3=\dfrac{3\sqrt2}2$ ، ومنه:
+\[V=\frac13\times\frac{3\sqrt2}2\times\frac{\sqrt2}2=\bx{\frac12}\ \text{\ (u.v)}\]
+\end{hal}
+% ===================== 4 =====================
+\begin{tamrin}{تمرين من بكالوريا 2009 -- الموضوع الثاني}
+في الفضاء المنسوب إلى معلم متعامد ومتجانس $\Rep$ نعتبر النقط: $A(2;3;-1)$ ، $B(1;-2;4)$ ، $C(3;0;-2)$ ، $D(1;-1;-2)$ ، وليكن $(\pi)$ المستوي المعرف بمعادلته الديكارتية: $2x-y+2z+1=0$.
+\par\textbf{المطلوب:} أجب بصحيح أو خطأ مع تبرير الإجابة في كل حالة من الحالات التالية:
+\QQ{1} النقط $A$ ، $B$ و $C$ في استقامية.
+\QQ{2} $(ABD)$ مستوٍ معادلة ديكارتية له: $25x-6y-z-33=0$.
+\QQ{3} المستقيم $(CD)$ عمودي على المستوي $(\pi)$.
+\QQ{4} المسقط العمودي للنقطة $B$ على $(\pi)$ هو النقطة $H(1;1;-1)$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\V{AB}(-1;-5;5)$ و $\V{AC}(1;-3;-1)$: $\dfrac1{-1}\neq\dfrac{-3}{-5}$ ، غير مرتبطين خطيًا: \bxt{خطأ}.
+\QQ{2} $\V{AD}(-1;-4;-1)$ و $\V{AB}$ غير مرتبطين خطيًا ، و: $A$: $50-18+1-33=0$ ، $B$: $25+12-4-33=0$ ، $D$: $25+6+2-33=0$: \bxt{صحيح}.
+\QQ{3} $\V{CD}(-2;-1;0)$ و $\vec n(2;-1;2)$ غير مرتبطين خطيًا (المركبة الثالثة) ، إذن $(CD)$ ليس عموديًا على $(\pi)$: \bxt{خطأ}.
+\QQ{4} $H\in(\pi)$ لأن $2-1-2+1=0$ ، لكن $\V{BH}(0;3;-5)$ ليس مرتبطًا خطيًا بـ $\vec n(2;-1;2)$: \bxt{خطأ}.
+\par المسقط الصحيح: $M(1+2t;-2-t;4+2t)$ مع $2(1+2t)+2+t+2(4+2t)+1=0$ ، أي $9t+13=0$ ، $t=-\dfrac{13}9$ ، ومنه $\bx{H'\left(-\frac{17}9;-\frac59;\frac{10}9\right)}$.
+\end{hal}
+% ===================== 5 =====================
+\begin{tamrin}{تمرين من بكالوريا 2010 -- الموضوع الأول}
+نعتبر في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ النقط: $A(1;1;0)$ ، $B(2;1;1)$ و $C(-1;2;-1)$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أن النقط $A$ ، $B$ و $C$ ليست في استقامية.
+\qb بيّن أن المعادلة الديكارتية للمستوي $(ABC)$ هي: $x+y-z-2=0$.
+\end{sq}
+\QQ{2} نعتبر المستويين $(P)$ و $(Q)$ اللذين معادلتاهما على الترتيب: $(P):\ x+2y-3z+1=0$ ، $(Q):\ 2x+y-z-1=0$ ، والمستقيم $(D)$ الذي يشمل النقطة $F(0;4;3)$ و $\vec u(-1;5;3)$ شعاع توجيه له.
+\begin{sq}
+\qa اكتب تمثيلًا وسيطيًا للمستقيم $(D)$.
+\qb تحقق أن تقاطع المستويين $(P)$ و $(Q)$ هو المستقيم $(D)$.
+\end{sq}
+\QQ{3} عيّن تقاطع المستويات الثلاثة $(ABC)$ ، $(P)$ و $(Q)$.
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa $\V{AB}(1;0;1)$ و $\V{AC}(-2;1;-1)$ غير مرتبطين خطيًا (المركبة الثانية) ، إذن \bxt{$A$ ، $B$ ، $C$ ليست في استقامية}.
+\pb $A$: $1+1-0-2=0$ ، $B$: $2+1-1-2=0$ ، $C$: $-1+2+1-2=0$ ، إذن \bx{(ABC):\ x+y-z-2=0}.
+\QQ{2}
+\pa $(D):\ \bx{\Sys{x=-t\\y=4+5t\\z=3+3t}}\quad(t\in\R)$
+\pb $\vec n_P(1;2;-3)$ و $\vec n_Q(2;1;-1)$ غير مرتبطين خطيًا ، إذن $(P)$ و $(Q)$ متقاطعان وفق مستقيم. ومن أجل كل $t$:
+\[(P):\ -t+2(4+5t)-3(3+3t)+1=0\qquad;\qquad(Q):\ -2t+4+5t-3-3t-1=0\]
+إذن $(D)\subset(P)$ و $(D)\subset(Q)$ ، ومنه \bxt{$(P)\cap(Q)=(D)$}.
+\QQ{3} تقاطع المستويات الثلاثة هو $(D)\cap(ABC)$: \ $-t+4+5t-3-3t-2=0$ ، أي $t-1=0$ ، $t=1$: \ التقاطع هو النقطة \bx{(-1;9;6)}.
+\end{hal}
+% ===================== 6 =====================
+\begin{tamrin}{تمرين من بكالوريا 2010 -- الموضوع الثاني}
+في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ نعتبر المستوي $(P)$ الذي معادلته: $x-2y+z+3=0$.
+\QQ{1} نذكّر أن حامل محور الفواصل $(O;\vec i)$ يعرّف بالجملة $\Sys{y=0\\z=0}$. عيّن إحداثيات $A$ نقطة تقاطع حامل $(O;\vec i)$ مع المستوي $(P)$.
+\QQ{2} $B$ و $C$ النقطتان من الفضاء حيث: $B(0;0;-3)$ و $C(-1;-4;2)$.
+\begin{sq}
+\qa تحقق أن النقطة $B$ تنتمي إلى المستوي $(P)$.
+\qb احسب الطول $AB$.
+\qc احسب المسافة بين النقطة $C$ والمستوي $(P)$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa اكتب تمثيلًا وسيطيًا للمستقيم $(\Delta)$ المار بالنقطة $C$ والعمودي على المستوي $(P)$.
+\qb تحقق أن النقطة $A$ تنتمي إلى المستقيم $(\Delta)$.
+\qc احسب مساحة المثلث $ABC$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} $y=0$ ، $z=0$: $x+3=0$ ، إذن \bx{A(-3;0;0)}.
+\QQ{2}
+\pa $0-0-3+3=0$ ، إذن \bxt{$B\in(P)$}.
+\pb $\V{AB}(3;0;-3)$: \ $AB=\sqrt{9+0+9}=\bx{3\sqrt2}$
+\pc $d\big(C;(P)\big)=\dfrac{|-1+8+2+3|}{\sqrt{1+4+1}}=\dfrac{12}{\sqrt6}=\bx{2\sqrt6}$
+\QQ{3}
+\pa $\vec n(1;-2;1)$ شعاع توجيه لـ $(\Delta)$: \quad $(\Delta):\ \bx{\Sys{x=-1+t\\y=-4-2t\\z=2+t}}\quad(t\in\R)$
+\pb من أجل $t=-2$: $(-3;0;0)$ ، إذن \bxt{$A\in(\Delta)$}.
+\pc $A\in(P)\cap(\Delta)$ ، إذن $A$ هي المسقط العمودي لـ $C$ على $(P)$ ، و $AC=2\sqrt6$ ، و $(AC)\perp(AB)$ لأن $(AB)\subset(P)$: المثلث $ABC$ قائم في $A$:
+\[S=\frac12\,AB\times AC=\frac12\times3\sqrt2\times2\sqrt6=3\sqrt{12}=\bx{6\sqrt3}\ \text{\ (u.a)}\]
+\end{hal}
+% ===================== 7 =====================
+\begin{tamrin}{تمرين من بكالوريا 2011 -- الموضوع الأول}
+نعتبر في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ المستوي $(P)$ الذي يشمل النقطة $A(1;-2;1)$ ، و $\vec n(-2;1;5)$ شعاع ناظمي له ، وليكن $(Q)$ المستوي ذو المعادلة $x+2y-7=0$.
+\QQ{1} اكتب معادلة ديكارتية للمستوي $(P)$.
+\QQ{2}
+\begin{sq}
+\qa تحقق أن النقطة $B(-1;4;-1)$ مشتركة بين المستويين $(P)$ و $(Q)$.
+\qb بيّن أن المستويين $(P)$ و $(Q)$ متقاطعان وفق مستقيم $(\Delta)$ يطلب تعيين تمثيل وسيطي له.
+\end{sq}
+\QQ{3} لتكن النقطة $C(5;-2;-1)$.
+\begin{sq}
+\qa احسب المسافة بين النقطة $C$ والمستوي $(P)$ ، ثم المسافة بين النقطة $C$ والمستوي $(Q)$.
+\qb أثبت أن المستويين $(P)$ و $(Q)$ متعامدان.
+\qc استنتج المسافة بين النقطة $C$ والمستقيم $(\Delta)$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} $-2(x-1)+(y+2)+5(z-1)=0$ ، أي \bx{(P):\ -2x+y+5z-1=0}.
+\QQ{2}
+\pa $(P)$: $2+4-5-1=0$ ، $(Q)$: $-1+8-7=0$ ، إذن \bxt{$B\in(P)\cap(Q)$}.
+\pb $\vec n(-2;1;5)$ و $\vec n_Q(1;2;0)$ غير مرتبطين خطيًا ، إذن المستويان متقاطعان وفق مستقيم $(\Delta)$ يشمل $B$. شعاع توجيهه $\vec u(a;b;c)$ يعامد الشعاعين: $-2a+b+5c=0$ و $a+2b=0$. نأخذ $b=-1$: $a=2$ ، $c=1$:
+\[(\Delta):\ \bx{\Sys{x=-1+2t\\y=4-t\\z=-1+t}}\quad(t\in\R)\]
+\QQ{3}
+\pa $d\big(C;(P)\big)=\dfrac{|-10-2-5-1|}{\sqrt{4+1+25}}=\dfrac{18}{\sqrt{30}}=\bx{\frac{3\sqrt{30}}5}$ \quad ؛ \quad $d\big(C;(Q)\big)=\dfrac{|5-4-7|}{\sqrt5}=\dfrac6{\sqrt5}=\bx{\frac{6\sqrt5}5}$
+\pb $\vec n\cdot\vec n_Q=-2+2+0=0$ ، إذن \bxt{$(P)\perp(Q)$}.
+\pc ليكن $H$ و $K$ مسقطي $C$ على $(P)$ و $(Q)$ ، و $L$ مسقطه على $(\Delta)$: $CHLK$ مستطيل ، ومنه:
+\[d\big(C;(\Delta)\big)=\sqrt{d_P^2+d_Q^2}=\sqrt{\frac{324}{30}+\frac{36}5}=\sqrt{\frac{54}5+\frac{36}5}=\sqrt{18}=\bx{3\sqrt2}\]
+\end{hal}
+% ===================== 8 =====================
+\begin{tamrin}{تمرين من بكالوريا 2011 -- الموضوع الثاني}
+نعتبر في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ النقط: $A(0;1;5)$ ، $B(2;1;7)$ و $C(3;-3;6)$.
+\QQ{1}
+\begin{sq}
+\qa اكتب تمثيلًا وسيطيًا للمستقيم $(\Delta)$ الذي يشمل النقطة $B$ و $\vec u(1;-4;-1)$ شعاع توجيه له.
+\qb تحقق أن النقطة $C$ تنتمي إلى المستقيم $(\Delta)$.
+\qc بيّن أن الشعاعين $\V{AB}$ و $\V{BC}$ متعامدان.
+\qd استنتج المسافة بين النقطة $A$ والمستقيم $(\Delta)$.
+\end{sq}
+\QQ{2} نعتبر النقطة $M(2+t;1-4t;7-t)$ حيث $t$ عدد حقيقي ، ولتكن الدالة $h$ المعرفة على $\R$ بـ: $h(t)=AM$.
+\begin{sq}
+\qa اكتب عبارة $h(t)$ بدلالة $t$.
+\qb بيّن أنه من أجل كل عدد حقيقي $t$: $h'(t)=\dfrac{18t}{\sqrt{18t^2+8}}$.
+\qc استنتج قيمة العدد الحقيقي $t$ التي من أجلها تكون المسافة $AM$ أصغر ما يمكن. قارن بين القيمة الصغرى للدالة $h$ والمسافة بين النقطة $A$ والمستقيم $(\Delta)$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa $(\Delta):\ \bx{\Sys{x=2+t\\y=1-4t\\z=7-t}}\quad(t\in\R)$
+\pb من أجل $t=1$: $(3;-3;6)$ ، إذن \bxt{$C\in(\Delta)$}.
+\pc $\V{AB}(2;0;2)$ و $\V{BC}(1;-4;-1)$: \ $\V{AB}\cdot\V{BC}=2+0-2=0$ ، إذن \bxt{$\V{AB}\perp\V{BC}$}.
+\pd $B\in(\Delta)$ و $(AB)\perp(\Delta)$ ، إذن $B$ هي المسقط العمودي لـ $A$ على $(\Delta)$: \ $d\big(A;(\Delta)\big)=AB=\sqrt8=\bx{2\sqrt2}$
+\QQ{2}
+\pa $\V{AM}(2+t;-4t;2-t)$:
+\[h(t)=\sqrt{(2+t)^2+16t^2+(2-t)^2}=\sqrt{4+4t+t^2+16t^2+4-4t+t^2}=\bx{\sqrt{18t^2+8}}\]
+\pb $h'(t)=\dfrac{36t}{2\sqrt{18t^2+8}}=\bx{\frac{18t}{\sqrt{18t^2+8}}}$
+\pc إشارة $h'(t)$ هي إشارة $t$: $h$ متناقصة على $]-\infty;0]$ ومتزايدة على $[0;+\infty[$ ، إذن $AM$ أصغر ما يمكن من أجل \bx{t=0} ، و $h(0)=\sqrt8=2\sqrt2$: \bxt{القيمة الصغرى لـ $h$ تساوي المسافة بين $A$ و $(\Delta)$} (و $M=B$).
+\end{hal}
+% ===================== 9 =====================
+\begin{tamrin}{تمرين من بكالوريا 2012 -- الموضوع الأول}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر المستوي $(P)$ ذا المعادلة: $14x+16y+13z-47=0$ ، والنقط $A(1;-2;5)$ ، $B(2;2;-1)$ و $C(-1;3;1)$.
+\QQ{1}
+\begin{sq}
+\qa تحقق أن النقط $A$ ، $B$ و $C$ ليست في استقامية.
+\qb بيّن أن المستوي $(ABC)$ هو $(P)$.
+\end{sq}
+\QQ{2} جد تمثيلًا وسيطيًا للمستقيم $(AB)$.
+\QQ{3}
+\begin{sq}
+\qa اكتب معادلة ديكارتية للمستوي المحوري $(Q)$ للقطعة $[AB]$.
+\qb تحقق أن النقطة $D\left(-1;-2;\frac14\right)$ تنتمي إلى $(Q)$.
+\qc احسب المسافة بين النقطة $D$ والمستقيم $(AB)$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa $\V{AB}(1;4;-6)$ و $\V{AC}(-2;5;-4)$ غير مرتبطين خطيًا ، إذن \bxt{$A$ ، $B$ ، $C$ ليست في استقامية}.
+\pb $A$: $14-32+65-47=0$ ، $B$: $28+32-13-47=0$ ، $C$: $-14+48+13-47=0$ ، إذن \bx{(ABC)=(P)}.
+\QQ{2} $(AB):\ \bx{\Sys{x=1+t\\y=-2+4t\\z=5-6t}}\quad(t\in\R)$
+\QQ{3}
+\pa $(Q)$ يشمل منتصف $[AB]$ وهو $I\left(\frac32;0;2\right)$ ، و $\V{AB}(1;4;-6)$ ناظمي له: \ $x-\frac32+4y-6(z-2)=0$ ، أي \bx{(Q):\ 2x+8y-12z+21=0}.
+\pb $2(-1)+8(-2)-12\times\frac14+21=-2-16-3+21=0$ ، إذن \bxt{$D\in(Q)$}.
+\pc $D\in(Q)$ ، إذن $(DI)\perp(AB)$ و $I\in(AB)$: المسافة هي $DI$. \ $\V{ID}\left(-\frac52;-2;-\frac74\right)$:
+\[d\big(D;(AB)\big)=DI=\sqrt{\frac{25}4+4+\frac{49}{16}}=\sqrt{\frac{213}{16}}=\bx{\frac{\sqrt{213}}4}\]
+\end{hal}
+% ===================== 10 =====================
+\begin{tamrin}{تمرين من بكالوريا 2012 -- الموضوع الثاني}
+في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ نعتبر النقط: $A(-1;0;1)$ ، $B(2;1;0)$ و $C(1;-1;0)$.
+\QQ{1} بيّن أن النقط $A$ ، $B$ و $C$ تعيّن مستويًا.
+\QQ{2} بيّن أن: $2x-y+5z-3=0$ هي معادلة ديكارتية للمستوي $(ABC)$.
+\QQ{3} $D$ و $H$ نقطتان من الفضاء حيث: $D(2;-1;3)$ و $H\left(\frac{13}{15};-\frac{13}{30};\frac16\right)$.
+\begin{sq}
+\qa تحقق أن النقطة $D$ لا تنتمي إلى المستوي $(ABC)$.
+\qb بيّن أن $H$ هي المسقط العمودي للنقطة $D$ على المستوي $(ABC)$.
+\qc استنتج أن المستويين $(ADH)$ و $(ABC)$ متعامدان ، ثم جد تمثيلًا وسيطيًا لمستقيم تقاطعهما.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\V{AB}(3;1;-1)$ و $\V{AC}(2;-1;-1)$ غير مرتبطين خطيًا ، إذن \bxt{$A$ ، $B$ ، $C$ تعيّن مستويًا}.
+\QQ{2} $A$: $-2-0+5-3=0$ ، $B$: $4-1+0-3=0$ ، $C$: $2+1+0-3=0$ ، إذن \bx{(ABC):\ 2x-y+5z-3=0}.
+\QQ{3}
+\pa $4+1+15-3=17\neq0$ ، إذن \bxt{$D\notin(ABC)$}.
+\pb $2\times\frac{13}{15}+\frac{13}{30}+\frac56-3=\frac{52+13+25-90}{30}=0$ ، إذن $H\in(ABC)$. و:
+\[\V{DH}\left(-\frac{17}{15};\frac{17}{30};-\frac{17}6\right)=-\frac{17}{30}(2;-1;5)=-\frac{17}{30}\,\vec n\]
+إذن $(DH)\perp(ABC)$ و \bxt{$H$ المسقط العمودي لـ $D$ على $(ABC)$}.
+\pc المستوي $(ADH)$ يحوي المستقيم $(DH)$ العمودي على $(ABC)$ ، إذن \bxt{$(ADH)\perp(ABC)$}. النقطتان $A$ و $H$ مشتركتان ، فمستقيم التقاطع هو $(AH)$: \ $\V{AH}\left(\frac{28}{15};-\frac{13}{30};-\frac56\right)=\frac1{30}(56;-13;-25)$:
+\[(AH):\ \bx{\Sys{x=-1+56t\\y=-13t\\z=1-25t}}\quad(t\in\R)\]
+\end{hal}
+% ===================== 11 =====================
+\begin{tamrin}{تمرين من بكالوريا 2013 -- الموضوع الأول}
+نعتبر في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ النقط: $A(-1;1;3)$ ، $B(1;0;-1)$ ، $C(2;-1;1)$ و $D(2;0;-1)$ ، والمستوي $(P)$ ذا المعادلة: $2y+z+1=0$. \ وليكن $(\Delta)$ المستقيم الذي تمثيل وسيطي له: $\Sys{x=-1\\y=2+\beta\\z=1-2\beta}$ حيث $\beta$ وسيط حقيقي.
+\QQ{1} اكتب تمثيلًا وسيطيًا للمستقيم $(BC)$ ، ثم تحقق أن المستقيم $(BC)$ محتوى في المستوي $(P)$.
+\QQ{2} بيّن أن المستقيمين $(\Delta)$ و $(BC)$ ليسا من نفس المستوي.
+\QQ{3}
+\begin{sq}
+\qa احسب المسافة بين النقطة $A$ والمستوي $(P)$.
+\qb بيّن أن $D$ نقطة من $(P)$ ، وأن المثلث $BCD$ قائم.
+\end{sq}
+\QQ{4} بيّن أن $ABCD$ رباعي وجوه ، ثم احسب حجمه.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\V{BC}(1;-1;2)$: \quad $(BC):\ \bx{\Sys{x=1+t\\y=-t\\z=-1+2t}}\quad(t\in\R)$. \quad ومن أجل كل $t$: $2(-t)+(-1+2t)+1=0$ ، إذن \bxt{$(BC)\subset(P)$}.
+\QQ{2} $\vec u_\Delta(0;1;-2)$ و $\V{BC}(1;-1;2)$ غير مرتبطين خطيًا: المستقيمان غير متوازيين. ندرس التقاطع: $1+t=-1$ يعطي $t=-2$ ، فـ $y=2$ و $z=-5$ ، ومن $(\Delta)$: $2+\beta=2$ يعطي $\beta=0$ و $z=1\neq-5$: لا تقاطع. إذن \bxt{$(\Delta)$ و $(BC)$ ليسا من نفس المستوي}.
+\QQ{3}
+\pa $d\big(A;(P)\big)=\dfrac{|2+3+1|}{\sqrt{4+1}}=\dfrac6{\sqrt5}=\bx{\frac{6\sqrt5}5}$
+\pb $0-1+1=0$: \bxt{$D\in(P)$}. \ $\V{DB}(-1;0;0)$ و $\V{DC}(0;-1;2)$: \ $\V{DB}\cdot\V{DC}=0$ ، إذن \bxt{$BCD$ قائم في $D$}.
+\QQ{4} $A\notin(P)$ و $B$ ، $C$ ، $D\in(P)$: \bxt{$ABCD$ رباعي وجوه}. \ $DB=1$ ، $DC=\sqrt5$:
+\[V=\frac13\times\Big(\frac12\times1\times\sqrt5\Big)\times\frac6{\sqrt5}=\bx{1}\ \text{\ (u.v)}\]
+\end{hal}
+% ===================== 12 =====================
+\begin{tamrin}{تمرين من بكالوريا 2013 -- الموضوع الثاني}
+نعتبر في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ النقط: $A(2;1;-1)$ ، $B(1;-1;3)$ ، $C\left(-\frac32;-2;1\right)$ و $D\left(\frac72;-3;0\right)$ ، ولتكن $I$ منتصف القطعة $[AB]$.
+\QQ{1}
+\begin{sq}
+\qa احسب إحداثيات النقطة $I$.
+\qb بيّن أن: $2x+4y-8z+5=0$ معادلة ديكارتية لـ $(P)$ ، المستوي المحوري لـ $[AB]$.
+\end{sq}
+\QQ{2} اكتب تمثيلًا وسيطيًا للمستقيم $(\Delta)$ الذي يشمل النقطة $C$ و $\vec u(1;2;-4)$ شعاع توجيه له.
+\QQ{3}
+\begin{sq}
+\qa جد إحداثيات $E$ نقطة تقاطع المستوي $(P)$ والمستقيم $(\Delta)$.
+\qb بيّن أن $(\Delta)$ و $(AB)$ من نفس المستوي ، ثم استنتج أن المثلث $IEC$ قائم.
+\end{sq}
+\QQ{4}
+\begin{sq}
+\qa بيّن أن المستقيم $(ID)$ عمودي على كل من المستقيم $(AB)$ والمستقيم $(IE)$.
+\qb احسب حجم رباعي الوجوه $DIEC$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa \bx{I\left(\frac32;0;1\right)}
+\pb $\V{AB}(-1;-2;4)=-\frac12(2;4;-8)$ ناظمي لـ $(P)$ ، و $I$: $3+0-8+5=0$ ، إذن \bx{(P):\ 2x+4y-8z+5=0}.
+\QQ{2} $(\Delta):\ \bx{\Sys{x=-\frac32+t\\y=-2+2t\\z=1-4t}}\quad(t\in\R)$
+\QQ{3}
+\pa $2\left(-\frac32+t\right)+4(-2+2t)-8(1-4t)+5=0$ ، أي $42t-14=0$ ، $t=\frac13$: \ \bx{E\left(-\frac76;-\frac43;-\frac13\right)}
+\pb $\vec u=-\V{AB}$: $(\Delta)\parallel(AB)$ ، إذن \bxt{$(\Delta)$ و $(AB)$ من نفس المستوي}. \ $(\Delta)\perp(P)$ (موازٍ لـ $(AB)$) ، و $I$ ، $E\in(P)$ ، إذن $(EC)\perp(IE)$: \bxt{$IEC$ قائم في $E$}.
+\QQ{4}
+\pa $\V{ID}(2;-3;-1)$ ، $\V{AB}(-1;-2;4)$ ، $\V{IE}\left(-\frac83;-\frac43;-\frac43\right)$:
+\[\V{ID}\cdot\V{AB}=-2+6-4=0\qquad;\qquad\V{ID}\cdot\V{IE}=-\frac{16}3+4+\frac43=0\]
+\bxt{$(ID)\perp(AB)$ و $(ID)\perp(IE)$}.
+\pb $(ID)$ عمودي على $(IE)$ وعلى $(EC)$ (لأن $(EC)\parallel(AB)$) ، إذن $(ID)\perp(IEC)$ و $ID$ ارتفاع. \ $IE=\dfrac{4\sqrt6}3$ ، $EC=\dfrac{\sqrt{21}}3$ ، $ID=\sqrt{14}$:
+\[V=\frac13\times\Big(\frac12\times\frac{4\sqrt6}3\times\frac{\sqrt{21}}3\Big)\times\sqrt{14}=\frac{2\sqrt{6\times21\times14}}{27}=\frac{2\times42}{27}=\bx{\frac{28}9}\ \text{\ (u.v)}\]
+\end{hal}
+% ===================== 13 =====================
+\begin{tamrin}{تمرين من بكالوريا 2014 -- الموضوع الأول}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقط: $A(2;-1;1)$ ، $B(-1;2;1)$ ، $C(1;-1;2)$ و $D(1;1;1)$.
+\QQ{1}
+\begin{sq}
+\qa تحقق أن النقط $A$ ، $B$ و $C$ تعيّن مستويًا.
+\qb بيّن أن $\vec n(1;1;1)$ هو شعاع ناظمي للمستوي $(ABC)$.
+\qc اكتب معادلة ديكارتية للمستوي $(ABC)$.
+\end{sq}
+\QQ{2} لتكن النقطة $G$ مرجح الجملة المثقلة $\{(A;1),(B;2),(C;-1)\}$.
+\begin{sq}
+\qa احسب إحداثيات $G$.
+\qb لتكن $(\Gamma)$ مجموعة النقط $M$ من الفضاء التي تحقق: $\big\|\V{MA}+2\V{MB}-\V{MC}\big\|=2\big\|\V{MD}\big\|$. بيّن أن $(\Gamma)$ هي المستوي المحوري للقطعة المستقيمة $[GD]$.
+\qc أثبت أن معادلة $(\Gamma)$ هي: $6x-4y+2z+3=0$.
+\end{sq}
+\QQ{3} بيّن أن المستويين $(ABC)$ و $(\Gamma)$ يتقاطعان وفق مستقيم $(\Delta)$ يطلب تعيين تمثيل وسيطي له.
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa $\V{AB}(-3;3;0)$ و $\V{AC}(-1;0;1)$ غير مرتبطين خطيًا ، إذن \bxt{$A$ ، $B$ ، $C$ تعيّن مستويًا}.
+\pb $\vec n\cdot\V{AB}=-3+3+0=0$ و $\vec n\cdot\V{AC}=-1+0+1=0$ ، إذن \bxt{$\vec n$ ناظمي لـ $(ABC)$}.
+\pc $x+y+z+d=0$ و $A$: $2-1+1+d=0$ ، $d=-2$: \quad \bx{(ABC):\ x+y+z-2=0}
+\QQ{2}
+\pa $1+2-1=2\neq0$:
+\[x_G=\frac{2-2-1}2=-\frac12\quad;\quad y_G=\frac{-1+4+1}2=2\quad;\quad z_G=\frac{1+2-2}2=\frac12\]
+ومنه: \quad \bx{G\left(-\frac12;2;\frac12\right)}
+\pb $\V{MA}+2\V{MB}-\V{MC}=2\V{MG}$ ، إذن: $2MG=2MD\iff MG=MD$: \bxt{$(\Gamma)$ المستوي المحوري للقطعة $[GD]$}.
+\pc $\V{GD}\left(\frac32;-1;\frac12\right)=\frac12(3;-2;1)$ ناظمي ، ومنتصف $[GD]$ هو $J\left(\frac14;\frac32;\frac34\right)$:
+\[3\Big(x-\frac14\Big)-2\Big(y-\frac32\Big)+\Big(z-\frac34\Big)=0\iff3x-2y+z+\frac32=0\iff\bx{6x-4y+2z+3=0}\]
+\QQ{3} $\vec n(1;1;1)$ و $(3;-2;1)$ غير مرتبطين خطيًا ، إذن المستويان متقاطعان. نضع $z=t$: $x+y=2-t$ و $6x-4y=-3-2t$ ، ومنه $10x=5-6t$:
+\[(\Delta):\ \bx{\Sys{x=\frac12-\frac35t\\y=\frac32-\frac25t\\z=t}}\quad(t\in\R)\qquad\text{\ (}\vec u(3;2;-5)\text{)}\]
+\end{hal}
+% ===================== 14 =====================
+\begin{tamrin}{تمرين من بكالوريا 2014 -- الموضوع الثاني}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقط: $A(1;-1;-2)$ ، $B(1;-2;-3)$ و $C(2;0;0)$.
+\QQ{1}
+\begin{sq}
+\qa برهن أن $A$ ، $B$ و $C$ ليست في استقامية.
+\qb اكتب تمثيلًا وسيطيًا للمستوي $(ABC)$.
+\qc تحقق أن $x+y-z-2=0$ هي معادلة ديكارتية للمستوي $(ABC)$.
+\end{sq}
+\QQ{2} نعتبر المستويين $(P)$ و $(Q)$ المعرفين بمعادلتيهما كما يلي: $(P):\ x-y-2z+5=0$ و $(Q):\ 3x+2y-z+10=0$.
+\par برهن أن $(P)$ و $(Q)$ يتقاطعان وفق المستقيم $(\Delta)$ ذي التمثيل الوسيطي: $\Sys{x=t-3\\y=-t\\z=t+1}\ (t\in\R)$.
+\QQ{3} عيّن تقاطع المستويات $(ABC)$ ، $(P)$ و $(Q)$.
+\QQ{4} لتكن $M(x;y;z)$ نقطة من الفضاء. نسمي $d\big(M,(P)\big)$ المسافة بين $M$ و $(P)$ ، و $d\big(M,(Q)\big)$ المسافة بين $M$ و $(Q)$. عيّن المجموعة $(\Gamma)$ للنقط $M$ بحيث: $\sqrt6\times d\big(M,(P)\big)=\sqrt{14}\times d\big(M,(Q)\big)$.
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa $\V{AB}(0;-1;-1)$ و $\V{AC}(1;1;2)$ غير مرتبطين خطيًا (المركبة الأولى) ، إذن \bxt{$A$ ، $B$ ، $C$ ليست في استقامية}.
+\pb $M\in(ABC)\iff\V{AM}=\alpha\V{AB}+\beta\V{AC}$: \quad \bx{\Sys{x=1+\beta\\y=-1-\alpha+\beta\\z=-2-\alpha+2\beta}}\quad$(\alpha,\beta\in\R)$
+\pc $A$: $1-1+2-2=0$ ، $B$: $1-2+3-2=0$ ، $C$: $2+0-0-2=0$ ، إذن \bx{(ABC):\ x+y-z-2=0}.
+\QQ{2} $\vec n_P(1;-1;-2)$ و $\vec n_Q(3;2;-1)$ غير مرتبطين خطيًا: المستويان متقاطعان. ومن أجل كل $t$:
+\[(P):\ t-3+t-2t-2+5=0\qquad;\qquad(Q):\ 3t-9-2t-t-1+10=0\]
+إذن \bxt{$(P)\cap(Q)=(\Delta)$}.
+\QQ{3} نعوض $(\Delta)$ في $(ABC)$: $t-3-t-t-1-2=0$ ، أي $t=-6$: \ التقاطع هو النقطة \bx{(-9;6;-5)}.
+\QQ{4} $d\big(M,(P)\big)=\dfrac{|x-y-2z+5|}{\sqrt6}$ و $d\big(M,(Q)\big)=\dfrac{|3x+2y-z+10|}{\sqrt{14}}$ ، ومنه الشرط يكافئ:
+\[|x-y-2z+5|=|3x+2y-z+10|\]
+أي: \ $x-y-2z+5=3x+2y-z+10$ \ أو \ $x-y-2z+5=-(3x+2y-z+10)$ ،
+أي $2x+3y+z+5=0$ أو $4x+y-3z+15=0$: \bxt{$(\Gamma)$ اتحاد مستويين متقاطعين وفق $(\Delta)$}.
+\end{hal}
+% ===================== 15 =====================
+\begin{tamrin}{تمرين من بكالوريا 2015 -- الموضوع الأول}
+في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ نعتبر النقط: $A(2;1;0)$ ، $B(1;2;2)$ ، $C(3;3;1)$ و $D(1;1;4)$.
+\QQ{1} تحقق أن النقط $A$ ، $B$ و $C$ تعيّن مستويًا وأن $x-y+z-1=0$ معادلة ديكارتية له.
+\QQ{2} بيّن أن المثلث $ABC$ متقايس الأضلاع ، ثم تحقق أن مساحته هي $\dfrac{3\sqrt3}2$ وحدة مساحة.
+\QQ{3} عيّن تمثيلًا وسيطيًا للمستقيم $(\Delta)$ العمودي على المستوي $(ABC)$ والذي يشمل النقطة $D$.
+\QQ{4} النقطة $E$ هي المسقط العمودي للنقطة $D$ على المستوي $(ABC)$.
+\begin{sq}
+\qa عيّن إحداثيات النقطة $E$ ، ثم احسب المسافة بين النقطة $D$ والمستوي $(ABC)$.
+\qb عيّن مركزي سطحي الكرتين اللذين يمسان $(ABC)$ في النقطة $E$ ونصف قطر كل منهما $\sqrt3$.
+\end{sq}
+\QQ{5} احسب حجم رباعي الوجوه $ABCD$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\V{AB}(-1;1;2)$ و $\V{AC}(1;2;1)$ غير مرتبطين خطيًا. \ $A$: $2-1+0-1=0$ ، $B$: $1-2+2-1=0$ ، $C$: $3-3+1-1=0$ ، إذن \bx{(ABC):\ x-y+z-1=0}.
+\QQ{2} $AB=\sqrt{1+1+4}=\sqrt6$ ، $AC=\sqrt{1+4+1}=\sqrt6$ ، $\V{BC}(2;1;-1)$: $BC=\sqrt6$ ، إذن \bxt{$ABC$ متقايس الأضلاع} و:
+\[S=\frac{\sqrt3}4\times\big(\sqrt6\big)^2=\bx{\frac{3\sqrt3}2}\ \text{\ (u.a)}\]
+\QQ{3} $\vec n(1;-1;1)$ شعاع توجيه: \quad $(\Delta):\ \bx{\Sys{x=1+t\\y=1-t\\z=4+t}}\quad(t\in\R)$
+\QQ{4}
+\pa $(1+t)-(1-t)+(4+t)-1=0$ ، أي $3t+3=0$ ، $t=-1$: \ \bx{E(0;2;3)} ، و $d\big(D;(ABC)\big)=DE=\sqrt{1+1+1}=\bx{\sqrt3}$
+\pb المركز $\Omega$ على $(\Delta)$ و $\Omega E=\sqrt3$: $\Omega=E\pm\vec n$ (لأن $\|\vec n\|=\sqrt3$) ، إذن \bx{\Omega_1(1;1;4)=D} و \bx{\Omega_2(-1;3;2)}.
+\QQ{5} $V=\dfrac13\times\dfrac{3\sqrt3}2\times\sqrt3=\bx{\frac32}$ \ (u.v)
+\end{hal}
+% ===================== 16 =====================
+\begin{tamrin}{تمرين من بكالوريا 2015 -- الموضوع الثاني}
+في الفضاء المنسوب إلى المعلم المتعامد والمتجانس $\Rep$ نعتبر النقط: $A(2;4;1)$ ، $B(0;4;-3)$ ، $C(3;1;-3)$ و $D(1;0;-2)$.
+\par أجب بصحيح أو خطأ مع التعليل في كل حالة من الحالات الآتية:
+\QQ{1} النقط $A$ ، $B$ و $C$ ليست في استقامية.
+\QQ{2} $2x+2y-z-11=0$ معادلة ديكارتية للمستوي $(ABC)$.
+\QQ{3} النقطة $E(3;2;-1)$ هي المسقط العمودي للنقطة $D$ على المستوي $(ABC)$.
+\QQ{4} المستقيمان $(AB)$ و $(CD)$ من نفس المستوي.
+\QQ{5} $\Sys{x=2t-1\\y=t-1\\z=-t-1}\ (t\in\R)$ تمثيل وسيطي للمستقيم $(CD)$.
+\QQ{6} يوجد عددان حقيقيان $\alpha$ و $\beta$ حيث النقطة $I\left(\frac35;4;-\frac95\right)$ مرجح الجملة $\{(A;\alpha),(B;\beta)\}$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\V{AB}(-2;0;-4)$ و $\V{AC}(1;-3;-4)$ غير مرتبطين خطيًا: \bxt{صحيح}.
+\QQ{2} $A$: $4+8-1-11=0$ ، $B$: $0+8+3-11=0$ ، $C$: $6+2+3-11=0$: \bxt{صحيح}.
+\QQ{3} $E\in(ABC)$ ($6+4+1-11=0$) ، لكن $\V{DE}(2;2;1)$ ليس مرتبطًا خطيًا بـ $\vec n(2;2;-1)$: \bxt{خطأ}.
+\par (المسقط الصحيح: $2(1+2t)+2(2t)-(-2-t)-11=0$ ، $t=\frac79$ ، أي $\left(\frac{23}9;\frac{14}9;-\frac{25}9\right)$.)
+\QQ{4} $D$: $2+0+2-11=-7\neq0$ ، إذن $D\notin(ABC)$ ، والنقط $A$ ، $B$ ، $C$ ، $D$ ليست من نفس المستوي: \bxt{خطأ}.
+\QQ{5} $t=1$ يعطي $(1;0;-2)=D$ ، و $t=2$ يعطي $(3;1;-3)=C$: \bxt{صحيح}.
+\QQ{6} $\V{AI}\left(-\frac75;0;-\frac{14}5\right)=\frac7{10}\V{AB}$ ، إذن $I\in[AB]$ ، و $\V{AI}=\frac{\beta}{\alpha+\beta}\V{AB}$ يتحقق مثلًا من أجل $\alpha=3$ ، $\beta=7$: \bxt{صحيح}.
+\end{hal}
+% ===================== 17 =====================
+\begin{tamrin}{تمرين من بكالوريا 2016 -- الدورة الأولى -- الموضوع الأول}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر المستويين $(P)$ و $(P')$ معادلتاهما على الترتيب: $x-2y+z-2=0$ و $2x+y-z+1=0$.
+\QQ{1} بيّن أن المستويين $(P)$ و $(P')$ متقاطعان.
+\QQ{2} عيّن $(\Gamma)$ مجموعة النقط $M(x;y;z)$ من الفضاء التي تحقق: $d\big(M,(P)\big)=d\big(M,(P')\big)$.
+\QQ{3} تحقق أن النقطة $A(1;2;0)$ تنتمي إلى المجموعة $(\Gamma)$.
+\QQ{4} $H$ و $H'$ المسقطان العموديان للنقطة $A$ على المستويين $(P)$ و $(P')$ على الترتيب.
+\begin{sq}
+\qa جد تمثيلًا وسيطيًا لكل من المستقيمين $(AH)$ و $(AH')$.
+\qb استنتج إحداثيات كل من النقطتين $H$ و $H'$.
+\end{sq}
+\QQ{5} عيّن إحداثيات النقطة $I$ منتصف القطعة $[HH']$ ، ثم احسب مساحة المثلث $AHH'$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\vec n(1;-2;1)$ و $\vec n'(2;1;-1)$ غير مرتبطين خطيًا ، إذن \bxt{$(P)$ و $(P')$ متقاطعان}.
+\QQ{2} $\|\vec n\|=\|\vec n'\|=\sqrt6$ ، والشرط يكافئ $|x-2y+z-2|=|2x+y-z+1|$:
+\[x-2y+z-2=2x+y-z+1\iff x+3y-2z+3=0\]
+\[x-2y+z-2=-(2x+y-z+1)\iff3x-y-1=0\]
+\bxt{$(\Gamma)$ اتحاد المستويين: $x+3y-2z+3=0$ و $3x-y-1=0$}.
+\QQ{3} $3\times1-2-1=0$ ، إذن \bxt{$A\in(\Gamma)$}.
+\QQ{4}
+\pa $(AH):\ \bx{\Sys{x=1+t\\y=2-2t\\z=t}}$ \qquad $(AH'):\ \bx{\Sys{x=1+2s\\y=2+s\\z=-s}}$ \qquad $(t,s\in\R)$
+\pb $(1+t)-2(2-2t)+t-2=0$ ، أي $6t=5$: \bx{H\left(\frac{11}6;\frac13;\frac56\right)}. \quad $2(1+2s)+2+s+s+1=0$ ، أي $6s=-5$: \bx{H'\left(-\frac23;\frac76;\frac56\right)}.
+\QQ{5} \bx{I\left(\frac7{12};\frac34;\frac56\right)}. \ $\V{AH}=\frac56(1;-2;1)$ و $\V{AH'}=-\frac56(2;1;-1)$ ، إذن $AH=AH'=\frac5{\sqrt6}$ و:
+\[\cos\widehat{HAH'}=\frac{\V{AH}\cdot\V{AH'}}{AH\times AH'}=\frac{-\frac{25}{36}(2-2-1)}{\frac{25}6}=\frac16\qquad;\qquad\sin\widehat{HAH'}=\sqrt{1-\frac1{36}}=\frac{\sqrt{35}}6\]
+\[S=\frac12\,AH\times AH'\times\sin\widehat{HAH'}=\frac12\times\frac{25}6\times\frac{\sqrt{35}}6=\bx{\frac{25\sqrt{35}}{72}}\ \text{\ (u.a)}\]
+\end{hal}
+% ===================== 18 =====================
+\begin{tamrin}{تمرين من بكالوريا 2016 -- الدورة الأولى -- الموضوع الثاني}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقطتين $A(5;-1;-2)$ و $B(3;12;-7)$ ، و $(\Delta)$ المستقيم المعرف بالتمثيل الوسيطي: $\Sys{x=1+3k\\y=1+2k\\z=4k}\ (k\in\R)$.
+\QQ{1}
+\begin{sq}
+\qa عيّن تمثيلًا وسيطيًا للمستقيم $(\Delta')$ الذي يشمل النقطة $A$ و $\vec u(-2;1;1)$ شعاع توجيه له.
+\qb بيّن أن المستقيمين $(\Delta)$ و $(\Delta')$ متعامدان وأن النقطة $C(1;1;0)$ نقطة تقاطعهما.
+\end{sq}
+\QQ{2} $(P)$ المستوي المعيّن بالمستقيمين $(\Delta)$ و $(\Delta')$.
+\begin{sq}
+\qa بيّن أن الشعاع $\vec n(2;11;-7)$ ناظمي للمستوي $(P)$ ، ثم جد معادلة ديكارتية له.
+\qb بيّن أن النقطة $C$ هي المسقط العمودي للنقطة $B$ على المستوي $(P)$.
+\end{sq}
+\QQ{3} $\alpha$ و $\beta$ عددان حقيقيان ، و $(P')$ مجموعة النقط $M(x;y;z)$ من الفضاء المعرفة بـ: $\Sys{x=3-\beta\\y=12+12\alpha+9\beta\\z=-7-6\alpha-11\beta}$.
+\begin{sq}
+\qa أثبت أن المجموعة $(P')$ هي مستوٍ ، ثم تحقق أن $13x-y-2z-41=0$ هي معادلة ديكارتية له.
+\qb عيّن إحداثيات $D$ و $E$ نقطتي تقاطع المستوي $(P')$ مع المستقيمين $(\Delta)$ و $(\Delta')$ على الترتيب.
+\qc احسب حجم رباعي الوجوه $BCDE$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa $(\Delta'):\ \bx{\Sys{x=5-2t\\y=-1+t\\z=-2+t}}\quad(t\in\R)$
+\pb $(3;2;4)\cdot(-2;1;1)=-6+2+4=0$ ، إذن \bxt{$(\Delta)\perp(\Delta')$}. \ $C$: $k=0$ في $(\Delta)$ و $t=2$ في $(\Delta')$ ، إذن \bxt{$C$ نقطة تقاطعهما}.
+\QQ{2}
+\pa $\vec n\cdot(3;2;4)=6+22-28=0$ و $\vec n\cdot(-2;1;1)=-4+11-7=0$: \bxt{$\vec n$ ناظمي لـ $(P)$}. \ $2x+11y-7z+d=0$ و $C$: $2+11+d=0$: \bx{(P):\ 2x+11y-7z-13=0}
+\pb $\V{BC}(-2;-11;7)=-\vec n$ و $C\in(P)$ ، إذن \bxt{$C$ المسقط العمودي لـ $B$ على $(P)$}.
+\QQ{3}
+\pa $M=B+\alpha\vec v_1+\beta\vec v_2$ مع $B(3;12;-7)$ ، $\vec v_1(0;12;-6)$ ، $\vec v_2(-1;9;-11)$ غير مرتبطين خطيًا: \bxt{$(P')$ مستوٍ يشمل $B$}. \ $(13;-1;-2)\cdot\vec v_1=-12+12=0$ ، $(13;-1;-2)\cdot\vec v_2=-13-9+22=0$ ، و $B$: $39-12+14-41=0$: \bx{(P'):\ 13x-y-2z-41=0}.
+\pb $(\Delta)$: $13(1+3k)-(1+2k)-8k-41=0$ ، أي $29k=29$: \bx{D(4;3;4)}. \ $(\Delta')$: $13(5-2t)-(-1+t)-2(-2+t)-41=0$ ، أي $29-29t=0$: \bx{E(3;0;-1)}.
+\pc $(CB)\perp(P)$ و $(CD)\perp(CE)$: رباعي الوجوه ثلاثي التعامد في $C$. \ $CB=\sqrt{174}$ ، $CD=\sqrt{29}$ ، $CE=\sqrt6$:
+\[V=\frac13\times\Big(\frac12\,CD\times CE\Big)\times CB=\frac16\sqrt{29\times6\times174}=\frac{174}6=\bx{29}\ \text{\ (u.v)}\]
+\end{hal}
+% ===================== 19 =====================
+\begin{tamrin}{تمرين من بكالوريا 2016 -- الدورة الثانية -- الموضوع الأول}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. $(\Delta)$ المستقيم الذي يشمل النقطة $A(1;0;2)$ و $\vec u(2;1;-1)$ شعاع توجيه له ، وليكن $(\Delta')$ المستقيم المعرف بالتمثيل الوسيطي: $\Sys{x=\lambda\\y=4+\lambda\\z=2+\lambda}\ (\lambda\in\R)$.
+\QQ{1}
+\begin{sq}
+\qa اكتب تمثيلًا وسيطيًا للمستقيم $(\Delta)$.
+\qb بيّن أن المستقيمين $(\Delta)$ و $(\Delta')$ ليسا من نفس المستوي.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أن النقطة $B(-1;3;1)$ هي المسقط العمودي للنقطة $A$ على المستقيم $(\Delta')$.
+\qb تحقق أن المستقيم $(AB)$ عمودي على كل من المستقيمين $(\Delta)$ و $(\Delta')$.
+\qc استنتج المسافة بين المستقيمين $(\Delta)$ و $(\Delta')$.
+\end{sq}
+\QQ{3} لتكن $N$ نقطة إحداثياتها $(-2+t;2+t;t)$ حيث $t\in\R$ ، ولتكن $h$ الدالة المعرفة على $\R$ بـ: $h(t)=AN^2$.
+\begin{sq}
+\qa بيّن أن النقطة $N$ تنتمي إلى المستقيم $(\Delta')$ ، ثم اكتب عبارة $h(t)$ بدلالة $t$.
+\qb استنتج قيمة العدد الحقيقي $t$ التي تكون من أجلها المسافة $AN$ أصغر ما يمكن ، ثم قارن بين القيمة الصغرى للدالة $h$ والمسافة $AB$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa $(\Delta):\ \bx{\Sys{x=1+2t\\y=t\\z=2-t}}\quad(t\in\R)$
+\pb $\vec u(2;1;-1)$ و $\vec u'(1;1;1)$ غير مرتبطين خطيًا. ندرس التقاطع: $1+2t=\lambda$ ، $t=4+\lambda$ ، $2-t=2+\lambda$. من الأخيرة $t=-\lambda$ ، ومع الثانية $\lambda=-2$ و $t=2$ ، لكن الأولى تعطي $5=-2$: مستحيل. إذن \bxt{$(\Delta)$ و $(\Delta')$ ليسا من نفس المستوي}.
+\QQ{2}
+\pa $\lambda=-1$ يعطي $B(-1;3;1)$ ، إذن $B\in(\Delta')$. \ $\V{AB}(-2;3;-1)$ و $\V{AB}\cdot\vec u'=-2+3-1=0$: \bxt{$B$ المسقط العمودي لـ $A$ على $(\Delta')$}.
+\pb $\V{AB}\cdot\vec u=-4+3+1=0$ و $\V{AB}\cdot\vec u'=0$: \bxt{$(AB)$ عمودي على $(\Delta)$ و $(\Delta')$}.
+\pc $A\in(\Delta)$ و $B\in(\Delta')$ و $(AB)$ عمودي مشترك: \ المسافة $=AB=\sqrt{4+9+1}=\bx{\sqrt{14}}$
+\QQ{3}
+\pa $\lambda=t-2$ يعطي $(t-2;2+t;t)$ ، إذن \bxt{$N\in(\Delta')$}. \ $\V{AN}(t-3;t+2;t-2)$:
+\[h(t)=(t-3)^2+(t+2)^2+(t-2)^2=\bx{3t^2-6t+17}\]
+\pb $h'(t)=6t-6$ تنعدم عند $t=1$ مغيّرة إشارتها من $-$ إلى $+$: $AN$ أصغر ما يمكن من أجل \bx{t=1} ، و $h(1)=14=AB^2$ ($N=B$): \bxt{القيمة الصغرى لـ $h$ تساوي $AB^2$}.
+\end{hal}
+% ===================== 20 =====================
+\begin{tamrin}{تمرين من بكالوريا 2016 -- الدورة الثانية -- الموضوع الثاني}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقط $A(2;1;-3)$ ، $B(0;-1;2)$ و $C(-3;-1;-1)$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أن النقط $A$ ، $B$ و $C$ تعيّن مستويًا.
+\qb بيّن أن المعادلة: $2x-7y-2z-3=0$ معادلة ديكارتية للمستوي $(ABC)$.
+\end{sq}
+\QQ{2} اكتب معادلة ديكارتية للمستوي $(P)$ الذي يشمل $A$ ويعامد المستقيم $(BC)$.
+\begin{sq}
+\qa جد تمثيلًا وسيطيًا للمستقيم $(D)$ تقاطع المستويين $(ABC)$ و $(P)$.
+\qb بيّن أن المستقيم $(D)$ عمود في المثلث $ABC$.
+\end{sq}
+\QQ{3} ليكن $(\Delta)$ المتوسط المتعلق بالضلع $[AC]$ في المثلث $ABC$.
+\begin{sq}
+\qa بيّن أن الجملة $\Sys{x=-\frac12-\frac12k\\y=k\\z=-2-4k}\ (k\in\R)$ تمثيل وسيطي للمستقيم $(\Delta)$.
+\qb بيّن أن المستقيمين $(\Delta)$ و $(D)$ يتقاطعان في نقطة $G$ يطلب تعيين إحداثياتها.
+\qc بيّن أن المثلث $ABC$ متساوي الساقين.
+\qd ماذا تمثل النقطة $G$ بالنسبة للمثلث $ABC$ ؟
+\end{sq}
+\QQ{4} عيّن طبيعة وعناصر المجموعة $(E)$ للنقط $M$ من الفضاء والتي تحقق: $\big\|\V{MA}+\V{MB}+\V{MC}\big\|=3$.
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa $\V{AB}(-2;-2;5)$ و $\V{AC}(-5;-2;2)$ غير مرتبطين خطيًا: \bxt{$A$ ، $B$ ، $C$ تعيّن مستويًا}.
+\pb $A$: $4-7+6-3=0$ ، $B$: $0+7-4-3=0$ ، $C$: $-6+7+2-3=0$ ، إذن \bx{(ABC):\ 2x-7y-2z-3=0}.
+\QQ{2} $\V{BC}(-3;0;-3)=-3(1;0;1)$: $x+z+d=0$ و $A$: $2-3+d=0$ ، $d=1$: \quad \bx{(P):\ x+z+1=0}
+\pa $A$ مشتركة. شعاع التوجيه $\vec v(a;b;c)$: $2a-7b-2c=0$ و $a+c=0$. نأخذ $a=-7$: $c=7$ ، $b=-4$:
+\[(D):\ \bx{\Sys{x=2-7t\\y=1-4t\\z=-3+7t}}\quad(t\in\R)\]
+\pb $(D)\subset(ABC)$ ، يشمل $A$ ويعامد $(BC)$ (لأنه محتوى في $(P)$): \bxt{$(D)$ الارتفاع المتعلق بالضلع $[BC]$}.
+\QQ{3}
+\pa منتصف $[AC]$ هو $J\left(-\frac12;0;-2\right)$ ($k=0$) ، و $k=-1$ يعطي $(0;-1;2)=B$: \bxt{الجملة تمثيل وسيطي للمتوسط $(BJ)$}.
+\pb $1-4t=k$ ، $-3+7t=-2-4k$: نعوض $k$: $-3+7t=-6+16t$ ، $t=\frac13$ ، $k=-\frac13$ ، والمعادلة الأولى: $2-\frac73=-\frac13$ و $-\frac12+\frac16=-\frac13$ \ok. \quad \bx{G\left(-\frac13;-\frac13;-\frac23\right)}
+\pc $AB=\sqrt{4+4+25}=\sqrt{33}$ ، $AC=\sqrt{25+4+4}=\sqrt{33}$: \bxt{$ABC$ متساوي الساقين رأسه $A$}.
+\pd في مثلث متساوي الساقين رأسه $A$ ، الارتفاع من $A$ هو أيضًا متوسط ، إذن $G$ تقاطع متوسطين: \bxt{$G$ مركز ثقل المثلث $ABC$} (تحقق: $\frac{A+B+C}3=G$).
+\QQ{4} $\V{MA}+\V{MB}+\V{MC}=3\V{MG}$ ، ومنه $3MG=3$ ، أي $MG=1$: \bxt{$(E)$ سطح الكرة التي مركزها $G$ ونصف قطرها $1$}.
+\end{hal}
+% ===================== 21 =====================
+\begin{tamrin}{تمرين من بكالوريا 2017 -- الموضوع الأول}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقطة $A(1;-1;2)$ والمستوي $(P)$ ذا المعادلة $x-y+z+2=0$ ، والمستقيم $(D)$ المعرف بـ: $\Sys{x+y-9=0\\y+z-4=0}$.
+\QQ{1} عيّن تمثيلًا وسيطيًا للمستقيم $(D)$.
+\QQ{2} جد معادلة ديكارتية للمستوي $(P')$ الذي يشمل $A$ ويوازي $(P)$.
+\QQ{3} أثبت أن $(D)$ يقطع $(P')$ في النقطة $A'$ حيث $A'(6;3;1)$.
+\QQ{4} عيّن تمثيلًا وسيطيًا للمستقيم $(\Delta)$ الذي يشمل $A$ ويوازي $(P)$ ويقطع $(D)$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} نضع $y=t$: $x=9-t$ و $z=4-t$: \quad $(D):\ \bx{\Sys{x=9-t\\y=t\\z=4-t}}\quad(t\in\R)$
+\QQ{2} $x-y+z+d=0$ و $A$: $1+1+2+d=0$: \quad \bx{(P'):\ x-y+z-4=0}
+\QQ{3} $(9-t)-t+(4-t)-4=0$ ، أي $9-3t=0$ ، $t=3$: النقطة \bx{A'(6;3;1)}.
+\QQ{4} $(\Delta)$ يشمل $A$ ويوازي $(P)$ ، إذن $(\Delta)\subset(P')$ ، ويقطع $(D)$ في نقطة من $(P')$ وهي $A'$. إذن $(\Delta)=(AA')$ ، $\V{AA'}(5;4;-1)$:
+\[(\Delta):\ \bx{\Sys{x=1+5s\\y=-1+4s\\z=2-s}}\quad(s\in\R)\qquad\text{\ (}\V{AA'}\cdot\vec n=5-4-1=0\text{)}\]
+\end{hal}
+% ===================== 22 =====================
+\begin{tamrin}{تمرين من بكالوريا 2017 -- الموضوع الثاني}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقط $A(3;0;0)$ ، $B(0;2;0)$ و $C(0;0;1)$.
+\QQ{1} بيّن أن النقط $A$ ، $B$ و $C$ تعيّن مستويًا ، ثم تحقق أن: $2x+3y+6z-6=0$ معادلة للمستوي $(ABC)$.
+\QQ{2} اكتب تمثيلًا وسيطيًا للمستقيم $(\Delta)$ العمودي على المستوي $(ABC)$ والذي يشمل المبدأ $O$.
+\QQ{3} جد إحداثيات $H$ نقطة تقاطع $(\Delta)$ و $(ABC)$.
+\QQ{4} بيّن أن $(BH)$ عمودي على $(AC)$ ، ثم استنتج أن $H$ هي نقطة تلاقي أعمدة المثلث $ABC$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\V{AB}(-3;2;0)$ و $\V{AC}(-3;0;1)$ غير مرتبطين خطيًا. \ $A$: $6-6=0$ ، $B$: $6-6=0$ ، $C$: $6-6=0$: \bx{(ABC):\ 2x+3y+6z-6=0}.
+\QQ{2} $(\Delta):\ \bx{\Sys{x=2t\\y=3t\\z=6t}}\quad(t\in\R)$
+\QQ{3} $4t+9t+36t-6=0$ ، $t=\frac6{49}$: \quad \bx{H\left(\frac{12}{49};\frac{18}{49};\frac{36}{49}\right)}
+\QQ{4} $\V{BH}=\frac1{49}(12;-80;36)$ و $\V{AC}(-3;0;1)$: $\V{BH}\cdot\V{AC}=\frac{-36+0+36}{49}=0$: \bxt{$(BH)\perp(AC)$}.
+\par وكذلك $\V{AH}=\frac1{49}(-135;18;36)$ و $\V{BC}(0;-2;1)$: $\V{AH}\cdot\V{BC}=\frac{-36+36}{49}=0$. إذن $H\in(ABC)$ تقع على ارتفاعين: \bxt{$H$ نقطة تلاقي أعمدة المثلث $ABC$}.
+\end{hal}
+% ===================== 23 =====================
+\begin{tamrin}{تمرين من بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الأول}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقط $A(1;1;-1)$ ، $B(2;-1;-1)$ و $C(4;-4;-2)$ ، والمستوي $(P)$ ذا المعادلة الديكارتية $x-2y+2z-3=0$.
+\QQ{1} بيّن أن النقط $A$ ، $B$ و $C$ تعيّن مستويًا.
+\QQ{2} بيّن أن المستويين $(P)$ و $(ABC)$ غير متوازيين.
+\QQ{3} تحقق أن الجملة $\Sys{x=-2+\alpha-3\beta\\y=6-2\alpha+5\beta\\z=\beta}\ (\alpha\in\R,\ \beta\in\R)$ تمثيل وسيطي للمستوي $(ABC)$.
+\QQ{4} جد تمثيلًا وسيطيًا لـ $(\Delta)$ مستقيم تقاطع المستويين $(P)$ و $(ABC)$.
+\end{tamrin}
+\begin{hal}
+\QQ{1} $\V{AB}(1;-2;0)$ و $\V{AC}(3;-5;-1)$ غير مرتبطين خطيًا: \bxt{$A$ ، $B$ ، $C$ تعيّن مستويًا}.
+\QQ{2} الناظمي $\vec n(a;b;c)$ لـ $(ABC)$: $a-2b=0$ و $3a-5b-c=0$ ، نأخذ $b=1$: $\vec n(2;1;1)$ ، و $(ABC):\ 2x+y+z-2=0$. \ $(2;1;1)$ و $(1;-2;2)$ غير مرتبطين خطيًا: \bxt{$(P)$ و $(ABC)$ غير متوازيين}.
+\QQ{3} الجملة تمثل المستوي الذي يشمل $(-2;6;0)$ وشعاعا توجيهه $(1;-2;0)=\V{AB}$ و $(-3;5;1)$ (غير مرتبطين خطيًا) ، ومن أجل كل $\alpha$ و $\beta$:
+\[2(-2+\alpha-3\beta)+(6-2\alpha+5\beta)+\beta-2=0\]
+إذن \bxt{الجملة تمثيل وسيطي للمستوي $(ABC)$}.
+\QQ{4} نعوض في $(P)$: $(-2+\alpha-3\beta)-2(6-2\alpha+5\beta)+2\beta-3=0$ ، أي $5\alpha-11\beta-17=0$ ، $\alpha=\frac{17+11\beta}5$:
+\[x=\frac{7-4\beta}5\quad;\quad y=\frac{-4+3\beta}5\quad;\quad z=\beta\qquad\Longrightarrow\qquad(\Delta):\ \bx{\Sys{x=\frac75-4s\\y=-\frac45+3s\\z=5s}}\quad(s\in\R)\]
+\end{hal}
+% ===================== 24 =====================
+\begin{tamrin}{تمرين من بكالوريا 2017 -- الدورة الاستثنائية -- الموضوع الثاني}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقط $A(-8;0;-2)$ ، $B(1;2;1)$ ، $C(2;3;-1)$ و $E(1;1;4)$ ، والمستوي $(P)$ ذا المعادلة $2x+y-3=0$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أن النقط $A$ ، $B$ و $C$ تعيّن مستويًا.
+\qb عيّن قيمة العدد الحقيقي $\alpha$ حتى يكون $\vec n(1;\alpha;-1)$ شعاعًا ناظميًا للمستوي $(ABC)$ ، ثم عيّن معادلة ديكارتية له.
+\end{sq}
+\QQ{2} بيّن أن المستويين $(P)$ و $(ABC)$ يتقاطعان وفق مستقيم $(\Delta)$ ، ثم تحقق أن $E$ تنتمي إلى $(\Delta)$ و $\vec u(1;-2;7)$ شعاع توجيه له.
+\QQ{3} لتكن $G$ مرجح الجملة $\{(A;1),(B;-2),(C;3)\}$ ، نرمز بـ $(\Gamma)$ إلى مجموعة النقط $M$ من الفضاء التي تحقق: $\big(\V{MA}-2\V{MB}+3\V{MC}\big)\cdot\big(\V{MB}-\V{MC}\big)=0$.
+\par عيّن إحداثيات النقطة $G$ ، ثم حدد طبيعة المجموعة $(\Gamma)$ واكتب معادلة ديكارتية لها.
+\QQ{4} عيّن إحداثيات نقطة تقاطع $(P)$ ، $(ABC)$ و $(\Gamma)$.
+\end{tamrin}
+\begin{hal}
+\QQ{1}
+\pa $\V{AB}(9;2;3)$ و $\V{AC}(10;3;1)$ غير مرتبطين خطيًا: \bxt{$A$ ، $B$ ، $C$ تعيّن مستويًا}.
+\pb $\vec n\cdot\V{AB}=9+2\alpha-3=0$ يعطي \bx{\alpha=-3} ، وتحقق: $\vec n\cdot\V{AC}=10-9-1=0$. \ $x-3y-z+d=0$ و $A$: $-8+2+d=0$: \bx{(ABC):\ x-3y-z+6=0}
+\QQ{2} $(2;1;0)$ و $(1;-3;-1)$ غير مرتبطين خطيًا: المستويان متقاطعان وفق $(\Delta)$. \ $E$: $2+1-3=0$ و $1-3-4+6=0$: $E\in(\Delta)$. \ $\vec u\cdot(2;1;0)=2-2=0$ و $\vec u\cdot(1;-3;-1)=1+6-7=0$: \bxt{$\vec u$ شعاع توجيه لـ $(\Delta)$}.
+\QQ{3} $1-2+3=2$: \ \bx{G\left(-2;\frac52;-\frac72\right)}. \ $\V{MA}-2\V{MB}+3\V{MC}=2\V{MG}$ و $\V{MB}-\V{MC}=\V{CB}$ ، ومنه $2\,\V{MG}\cdot\V{CB}=0$:
+\par \bxt{$(\Gamma)$ المستوي الذي يشمل $G$ ويعامد $(BC)$}. \ $\V{CB}(-1;-1;2)$: $-x-y+2z+d=0$ و $G$: $2-\frac52-7+d=0$:
+\[(\Gamma):\ \bx{2x+2y-4z-15=0}\]
+\QQ{4} نقطة من $(\Delta)$: $(1+t;1-2t;4+7t)$ ، في $(\Gamma)$: $2+2t+2-4t-16-28t-15=0$ ، أي $-30t-27=0$ ، $t=-\frac9{10}$: \quad \bx{\left(\frac1{10};\frac{14}5;-\frac{23}{10}\right)}
+\end{hal}
+% ===================== 25 =====================
+\begin{tamrin}{تمرين من بكالوريا 2018 -- الموضوع الثاني}
+الفضاء منسوب إلى المعلم المتعامد والمتجانس $\Rep$. نعتبر النقطة $A(1;-2;1)$ والمستويين $(P_1)$ و $(P_2)$ اللذين معادلتاهما على الترتيب: $-x+y+2z+1=0$ و $-3x+y+z+4=0$.
+\QQ{1} اكتب تمثيلًا وسيطيًا للمستقيم $(\Delta)$ الذي يشمل النقطة $A$ و $\vec u(1;5;-2)$ شعاع توجيه له.
+\QQ{2} بيّن أن المستويين $(P_1)$ و $(P_2)$ متقاطعان ، ثم تحقق أن تقاطعهما هو المستقيم $(\Delta)$.
+\QQ{3} اكتب معادلة ديكارتية للمستوي $(Q)$ الذي يشمل $B(-1;4;0)$ ويعامد كلًا من $(P_1)$ و $(P_2)$ ، ثم استنتج تقاطع المستويات الثلاثة $(P_1)$ ، $(P_2)$ و $(Q)$.
+\QQ{4} لتكن $E(2;3;-1)$ و $H(0;3;-2)$ نقطتين من الفضاء.
+\begin{sq}
+\qa تحقق أن $H$ هي المسقط العمودي للنقطة $B$ على المستوي $(P_1)$.
+\qb حدد طبيعة المثلث $EBH$ ، ثم احسب $V$ حجم رباعي الوجوه $AEBH$.
+\end{sq}
+\end{tamrin}
+\begin{hal}
+\QQ{1} $(\Delta):\ \bx{\Sys{x=1+t\\y=-2+5t\\z=1-2t}}\quad(t\in\R)$
+\QQ{2} $(-1;1;2)$ و $(-3;1;1)$ غير مرتبطين خطيًا: \bxt{$(P_1)$ و $(P_2)$ متقاطعان}. ومن أجل كل $t$:
+\[(P_1):\ -1-t-2+5t+2-4t+1=0\qquad;\qquad(P_2):\ -3-3t-2+5t+1-2t+4=0\]
+إذن \bxt{$(P_1)\cap(P_2)=(\Delta)$}.
+\QQ{3} $(Q)$ يعامد المستويين ، إذن يعامد $(\Delta)$ و $\vec u(1;5;-2)$ ناظمي له: $x+5y-2z+d=0$ و $B$: $-1+20+d=0$: \bx{(Q):\ x+5y-2z-19=0}.
+\par تقاطع المستويات الثلاثة هو $(\Delta)\cap(Q)$: $1+t-10+25t-2+4t-19=0$ ، أي $30t=30$ ، $t=1$: النقطة \bx{(2;3;-1)} وهي $E$.
+\QQ{4}
+\pa $H$: $0+3-4+1=0$ ، إذن $H\in(P_1)$ ، و $\V{BH}(1;-1;-2)=-\vec n_1$: \bxt{$H$ المسقط العمودي لـ $B$ على $(P_1)$}.
+\pb $\V{HE}(2;0;1)$ و $\V{HB}(-1;1;2)$: $\V{HE}\cdot\V{HB}=-2+0+2=0$: \bxt{$EBH$ قائم في $H$}.
+\par $(BH)\perp(P_1)$ و $A$ ، $E$ ، $H\in(P_1)$ ، إذن $BH=\sqrt6$ ارتفاع. \ $\V{EA}(-1;-5;2)$ و $\V{EH}(-2;0;-1)$: $\V{EA}\cdot\V{EH}=2+0-2=0$ ، فالمثلث $AEH$ قائم في $E$ ومساحته $\frac12\sqrt{30}\times\sqrt5=\frac{5\sqrt6}2$:
+\[V=\frac13\times\frac{5\sqrt6}2\times\sqrt6=\bx{5}\ \text{\ (u.v)}\]
+\end{hal}
+\end{document}
