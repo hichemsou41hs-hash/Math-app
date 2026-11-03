@@ -174,6 +174,14 @@
 \newcommand{\Pt}[3][above right]{\fill (#2) circle (1.7pt) node[#1,inner sep=2pt]{$#3$};}
 \SetHeader{\small\bfseries\color{cSec}ملخص: الأعداد المركبة والتحويلات النقطية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
 \let\origNeedspace\Needspace
+
+\providecommand{\Pt}[3][above right]{\fill (#2) circle (1.7pt) node[#1,inner sep=2pt]{$#3$};}
+\newcommand{\AX}[4]{\draw[gray!22,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.4,0); \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.4);
+ \draw[thick,-{Stealth[length=2mm]}] (0,0)--(1,0) node[pos=0.55,below]{$\vec u$};
+ \draw[thick,-{Stealth[length=2mm]}] (0,0)--(0,1) node[pos=0.55,left]{$\vec v$};
+ \node[below left] at (0,0){$O$};}
+\newenvironment{FG}[1]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[#1,font=\footnotesize]}{\end{tikzpicture}\end{LTR}\end{center}}
 \renewcommand{\Needspace}[1]{\origNeedspace{14\baselineskip}}
 \begin{document}
 \begin{LTR}
@@ -262,7 +270,15 @@ $A(1+2i)$ ، $B(3-i)$ ، $C(-2+i)$:
 \item مرجح $\{(A;1),(B;2),(C;1)\}$: $z_G=\dfrac{(1+2i)+2(3-i)+(-2+i)}{4}=\dfrac{5+i}{4}$.
 \item $ABDC$ متوازي أضلاع $\iff z_D=z_B+z_C-z_A=(3-i)+(-2+i)-(1+2i)=-2i$.
 \end{itemize}
-\end{mithal}
+\par\textbf{\color{cRem}التفسير البياني:} لاحقة الشعاع $\overrightarrow{AB}$ هي لاحقة الشعاع $\vec w$ الذي له نفس المركبتين ، و $I$ منتصف $[AB]$ ، و $G$ المرجح ، و $ABDC$ متوازي أضلاع لأن $\overrightarrow{AB}=\overrightarrow{CD}$.
+\begin{FG}{x=0.75cm,y=0.75cm}\AX{-3}{4}{-3}{3}
+ \fill[cDef!10] (1,2)--(3,-1)--(0,-2)--(-2,1)--cycle; \draw[cDef,thick] (1,2)--(3,-1)--(0,-2)--(-2,1)--cycle;
+ \draw[cThm,very thick,-{Stealth[length=2mm]}] (1,2)--(3,-1);
+ \draw[cThm,very thick,-{Stealth[length=2mm]}] (-2,1)--(0,-2);
+ \draw[cRem,thick,-{Stealth[length=2mm]}] (0,0)--(2,-3) node[pos=0.55,left]{$\vec w(2-3i)$};
+ \Pt[above]{1,2}{A} \Pt[right]{3,-1}{B} \Pt[below]{0,-2}{D} \Pt[left]{-2,1}{C}
+ \Pt[right]{2,0.5}{I} \Pt[above left]{1.25,0.25}{G}
+\end{FG}\end{mithal}
 
 %================================================================
 \section{مرافق عدد مركب}
@@ -312,7 +328,13 @@ $A(1+2i)$ ، $B(3-i)$ ، $C(-2+i)$:
 طويلة العدد المركب $z=a+ib$ هي العدد الحقيقي الموجب: \quad $\bx{|z|=\sqrt{a^2+b^2}=\sqrt{z\,\overline{z}}}$
 \par هندسيًا: إذا كانت $M$ صورة $z$ فإن $|z|=OM$، و\quad $\bx{AB=|z_B-z_A|}$
 \end{tarif}
-\begin{khassia}[خواص الطويلة]
+\par\textbf{\color{cRem}التفسير البياني:} الطويلة مسافة: $|z|$ هي طول $[OM]$ ، و $|z_B-z_A|$ هي طول $[AB]$.
+\begin{FG}{x=0.65cm,y=0.65cm}\AX{-1}{5}{-1}{5}
+ \draw[cDef,very thick] (0,0)--(3,4) node[pos=0.5,above left]{$OM=|z|$};
+ \draw[dashed] (3,0) node[below]{$x$}--(3,4)--(0,4) node[left]{$y$};
+ \draw[cThm,very thick,-{Stealth[length=2mm]}] (1,1)--(5,2) node[pos=0.5,below right]{$AB=|z_B-z_A|$};
+ \Pt[above]{3,4}{M(z)} \Pt[left]{1,1}{A} \Pt[right]{5,2}{B}
+\end{FG}\begin{khassia}[خواص الطويلة]
 من أجل كل عددين مركبين $z$ و$z'$ ومن أجل كل عدد طبيعي $n$:
 \[|z|=0\iff z=0\ ;\quad |\overline{z}|=|-z|=|z|\ ;\quad |zz'|=|z|\,|z'|\ ;\quad \Big|\frac{z}{z'}\Big|=\frac{|z|}{|z'|}\ (z'\neq0)\ ;\quad |z^n|=|z|^n\]
 \begin{center}$|z+z'|\leqslant|z|+|z'|$ \quad (المتباينة المثلثية)\end{center}
@@ -350,7 +372,20 @@ $|3-4i|=\sqrt{9+16}=5$ ؛ \quad $\Big|\dfrac{1+i\sqrt3}{1-i}\Big|=\dfrac{|1+i\sq
 \item $z$ حقيقي غير معدوم $\iff\arg z=k\pi$ \ ؛ \ $z$ تخيلي صرف غير معدوم $\iff\arg z=\dfrac{\pi}{2}+k\pi$.
 \end{itemize}
 \end{khassia}
-
+\par\textbf{\color{cRem}التفسير البياني:} صور $z$ و $\overline z$ و $-z$ ، وعند ضرب عددين تُجمع العمدتان وتُضرب الطويلتان.
+\begin{FG}{x=0.85cm,y=0.85cm}\AX{-3}{3}{-2}{2}
+ \draw[cDef,thick] (0,0)--(2,1); \draw[cRem,thick] (0,0)--(2,-1); \draw[cThm,thick] (0,0)--(-2,-1);
+ \draw[cDef,-{Stealth[length=1.6mm]}] (1.2,0) arc (0:26.57:1.2) node[pos=0.6,right]{$\theta$};
+ \draw[cRem,-{Stealth[length=1.6mm]}] (0.9,0) arc (0:-26.57:0.9) node[pos=0.6,right]{$-\theta$};
+ \draw[cThm,-{Stealth[length=1.6mm]}] (0.5,0) arc (0:206.57:0.5); \node[cThm,font=\scriptsize] at (-0.9,0.75){$\theta+\pi$};
+ \Pt{2,1}{M(z)} \Pt[below right]{2,-1}{M'(\overline z)} \Pt[below left]{-2,-1}{M''(-z)}
+\end{FG}\begin{FG}{x=1.1cm,y=1.1cm}\AX{-0.5}{2.5}{-0.5}{2.3}
+ \draw[cDef,thick] (0,0)--(20:1.5); \draw[cRem,thick] (0,0)--(40:1.2); \draw[cThm,very thick] (0,0)--(60:1.8);
+ \draw[cDef,-{Stealth[length=1.5mm]}] (0.5,0) arc (0:20:0.5); \node[cDef,font=\scriptsize] at (10:0.75){$\theta$};
+ \draw[cThm,-{Stealth[length=1.5mm]}] (0.3,0) arc (0:60:0.3); 
+ \Pt[right]{20:1.5}{z} \Pt[right]{40:1.2}{z'} \Pt[above right]{60:1.8}{zz'}
+ \node[cThm,font=\scriptsize,align=center] at (1.9,1.9){$\arg(zz')=\theta+\theta'$\\$|zz'|=|z|\,|z'|$};
+\end{FG}
 \begin{mithal}[طويلات وعمدات يجب حفظها]
 \begin{center}
 \renewcommand{\arraystretch}{1.6}
@@ -370,7 +405,15 @@ $\arg z$ & $0$ & $\frac{\pi}{2}$ & $\pi$ & $-\frac{\pi}{2}$ & $\frac{\pi}{4}$ & 
 \begin{center}\bx{z=r(\cos\theta+i\sin\theta)} \ (الشكل المثلثي)\qquad\qquad \bx{z=re^{i\theta}} \ (الشكل الأسي)\end{center}
 حيث نضع اصطلاحًا: $e^{i\theta}=\cos\theta+i\sin\theta$. \ وبالعكس: إذا كان $z=re^{i\theta}$ مع $r>0$ فإن $|z|=r$ و$\arg z=\theta+2k\pi$.
 \end{tarif}
-\begin{molahada}[انتبه إلى شرط $r>0$]
+\par\textbf{\color{cRem}التفسير البياني:} صورة $e^{i\theta}$ نقطة من الدائرة المثلثية ($|e^{i\theta}|=1$) إحداثياها $(\cos\theta;\sin\theta)$.
+\begin{FG}{x=1.6cm,y=1.6cm}\AX{-1.3}{1.4}{-1.3}{1.3}
+ \draw[cDef,thick] (0,0) circle (1);
+ \draw[cThm,thick] (0,0)--(50:1); \draw[cRem,thick] (0,0)--(-50:1);
+ \draw[dashed] (50:1)--(0.643,0) node[below,font=\scriptsize]{$\cos\theta$} (50:1)--(0,0.766) node[left,font=\scriptsize]{$\sin\theta$};
+ \draw[cThm,-{Stealth[length=1.5mm]}] (0.3,0) arc (0:50:0.3) node[pos=0.6,right,font=\scriptsize]{$\theta$};
+ \Pt[above right]{50:1}{e^{i\theta}} \Pt[below right]{-50:1}{e^{-i\theta}=\overline{e^{i\theta}}}
+ \Pt[below right]{1,0}{1} \Pt[above right]{0,1}{i=e^{i\frac\pi2}} \Pt[above left]{-1,0}{-1=e^{i\pi}} \Pt[below left]{0,-1}{-i}
+\end{FG}\begin{molahada}[انتبه إلى شرط $r>0$]
 $z=-2e^{i\frac{\pi}{5}}$ ليس شكلًا أسيًا لأن $-2<0$؛ نكتب $-1=e^{i\pi}$ فيكون $z=2e^{i\pi}e^{i\frac{\pi}{5}}=\bx{2e^{i\frac{6\pi}{5}}}$.
 \par وكذلك $z=\cos\theta-i\sin\theta=\cos(-\theta)+i\sin(-\theta)=e^{-i\theta}$.
 \end{molahada}
@@ -474,7 +517,14 @@ $z^2-2z+5=0$: \ $\Delta=4-20=-16=(4i)^2$ ، إذن $z_1=\dfrac{2-4i}{2}=\bx{1-2i
 $z^2-2(\cos\theta)z+1=0$ حيث $\theta\in\R$: \ $\Delta=4\cos^2\theta-4=-4\sin^2\theta=(2i\sin\theta)^2$،
 ومنه الحلان: $z=\cos\theta-i\sin\theta=\bx{e^{-i\theta}}$ \ و\ $z=\cos\theta+i\sin\theta=\bx{e^{i\theta}}$.
 \end{mithal}
-
+\par\textbf{\color{cRem}التفسير البياني:} لما $\Delta<0$ صورتا الحلين المترافقين متناظرتان بالنسبة إلى محور الفواصل.
+\begin{FG}{x=0.8cm,y=0.8cm}\AX{-2}{3}{-2.5}{2.5}
+ \draw[cDef,dashed] (1,2)--(1,-2); \draw[gray,dashed] (0,0) circle (1);
+ \Pt[right]{1,2}{z_2=1+2i} \Pt[right]{1,-2}{z_1=1-2i}
+ \Pt[above left]{120:1}{e^{i\theta}} \Pt[below left]{-120:1}{e^{-i\theta}}
+ \draw[cThm,dashed] (120:1)--(-120:1);
+ \node[cDef,right,font=\scriptsize] at (1.05,0.4){\ar{حلان مترافقان: متناظران بالنسبة إلى محور الفواصل}};
+\end{FG}
 \subsection{الجذران التربيعيان لعدد مركب \ (شعبة علوم تجريبية)}
 \begin{tariqa}[حل $w^2=a+ib$]
 كل عدد مركب غير معدوم له جذران تربيعيان متناقضان. نضع $w=x+iy$؛ من $w^2=a+ib$ و$|w|^2=|a+ib|$:
@@ -489,7 +539,12 @@ $z^2-2(\cos\theta)z+1=0$ حيث $\theta\in\R$: \ $\Delta=4\cos^2\theta-4=-4\sin^
 \item $x$ و$y$ من نفس الإشارة (لأن $xy>0$)، إذن: \ \bx{w=3+i} \ أو \ \bx{w=-3-i}.
 \item تحقق: $(3+i)^2=9+6i+i^2=8+6i$ \ok.
 \end{itemize}
-\end{mithal}
+\par\textbf{\color{cRem}التفسير البياني:} الجذران التربيعيان متناقضان: صورتاهما متناظرتان بالنسبة إلى $O$.
+\begin{FG}{x=0.5cm,y=0.5cm}\AX{-4}{9}{-2}{7}
+ \draw[cThm,dashed] (-3,-1)--(3,1);
+ \Pt[below right]{3,1}{w=3+i} \Pt[below left]{-3,-1}{-w=-3-i} \Pt[above]{8,6}{8+6i}
+ \draw[cDef,dashed] (0,0)--(8,6);
+\end{FG}\end{mithal}
 
 \subsection{معادلات تؤول إلى الدرجة الثانية: الدرجة الثالثة بجذر معلوم}
 \begin{tariqa}
@@ -506,7 +561,11 @@ $P(z)=z^3+z^2-4z+6$. \ $P(-3)=-27+9+12+6=0$ إذن $-3$ جذر لـ $P$.
 بالمطابقة: $\alpha=1$ ، $\beta+3=1$ ، $3\gamma=6$ ، أي $\alpha=1$ ، $\beta=-2$ ، $\gamma=2$:
 \[P(z)=(z+3)(z^2-2z+2)\]
 $z^2-2z+2=0$: \ $\Delta=-4=(2i)^2$ ، حلاها $1-i$ و$1+i$. \quad إذن حلول $P(z)=0$ هي: \bx{-3\ ;\ 1-i\ ;\ 1+i}.
-\end{mithal}
+\par\textbf{\color{cRem}التفسير البياني:} صور الحلول الثلاثة: الحل الحقيقي على محور الفواصل والحلان المترافقان متناظران بالنسبة إليه.
+\begin{FG}{x=0.8cm,y=0.8cm}\AX{-4}{2}{-2}{2}
+ \fill[cEx!12] (-3,0)--(1,1)--(1,-1)--cycle; \draw[cEx,thick] (-3,0)--(1,1)--(1,-1)--cycle;
+ \Pt[below left]{-3,0}{-3} \Pt[right]{1,1}{1+i} \Pt[right]{1,-1}{1-i}
+\end{FG}\end{mithal}
 %================================================================
 \section{التفسير الهندسي للأعداد المركبة}
 \begin{khassia}[المسافات والزوايا]
@@ -514,7 +573,15 @@ $A$ ، $B$ ، $C$ ، $D$ نقط لواحقها $z_A$ ، $z_B$ ، $z_C$ ، $z_D$ 
 \[\bx{AB=|z_B-z_A|}\qquad \bx{(\vec u;\overrightarrow{AB})=\arg(z_B-z_A)+2k\pi}\]
 \[\bx{(\overrightarrow{AB};\overrightarrow{CD})=\arg\Big(\frac{z_D-z_C}{z_B-z_A}\Big)+2k\pi}\qquad;\qquad \bx{(\overrightarrow{AB};\overrightarrow{AC})=\arg\Big(\frac{z_C-z_A}{z_B-z_A}\Big)+2k\pi}\]
 \end{khassia}
-
+\par\textbf{\color{cRem}التفسير البياني:} المسافة طويلة الفرق ، والزاوية الموجهة عمدة حاصل القسمة.
+\begin{FG}{x=0.9cm,y=0.9cm}\AX{-1}{5}{-1}{4}
+ \draw[cDef,very thick,-{Stealth[length=2mm]}] (1,1)--(4,2) node[pos=0.5,below right]{$AB=|z_B-z_A|$};
+ \draw[cRem,very thick,-{Stealth[length=2mm]}] (1,1)--(2,3.5);
+ \draw[dashed] (1,1)--(3,1);
+ \draw[cThm,-{Stealth[length=1.6mm]}] (1.8,1) arc (0:18.43:0.8); \node[cThm,right,font=\scriptsize] at (1.9,1.05){$(\vec u;\overrightarrow{AB})$};
+ \draw[cEx,-{Stealth[length=1.6mm]}] ($(1,1)+(18.43:0.55)$) arc (18.43:68.2:0.55); \node[cEx,font=\scriptsize] at (0.6,2.0){$(\overrightarrow{AB};\overrightarrow{AC})$};
+ \Pt[below left]{1,1}{A} \Pt[right]{4,2}{B} \Pt[above]{2,3.5}{C}
+\end{FG}
 \begin{khassia}[الاستقامية والتعامد]
 نضع $L=\dfrac{z_C-z_A}{z_B-z_A}$ \ ($A\neq B$):
 \begin{itemize}
@@ -523,7 +590,20 @@ $A$ ، $B$ ، $C$ ، $D$ نقط لواحقها $z_A$ ، $z_B$ ، $z_C$ ، $z_D$ 
 \item بصفة عامة: $(AB)\parallel(CD)\iff\dfrac{z_D-z_C}{z_B-z_A}\in\R$ \ و\ $(AB)\perp(CD)\iff\dfrac{z_D-z_C}{z_B-z_A}$ تخيلي صرف.
 \end{itemize}
 \end{khassia}
-
+\par\textbf{\color{cRem}التفسير البياني:}
+\begin{FG}{x=1.2cm,y=1.2cm}
+ \begin{scope}
+ \draw[cDef,very thick] (-0.5,-0.25)--(3.4,1.7);
+ \Pt[below right]{0,0}{A} \Pt[below right]{1.2,0.6}{B} \Pt[below right]{2.8,1.4}{C}
+ \node[cSec,font=\footnotesize] at (1.4,-1){\ar{$L$ حقيقي: $A$ ، $B$ ، $C$ في استقامية}};
+ \end{scope}
+ \begin{scope}[xshift=7.5cm]
+ \draw[cThm,very thick] (0,0)--(2.4,0) (0,0)--(0,1.8);
+ \draw[cThm] (0.25,0)--(0.25,0.25)--(0,0.25);
+ \Pt[below left]{0,0}{A} \Pt[below]{2.2,0}{B} \Pt[left]{0,1.6}{C}
+ \node[cSec,font=\footnotesize] at (1.2,-1){\ar{$L$ تخيلي صرف: $(AB)\perp(AC)$}};
+ \end{scope}
+\end{FG}
 \begin{khassia}[طبيعة المثلث $ABC$ انطلاقًا من $L=\dfrac{z_C-z_A}{z_B-z_A}$]
 \begin{itemize}
 \item $|L|=1$ \ ($AC=AB$): المثلث متساوي الساقين رأسه $A$.
@@ -532,7 +612,28 @@ $A$ ، $B$ ، $C$ ، $D$ نقط لواحقها $z_A$ ، $z_B$ ، $z_C$ ، $z_D$ 
 \item $L=e^{i\frac{\pi}{3}}$ أو $L=e^{-i\frac{\pi}{3}}$: المثلث متقايس الأضلاع.
 \end{itemize}
 \end{khassia}
-
+\par\textbf{\color{cRem}التفسير البياني:}
+\begin{FG}{x=1cm,y=1cm}
+ \begin{scope}
+ \fill[cDef!10] (0,0)--(2,0.6)--(0.37,1.93)--cycle; \draw[cDef,thick] (0,0)--(2,0.6)--(0.37,1.93)--cycle;
+ \path (0,0)--(2,0.6) node[midway,sloped,cThm]{$|$}; \path (0,0)--(0.37,1.93) node[midway,sloped,cThm]{$|$};
+ \Pt[below left]{0,0}{A} \Pt[right]{2,0.6}{B} \Pt[above]{0.37,1.93}{C}
+ \node[cSec,font=\footnotesize] at (1,-0.8){\ar{$|L|=1$: متساوي الساقين}};
+ \end{scope}
+ \begin{scope}[xshift=4.8cm]
+ \fill[cRem!10] (0,0)--(2,0)--(0,2)--cycle; \draw[cRem,thick] (0,0)--(2,0)--(0,2)--cycle;
+ \draw[cRem] (0.25,0)--(0.25,0.25)--(0,0.25);
+ \path (0,0)--(2,0) node[midway,sloped,cThm]{$|$}; \path (0,0)--(0,2) node[midway,sloped,cThm]{$|$};
+ \Pt[below left]{0,0}{A} \Pt[below]{2,0}{B} \Pt[left]{0,2}{C}
+ \node[cSec,font=\footnotesize] at (1,-0.8){\ar{$L=i$: قائم ومتساوي الساقين}};
+ \end{scope}
+ \begin{scope}[xshift=9.6cm]
+ \fill[cEx!10] (0,0)--(2,0)--(1,1.732)--cycle; \draw[cEx,thick] (0,0)--(2,0)--(1,1.732)--cycle;
+ \draw[cEx,-{Stealth[length=1.5mm]}] (0.5,0) arc (0:60:0.5); \node[cEx,font=\scriptsize] at (0.75,0.3){$\frac\pi3$};
+ \Pt[below left]{0,0}{A} \Pt[below right]{2,0}{B} \Pt[above]{1,1.732}{C}
+ \node[cSec,font=\footnotesize] at (1,-0.8){\ar{$L=e^{i\frac\pi3}$: متقايس الأضلاع}};
+ \end{scope}
+\end{FG}
 \begin{khassia}[الرباعيات والنقط المتداورة]
 \begin{itemize}
 \item $ABCD$ متوازي أضلاع $\iff z_B-z_A=z_C-z_D\iff\dfrac{z_A+z_C}{2}=\dfrac{z_B+z_D}{2}$ (منتصفا القطرين منطبقان).
@@ -578,7 +679,31 @@ $M$ نقطة لاحقتها $z$ ، و$A$ ، $B$ نقطتان متمايزتان�
 \item $(z-z_A)(\overline{z}-\overline{z_A})=r^2\iff|z-z_A|^2=r^2$: \quad دائرة مركزها $A$ ونصف قطرها $r$.
 \end{itemize}
 \end{khassia}
-
+\par\textbf{\color{cRem}التفسير البياني:} المجموعات المعرفة بحاصل القسمة $\dfrac{z_B-z}{z_A-z}$.
+\begin{FG}{x=1.05cm,y=1.05cm}
+ \begin{scope}
+ \draw[cDef,very thick] (1,0) circle (1); \draw[gray] (0,0)--(2,0);
+ \draw (0,0)--(1.5,0.866)--(2,0); \draw (1.5,0.866)++(-0.21,-0.12)--++(0.1,-0.18)--++(0.21,0.12);
+ \Pt[left]{0,0}{A} \draw[fill=white] (2,0) circle (1.8pt) node[right]{$B$}; \Pt[above]{1.5,0.866}{M}
+ \node[cSec,font=\footnotesize,align=center] at (1,-1.5){$\frac{z-z_A}{z-z_B}$ \ar{تخيلي صرف}\\\ar{دائرة قطرها $[AB]$}};
+ \end{scope}
+ \begin{scope}[xshift=4.4cm]
+ \draw[cThm,line width=2pt] (0,0)--(2,0); \draw[fill=white] (0,0) circle (1.8pt) (2,0) circle (1.8pt);
+ \node[below] at (0,0){$A$}; \node[below] at (2,0){$B$}; \Pt[above]{1.2,0}{M}
+ \node[cSec,font=\footnotesize,align=center] at (1,-1.5){$\arg\frac{z_B-z}{z_A-z}=\pi$\\\ar{القطعة $]AB[$}};
+ \end{scope}
+ \begin{scope}[xshift=8.8cm]
+ \draw[gray,dashed] (0,0)--(2,0); \draw[cRem,very thick] (2,0) arc (0:180:1);
+ \draw[fill=white] (0,0) circle (1.8pt) (2,0) circle (1.8pt); \node[below] at (0,0){$A$}; \node[below] at (2,0){$B$};
+ \Pt[above]{1.6,0.8}{M}
+ \node[cSec,font=\footnotesize,align=center] at (1,-1.5){$\arg\frac{z_B-z}{z_A-z}=\frac\pi2$\\\ar{نصف دائرة}};
+ \end{scope}
+ \begin{scope}[xshift=13.2cm]
+ \draw[cEx,very thick] (-0.9,0)--(0,0) (2,0)--(2.9,0); \draw[gray,dashed] (0,0)--(2,0);
+ \Pt[below]{0,0}{A} \Pt[below]{2,0}{B} \Pt[above]{2.6,0}{M}
+ \node[cSec,font=\footnotesize,align=center] at (1,-1.5){$\arg\frac{z_B-z}{z_A-z}=0$\\\ar{$(AB)$ ما عدا $[AB]$}};
+ \end{scope}
+\end{FG}
 \begin{tariqa}[تعيين مجموعة نقط]
 \begin{enumerate}
 \item نكتب الشرط على شكل مسافات $|z-z_A|=MA$ أو زوايا $\arg(z-z_A)=(\vec u;\overrightarrow{AM})$ ثم نتعرف على المجموعة.
@@ -691,7 +816,15 @@ $\alpha\overrightarrow{MA}+\beta\overrightarrow{MB}+\gamma\overrightarrow{MC}=(\
 \item يوجد تشابه مباشر وحيد يحول $A$ إلى $A'$ و$B$ إلى $B'$ ($A\neq B$ و$A'\neq B'$): \ $a=\dfrac{z_{B'}-z_{A'}}{z_B-z_A}$ \ و\ $b=z_{A'}-az_A$.
 \end{itemize}
 \end{khassia}
-
+\par\textbf{\color{cRem}التفسير البياني:} التشابه المباشر يضرب الأطوال في $k$ ويدير الأشعة بالزاوية $\theta$.
+\begin{FG}{x=0.9cm,y=0.9cm}
+ \draw[gray] (0,0)--(2,0) (0,0)--(2.298,1.928);
+ \draw[cThm,-{Stealth[length=1.6mm]}] (0.8,0) arc (0:40:0.8) node[pos=0.5,right]{$\theta$};
+ \draw[cDef,very thick] (2,0)--(2.5,0.8); \draw[cMeth,very thick] (2.298,1.928)--(2.101,3.330);
+ \draw[dashed,gray] (0,0)--(2.5,0.8) (0,0)--(2.101,3.330);
+ \Pt[below]{0,0}{\Omega} \Pt[below]{2,0}{M} \Pt[right]{2.5,0.8}{N} \Pt[right]{2.298,1.928}{M'} \Pt[above]{2.101,3.330}{N'}
+ \node[cMeth,font=\scriptsize,align=left] at (4.6,2.5){$M'N'=k\,MN$\\$(\overrightarrow{MN};\overrightarrow{M'N'})=\theta$};
+\end{FG}
 \begin{khassia}[تركيب تحويلين]
 إذا كان $F_1: z'=a_1z+b_1$ و$F_2: z'=a_2z+b_2$ فإن $F_2\circ F_1: z'=a_2(a_1z+b_1)+b_2=\bx{a_1a_2\,z+a_2b_1+b_2}$:
 النسبة $|a_1a_2|=k_1k_2$ والزاوية $\theta_1+\theta_2$.
@@ -707,7 +840,14 @@ $S$ تشابه مباشر ليس انسحابًا، مركزه $\Omega(\omega)$ 
 \item \textbf{توظيفه}: لإنشاء $M'=S(M)$ ندير $M$ حول $\Omega$ بزاوية $\theta$ فنحصل على $M_1$ ، ثم $\overrightarrow{\Omega M'}=k\,\overrightarrow{\Omega M_1}$.
 \end{itemize}
 \end{khassia}
-\begin{mithal}[التحليل القانوني]
+\par\textbf{\color{cRem}التفسير البياني:} إنشاء صورة $M$: دوران ثم تحاك لهما نفس المركز $\Omega$.
+\begin{FG}{x=1cm,y=1cm}
+ \draw[cRem,thick] (0,0)--(2,0.5); \draw[cRem,thick] (0,0)--(0.567,1.982);
+ \draw[cMeth,very thick,dashed] (0.567,1.982)--(0.907,3.171);
+ \draw[cRem,-{Stealth[length=1.6mm]}] (14.04:1) arc (14.04:74.04:1) node[pos=0.5,above right]{$\theta$};
+ \Pt[below]{0,0}{\Omega} \Pt[right]{2,0.5}{M} \Pt[left]{0.567,1.982}{M_1=r(M)} \Pt[above]{0.907,3.171}{M'=h(M_1)}
+ \node[cMeth,font=\scriptsize] at (2.8,2.6){$\overrightarrow{\Omega M'}=k\,\overrightarrow{\Omega M_1}$};
+\end{FG}\begin{mithal}[التحليل القانوني]
 $S: z'=(1+i\sqrt3)z-i\sqrt3$. \ $a=1+i\sqrt3=2e^{i\frac{\pi}{3}}$ ، \ $\omega=\dfrac{-i\sqrt3}{1-(1+i\sqrt3)}=\dfrac{-i\sqrt3}{-i\sqrt3}=1$.
 \begin{itemize}
 \item \bxt{$S$ تشابه مباشر مركزه $\Omega(1)$ ، نسبته $2$ وزاويته $\frac{\pi}{3}$} ، \ وتحليله القانوني $S=h\circ r$ حيث:

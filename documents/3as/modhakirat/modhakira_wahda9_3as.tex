@@ -203,6 +203,14 @@
 \newcommand{\RR}[1]{\ifmmode{\color{cThm}#1}\else$\mbox{\color{cThm}#1}$\fi}
 \newcommand{\T}[1]{$\mbox{\color{cDef}\bfseries #1}$}
 \providecommand{\LW}[1]{{\color{cDef}#1}}
+
+\providecommand{\Pt}[3][above right]{\fill (#2) circle (1.7pt) node[#1,inner sep=2pt]{$#3$};}
+\newcommand{\AX}[4]{\draw[gray!22,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.4,0); \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.4);
+ \draw[thick,-{Stealth[length=2mm]}] (0,0)--(1,0) node[pos=0.55,below]{$\vec u$};
+ \draw[thick,-{Stealth[length=2mm]}] (0,0)--(0,1) node[pos=0.55,left]{$\vec v$};
+ \node[below left] at (0,0){$O$};}
+\newenvironment{FG}[1]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[#1,font=\footnotesize]}{\end{tikzpicture}\end{LTR}\end{center}}
 \SetHeader{\small\bfseries\color{cSec}مذكرات محور: الأعداد المركبة والتحويلات النقطية}{\small\color{cSec}السنة الثالثة ثانوي -- علوم تجريبية ، رياضيات ، تقني رياضي}
 \begin{document}
 \begin{LTR}
@@ -244,6 +252,15 @@
 \Row{بناء المعارف}{%
 \Lab{cDef}{تعريف}\ كل عدد مركب يكتب بطريقة وحيدة $\LW{\RR{z=x+iy}}$ ($\LW{x,y\in\mathbb R}$): $\LW{x=\mathrm{Re}(z)}$ الجزء الحقيقي ، $\LW{y=\mathrm{Im}(z)}$ الجزء التخيلي. $\LW{z}$ حقيقي إذا كان $\LW{y=0}$ ، وتخيلي صرف إذا كان $\LW{x=0}$.}{50 د}{المستوي المركب.}
 \Row{}{%
+\Lab{cRem}{التفسير البياني}\ الأعداد الحقيقية صورها على محور الفواصل ، والتخيلية الصرفة على محور التراتيب.
+\begin{FG}{x=0.75cm,y=0.75cm}\AX{-3}{4}{-3}{3}
+ \draw[cDef,line width=2pt,opacity=0.35] (-3,0)--(4.3,0); \draw[cThm,line width=2pt,opacity=0.35] (0,-3)--(0,3.3);
+ \Pt[below]{3,0}{A(3)} \Pt[left]{0,2}{B(2i)} \Pt[above left]{-2,1}{C(-2+i)} \Pt[below right]{-1,-2}{D(-1-2i)}
+ \draw[dashed] (-2,0)--(-2,1)--(0,1) (-1,0)--(-1,-2)--(0,-2);
+ \node[cDef,above,font=\scriptsize] at (3.4,0.1){\ar{أعداد حقيقية}};
+ \node[cThm,right,font=\scriptsize] at (0.05,3){\ar{تخيلية صرفة}};
+\end{FG}}{}{}
+\Row{}{%
 \Lab{cThm}{خاصية}\par\textbf{(1)} $\LW{x+iy=x^{\prime}+iy^{\prime}\iff x=x^{\prime}}$ و $\LW{y=y^{\prime}}$.\par\textbf{(2)} $\LW{i^{4k}=1}$ ، $\LW{i^{4k+1}=i}$ ، $\LW{i^{4k+2}=-1}$ ، $\LW{i^{4k+3}=-i}$.}{}{}
 \Row{}{%
 \Lab{cDef}{التمثيل الهندسي}\ في معلم متعامد ومتجانس $(O;\vec u,\vec v)$ نرفق بـ $z=x+iy$ النقطة $M(x;y)$ والشعاع $\overrightarrow{OM}$: $z$ \textbf{لاحقة} $M$.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=1cm,y=1cm,font=\footnotesize]\draw[gray!25,step=0.5] (-1,-0.8) grid (3.5,3.6);\draw[->,thick] (-1,0)--(3.5,0) node[right]{$x$}; \draw[->,thick] (0,-0.8)--(0,3.6) node[above]{$y$};\draw (1,0.08)--(1,-0.08) node[below]{$1$};\draw (0.08,1)--(-0.08,1) node[left]{$1$};\node[below left] at (0,0){$O$};\draw[cDef,thick,->] (0,0)--(2,3) node[above right]{$M(z)$};
@@ -276,6 +293,15 @@
 \Row{}{%
 \Lab{cThm}{خاصية}\par\textbf{(1)} $\LW{z+\overline z=2\,\mathrm{Re}(z)}$ ، $\LW{z-\overline z=2i\,\mathrm{Im}(z)}$ ، $\LW{z\overline z=x^2+y^2}$.\par\textbf{(2)} $\LW{\overline{z+z^{\prime}}=\overline z+\overline{z^{\prime}}}$ ، $\LW{\overline{zz^{\prime}}=\overline z\,\overline{z^{\prime}}}$ ، $\LW{\overline{z^n}=\overline z^{\,n}}$ ، $\LW{\overline{\left(\dfrac z{z^{\prime}}\right)}=\dfrac{\overline z}{\overline{z^{\prime}}}}$.\par\textbf{(3)} $\LW{z}$ حقيقي إذا وفقط إذا كان $\LW{z=\overline z}$ ؛ \quad $\LW{z}$ تخيلي صرف إذا وفقط إذا كان $\LW{z=-\overline z}$.}{}{}
 \Row{}{%
+\Lab{cRem}{التفسير البياني}\ $M(z)$ و $M^{\prime}(\overline z)$ متناظرتان بالنسبة إلى محور الفواصل ، و $M^{\prime\prime}(-z)$ نظيرة $M$ بالنسبة إلى $O$.
+\begin{FG}{x=0.8cm,y=0.8cm}\AX{-4}{4}{-3}{3}
+ \draw[dashed,cDef] (3,2)--(3,-2); \draw[dashed,cThm] (3,2)--(-3,-2);
+ \draw[cRem,thick,-{Stealth[length=2mm]}] (0,0)--(3,2); \draw[cRem,thick,-{Stealth[length=2mm]}] (0,0)--(3,-2);
+ \draw[cEx,very thick,-{Stealth[length=2mm]}] (0,0)--(6,0) node[above left]{$z+\overline z=2x$};
+ \Pt{3,2}{M(z)} \Pt[below right]{3,-2}{M'(\overline{z})} \Pt[below left]{-3,-2}{M''(-z)}
+ \node[cDef,right,font=\scriptsize] at (3,0.6){\ar{تناظر محوري}};
+\end{FG}}{}{}
+\Row{}{%
 \Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} حل $2z+i\overline z=3$: نضع $z=x+iy$: $2x+2iy+ix+y=3$.\par\textbf{(2)} $(2x+y)+i(x+2y)=3$: $2x+y=3$ و $x+2y=0$ ، إذن $x=2$ ، $y=-1$: $\RR{z=2-i}$.\par\textbf{(3)} $Z=z^2+\overline z^{\,2}$: $\overline Z=\overline z^{\,2}+z^2=Z$ ، إذن $Z$ \RR{حقيقي}.}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ في معادلة فيها $z$ و $\overline z$ نضع $z=x+iy$ ونطابق الجزأين الحقيقي والتخيلي.}{}{}
@@ -301,9 +327,26 @@
 \Row{}{%
 \Lab{cThm}{خاصية}\par\textbf{(1)} $\LW{|zz^{\prime}|=|z|\,|z^{\prime}|}$ ، $\LW{\left|\dfrac z{z^{\prime}}\right|=\dfrac{|z|}{|z^{\prime}|}}$ ، $\LW{|z^n|=|z|^n}$ ، $\LW{|\overline z|=|z|}$.\par\textbf{(2)} $\LW{\RR{AB=|z_B-z_A|}}$.}{}{}
 \Row{}{%
+\Lab{cRem}{التفسير البياني}\ $|z|=OM$ و $|z_B-z_A|=AB$.
+\begin{FG}{x=0.65cm,y=0.65cm}\AX{-1}{5}{-1}{5}
+ \draw[cDef,very thick] (0,0)--(3,4) node[pos=0.5,above left]{$OM=|z|$};
+ \draw[dashed] (3,0) node[below]{$x$}--(3,4)--(0,4) node[left]{$y$};
+ \draw[cThm,very thick,-{Stealth[length=2mm]}] (1,1)--(5,2) node[pos=0.5,below right]{$AB=|z_B-z_A|$};
+ \Pt[above]{3,4}{M(z)} \Pt[left]{1,1}{A} \Pt[right]{5,2}{B}
+\end{FG}}{}{}
+\Row{}{%
 \Lab{cMeth}{مجموعات نقط}\par\textbf{(1)} $\LW{|z-z_A|=r}$ ($\LW{r>0}$): \RR{دائرة} مركزها $\LW{A}$ ونصف قطرها $\LW{r}$.\par\textbf{(2)} $\LW{|z-z_A|=|z-z_B|}$: \RR{محور} القطعة $\LW{[AB]}$.}{}{}
 \Row{}{%
 \Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $|1+i\sqrt3|=\sqrt{1+3}=\RR{2}$ ؛ \quad $|(1+i)(3-4i)|=\sqrt2\times5=\RR{5\sqrt2}$.\par\textbf{(2)} $|z-1|=|z+i|$: $AM=BM$ مع $A(1)$ و $B(-i)$: \RR{محور} \RR{القطعة} \RR{$[AB]$}.}{}{}
+\Row{}{%
+\Lab{cRem}{التفسير البياني}\ الدائرة $|z-2i|=3$ ، ومحور القطعة $[AB]$: $|z-1|=|z+i|$.
+\begin{FG}{x=0.55cm,y=0.55cm}\AX{-4}{4}{-2}{5}
+ \draw[cDef,very thick] (0,2) circle (3); \draw[dashed,cDef] (0,2)--(3,2) node[pos=0.5,above]{$3$};
+ \draw[cThm,very thick] (-4,4)--(2,-2) node[below]{$y=-x$};
+ \draw[dashed,gray] (1,0)--(0,-1);
+ \Pt[left]{0,2}{\Omega(2i)} \Pt[above right]{1,0}{A(1)} \Pt[below left]{0,-1}{B(-i)}
+ \node[cDef] at (-2.9,4.6){$|z-2i|=3$}; \node[cThm,right] at (-4,4.6){};
+\end{FG}}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ \par $|z+z^{\prime}|\neq|z|+|z^{\prime}|$ عمومًا.}{}{}
 \Row{التقويم}{%
@@ -328,7 +371,25 @@
 \Row{}{%
 \Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $z^2+z+1=0$: $\Delta=-3$ ، $\RR{z=\dfrac{-1\pm i\sqrt3}2}$.\par\textbf{(2)} $z^3-1=0$: $(z-1)(z^2+z+1)=0$: \par $\RR{z\in\left\{1;\dfrac{-1+i\sqrt3}2;\dfrac{-1-i\sqrt3}2\right\}}$.}{}{}
 \Row{}{%
+\Lab{cRem}{التفسير البياني}\ الحلان المترافقان متناظران بالنسبة إلى محور الفواصل ، وحلول $z^3=1$ رؤوس مثلث متقايس الأضلاع على الدائرة المثلثية.
+\begin{FG}{x=0.8cm,y=0.8cm}\AX{-2}{3}{-2.5}{2.5}
+ \draw[gray,dashed] (0,0) circle (1);
+ \fill[cEx!15] (1,0)--(-0.5,0.866)--(-0.5,-0.866)--cycle; \draw[cEx,thick] (1,0)--(-0.5,0.866)--(-0.5,-0.866)--cycle;
+ \draw[cDef,dashed] (1,2)--(1,-2);
+ \Pt[right]{1,2}{1+2i} \Pt[right]{1,-2}{1-2i}
+ \Pt[above right]{1,0}{} \Pt[above left]{-0.5,0.866}{} \Pt[below left]{-0.5,-0.866}{}
+ \node[cEx,font=\scriptsize] at (-1.25,1.25){$z^3=1$};
+ \node[cDef,right,font=\scriptsize] at (1.05,0.45){\ar{حلان متناظران}};
+\end{FG}}{}{}
+\Row{}{%
 \Lab{cMeth}{الجذران التربيعيان (علوم تجريبية)}\ لـ $\LW{3+4i}$: نبحث عن $\LW{(x+iy)^2=3+4i}$:\par\textbf{(1)} $\LW{x^2-y^2=3}$ ، $\LW{2xy=4}$ ، و $\LW{x^2+y^2=|3+4i|=5}$.\par\textbf{(2)} $\LW{x^2=4}$ ، $\LW{y^2=1}$ ، و $\LW{xy>0}$: الجذران $\LW{\RR{2+i}}$ و $\LW{\RR{-2-i}}$ (تحقق: $\LW{(2+i)^2=3+4i}$ \ck).}{}{}
+\Row{}{%
+\Lab{cRem}{التفسير البياني}\ الجذران التربيعيان متناظران بالنسبة إلى $O$.
+\begin{FG}{x=0.75cm,y=0.75cm}\AX{-3}{4}{-2}{4}
+ \draw[cThm,dashed] (-2,-1)--(2,1);
+ \Pt[right]{2,1}{w_1=2+i} \Pt[below left]{-2,-1}{w_2=-2-i} \Pt[right]{3,4}{3+4i}
+ \node[cThm,font=\scriptsize,above left] at (-0.3,0.2){\ar{متناظران بالنسبة إلى $O$}};
+\end{FG}}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ لا نكتب $\sqrt{-16}$ ؛ نكتب $-16=(4i)^2$.}{}{}
 \Row{التقويم}{%
@@ -353,7 +414,32 @@
 \Row{}{%
 \Lab{cThm}{خاصية}\par\textbf{(1)} $\LW{\arg(zz^{\prime})=\arg z+\arg z^{\prime}}$ ؛ \quad $\LW{\arg\dfrac z{z^{\prime}}=\arg z-\arg z^{\prime}}$ ؛ \quad $\LW{\arg z^n=n\arg z}$.\par\textbf{(2)} $\LW{\arg\overline z=-\arg z}$ ؛ \quad $\LW{\arg(-z)=\arg z+\pi}$ \quad $\LW{[2\pi]}$.}{}{}
 \Row{}{%
+\Lab{cRem}{التفسير البياني}\ عمدة $\overline z$ و $-z$ ، وجمع العمدتين عند الضرب.
+\begin{FG}{x=0.85cm,y=0.85cm}\AX{-3}{3}{-2}{2}
+ \draw[cDef,thick] (0,0)--(2,1); \draw[cRem,thick] (0,0)--(2,-1); \draw[cThm,thick] (0,0)--(-2,-1);
+ \draw[cDef,-{Stealth[length=1.6mm]}] (1.2,0) arc (0:26.57:1.2) node[pos=0.6,right]{$\theta$};
+ \draw[cRem,-{Stealth[length=1.6mm]}] (0.9,0) arc (0:-26.57:0.9) node[pos=0.6,right]{$-\theta$};
+ \draw[cThm,-{Stealth[length=1.6mm]}] (0.5,0) arc (0:206.57:0.5); \node[cThm,font=\scriptsize] at (-0.9,0.75){$\theta+\pi$};
+ \Pt{2,1}{M(z)} \Pt[below right]{2,-1}{M'(\overline z)} \Pt[below left]{-2,-1}{M''(-z)}
+\end{FG}\begin{FG}{x=1.1cm,y=1.1cm}\AX{-0.5}{2.5}{-0.5}{2.3}
+ \draw[cDef,thick] (0,0)--(20:1.5); \draw[cRem,thick] (0,0)--(40:1.2); \draw[cThm,very thick] (0,0)--(60:1.8);
+ \draw[cDef,-{Stealth[length=1.5mm]}] (0.5,0) arc (0:20:0.5); \node[cDef,font=\scriptsize] at (10:0.75){$\theta$};
+ \draw[cThm,-{Stealth[length=1.5mm]}] (0.3,0) arc (0:60:0.3); 
+ \Pt[right]{20:1.5}{z} \Pt[right]{40:1.2}{z'} \Pt[above right]{60:1.8}{zz'}
+ \node[cThm,font=\scriptsize,align=center] at (1.9,1.9){$\arg(zz')=\theta+\theta'$\\$|zz'|=|z|\,|z'|$};
+\end{FG}}{}{}
+\Row{}{%
 \Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $1+i\sqrt3$: $r=2$ ، $\cos\theta=\dfrac12$ ، $\sin\theta=\dfrac{\sqrt3}2$: $\RR{2\left(\cos\dfrac\pi3+i\sin\dfrac\pi3\right)}$.\par\textbf{(2)} $-1+i$: $r=\sqrt2$ ، $\cos\theta=-\dfrac{\sqrt2}2$ ، $\sin\theta=\dfrac{\sqrt2}2$: $\RR{\sqrt2\left(\cos\dfrac{3\pi}4+i\sin\dfrac{3\pi}4\right)}$.}{}{}
+\Row{}{%
+\Lab{cRem}{التفسير البياني}\ صور الأعداد وعمداتها.
+\begin{FG}{x=0.9cm,y=0.9cm}\AX{-2.5}{2}{-1.5}{2}
+ \draw[gray,dashed] (0,0) circle (2);
+ \draw[cDef,thick] (0,0)--(1,1.732); \draw[cRem,thick] (0,0)--(-1,1); \draw[cThm,thick] (0,0)--(-1.732,-1);
+ \draw[cDef,-{Stealth[length=1.5mm]}] (0.7,0) arc (0:60:0.7) node[pos=0.5,right]{$\frac\pi3$};
+ \draw[cRem,-{Stealth[length=1.5mm]}] (0.45,0) arc (0:135:0.45); \node[cRem] at (0.05,0.75){$\frac{3\pi}4$};
+ \draw[cThm,-{Stealth[length=1.5mm]}] (0.3,0) arc (0:-150:0.3); \node[cThm] at (-0.3,-0.65){$-\frac{5\pi}6$};
+ \Pt{1,1.732}{1+i\sqrt3} \Pt[above left]{-1,1}{-1+i} \Pt[below left]{-1.732,-1}{-\sqrt3-i}
+\end{FG}}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ نحدد الربع من إشارتي $\cos\theta$ و $\sin\theta$ معًا ، و $r>0$ دائمًا.}{}{}
 \Row{التقويم}{%
@@ -375,6 +461,16 @@
 \Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $f(\theta)f(\theta^{\prime})=\cos\theta\cos\theta^{\prime}-\sin\theta\sin\theta^{\prime}+i(\sin\theta\cos\theta^{\prime}+\cos\theta\sin\theta^{\prime})=\RR{f(\theta+\theta^{\prime})}$.\par\textbf{(2)} نفس قاعدة الأسس $e^ae^b=e^{a+b}$: نكتب $\RR{f(\theta)=e^{i\theta}}$ (ترميز أولر).}{}{}
 \Row{بناء المعارف}{%
 \Lab{cDef}{تعريف}\ $\LW{e^{i\theta}=\cos\theta+i\sin\theta}$ ؛ الشكل الأسي لـ $\LW{z\neq0}$: $\LW{\RR{z=re^{i\theta}}}$ ($\LW{r=|z|}$ ، $\LW{\theta=\arg z}$).}{50 د}{دستور موافر.}
+\Row{}{%
+\Lab{cRem}{التفسير البياني}\ صورة $e^{i\theta}$ على الدائرة المثلثية.
+\begin{FG}{x=1.6cm,y=1.6cm}\AX{-1.3}{1.4}{-1.3}{1.3}
+ \draw[cDef,thick] (0,0) circle (1);
+ \draw[cThm,thick] (0,0)--(50:1); \draw[cRem,thick] (0,0)--(-50:1);
+ \draw[dashed] (50:1)--(0.643,0) node[below,font=\scriptsize]{$\cos\theta$} (50:1)--(0,0.766) node[left,font=\scriptsize]{$\sin\theta$};
+ \draw[cThm,-{Stealth[length=1.5mm]}] (0.3,0) arc (0:50:0.3) node[pos=0.6,right,font=\scriptsize]{$\theta$};
+ \Pt[above right]{50:1}{e^{i\theta}} \Pt[below right]{-50:1}{e^{-i\theta}=\overline{e^{i\theta}}}
+ \Pt[below right]{1,0}{1} \Pt[above right]{0,1}{i=e^{i\frac\pi2}} \Pt[above left]{-1,0}{-1=e^{i\pi}} \Pt[below left]{0,-1}{-i}
+\end{FG}}{}{}
 \Row{}{%
 \Lab{cThm}{خاصية}\par\textbf{(1)} $\LW{re^{i\theta}\times r^{\prime}e^{i\theta^{\prime}}=rr^{\prime}e^{i(\theta+\theta^{\prime})}}$ ؛ \quad \par $\LW{\dfrac{re^{i\theta}}{r^{\prime}e^{i\theta^{\prime}}}=\dfrac r{r^{\prime}}e^{i(\theta-\theta^{\prime})}}$.\par\textbf{(2)} $\LW{\left(re^{i\theta}\right)^n=r^ne^{in\theta}}$ ؛ \quad $\LW{\overline{e^{i\theta}}=e^{-i\theta}}$.}{}{}
 \Row{}{%
@@ -403,7 +499,52 @@
 \Row{بناء المعارف}{%
 \Lab{cThm}{خاصية}\ $\LW{\RR{\left|\dfrac{z_C-z_A}{z_B-z_A}\right|=\dfrac{AC}{AB}}}$ و \par $\LW{\RR{\arg\dfrac{z_C-z_A}{z_B-z_A}=(\overrightarrow{AB};\overrightarrow{AC})}\ [2\pi]}$.}{50 د}{جدول الحالات.}
 \Row{}{%
+\Lab{cRem}{التفسير البياني}
+\begin{FG}{x=0.9cm,y=0.9cm}\AX{-1}{5}{-1}{4}
+ \draw[cDef,very thick,-{Stealth[length=2mm]}] (1,1)--(4,2) node[pos=0.5,below right]{$AB=|z_B-z_A|$};
+ \draw[cRem,very thick,-{Stealth[length=2mm]}] (1,1)--(2,3.5);
+ \draw[dashed] (1,1)--(3,1);
+ \draw[cThm,-{Stealth[length=1.6mm]}] (1.8,1) arc (0:18.43:0.8); \node[cThm,right,font=\scriptsize] at (1.9,1.05){$(\vec u;\overrightarrow{AB})$};
+ \draw[cEx,-{Stealth[length=1.6mm]}] ($(1,1)+(18.43:0.55)$) arc (18.43:68.2:0.55); \node[cEx,font=\scriptsize] at (0.6,2.0){$(\overrightarrow{AB};\overrightarrow{AC})$};
+ \Pt[below left]{1,1}{A} \Pt[right]{4,2}{B} \Pt[above]{2,3.5}{C}
+\end{FG}}{}{}
+\Row{}{%
 \Lab{cMeth}{طبيعة مثلث}\par\textbf{(1)} النسبة $\LW{=e^{\pm i\frac\pi3}}$: مثلث \RR{متقايس} \RR{الأضلاع}.\par\textbf{(2)} النسبة $\LW{=\pm i}$: مثلث \RR{قائم} \RR{ومتساوي} \RR{الساقين} في $\LW{A}$.\par\textbf{(3)} النسبة حقيقية: النقط \RR{على} \RR{استقامة} \RR{واحدة}.\par\textbf{(4)} النسبة تخيلية صرفة: المثلث \RR{قائم} في $\LW{A}$.}{}{}
+\Row{}{%
+\Lab{cRem}{التفسير البياني}
+\begin{FG}{x=1cm,y=1cm}
+ \begin{scope}
+ \fill[cDef!10] (0,0)--(2,0.6)--(0.37,1.93)--cycle; \draw[cDef,thick] (0,0)--(2,0.6)--(0.37,1.93)--cycle;
+ \path (0,0)--(2,0.6) node[midway,sloped,cThm]{$|$}; \path (0,0)--(0.37,1.93) node[midway,sloped,cThm]{$|$};
+ \Pt[below left]{0,0}{A} \Pt[right]{2,0.6}{B} \Pt[above]{0.37,1.93}{C}
+ \node[cSec,font=\footnotesize] at (1,-0.8){\ar{$|L|=1$: متساوي الساقين}};
+ \end{scope}
+ \begin{scope}[xshift=4.8cm]
+ \fill[cRem!10] (0,0)--(2,0)--(0,2)--cycle; \draw[cRem,thick] (0,0)--(2,0)--(0,2)--cycle;
+ \draw[cRem] (0.25,0)--(0.25,0.25)--(0,0.25);
+ \path (0,0)--(2,0) node[midway,sloped,cThm]{$|$}; \path (0,0)--(0,2) node[midway,sloped,cThm]{$|$};
+ \Pt[below left]{0,0}{A} \Pt[below]{2,0}{B} \Pt[left]{0,2}{C}
+ \node[cSec,font=\footnotesize] at (1,-0.8){\ar{$L=i$: قائم ومتساوي الساقين}};
+ \end{scope}
+ \begin{scope}[xshift=9.6cm]
+ \fill[cEx!10] (0,0)--(2,0)--(1,1.732)--cycle; \draw[cEx,thick] (0,0)--(2,0)--(1,1.732)--cycle;
+ \draw[cEx,-{Stealth[length=1.5mm]}] (0.5,0) arc (0:60:0.5); \node[cEx,font=\scriptsize] at (0.75,0.3){$\frac\pi3$};
+ \Pt[below left]{0,0}{A} \Pt[below right]{2,0}{B} \Pt[above]{1,1.732}{C}
+ \node[cSec,font=\footnotesize] at (1,-0.8){\ar{$L=e^{i\frac\pi3}$: متقايس الأضلاع}};
+ \end{scope}
+\end{FG}\begin{FG}{x=1.2cm,y=1.2cm}
+ \begin{scope}
+ \draw[cDef,very thick] (-0.5,-0.25)--(3.4,1.7);
+ \Pt[below right]{0,0}{A} \Pt[below right]{1.2,0.6}{B} \Pt[below right]{2.8,1.4}{C}
+ \node[cSec,font=\footnotesize] at (1.4,-1){\ar{$L$ حقيقي: $A$ ، $B$ ، $C$ في استقامية}};
+ \end{scope}
+ \begin{scope}[xshift=7.5cm]
+ \draw[cThm,very thick] (0,0)--(2.4,0) (0,0)--(0,1.8);
+ \draw[cThm] (0.25,0)--(0.25,0.25)--(0,0.25);
+ \Pt[below left]{0,0}{A} \Pt[below]{2.2,0}{B} \Pt[left]{0,1.6}{C}
+ \node[cSec,font=\footnotesize] at (1.2,-1){\ar{$L$ تخيلي صرف: $(AB)\perp(AC)$}};
+ \end{scope}
+\end{FG}}{}{}
 \Row{}{%
 \Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $A(0)$ ، $B(2)$ ، $C(1+i\sqrt3)$: $\dfrac{z_C-z_A}{z_B-z_A}=\dfrac{1+i\sqrt3}2=e^{i\frac\pi3}$: \RR{متقايس} \RR{الأضلاع}.\par\textbf{(2)} $A(1)$ ، $B(2+i)$ ، $C(4+3i)$: $\dfrac{z_C-z_A}{z_B-z_A}=\dfrac{3+3i}{1+i}=3$ حقيقي: \RR{على} \RR{استقامة} \RR{واحدة}.}{}{}
 \Row{}{%
@@ -411,7 +552,12 @@
 \Row{التقويم}{%
 \Lab{cMeth}{تمرين تطبيقي}\par $A(1+i)$ ، $B(3+2i)$ ، $C(3i)$.\par\textbf{(1)} احسب $\dfrac{z_C-z_A}{z_B-z_A}$.\par\textbf{(2)} استنتج طبيعة المثلث $ABC$.}{25 د}{تقويم فردي.}
 \Row{}{%
-\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $\dfrac{-1+2i}{2+i}=\dfrac{(-1+2i)(2-i)}{5}=\dfrac{-2+i+4i+2}{5}=\RR{i}$.\par\textbf{(2)} $AC=AB$ و $(\overrightarrow{AB};\overrightarrow{AC})=\dfrac\pi2$: \RR{قائم} \RR{ومتساوي} \RR{الساقين} \RR{في} \RR{$A$}.\par\textbf{واجب منزلي:} تمارين من باب الأعداد المركبة.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
+\Lab{cEx}{حل التمرين التطبيقي}\par\textbf{(1)} $\dfrac{-1+2i}{2+i}=\dfrac{(-1+2i)(2-i)}{5}=\dfrac{-2+i+4i+2}{5}=\RR{i}$.\par\textbf{(2)} $AC=AB$ و $(\overrightarrow{AB};\overrightarrow{AC})=\dfrac\pi2$: \RR{قائم} \RR{ومتساوي} \RR{الساقين} \RR{في} \RR{$A$}.\begin{FG}{x=0.8cm,y=0.8cm}\AX{-1}{4}{-1}{4}
+ \fill[cDef!10] (1,1)--(3,2)--(0,3)--cycle; \draw[cDef,very thick] (1,1)--(3,2)--(0,3)--cycle;
+ \draw[cDef] (1,1)++(0.36,0.18)--++(-0.18,0.36)--++(-0.36,-0.18);
+ \path (1,1)--(3,2) node[midway,sloped,cThm]{$|$}; \path (1,1)--(0,3) node[midway,sloped,cThm]{$|$};
+ \Pt[below]{1,1}{A} \Pt[right]{3,2}{B} \Pt[left]{0,3}{C}
+\end{FG}\par\textbf{واجب منزلي:} تمارين من باب الأعداد المركبة.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
 \ModhHead{74}{3 ع ت / 3 ر / 3 ت ر}{أعداد وحساب}{الأعداد المركبة والتحويلات النقطية}{02 سا}{الكتابة المركبة للتحويلات: الانسحاب ، التحاكي ، الدوران}%
@@ -425,12 +571,51 @@
 \Lab{cEx}{نشاط رقم 08}\ $z^{\prime}=iz$.\par\textbf{(1)} قارن $|z^{\prime}|$ و $|z|$.\par\textbf{(2)} قارن $\arg z^{\prime}$ و $\arg z$ ، واستنتج طبيعة التحويل.}{35 د}{تفسير الضرب.}
 \Row{}{%
 \Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $|z^{\prime}|=|i||z|=\RR{|z|}$: $OM^{\prime}=OM$.\par\textbf{(2)} $\arg z^{\prime}=\arg z+\dfrac\pi2$: \RR{دوران} \RR{مركزه} \RR{$O$} \RR{وزاويته} \RR{$\frac\pi2$}.}{}{}
+\Row{}{%
+\Lab{cRem}{التفسير البياني}\ الضرب في $i$ دوران مركزه $O$ وزاويته $\frac\pi2$.
+\begin{FG}{x=0.8cm,y=0.8cm}\AX{-2}{3}{-1}{3}
+ \draw[cDef,thick] (0,0)--(2,1); \draw[cThm,thick] (0,0)--(-1,2);
+ \draw[cThm] (0,0)++(0.27,0.13)--++(-0.13,0.27)--++(-0.27,-0.13);
+ \draw[cRem,-{Stealth[length=1.6mm]}] (26.57:1.1) arc (26.57:116.57:1.1) node[pos=0.5,above right]{$\frac\pi2$};
+ \Pt{2,1}{M(z)} \Pt[above left]{-1,2}{M'(iz)}
+\end{FG}}{}{}
 \Row{بناء المعارف}{%
 \Lab{cThm}{الكتابات المركبة}\par\textbf{(1)} انسحاب شعاعه $\LW{\vec w(b)}$: $\LW{\RR{z^{\prime}=z+b}}$.\par\textbf{(2)} تحاكٍ مركزه $\LW{\Omega(\omega)}$ ونسبته $\LW{k}$: $\LW{\RR{z^{\prime}-\omega=k(z-\omega)}}$.\par\textbf{(3)} دوران مركزه $\LW{\Omega(\omega)}$ وزاويته $\LW{\theta}$: $\LW{\RR{z^{\prime}-\omega=e^{i\theta}(z-\omega)}}$.}{50 د}{جدول الكتابات.}
+\Row{}{%
+\Lab{cRem}{التفسير البياني}
+\begin{FG}{x=1cm,y=1cm}
+ \begin{scope}[xshift=8.4cm]
+ \draw[cDef,very thick,-{Stealth[length=2.5mm]}] (0,0)--(1.8,0.9) node[midway,above left]{$\vec w(b)$};
+ \Pt[below]{0,0}{M(z)} \Pt[right]{1.8,0.9}{M'(z+b)}
+ \node[cSec] at (0.9,-1.1){\ar{\textbf{انسحاب}}};
+ \end{scope}
+ \begin{scope}[xshift=4.4cm]
+ \draw[thick,cThm] (0,0)--(2.4,1.2);
+ \Pt[below]{0,0}{\Omega} \Pt[below right]{1.2,0.6}{M} \Pt[right]{2.4,1.2}{M'}
+ \node[cThm,above,font=\scriptsize] at (0.9,1.15){$\overrightarrow{\Omega M'}=k\,\overrightarrow{\Omega M}$};
+ \node[cSec] at (1.2,-1.1){\ar{\textbf{تحاك}}};
+ \end{scope}
+ \begin{scope}
+ \draw[thick,cRem] (0,0)--(1.6,0) (0,0)--(60:1.6);
+ \draw[cRem,-{Stealth[length=2mm]}] (0.6,0) arc (0:60:0.6) node[midway,right]{$\theta$};
+ \path (0,0)--(1.6,0) node[midway,sloped]{$|$}; \path (0,0)--(60:1.6) node[midway,sloped]{$|$};
+ \Pt[below]{0,0}{\Omega} \Pt[right]{1.6,0}{M} \Pt[above]{60:1.6}{M'}
+ \node[cSec] at (0.8,-1.1){\ar{\textbf{دوران}}};
+ \end{scope}
+\end{FG}}{}{}
 \Row{}{%
 \Lab{cMeth}{التعرف على $z^{\prime}=az+b$}\par\textbf{(1)} $\LW{a=1}$: انسحاب ؛ $\LW{a}$ حقيقي يختلف عن $\LW{1}$: تحاكٍ نسبته $\LW{a}$ ؛ $\LW{|a|=1}$ و $\LW{a\neq1}$: دوران زاويته $\LW{\arg a}$.\par\textbf{(2)} المركز: النقطة الصامدة $\LW{\omega=a\omega+b}$ ، أي $\LW{\omega=\dfrac b{1-a}}$.}{}{}
 \Row{}{%
 \Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $z^{\prime}=iz+1+i$: $|i|=1$ ، $\arg i=\dfrac\pi2$: دوران.\par\textbf{(2)} $\omega=\dfrac{1+i}{1-i}=\RR{i}$: \RR{دوران} \RR{مركزه} \RR{$\Omega(i)$} \RR{وزاويته} \RR{$\frac\pi2$}.\par\textbf{(3)} $z^{\prime}=z+2-i$: \RR{انسحاب} \RR{شعاعه} \RR{$\vec w(2-i)$}.}{}{}
+\Row{}{%
+\Lab{cRem}{التفسير البياني}\ الدوران الذي مركزه $\Omega(i)$ وزاويته $\frac\pi2$: صورة $A(2)$ هي $A^{\prime}(1+3i)$.
+\begin{FG}{x=0.8cm,y=0.8cm}\AX{-1}{3}{-1}{4}
+ \draw[cRem,thick] (0,1)--(2,0) (0,1)--(1,3);
+ \draw[cRem] (0,1)++(0.27,-0.13)--++(0.13,0.27)--++(-0.27,0.13);
+ \draw[cRem,-{Stealth[length=1.6mm]}] ($(0,1)+(-26.57:0.9)$) arc (-26.57:63.43:0.9);
+ \path (0,1)--(2,0) node[midway,sloped]{$|$}; \path (0,1)--(1,3) node[midway,sloped]{$|$};
+ \Pt[left]{0,1}{\Omega(i)} \Pt[below]{2,0}{A(2)} \Pt[right]{1,3}{A'(1+3i)}
+\end{FG}}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ في الدوران نكتب $z^{\prime}-\omega=e^{i\theta}(z-\omega)$ وليس $z^{\prime}=e^{i\theta}z$ (إلا إذا كان المركز $O$).}{}{}
 \Row{التقويم}{%
@@ -458,6 +643,19 @@
 \Row{}{%
 \Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} مثلث متقايس الأضلاع مباشر $ABC$ مع $A(0)$ ، $B(2)$: \par $z_C=e^{i\frac\pi3}z_B=2\left(\dfrac12+i\dfrac{\sqrt3}2\right)=\RR{1+i\sqrt3}$.\par\textbf{(2)} صورة $M(2+i)$ بالتحاكي الذي مركزه $O$ ونسبته $3$: $\RR{6+3i}$.}{}{}
 \Row{}{%
+\Lab{cRem}{التفسير البياني}\ المثلث المتقايس الأضلاع $ABC$ ، والمثلث القائم المتساوي الساقين في التمرين.
+\begin{FG}{x=0.8cm,y=0.8cm}\AX{-1}{3}{-1}{3}
+ \fill[cEx!12] (0,0)--(2,0)--(1,1.732)--cycle; \draw[cEx,thick] (0,0)--(2,0)--(1,1.732)--cycle;
+ \draw[cEx,-{Stealth[length=1.5mm]}] (0.5,0) arc (0:60:0.5); \node[cEx,font=\scriptsize] at (0.75,0.28){$\frac\pi3$};
+ \Pt[below right]{2,0}{B(2)} \Pt[above]{1,1.732}{C(1+i\sqrt3)}
+ \node[below right] at (0,0){$A$};
+\end{FG}
+\begin{FG}{x=0.8cm,y=0.8cm}\AX{-1}{3}{-1}{3.5}
+ \fill[cRem!12] (0,1)--(2,1)--(0,3)--cycle; \draw[cRem,thick] (0,1)--(2,1)--(0,3)--cycle;
+ \draw[cRem] (0.25,1)--(0.25,1.25)--(0,1.25);
+ \Pt[left]{0,1}{A(i)} \Pt[right]{2,1}{B(2+i)} \Pt[left]{0,3}{C(3i)}
+\end{FG}}{}{}
+\Row{}{%
 \Lab{cThm!80!black}{حذار}\ نراعي الاتجاه: مباشر (زاوية $+\frac\pi2$) أو غير مباشر ($-\frac\pi2$).}{}{}
 \Row{التقويم}{%
 \Lab{cMeth}{تمرين تطبيقي}\par $A(i)$ ، $B(2+i)$.\par\textbf{(1)} عيّن لاحقة $C$ حيث $ABC$ قائم ومتساوي الساقين في $A$ ومباشر.}{25 د}{تقويم فردي.}
@@ -476,11 +674,18 @@
 \Lab{cEx}{نشاط رقم 10}\ $z^{\prime}=(1+i)z$.\par\textbf{(1)} قارن $|z^{\prime}|$ بـ $|z|$ ، و $\arg z^{\prime}$ بـ $\arg z$.\par\textbf{(2)} صف التحويل.}{35 د}{مثال بالضرب.}
 \Row{}{%
 \Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $|z^{\prime}|=\sqrt2|z|$ ؛ \quad $\arg z^{\prime}=\arg z+\dfrac\pi4$.\par\textbf{(2)} تكبير بالنسبة $\sqrt2$ ودوران بـ $\dfrac\pi4$ حول $O$: \RR{تشابه} \RR{مباشر}.}{}{}
+\Row{}{%
+\Lab{cRem}{التفسير البياني}
+\begin{FG}{x=0.9cm,y=0.9cm}\AX{-1}{3}{-1}{3.5}
+ \draw[cDef,thick] (0,0)--(2,1); \draw[cMeth,thick] (0,0)--(1,3);
+ \draw[cMeth,-{Stealth[length=1.6mm]}] (26.57:1) arc (26.57:71.57:1) node[pos=0.5,above right]{$\frac\pi4$};
+ \Pt{2,1}{M(2+i)} \Pt[left]{1,3}{M'(1+3i)}
+ \node[cMeth,font=\scriptsize] at (2.6,2.6){$OM'=\sqrt2\,OM$};
+\end{FG}}{}{}
 \Row{بناء المعارف}{%
 \Lab{cDef}{تعريف}\ \textbf{التشابه المباشر} تحويل كتابته المركبة $\LW{\RR{z^{\prime}=az+b}}$ مع $\LW{a\in\mathbb C^*}$.}{50 د}{جدول العناصر.}
 \Row{}{%
-\Lab{cThm}{العناصر المميزة ($a
-eq1$)}\par\textbf{(1)} النسبة $\LW{\RR{k=|a|}}$ ، الزاوية $\LW{\RR{\theta=\arg a}}$ ، المركز $\LW{\RR{\omega=\dfrac b{1-a}}}$.\par\textbf{(2)} الانسحابات والدورانات والتحاكيات حالات خاصة ، والتشابه الذي نسبته $\LW{1}$ \textbf{تقايس}.}{}{}
+\Lab{cThm}{العناصر المميزة ($a\neq1$)}\par\textbf{(1)} النسبة $\LW{\RR{k=|a|}}$ ، الزاوية $\LW{\RR{\theta=\arg a}}$ ، المركز $\LW{\RR{\omega=\dfrac b{1-a}}}$.\par\textbf{(2)} الانسحابات والدورانات والتحاكيات حالات خاصة ، والتشابه الذي نسبته $\LW{1}$ \textbf{تقايس}.}{}{}
 \Row{}{%
 \Lab{cEx}{أمثلة محلولة}\par\textbf{(1)} $z^{\prime}=(1+i)z+2$: $k=\RR{\sqrt2}$ ، $\theta=\RR{\dfrac\pi4}$ ، $\omega=\dfrac2{-i}=\RR{2i}$.\par\textbf{(2)} $z^{\prime}=-3iz$: $k=\RR{3}$ ، $\theta=\RR{-\dfrac\pi2}$ ، المركز $\RR{O}$.}{}{}
 \Row{}{%
@@ -504,6 +709,15 @@ eq1$)}\par\textbf{(1)} النسبة $\LW{\RR{k=|a|}}$ ، الزاوية $\LW{\RR
 \Lab{cDef}{مناقشة النشاط}\par\textbf{(1)} $z^{\prime}-\omega=k\,e^{i\theta}(z-\omega)$: $\RR{h\circ r=s}$.\par\textbf{(2)} $ke^{i\theta}=e^{i\theta}k$: \RR{نعم} ، الترتيب لا يهم لأن لهما نفس المركز.}{}{}
 \Row{بناء المعارف}{%
 \Lab{cThm}{التحليل القانوني}\ التشابه $\LW{s}$ الذي مركزه $\LW{\Omega}$ ونسبته $\LW{k}$ وزاويته $\LW{\theta}$: $\LW{\RR{s=h\circ r=r\circ h}}$ حيث $\LW{h}$ التحاكي $\LW{(\Omega;k)}$ و $\LW{r}$ الدوران $\LW{(\Omega;\theta)}$.}{50 د}{جدول المركب.}
+\Row{}{%
+\Lab{cRem}{التفسير البياني}
+\begin{FG}{x=1cm,y=1cm}
+ \draw[cRem,thick] (0,0)--(2,0.5); \draw[cRem,thick] (0,0)--(0.567,1.982);
+ \draw[cMeth,very thick,dashed] (0.567,1.982)--(0.907,3.171);
+ \draw[cRem,-{Stealth[length=1.6mm]}] (14.04:1) arc (14.04:74.04:1) node[pos=0.5,above right]{$\theta$};
+ \Pt[below]{0,0}{\Omega} \Pt[right]{2,0.5}{M} \Pt[left]{0.567,1.982}{M_1=r(M)} \Pt[above]{0.907,3.171}{M'=h(M_1)}
+ \node[cMeth,font=\scriptsize] at (2.8,2.6){$\overrightarrow{\Omega M'}=k\,\overrightarrow{\Omega M_1}$};
+\end{FG}}{}{}
 \Row{}{%
 \Lab{cThm}{مركب تشابهين}\ مركب تشابهين مباشرين تشابه مباشر: \RR{النسبة} \RR{جداء} \RR{النسبتين} و\RR{الزاوية} \RR{مجموع} \RR{الزاويتين}.}{}{}
 \Row{}{%
@@ -530,7 +744,24 @@ eq1$)}\par\textbf{(1)} النسبة $\LW{\RR{k=|a|}}$ ، الزاوية $\LW{\RR
 \Row{بناء المعارف}{%
 \Lab{cThm}{خاصية}\par\textbf{(1)} التشابه المباشر يحافظ على \RR{نسب} \RR{المسافات} \RR{والزوايا} \RR{الموجهة} والاستقامية والتوازي.\par\textbf{(2)} من أجل $\LW{A\neq B}$ و $\LW{A^{\prime}\neq B^{\prime}}$ يوجد تشابه مباشر وحيد: \par $\LW{\RR{a=\dfrac{z_{B^{\prime}}-z_{A^{\prime}}}{z_B-z_A}}}$ ، $\LW{\RR{b=z_{A^{\prime}}-az_A}}$.\par\textbf{(3)} صورة دائرة مركزها $\LW{\Omega}$ ونصف قطرها $\LW{R}$: دائرة مركزها $\LW{s(\Omega)}$ ونصف قطرها $\LW{kR}$.}{50 د}{رسم الصور.}
 \Row{}{%
+\Lab{cRem}{التفسير البياني}
+\begin{FG}{x=0.9cm,y=0.9cm}
+ \draw[gray] (0,0)--(2,0) (0,0)--(2.298,1.928);
+ \draw[cThm,-{Stealth[length=1.6mm]}] (0.8,0) arc (0:40:0.8) node[pos=0.5,right]{$\theta$};
+ \draw[cDef,very thick] (2,0)--(2.5,0.8); \draw[cMeth,very thick] (2.298,1.928)--(2.101,3.330);
+ \draw[dashed,gray] (0,0)--(2.5,0.8) (0,0)--(2.101,3.330);
+ \Pt[below]{0,0}{\Omega} \Pt[below]{2,0}{M} \Pt[right]{2.5,0.8}{N} \Pt[right]{2.298,1.928}{M'} \Pt[above]{2.101,3.330}{N'}
+ \node[cMeth,font=\scriptsize,align=left] at (4.6,2.5){$M'N'=k\,MN$\\$(\overrightarrow{MN};\overrightarrow{M'N'})=\theta$};
+\end{FG}}{}{}
+\Row{}{%
 \Lab{cEx}{مثال محلول}\ $s$: $z^{\prime}=2iz-i$ ، والدائرة $(\mathcal C)$: مركزها $\Omega(1)$ ونصف قطرها $1$.\par\textbf{(1)} $s(\Omega)$: $2i\times1-i=\RR{i}$ ؛ \quad $k=|2i|=2$.\par\textbf{(2)} صورة $(\mathcal C)$: \RR{دائرة} \RR{مركزها} \RR{$(0;1)$} \RR{ونصف} \RR{قطرها} \RR{$2$}.}{}{}
+\Row{}{%
+\Lab{cRem}{التفسير البياني}
+\begin{FG}{x=0.7cm,y=0.7cm}\AX{-2.5}{2.5}{-1.5}{3.5}
+ \draw[cDef,very thick] (1,0) circle (1); \draw[cMeth,very thick] (0,1) circle (2);
+ \Pt[below]{1,0}{\Omega(1)} \Pt[left]{0,1}{s(\Omega)}
+ \node[cDef] at (2.4,-0.8){$(\mathcal C)$}; \node[cMeth] at (-2.1,2.9){$(\mathcal C')$};
+\end{FG}}{}{}
 \Row{}{%
 \Lab{cThm!80!black}{حذار}\ صورة دائرة دائرة: نحول المركز ونضرب نصف القطر في $k$.}{}{}
 \Row{التقويم}{%
