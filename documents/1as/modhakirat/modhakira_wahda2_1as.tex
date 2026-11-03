@@ -3,7 +3,7 @@
 %  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
 % ============================================================
 \documentclass[12pt,a4paper]{article}
-\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage[a4paper,margin=1.2cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{icomma}
 \usepackage[english,bidi=default,layout=lists]{babel}
@@ -161,7 +161,7 @@
 \newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
 \pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
 \newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
-\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\newcommand{\bxtOLD}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
 \usepackage{longtable}
 \setlength{\LTpre}{4pt}\setlength{\LTpost}{0pt}
 \newcommand{\Phase}[1]{\textbf{#1}}
@@ -188,177 +188,478 @@
 \end{LTR}
 \par\smallskip\textbf{الوسائل:} #9\par\smallskip}
 \newenvironment{Sayr}{%
-\begin{LTR}\renewcommand{\arraystretch}{1.25}
-\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
-\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\begin{LTR}\renewcommand{\arraystretch}{1.25}\setlength{\tabcolsep}{4pt}\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\begin{longtable}{|p{0.09\textwidth}|>{\centering\arraybackslash}p{0.05\textwidth}|p{0.71\textwidth}|>{\centering\arraybackslash}p{0.09\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\footnotesize\textbf{توجيهات وتعاليق}} & \ar{\footnotesize\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\footnotesize\textbf{مراحل الحصة}}\\\hline\endhead
 \hline\endfoot}{\end{longtable}\end{LTR}}
 % سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
-\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
+\newcommand{\RaggedEnd}{\leftskip=0pt plus 1fil\relax}
+\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{\RaggedEnd #2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
 
 \newcommand{\Lab}[2]{\foreignlanguage{english}{\tcbox[on line,colback=#1,colframe=#1,boxrule=0pt,arc=2pt,boxsep=1pt,left=5pt,right=5pt,top=1pt,bottom=1pt]{\ar{\textcolor{white}{\textbf{#2}}}}}}
 \newcommand{\Num}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[fill=cDef,text=white,inner sep=2pt,font=\footnotesize\bfseries](c){#1};}}
 \newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
 \newenvironment{Kad}[1]{\par\smallskip\Lab{#1}}{\par}
+\newcommand{\RR}[1]{\ifmmode{\color{cThm}#1}\else$\mbox{\color{cThm}#1}$\fi}
+\newcommand{\T}[1]{$\mbox{\color{cDef}\bfseries #1}$}
+\providecommand{\LW}[1]{{\color{cDef}#1}}
+\newcommand{\bxt}[1]{}
+\renewcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\renewcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{\color{cThm}#1}}}}
+\newcommand{\Car}[1]{\left\{\begin{array}{l}#1\end{array}\right.}
+\newcommand{\Lm}[1]{\displaystyle\lim_{x\to#1}}
+\newcommand{\LDx}[3]{لدينا: $\Lm{#2}#1=\bx{#3}$ لأنّ: \quad}
+\newcommand{\LD}{\par\LDx}
+\newcommand{\GRS}[5]{\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\scriptsize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=1.6mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=1.6mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};}
+\newcommand{\GRE}{\end{tikzpicture}\end{LTR}\end{center}}
 \SetHeader{\small\bfseries\color{cSec}مذكرات محور: عموميات على الدوال}{\small\color{cSec}السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا}
+\newcommand{\Lmm}[2]{\displaystyle\lim_{\substack{x\to#1\\#2}}}
+\newcommand{\LDy}[4]{\par لدينا: $\Lmm{#2}{#3}#1=\bx{#4}$ لأنّ: \quad}
+\newcommand{\Cu}[4]{\draw[cThm,very thick,domain=#1:#2,samples=#4] plot(\x,{#3});}
+% monotone cosine link between two points (extrema at the ends)
+\newcommand{\Seg}[4]{\draw[cThm,very thick,domain=0:1,samples=40] plot({#1+(#3-(#1))*\x},{#2+(#4-(#2))*(1-cos(180*\x))/2});}
 \begin{document}
 \begin{LTR}
-\begin{tcolorbox}[enhanced,colback=cThm!85!black,colframe=cThm!85!black,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
-{\color{white}\fontsize{26}{32}\selectfont\bfseries مذكرات محور: عموميات على الدوال}\\[8pt]
-{\color{white}\large السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا}\\[4pt]
-{\color{white}\large 5 مذكرات (10 ساعات) -- السنة الدراسية 2026-2027}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\fontsize{24}{30}\selectfont\bfseries مذكرات محور: عموميات على الدوال}\\[8pt]
+{\color{cSec!80!black}\large السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا}\\[4pt]
+{\color{cSec!80!black}\large 5 مذكرات -- السنة الدراسية 2026-2027}
 \end{tcolorbox}
 \end{LTR}
 \begin{BOX}{cThm}{يتضمن هذا العمل}
-\begin{enumerate}[label=\textbf{مذكرة \arabic{enumi}:},leftmargin=6em,start=12]
-\item مفهوم الدالة ، مجموعة التعريف ، الصورة والسوابق.
-\item التمثيل البياني لدالة والقراءة البيانية.
-\item اتجاه تغير دالة وجدول التغيرات.
-\item القيم الحدية لدالة.
-\item شفعية دالة والبرهان بمثال مضاد.
-\end{enumerate}
-مراجع النشاطات: الكتاب المدرسي للسنة الأولى ثانوي جذع مشترك علوم وتكنولوجيا (الباب 3 ص 49--50).
+\RL{0.48}{\textbf{مذكرة 16:} مفهوم الدالة.\par \textbf{مذكرة 17:} التمثيل البياني لدالة في معلم.\par \textbf{مذكرة 18:} اتجاه تغير دالة.}{0.48}{\textbf{مذكرة 19:} القيم الحدية لدالة.\par \textbf{مذكرة 20:} شفعية دالة.}
+\par\smallskip مراجع النشاطات والتمارين: الكتاب المدرسي للسنة الأولى ثانوي. \ \LW{القوانين بالأزرق} ، و\bxt{النتائج بالأحمر}.
 \end{BOX}
 \newpage
-\ModhHead{12}{1 ج م ع ت}{تحليل}{عموميات على الدوال}{02 سا}{مفهوم الدالة ، مجموعة التعريف ، الصورة والسوابق}%
-{\begin{itemize}\item المجالات.\item الدالة الخطية والدالة التآلفية (التعليم المتوسط).\end{itemize}}%
-{\begin{itemize}\item تحديد دالة: متغيرها ، مجموعة تعريفها.\item تعيين صورة عدد أو سوابقه بدالة معرفة بدستور.\item الربط بين دستور وجدول قيم.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+% =====================================================================
+\ModhHead{16}{1 ج م ع ت}{تحليل}{عموميات على الدوال}{02 سا}{مفهوم الدالة}%
+{\begin{itemize}\item مفهوم المجال.\item الدوال التآلفية والدوال الخطية.\end{itemize}}%
+{\begin{itemize}\item تحديد دالة (متغيرها ، مجموعة تعريفها ، مجموعة قيمها).\item الربط بين دستور وجدول قيم وتمثيل بياني.\item تعيين صورة عدد أو سابقة عدد وفق دالة معرفة بدستور.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الأنترنت.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} التذكير بالدالة التآلفية.\par\Num{1} ثمن الكيلوغرام من البرتقال $250$ DA: ما ثمن $x$ kg؟ \ \Num{2} هل يمكن أن يكون $x=-2$ ؟}{10 د}{حوار شفهي.}
-\Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مناقشة نشاط 02 صفحة 49}\par\ck\ الطول $x$ ينتمي إلى المجال $[0;10]$: هذه هي \textbf{مجموعة التعريف}.\par
-\ck\ بعد الحساب نجد: $A(x)=\dfrac{-x^2+5x+50}{2}$: كل قيمة لـ $x$ تعطي مساحة \textbf{وحيدة}.\par
-\ck\ $A(x)=25\iff x(5-x)=0\iff x=0$ أو $x=5$: للعدد $25$ \textbf{سابقتان}.\par
-\ck\ جدول قيم بالحاسبة: $A(0)=25$ ، $A(2)=28$ ، $A(4)=27$ ، $A(6)=22$ ، $A(8)=13$ ، $A(10)=0$.\par
-}{35 د}{عمل ثنائي ثم نقاش ؛ جدول القيم بالحاسبة (TABLE).}
+\textbf{التهيئة:} التذكير بالدالة التآلفية والدالة الخطية.\par
+\Lab{cEx}{مناقشة نشاط 02 صفحة 50}\par
+\Num{1} الطول $x$ ينتمي إلى المجال \bx{[0;10]}.\par
+\Num{2} $A(x)$ مساحة الرباعي $AINM$:
+\[A(x)=S_{ABC}-\big(S_{INB}+S_{NMC}\big)=\frac{10\times10}2-\left(\frac{5(10-x)}2+\frac{x^2}2\right)\]
+(حسب نظرية طالس: $\dfrac{MN}{10}=\dfrac x{10}$ أي $MN=x$.)
+\[A(x)=50-\frac{50-5x+x^2}2=\frac{100-50+5x-x^2}2=\bx{\frac{-x^2+5x+50}2}\]}{20 د}{قراءة الشكل.}
+\Row{}{%
+\Num{3} قيم $x$ التي من أجلها $A(x)=25$:
+\[\frac{-x^2+5x+50}2=25\iff-x^2+5x=0\iff x(-x+5)=0\]
+إذن \bx{x=0} أو \bx{x=5}.\par
+\Num{4} باستعمال الحاسبة:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.3}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$ & $9$ & $10$\\\hline
+$A(x)$ & $25$ & $27$ & $28$ & $28$ & $27$ & $25$ & $22$ & $18$ & $13$ & $7$ & $0$\\\hline
+\end{tabular}\end{LTR}\end{center}}{}{الحاسبة.}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $D$ جزء من $\R$. نعرّف \textbf{دالة} $f$ على $D$ عندما نرفق بكل عدد حقيقي $x$ من $D$ عدداً حقيقياً \textbf{وحيداً} نرمز له $f(x)$. نكتب $f:x\mapsto f(x)$.\par\Lab{cRem}{مفردات}\par\ck\ $D$ مجموعة تعريف $f$ ونرمز لها $D_f$ ؛ $x$ \textbf{المتغير}.\par
-\ck\ $f(x)$ \textbf{صورة} $x$ ؛ إذا كان $f(a)=b$ فإن $a$ \textbf{سابقة} لـ $b$.\par
-\ck\ نعرّف دالة بدستور ، أو بجدول قيم ، أو بتمثيل بياني.\par
-}{50 د}{تدوَّن التعاريف ؛ نؤكد على كلمة «وحيد».}
+\Lab{cDef}{تعريف: مفهوم الدالة}\ $D$ جزء من $\R$. نعرّف \textbf{دالة} $f$ على $D$ عندما نرفق بكل عدد حقيقي $x$ من $D$ عددًا حقيقيًا \textbf{وحيدًا} نرمز له بالرمز $\LW{f(x)}$.\par
+\Lab{cDef}{وصف ومفردات}\par
+\ck\ نرمز عادة إلى الدوال بالرموز $f$ ، $g$ ، $h$ ، $\ldots$ و $D$ هي \textbf{مجموعة تعريف} الدالة.\par
+\ck\ إذا كان $x$ عنصرًا من $D$ نسمي العدد $f(x)$ \textbf{صورة} $x$ بالدالة $f$ ، وتقرأ «$f$ لـ $x$».\par
+\ck\ إذا كان $y=f(x)$ نقول إن $x$ \textbf{سابقة} للعدد $y$ بالدالة $f$.\par
+\ck\ نكتب: \quad $\LW{f:\ D\to\R\ ;\ x\mapsto y=f(x)}$ \quad حيث $x$ المتغير و $y$ مرتبط بالمتغير $x$.\par
+\Lab{cThm!80!black}{حذار}\ يجب التمييز بين $f$ (الدالة) و $f(x)$ (عدد: صورة $x$).}{50 د}{}
 \Row{}{%
-\Lab{cMeth}{تعيين مجموعة التعريف}\ نستبعد القيم التي تعدم المقام ، ونشترط أن يكون ما تحت الجذر موجباً.\par\Lab{cEx}{مثال}\par\ck\ $f(x)=\dfrac{2x+1}{x-3}$: $D_f=\R-\{3\}$.\par
-\ck\ $g(x)=\sqrt{4-2x}$: $4-2x\geqslant0\iff x\leqslant2$ ، $D_g=]-\infty;2]$.\par
-\ck\ $h(x)=\dfrac{\sqrt{x+1}}{x-2}$: $D_h=[-1;2[\cup]2;+\infty[$.\par
-}{}{}
+\Lab{cDef}{طرق تعريف دالة}\ يمكن تعريف دالة $f$ على $D$ \textbf{بدستور} ، أو \textbf{بتمثيل بياني} ، أو \textbf{بجدول قيم}.\par
+\Lab{cDef}{1. دالة معرفة بدستور}\ نعبّر عن $f(x)$ بدلالة $x$ من $D$.\par
+\Lab{cEx}{مثال 1}\ $f(x)=2x^2+1$ على $[-4;3]$: \ مجموعة التعريف \bx{[-4;3]} ؛ \ $f(1)=2\times1^2+1=\bx{3}$ ، و $f(-1)=2\times(-1)^2+1=\bx{3}$: العددان $1$ و $-1$ لهما نفس الصورة.\par
+\Lab{cDef}{مجموعة تعريف دالة}\ هي مجموعة الأعداد الحقيقية التي لها صور بالدالة $f$ ، ونرمز لها بـ $\LW{D_f}$.\par
+\Lab{cMeth}{طريقة}\ نستثني من $\R$ القيم التي لا يمكن حساب صورتها:\par
+\ck\ إذا تضمن الدستور \textbf{مقامًا} فيه $x$: نرفض قيم $x$ التي تعدم المقام.\par
+\ck\ إذا تضمن \textbf{جذرًا تربيعيًا} فيه $x$: نرفض قيم $x$ التي تجعل ما تحت الجذر سالبًا تمامًا.\par
+\Lab{cEx}{مثال 2}\ $f(x)=\dfrac1x$: \bx{D_f=\R^*} \ ؛ \ $g(x)=\sqrt{x-1}$: $x-1\geqslant0$ ، \bx{D_g=[1;+\infty[} \ ؛ \ $h(x)=x^2+2x+8$: لا مقام ولا جذر ، \bx{D_h=\R}.}{}{}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ $f$ هي الدالة ، و $f(x)$ عدد (صورة $x$).}{}{}
+\Lab{cMeth}{حساب صورة أو سابقة}\par
+\ck\ \textbf{صورة} عدد $a$ من $D_f$: نعوض $x$ بـ $a$ في عبارة $f(x)$.\par
+\ck\ \textbf{سوابق} عدد $b$: نحل المعادلة $f(x)=b$ ونحتفظ بالحلول التي تنتمي إلى $D_f$.\par
+\Lab{cEx}{مثال 3}\ $f(x)=5x-3$ على $\R$: \ صورة $2$: $f(2)=10-3=\bx{7}$ ؛ \ سوابق $12$: $5x-3=12$ ، أي \bx{x=3}.\par
+\Lab{cRem}{ملاحظات}\par
+\ck\ الأعداد التي لا تملك صورة بالدالة $f$ تسمى «القيم الممنوعة للدالة $f$».\par
+\ck\ لا يمكن أن يكون لعدد عدة صور ، لكن يمكن أن يكون لعدد عدة سوابق.\par
+\ck\ عندما تعرّف دالة بدستور يمكن إعطاء جدول لبعض قيمها.}{}{}
+\Row{}{%
+\Lab{cDef}{2. دالة معرفة بتمثيل بياني}\par
+\Lab{cEx}{مثال 4}\ المنحنى $(C_g)$ يمثل دالة $g$ معرفة على $[-2;3]$. نقرأ: $g(2)=1$ ، $g(-1)=1$ ، $g(1)=-1$ ، $g(0)=-1$.\par
+لدينا $2\neq-1$ لكن $g(2)=g(-1)$ ، و $1\neq0$ لكن $g(1)=g(0)$.
+\GRS{-2.5}{3.5}{-2}{4}{0.7}
+\Cu{-2}{3}{\x*\x-\x-1}{60}
+\foreach \a/\b in {-1/1,2/1,0/-1,1/-1}{\fill (\a,\b) circle(1.6pt);}
+\foreach \t in {-2,-1,1,2,3}{\node[below] at (\t,0){$\t$};}
+\foreach \t in {-1,1,2,3}{\node[left] at (0,\t){$\t$};}
+\node[cThm] at (2.8,2.6){$(C_g)$};
+\GRE}{}{قراءة بيانية.}
+\Row{}{%
+\Lab{cDef}{3. دالة معرفة بجدول قيم}\ يشمل الجدول قيم السابقة $x$ وقيم صورها $f(x)$.\par
+\Lab{cEx}{مثال 5}\ الجدول يمثل أطوال $25$ تلميذًا من قسم $1$ج م ع ت. نتعرّف على دالة $h$ معرفة على المجال $[140;170[$ ترفق بكل طول عدد التلاميذ في فئته:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.3}\small
+\begin{tabular}{|C|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}الطول (cm) & $[140;145[$ & $[145;150[$ & $[150;155[$ & $[155;160[$ & $[160;165[$ & $[165;170[$\\\hline
+عدد التلاميذ & $7$ & $6$ & $5$ & $4$ & $2$ & $1$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\ck\ صورة $160$ بالدالة $h$ هي \bx{2}. \quad \ck\ العدد $10$ ليس له سوابق. \quad \ck\ سوابق العدد $5$ هي كل الأعداد الحقيقية من المجال \bx{[150;155[}.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $f(x)=x^2-3$. \Num{1} احسب صورة $2$ و $-2$. \Num{2} عيّن سوابق $6$ ثم سوابق $-5$. \Num{3} عيّن مجموعة تعريف $k(x)=\dfrac{1}{x^2-4}$.\par\textbf{الحل:} \Num{1} $f(2)=f(-2)=1$ ؛ \Num{2} $x^2=9$: السابقتان $3$ و $-3$ ؛ $x^2=-2$: لا سابقة لـ $-5$ ؛ \Num{3} $D_k=\R-\{-2;2\}$.\par\textbf{واجب منزلي:} تمارين من الكتاب المدرسي.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{تطبيق 1}\ عيّن مجموعة تعريف الدوال الآتية:\par
+\Num{1} $f:x\mapsto4x+7$ \quad \Num{2} $g:x\mapsto3(x-2)^2$ \quad \Num{3} $h:x\mapsto\dfrac{3-x}{2x-4}$\par
+\Num{4} $k:x\mapsto\sqrt{x-3}$ \quad \Num{5} $l:x\mapsto(x-4)\sqrt{4-x}$ \quad \Num{6} $s:x\mapsto\dfrac{x-2}x\sqrt{x-1}$\par
+\textbf{الحل:} \Num{1} \bx{D_f=\R} \quad \Num{2} \bx{D_g=\R} \quad \Num{3} $2x-4\neq0\iff x\neq2$: \bx{D_h=\R-\{2\}}\par
+\Num{4} $x-3\geqslant0$: \bx{D_k=[3;+\infty[} \quad \Num{5} $4-x\geqslant0\iff x\leqslant4$: \bx{D_l=]-\infty;4]}\par
+\Num{6} $x\neq0$ و $x-1\geqslant0$ ، أي $x\geqslant1$: \bx{D_s=[1;+\infty[}}{30 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{تطبيق 2}\ $f$ دالة معرفة على $\R$ بـ: $f(x)=x^2+6x+3$.\par
+\Num{1} عيّن صور الأعداد: $-2$ ، $0$ ، $3$ و $14$. \ \Num{2} بيّن أنه من أجل كل عدد حقيقي $x$: $f(x)=(x+3)^2-6$. \ \Num{3} عيّن (إن وجدت) سوابق كل من: $-6$ ، $0$ ، $3$ و $12$.\par
+\textbf{الحل:} \Num{1} $f(-2)=4-12+3=\bx{-5}$ ؛ \ $f(0)=\bx{3}$ ؛ \ $f(3)=9+18+3=\bx{30}$ ؛ \ $f(14)=196+84+3=\bx{283}$\par
+\Num{2} $(x+3)^2-6=x^2+6x+9-6=x^2+6x+3=f(x)$.\par
+\Num{3} نحل $(x+3)^2-6=b$ ، أي $(x+3)^2=b+6$:\par
+\ck\ $b=-6$: $(x+3)^2=0$ ، \bx{x=-3} \quad \ck\ $b=0$: $(x+3)^2=6$ ، \bx{x=-3-\sqrt6} أو \bx{x=-3+\sqrt6}\par
+\ck\ $b=3$: $(x+3)^2=9$ ، $x+3=\pm3$: \bx{x=0} أو \bx{x=-6} \quad \ck\ $b=12$: $(x+3)^2=18$: \bx{x=-3\pm3\sqrt2}\par
+\textbf{عمل منزلي:} تمارين 11 ، 12 ، 19 ، 20 ، 21 ، 22 ، 23 ، 24 ، 25 ، 26 ، 27 الصفحة 73-74.\par
+\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
+% =====================================================================
 \newpage
-\ModhHead{13}{1 ج م ع ت}{تحليل}{عموميات على الدوال}{02 سا}{التمثيل البياني لدالة والقراءة البيانية}%
-{\begin{itemize}\item المعلم في المستوي.\item مفهوم الدالة ، الصورة والسابقة.\end{itemize}}%
-{\begin{itemize}\item قراءة صورة عدد وسوابقه بيانياً.\item الحل البياني لمعادلات ومتراجحات.\item الحاسبة البيانية.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+\ModhHead{17}{1 ج م ع ت}{تحليل}{عموميات على الدوال}{02 سا}{التمثيل البياني لدالة في معلم}%
+{\begin{itemize}\item مفهوم المجال ، مفهوم دالة وطرق تعريفها.\item التمثيل البياني للدوال التآلفية والخطية.\end{itemize}}%
+{\begin{itemize}\item إنشاء تمثيل بياني لدالة وتعيين مجموعة التعريف بيانيًا.\item توظيف الحاسبة البيانية لإعطاء التمثيل البياني لدالة معطاة على مجال بواسطة دستور.\item تعيين صورة عدد أو سابقة عدد وفق دالة معرفة بواسطة منحنى.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الأنترنت.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} $f(x)=x^2-3$. هل النقطة $A(2;1)$ تنتمي إلى منحنى $f$ ؟ و $B(1;0)$ ؟}{10 د}{تذكير بالحصة السابقة.}
-\Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مناقشة نشاط 01 صفحة 49}\par\ck\ كل عمود من الجدول (المسافة $x$ ، تواتر النبضات) يعطي نقطة في المعلم ، ونصل النقط بخط منحنٍ منتظم.\par
-\ck\ تواتر النبضات عند منتصف المسافة ($200$ m): $175$ نبضة في الدقيقة.\par
-\ck\ التواتر $175$ يقابل المسافة $200$ m: قرأنا \textbf{سابقة} بيانياً.\par
-\ck\ التواتر أكبر من $165$ عندما تكون المسافة في $]100;400]$.\par
-}{35 د}{يُوزَّع ورق مليمتري.}
+\textbf{التهيئة:} التذكير بمفهوم دالة وطرق تعريفها.\par
+\Lab{cEx}{نشاط}\ نعتبر الدالة $f:[-2;2]\to\R$ ، $x\mapsto f(x)=x^3-3x$.\par
+\Num{1} أكمل جدول القيم. \ \Num{2} أنشئ النقط $A_i\big(x_i;f(x_i)\big)$ في المعلم المتعامد والمتجانس $(O;\vec i,\vec j)$. \ \Num{3} أوصل بين هذه النقط باستمرار. ماذا تستنتج؟\par
+\textbf{المناقشة:} \Num{1}
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_i$ & $-2$ & $-1$ & $-\frac12$ & $0$ & $\frac12$ & $1$ & $2$\\\hline
+$f(x_i)$ & $-2$ & $2$ & $\frac{11}8$ & $0$ & $-\frac{11}8$ & $-2$ & $2$\\\hline
+\end{tabular}\end{LTR}\end{center}
+مثلًا: $f\left(-\frac12\right)=-\frac18+\frac32=\frac{11}8$.}{25 د}{عمل فردي.}
+\Row{}{%
+\Num{2} و \Num{3}
+\GRS{-2.5}{2.5}{-2.5}{2.5}{0.8}
+\Cu{-2}{2}{\x*\x*\x-3*\x}{80}
+\foreach \a/\b in {-2/-2,-1/2,-0.5/1.375,0/0,0.5/-1.375,1/-2,2/2}{\fill[cDef] (\a,\b) circle(1.8pt);}
+\foreach \t in {-2,-1,1,2}{\node[below] at (\t,0){$\t$};}
+\foreach \t in {-2,-1,1,2}{\node[left] at (0,\t){$\t$};}
+\node[cThm] at (1.6,2.3){$(C_f)$};
+\GRE
+\textbf{الاستنتاج:} التمثيل البياني للدالة $f$ هو مجموعة النقط $M\big(x;f(x)\big)$ حيث $x\in D$.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ \textbf{التمثيل البياني} للدالة $f$ هو مجموعة النقط $M(x;f(x))$ حيث $x\in D_f$ ، ونقول إن $y=f(x)$ \textbf{معادلة} له.\par\Lab{cThm}{خاصية}\ $M(a;b)\in(C_f)\iff a\in D_f$ و $b=f(a)$.\par}{50 د}{نرسم الأسهم بالألوان على السبورة.}
+\Lab{cDef}{تعريف}\ المستوي منسوب إلى معلم $(O;I,J)$ ، و $f$ دالة معرفة على $D_f$. \textbf{التمثيل البياني} (أو المنحنى الممثل) للدالة $f$ هو مجموعة النقط $M(x;y)$ حيث $\LW{x\in D_f}$ و $\LW{y=f(x)}$. نرمز له بـ $(C_f)$ ونقول إن $\LW{y=f(x)}$ \textbf{معادلة} $(C_f)$.\par
+\Lab{cRem}{ملاحظة}\ لرسم $(C_f)$: جدول لبعض القيم ، أو حاسبة بيانية ، أو مجدول.\par
+\Lab{cEx}{مثال 1}\ $f(x)=x^2$ على $[-2;2]$:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x$ & $-2$ & $-1$ & $0$ & $1$ & $2$\\\hline
+$f(x)$ & $4$ & $1$ & $0$ & $1$ & $4$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\GRS{-2.5}{4.5}{-0.5}{4.5}{0.6}
+\Cu{-2}{2}{\x*\x}{60}
+\foreach \a in {-2,-1,0,1,2}{\fill[cDef] (\a,\a*\a) circle(1.8pt);}
+\draw[->,cRem,thick] (4,0.6)--(4,0.05); \node[cRem,above,font=\scriptsize] at (4,0.6){\ar{محور السوابق}};
+\draw[->,cRem,thick] (-2.2,3)--(-0.05,3); \node[cRem,above,font=\scriptsize] at (-1.6,3){\ar{محور الصور}};
+\foreach \t in {-2,-1,1,2,3,4}{\node[below] at (\t,0){$\t$};}
+\node[cThm] at (1.6,3.8){$(C)$};
+\GRE
+\Lab{cThm!80!black}{تنبيه}\ مجموعة من القيم لا تكفي للحصول على المنحنى: توجد عدة كيفيات للمرور من نقطة إلى أخرى.}{45 د}{الحاسبة البيانية.}
 \Row{}{%
-\Lab{cMeth}{القراءة البيانية}\par\ck\ \textbf{صورة $a$:} من $a$ على محور الفواصل نصعد إلى $(C_f)$ ثم نتجه أفقياً إلى محور التراتيب.\par
-\ck\ \textbf{سوابق $b$:} نرسم المستقيم $y=b$ ، ومن كل نقطة تقاطع مع $(C_f)$ ننزل إلى محور الفواصل.\par
-\ck\ حلول $f(x)=g(x)$: فواصل نقط تقاطع $(C_f)$ و $(C_g)$ ؛ حلول $f(x)<g(x)$: فواصل نقط $(C_f)$ الواقعة \textbf{تحت} $(C_g)$.\par
-\Lab{cEx}{مثال}\ $f(x)=x^2$ و $g(x)=x+2$: المنحنيان يتقاطعان في نقطتين فاصلتاهما $-1$ و $2$ ، إذن $f(x)<g(x)\iff x\in]-1;2[$.\par\smallskip\begin{LTR}\centering\begin{tikzpicture}[x=0.55cm,y=0.42cm,font=\scriptsize]
-\draw[gray!25] (-2.5,-0.5) grid (3,5.5);
-\draw[->] (-2.6,0)--(3.2,0) node[right]{$x$}; \draw[->] (0,-0.6)--(0,5.7) node[above]{$y$};
-\draw[cThm,thick,domain=-2.3:2.3] plot (\x,{\x*\x}) node[above]{$(C_f)$};
-\draw[cDef,thick] (-2.5,-0.5)--(3,5) node[right]{$(C_g)$};
-\draw[cRem,dashed] (-1,1)--(-1,0) node[below]{$-1$} (2,4)--(2,0) node[below]{$2$};
-\draw[cRem,line width=1.6pt] (-1,0)--(2,0);
-\end{tikzpicture}\end{LTR}\par}{}{}
-\Row{}{%
-\Lab{cThm!80!black}{حذار}\ القراءة البيانية تقريبية ؛ نتحقق جبرياً عند الإمكان.}{}{}
+\Lab{cMeth}{القراءة البيانية}\par
+\ck\ \textbf{مجموعة التعريف:} مجموعة فواصل نقط المنحنى $(C_f)$.\par
+\ck\ \textbf{صورة} $a$: نرسم من $A(a;0)$ الموازي لمحور التراتيب ، فيقطع المنحنى في $M$: ترتيب $M$ هو $f(a)$.\par
+\ck\ \textbf{سوابق} $b$: نرسم من $B(0;b)$ الموازي لمحور الفواصل: فواصل نقط تقاطعه مع المنحنى (إن وجدت) هي سوابق $b$.\par
+\Lab{cEx}{مثال 2}\ $f$ معرفة بالتمثيل البياني التالي:
+\GRS{-5.5}{5.5}{-5.5}{3}{0.5}
+\draw[cThm,very thick] plot[smooth,tension=0.6] coordinates{(-5,1)(-4.2,2.2)(-3.5,2.6)(-2.6,2)(-1,-1)(-0.5,-2)(0,-3)(1,-4.5)(2,-5)(3,-4.4)(4,-3.3)(5,-2)};
+\draw[dashed,cDef] (-0.5,0)--(-0.5,-2)--(5,-2) (0,-2)--(-0.5,-2);
+\foreach \a/\b in {-5/1,0/-3,2/-5,-1/-1,-0.5/-2,5/-2}{\fill (\a,\b) circle(1.8pt);}
+\foreach \t in {-5,-4,-3,-2,-1,1,2,3,4,5}{\node[below,font=\tiny] at (\t,0){$\t$};}
+\foreach \t in {-5,-4,-3,-2,-1,1,2}{\node[left,font=\tiny] at (0,\t){$\t$};}
+\node[cThm] at (-3.5,3.2){$(C_f)$};
+\GRE
+\ck\ $f$ معرفة على \bx{[-5;5]}. \ \ck\ صور $-5$ ، $0$ ، $2$ هي على الترتيب: \bx{1} ، \bx{-3} ، \bx{-5}.\par
+\ck\ سابقة العدد $-1$ هي \bx{-1}. \ \ck\ سوابق العدد $-2$ هي \bx{-\frac12} و \bx{5}. \ \ck\ لا توجد سوابق للأعداد $4$ ، $10$ ، $-12$.}{}{قراءة بيانية.}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $f(x)=x^2-2x$. \Num{1} بالحاسبة البيانية ارسم $(C_f)$. \Num{2} حل بيانياً $f(x)=0$ و $f(x)<0$. \Num{3} تحقق جبرياً.\par\textbf{الحل:} \Num{2} $\{0;2\}$ و $]0;2[$ ؛ \Num{3} $x^2-2x=x(x-2)$.\par\textbf{واجب منزلي:} تمارين من الكتاب المدرسي.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{باستعمال الحاسبة البيانية.}
+\Lab{cEx}{تطبيق}\ لتكن الدالة $f$ المعرفة على $\R$ بالتمثيل البياني التالي:
+\GRS{-3.5}{1.8}{-2.5}{3}{0.8}
+\Cu{-3.24}{1.24}{\x*\x+2*\x-1}{60}
+\foreach \t in {-3,-2,-1,1}{\node[below] at (\t,0){$\t$};}
+\foreach \t in {-2,-1,1,2,3}{\node[left] at (0,\t){$\t$};}
+\node[cThm] at (1.2,2.4){$(C_f)$};
+\GRE
+\Num{1} عيّن مجموعة تعريف $f$. \ \Num{2} عيّن صور الأعداد: $-2$ ، $0$ ، $1$. \ \Num{3} عيّن سوابق الأعداد إن وجدت: $-3$ ، $-2$ ، $2$.\par
+\textbf{الحل:} \Num{1} \bx{D_f=\R}. \quad \Num{2} $f(-2)=\bx{-1}$ ؛ $f(0)=\bx{-1}$ ؛ $f(1)=\bx{2}$.\par
+\Num{3} \ck\ $-3$: لا توجد سوابق (أخفض نقطة من المنحنى ترتيبها $-2$). \ \ck\ $-2$: سابقة وحيدة \bx{-1}. \ \ck\ $2$: سابقتان \bx{-3} و \bx{1}.\par
+\textbf{عمل منزلي:} تمارين 28 ، 29 ، 30 ، 31 ، 32 الصفحة 75.\par
+\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{20 د}{تقويم فردي.}
 \end{Sayr}
+% =====================================================================
 \newpage
-\ModhHead{14}{1 ج م ع ت}{تحليل}{عموميات على الدوال}{02 سا}{اتجاه تغير دالة وجدول التغيرات}%
-{\begin{itemize}\item التمثيل البياني لدالة.\item خواص الترتيب.\end{itemize}}%
-{\begin{itemize}\item تعريف اتجاه تغير دالة.\item الانتقال من جدول التغيرات إلى التمثيل البياني والعكس.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+\ModhHead{18}{1 ج م ع ت}{تحليل}{عموميات على الدوال}{03 سا}{اتجاه تغير دالة}%
+{\begin{itemize}\item مفهوم المجال ، تعريف دالة.\item التمثيل البياني لدالة والقراءة البيانية.\end{itemize}}%
+{\begin{itemize}\item وصف سلوك دالة معرفة بمنحنى باستعمال التعبير الرياضي المناسب.\item استنتاج جدول تغيرات دالة انطلاقًا من تمثيلها البياني ، وإرفاق جدول تغيرات معطى بتمثيل بياني ممكن.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الأنترنت.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} منحنى درجة الحرارة خلال يوم: متى ترتفع؟ متى تنخفض؟}{10 د}{حوار حول ظاهرة مألوفة.}
-\Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مناقشة نشاط 05 صفحة 50}\par\ck\ التحويل من الدرجة المئوية إلى فهرنهايت دالة تآلفية: $F=1{,}8\,C+32$ ، والنقطتان $A(0;32)$ و $B(100;212)$ من تمثيلها.\par
-\ck\ كلما زادت $C$ زادت $F$: الدالة \textbf{متزايدة}.\par
-\ck\ معامل التوجيه $\dfrac{212-32}{100}=1{,}8>0$.\par
-}{35 د}{عمل ثنائي.}
+\textbf{التهيئة:} التذكير بالتمثيل البياني لدالة والقراءة البيانية.\par
+\Lab{cEx}{نشاط}\ الشكل يمثل السرعة $v$ (بـ m/s) بدلالة الزمن $t$ (بـ s) لمتحرك على طريق.
+\GRS{-0.5}{7.5}{-0.5}{3.5}{0.7}
+\draw[cThm,very thick] (0,0)--(3,3)--(5,3)--(7,0);
+\foreach \t in {1,...,7}{\node[below] at (\t,0){$\t$};}
+\foreach \t in {1,2,3}{\node[left] at (0,\t){$\t$};}
+\node[above right] at (0,3.3){$v$ (m/s)}; \node[above] at (7.4,0){$t$ (s)};
+\GRE
+\Num{1} اذكر المجالات التي تكون فيها السرعة متزايدة تمامًا ، متناقصة تمامًا ، ثابتة. \ \Num{2} قارن بين $v(1)$ و $v(2)$ ، ثم $v(3{,}5)$ و $v(4{,}5)$ ، ثم $v(5)$ و $v(6)$. ماذا تستنتج؟\par
+\textbf{المناقشة:} \Num{1} السرعة \bxt{متزايدة تمامًا على $[0;3]$} ، \bxt{ثابتة على $[3;5]$} ، \bxt{متناقصة تمامًا على $[5;7]$}.\par
+\Num{2} $v(1)=1<v(2)=2$ ؛ \ $v(3{,}5)=v(4{,}5)=3$ ؛ \ $v(5)=3>v(6)=1{,}5$.\par
+\textbf{الاستنتاج:} من أجل $t_1<t_2$: إذا كان $v(t_1)<v(t_2)$ فالسرعة متزايدة تمامًا ، وإذا كان $v(t_1)>v(t_2)$ فهي متناقصة تمامًا ، وإذا كان $v(t_1)=v(t_2)$ فهي ثابتة.}{25 د}{قراءة بيانية.}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $f$ دالة و $I$ مجال من $D_f$:\par\ck\ $f$ \textbf{متزايدة تماماً} على $I$ إذا كان من أجل كل $a<b$ من $I$: $f(a)<f(b)$.\par
-\ck\ $f$ \textbf{متناقصة تماماً} على $I$ إذا كان من أجل كل $a<b$ من $I$: $f(a)>f(b)$.\par
-\ck\ $f$ \textbf{ثابتة} على $I$ إذا كان $f(a)=f(b)$ لكل $a$ و $b$ من $I$.\par
-\Lab{cThm}{جدول التغيرات}\ نلخص اتجاه التغير بأسهم: صاعد (متزايدة) ، نازل (متناقصة). مثلاً للدالة $f(x)=x^2$:\par\smallskip\begin{LTR}\centering\begin{tikzpicture}[font=\small]
-\draw (0,0) rectangle (6,1.9); \draw (0,1.35)--(6,1.35); \draw (1.2,0)--(1.2,1.9);
-\node at (0.6,1.62){$x$}; \node at (0.6,0.67){$f(x)$};
-\node at (1.6,1.62){$-\infty$}; \node at (3.6,1.62){$0$}; \node at (5.6,1.62){$+\infty$};
-\node at (3.6,0.2){$0$};
-\draw[->,thick] (1.7,1.1)--(3.3,0.3); \draw[->,thick] (3.9,0.3)--(5.5,1.1);
-\end{tikzpicture}\end{LTR}\par}{50 د}{نرسم جدول التغيرات ونقابله بالمنحنى.}
+\Lab{cDef}{تعريف: اتجاه تغير دالة على مجال}\ $f$ دالة معرفة على مجال $I$ من $\R$.\par
+\ck\ $f$ \textbf{متزايدة تمامًا} على $I$ يعني: من أجل كل $x_1$ و $x_2$ من $I$ ، إذا كان $x_1<x_2$ فإن $\LW{f(x_1)<f(x_2)}$ (الدالة تحفظ الترتيب).\par
+\ck\ $f$ \textbf{متناقصة تمامًا} على $I$ يعني: إذا كان $x_1<x_2$ فإن $\LW{f(x_1)>f(x_2)}$ (الدالة تعكس الترتيب).\par
+\ck\ $f$ \textbf{ثابتة} على $I$ يعني: من أجل كل $x_1$ و $x_2$ من $I$: $\LW{f(x_1)=f(x_2)}$.
+\begin{center}\begin{LTR}\begin{tikzpicture}[x=0.55cm,y=0.55cm,font=\scriptsize]
+\begin{scope}
+\draw[->] (-0.5,0)--(4.5,0); \draw[->] (0,-0.5)--(0,4.5);
+\draw[cThm,very thick,domain=0:4,samples=40] plot(\x,{0.3+0.25*\x*\x});
+\draw[dashed,cDef] (1,0)--(1,0.55)--(0,0.55) (3,0)--(3,2.55)--(0,2.55);
+\node[below] at (1,0){$x_1$}; \node[below] at (3,0){$x_2$}; \node[left] at (0,0.55){$f(x_1)$}; \node[left] at (0,2.55){$f(x_2)$};
+\node[cThm,font=\small] at (2,-1.3){\ar{متزايدة تمامًا}};
+\end{scope}
+\begin{scope}[xshift=4.6cm]
+\draw[->] (-0.5,0)--(4.5,0); \draw[->] (0,-0.5)--(0,4.5);
+\draw[cThm,very thick,domain=0.4:4,samples=40] plot(\x,{1.6/\x});
+\draw[dashed,cDef] (1,0)--(1,1.6)--(0,1.6) (3,0)--(3,0.53)--(0,0.53);
+\node[below] at (1,0){$x_1$}; \node[below] at (3,0){$x_2$}; \node[left] at (0,1.6){$f(x_1)$}; \node[left] at (0,0.53){$f(x_2)$};
+\node[cThm,font=\small] at (2,-1.3){\ar{متناقصة تمامًا}};
+\end{scope}
+\begin{scope}[xshift=9.2cm]
+\draw[->] (-0.5,0)--(4.5,0); \draw[->] (0,-0.5)--(0,4.5);
+\draw[cThm,very thick] (0.3,2)--(4,2);
+\draw[dashed,cDef] (1,0)--(1,2) (3,0)--(3,2);
+\node[below] at (1,0){$x_1$}; \node[below] at (3,0){$x_2$}; \node[left] at (0,2){$f(x_1)=f(x_2)$};
+\node[cThm,font=\small] at (2,-1.3){\ar{ثابتة}};
+\end{scope}
+\end{tikzpicture}\end{LTR}\end{center}
+\Lab{cRem}{ملاحظة}\ $f$ متزايدة على $I$: إذا كان $x_1<x_2$ فإن $f(x_1)\leqslant f(x_2)$ ؛ \ $f$ متناقصة على $I$: إذا كان $x_1<x_2$ فإن $f(x_1)\geqslant f(x_2)$.}{60 د}{}
 \Row{}{%
-\Lab{cEx}{مثال}\par\ck\ $f(x)=-3x+2$: إذا كان $a<b$ فإن $-3a>-3b$ ومنه $f(a)>f(b)$: متناقصة تماماً على $\R$.\par
-\ck\ $g(x)=x^2$ على $[0;+\infty[$: إذا كان $0\leqslant a<b$ فإن $a^2<b^2$: متزايدة تماماً.\par
-\Lab{cThm!80!black}{حذار}\ لا علاقة بين اتجاه التغير والإشارة: دالة سالبة قد تكون متزايدة.}{}{}
+\Lab{cEx}{مثال 1}\ الدالة $f:x\mapsto x^2$ على $[-2;2]$: \ \bxt{متناقصة تمامًا على $[-2;0]$} و \bxt{متزايدة تمامًا على $[0;2]$}.\par
+\Lab{cDef}{دراسة اتجاه تغير دالة}\ نعني بها تعيين المجالات التي تكون فيها الدالة متزايدة تمامًا أو متناقصة تمامًا أو ثابتة ، ونلخص النتائج في جدول يسمى \textbf{جدول التغيرات}.\par
+\Lab{cEx}{مثال 2}\ الدالة $f:x\mapsto x^3-3x$ على $[-2;2]$ (المذكرة 17): متزايدة تمامًا على $[-2;-1]$ وعلى $[1;2]$ ، ومتناقصة تمامًا على $[-1;1]$:
+\GRS{-2.3}{2.3}{-2.3}{2.3}{0.7}
+\Cu{-2}{2}{\x*\x*\x-3*\x}{80}
+\foreach \t in {-2,-1,1,2}{\node[below,font=\tiny] at (\t,0){$\t$};}
+\node[cThm] at (1.7,2.4){$(C_f)$};
+\GRE
+\begin{TAB}
+\tkzTabInit[lgt=1.3,espcl=1.5]{$x$/0.8,$f(x)$/1.6}{$-2$,$-1$,$1$,$2$}
+\tkzTabVar{-/$-2$,+/$2$,-/$-2$,+/$2$}
+\end{TAB}}{}{}
+\Row{}{%
+\Lab{cMeth}{طريقة: تعيين اتجاه تغير دالة بحساب}\ لتعيين اتجاه تغير $f$ على مجال $I$ نفرض $a<b$ من $I$ ونقارن بين $f(a)$ و $f(b)$ بسلسلة من الاستنتاجات المتوالية.\par
+\Lab{cEx}{تطبيق 1}\ $f(x)=3x^2-4$ على $\R$. \ \Num{1} بيّن أن $f$ متناقصة تمامًا على $]-\infty;0]$. \ \Num{2} ما اتجاه تغير $f$ على $[0;+\infty[$ ؟ \ \Num{3} شكّل جدول تغيرات $f$. \ \Num{4} ارسم $(C_f)$.\par
+\textbf{الحل:} \Num{1} ليكن $x_1<x_2\leqslant0$: \ $x_1^2>x_2^2$ (مربعا عددين سالبين يعكسان الترتيب) ، ومنه $3x_1^2-4>3x_2^2-4$ ، أي $f(x_1)>f(x_2)$: \bxt{$f$ متناقصة تمامًا على $]-\infty;0]$}.\par
+\Num{2} ليكن $0\leqslant x_1<x_2$: \ $x_1^2<x_2^2$ ، ومنه $f(x_1)<f(x_2)$: \bxt{$f$ متزايدة تمامًا على $[0;+\infty[$}.\par
+\Num{3} و \Num{4} \ $f(0)=-4$:
+\GRS{-2}{2}{-4.5}{1.5}{0.7}
+\Cu{-1.32}{1.32}{3*\x*\x-4}{60}
+\foreach \t in {-1,1}{\node[below,font=\tiny] at (\t,0){$\t$};}
+\node[left,font=\tiny] at (0,-4){$-4$};
+\node[cThm] at (1.6,1.3){$(C_f)$};
+\GRE
+\begin{TAB}
+\tkzTabInit[lgt=1.3,espcl=2]{$x$/0.8,$f(x)$/1.6}{$-\infty$,$0$,$+\infty$}
+\tkzTabVar{+/,-/$-4$,+/}
+\end{TAB}}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par\Num{1} ادرس اتجاه تغير $h(x)=2x-5$ على $\R$. \Num{2} ارسم منحنياً ممكناً لدالة $f$ معرفة على $[-3;4]$ متزايدة على $[-3;1]$ ومتناقصة على $[1;4]$ مع $f(-3)=-1$ ، $f(1)=3$ ، $f(4)=0$.\par\textbf{الحل:} \Num{1} $a<b\Rightarrow2a-5<2b-5$: متزايدة تماماً.\par\textbf{واجب منزلي:} تمارين من الكتاب المدرسي.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{لكل تلميذ منحنى مختلف: نقارن.}
+\Lab{cMeth}{طريقة: جدول التغيرات من التمثيل البياني}\ نقرأ المجالات التي يصعد فيها المنحنى أو ينزل (من اليسار إلى اليمين) ونلخصها في جدول.\par
+\Lab{cEx}{تطبيق 2}\ $f$ معرفة على $\R$ بالتمثيل البياني التالي. أكمل جدول التغيرات:
+\GRS{-1.3}{2.2}{-2.3}{2.3}{0.8}
+\Cu{-0.65}{1.68}{2*\x*\x*\x-3*\x*\x+1}{80}
+\foreach \t in {-1,1,2}{\node[below,font=\tiny] at (\t,0){$\t$};}
+\foreach \t in {-2,-1,1,2}{\node[left,font=\tiny] at (0,\t){$\t$};}
+\node[cThm] at (1.9,1.8){$(C_f)$};
+\GRE
+\textbf{الحل:} $f$ متزايدة تمامًا على $]-\infty;0]$ ، متناقصة تمامًا على $[0;1]$ ، متزايدة تمامًا على $[1;+\infty[$:
+\begin{TAB}
+\tkzTabInit[lgt=1.3,espcl=1.6]{$x$/0.8,$f(x)$/1.6}{$-\infty$,$0$,$1$,$+\infty$}
+\tkzTabVar{-/,+/$1$,-/$-1$,+/}
+\end{TAB}}{40 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cMeth}{طريقة: رسم تمثيل بياني انطلاقًا من جدول التغيرات}\ نقرأ سلوك الدالة على مختلف المجالات المكونة لمجموعة تعريفها ونمثلها في معلم مناسب.\par
+\Lab{cEx}{تطبيق 3}\ نعتبر جدول تغيرات الدالة $f$:
+\begin{TAB}
+\tkzTabInit[lgt=1.3,espcl=2]{$x$/0.8,$f(x)$/1.6}{$-6$,$-2$,$3$,$7$}
+\tkzTabVar{+/$1$,-/$-3$,+/$2$,-/$-4$}
+\end{TAB}
+\Num{1} عيّن مجموعة تعريف $f$. \ \Num{2} عيّن اتجاه تغير $f$. \ \Num{3} ارسم تمثيلًا بيانيًا ممكنًا للدالة $f$.\par
+\textbf{الحل:} \Num{1} \bx{D_f=[-6;7]}. \ \Num{2} \bxt{متناقصة تمامًا على $[-6;-2]$ وعلى $[3;7]$} ، \bxt{متزايدة تمامًا على $[-2;3]$}.\par
+\Num{3} تمثيل ممكن (ليس وحيدًا):
+\GRS{-6.5}{7.5}{-4.5}{2.5}{0.45}
+\Seg{-6}{1}{-2}{-3} \Seg{-2}{-3}{3}{2} \Seg{3}{2}{7}{-4}
+\foreach \a/\b in {-6/1,-2/-3,3/2,7/-4}{\fill (\a,\b) circle(2pt);}
+\foreach \t in {-6,-2,3,7}{\node[below,font=\tiny] at (\t,0){$\t$};}
+\foreach \t in {-4,-3,1,2}{\node[left,font=\tiny] at (0,\t){$\t$};}
+\GRE}{}{}
+\Row{}{%
+\Lab{cEx}{تطبيق 4}\ عيّن اتجاه تغير الدوال الآتية على مجموعة تعريفها:\par
+\Num{1} $f:x\mapsto4x+7$ \quad \Num{2} $g:x\mapsto3(x-2)^2$ \quad \Num{3} $h:x\mapsto\dfrac1{2x-4}$ \quad \Num{4} $k:x\mapsto\sqrt{x-3}$\par
+\textbf{الحل:} \Num{1} $a<b\Rightarrow4a+7<4b+7$: \bxt{$f$ متزايدة تمامًا على $\R$}.\par
+\Num{2} إذا كان $a<b\leqslant2$: $a-2<b-2\leqslant0$ ، ومنه $(a-2)^2>(b-2)^2$ و $g(a)>g(b)$: \bxt{متناقصة تمامًا على $]-\infty;2]$} ، وبنفس الطريقة \bxt{متزايدة تمامًا على $[2;+\infty[$}.\par
+\Num{3} $D_h=\R-\{2\}$. إذا كان $2<a<b$: $0<2a-4<2b-4$ ، ومنه $\dfrac1{2a-4}>\dfrac1{2b-4}$ ، وإذا كان $a<b<2$: $2a-4<2b-4<0$ ، ومنه أيضًا $\dfrac1{2a-4}>\dfrac1{2b-4}$: \bxt{$h$ متناقصة تمامًا على $]-\infty;2[$ وعلى $]2;+\infty[$}.\par
+\Num{4} إذا كان $3\leqslant a<b$: $0\leqslant a-3<b-3$ ، ومنه $\sqrt{a-3}<\sqrt{b-3}$: \bxt{$k$ متزايدة تمامًا على $[3;+\infty[$}.\par
+\textbf{عمل منزلي:} تمارين 35 ، 36 ، 37 ، 40 ، 41 ، 45 الصفحة 76-77.\par
+\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
+% =====================================================================
 \newpage
-\ModhHead{15}{1 ج م ع ت}{تحليل}{عموميات على الدوال}{02 سا}{القيم الحدية لدالة}%
-{\begin{itemize}\item اتجاه التغير وجدول التغيرات.\item المتطابقات الشهيرة.\end{itemize}}%
-{\begin{itemize}\item تعريف القيمة الحدية العظمى والصغرى.\item تعيين القيم الحدية بالحاسبة البيانية وبالحساب.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+\ModhHead{19}{1 ج م ع ت}{تحليل}{عموميات على الدوال}{02 سا}{القيم الحدية لدالة}%
+{\begin{itemize}\item التمثيل البياني لدالة والقراءة البيانية.\item جدول تغيرات دالة.\end{itemize}}%
+{\begin{itemize}\item إيجاد القيمة الحدية لدالة على مجال.\item توظيف تعريف القيمة الحدية لدالة على مجال من تمثيلها البياني أو من جدول تغيراتها.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الأنترنت.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} قذيفة ترتفع ثم تنزل: ما أعلى ارتفاع تبلغه؟}{10 د}{ربط بالواقع.}
-\Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par مستطيل محيطه $20$ cm وأحد بعديه $x$. \Num{1} عبّر عن مساحته $A(x)$. \Num{2} بالحاسبة: ما قيمة $x$ التي تجعل المساحة أكبر ما يمكن؟\par\ck\ البعد الآخر $10-x$ ، و $A(x)=x(10-x)$ حيث $x\in]0;10[$.\par
-\ck\ الجدول: $A(4)=24$ ، $A(5)=25$ ، $A(6)=24$: \textbf{تخمين} أعظم مساحة $25$ عند $x=5$ (مربع).\par
-\ck\ \textbf{إثبات:} $A(x)=25-(x-5)^2\leqslant25$ و $A(5)=25$.\par
-}{35 د}{عمل بالحاسبة البيانية في مجموعات.}
+\textbf{التهيئة:} التذكير بالقراءة البيانية واتجاه تغير دالة وجدول التغيرات.\par
+\Lab{cEx}{نشاط}\ الرسم التالي هو التمثيل البياني للدالة $f$ المعرفة على $[-4;4]$ بـ: $f(x)=\dfrac{4x}{x^2+1}$.
+\GRS{-4.3}{4.3}{-2.4}{2.4}{0.7}
+\Cu{-4}{4}{4*\x/(\x*\x+1)}{100}
+\foreach \t in {-4,-3,-2,-1,1,2,3,4}{\node[below,font=\tiny] at (\t,0){$\t$};}
+\foreach \t in {-2,-1,1,2}{\node[left,font=\tiny] at (0,\t){$\t$};}
+\draw[dashed,cDef] (1,0)--(1,2)--(0,2) (-1,0)--(-1,-2)--(0,-2);
+\node[cThm] at (2.6,1.9){$(C_f)$};
+\GRE
+بقراءة بيانية: \Num{1} شكّل جدول تغيرات $f$. \ \Num{2} أوجد أكبر قيمة تبلغها $f$. \ \Num{3} أوجد أصغر قيمة تبلغها $f$. \ \Num{4} عيّن قيم $x$ التي تبلغ عندها $f$ هاتين القيمتين.}{25 د}{قراءة بيانية.}
+\Row{}{%
+\textbf{المناقشة:} \Num{1} $f(-4)=-\dfrac{16}{17}$ ، $f(4)=\dfrac{16}{17}$:
+\begin{TAB}
+\tkzTabInit[lgt=1.3,espcl=2]{$x$/0.8,$f(x)$/1.6}{$-4$,$-1$,$1$,$4$}
+\tkzTabVar{+/$-\frac{16}{17}$,-/$-2$,+/$2$,-/$\frac{16}{17}$}
+\end{TAB}
+\Num{2} أكبر قيمة: \bx{2} \quad \Num{3} أصغر قيمة: \bx{-2} \quad \Num{4} تبلغ $f$ أكبر قيمة عند \bx{x=1} وأصغر قيمة عند \bx{x=-1}.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $f$ دالة معرفة على مجال $I$ و $a\in I$:\par\ck\ $f(a)$ \textbf{قيمة حدية عظمى} لـ $f$ على $I$ إذا كان $f(x)\leqslant f(a)$ لكل $x\in I$.\par
-\ck\ $f(a)$ \textbf{قيمة حدية صغرى} إذا كان $f(x)\geqslant f(a)$ لكل $x\in I$.\par
-\Lab{cMeth}{إثبات قيمة حدية}\ نكتب $f(x)$ على شكل $m+(\ldots)^2$ (صغرى) أو $M-(\ldots)^2$ (عظمى) ، ونعيّن القيمة التي تبلغها.\par}{50 د}{نؤكد الفرق بين التخمين والبرهان.}
+\Lab{cDef}{تعريف: القيم الحدية لدالة}\ $f$ دالة معرفة على مجال $I$ من $\R$.\par
+\ck\ \textbf{القيمة الحدية العظمى} لـ $f$ على $I$ هي أكبر صورة $f(a)$ تبلغها $f$ من أجل عدد $a$ من $I$: من أجل كل $x$ من $I$: $\LW{f(x)\leqslant f(a)}$.\par
+\ck\ \textbf{القيمة الحدية الصغرى} لـ $f$ على $I$ هي أصغر صورة $f(b)$ تبلغها $f$ من أجل عدد $b$ من $I$: من أجل كل $x$ من $I$: $\LW{f(x)\geqslant f(b)}$.\par
+\Lab{cEx}{مثال 1}\ $f$ معرفة بالتمثيل البياني التالي (على $\left[-\frac52;\frac12\right]$):
+\GRS{-3.2}{1.3}{-2.4}{2.4}{0.65}
+\Cu{-2.5}{0.5}{\x*\x*\x+3*\x*\x-2}{80}
+\draw[dashed,cDef] (-2,0)--(-2,2)--(0,2);
+\fill (-2,2) circle(1.8pt); \fill (0,-2) circle(1.8pt);
+\foreach \t in {-3,-2,-1,1}{\node[below,font=\tiny] at (\t,0){$\t$};}
+\foreach \t in {-2,-1,1,2}{\node[left,font=\tiny] at (0,\t){$\t$};}
+\node[cThm] at (-2.6,2.3){$(C_f)$};
+\GRE
+\ck\ $f$ تقبل \bxt{قيمة حدية صغرى على $\left[-\frac52;\frac12\right]$ عند $0$ تساوي $-2$}.\par
+\ck\ $f$ تقبل \bxt{قيمة حدية كبرى عند $-2$ تساوي $2$}.\par
+\Lab{cRem}{ملاحظات}\ \ck\ إذا قبلت دالة قيمة حدية صغرى أو كبرى نقول إنها تقبل قيمة حدية. \ \ck\ يمكن أن تبلغ دالة قيمتها الحدية عند أكثر من عنصر. \ \ck\ القيمة الحدية عدد حقيقي دائمًا ($-\infty$ و $+\infty$ ليستا قيمتين حديتين).}{40 د}{}
 \Row{}{%
-\Lab{cEx}{مثال}\ $f(x)=x^2-4x+5=(x-2)^2+1\geqslant1$ و $f(2)=1$: القيمة الحدية الصغرى $1$ عند $x=2$.\par\Lab{cRem}{ملاحظات}\ نقرأ القيم الحدية من جدول التغيرات: عند تغيّر اتجاه السهم.\par}{}{}
-\Row{}{%
-\Lab{cThm!80!black}{حذار}\ الحاسبة تعطي \textbf{تخميناً} لا برهاناً.}{}{}
+\Lab{cEx}{مثال 2}\ الدالة $f:x\mapsto x^4-2x^2$ تبلغ قيمتها الحدية الصغرى $-1$ عند عنصرين: $x=-1$ و $x=1$.
+\GRS{-2}{2}{-1.5}{4}{0.7}
+\Cu{-1.8}{1.8}{\x*\x*\x*\x-2*\x*\x}{100}
+\draw[dashed,cDef] (-1,0)--(-1,-1)--(1,-1)--(1,0);
+\foreach \t in {-1,1}{\node[above,font=\tiny] at (\t,0){$\t$};}
+\node[left,font=\tiny] at (0,-1){$-1$};
+\node[cThm] at (1.6,3.4){$(C_f)$};
+\GRE
+\Lab{cMeth}{تعيين القيم الحدية}\ \ck\ \textbf{من التمثيل البياني:} الصغرى هي ترتيب أدنى نقطة من المنحنى ، والكبرى ترتيب أعلى نقطة. \ \ck\ \textbf{من جدول التغيرات:} الصغرى أدنى قيمة في الجدول ، والكبرى أكبر قيمة فيه.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par عيّن القيمة الحدية لكل دالة: \Num{1} $g(x)=-x^2+2x+3$ ؛ \Num{2} $h(x)=x^2+6x+10$.\par\textbf{الحل:} \Num{1} $g(x)=4-(x-1)^2$: عظمى $4$ عند $1$ ؛ \Num{2} $h(x)=(x+3)^2+1$: صغرى $1$ عند $-3$.\par\textbf{واجب منزلي:} تمارين من الكتاب المدرسي.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{تطبيق 1}\ باستعمال التمثيلات البيانية المعطاة في تمرين 35 صفحة 76 ، عيّن القيم الحدية الصغرى والكبرى لكل دالة على مجموعة تعريفها.\par
+\Lab{cEx}{تطبيق 2}\ باستعمال جدول التغيرات التالي عيّن القيم الحدية الصغرى والكبرى للدالة $f$ على مجموعة تعريفها:
+\begin{TAB}
+\tkzTabInit[lgt=1.3,espcl=2]{$x$/0.8,$f(x)$/1.6}{$-4$,$-1$,$2$,$6$}
+\tkzTabVar{+/$3$,-/$-5$,+/$7$,-/$-2$}
+\end{TAB}
+\textbf{الحل:} \bxt{القيمة الحدية الصغرى $-5$ عند $-1$} ، و \bxt{القيمة الحدية الكبرى $7$ عند $2$}.}{35 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{تطبيق 3}\ $f$ الدالة المعرفة على $\R$ بـ: $f(x)=(x+2)^2-3$. \ \Num{1} عيّن اتجاه تغير $f$ ثم شكّل جدول تغيراتها. \ \Num{2} هل تقبل $f$ قيمًا حدية؟\par
+\textbf{الحل:} \Num{1} إذا كان $a<b\leqslant-2$: $a+2<b+2\leqslant0$ ، ومنه $(a+2)^2>(b+2)^2$ و $f(a)>f(b)$: \bxt{$f$ متناقصة تمامًا على $]-\infty;-2]$} ، وبنفس الطريقة \bxt{متزايدة تمامًا على $[-2;+\infty[$}. \ $f(-2)=-3$:
+\begin{TAB}
+\tkzTabInit[lgt=1.3,espcl=2]{$x$/0.8,$f(x)$/1.6}{$-\infty$,$-2$,$+\infty$}
+\tkzTabVar{+/,-/$-3$,+/}
+\end{TAB}
+\Num{2} $(x+2)^2\geqslant0$ ، أي $f(x)\geqslant-3=f(-2)$: \bxt{$f$ تقبل قيمة حدية صغرى $-3$ عند $-2$} ، ولا تقبل قيمة حدية كبرى (صورها تكبر بلا حد).\par
+\textbf{عمل منزلي:} تمارين 39 ، 41 ، 42 ، 45 ، 46 ، 47 الصفحة 76-77.\par
+\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
+% =====================================================================
 \newpage
-\ModhHead{16}{1 ج م ع ت}{تحليل}{عموميات على الدوال}{02 سا}{شفعية دالة والبرهان بمثال مضاد}%
-{\begin{itemize}\item التناظر المحوري والمركزي.\item مجموعة تعريف دالة.\end{itemize}}%
-{\begin{itemize}\item التعرّف على دالة زوجية أو فردية.\item التفسير البياني للشفعية.\item البرهان بمثال مضاد.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+\ModhHead{20}{1 ج م ع ت}{تحليل}{عموميات على الدوال}{02 سا}{شفعية دالة}%
+{\begin{itemize}\item التمثيل البياني لدالة والقراءة البيانية.\item التناظر المركزي والتناظر المحوري.\end{itemize}}%
+{\begin{itemize}\item التعرف على شفعية دالة انطلاقًا من تمثيلها البياني أو بالاعتماد على التعبير الجبري للخاصية.\end{itemize}}%
+{المنهاج ، الكتاب المدرسي ، مراجع ، الأنترنت.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} صورة فراشة: ما الذي تلاحظه؟ ارسم نظير نقطة بالنسبة إلى محور التراتيب.}{10 د}{صورة من الطبيعة.}
-\Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مناقشة نشاط 04 صفحة 50}\par\ck\ $f(x)=x^4-2x^2$ على $[-2;2]$: $f(2)=f(-2)=8$ و $f(1)=f(-1)=-1$.\par
-\ck\ من أجل كل $x$ من $[-2;2]$: $-x\in[-2;2]$ و $f(-x)=(-x)^4-2(-x)^2=f(x)$.\par
-\ck\ النقطتان $M(x;f(x))$ و $M_1(-x;f(x))$ متناظرتان بالنسبة إلى محور التراتيب: المنحنى متناظر.\par
-}{35 د}{عمل ثنائي على التمثيل البياني.}
+\textbf{التهيئة:} التذكير بالقراءة البيانية والتناظر المركزي والتناظر المحوري.\par
+\Lab{cEx}{نشاط}\ $f$ الدالة المعرفة على $[-2;2]$ بـ: $f(x)=x^4-2x^2$ ، و $(C_f)$ تمثيلها البياني.
+\GRS{-2.5}{2.5}{-1.5}{8}{0.5}
+\Cu{-2}{2}{\x*\x*\x*\x-2*\x*\x}{100}
+\draw[dashed,cDef] (-2,0)--(-2,8)--(2,8)--(2,0) (-1,0)--(-1,-1)--(1,-1)--(1,0);
+\foreach \t in {-2,-1,1,2}{\node[below,font=\tiny] at (\t,0){$\t$};}
+\node[left,font=\tiny] at (0,8){$8$}; \node[left,font=\tiny] at (0,-1){$-1$};
+\node[cThm] at (1.9,6){$(C_f)$};
+\GRE
+\Num{1} قارن بيانيًا ثم حسابيًا بين $f(-1)$ و $f(1)$ ، وبين $f(-2)$ و $f(2)$. \ \Num{2} بيّن أنه إذا كان $x\in[-2;2]$ فإن $-x\in[-2;2]$. \ \Num{3} ما الخاصية الهندسية التي يحققها المنحنى؟ \ \Num{4} $M\big(x;f(x)\big)$ و $M'\big(-x;f(-x)\big)$: بيّن أن $M$ و $M'$ متناظرتان بالنسبة إلى محور التراتيب.}{25 د}{قراءة بيانية.}
+\Row{}{%
+\textbf{المناقشة:} \Num{1} بيانيًا: $f(-1)=f(1)=-1$ و $f(-2)=f(2)=8$. \ حسابيًا: $f(-1)=1-2=-1=f(1)$ ؛ \ $f(-2)=16-8=8=f(2)$.\par
+\Num{2} $-2\leqslant x\leqslant2\iff2\geqslant-x\geqslant-2$ ، ومنه $-x\in[-2;2]$.\par
+\Num{3} \bxt{المنحنى متناظر بالنسبة إلى محور التراتيب}.\par
+\Num{4} $f(-x)=(-x)^4-2(-x)^2=x^4-2x^2=f(x)$ ، إذن $M'(-x;f(x))$ نظيرة $M(x;f(x))$ بالنسبة إلى محور التراتيب.\par
+\textbf{الاستنتاج:} \bxt{الدالة $f$ زوجية}.}{}{}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $D_f$ متناظرة بالنسبة إلى $0$:\par\ck\ $f$ \textbf{زوجية} إذا كان $f(-x)=f(x)$ لكل $x\in D_f$.\par
-\ck\ $f$ \textbf{فردية} إذا كان $f(-x)=-f(x)$ لكل $x\in D_f$.\par
-\Lab{cThm}{التفسير البياني}\ $f$ زوجية $\iff$ $(C_f)$ متناظر بالنسبة إلى محور التراتيب ؛ $f$ فردية $\iff$ $(C_f)$ متناظر بالنسبة إلى المبدأ $O$.\par}{50 د}{نرسم المنحنيين النموذجيين على السبورة.}
+\Lab{cDef}{تعريف 1}\ نقول عن جزء $D$ من $\R$ إنه \textbf{متناظر بالنسبة إلى الصفر} إذا وفقط إذا كان: من أجل كل $x\in D$ فإن $\LW{-x\in D}$.\par
+\Lab{cEx}{مثال 1}\ \ck\ $\R$ ، $\R^*$ ، $[-5;5]$ ، $]-11;11[$ و $]-\infty;-4]\cup[4;+\infty[$ متناظرة بالنسبة إلى الصفر.\par
+\ck\ $[-3;3[$ ، $[6;8]$ و $]-\infty;-2]\cup[3;+\infty[$ غير متناظرة بالنسبة إلى الصفر (مثلًا $3\notin[-3;3[$ بينما $-3\in[-3;3[$).\par
+\Lab{cDef}{تعريف 2}\ $D$ جزء من $\R$ و $f$ دالة معرفة على $D$:\par
+\ck\ $f$ \textbf{زوجية} إذا كان $D$ متناظرًا بالنسبة إلى $0$ ، ومن أجل كل $x$ من $D$: $\LW{f(-x)=f(x)}$.\par
+\ck\ $f$ \textbf{فردية} إذا كان $D$ متناظرًا بالنسبة إلى $0$ ، ومن أجل كل $x$ من $D$: $\LW{f(-x)=-f(x)}$.}{45 د}{}
 \Row{}{%
-\Lab{cEx}{مثال}\par\ck\ $x\mapsto x^2+1$ زوجية ؛ $x\mapsto x^3-x$ فردية.\par
-\ck\ $k(x)=\dfrac{1}{x-1}$: $D_k=\R-\{1\}$ غير متناظرة ، إذن $k$ ليست زوجية ولا فردية.\par
-\Lab{cMeth}{البرهان بمثال مضاد}\ لإثبات أن خاصية «من أجل كل $x$» خاطئة يكفي مثال واحد: $h(x)=x^2+x$ ليست زوجية لأن $h(-1)=0\ne h(1)=2$ ، وليست فردية لأن $h(-1)\ne-h(1)$.\par}{}{}
+\Lab{cEx}{مثال 2}\par
+\Num{1} $f(x)=5x^2-3$ على $\R$: $\R$ متناظرة ، و $f(-x)=5(-x)^2-3=5x^2-3=f(x)$: \bxt{$f$ زوجية}.\par
+\Num{2} $g(x)=\dfrac1x$ على $\R^*$: $\R^*$ متناظرة ، و $g(-x)=\dfrac1{-x}=-\dfrac1x=-g(x)$: \bxt{$g$ فردية}.\par
+\Num{3} $h(x)=\sqrt x$ على $\R^+$: $\R^+$ غير متناظرة بالنسبة إلى $0$: \bxt{$h$ ليست زوجية ولا فردية}.\par
+\Num{4} $k(x)=-2x+5$ على $\R$: $k(-x)=2x+5$ لا تساوي $k(x)$ ولا $-k(x)$: \bxt{$k$ ليست زوجية ولا فردية}.\par
+\Lab{cDef}{التفسير الهندسي}\ في معلم متعامد: منحنى الدالة الزوجية \textbf{متناظر بالنسبة إلى محور التراتيب} ، ومنحنى الدالة الفردية \textbf{متناظر بالنسبة إلى مبدأ المعلم}.
+\begin{center}\begin{LTR}\begin{tikzpicture}[x=0.75cm,y=0.75cm,font=\scriptsize]
+\begin{scope}
+\draw[->] (-2.5,0)--(2.6,0) node[right]{$x$}; \draw[->] (0,-0.5)--(0,4.4) node[above]{$y$};
+\draw[cThm,very thick,domain=-2:2,samples=50] plot(\x,{\x*\x});
+\draw[dashed,cDef] (1.5,0)--(1.5,2.25)--(-1.5,2.25)--(-1.5,0);
+\fill (1.5,2.25) circle(1.6pt); \fill (-1.5,2.25) circle(1.6pt);
+\node[below] at (1.5,0){$x$}; \node[below] at (-1.5,0){$-x$}; \node[above] at (0.75,2.25){$f(x)$}; \node[above] at (-0.75,2.25){$f(-x)$};
+\node[cThm,font=\small] at (0,-1.1){\ar{دالة زوجية}};
+\end{scope}
+\begin{scope}[xshift=7.5cm,yshift=2cm]
+\draw[->] (-2.5,0)--(2.6,0) node[right]{$x$}; \draw[->] (0,-2.5)--(0,2.5) node[above]{$y$};
+\draw[cThm,very thick,domain=-1.6:1.6,samples=50] plot(\x,{0.5*\x*\x*\x});
+\draw[dashed,cDef] (1.4,0)--(1.4,1.372)--(0,1.372) (-1.4,0)--(-1.4,-1.372)--(0,-1.372);
+\fill (1.4,1.372) circle(1.6pt); \fill (-1.4,-1.372) circle(1.6pt);
+\node[below] at (1.4,0){$x$}; \node[above] at (-1.4,0){$-x$}; \node[right] at (0,1.372){$f(x)$}; \node[right] at (0,-1.372){$f(-x)$};
+\node[cThm,font=\small] at (0,-3.1){\ar{دالة فردية}};
+\end{scope}
+\end{tikzpicture}\end{LTR}\end{center}}{}{رسم الشكلين.}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ الأمثلة لا تكفي لإثبات أن خاصية صحيحة.}{}{}
+\Lab{cRem}{ملاحظة}\ \ck\ الدالة المعدومة $x\mapsto0$ هي الدالة الوحيدة الزوجية والفردية في آن واحد. \ \ck\ التمثيل البياني وسيلة للتخمين.\par
+\ck\ للبرهان على أن $f$ ليست زوجية (أو ليست فردية) يكفي إيجاد عنصر $a$ من $D_f$ حيث $f(-a)\neq f(a)$ (أو $f(-a)\neq-f(a)$): هذا هو \textbf{البرهان بمثال مضاد}.\par
+\Lab{cEx}{مثال 3}\ $f(x)=6x+8$ على $\R$: $f(1)=14$ و $f(-1)=2$ ، إذن $f(-1)\neq f(1)$ و $f(-1)\neq-f(1)$: \bxt{$f$ ليست زوجية ولا فردية}.\par
+\Lab{cThm}{مبرهنة}\ $f$ دالة معرفة على مجال $I=[-a;a]$ حيث $a$ عدد حقيقي موجب:\par
+\ck\ الدالة $h$ المعرفة على $I$ بـ: $\LW{h(x)=\dfrac{f(x)+f(-x)}2}$ زوجية. \quad \ck\ الدالة $k$ المعرفة على $I$ بـ: $\LW{k(x)=\dfrac{f(x)-f(-x)}2}$ فردية.\par
+\textbf{البرهان:} $I$ متناظر ، و $h(-x)=\dfrac{f(-x)+f(x)}2=h(x)$ ، و $k(-x)=\dfrac{f(-x)-f(x)}2=-k(x)$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par ادرس شفعية: \Num{1} $f(x)=\dfrac{x}{x^2+1}$ ؛ \Num{2} $g(x)=|x|+x^2$ ؛ \Num{3} $k(x)=2x+1$.\par\textbf{الحل:} \Num{1} $f(-x)=-f(x)$: فردية ؛ \Num{2} $g(-x)=g(x)$: زوجية ؛ \Num{3} $k(1)=3$ و $k(-1)=-1$: ليست زوجية ولا فردية.\par\textbf{واجب منزلي:} تمارين حوصلة المحور من الكتاب المدرسي.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو تمارين حوصلة.}
+\Lab{cEx}{تطبيق 1}\ تمرين 52 صفحة 78.\par
+\Lab{cEx}{تطبيق 2}\ ادرس شفعية الدوال الآتية على مجموعة تعريفها:\par
+\Num{1} $f:x\mapsto2x^3+3x$ \quad \Num{2} $g:x\mapsto2x^2+7$ \quad \Num{3} $h:x\mapsto2x^2+5x$\par
+\Num{4} $g:x\mapsto|-x|+2$ \quad \Num{5} $h:x\mapsto\dfrac{x^2+1}{x^2+2}$ \quad \Num{6} $h:x\mapsto\dfrac{2x}{1+x^2}$\par
+\textbf{الحل:} مجموعة التعريف في كل الحالات $\R$ (متناظرة) لأن $x^2+2\neq0$ و $1+x^2\neq0$.\par
+\Num{1} $f(-x)=-2x^3-3x=-f(x)$: \bxt{فردية}. \quad \Num{2} $g(-x)=2x^2+7=g(x)$: \bxt{زوجية}.\par
+\Num{3} $h(1)=7$ و $h(-1)=-3$: $h(-1)\neq h(1)$ و $h(-1)\neq-h(1)$: \bxt{ليست زوجية ولا فردية}.\par
+\Num{4} $g(-x)=|x|+2=|-x|+2=g(x)$: \bxt{زوجية}. \quad \Num{5} $h(-x)=\dfrac{x^2+1}{x^2+2}=h(x)$: \bxt{زوجية}. \quad \Num{6} $h(-x)=\dfrac{-2x}{1+x^2}=-h(x)$: \bxt{فردية}.\par
+\textbf{عمل منزلي:} تمارين 48 ، 49 ، 50 ، 51 الصفحة 78.\par
+\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{30 د}{تقويم فردي.}
 \end{Sayr}
 \end{document}
