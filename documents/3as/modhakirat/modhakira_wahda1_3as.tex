@@ -3,7 +3,7 @@
 %  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
 % ============================================================
 \documentclass[12pt,a4paper]{article}
-\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage[a4paper,margin=1.2cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{icomma}
 \usepackage[english,bidi=default,layout=lists]{babel}
@@ -12,7 +12,7 @@
 \babelfont{sf}[Scale=1.08]{Amiri}
 \usepackage[most]{tcolorbox}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,calc,shadings}
+\usetikzlibrary{arrows.meta,calc,shadings,patterns}
 \usepackage{array}
 \usepackage{colortbl}
 \usepackage{fancyhdr}
@@ -161,7 +161,7 @@
 \newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
 \pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
 \newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
-\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\newcommand{\bxtOLD}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
 \usepackage{longtable}
 \setlength{\LTpre}{4pt}\setlength{\LTpost}{0pt}
 \newcommand{\Phase}[1]{\textbf{#1}}
@@ -188,228 +188,856 @@
 \end{LTR}
 \par\smallskip\textbf{الوسائل:} #9\par\smallskip}
 \newenvironment{Sayr}{%
-\begin{LTR}\renewcommand{\arraystretch}{1.25}
-\begin{longtable}{|p{0.17\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|p{0.53\textwidth}|>{\centering\arraybackslash}p{0.12\textwidth}|}
-\hline\rowcolor{cThm!12}\ar{\textbf{توجيهات وتعاليق}} & \ar{\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\textbf{مراحل الحصة}}\\\hline\endhead
+\begin{LTR}\renewcommand{\arraystretch}{1.25}\setlength{\tabcolsep}{4pt}\relpenalty=10000\binoppenalty=10000\tolerance=9000\emergencystretch=0.3\linewidth
+\begin{longtable}{|p{0.09\textwidth}|>{\centering\arraybackslash}p{0.05\textwidth}|p{0.71\textwidth}|>{\centering\arraybackslash}p{0.09\textwidth}|}
+\hline\rowcolor{cThm!12}\ar{\footnotesize\textbf{توجيهات وتعاليق}} & \ar{\footnotesize\textbf{المدة}} & \ar{\textbf{سير الحصة}} & \ar{\footnotesize\textbf{مراحل الحصة}}\\\hline\endhead
 \hline\endfoot}{\end{longtable}\end{LTR}}
 % سطر في الجدول: \Row{مرحلة}{سير}{مدة}{توجيهات}
-\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{#2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
+\newcommand{\RaggedEnd}{\leftskip=0pt plus 1fil\relax}
+\newcommand{\Row}[4]{\ar{\small #4} & \ar{#3} & \ar{\RaggedEnd #2} & \cellcolor{cThm!8}\ar{\Phase{#1}}\\\hline}
 
 \newcommand{\Lab}[2]{\foreignlanguage{english}{\tcbox[on line,colback=#1,colframe=#1,boxrule=0pt,arc=2pt,boxsep=1pt,left=5pt,right=5pt,top=1pt,bottom=1pt]{\ar{\textcolor{white}{\textbf{#2}}}}}}
 \newcommand{\Num}[1]{\foreignlanguage{english}{\tikz[baseline=(c.base)]\node[fill=cDef,text=white,inner sep=2pt,font=\footnotesize\bfseries](c){#1};}}
 \newcommand{\ck}{\ensuremath{{\color{cRem}\checkmark}}}
 \newenvironment{Kad}[1]{\par\smallskip\Lab{#1}}{\par}
-\SetHeader{\small\bfseries\color{cSec}مذكرات محور: الاشتقاقية والاستمرارية}{\small\color{cSec}السنة الثالثة ثانوي -- علوم تجريبية}
+\newcommand{\RR}[1]{\ifmmode{\color{cThm}#1}\else$\mbox{\color{cThm}#1}$\fi}
+\newcommand{\T}[1]{$\mbox{\color{cDef}\bfseries #1}$}
+\providecommand{\LW}[1]{{\color{cDef}#1}}
+\newcommand{\bxt}[1]{}
+\newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
+\renewcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\renewcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{\color{cThm}#1}}}}
+\newcommand{\Car}[1]{\left\{\begin{array}{l}#1\end{array}\right.}
+\newcommand{\Lm}[1]{\displaystyle\lim_{x\to#1}}
+\newcommand{\LDx}[3]{لدينا: $\Lm{#2}#1=\bx{#3}$ لأنّ: \quad}
+\newcommand{\LD}{\par\LDx}
+\newcommand{\GRS}[5]{\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\scriptsize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=1.6mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=1.6mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};}
+\newcommand{\GRE}{\end{tikzpicture}\end{LTR}\end{center}}
+\SetHeader{\small\bfseries\color{cSec}مذكرات محور: الاشتقاقية والاستمرارية}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
 \begin{document}
 \begin{LTR}
-\begin{tcolorbox}[enhanced,colback=cThm!85!black,colframe=cThm!85!black,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
-{\color{white}\fontsize{24}{30}\selectfont\bfseries مذكرات محور: الاشتقاقية والاستمرارية}\\[8pt]
-{\color{white}\large السنة الثالثة ثانوي -- علوم تجريبية (صالحة لشعبتي رياضيات وتقني رياضي)}\\[4pt]
-{\color{white}\large 9 مذكرات (18 ساعة) -- السنة الدراسية 2026-2027}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\fontsize{24}{30}\selectfont\bfseries مذكرات محور: الاشتقاقية والاستمرارية}\\[8pt]
+{\color{cSec!80!black}\large السنة الثالثة ثانوي -- علوم تجريبية ، رياضيات ، تقني رياضي}\\[4pt]
+{\color{cSec!80!black}\large 12 مذكرة -- السنة الدراسية 2026-2027}
 \end{tcolorbox}
 \end{LTR}
 \begin{BOX}{cThm}{يتضمن هذا العمل}
-\begin{enumerate}[label=\textbf{مذكرة \arabic{enumi}:},leftmargin=6em]
-\item تذكير: العدد المشتق ، المماس ، مشتقات الدوال المألوفة.
-\item الاستمرارية.
-\item مبرهنة القيم المتوسطة.
-\item مشتق دالة مركبة.
-\item المشتقات المتتابعة ، نقطة الانعطاف.
-\item اتجاه التغير ، القيم الحدية ، التقريب التآلفي.
-\item توظيف المشتقات لحل مشكلات.
-\item دراسة الدوال المثلثية.
-\item المعادلات التفاضلية $y^{\prime}=f$.
-\end{enumerate}
-مراجع النشاطات والتمارين: الكتاب المدرسي للسنة الثالثة ثانوي ، الجزء الأول (باب النهايات والاستمرارية ص 7--36 ، باب الاشتقاقية ص 40--70).
+\RL{0.48}{\textbf{مذكرة 01:} العدد المشتق والمماس.\par \textbf{مذكرة 02:} الاستمرارية.\par \textbf{مذكرة 03:} مبرهنة القيم المتوسطة.\par \textbf{مذكرة 04:} قابلية اشتقاق دالة عند عدد.\par \textbf{مذكرة 05:} حساب مشتقة دالة.\par \textbf{مذكرة 06:} مشتقة دالة مركبة.}{0.48}{\textbf{مذكرة 07:} تطبيقات الاشتقاقية: اتجاه التغير.\par \textbf{مذكرة 08:} القيم الحدية ونقطة الانعطاف.\par \textbf{مذكرة 09:} التقريب التآلفي وطريقة أولر.\par \textbf{مذكرة 10:} توظيف المشتقات لحل مشكلات.\par \textbf{مذكرة 11:} دراسة الدوال المثلثية.\par \textbf{مذكرة 12:} دراسة الدوال المثلثية (تابع).}
+\par\smallskip مراجع النشاطات والتمارين: الكتاب المدرسي للسنة الثالثة ثانوي ، الجزء الأول. \ \LW{القوانين بالأزرق} ، و\bxt{النتائج بالأحمر}.
 \end{BOX}
 \newpage
-\ModhHead{01}{3 ع ت}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{تذكير: العدد المشتق ، المماس ، مشتقات الدوال المألوفة}%
-{\begin{itemize}\item الاشتقاقية (2 ع ت).\end{itemize}}%
-{\begin{itemize}\item حساب مشتقة دالة ، وتعيين معادلة المماس عند نقطة.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+% =====================================================================
+\ModhHead{01}{3 ع ت + 3 ت ر + 3 ر}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{العدد المشتق ، الدالة المشتقة والمماس}%
+{\begin{itemize}\item حساب مشتقة دالة.\item تعيين معادلة مماس عند نقطة.\end{itemize}}%
+{\begin{itemize}\item تذكير: حساب مشتقة دالة ، تعيين معادلة مماس عند نقطة.\end{itemize}}%
+{الكتاب المدرسي ، الأنترنت.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} ما معنى العدد المشتق هندسياً؟ ما مشتقة $\dfrac1x$ ؟ و $\sqrt x$ ؟}{10 د}{تقويم تشخيصي.}
-\Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مناقشة نشاط 01 صفحة 40}\par\ck\ قراءة أعداد مشتقة من معاملات توجيه المماسات المرسومة.\par
-\ck\ حساب مشتقة مجموع وجداء دالتين انطلاقاً من القراءة البيانية.\par
-}{35 د}{قراءة بيانية.}
+\Lab{cEx}{مناقشة نشاط 01 صفحة 40}\par
+\Num{1} \textbf{حساب الأعداد المشتقة (قراءة بيانية):}\par
+$f^{\prime}(-1)$ هو معامل توجيه المماس لـ $(C_f)$ عند النقطة ذات الفاصلة $-1$. نختار نقطتين من المماس ، مثلًا $A(-1;2)$ و $B(-2;2)$:
+\[f^{\prime}(-1)=\frac{2-2}{-1+2}=\bx{0}\]
+وبنفس الطريقة: \quad $f^{\prime}(2)=\bx{-1}$ \ ؛ \ $g^{\prime}(-1)=\bx{\frac13}$ \ ؛ \ $g^{\prime}(2)=\bx{\frac12}$\par
+\textbf{باستعمال قواعد الحساب:}
+\[\LW{(f+g)^{\prime}=f^{\prime}+g^{\prime}}:\quad(f+g)^{\prime}(-1)=0+\frac13=\bx{\frac13}\]
+\[\LW{(fg)^{\prime}=f^{\prime}g+fg^{\prime}}:\quad(fg)^{\prime}(2)=f^{\prime}(2)g(2)+f(2)g^{\prime}(2)=\bx{-2}\]
+\[\LW{\Big(\frac fg\Big)^{\prime}=\frac{f^{\prime}g-fg^{\prime}}{g^2}}:\quad\Big(\frac fg\Big)^{\prime}(2)=\frac{f^{\prime}(2)g(2)-f(2)g^{\prime}(2)}{\big(g(2)\big)^2}=\bx{-\frac12}\]
+\[\LW{\Big(\frac kf\Big)^{\prime}=-\frac{kf^{\prime}}{f^2}}:\quad\Big(\frac3f\Big)^{\prime}(-1)=-\frac{3f^{\prime}(-1)}{\big(f(-1)\big)^2}=\bx{0}\]
+\Num{2} من أجل كل $x$ من $[0;2]$ نضع $h(x)=f(2x-1)$. \quad $\LW{h^{\prime}(x)=2f^{\prime}(2x-1)}$:
+\[h^{\prime}(0)=2f^{\prime}(-1)=\bx{0}\qquad;\qquad h^{\prime}\Big(\frac32\Big)=2f^{\prime}(2)=\bx{-2}\]}{20 د}{قراءة بيانية من الشكل.}
 \Row{بناء المعارف}{%
-\Lab{cThm}{تذكير}\par\ck\ $f$ قابلة للاشتقاق عند $a$: $\lim\limits_{h\to0}\dfrac{f(a+h)-f(a)}h=f^{\prime}(a)$.\par
-\ck\ المماس عند $A(a;f(a))$: $y=f^{\prime}(a)(x-a)+f(a)$.\par
-\ck\ $(uv)^{\prime}=u^{\prime}v+uv^{\prime}$ ، $\left(\dfrac uv\right)^{\prime}=\dfrac{u^{\prime}v-uv^{\prime}}{v^2}$ ، $(x^n)^{\prime}=nx^{n-1}$ ، $(\sqrt x)^{\prime}=\dfrac1{2\sqrt x}$.\par
-\Lab{cEx}{مثال}\ $f(x)=x^3-3x+1$ عند $2$: $f(2)=3$ ، $f^{\prime}(2)=9$ ، المماس $y=9x-15$.\par}{50 د}{جدول المشتقات يُراجع.}
+\Lab{cDef}{تعريف: العدد المشتق}\par
+$f$ دالة معرفة على مجال $I$ من $\R$ ، و $x_0$ و $x_0+h$ عددان من $I$ مع $h\neq0$.\par
+نقول إن $f$ \textbf{تقبل الاشتقاق عند $x_0$} إذا قبلت النسبة $\dfrac{f(x_0+h)-f(x_0)}h$ نهاية حقيقية لما يؤول $h$ إلى $0$. تسمى هذه النهاية \textbf{العدد المشتق} للدالة $f$ عند $x_0$ ونرمز لها بـ $f^{\prime}(x_0)$:
+\[\LW{f^{\prime}(x_0)=\lim_{h\to0}\frac{f(x_0+h)-f(x_0)}h=\lim_{x\to x_0}\frac{f(x)-f(x_0)}{x-x_0}}\]
+\Lab{cRem}{ملاحظة}\ إذا قبلت $f$ الاشتقاق عند كل $x$ من $I$ فهي تقبل الاشتقاق على $I$ ، ونرمز لدالتها المشتقة بـ $f^{\prime}$.}{40 د}{تعريف بالنهاية.}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ $\sqrt x$ غير قابلة للاشتقاق عند $0$.}{}{}
+\Lab{cEx}{مثال}\ $f(x)=x^2+x$ على $\R$. \ \Num{1} برهن أن $f$ قابلة للاشتقاق على $\R$. \ \Num{2} عيّن $f^{\prime}(x)$.\par
+\textbf{الحل:} ليكن $x_0$ عددًا حقيقيًا كيفيًا. نكتب:
+\[\frac{f(x)-f(x_0)}{x-x_0}=\frac{x^2+x-x_0^2-x_0}{x-x_0}=\frac{(x-x_0)(x+x_0+1)}{x-x_0}=x+x_0+1\]
+ومنه: \quad $\Lm{x_0}\dfrac{f(x)-f(x_0)}{x-x_0}=\Lm{x_0}(x+x_0+1)=\bx{2x_0+1}$ \ عدد حقيقي.\par
+إذن $f$ قابلة للاشتقاق عند كل $x_0$ من $\R$ ، و \bx{f^{\prime}(x)=2x+1}.}{}{}
+\Row{}{%
+\Lab{cDef}{التفسير البياني: مماس منحنى دالة}\par
+إذا كانت $f$ قابلة للاشتقاق عند $x_0$ فإن المستقيم الذي يشمل النقطة $A\big(x_0;f(x_0)\big)$ ومعامل توجيهه $f^{\prime}(x_0)$ يسمى \textbf{مماس} المنحنى $(C_f)$ عند $A$ ، ومعادلته:
+\[\LW{y=f^{\prime}(x_0)(x-x_0)+f(x_0)}\]
+\Lab{cMeth}{البرهان}\ المماس من الشكل $y=f^{\prime}(x_0)x+b$ ، و $A\big(x_0;f(x_0)\big)$ تنتمي إليه:\par
+$f(x_0)=f^{\prime}(x_0)x_0+b$ \ ومنه \ $b=f(x_0)-f^{\prime}(x_0)x_0$ \ ، إذن $y=f^{\prime}(x_0)(x-x_0)+f(x_0)$.
+\GRS{-0.5}{4.5}{-0.5}{4.5}{0.7}
+\draw[cDef,very thick,domain=-0.4:3.2,samples=60] plot(\x,{0.35+0.18*exp(\x)});
+\draw[cThm,thick,domain=0.2:3.2] plot(\x,{0.854+0.5*(\x-1.5)*1.66});
+\fill (1.5,1.157) circle(1.5pt) node[above left]{$A$};
+\draw[dashed] (1.5,0)--(1.5,1.157) (0,1.157)--(1.5,1.157);
+\node[below] at (1.5,0){$x_0$}; \node[left] at (0,1.157){$f(x_0)$};
+\draw[->,blue] (1.5,1.157)--(2.5,1.157) node[midway,below]{$1$}; \draw[->,blue] (2.5,1.157)--(2.5,1.987) node[midway,right]{$f^{\prime}(x_0)$};
+\node[cDef] at (3.3,4.3){$(\mathcal C)$}; \node[cThm] at (0.4,0.4){$(T)$};
+\GRE}{}{}
+\Row{}{%
+\Lab{cEx}{مثال}\ $f(x)=x^3+2$. \ معادلة المماس عند النقطة ذات الفاصلة $1$: \quad $f(1)=3$ \ ، \ $f^{\prime}(x)=3x^2$ \ ، \ $f^{\prime}(1)=3$
+\[y=f^{\prime}(1)(x-1)+f(1)=3(x-1)+3\quad\text{\ar{أي}}\quad\bx{y=3x}\]
+\Lab{cMeth}{تطبيق}\ تمرين 4 صفحة 58.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $f(x)=\dfrac{2x-1}{x+1}$. اكتب معادلة المماس عند النقطة ذات الفاصلة $0$.\par\textbf{الحل:} $f^{\prime}(x)=\dfrac3{(x+1)^2}$ ، $f^{\prime}(0)=3$ ، $f(0)=-1$: $y=3x-1$.\par\textbf{واجب منزلي:} تمرينا 5 و 6 صفحة 58.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{حل التطبيق}\par
+\textbf{المعطيات:} $(C_f)$ يشمل النقطة $A(0;2)$ ، ومماسه عند $A$ معامل توجيهه $-3$.\par
+\Num{1} $A(0;2)\in(C_f)$ ، إذن \bx{f(0)=2} ، و $-3$ معامل توجيه المماس عند $A$ ، إذن \bx{f^{\prime}(0)=-3}.\par
+\Num{2} العدد $\dfrac{f(x)-2}x=\dfrac{f(x)-f(0)}{x-0}$ هو \bxt{نسبة تزايد الدالة $f$ بين $0$ و $x$}.\par
+\Num{3} $f$ قابلة للاشتقاق عند $0$ ، إذن: \quad $\Lm{0}\dfrac{f(x)-2}x=\Lm{0}\dfrac{f(x)-f(0)}{x-0}=f^{\prime}(0)=\bx{-3}$\par
+\textbf{واجب منزلي:} تمرينا 5 و 6 صفحة 58.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{20 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
-\ModhHead{02}{3 ع ت}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{الاستمرارية}%
-{\begin{itemize}\item النهايات (2 ع ت) ، الاشتقاقية.\end{itemize}}%
-{\begin{itemize}\item التعرف على دالة مستمرة بيانياً وجبرياً.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+% =====================================================================
+\ModhHead{02}{3 ع ت + 3 ت ر + 3 ر}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{الاستمرارية}%
+{\begin{itemize}\item مفاهيم أولية حول الدوال العددية.\end{itemize}}%
+{\begin{itemize}\item التعرف بيانيًا على دالة مستمرة على مجال.\item دراسة استمرارية دالة.\end{itemize}}%
+{الكتاب المدرسي ، الأنترنت.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} هل يمكن رسم منحني الدالة «الجزء الصحيح» دون رفع القلم؟}{10 د}{رسم بالحاسبة.}
-\Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مناقشة نشاط 03 صفحة 7}\par\ck\ الدالة الجزء الصحيح $E(x)$: منحناها «يقفز» عند كل عدد صحيح.\par
-\ck\ دوال أخرى يمكن رسمها دون رفع القلم: نقول إنها مستمرة.\par
-}{35 د}{نشاط الكتاب.}
+\Lab{cEx}{مناقشة نشاط 03 صفحة 07}\par
+\Num{1} نرمز بـ $E(x)$ للجزء الصحيح للعدد $x$ (أكبر عدد صحيح أصغر من أو يساوي $x$).\par
+$-3\leqslant-2{,}3<-2$ \ ومنه \ $E(-2{,}3)=\bx{-3}$ \ ؛ \ $E(-1)=\bx{-1}$ \ ؛ \ $1\leqslant\sqrt3<2$ \ ومنه \ $E\big(\sqrt3\big)=\bx{1}$ \ ؛ \ $E(11{,}01)=\bx{11}$\par
+\Num{2} نعتبر الدوال $f$ ، $g$ و $h$ المعرفة على المجال $[-2;1[$ بـ: \quad $f(x)=E(x)$ \ ، \ $g(x)=x-E(x)$ \ ، \ $h(x)=x^2+1$.
+\[f(x)=\begin{cases}-2 & x\in[-2;-1[\\ -1 & x\in[-1;0[\\ 0 & x\in[0;1[\end{cases}\qquad\qquad g(x)=\begin{cases}x+2 & x\in[-2;-1[\\ x+1 & x\in[-1;0[\\ x & x\in[0;1[\end{cases}\]
+\RL{0.32}{\GRS{-2.3}{1.3}{-2.3}{1.3}{0.8}
+\foreach \a/\v in {-2/-2,-1/-1,0/0} {\draw[cDef,very thick] (\a,\v)--(\a+1,\v); \fill[cDef] (\a,\v) circle(1.5pt); \draw[cDef,fill=white] (\a+1,\v) circle(1.5pt);}
+\node[cDef] at (0.6,0.6){$(C_f)$};
+\GRE}{0.32}{\GRS{-2.3}{1.3}{-0.4}{1.3}{0.8}
+\foreach \a in {-2,-1,0} {\draw[cThm,very thick] (\a,0)--(\a+1,1); \fill[cThm] (\a,0) circle(1.5pt); \draw[cThm,fill=white] (\a+1,1) circle(1.5pt);}
+\node[cThm] at (-1.6,1.1){$(C_g)$};
+\GRE}
+\GRS{-2.3}{1.3}{-0.4}{5.4}{0.6}
+\draw[cRem,very thick,domain=-2:1,samples=50] plot(\x,{\x*\x+1}); \fill[cRem] (-2,5) circle(1.5pt); \draw[cRem,fill=white] (1,2) circle(1.5pt);
+\node[cRem] at (-1,3.6){$(C_h)$};
+\GRE
+\ck\ لا يمكن رسم $(C_f)$ و $(C_g)$ دون رفع القلم ، بينما يمكن رسم $(C_h)$ دون رفع القلم.\par
+\ck\ $f$ و $g$ لا تقبلان نهاية عند $-1$ ولا عند $0$ (النهاية من اليمين تختلف عن النهاية من اليسار) ، أما $h$ فتقبل نهاية عند $-1$ وعند $0$ تساوي صورتها: $\Lm{-1}h(x)=h(-1)=2$ و $\Lm{0}h(x)=h(0)=1$.}{35 د}{رسم المنحنيات على السبورة.}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $f$ مستمرة عند $a$ إذا كان $\lim\limits_{x\to a}f(x)=f(a)$ ؛ ومستمرة على مجال $I$ إذا كانت مستمرة عند كل عدد من $I$.\par\Lab{cThm}{خاصية}\par\ck\ الدوال كثيرات الحدود والناطقة والجذر التربيعي والجيب وجيب التمام مستمرة على كل مجال من مجموعة تعريفها.\par
-\ck\ كل دالة قابلة للاشتقاق على $I$ مستمرة على $I$ (العكس خاطئ: $|x|$ عند $0$).\par
-}{50 د}{التمييز بين المستمرة والقابلة للاشتقاق.}
+\Lab{cThm}{خلاصة}\par
+\ck\ يمكن رسم المنحنى $(C_h)$ دون رفع القلم ، فنقول إن الدالة $h$ \textbf{مستمرة} على المجال $[-2;1[$.\par
+\ck\ أما $f$ و $g$ فهما \textbf{غير مستمرتين} على المجال $[-2;1[$.\par
+\Lab{cDef}{تعريف}\ $f$ مستمرة عند $a$ يعني $\LW{\lim\limits_{x\to a}f(x)=f(a)}$ ، و $f$ مستمرة على مجال $I$ إذا كانت مستمرة عند كل عدد من $I$.\par
+\Lab{cRem}{ملاحظات}\par
+\ck\ الدوال المرجعية مستمرة على كل مجال من مجموعة تعريفها.\par
+\ck\ مجموع وجداء دوال مستمرة عند $a$ هي دالة مستمرة عند $a$.\par
+\ck\ الدوال كثيرات الحدود والدالتان $\sin$ و $\cos$ مستمرة على $\R$.\par
+\ck\ الدوال الناطقة (حاصل قسمة كثيري حدود) مستمرة على كل مجال من مجموعة تعريفها.}{40 د}{بطاقة الملاحظات تُنقل في الكراس.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $f(x)=x^2+1$ لما $x\leqslant1$ ، $f(x)=ax+1$ لما $x>1$: $f$ مستمرة عند $1$ إذا كان $a+1=2$ ، أي $a=1$.\par\Lab{cThm!80!black}{حذار}\ الدالة الجزء الصحيح غير مستمرة عند كل عدد صحيح.}{}{}
+\Lab{cEx}{مثال}\ $f$ الدالة المعرفة على $[-2;3]$ بـ: \ $f(x)=\begin{cases}-x^2+2 & x\in[-2;0[\\ x & x\in[0;3]\end{cases}$\par
+\Num{1} مثّل بيانيًا الدالة $f$. \ \Num{2} هل $f$ مستمرة على $[-2;3]$؟ اذكر مجالًا تكون فيه $f$ مستمرة.\par
+\textbf{الحل:}
+\GRS{-2.3}{3.3}{-2.4}{3.4}{0.6}
+\draw[cDef,very thick,domain=-2:-0.03,samples=40] plot(\x,{-\x*\x+2}); \draw[cDef,fill=white] (0,2) circle(1.5pt);
+\draw[cDef,very thick] (0,0)--(3,3); \fill[cDef] (0,0) circle(1.5pt);
+\node[cDef] at (2.2,3){$(C_f)$};
+\GRE
+\Num{1} على $[-2;0[$: جزء من القطع المكافئ $y=-x^2+2$ ، وعلى $[0;3]$: قطعة من المستقيم $y=x$.\par
+\Num{2} $\Lm{0^-}f(x)=2$ و $f(0)=0$: \bxt{$f$ غير مستمرة عند $0$} ، فهي غير مستمرة على $[-2;3]$. \ $f$ مستمرة مثلًا على \bx{[0;3]}.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $f(x)=\dfrac{x^2-4}{x-2}$ لما $x\neq2$ و $f(2)=k$. عيّن $k$ حتى تكون $f$ مستمرة عند $2$.\par\textbf{الحل:} $\lim\limits_{x\to2}(x+2)=4$ ، إذن $k=4$.\par\textbf{واجب منزلي:} تمرينا 48 و 49 صفحة 29.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تطبيق}\ $f(x)=x+1+E(x)$ على المجال $[-1;2[$.\par
+\Num{1} اكتب حسب قيم $x$ عبارة $f(x)$ دون الرمز $E$. \ \Num{2} ارسم المنحنى الممثل لـ $f$. \ \Num{3} هل $f$ مستمرة على $[-1;2[$؟ \ \Num{4} عيّن مجالات تكون فيها $f$ مستمرة.}{25 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التطبيق}\par
+\Num{1} على $[-1;0[$: $E(x)=-1$ ؛ على $[0;1[$: $E(x)=0$ ؛ على $[1;2[$: $E(x)=1$:
+\[\bx{f(x)=\begin{cases}x & x\in[-1;0[\\ x+1 & x\in[0;1[\\ x+2 & x\in[1;2[\end{cases}}\]
+\Num{2}
+\GRS{-1.3}{2.3}{-1.3}{4.3}{0.7}
+\draw[cThm,very thick] (-1,-1)--(0,0); \fill[cThm] (-1,-1) circle(1.5pt); \draw[cThm,fill=white] (0,0) circle(1.5pt);
+\draw[cThm,very thick] (0,1)--(1,2); \fill[cThm] (0,1) circle(1.5pt); \draw[cThm,fill=white] (1,2) circle(1.5pt);
+\draw[cThm,very thick] (1,3)--(2,4); \fill[cThm] (1,3) circle(1.5pt); \draw[cThm,fill=white] (2,4) circle(1.5pt);
+\node[cThm] at (1.6,2.6){$(C_f)$};
+\GRE
+\Num{3} \bxt{$f$ غير مستمرة على $[-1;2[$} (قفزة عند $0$ وعند $1$).\par
+\Num{4} $f$ مستمرة على كل من المجالات \bx{[-1;0[} ، \bx{[0;1[} و \bx{[1;2[}.\par
+\textbf{واجب منزلي:} تمرينا 48 و 49 صفحة 29.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
-\ModhHead{03}{3 ع ت}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{مبرهنة القيم المتوسطة}%
-{\begin{itemize}\item الاستمرارية ، اتجاه التغير.\end{itemize}}%
-{\begin{itemize}\item إثبات وجود حل للمعادلة $f(x)=k$ ووحدانيته ، وحصره.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+% =====================================================================
+\ModhHead{03}{3 ع ت + 3 ت ر + 3 ر}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{مبرهنة القيم المتوسطة}%
+{\begin{itemize}\item استمرارية دالة على مجال.\item رتابة دالة.\end{itemize}}%
+{\begin{itemize}\item تبيان وجود حل للمعادلة $f(x)=k$.\item حصر حل بطريقة التنصيف.\end{itemize}}%
+{الكتاب المدرسي ، الأنترنت.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} متسلق ينتقل من ارتفاع $1000$ m إلى $3000$ m: هل مر حتماً بالارتفاع $2000$ m ؟}{10 د}{سؤال من الحياة.}
-\Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مناقشة نشاط 04 صفحة 8}\par\ck\ قراءة بيانية لعدد حلول $f(x)=k$ حسب قيم $k$ لثلاث دوال.\par
-\ck\ الاستمرارية شرط أساسي: منحني غير مستمر قد «يقفز» فوق القيمة $k$.\par
-}{35 د}{قراءة بيانية.}
+\textbf{التهيئة النفسية:} دالة مستمرة على $[a;b]$ ، $f(a)<0$ و $f(b)>0$: هل يقطع منحناها محور الفواصل؟}{10 د}{سؤال شفهي.}
 \Row{بناء المعارف}{%
-\Lab{cThm}{مبرهنة القيم المتوسطة}\ إذا كانت $f$ مستمرة على $[a;b]$ ، فمن أجل كل $k$ محصور بين $f(a)$ و $f(b)$ ، المعادلة $f(x)=k$ تقبل حلاً على الأقل في $[a;b]$.\par\Lab{cThm}{نتيجة}\ إذا كانت $f$ مستمرة ورتيبة تماماً على $[a;b]$ ، فالحل وحيد.\par}{50 د}{جدول المسح بالحاسبة.}
+\Lab{cThm}{مبرهنة القيم المتوسطة (تقبل دون برهان)}\par
+إذا كانت $f$ دالة \textbf{مستمرة} على المجال $[a;b]$ وكان العدد الحقيقي $k$ محصورًا بين $f(a)$ و $f(b)$ ، فإن المعادلة $\LW{f(x)=k}$ تقبل \textbf{على الأقل حلًا} في المجال $[a;b]$.\par
+\Lab{cThm}{حالة خاصة}\ إذا كانت $f$ مستمرة على $[a;b]$ و $\LW{f(a)\times f(b)<0}$ فإنه يوجد على الأقل عدد حقيقي $c$ من $]a;b[$ حيث $f(c)=0$.\par
+\Lab{cDef}{التفسير البياني}\ المستقيم ذو المعادلة $y=k$ يقطع منحنى $f$ مرة واحدة على الأقل في نقطة فاصلتها محصورة بين $a$ و $b$ (قد يقطعه في عدة نقط).
+\GRS{-0.3}{4.3}{-0.4}{5.2}{0.6}
+\draw[cDef,very thick,domain=0.4:3.6,samples=80] plot(\x,{1.2*(\x-2)^3-1.6*(\x-2)+2.4});
+\draw[cThm,thick] (-0.3,2.4)--(4.3,2.4) node[above left]{$y=k$};
+\draw[dashed] (0.4,0)--(0.4,0.04) (3.6,0)--(3.6,4.75); \node[below] at (0.4,0){$a$}; \node[below] at (3.6,0){$b$};
+\foreach \c/\n in {0.845/1,2/2,3.155/3} {\draw[dashed] (\c,0)--(\c,2.4); \fill (\c,2.4) circle(1.3pt); \node[below] at (\c,0){$c_\n$};}
+\node[cDef] at (3.9,5){$(C_f)$};
+\GRE
+\Lab{cRem}{ملاحظة}\ مبرهنة القيم المتوسطة تؤكد وجود حل على الأقل ، أما تعيين الحلول أو قيم مقربة لها فيتم بخوارزميات مختلفة.}{40 د}{نوضح المبرهنة بالرسم.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $f(x)=x^3+x-1$ على $[0;1]$: $f^{\prime}(x)=3x^2+1>0$ ، $f(0)=-1<0$ ، $f(1)=1>0$: حل وحيد $\alpha$ ؛ $f(0{,}6)\approx-0{,}18$ و $f(0{,}7)\approx0{,}04$ ، إذن $0{,}6<\alpha<0{,}7$.\par\Lab{cMeth}{الحصر}\ بالتنصيف أو بالمسح (جدول قيم بخطوة $0{,}1$ ثم $0{,}01$).\par}{}{}
+\Lab{cEx}{مثال}\ برهن باستعمال مبرهنة القيم المتوسطة أن المعادلة $x^5+3x^4-6x^2=1$ تقبل على الأقل حلًا في المجال $[1;2]$.\par
+\Lab{cMeth}{طريقة}\ نكتب المعادلة على الشكل $f(x)=k$ ، نتحقق من استمرارية $f$ على $[a;b]$ ، ثم نتحقق أن $k$ محصور بين $f(a)$ و $f(b)$.\par
+\textbf{الحل:} $f(x)=x^5+3x^4-6x^2$ كثير حدود ، فهي مستمرة على $[1;2]$.\par
+$f(1)=1+3-6=-2$ \ و \ $f(2)=32+48-24=56$ \ ، و $-2<1<56$ ، أي $1$ محصور بين $f(1)$ و $f(2)$.\par
+إذن \bxt{المعادلة $f(x)=1$ تقبل على الأقل حلًا في $[1;2]$}.}{}{}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ المبرهنة تضمن الوجود ولا تعطي قيمة الحل.}{}{}
-\Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par بيّن أن المعادلة $x^3-3x+1=0$ تقبل حلاً وحيداً $\alpha$ في $[0;1]$ ، ثم احصره بسعة $0{,}1$.\par\textbf{الحل:} $f^{\prime}(x)=3(x^2-1)<0$ على $]0;1[$ ، $f(0)=1$ ، $f(1)=-1$ ؛ $f(0{,}3)\approx0{,}13$ ، $f(0{,}4)\approx-0{,}14$: $0{,}3<\alpha<0{,}4$.\par\textbf{واجب منزلي:} تمرينا 106 و 107 صفحة 36.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تطبيق}\ $f(x)=3x^3-2x-\dfrac14$ على $\R$. \ \Num{1} احسب $f(-1)$ ، $f\Big(-\dfrac12\Big)$ ، $f(0)$ و $f(1)$. \ \Num{2} استنتج أن المعادلة $f(x)=0$ تقبل على الأقل ثلاثة حلول في $]-1;1[$.\par
+\textbf{الحل:} \Num{1} \ $f(-1)=-3+2-\dfrac14=\bx{-\frac54}$ \ ؛ \ $f\Big(-\dfrac12\Big)=-\dfrac38+1-\dfrac14=\bx{\frac38}$ \ ؛ \ $f(0)=\bx{-\frac14}$ \ ؛ \ $f(1)=3-2-\dfrac14=\bx{\frac34}$\par
+\Num{2} $f$ كثير حدود ، فهي مستمرة على $\R$:\par
+\ck\ على $\Big[-1;-\dfrac12\Big]$: $f(-1)\times f\Big(-\dfrac12\Big)<0$ ، إذن المعادلة تقبل حلًا في $\Big]-1;-\dfrac12\Big[$.\par
+\ck\ على $\Big[-\dfrac12;0\Big]$: $f\Big(-\dfrac12\Big)\times f(0)<0$ ، إذن تقبل حلًا في $\Big]-\dfrac12;0\Big[$.\par
+\ck\ على $[0;1]$: $f(0)\times f(1)<0$ ، إذن تقبل حلًا في $]0;1[$.\par
+النتيجة: \bxt{المعادلة $f(x)=0$ تقبل على الأقل ثلاثة حلول في $]-1;1[$}.}{}{}
+\Row{}{%
+\Lab{cThm}{مبرهنة: دالة مستمرة ورتيبة تمامًا}\par
+إذا كانت $f$ دالة \textbf{مستمرة ورتيبة تمامًا} على $[a;b]$ وكان $k$ محصورًا بين $f(a)$ و $f(b)$ ، فإن المعادلة $\LW{f(x)=k}$ تقبل \textbf{حلًا وحيدًا} في $[a;b]$.\par
+\Lab{cMeth}{البرهان}\ حسب مبرهنة القيم المتوسطة يوجد على الأقل $c$ من $[a;b]$ حيث $f(c)=k$. لو وُجد $c^{\prime}\neq c$ حيث $f(c^{\prime})=k$ لكان $f(c)=f(c^{\prime})$ مع $c\neq c^{\prime}$ ، وهذا يناقض الرتابة التامة. إذن $c$ وحيد.\par
+\Lab{cDef}{التفسير البياني}\ المستقيم $y=k$ يقطع منحنى $f$ مرة واحدة ، وإذا كان $k=0$ فإن المنحنى يقطع محور الفواصل في نقطة وحيدة.}{}{}
+\Row{مرحلة التقويم}{%
+\Lab{cMeth}{تطبيق 1}\ $f$ دالة معرفة على $\R$ وجدول تغيراتها:
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=2]{$x$/1,$f(x)$/2}{$-\infty$,$-1$,$0$,$2$,$+\infty$}
+\tkzTabVar{+/$+\infty$,-/$-2$,+/$5$,-/$-3$,+/$8$}
+\end{TAB}
+عيّن عدد حلول كل من المعادلات: $f(x)=0$ ، $f(x)=-2$ ، $f(x)=9$ ، محددًا المجال الذي ينتمي إليه كل حل.\par
+\textbf{الحل:}\par
+\ck\ $f(x)=0$: \bx{4} حلول ، في $]-\infty;-1[$ ، $]-1;0[$ ، $]0;2[$ و $]2;+\infty[$.\par
+\ck\ $f(x)=-2$: \bx{3} حلول: $x=-1$ ، وحل في $]0;2[$ ، وحل في $]2;+\infty[$.\par
+\ck\ $f(x)=9$: \bx{1} حل وحيد في $]-\infty;-1[$ (لأن $9>5$ و $9>8$).}{30 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cMeth}{تطبيق 2}\ $f(x)=-x^3-2x+5$ على $\R$. \ \Num{1} احسب $f^{\prime}(x)$ وشكّل جدول تغيرات $f$. \ \Num{2} برهن أن المعادلة $f(x)=0$ تقبل حلًا وحيدًا $\alpha$ في $[1;2]$. \ \Num{3} استنتج إشارة $f(x)$.\par
+\textbf{الحل:} \Num{1} $f^{\prime}(x)=\bx{-3x^2-2}<0$: $f$ متناقصة تمامًا على $\R$.
+\LD{f(x)}{-\infty}{+\infty} $\Car{\Lm{-\infty}f(x)=\Lm{-\infty}\left(-x^3\right)}$
+\LD{f(x)}{+\infty}{-\infty} $\Car{\Lm{+\infty}f(x)=\Lm{+\infty}\left(-x^3\right)}$
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=3]{$x$/1,$f^{\prime}(x)$/1,$f(x)$/2}{$-\infty$,$+\infty$}
+\tkzTabLine{,-,}
+\tkzTabVar{+/$+\infty$,-/$-\infty$}
+\end{TAB}
+\Num{2} $f$ مستمرة ومتناقصة تمامًا على $[1;2]$ ، و $f(1)=2$ ، $f(2)=-7$ ، أي $f(1)\times f(2)<0$: \bxt{المعادلة $f(x)=0$ تقبل حلًا وحيدًا $\alpha$ في $[1;2]$}.\par
+\Num{3}
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=3]{$x$/1,$f(x)$/1}{$-\infty$,$\alpha$,$+\infty$}
+\tkzTabLine{,+,z,-,}
+\end{TAB}}{}{}
+\Row{}{%
+\Lab{cMeth}{إيجاد حصر لحل معادلة بالتنصيف}\par
+\ck\ نحسب $m=\dfrac{a+b}2$ (مركز المجال $[a;b]$) و $f(m)$.\par
+\ck\ إذا كان $f(a)\times f(m)<0$ فإن $\alpha\in\,]a;m[$ ، وإلا فإن $\alpha\in\,]m;b[$.\par
+\ck\ نواصل بنفس الطريقة (نعوض $a$ أو $b$ بـ $m$) حتى نحصل على الحصر المطلوب.}{}{}
+\Row{}{%
+\Lab{cMeth}{تطبيق 3}\ $f(x)=\dfrac1{x-1}-\sqrt x$ على $]1;+\infty[$. \ \Num{1} ادرس اتجاه تغير $f$. \ \Num{2} برهن أن المعادلة $f(x)=0$ تقبل حلًا وحيدًا $\alpha$ في $[1{,}1;2{,}3]$. \ \Num{3} بطريقة التنصيف عيّن حصرًا لـ $\alpha$ سعته $0{,}15$. \ \Num{4} أثبت أن $\alpha^3-2\alpha^2+\alpha-1=0$.\par
+\renewcommand{\arraystretch}{1.3}
+\begin{center}\begin{LTR}\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x$ & $1{,}1$ & $1{,}7$ & $1{,}85$ & $2$ & $2{,}3$\\\hline
+$f(x)$ & $8{,}95$ & $0{,}12$ & $-0{,}18$ & $-0{,}41$ & $-0{,}75$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\textbf{الحل:} \Num{1} $f^{\prime}(x)=-\dfrac1{(x-1)^2}-\dfrac1{2\sqrt x}<0$: \bxt{$f$ متناقصة تمامًا على $]1;+\infty[$}.\par
+\Num{2} $f$ مستمرة ومتناقصة تمامًا على $[1{,}1;2{,}3]$ ، و $f(1{,}1)\approx8{,}95$ ، $f(2{,}3)\approx-0{,}75$: $f(1{,}1)\times f(2{,}3)<0$ ، إذن \bxt{$f(x)=0$ تقبل حلًا وحيدًا $\alpha$}.\par
+\Num{3} \ck\ $m=\dfrac{1{,}1+2{,}3}2=1{,}7$ ، $f(1{,}7)\approx0{,}12>0$: \ $\alpha\in\,]1{,}7;2{,}3[$.\par
+\ck\ $m=\dfrac{1{,}7+2{,}3}2=2$ ، $f(2)\approx-0{,}41<0$: \ $\alpha\in\,]1{,}7;2[$.\par
+\ck\ $m=\dfrac{1{,}7+2}2=1{,}85$ ، $f(1{,}85)\approx-0{,}18<0$: \ \bx{1{,}7<\alpha<1{,}85} \ (سعته $0{,}15$).\par
+\Num{4} $f(\alpha)=0$ يعني $\dfrac1{\alpha-1}=\sqrt\alpha$. بتربيع الطرفين: $\dfrac1{(\alpha-1)^2}=\alpha$ ، أي $\alpha\left(\alpha^2-2\alpha+1\right)=1$:
+\[\bx{\alpha^3-2\alpha^2+\alpha-1=0}\]
+\textbf{واجب منزلي:} تمرينا 106 و 107 صفحة 36.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
-\ModhHead{04}{3 ع ت}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{مشتق دالة مركبة}%
-{\begin{itemize}\item مشتقات الدوال المألوفة ، تركيب دالتين.\end{itemize}}%
-{\begin{itemize}\item حساب مشتقات الدوال $g\circ u$ ، $u^n$ ، $\sqrt u$ ، $f(ax+b)$.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+% =====================================================================
+\ModhHead{04}{3 ع ت + 3 ت ر + 3 ر}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{قابلية اشتقاق دالة عند عدد}%
+{\begin{itemize}\item حساب مشتقة دالة.\item تعيين معادلة مماس عند نقطة.\end{itemize}}%
+{\begin{itemize}\item دراسة قابلية اشتقاق دالة عند عدد من اليمين ومن اليسار ، والتفسير الهندسي.\end{itemize}}%
+{الكتاب المدرسي ، الأنترنت.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} كيف نشتق $(2x^2+1)^3$ دون نشر؟}{10 د}{تحدٍّ.}
-\Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مناقشة نشاط 03 (أنشطة باب الاشتقاقية)}\par\ck\ تفكيك الدالة إلى مركب دالتين ، ومقارنة نسبتي التزايد بجدول قيم.\par
-\ck\ تخمين: $(g\circ u)^{\prime}=u^{\prime}\times g^{\prime}\circ u$.\par
-}{35 د}{جدول قيم.}
+\textbf{التهيئة النفسية:} هل الدالة $x\mapsto\sqrt x$ قابلة للاشتقاق عند $0$؟ وهل للنسبة $\dfrac{|x|}x$ نهاية عند $0$؟}{10 د}{سؤال شفهي.}
 \Row{بناء المعارف}{%
-\Lab{cThm}{خاصية}\ إذا كانت $u$ قابلة للاشتقاق على $I$ و $g$ قابلة للاشتقاق على مجال يشمل $u(I)$: $(g\circ u)^{\prime}(x)=u^{\prime}(x)\times g^{\prime}\big(u(x)\big)$.\par\Lab{cThm}{حالات خاصة}\par\ck\ $(u^n)^{\prime}=n\,u^{\prime}u^{n-1}$ ؛ $(\sqrt u)^{\prime}=\dfrac{u^{\prime}}{2\sqrt u}$ ($u>0$).\par
-\ck\ $\big(f(ax+b)\big)^{\prime}=a\,f^{\prime}(ax+b)$.\par
-}{50 د}{جدول القواعد يُحفظ.}
+\Lab{cDef}{تعريف: قابلية الاشتقاق على اليمين}\par
+$f$ دالة معرفة على الأقل على مجال من الشكل $[x_0;x_0+\alpha[$ ($\alpha>0$). نقول إن $f$ تقبل الاشتقاق عند $x_0$ \textbf{من اليمين} إذا وفقط إذا كانت:
+\[\LW{\lim_{\substack{x\to x_0\\x>x_0}}\frac{f(x)-f(x_0)}{x-x_0}=\ell_1}\quad\text{\ar{حيث $\ell_1$ عدد حقيقي}}\]
+يسمى $\ell_1$ \textbf{العدد المشتق من اليمين} ونرمز له $f^{\prime}_d(x_0)$.\par
+\Lab{cDef}{التفسير البياني}\ $(C_f)$ يقبل عند $A\big(x_0;f(x_0)\big)$ \textbf{نصف مماس} من اليمين معادلته: $\LW{y=\ell_1(x-x_0)+f(x_0)}$ مع $x\geqslant x_0$.\par
+\Lab{cEx}{مثال}\ $f(x)=x\sqrt x$ على $[0;+\infty[$: \quad $\Lm{0^+}\dfrac{x\sqrt x-0}{x-0}=\Lm{0^+}\sqrt x=\bx{0}$: $f$ تقبل الاشتقاق عند $0$ من اليمين.}{40 د}{نرسم نصف المماس.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $(2x^2+1)^3$: مشتقها $3\times4x(2x^2+1)^2=12x(2x^2+1)^2$ ؛ $\sqrt{x^2+4}$: مشتقها $\dfrac{x}{\sqrt{x^2+4}}$.\par\Lab{cThm!80!black}{حذار}\ لا ننسى ضرب $u^{\prime}$.}{}{}
+\Lab{cDef}{تعريف: قابلية الاشتقاق على اليسار}\par
+$f$ دالة معرفة على الأقل على مجال من الشكل $]x_0-\alpha;x_0]$. نقول إن $f$ تقبل الاشتقاق عند $x_0$ \textbf{من اليسار} إذا كانت $\LW{\lim\limits_{\substack{x\to x_0\\x<x_0}}\dfrac{f(x)-f(x_0)}{x-x_0}=\ell_2}$ حيث $\ell_2$ عدد حقيقي ، ونرمز له $f^{\prime}_g(x_0)$.\par
+نصف المماس من اليسار: $\LW{y=\ell_2(x-x_0)+f(x_0)}$ مع $x\leqslant x_0$.\par
+\Lab{cEx}{مثال}\ $f(x)=\left|x^2-9\right|$. \ على $[-3;3]$: $f(x)=-\left(x^2-9\right)$ ، ومنه:
+\[\lim_{\substack{x\to3\\x<3}}\frac{-\left(x^2-9\right)}{x-3}=\lim_{\substack{x\to3\\x<3}}-(x+3)=\bx{-6}\]
+$f$ تقبل الاشتقاق عند $3$ من اليسار ، و $(C_f)$ يقبل نصف مماس من اليسار معادلته \bx{y=-6(x-3)}.}{}{}
+\Row{}{%
+\Lab{cDef}{نقطة زاوية}\ إذا كان $\ell_1\neq\ell_2$ فإن النقطة ذات الفاصلة $x_0$ تسمى \textbf{نقطة زاوية} ، و $f$ غير قابلة للاشتقاق عند $x_0$.\par
+\Lab{cEx}{مثال}\ $f(x)=\left|x^2-9\right|$ عند $3$: على $[3;+\infty[$: $f(x)=x^2-9$:
+\[\lim_{\substack{x\to3\\x>3}}\frac{x^2-9}{x-3}=\lim_{\substack{x\to3\\x>3}}(x+3)=\bx{6}\qquad;\qquad f^{\prime}_g(3)=-6\]
+العددان المشتقان من اليمين ومن اليسار مختلفان: \bxt{$f$ لا تقبل الاشتقاق عند $3$ ، والنقطة $(3;0)$ نقطة زاوية}.
+\GRS{-1}{5}{-0.5}{5.5}{0.5}
+\draw[cDef,very thick,domain=-1:4.6,samples=100] plot(\x,{abs(\x*\x-9)/2});
+\draw[cThm,->,thick] (3,0)--(2.3,2.1); \draw[cThm,->,thick] (3,0)--(3.7,2.1);
+\fill (3,0) circle(1.5pt) node[below]{$3$};
+\node[cDef] at (4.5,4.5){$(C_f)$};
+\GRE}{}{}
+\Row{}{%
+\Lab{cDef}{مماس موازٍ لمحور التراتيب}\par
+إذا كانت $\Lm{x_0}\left|\dfrac{f(x)-f(x_0)}{x-x_0}\right|=+\infty$ فإن $(C_f)$ يقبل عند النقطة ذات الفاصلة $x_0$ مماسًا (أو نصف مماس) موازيًا لحامل محور التراتيب معادلته $\LW{x=x_0}$:\par
+\ck\ $\Lm{x_0^+}\dfrac{f(x)-f(x_0)}{x-x_0}=+\infty$: نصف مماس عمودي عند يمين $A$ موجه نحو الأعلى.\par
+\ck\ $\Lm{x_0^+}\dfrac{f(x)-f(x_0)}{x-x_0}=-\infty$: نصف مماس عمودي عند يمين $A$ موجه نحو الأسفل.\par
+\ck\ $\Lm{x_0^-}\dfrac{f(x)-f(x_0)}{x-x_0}=-\infty$: نصف مماس عمودي عند يسار $A$ موجه نحو الأعلى.\par
+\ck\ $\Lm{x_0^-}\dfrac{f(x)-f(x_0)}{x-x_0}=+\infty$: نصف مماس عمودي عند يسار $A$ موجه نحو الأسفل.\par
+\Lab{cEx}{مثال}\ $f(x)=\sqrt x$: \quad $\Lm{0^+}\dfrac{\sqrt x}x=\Lm{0^+}\dfrac1{\sqrt x}=+\infty$: \bxt{$f$ غير قابلة للاشتقاق عند $0$} ، و $(C_f)$ يقبل نصف مماس عمودي معادلته \bx{x=0} نحو الأعلى.}{}{}
+\Row{}{%
+\Lab{cThm}{مبرهنة: الاشتقاقية والاستمرارية}\ إذا كانت $f$ قابلة للاشتقاق عند $x_0$ فإنها \textbf{مستمرة} عند $x_0$.\par
+\Lab{cRem}{ملاحظة}\ عكس هذه المبرهنة ليس دائمًا صحيحًا.\par
+\Lab{cEx}{مثال}\ $f:x\mapsto|x|$ مستمرة عند $0$ ، لكن: \quad $\Lm{0^+}\dfrac{x-0}{x-0}=1$ \ و \ $\Lm{0^-}\dfrac{-x-0}{x-0}=-1$\par
+$f^{\prime}_d(0)\neq f^{\prime}_g(0)$: \bxt{$f$ لا تقبل الاشتقاق عند $0$}.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par احسب مشتقة: $f(x)=(1-3x)^4$ ؛ $g(x)=\sqrt{2x+5}$ ؛ $h(x)=\dfrac1{(x^2+1)^2}$.\par\textbf{الحل:} $-12(1-3x)^3$ ؛ $\dfrac1{\sqrt{2x+5}}$ ؛ $\dfrac{-4x}{(x^2+1)^3}$.\par\textbf{واجب منزلي:} تمرين 40 صفحة 61 ، وتمرين 78 صفحة 66.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تطبيق}\ ادرس قابلية اشتقاق الدالة $f$ عند $x_0$ في كل حالة ، ثم فسّر النتيجة بيانيًا:\par
+\Num{1} $f(x)=-x^2+2$ ، $x_0=1$ \quad \Num{2} $f(x)=\sqrt{x-4}$ ، $x_0=4$ \quad \Num{3} $f(x)=x|x-3|$ ، $x_0=3$ \quad \Num{4} $f(x)=\dfrac{|x|x^2}{x+2}$ ، $x_0=0$}{30 د}{تقويم فردي.}
+\Row{}{%
+\Lab{cEx}{حل التطبيق}\par
+\Num{1} نكتب: \quad $\dfrac{f(x)-f(1)}{x-1}=\dfrac{-x^2+1}{x-1}=\dfrac{-(x-1)(x+1)}{x-1}=-(x+1)$\par
+ومنه: \quad $\Lm{1}\dfrac{f(x)-f(1)}{x-1}=\Lm{1}-(x+1)=\bx{-2}$: \bxt{$f$ تقبل الاشتقاق عند $1$} و $f^{\prime}(1)=-2$ ؛ $(C_f)$ يقبل مماسًا عند النقطة $(1;1)$.\par
+\Num{2} نكتب: \quad $\dfrac{f(x)-f(4)}{x-4}=\dfrac{\sqrt{x-4}}{x-4}=\dfrac1{\sqrt{x-4}}$
+\LD{\dfrac{f(x)-f(4)}{x-4}}{4^+}{+\infty} $\Car{\Lm{4^+}\sqrt{x-4}=0^+}$
+\par\bxt{$f$ غير قابلة للاشتقاق عند $4$} ، و $(C_f)$ يقبل نصف مماس عمودي معادلته $x=4$ نحو الأعلى.\par
+\Num{3} $f(x)=\begin{cases}-x(x-3) & x<3\\ x(x-3) & x\geqslant3\end{cases}$\par
+$\Lm{3^+}\dfrac{x(x-3)}{x-3}=\Lm{3^+}x=\bx{3}$ \quad و \quad $\Lm{3^-}\dfrac{-x(x-3)}{x-3}=\Lm{3^-}(-x)=\bx{-3}$\par
+$f^{\prime}_d(3)\neq f^{\prime}_g(3)$: \bxt{$f$ غير قابلة للاشتقاق عند $3$} ، والنقطة $(3;0)$ نقطة زاوية.\par
+\Num{4} $f(x)=\begin{cases}\dfrac{x^3}{x+2} & x\geqslant0\\[6pt] \dfrac{-x^3}{x+2} & x<0\ ,\ x\neq-2\end{cases}$\par
+$\Lm{0^+}\dfrac{f(x)-f(0)}{x}=\Lm{0^+}\dfrac{x^2}{x+2}=\bx{0}$ \quad و \quad $\Lm{0^-}\dfrac{f(x)-f(0)}{x}=\Lm{0^-}\dfrac{-x^2}{x+2}=\bx{0}$\par
+\bxt{$f$ تقبل الاشتقاق عند $0$} و $f^{\prime}(0)=0$: $(C_f)$ يقبل مماسًا أفقيًا عند $O$.}{}{}
+\Row{}{%
+\Lab{cEx}{حل تمرين 7 صفحة 58}\ ($f(x)=x^2+|x-1|$ ، $f(1)=1$)\par
+\Num{1} $\dfrac{f(1+h)-1}h=\dfrac{(1+h)^2+|h|-1}h=\dfrac{h^2+2h+|h|}h=\bx{h+2+\frac{|h|}h}$\par
+\Num{2} $\lim\limits_{h\to0^+}\Big(h+2+\dfrac hh\Big)=\bx{3}$ \quad و \quad $\lim\limits_{h\to0^-}\Big(h+2-\dfrac hh\Big)=\bx{1}$: النهايتان مختلفتان ، فالعبارة لا تقبل نهاية لما يؤول $h$ إلى $0$.\par
+\Num{3} $(C_f)$ يقبل عند النقطة ذات الفاصلة $1$ نصفي مماسين:
+\[(T_d):\ y=3(x-1)+1=\bx{3x-2}\qquad;\qquad(T_g):\ y=1(x-1)+1=\bx{x}\]
+\Lab{cEx}{حل تمرين 8 صفحة 58}\ ($f(x)=\sqrt{x+2}$ ، $f(-2)=0$)\par
+\Num{1} $\dfrac{f(-2+h)}h=\dfrac{\sqrt h}h=\dfrac1{\sqrt h}$ \quad ومنه \quad $\lim\limits_{h\to0^+}\dfrac{f(-2+h)}h=\bx{+\infty}$\par
+\Num{2} \bxt{$f$ غير قابلة للاشتقاق عند يمين $-2$} ، و $(C_f)$ يقبل نصف مماس موجه نحو الأعلى موازٍ لمحور التراتيب عند النقطة ذات الفاصلة $-2$.\par
+\textbf{واجب منزلي:} تمرينا 7 و 8 صفحة 58.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
-\ModhHead{05}{3 ع ت}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{المشتقات المتتابعة ، نقطة الانعطاف}%
-{\begin{itemize}\item حساب المشتقات ، معادلة المماس.\end{itemize}}%
-{\begin{itemize}\item حساب المشتقة الثانية ، وتعيين نقطة انعطاف منحنٍ.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+% =====================================================================
+\ModhHead{05}{3 ع ت + 3 ت ر + 3 ر}{تحليل}{الاشتقاقية والاستمرارية}{01 سا}{حساب مشتقة دالة}%
+{\begin{itemize}\item حساب مشتقة دالة.\item تعيين معادلة مماس.\end{itemize}}%
+{\begin{itemize}\item حساب مشتقات الدوال المألوفة.\end{itemize}}%
+{الكتاب المدرسي ، الأنترنت.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} منحني $x\mapsto x^3$ عند $O$: هل يقع فوق مماسه أم تحته؟}{10 د}{سؤال بالرسم.}
-\Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\ $f(x)=x^3-3x^2+2$.\par\ck\ $f^{\prime}(x)=3x^2-6x$ ، $f^{\prime\prime}(x)=6x-6$ تنعدم عند $1$ مغيرة إشارتها.\par
-\ck\ المماس عند $(1;0)$: $y=-3x+3$ ، والمنحني يخترقه.\par
-}{35 د}{الحاسبة البيانية.}
+\textbf{التهيئة النفسية:} تذكير بجدول مشتقات الدوال المألوفة (أسئلة شفهية).}{5 د}{أسئلة سريعة.}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ $f^{\prime\prime}=(f^{\prime})^{\prime}$ المشتقة الثانية ، وعموماً $f^{(n)}$ المشتقة من الرتبة $n$.\par\Lab{cThm}{نقطة الانعطاف}\ إذا انعدمت $f^{\prime\prime}$ عند $a$ مغيرة إشارتها ، فالنقطة $(a;f(a))$ \textbf{نقطة انعطاف}: المنحني يخترق مماسه عندها.\par\smallskip\begin{LTR}\centering \begin{tikzpicture}[x=0.8cm,y=0.45cm,font=\scriptsize]
-\draw[->] (-1.4,0)--(3.6,0) node[right]{$x$}; \draw[->] (0,-3)--(0,4.5) node[above]{$y$};
-\draw[cDef,thick,domain=-1.1:3.1,samples=80] plot (\x,{\x*\x*\x-3*\x*\x+2}); \node[cDef] at (3.2,3.4){$C_f$};
-\draw[cThm,thick,domain=-0.3:2.1] plot (\x,{-3*\x+3}); \node[cThm] at (-0.5,3.6){$(T)$};
-\fill (1,0) circle (1.6pt) node[above right]{$I(1;0)$};
-\end{tikzpicture}\end{LTR}\par }{50 د}{جدول إشارة $f^{\prime\prime}$.}
+\Lab{cThm}{مشتقات دوال مألوفة}
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.6}\small
+\begin{tabular}{|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{الدالة المشتقة $f^{\prime}$} & \ar{مجالات قابلية الاشتقاق} & \ar{الدالة $f$}\\\hline
+$\LW{0}$ & $\R$ & $a$\\\hline
+$\LW{a}$ & $\R$ & $ax+b$\\\hline
+$\LW{nx^{n-1}}$ & $\R$ & $x^n\ (n\in\N^*)$\\\hline
+$\LW{-\dfrac1{x^2}}$ & $]-\infty;0[$ \ar{و} $]0;+\infty[$ & $\dfrac1x$\\\hline
+$\LW{-\dfrac n{x^{n+1}}}$ & $]-\infty;0[$ \ar{و} $]0;+\infty[$ & $\dfrac1{x^n}\ (n\in\N^*)$\\\hline
+$\LW{\dfrac1{2\sqrt x}}$ & $]0;+\infty[$ & $\sqrt x$\\\hline
+$\LW{\cos x}$ & $\R$ & $\sin x$\\\hline
+$\LW{-\sin x}$ & $\R$ & $\cos x$\\\hline
+\end{tabular}\end{LTR}\end{center}}{20 د}{يُنقل الجدول في الكراس.}
 \Row{}{%
-\Lab{cRem}{ملاحظات}\ إذا انعدمت $f^{\prime}$ عند $a$ دون أن تغير إشارتها فالنقطة أيضاً نقطة انعطاف (المماس أفقي).\par\Lab{cThm!80!black}{حذار}\ انعدام $f^{\prime\prime}$ وحده لا يكفي: $x^4$ عند $0$.}{}{}
+\Lab{cThm}{المشتقات والعمليات على الدوال}\ ($u$ و $v$ قابلتان للاشتقاق على $I$)
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.6}\small
+\begin{tabular}{|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{الدالة المشتقة} & \ar{الشرط} & \ar{الدالة}\\\hline
+$\LW{u^{\prime}+v^{\prime}}$ & & $u+v$\\\hline
+$\LW{u^{\prime}v+uv^{\prime}}$ & & $uv$\\\hline
+$\LW{\lambda u^{\prime}}$ & $\lambda\in\R$ & $\lambda u$\\\hline
+$\LW{-\dfrac{u^{\prime}}{u^2}}$ & \ar{$u(x)\neq0$ على $I$} & $\dfrac1u$\\\hline
+$\LW{\dfrac{u^{\prime}v-uv^{\prime}}{v^2}}$ & \ar{$v(x)\neq0$ على $I$} & $\dfrac uv$\\\hline
+\end{tabular}\end{LTR}\end{center}
+\Lab{cThm}{نتائج}\ الدوال كثيرات الحدود قابلة للاشتقاق على $\R$ ، والدوال الناطقة قابلة للاشتقاق على كل مجال محتوى في مجموعة تعريفها.}{}{}
+\Row{}{%
+\Lab{cEx}{أمثلة}\ مشتقات الدوال التالية المعرفة على $]0;+\infty[$:\par
+\Num{1} $f(x)=x^4-2x^3+4x^2-8$: \quad $f^{\prime}(x)=\bx{4x^3-6x^2+8x}$\par
+\Num{2} $f(x)=(x-2)\sqrt x$: \quad $f^{\prime}(x)=\sqrt x+(x-2)\times\dfrac1{2\sqrt x}=\dfrac{2x+x-2}{2\sqrt x}=\bx{\frac{3x-2}{2\sqrt x}}$\par
+\Num{3} $f(x)=\dfrac{x^2+3}{2x}$: \quad $f^{\prime}(x)=\dfrac{2x\times2x-2\left(x^2+3\right)}{4x^2}=\bx{\frac{2x^2-6}{4x^2}}$}{}{}
+\Row{}{%
+\Lab{cThm}{مبرهنة}\ $a$ و $b$ عددان حقيقيان مع $a\neq0$ ، و $u$ دالة قابلة للاشتقاق على مجال $I$. ليكن $J$ مجال الأعداد $x$ حيث $ax+b\in I$. الدالة $f:x\mapsto u(ax+b)$ قابلة للاشتقاق على $J$ ولدينا: $\LW{f^{\prime}(x)=a\,u^{\prime}(ax+b)}$.\par
+\Lab{cEx}{أمثلة}\par
+\ck\ $f(x)=\sin(ax+b)$: \ $\LW{f^{\prime}(x)=a\cos(ax+b)}$ \quad \ck\ $f(x)=\cos(ax+b)$: \ $\LW{f^{\prime}(x)=-a\sin(ax+b)}$\par
+\ck\ $f(x)=(ax+b)^n$: \ $\LW{f^{\prime}(x)=na(ax+b)^{n-1}}$}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par عيّن نقط انعطاف منحني $f(x)=x^4-6x^2$.\par\textbf{الحل:} $f^{\prime\prime}(x)=12x^2-12=12(x-1)(x+1)$ يغير إشارته عند $\pm1$: النقطتان $(-1;-5)$ و $(1;-5)$.\par\textbf{واجب منزلي:} تمرين 67 صفحة 64 ، وتمرين 70 صفحة 65.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تطبيق}\ $f(x)=\dfrac{2x-1}{x^2+1}$ على $\R$. \ \Num{1} عيّن مشتقة $f$. \ \Num{2} $g$ و $h$ الدالتان المعرفتان على $\R$ بـ: $g(x)=f(-x)$ و $h(x)=g(3x-1)$. عيّن $g^{\prime}(x)$ و $h^{\prime}(x)$ دون تعيين $g(x)$ و $h(x)$.\par
+\textbf{الحل:} \Num{1}
+\[f^{\prime}(x)=\frac{2\left(x^2+1\right)-(2x-1)\times2x}{\left(x^2+1\right)^2}=\frac{2x^2+2-4x^2+2x}{\left(x^2+1\right)^2}\]
+\[f^{\prime}(x)=\bx{\frac{-2x^2+2x+2}{\left(x^2+1\right)^2}}\]
+\Num{2} $\LW{g^{\prime}(x)=-f^{\prime}(-x)}$:
+\[g^{\prime}(x)=-\frac{-2x^2-2x+2}{\left(x^2+1\right)^2}=\bx{\frac{2x^2+2x-2}{\left(x^2+1\right)^2}}\]
+$\LW{h^{\prime}(x)=3g^{\prime}(3x-1)}$ ، و $2(3x-1)^2+2(3x-1)-2=18x^2-6x-2$ ، $(3x-1)^2+1=9x^2-6x+2$:
+\[h^{\prime}(x)=\frac{3\left(18x^2-6x-2\right)}{\left(9x^2-6x+2\right)^2}\]
+\[h^{\prime}(x)=\bx{\frac{54x^2-18x-6}{\left(9x^2-6x+2\right)^2}}\]
+\textbf{واجب منزلي:} تمارين 13 ، 17 و 24 صفحة 59--60.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{15 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
-\ModhHead{06}{3 ع ت}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{اتجاه التغير ، القيم الحدية ، التقريب التآلفي}%
-{\begin{itemize}\item المشتقات ، القيم الحدية المحلية (2 ع ت).\end{itemize}}%
-{\begin{itemize}\item دراسة اتجاه تغير دالة ، وتعيين قيمها الحدية.\item استعمال التقريب التآلفي لحساب قيم مقربة.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+% =====================================================================
+\ModhHead{06}{3 ع ت + 3 ت ر + 3 ر}{تحليل}{الاشتقاقية والاستمرارية}{01 سا و 30 د}{مشتقة دالة مركبة ، المشتقات المتتابعة}%
+{\begin{itemize}\item حساب مشتقات الدوال المألوفة.\end{itemize}}%
+{\begin{itemize}\item حساب مشتقة دالة مركبة: $\sqrt{u}$ ، $u^n$ ، $\dfrac1{u^n}$.\item المشتقات المتتابعة.\end{itemize}}%
+{الكتاب المدرسي ، الأنترنت.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} بدون حاسبة: قيمة مقربة لـ $\sqrt{4{,}02}$ ؟}{10 د}{تحدٍّ ذهني.}
-\Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ $f(x)=\sqrt x$ عند $4$: $f(4+h)\approx f(4)+f^{\prime}(4)h=2+\dfrac h4$.\par
-\ck\ $\sqrt{4{,}02}\approx2{,}005$ (الحاسبة: $2{,}00499$).\par
-}{35 د}{مقارنة بالحاسبة.}
-\Row{بناء المعارف}{%
-\Lab{cThm}{اتجاه التغير}\ إشارة $f^{\prime}$ على مجال تعطي اتجاه تغير $f$ ؛ إذا انعدمت $f^{\prime}$ عند $a$ مغيرة إشارتها فـ $f(a)$ قيمة حدية محلية.\par\Lab{cThm}{التقريب التآلفي}\ من أجل $h$ قريب من $0$: $f(a+h)\approx f(a)+f^{\prime}(a)\,h$.\par}{50 د}{جدول التغيرات.}
+\textbf{التهيئة النفسية:} التذكير بتفكيك دالة وتركيب دالتين ومشتقة الدالة $x\mapsto f(ax+b)$.\par
+\Lab{cEx}{نشاط مقترح}\ $f(x)=x^2-1$ و $g(x)=x+3$ على $\R$. \ \Num{1} عيّن عبارة $(f\circ g)(x)$. \ \Num{2} احسب $f^{\prime}(x)$ ، $g^{\prime}(x)$ و $(f\circ g)^{\prime}(x)$. \ \Num{3} قارن بين $(f\circ g)^{\prime}(x)$ و $g^{\prime}(x)\times f^{\prime}\big(g(x)\big)$.}{15 د}{عمل فردي.}
 \Row{}{%
-\Lab{cEx}{مثال}\ $(1+h)^5\approx1+5h$: $1{,}003^5\approx1{,}015$.\par\Lab{cThm!80!black}{حذار}\ التقريب جيد فقط لـ $h$ صغير.}{}{}
-\Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $g(x)=x+\dfrac4x$ على $]0;+\infty[$. ادرس اتجاه تغيرها ، وعيّن قيمتها الحدية.\par\textbf{الحل:} $g^{\prime}(x)=\dfrac{x^2-4}{x^2}$: متناقصة على $]0;2]$ ، متزايدة على $[2;+\infty[$ ؛ قيمة حدية صغرى $g(2)=4$.\par\textbf{واجب منزلي:} تمارين 11 ، 12 ، 13 صفحتي 36 و 37.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cDef}{مناقشة النشاط}\par
+\Num{1} $(f\circ g)(x)=f(x+3)=(x+3)^2-1=\bx{x^2+6x+8}$\par
+\Num{2} $f^{\prime}(x)=2x$ \ ، \ $g^{\prime}(x)=1$ \ ، \ $(f\circ g)^{\prime}(x)=\bx{2x+6}$\par
+\Num{3} $g^{\prime}(x)\times f^{\prime}\big(g(x)\big)=1\times2(x+3)=2x+6$ \quad إذن \quad \bx{(f\circ g)^{\prime}(x)=g^{\prime}(x)\,f^{\prime}\big(g(x)\big)}}{}{}
+\Row{بناء المعارف}{%
+\Lab{cThm}{مبرهنة: مشتقة دالة مركبة}\ إذا قبلت الدالة $u$ الاشتقاق على مجال $I$ ، وقبلت الدالة $v$ الاشتقاق على $u(I)$ ، فإن الدالة $v\circ u$ قابلة للاشتقاق على $I$ ولدينا:
+\[\LW{\big[v\big(u(x)\big)\big]^{\prime}=u^{\prime}(x)\,v^{\prime}\big(u(x)\big)}\]
+\Lab{cEx}{مثال}\ $f(x)=\sqrt{x^2+1}$ على $\R$. نضع $u(x)=x^2+1$ و $v(x)=\sqrt x$: \ $u^{\prime}(x)=2x$ و $v^{\prime}(x)=\dfrac1{2\sqrt x}$.
+\[f^{\prime}(x)=2x\times\frac1{2\sqrt{x^2+1}}=\bx{\frac x{\sqrt{x^2+1}}}\]}{25 د}{نبرهن الحالات الخاصة.}
+\Row{}{%
+\Lab{cDef}{المشتقات المتتابعة}\ $f$ قابلة للاشتقاق على مجال مفتوح $I$ ودالتها المشتقة $f^{\prime}$. إذا كانت $f^{\prime}$ قابلة للاشتقاق على $I$ فإن مشتقتها $(f^{\prime})^{\prime}$ تسمى \textbf{الدالة المشتقة الثانية} ونرمز لها $f^{\prime\prime}$ أو $f^{(2)}$. وهكذا ، المشتقة النونية نرمز لها $f^{(n)}$.\par
+\Lab{cEx}{مثال}\ $f(x)=x^4-2x^3+x-1$:
+\[f^{\prime}(x)=\bx{4x^3-6x^2+1}\qquad;\qquad f^{\prime\prime}(x)=\bx{12x^2-12x}\]
+\[f^{(3)}(x)=\bx{24x-12}\qquad;\qquad f^{(4)}(x)=\bx{24}\]
+\Lab{cRem}{ملاحظة}\ $f^n$ هي الدالة $f$ قوى العدد $n$ ، أما $f^{(n)}$ فهي المشتقة ذات الرتبة $n$.}{}{}
+\Row{}{%
+\Lab{cMeth}{تطبيق}\ $f(x)=\cos x$ على $\R$. \ \Num{1} عيّن $f^{\prime}$ ، $f^{\prime\prime}$ ، $f^{(3)}$ ، $f^{(4)}$ و $f^{(5)}$. \ \Num{2} خمّن عبارة $f^{(n)}(x)$.\par
+\textbf{الحل:} \Num{1} $f^{\prime}(x)=-\sin x$ \ ؛ \ $f^{\prime\prime}(x)=-\cos x$ \ ؛ \ $f^{(3)}(x)=\sin x$ \ ؛ \ $f^{(4)}(x)=\cos x$ \ ؛ \ $f^{(5)}(x)=-\sin x$\par
+\Num{2} من أجل $k\in\N$: \quad \bx{f^{(2k)}(x)=(-1)^k\cos x} \quad و \quad \bx{f^{(2k+1)}(x)=(-1)^{k+1}\sin x}}{}{}
+\Row{}{%
+\Lab{cThm}{مشتقة الدالة $x\mapsto\sqrt{u(x)}$}\ إذا كانت $u$ قابلة للاشتقاق وموجبة تمامًا على $I$ فإن $\sqrt u$ قابلة للاشتقاق على $I$ و: $\LW{\Big(\sqrt{u(x)}\Big)^{\prime}=\dfrac{u^{\prime}(x)}{2\sqrt{u(x)}}}$\par
+\Lab{cMeth}{البرهان}\ $\sqrt u=v\circ u$ مع $v(x)=\sqrt x$ ، $v^{\prime}(x)=\dfrac1{2\sqrt x}$ و $u(x)>0$ ، ومنه $f^{\prime}(x)=u^{\prime}(x)\,v^{\prime}\big(u(x)\big)=\dfrac{u^{\prime}(x)}{2\sqrt{u(x)}}$.\par
+\Lab{cEx}{مثال}\ $f(x)=\sqrt{x^2-2x+5}$: \quad $f^{\prime}(x)=\dfrac{2x-2}{2\sqrt{x^2-2x+5}}=\bx{\frac{x-1}{\sqrt{x^2-2x+5}}}$}{}{}
+\Row{}{%
+\Lab{cThm}{مشتقة الدالة $x\mapsto\big(u(x)\big)^n$}\ $n\in\N^*$ ، $u$ قابلة للاشتقاق على $I$: $\LW{\big(u^n\big)^{\prime}=nu^{\prime}u^{n-1}}$\par
+\Lab{cMeth}{البرهان}\ $u^n=v\circ u$ مع $v(x)=x^n$ ، $v^{\prime}(x)=nx^{n-1}$ ، ومنه $f^{\prime}(x)=u^{\prime}(x)\times n\big(u(x)\big)^{n-1}$.\par
+\Lab{cEx}{مثال}\ $f(x)=\left(x^4+2x\right)^6$: \quad \[f^{\prime}(x)=6\left(4x^3+2\right)\left(x^4+2x\right)^5=\bx{\left(24x^3+12\right)\left(x^4+2x\right)^5}\]}{}{}
+\Row{}{%
+\Lab{cThm}{مشتقة الدالة $x\mapsto\dfrac1{\big(u(x)\big)^n}$}\ $n\in\N^*$ ، $u$ قابلة للاشتقاق ولا تنعدم على $I$: $\LW{\Big(\dfrac1{u^n}\Big)^{\prime}=-\dfrac{nu^{\prime}}{u^{n+1}}}$\par
+\Lab{cMeth}{البرهان}\ باستعمال مشتقة المقلوب: \quad $f^{\prime}(x)=-\dfrac{\big(u^n\big)^{\prime}(x)}{\big(u(x)\big)^{2n}}=-\dfrac{nu^{\prime}(x)\big(u(x)\big)^{n-1}}{\big(u(x)\big)^{2n}}=-\dfrac{nu^{\prime}(x)}{\big(u(x)\big)^{n+1}}$\par
+\Lab{cEx}{مثال}\ $f(x)=\dfrac1{\left(x^2+3\right)^3}$: \quad $f^{\prime}(x)=-\dfrac{3\times2x}{\left(x^2+3\right)^4}=\bx{-\frac{6x}{\left(x^2+3\right)^4}}$\par
+\textbf{واجب منزلي:} تمرين 78 صفحة 66 وتمرين 40 صفحة 61.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{50 د}{}
 \end{Sayr}
 \newpage
-\ModhHead{07}{3 ع ت}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{توظيف المشتقات لحل مشكلات}%
-{\begin{itemize}\item دراسة اتجاه التغير ، القيم الحدية.\end{itemize}}%
-{\begin{itemize}\item دراسة دوال كثيرات حدود ، ناطقة ، صماء ، وحل مسائل استمثال.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+% =====================================================================
+\ModhHead{07}{3 ع ت + 3 ت ر + 3 ر}{تحليل}{الاشتقاقية والاستمرارية}{01 سا}{تطبيقات الاشتقاقية: اتجاه تغير دالة}%
+{\begin{itemize}\item حساب مشتقات الدوال المألوفة.\end{itemize}}%
+{\begin{itemize}\item دراسة اتجاه تغير دالة باستعمال الدالة المشتقة.\end{itemize}}%
+{الكتاب المدرسي ، الأنترنت.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} من صفيحة مربعة ضلعها $12$ cm نقطع مربعات في الأركان ونطوي: ما أكبر حجم للعلبة؟}{10 د}{مسألة من الحياة.}
-\Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ $x$ ضلع المربع المقطوع ، $0<x<6$: $V(x)=x(12-2x)^2$.\par
-\ck\ $V^{\prime}(x)=12(x-2)(x-6)$: أكبر حجم $V(2)=128$ cm$^3$.\par
-}{35 د}{عمل بالأفواج.}
+\Lab{cEx}{نشاط مقترح}\ في الشكل: $(C_f)$ منحنى الدالة $f(x)=x^3-3x$ و $(C_{f^{\prime}})$ منحنى دالتها المشتقة $f^{\prime}(x)=3x^2-3$ على $[-2;2]$.
+\GRS{-2.3}{2.3}{-3.3}{9.3}{0.45}
+\draw[cDef,very thick,domain=-2:2,samples=60] plot(\x,{\x*\x*\x-3*\x}); \node[cDef] at (2.4,1.4){$(C_f)$};
+\draw[cThm,very thick,domain=-2:2,samples=60] plot(\x,{3*\x*\x-3}); \node[cThm] at (1.2,7.5){$(C_{f^{\prime}})$};
+\foreach \t in {-2,-1,1,2} \node[below,font=\tiny] at (\t,0){$\t$};
+\GRE
+\Num{1} أتمم الجدول: \quad \Num{2} اذكر الخاصية التي تربط إشارة $f^{\prime}(x)$ باتجاه تغير $f$.
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.4}\small
+\begin{tabular}{|c|c|c|}\hline
+\rowcolor{cSec!12}\ar{تغيرات $f$} & \ar{إشارة $f^{\prime}(x)$} & \ar{المجال}\\\hline
+\ar{\color{cThm}متزايدة} & $\color{cThm}+$ & $[-2;-1]$\\\hline
+\ar{\color{cThm}متناقصة} & $\color{cThm}-$ & $[-1;1]$\\\hline
+\ar{\color{cThm}متزايدة} & $\color{cThm}+$ & $[1;2]$\\\hline
+\end{tabular}\end{LTR}\end{center}}{10 د}{قراءة بيانية.}
 \Row{بناء المعارف}{%
-\Lab{cMeth}{حل مسألة استمثال}\ نختار المتغير ومجاله ، نعبر عن المقدار بدالة ، ندرس تغيراتها ، ونقرأ القيمة الحدية.\par\Lab{cEx}{دالة صماء}\ $f(x)=x\sqrt{4-x}$ على $[0;4]$: $f^{\prime}(x)=\dfrac{8-3x}{2\sqrt{4-x}}$ على $[0;4[$: متزايدة على $[0;\frac83]$ ومتناقصة على $[\frac83;4]$ ؛ القيمة العظمى $f(\frac83)=\dfrac{16\sqrt3}9$.\par}{50 د}{مخطط حل مسألة استمثال.}
+\Lab{cThm}{مبرهنة}\ $f$ دالة قابلة للاشتقاق على مجال $I$:\par
+\ck\ إذا كان من أجل كل $x$ من $I$: $\LW{f^{\prime}(x)>0}$ فإن $f$ \textbf{متزايدة تمامًا} على $I$.\par
+\ck\ إذا كان من أجل كل $x$ من $I$: $\LW{f^{\prime}(x)<0}$ فإن $f$ \textbf{متناقصة تمامًا} على $I$.\par
+\ck\ إذا كان من أجل كل $x$ من $I$: $\LW{f^{\prime}(x)=0}$ فإن $f$ \textbf{ثابتة} على $I$.\par
+\Lab{cRem}{ملاحظة}\ تبقى المبرهنة صحيحة إذا انعدمت المشتقة من أجل قيم معزولة من المجال.}{20 د}{}
 \Row{}{%
-\Lab{cThm!80!black}{حذار}\ نتحقق من أن القيمة الحدية تنتمي إلى المجال المقبول فيزيائياً.}{}{}
+\Lab{cMeth}{تطبيق}\ ادرس اتجاه تغير الدالة $f(x)=\left(x^2-4\right)^2$ على $\R$.\par
+\textbf{الحل:} $\LW{\left(u^2\right)^{\prime}=2u^{\prime}u}$: \quad $f^{\prime}(x)=2\times2x\left(x^2-4\right)=\bx{4x\left(x^2-4\right)}$
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=1.8]{$x$/0.8,$4x$/0.8,$x^2-4$/0.8,$f^{\prime}(x)$/0.8}{$-\infty$,$-2$,$0$,$2$,$+\infty$}
+\tkzTabLine{,-,t,-,z,+,t,+,}
+\tkzTabLine{,+,z,-,t,-,z,+,}
+\tkzTabLine{,-,z,+,z,-,z,+,}
+\end{TAB}
+\bxt{$f$ متزايدة تمامًا على $[-2;0]$ وعلى $[2;+\infty[$ ، ومتناقصة تمامًا على $]-\infty;-2]$ وعلى $[0;2]$}.\par
+\Lab{cEx}{مثال}\ $f(x)=x^3$: $f^{\prime}(x)=3x^2\geqslant0$ ولا تنعدم إلا عند $0$ (قيمة معزولة) ،\par إذن \bxt{$f$ متزايدة تمامًا على $\R$}.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par مستطيل مساحته $16$ cm$^2$. عيّن بعديه حتى يكون محيطه أصغر ما يمكن.\par\textbf{الحل:} $P(x)=2\left(x+\dfrac{16}x\right)$ ، $P^{\prime}(x)=2\dfrac{x^2-16}{x^2}$: أصغر محيط عند $x=4$: مربع ضلعه $4$ ، $P=16$ cm.\par\textbf{واجب منزلي:} تمارين من باب الاشتقاقية (مسائل).\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cMeth}{تطبيق}\ $f(x)=x^3-3x^2+4$ على $\R$. \ \Num{1} ادرس اتجاه تغير $f$ ، واحسب $f(-1)$. \ \Num{2} شكّل جدول تغيرات $f$ ، ثم استنتج إشارة $f(x)$. \ \Num{3} استعمل السؤال 1 لدراسة اتجاه تغير الدالة $g(x)=\dfrac12x^2-3x-\dfrac4x$ على $]-\infty;0[$.\par
+\textbf{الحل:} \Num{1} $f^{\prime}(x)=3x^2-6x=\bx{3x(x-2)}$: موجبة خارج الجذرين $0$ و $2$. \quad $f(-1)=-1-3+4=\bx{0}$
+\LD{f(x)}{-\infty}{-\infty} $\Car{\Lm{-\infty}f(x)=\Lm{-\infty}x^3}$
+\LD{f(x)}{+\infty}{+\infty} $\Car{\Lm{+\infty}f(x)=\Lm{+\infty}x^3}$
+\Num{2}
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=2.2]{$x$/1,$f^{\prime}(x)$/1,$f(x)$/2}{$-\infty$,$0$,$2$,$+\infty$}
+\tkzTabLine{,+,z,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$4$,-/$0$,+/$+\infty$}
+\tkzTabVal{1}{2}{0.35}{$-1$}{$0$}
+\end{TAB}
+$f(0)=4$ قيمة حدية محلية عظمى ، و $f(2)=0$ قيمة حدية محلية صغرى. \ إشارة $f(x)$:
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=2.2]{$x$/1,$f(x)$/1}{$-\infty$,$-1$,$2$,$+\infty$}
+\tkzTabLine{,-,z,+,z,+,}
+\end{TAB}}{30 د}{تقويم فردي.}
+\Row{}{%
+\Num{3} $g^{\prime}(x)=x-3+\dfrac4{x^2}=\dfrac{x^3-3x^2+4}{x^2}=\bx{\frac{f(x)}{x^2}}$: إشارة $g^{\prime}(x)$ هي إشارة $f(x)$ على $]-\infty;0[$:
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=2.6]{$x$/1,$g^{\prime}(x)$/1}{$-\infty$,$-1$,$0$}
+\tkzTabLine{,-,z,+,d}
+\end{TAB}
+\bxt{$g$ متناقصة تمامًا على $]-\infty;-1]$ ومتزايدة تمامًا على $[-1;0[$}.\par
+\textbf{واجب منزلي:} تمارين 11 ، 12 و 13 صفحة 36--37.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{}{}
 \end{Sayr}
 \newpage
-\ModhHead{08}{3 ع ت}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{دراسة الدوال المثلثية $x\mapsto\cos(\omega x+\varphi)$ و $x\mapsto\sin(\omega x+\varphi)$}%
-{\begin{itemize}\item حساب المثلثات ، مشتق دالة مركبة.\end{itemize}}%
-{\begin{itemize}\item حساب مشتقات الدوال المثلثية ، ودراسة دالة مثلثية على دور.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+% =====================================================================
+\ModhHead{08}{3 ع ت + 3 ت ر + 3 ر}{تحليل}{الاشتقاقية والاستمرارية}{01 سا}{تطبيقات الاشتقاقية: القيم الحدية المحلية ، نقطة الانعطاف}%
+{\begin{itemize}\item حساب مشتقات الدوال المألوفة.\end{itemize}}%
+{\begin{itemize}\item تعيين القيم الحدية المحلية لدالة.\item تعيين نقطة انعطاف.\end{itemize}}%
+{الكتاب المدرسي ، الأنترنت.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} ما دور الدالة $\sin$ ؟ وما دور $\sin(2x)$ ؟}{10 د}{سؤال.}
-\Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{مناقشة نشاط 02 (أنشطة باب الاشتقاقية)}\par\ck\ نقطة على الدائرة المثلثية ، وتفسير هندسي لـ $\dfrac{\sin h}h$ لما $h\to0$.\par
-\ck\ تخمين: $\sin^{\prime}=\cos$.\par
-}{35 د}{نشاط الكتاب.}
+\textbf{التهيئة النفسية:} ما هي أعلى نقطة في منحنى دالة على مجال؟ ما هو المماس عندها؟}{5 د}{سؤال شفهي.}
 \Row{بناء المعارف}{%
-\Lab{cThm}{خاصية}\par\ck\ $\sin^{\prime}(x)=\cos x$ ، $\cos^{\prime}(x)=-\sin x$.\par
-\ck\ $\big(\sin(\omega x+\varphi)\big)^{\prime}=\omega\cos(\omega x+\varphi)$ ، $\big(\cos(\omega x+\varphi)\big)^{\prime}=-\omega\sin(\omega x+\varphi)$.\par
-\ck\ الدالتان دوريتان ودورهما $\dfrac{2\pi}{|\omega|}$.\par
-\Lab{cMeth}{دراسة دالة مثلثية}\ نعين الدور ، والشفعية ، ثم ندرس الدالة على مجال طوله دور (أو نصف دور) ونستنتج المنحني بالانسحاب والتناظر.\par}{50 د}{منحني على دور ثم الانسحاب.}
+\Lab{cDef}{تعريف}\ $f$ دالة معرفة على مجال $I$ من $\R$ ، و $x_0$ عدد من $I$:\par
+\ck\ $f(x_0)$ \textbf{قيمة حدية محلية عظمى} إذا وُجد مجال مفتوح $I^{\prime}$ محتوى في $I$ ويشمل $x_0$ بحيث من أجل كل $x$ من $I^{\prime}$: $\LW{f(x)\leqslant f(x_0)}$.\par
+\ck\ $f(x_0)$ \textbf{قيمة حدية محلية صغرى} إذا وُجد مجال مفتوح $I^{\prime}$ محتوى في $I$ ويشمل $x_0$ بحيث من أجل كل $x$ من $I^{\prime}$: $\LW{f(x_0)\leqslant f(x)}$.\par
+\Lab{cEx}{مثال}\ $f(x)=\dfrac15\left(x^3+3x^2-9x\right)$ على $[-4;4]$: \ $f^{\prime}(x)=\dfrac35(x+3)(x-1)$.
+\GRS{-4.3}{2.6}{-1.6}{6}{0.55}
+\draw[cDef,very thick,domain=-4.2:2.4,samples=80] plot(\x,{(\x*\x*\x+3*\x*\x-9*\x)/5});
+\draw[dashed] (-3,0)--(-3,5.4) (-3,5.4)--(0,5.4) (1,0)--(1,-1);
+\fill (-3,5.4) circle(1.5pt) (1,-1) circle(1.5pt);
+\node[left] at (0,5.4){$\frac{27}5$}; \node[below] at (-3,0){$-3$}; \node[above] at (1,0){$1$};
+\node[cDef] at (2.1,1.5){$(C_f)$};
+\GRE
+$f(-3)=\bx{\frac{27}5}$ قيمة حدية محلية عظمى عند $x_0=-3$ ، و $f(1)=\bx{-1}$ قيمة حدية محلية صغرى عند $x_1=1$.}{20 د}{}
 \Row{}{%
-\Lab{cEx}{مثال}\ $f(x)=\sin2x$: الدور $\pi$ ، فردية ؛ $f^{\prime}(x)=2\cos2x$: متزايدة على $[0;\frac\pi4]$ ، متناقصة على $[\frac\pi4;\frac{3\pi}4]$ ، متزايدة على $[\frac{3\pi}4;\pi]$.\par\Lab{cThm!80!black}{حذار}\ $\omega$ يظهر عاملاً في المشتقة.}{}{}
+\Lab{cThm}{مبرهنة}\ $f$ دالة قابلة للاشتقاق على مجال $I$. إذا \textbf{انعدمت} الدالة المشتقة $f^{\prime}$ عند قيمة $x_0$ من $I$ \textbf{مغيّرة إشارتها} فإن $f(x_0)$ قيمة حدية محلية.\par
+\Lab{cRem}{ملاحظة}\ \Num{1} النقطة $\big(x_0;f(x_0)\big)$ تسمى نقطة حدية (ذروة) ، والمماس عندها يوازي حامل محور الفواصل ومعادلته $\LW{y=f(x_0)}$. \ \Num{2} إذا قبلت $f$ قيمة حدية محلية عند $x_0$ فإن $\LW{f^{\prime}(x_0)=0}$.}{}{}
+\Row{}{%
+\Lab{cDef}{نقطة الانعطاف}\ هي النقطة التي يخترق فيها المماس المنحنى البياني.\par
+\Lab{cThm}{مبرهنة}\par
+\ck\ إذا انعدمت $f^{\prime\prime}$ عند $x_0$ \textbf{مع تغيير الإشارة} فإن $(C_f)$ يقبل نقطة انعطاف فاصلتها $x_0$.\par
+\ck\ إذا انعدمت $f^{\prime}$ عند $x_0$ \textbf{دون تغيير الإشارة} فإن $(C_f)$ يقبل نقطة انعطاف فاصلتها $x_0$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par $f(x)=\cos\left(3x-\frac\pi2\right)$. بسّط $f(x)$ ، عيّن دورها ، واحسب $f^{\prime}(x)$.\par\textbf{الحل:} $f(x)=\sin3x$ ، الدور $\dfrac{2\pi}3$ ، $f^{\prime}(x)=3\cos3x$.\par\textbf{واجب منزلي:} تمرين 63 صفحة 69 ، وتمرين 95 صفحة 70.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{تقويم فردي.}
+\Lab{cEx}{أمثلة}\par
+\ck\ $f(x)=x^3$: \ $f^{\prime}(x)=3x^2$ تنعدم عند $0$ ولا تغير إشارتها: \bxt{$O(0;0)$ نقطة انعطاف لـ $(C_f)$}.\par
+\ck\ $g(x)=x^3-3x^2+1$: \ $g^{\prime}(x)=3x^2-6x$ ، $g^{\prime\prime}(x)=6x-6$ تنعدم عند $1$ وتغير إشارتها ، و $g(1)=-1$: \bxt{$A(1;-1)$ نقطة انعطاف لـ $(C_g)$}.
+\GRS{-1.3}{3.3}{-3.3}{1.6}{0.6}
+\draw[cDef,very thick,domain=-0.9:3.05,samples=80] plot(\x,{\x*\x*\x-3*\x*\x+1});
+\draw[cThm,thick,domain=-0.2:2.2] plot(\x,{-3*(\x-1)-1});
+\fill (1,-1) circle(1.5pt) node[above right]{$A$};
+\node[cDef] at (2.9,1.3){$(C_g)$};
+\GRE
+\textbf{واجب منزلي:} تمرين 67 صفحة 64 وتمرين 70 صفحة 65.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{35 د}{تقويم فردي.}
 \end{Sayr}
 \newpage
-\ModhHead{09}{3 ع ت}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{المعادلات التفاضلية $y^{\prime}=f$}%
-{\begin{itemize}\item مشتقات الدوال المألوفة.\end{itemize}}%
-{\begin{itemize}\item حل معادلات تفاضلية من الشكل $y^{\prime}=f(x)$ ، وتعيين الحل الذي يحقق شرطاً ابتدائياً.\end{itemize}}%
-{المنهاج ، الكتاب المدرسي ، مراجع ، الحاسبة البيانية.}
+% =====================================================================
+\ModhHead{09}{3 ع ت + 3 ت ر + 3 ر}{تحليل}{الاشتقاقية والاستمرارية}{01 سا}{التقريب التآلفي ، طريقة أولر}%
+{\begin{itemize}\item حساب مشتقات الدوال المألوفة.\end{itemize}}%
+{\begin{itemize}\item توظيف المشتقات لحل مشكلات: التقريب التآلفي ، طريقة أولر.\end{itemize}}%
+{الكتاب المدرسي ، الأنترنت.}
 \begin{Sayr}
 \Row{مرحلة الانطلاق}{%
-\textbf{التهيئة النفسية:} نعرف سرعة سيارة في كل لحظة: هل نستطيع معرفة المسافة المقطوعة؟}{10 د}{سؤال فيزيائي.}
-\Row{التشخيص والاكتشاف}{%
-\Lab{cEx}{وضعية مقترحة}\par\ck\ $y^{\prime}=2x$: الدوال $x^2$ ، $x^2+1$ ، $x^2-5$ كلها حلول.\par
-\ck\ لتعيين حل وحيد نحتاج شرطاً ، مثلاً $y(0)=3$.\par
-}{35 د}{نبحث عن «الدالة الأصلية».}
+\textbf{التهيئة النفسية:} التذكير بأحسن تقريب تآلفي لدالة بجوار عدد حقيقي $x_0$.}{5 د}{}
 \Row{بناء المعارف}{%
-\Lab{cDef}{تعريف}\ حل المعادلة $y^{\prime}=f(x)$ على $I$ هو كل دالة $F$ قابلة للاشتقاق على $I$ حيث $F^{\prime}=f$.\par\Lab{cThm}{خاصية}\ إذا كانت $F$ حلاً فالحلول هي الدوال $x\mapsto F(x)+c$ ($c$ ثابت حقيقي) ، ويوجد حل وحيد يحقق $y(x_0)=y_0$.\par}{50 د}{نتحقق بالاشتقاق.}
+\Lab{cThm}{خاصية: التقريب التآلفي}\ $f$ دالة معرفة على مجال مفتوح $I$. إذا قبلت $f$ الاشتقاق عند $x$ من $I$ فإنه توجد دالة $\varepsilon$ بحيث من أجل كل $h$ حيث $x+h\in I$:
+\[\LW{f(x+h)=f(x)+hf^{\prime}(x)+h\varepsilon(h)}\quad\text{\ar{مع}}\quad\LW{\lim_{h\to0}\varepsilon(h)=0}\]
+من أجل $h$ قريب من $0$ نكتب: $\LW{f(x+h)\approx f(x)+hf^{\prime}(x)}$ ، ويسمى $f(x)+hf^{\prime}(x)$ \textbf{التقريب التآلفي} لـ $f(x+h)$.\par
+\Lab{cMeth}{البرهان}\ نضع $\varepsilon(h)=\dfrac{f(x_0+h)-f(x_0)}h-f^{\prime}(x_0)$: \ لدينا $\lim\limits_{h\to0}\varepsilon(h)=f^{\prime}(x_0)-f^{\prime}(x_0)=0$ ، ومنه $f(x_0+h)=f(x_0)+hf^{\prime}(x_0)+h\varepsilon(h)$.\par
+\Lab{cRem}{ملاحظة}\ بوضع $x=x_0+h$: \ $\LW{f(x)\approx f^{\prime}(x_0)(x-x_0)+f(x_0)}$.}{20 د}{}
 \Row{}{%
-\Lab{cEx}{مثال}\par\ck\ $y^{\prime}=3x^2-2x$: $y=x^3-x^2+c$ ؛ مع $y(1)=2$: $c=2$.\par
-\ck\ $y^{\prime}=\cos2x$: $y=\frac12\sin2x+c$.\par
-\Lab{cThm!80!black}{حذار}\ لا ننسى الثابت $c$.}{}{}
+\Lab{cEx}{مثال 1}\ $f(x)=\dfrac{x-2}{x^2+1}$. باستعمال التقريب التآلفي احسب قيمة مقربة إلى $10^{-2}$ للعدد $f(1{,}0001)$.\par
+$f^{\prime}(x)=\dfrac{\left(x^2+1\right)-(x-2)\times2x}{\left(x^2+1\right)^2}=\dfrac{-x^2+4x+1}{\left(x^2+1\right)^2}$ \ ، \ $f(1)=-\dfrac12$ \ ، \ $f^{\prime}(1)=1$
+\[f(1{,}0001)=f(1+0{,}0001)\approx f(1)+0{,}0001\times f^{\prime}(1)\approx\bx{-0{,}50}\]
+\Lab{cEx}{مثال 2}\ أحسن تقريب تآلفي للدالة $x\mapsto\sqrt{x+1}$ بجوار $0$: \ $f(0)=1$ ، $f^{\prime}(0)=\dfrac12$ ، ومنه \bx{\sqrt{x+1}\approx\frac12x+1}.}{}{}
+\Row{}{%
+\Lab{cMeth}{طريقة أولر}\ تسمح بإنشاء تمثيل بياني تقريبي لدالة $f$ بمعرفة $f^{\prime}$ و $y_0=f(x_0)$:\par
+انطلاقًا من $A_0\big(x_0;y_0\big)$ ، نُنشئ النقط $A_n(x_n;y_n)$ حيث:
+\[\LW{x_n=x_{n-1}+h}\qquad;\qquad\LW{y_n=y_{n-1}+hf^{\prime}(x_{n-1})}\]
+يسمى $h$ \textbf{الخطوة} ، وكلما كانت أقرب إلى الصفر حصلنا على تمثيل أدق.\par
+\Lab{cDef}{الكتابة التفاضلية}\ بوضع $\Delta x=(x+h)-x$ و $\Delta y=f(x+h)-f(x)$: \ $\Delta y\approx f^{\prime}(x)\Delta x$ عندما يكون $\Delta x$ قريبًا من $0$. نكتب $\LW{dy=f^{\prime}(x)\,dx}$ أو $\LW{f^{\prime}(x)=\dfrac{dy}{dx}}$ ، وبصفة عامة $\dfrac{df}{dx}$ بدلًا من $f^{\prime}$ و $\dfrac{d^2f}{dx^2}$ بدلًا من $f^{\prime\prime}$.}{}{}
 \Row{التقويم}{%
-\Lab{cEx}{تطبيق}\par حل على $]0;+\infty[$: $y^{\prime}=\dfrac1{x^2}$ ، ثم عيّن الحل الذي يحقق $y(1)=0$.\par\textbf{الحل:} $y=-\dfrac1x+c$ ؛ $-1+c=0$ ، $c=1$: $y=1-\dfrac1x$.\par\textbf{واجب منزلي:} تمارين من باب الاشتقاقية.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{25 د}{نهاية المحور: فرض أو مراجعة.}
+\Lab{cMeth}{مثال تطبيقي}\ أنشئ منحنى تقريبيًا بطريقة أولر للدالة $f$ على $[0;5]$ حيث $f(0)=1$ و $f^{\prime}(x)=\sqrt x$ ، بالخطوة $h=0{,}5$.\par
+\textbf{الحل:} $A_0(0;1)$ ، و $y_{n}=y_{n-1}+0{,}5\sqrt{x_{n-1}}$:
+\begin{center}\begin{LTR}\renewcommand{\arraystretch}{1.35}\small
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}\hline
+\rowcolor{cSec!12}$x_n$ & $0$ & $0{,}5$ & $1$ & $1{,}5$ & $2$ & $2{,}5$ & $3$ & $3{,}5$ & $4$ & $4{,}5$ & $5$\\\hline
+$y_n$ & $1$ & $1$ & $1{,}35$ & $1{,}85$ & $2{,}47$ & $3{,}17$ & $3{,}96$ & $4{,}83$ & $5{,}77$ & $6{,}77$ & $7{,}83$\\\hline
+\end{tabular}\end{LTR}\end{center}
+مثلًا: $y_2=1+0{,}5\sqrt{0{,}5}\approx1{,}35$ \ ؛ \ $y_3=1{,}35+0{,}5\sqrt1=1{,}85$ \ ؛ \ $y_4=1{,}85+0{,}5\sqrt{1{,}5}\approx2{,}47$
+\GRS{-0.3}{5.4}{-0.3}{8.4}{0.5}
+\foreach \t in {1,2,3,4,5} \node[below,font=\tiny] at (\t,0){$\t$};
+\foreach \t in {2,4,6,8} \node[left,font=\tiny] at (0,\t){$\t$};
+\draw[cThm,very thick] (0,1)--(0.5,1)--(1,1.35)--(1.5,1.85)--(2,2.47)--(2.5,3.17)--(3,3.96)--(3.5,4.83)--(4,5.77)--(4.5,6.77)--(5,7.83);
+\foreach \p in {(0,1),(0.5,1),(1,1.35),(1.5,1.85),(2,2.47),(2.5,3.17),(3,3.96),(3.5,4.83),(4,5.77),(4.5,6.77),(5,7.83)} \fill[cThm] \p circle(1.3pt);
+\node[cThm] at (3.4,6.5){$(C_f)$};
+\GRE
+\textbf{ملاحظات حول سير الحصة:} \dotfill}{35 د}{عمل بالأفواج.}
+\end{Sayr}
+\newpage
+% =====================================================================
+\ModhHead{10}{3 ع ت + 3 ت ر + 3 ر}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{توظيف المشتقات لحل المشكلات}%
+{\begin{itemize}\item مفاهيم أولية حول الدوال العددية.\end{itemize}}%
+{\begin{itemize}\item دراسة اتجاه تغير دوال كثيرات حدود ، ناطقة ، صمّاء.\end{itemize}}%
+{الكتاب المدرسي ، الأنترنت.}
+\begin{Sayr}
+\Row{وضعية 1: دالة صمّاء}{%
+\textbf{I)} $g$ الدالة المعرفة على $D=\,]-\infty;-1]\cup[1;+\infty[$ بـ: $g(x)=2-x^2\sqrt{x^2-1}$ ، و $(C_g)$ تمثيلها البياني (الشكل).
+\GRS{-2.4}{2.4}{-3.3}{2.4}{0.65}
+\foreach \t in {-2,-1,1,2} \node[below,font=\tiny] at (\t,0){$\t$};
+\draw[cDef,very thick,domain=1:2.2,samples=60] plot(\x,{2-\x*\x*sqrt(\x*\x-1)});
+\draw[cDef,very thick,domain=-2.2:-1,samples=60] plot(\x,{2-\x*\x*sqrt(\x*\x-1)});
+\draw[cThm,->,thick] (1,2)--(1,1.2); \draw[cThm,->,thick] (-1,2)--(-1,1.2);
+\node[cDef] at (2.1,-1.8){$(C_g)$};
+\GRE
+\Num{1} احسب $g\big(\sqrt2\big)$ و $g\big(-\sqrt2\big)$.\par
+\Num{2} بقراءة بيانية: (أ) عيّن $\Lm{+\infty}g(x)$ و $\Lm{-\infty}g(x)$. \ (ب) هل $g$ مستمرة على $\R$؟ \ (جـ) هل $g$ قابلة للاشتقاق عند $1$ من اليمين؟ \ (د) عيّن إشارة $g(x)$.\par
+\textbf{II)} $f$ الدالة المعرفة على $D$ بـ: $f(x)=\dfrac{2\sqrt{x^2-1}}x-x+1$ ، و $(C_f)$ تمثيلها البياني.\par
+\Num{1} (أ) ادرس قابلية اشتقاق $f$ عند $1$ من اليمين وعند $-1$ من اليسار ، وفسّر النتائج بيانيًا. \ (ب) احسب $\Lm{+\infty}f(x)$ و $\Lm{-\infty}f(x)$.\par
+\Num{2} بيّن أنه من أجل كل $x$ من $]-\infty;-1[\cup]1;+\infty[$: $f^{\prime}(x)=\dfrac{g(x)}{x^2\sqrt{x^2-1}}$.\par
+\Num{3} شكّل جدول تغيرات $f$. \ \Num{4} بيّن أن $I(0;1)$ مركز تناظر لـ $(C_f)$. \ \Num{5} أنشئ $(C_f)$.}{20 د}{عمل بالأفواج.}
+\Row{}{%
+\Lab{cEx}{الحل}\par
+\textbf{I) 1.} $g\big(\sqrt2\big)=2-2\sqrt{2-1}=\bx{0}$ \quad و \quad $g\big(-\sqrt2\big)=2-2\sqrt{2-1}=\bx{0}$\par
+\textbf{2.} (أ) $\Lm{+\infty}g(x)=\bx{-\infty}$ و $\Lm{-\infty}g(x)=\bx{-\infty}$.\par
+(ب) \bxt{$g$ غير مستمرة على $\R$} لأنها غير معرفة على $]-1;1[$ ؛ وهي مستمرة على $]-\infty;-1]$ وعلى $[1;+\infty[$.\par
+(جـ) \bxt{لا} ، $(C_g)$ يقبل عند $(1;2)$ نصف مماس عمودي موجه نحو الأسفل: $\Lm{1^+}\dfrac{g(x)-g(1)}{x-1}=-\infty$.\par
+(د) إشارة $g(x)$:
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=1.6]{$x$/1,$g(x)$/1}{$-\infty$,$-\sqrt2$,$-1$,$1$,$\sqrt2$,$+\infty$}
+\tkzTabLine{,-,z,+,d,h,d,+,z,-,}
+\end{TAB}}{}{}
+\Row{}{%
+\textbf{II) 1.} (أ) \textbf{عند $1$ من اليمين:} $f(1)=0$. نكتب:
+\[\frac{f(x)-f(1)}{x-1}=\frac{2\sqrt{x^2-1}}{x(x-1)}-1=\frac{2\sqrt{x^2-1}\times\sqrt{x^2-1}}{x(x-1)\sqrt{x^2-1}}-1=\frac{2(x+1)}{x\sqrt{x^2-1}}-1\]
+\LD{\dfrac{f(x)-f(1)}{x-1}}{1^+}{+\infty} $\Car{\Lm{1}2(x+1)=4\\ \Lm{1^+}x\sqrt{x^2-1}=0^+}$
+\par\bxt{$f$ غير قابلة للاشتقاق عند يمين $1$} ، و $(C_f)$ يقبل نصف مماس موازٍ لمحور التراتيب معادلته $x=1$ موجه نحو الأعلى.\par
+\textbf{عند $-1$ من اليسار:} $f(-1)=2$. نكتب: \quad $\dfrac{f(x)-f(-1)}{x+1}=\dfrac{2\sqrt{x^2-1}}{x(x+1)}-1=\dfrac{2(x-1)}{x\sqrt{x^2-1}}-1$
+\LD{\dfrac{f(x)-f(-1)}{x+1}}{-1^-}{+\infty} $\Car{\Lm{-1}2(x-1)=-4\\ \Lm{-1^-}x\sqrt{x^2-1}=0^-}$
+\par\bxt{$f$ غير قابلة للاشتقاق عند يسار $-1$} ، و $(C_f)$ يقبل نصف مماس موازٍ لمحور التراتيب معادلته $x=-1$ موجه نحو الأسفل.\par
+(ب) من أجل $x>0$: $\dfrac{2\sqrt{x^2-1}}x=\dfrac{2x\sqrt{1-\frac1{x^2}}}x=2\sqrt{1-\frac1{x^2}}$ ، ومن أجل $x<0$: $\dfrac{2\sqrt{x^2-1}}x=-2\sqrt{1-\frac1{x^2}}$:
+\LD{f(x)}{+\infty}{-\infty} $\Car{\Lm{+\infty}2\sqrt{1-\frac1{x^2}}=2\\ \Lm{+\infty}(-x+1)=-\infty}$
+\LD{f(x)}{-\infty}{+\infty} $\Car{\Lm{-\infty}\left(-2\sqrt{1-\frac1{x^2}}\right)=-2\\ \Lm{-\infty}(-x+1)=+\infty}$}{}{}
+\Row{}{%
+\textbf{2.} $\LW{\Big(\dfrac uv\Big)^{\prime}=\dfrac{u^{\prime}v-uv^{\prime}}{v^2}}$ مع $u=2\sqrt{x^2-1}$ ، $u^{\prime}=\dfrac{2x}{\sqrt{x^2-1}}$:
+\[\Big(\frac{2\sqrt{x^2-1}}x\Big)^{\prime}=\frac{\frac{2x^2}{\sqrt{x^2-1}}-2\sqrt{x^2-1}}{x^2}=\frac{2x^2-2\left(x^2-1\right)}{x^2\sqrt{x^2-1}}=\frac2{x^2\sqrt{x^2-1}}\]
+\[f^{\prime}(x)=\frac2{x^2\sqrt{x^2-1}}-1=\frac{2-x^2\sqrt{x^2-1}}{x^2\sqrt{x^2-1}}=\bx{\frac{g(x)}{x^2\sqrt{x^2-1}}}\]
+\textbf{3.} $x^2\sqrt{x^2-1}>0$ ، فإشارة $f^{\prime}(x)$ هي إشارة $g(x)$. \quad $f\big(\sqrt2\big)=\dfrac2{\sqrt2}-\sqrt2+1=1$ \ و \ $f\big(-\sqrt2\big)=1$:
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=1.6]{$x$/1,$f^{\prime}(x)$/1,$f(x)$/2}{$-\infty$,$-\sqrt2$,$-1$,$1$,$\sqrt2$,$+\infty$}
+\tkzTabLine{,-,z,+,d,h,d,+,z,-,}
+\tkzTabVar{+/$+\infty$,-/$1$,+DH/$2$,D-/$0$,+/$1$,-/$-\infty$}
+\end{TAB}
+\textbf{4.} من أجل كل $x$ من $D$ ، $-x\in D$ و:
+\[f(-x)+f(x)=\frac{2\sqrt{x^2-1}}{-x}+x+1+\frac{2\sqrt{x^2-1}}x-x+1=\bx{2}=2\times1\]
+إذن \bxt{$I(0;1)$ مركز تناظر لـ $(C_f)$}.\par
+\textbf{5.}
+\GRS{-5.3}{5.3}{-4.3}{5.3}{0.45}
+\foreach \t in {-4,-2,2,4} \node[below,font=\tiny] at (\t,0){$\t$};
+\draw[cDef,very thick,domain=1:5.3,samples=80] plot(\x,{2*sqrt(\x*\x-1)/\x-\x+1});
+\draw[cDef,very thick,domain=-5.3:-1,samples=80] plot(\x,{2*sqrt(\x*\x-1)/\x-\x+1});
+\fill (0,1) circle(1.5pt) node[left]{$I$};
+\node[cDef] at (-4,5){$(C_f)$};
+\GRE}{}{}
+\Row{وضعية 2: دالة ناطقة}{%
+\textbf{الجزء الأول:} $g(x)=x^3-x^2+3x+1$ على $\R$.\par
+\Num{1} ادرس تغيرات $g$. \ \Num{2} بيّن أن المعادلة $g(x)=0$ تقبل حلًا وحيدًا $\alpha$ في $[-1;0]$. \ \Num{3} عيّن إشارة $g(x)$. \ \Num{4} بيّن أن $\alpha^2=-3-\dfrac4{\alpha-1}$.\par
+\textbf{الجزء الثاني:} $f(x)=\dfrac{x^3+x-2}{x^2+1}$ على $\R$ ، و $(C_f)$ منحناها في معلم متعامد ومتجانس (الوحدة $2\,\text{cm}$).\par
+\Num{1} بيّن أن $f^{\prime}(x)=\dfrac{(x+1)g(x)}{\left(x^2+1\right)^2}$ ، وادرس تغيرات $f$.\par
+\Num{2} بيّن أن $f(\alpha)=\alpha-\dfrac2{\alpha^2+1}$ ، واستنتج حصرًا للعدد $f(\alpha)$.\par
+\Num{3} عيّن $a$ ، $b$ ، $c$ و $d$ بحيث $f(x)=ax+b+\dfrac{cx+d}{x^2+1}$. (أ) بيّن أن $(C_f)$ يقبل مستقيمًا مقاربًا مائلًا $(\Delta)$. (ب) ادرس وضعية $(C_f)$ بالنسبة إلى $(\Delta)$.\par
+\Num{4} تحقق أن $f^{\prime\prime}(x)=\dfrac{4\left(-3x^2+1\right)}{\left(x^2+1\right)^3}$ ، وبيّن أن $(C_f)$ يقبل نقطتي انعطاف.\par
+\Num{5} اكتب معادلة المماس $(T)$ عند النقطة ذات الفاصلة $0$. ماذا تستنتج بالنسبة لـ $(T)$ و $(\Delta)$؟\par
+\Num{6} أنشئ $(\Delta)$ ، $(T)$ و $(C_f)$. \ \Num{7} ناقش بيانيًا حسب قيم الوسيط $m$ عدد وإشارة حلول المعادلة $m\left(x^2+1\right)+2=0$.}{25 د}{عمل بالأفواج.}
+\Row{}{%
+\Lab{cEx}{الحل: الجزء الأول}\par
+\Num{1} $\Lm{-\infty}g(x)=\Lm{-\infty}x^3=\bx{-\infty}$ \quad و \quad $\Lm{+\infty}g(x)=\Lm{+\infty}x^3=\bx{+\infty}$\par
+$g^{\prime}(x)=3x^2-2x+3$: \ $\Delta=4-36=-32<0$ ، إذن $g^{\prime}(x)>0$: \bxt{$g$ متزايدة تمامًا على $\R$}.
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=3]{$x$/1,$g^{\prime}(x)$/1,$g(x)$/2}{$-\infty$,$+\infty$}
+\tkzTabLine{,+,}
+\tkzTabVar{-/$-\infty$,+/$+\infty$}
+\end{TAB}
+\Num{2} $g$ مستمرة ومتزايدة تمامًا على $[-1;0]$ ، و $g(-1)=-4$ ، $g(0)=1$: \bxt{$g(x)=0$ تقبل حلًا وحيدًا $\alpha$ في $]-1;0[$}.\par
+بالتنصيف: $g(-0{,}30)\approx-0{,}02$ و $g(-0{,}29)\approx0{,}02$ ، إذن \bx{-0{,}30<\alpha<-0{,}29}.\par
+\Num{3}
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=3]{$x$/1,$g(x)$/1}{$-\infty$,$\alpha$,$+\infty$}
+\tkzTabLine{,-,z,+,}
+\end{TAB}
+\Num{4} $g(\alpha)=0$: \ $\alpha^3-\alpha^2=-3\alpha-1$ \ أي \ $\alpha^2(\alpha-1)=-3(\alpha-1)-4$ ، ومنه \bx{\alpha^2=-3-\frac4{\alpha-1}}.}{}{}
+\Row{}{%
+\Lab{cEx}{الحل: الجزء الثاني}\par
+\Num{1}
+\[f^{\prime}(x)=\frac{\left(3x^2+1\right)\left(x^2+1\right)-\left(x^3+x-2\right)2x}{\left(x^2+1\right)^2}\]
+\[f^{\prime}(x)=\frac{x^4+2x^2+4x+1}{\left(x^2+1\right)^2}\]
+و $(x+1)g(x)=x^4-x^3+3x^2+x+x^3-x^2+3x+1=x^4+2x^2+4x+1$ \quad إذن \quad \bx{f^{\prime}(x)=\frac{(x+1)g(x)}{\left(x^2+1\right)^2}}\par
+$\Lm{-\infty}f(x)=\Lm{-\infty}\dfrac{x^3}{x^2}=\bx{-\infty}$ \ و \ $\Lm{+\infty}f(x)=\bx{+\infty}$ \ ؛ \ $f(-1)=\dfrac{-4}2=-2$
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=2.2]{$x$/1,$x+1$/1,$g(x)$/1,$f^{\prime}(x)$/1,$f(x)$/2}{$-\infty$,$-1$,$\alpha$,$+\infty$}
+\tkzTabLine{,-,z,+,t,+,}
+\tkzTabLine{,-,t,-,z,+,}
+\tkzTabLine{,+,z,-,z,+,}
+\tkzTabVar{-/$-\infty$,+/$-2$,-/$f(\alpha)$,+/$+\infty$}
+\end{TAB}
+\Num{2} $f(\alpha)=\dfrac{\alpha^3+\alpha-2}{\alpha^2+1}=\dfrac{\alpha\left(\alpha^2+1\right)-2}{\alpha^2+1}=\bx{\alpha-\frac2{\alpha^2+1}}$\par
+$-0{,}30<\alpha<-0{,}29$ \ ومنه \ $1{,}08<\alpha^2+1<1{,}09$ \ و \ $-\dfrac2{1{,}08}<-\dfrac2{\alpha^2+1}<-\dfrac2{1{,}09}$ \ ، بالجمع: \ \bx{-2{,}15<f(\alpha)<-2{,}12}}{}{}
+\Row{}{%
+\Num{3} بالمطابقة: $ax+b+\dfrac{cx+d}{x^2+1}=\dfrac{ax^3+bx^2+(a+c)x+b+d}{x^2+1}$ \ ، ومنه $a=1$ ، $b=0$ ، $c=0$ ، $d=-2$:
+\[\bx{f(x)=x-\frac2{x^2+1}}\]
+(أ) \LDx{\big[f(x)-x\big]}{\pm\infty}{0} $\Car{\Lm{\pm\infty}\left(x^2+1\right)=+\infty}$
+\par إذن \bxt{$(\Delta):\ y=x$ مستقيم مقارب مائل لـ $(C_f)$ عند $\pm\infty$}.\par
+(ب) $f(x)-x=-\dfrac2{x^2+1}<0$:
+\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (11.5,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (11.5,-4.6);
+\draw[thick] (0,0) rectangle (11.5,-4.6); \draw (0,-0.9)--(11.5,-0.9) (0,-1.8)--(11.5,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (3.3,-0.45){$-\infty$};
+\node at (10.8,-0.45){$+\infty$};
+\node at (7.05,-1.35){$-$};
+\node[align=center,font=\small] at (7.05,-3.2){$(C_f)$\\ \ar{تحت}\\ $(\Delta)$};
+\end{tikzpicture}
+\end{FIG}
+\Num{4} $f^{\prime}(x)=1+\dfrac{4x}{\left(x^2+1\right)^2}$ ، ومنه:
+\[f^{\prime\prime}(x)=\frac{4\left(x^2+1\right)^2-4x\times2\left(x^2+1\right)\times2x}{\left(x^2+1\right)^4}\]
+\[f^{\prime\prime}(x)=\frac{4\left[x^2+1-4x^2\right]}{\left(x^2+1\right)^3}=\bx{\frac{4\left(-3x^2+1\right)}{\left(x^2+1\right)^3}}\]
+$f^{\prime\prime}$ تنعدم مغيّرة إشارتها عند $-\dfrac{\sqrt3}3$ و $\dfrac{\sqrt3}3$:
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=2.2]{$x$/1,$f^{\prime\prime}(x)$/1}{$-\infty$,$-\frac{\sqrt3}3$,$\frac{\sqrt3}3$,$+\infty$}
+\tkzTabLine{,-,z,+,z,-,}
+\end{TAB}
+إذن \bxt{$(C_f)$ يقبل نقطتي انعطاف} إحداثياتهما:
+\[\Big(-\frac{\sqrt3}3;-\frac{\sqrt3}3-\frac32\Big)\qquad\text{\ar{و}}\qquad\Big(\frac{\sqrt3}3;\frac{\sqrt3}3-\frac32\Big)\]\par
+\Num{5} $f(0)=-2$ ، $f^{\prime}(0)=1$: \quad \bx{(T):\ y=x-2}.\par $(T)$ و $(\Delta)$ لهما نفس معامل التوجيه $1$: \bxt{$(T)\parallel(\Delta)$}.}{}{}
+\Row{}{%
+\Num{6}
+\GRS{-4.3}{4.3}{-6.3}{4.3}{0.45}
+\foreach \t in {-4,-2,2,4} \node[below,font=\tiny] at (\t,0){$\t$};
+\foreach \t in {-4,-2,2} \node[left,font=\tiny] at (0,\t){$\t$};
+\draw[cRem,thick,dashed,domain=-4.3:4.3] plot(\x,{\x}); \node[cRem] at (3.5,4){$(\Delta)$};
+\draw[cEx,thick,domain=-4.3:4.3] plot(\x,{\x-2}); \node[cEx] at (4,1.4){$(T)$};
+\draw[cDef,very thick,domain=-4.3:4.3,samples=100] plot(\x,{\x-2/(\x*\x+1)}); \node[cDef] at (-3.5,-2.6){$(C_f)$};
+\GRE
+\Num{7}
+\[m\left(x^2+1\right)+2=0\iff-\frac2{x^2+1}=m\]
+\[\iff x-\frac2{x^2+1}=x+m\iff\LW{f(x)=x+m}\]\par
+حلول المعادلة هي فواصل نقط تقاطع $(C_f)$ والمستقيم $(\Delta_m):\ y=x+m$ الموازي لـ $(T)$ و $(\Delta)$:\par
+\ck\ $m<-2$: \bxt{لا توجد حلول}\par \ck\ $m=-2$: \bxt{حل وحيد معدوم} $x=0$\par
+\ck\ $-2<m<0$: \bxt{حلان مختلفان في الإشارة}\par \ck\ $m\geqslant0$: \bxt{لا توجد حلول}\par
+\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{75 د}{}
+\end{Sayr}
+\newpage
+% =====================================================================
+\ModhHead{11}{3 ع ت + 3 ت ر + 3 ر}{تحليل}{الاشتقاقية والاستمرارية}{02 سا}{دراسة الدوال المثلثية}%
+{\begin{itemize}\item حساب مشتقات الدوال المألوفة.\end{itemize}}%
+{\begin{itemize}\item توظيف المشتقات لدراسة الدوال المثلثية: $x\mapsto\sin x$ ، $x\mapsto\cos x$ ، $x\mapsto a\sin(bx+c)$.\end{itemize}}%
+{الكتاب المدرسي ، الأنترنت.}
+\begin{Sayr}
+\Row{مرحلة الانطلاق}{%
+\textbf{التهيئة النفسية:} التذكير بالدوال $\cos$ ، $\sin$ ، $\tan$ ودساتير الجمع.\par
+\Lab{cEx}{نشاط مقترح}\ $f(x)=\sin x$ و $g(x)=\cos x$ على $\R$ ، و $(C_f)$ و $(C_g)$ تمثيلاهما البيانيان. نقتصر على المجال $[-\pi;\pi]$.\par
+\Num{1} اعتمادًا على الدائرة المثلثية حدّد إشارة $f(x)$ و $g(x)$ على $[0;\pi]$. \ \Num{2} باستعمال دساتير الجمع: ادرس شفعية الدالتين ، وأثبت أنهما دوريتان ودورهما $2\pi$. \ \Num{3} احسب $f^{\prime}(x)$ و $g^{\prime}(x)$. \ \Num{4} استنتج اتجاه تغير $f$ و $g$ على $[0;\pi]$. \ \Num{5} أنشئ $(C_f)$ و $(C_g)$ على $[0;\pi]$ ، ثم استنتج الإنشاء على $[-\pi;0]$. \ \Num{6} اشرح كيف يتم إنشاء $(C_f)$ و $(C_g)$ على $\R$.}{20 د}{عمل فردي.}
+\Row{بناء المعارف}{%
+\Lab{cDef}{مناقشة النشاط}\par
+\Num{1}
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=2.6]{$x$/1,$f(x)$/1,$g(x)$/1}{$0$,$\frac\pi2$,$\pi$}
+\tkzTabLine{z,+,t,+,z}
+\tkzTabLine{,+,z,-,}
+\end{TAB}
+\Num{2} \textbf{الشفعية:} من أجل كل $x$ من $\R$ ، $-x\in\R$:
+\[\cos(-x)=\cos0\cos x+\sin0\sin x=\cos x\]
+\[\sin(-x)=\sin0\cos x-\cos0\sin x=-\sin x\]
+\bxt{$\cos$ دالة زوجية} (منحناها متناظر بالنسبة لمحور التراتيب) ، و \bxt{$\sin$ دالة فردية} (منحناها متناظر بالنسبة للمبدأ).\par
+\textbf{الدورية:}
+\[\cos(x+2\pi)=\cos x\cos2\pi-\sin x\sin2\pi=\cos x\]
+\[\sin(x+2\pi)=\sin x\cos2\pi+\cos x\sin2\pi=\sin x\]
+إذن \bxt{الدالتان دوريتان ودورهما $2\pi$}.\par
+\Num{3} $f^{\prime}(x)=\bx{\cos x}$ \ ؛ \ $g^{\prime}(x)=\bx{-\sin x}$}{60 د}{}
+\Row{}{%
+\Num{4} على $[0;\pi]$: $f^{\prime}(x)=\cos x$ موجبة على $\Big[0;\dfrac\pi2\Big]$ وسالبة على $\Big[\dfrac\pi2;\pi\Big]$ ، و $g^{\prime}(x)=-\sin x\leqslant0$:
+\begin{TAB}
+\tkzTabInit[lgt=1.3,espcl=1.6]{$x$/1,$f^{\prime}(x)$/1,$f(x)$/2}{$0$,$\frac\pi2$,$\pi$}
+\tkzTabLine{,+,z,-,}
+\tkzTabVar{-/$0$,+/$1$,-/$0$}
+\end{TAB}
+\begin{TAB}
+\tkzTabInit[lgt=1.3,espcl=2.6]{$x$/1,$g^{\prime}(x)$/1,$g(x)$/2}{$0$,$\pi$}
+\tkzTabLine{,-,}
+\tkzTabVar{+/$1$,-/$-1$}
+\end{TAB}
+\Num{5} \textbf{التمثيل البياني:} نُنشئ المنحنى على $[0;\pi]$ (بالأحمر) ، ثم على $[-\pi;0]$ بالتناظر (زوجية $\cos$ ، فردية $\sin$) ، ثم على $\R$ بالانسحابات $2k\pi\,\vec i$: $\LW{\cos(x+2k\pi)=\cos x}$ و $\LW{\sin(x+2k\pi)=\sin x}$.
+\begin{center}\begin{LTR}\begin{tikzpicture}[x=0.55cm,y=0.9cm,font=\tiny]
+\draw[gray!25] (-7,-1.2) grid (7,1.2); \draw[->] (-7,0)--(7.3,0) node[right]{$x$}; \draw[->] (0,-1.3)--(0,1.4);
+\foreach \t/\l in {-6.283/-2\pi,-3.1416/-\pi,3.1416/\pi,6.283/2\pi} \node[below] at (\t,0){$\l$};
+\draw[black,thick,domain=-7:7,samples=150] plot(\x,{cos(\x r)}); \draw[cThm,very thick,domain=-3.1416:3.1416,samples=80] plot(\x,{cos(\x r)});
+\node[left] at (-7,0.6){$\cos$};
+\end{tikzpicture}\end{LTR}\end{center}
+\begin{center}\begin{LTR}\begin{tikzpicture}[x=0.55cm,y=0.9cm,font=\tiny]
+\draw[gray!25] (-7,-1.2) grid (7,1.2); \draw[->] (-7,0)--(7.3,0) node[right]{$x$}; \draw[->] (0,-1.3)--(0,1.4);
+\foreach \t/\l in {-6.283/-2\pi,-3.1416/-\pi,3.1416/\pi,6.283/2\pi} \node[below] at (\t,0){$\l$};
+\draw[black,thick,domain=-7:7,samples=150] plot(\x,{sin(\x r)}); \draw[cThm,very thick,domain=-3.1416:3.1416,samples=80] plot(\x,{sin(\x r)});
+\node[left] at (-7,0.6){$\sin$};
+\end{tikzpicture}\end{LTR}\end{center}}{}{}
+\Row{}{%
+\Lab{cDef}{دراسة الدالة $\tan$}\ الدالة \textbf{ظل} معرفة من أجل كل $x$ يختلف عن $\dfrac\pi2+k\pi$ ($k\in\Z$) بـ: $\LW{\tan x=\dfrac{\sin x}{\cos x}}$.\par
+\Num{1} \textbf{الشفعية:} $\tan(-x)=\dfrac{\sin(-x)}{\cos(-x)}=-\dfrac{\sin x}{\cos x}=-\tan x$: \bxt{$\tan$ دالة فردية}.\par
+\Num{2} \textbf{الدورية:} $\tan(x+\pi)=\dfrac{\sin(x+\pi)}{\cos(x+\pi)}=\dfrac{-\sin x}{-\cos x}=\tan x$: \bxt{$\tan$ دورية ودورها $\pi$}.\par
+\Num{3} \textbf{الدراسة على $\Big[0;\dfrac\pi2\Big[$} (تكفي للدورية والفردية): $\tan0=0$
+\LD{\tan x}{\frac\pi2^-}{+\infty} $\Car{\Lm{\frac\pi2^-}\sin x=1\\ \Lm{\frac\pi2^-}\cos x=0^+}$
+\par المستقيم ذو المعادلة $x=\dfrac\pi2$ مقارب لمنحنى الدالة ظل.\par
+$\tan^{\prime}x=\dfrac{\cos x\cos x-(-\sin x)\sin x}{\cos^2x}=\bx{\frac1{\cos^2x}}>0$: \bxt{$\tan$ متزايدة تمامًا على $\Big[0;\frac\pi2\Big[$}.
+\begin{TAB}
+\tkzTabInit[lgt=1.5,espcl=3]{$x$/1,$\tan^{\prime}x$/1,$\tan x$/2}{$0$,$\frac\pi2$}
+\tkzTabLine{,+,d}
+\tkzTabVar{-/$0$,+D/$+\infty$}
+\end{TAB}
+\begin{center}\begin{LTR}\begin{tikzpicture}[x=0.6cm,y=0.45cm,font=\tiny]
+\draw[gray!25] (-4.8,-4) grid (4.8,4); \draw[->] (-4.8,0)--(5,0) node[right]{$x$}; \draw[->] (0,-4.1)--(0,4.3);
+\foreach \t/\l in {-3.1416/-\pi,-1.5708/-\frac\pi2,1.5708/\frac\pi2,3.1416/\pi} \node[below] at (\t,0){$\l$};
+\foreach \a in {-4.7124,-1.5708,1.5708,4.7124} \draw[cThm,dashed] (\a,-4)--(\a,4);
+\foreach \c in {-3.1416,0,3.1416} \draw[cDef,very thick,domain=\c-1.33:\c+1.33,samples=60] plot(\x,{tan(\x r)});
+\end{tikzpicture}\end{LTR}\end{center}}{}{}
+\Row{التقويم}{%
+\textbf{واجب منزلي:} تمرين 95 صفحة 70.\par\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{40 د}{}
+\end{Sayr}
+\newpage
+% =====================================================================
+\ModhHead{12}{3 ع ت + 3 ت ر + 3 ر}{تحليل}{الاشتقاقية والاستمرارية}{01 سا}{دراسة الدوال المثلثية (تابع)}%
+{\begin{itemize}\item حساب مشتقات الدوال المألوفة.\end{itemize}}%
+{\begin{itemize}\item توظيف المشتقات لدراسة الدوال المثلثية.\end{itemize}}%
+{الكتاب المدرسي ، الأنترنت.}
+\begin{Sayr}
+\Row{التقويم}{%
+\Lab{cEx}{حل تمرين 95 صفحة 70}\ $f(x)=\dfrac12\cos2x-\cos x$ على $\R$.\par
+\Num{1} (أ) \textbf{الدورية:} من أجل كل $x$ من $\R$ ، $x+2\pi\in\R$:
+\[f(x+2\pi)=\frac12\cos(2x+4\pi)-\cos(x+2\pi)=\frac12\cos2x-\cos x=f(x)\]
+إذن \bxt{$f$ دورية ودورها $2\pi$}.\par
+(ب) \textbf{محور التناظر:} $f(-x)=\dfrac12\cos(-2x)-\cos(-x)=\dfrac12\cos2x-\cos x=f(x)$: \bxt{$f$ زوجية} و $(C)$ يقبل محور التراتيب ($x=0$) محور تناظر.\par
+\Num{2} (أ) $f^{\prime}(x)=\bx{-\sin2x+\sin x}$ \quad (ب) $\LW{\sin2x=2\sin x\cos x}$: \ $f^{\prime}(x)=-2\sin x\cos x+\sin x=\bx{\sin x(1-2\cos x)}$\par
+(جـ) $f^{\prime}(x)=0\iff\sin x=0$ أو $\cos x=\dfrac12$ ، وعلى $[0;\pi]$: $x\in\Big\{0;\dfrac\pi3;\pi\Big\}$.
+\begin{TAB}
+\tkzTabInit[lgt=1.8,espcl=2.6]{$x$/1,$\sin x$/1,$1-2\cos x$/1,$f^{\prime}(x)$/1,$f(x)$/2}{$0$,$\frac\pi3$,$\pi$}
+\tkzTabLine{z,+,t,+,z}
+\tkzTabLine{,-,z,+,}
+\tkzTabLine{z,-,z,+,z}
+\tkzTabVar{+/$-\frac12$,-/$-\frac34$,+/$\frac32$}
+\end{TAB}
+$f(0)=\dfrac12-1=-\dfrac12$\par $f\Big(\dfrac\pi3\Big)=\dfrac12\cos\dfrac{2\pi}3-\cos\dfrac\pi3=-\dfrac14-\dfrac12=-\dfrac34$ \ ؛ \ $f(\pi)=\dfrac12+1=\dfrac32$}{40 د}{تقويم جماعي.}
+\Row{}{%
+\Num{4} \textbf{رسم المنحنى على $[-\pi;\pi]$:} نرسم $(C)$ على $[0;\pi]$ ثم نأخذ نظيره بالنسبة لمحور التراتيب على $[-\pi;0]$ ، ويُرسم على $\R$ بالانسحابات $2k\pi\,\vec i$.
+\begin{center}\begin{LTR}\begin{tikzpicture}[x=0.75cm,y=1.2cm,font=\tiny]
+\draw[gray!25,ystep=0.5] (-4.5,-1) grid (4.5,1.75); \draw[->] (-4.5,0)--(4.7,0) node[right]{$x$}; \draw[->] (0,-1.05)--(0,1.9) node[above]{$y$};
+\foreach \t/\l in {-3.1416/-\pi,-1.0472/-\frac\pi3,1.0472/\frac\pi3,3.1416/\pi} \node[below] at (\t,0){$\l$};
+\node[left] at (0,1.5){$\frac32$}; \node[left] at (0,-0.75){$-\frac34$};
+\draw[cDef,very thick,domain=-3.1416:3.1416,samples=150] plot(\x,{0.5*cos(2*\x r)-cos(\x r)});
+\node[cDef] at (3.6,1.6){$(C)$};
+\end{tikzpicture}\end{LTR}\end{center}
+\Lab{cEx}{حل تمرين 63 صفحة 69}\ أثبت أن تسارع متحرك فاصلته $x(t)=3\cos\Big(2t+\dfrac\pi4\Big)$ ($t\geqslant0$) متناسب مع فاصلته.\par
+السرعة اللحظية: \quad $x^{\prime}(t)=3\Big[-2\sin\Big(2t+\dfrac\pi4\Big)\Big]=\bx{-6\sin\Big(2t+\frac\pi4\Big)}$\par
+التسارع: \quad $x^{\prime\prime}(t)=-6\Big[2\cos\Big(2t+\dfrac\pi4\Big)\Big]=-12\cos\Big(2t+\dfrac\pi4\Big)=-4\Big[3\cos\Big(2t+\dfrac\pi4\Big)\Big]$\par
+إذن \bx{x^{\prime\prime}(t)=-4x(t)}: \bxt{تسارع المتحرك متناسب مع فاصلته}.\par
+\smallskip\textbf{ملاحظات حول سير الحصة:} \dotfill}{20 د}{}
 \end{Sayr}
 \end{document}
