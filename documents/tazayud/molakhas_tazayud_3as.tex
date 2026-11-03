@@ -1,0 +1,638 @@
+% ============================================================
+%  يُترجَم بـ XeLaTeX  (في Overleaf: Menu → Compiler → XeLaTeX)
+%  الخط: Amiri (متوفر في Overleaf، أو حمّله من github.com/aliftype/amiri)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1.7cm,top=2.3cm,bottom=2.9cm,headheight=15pt,footskip=1.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage[english,bidi=default,layout=lists]{babel}
+\babelprovide[import,main]{arabic}
+\babelfont{rm}[Scale=1.08]{Amiri}
+\babelfont{sf}[Scale=1.08]{Amiri}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,shadings,patterns}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{collcell}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\newcolumntype{C}{>{\collectcell\ar}c<{\endcollectcell}}
+\pretocmd{\section}{\Needspace{15\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{11\baselineskip}}{}{}
+
+\definecolor{cDef}{HTML}{1F4E9C}
+\definecolor{cThm}{HTML}{B3261E}
+\definecolor{cRem}{HTML}{2E7D32}
+\definecolor{cEx}{HTML}{C76B00}
+\definecolor{cMeth}{HTML}{6A1B9A}
+\definecolor{cSol}{HTML}{00695C}
+\definecolor{cSec}{HTML}{1F3A68}
+
+\titleformat{\section}{\Large\bfseries\color{cSec}}{\thesection.}{0.6em}{}[{\color{cSec!60}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{cThm!85!black}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{itemsep=2pt,topsep=3pt}
+
+\newtcolorbox{arbox}[3][]{enhanced,
+  colback=#2!5,colframe=#2!80!black,arc=2mm,boxrule=0.8pt,
+  left=6pt,right=6pt,top=8pt,bottom=5pt,
+  fonttitle=\bfseries,coltitle=white,
+  title={\foreignlanguage{arabic}{#3}},
+  attach boxed title to top right={xshift=-5mm,yshift=-3mm},
+  boxed title style={colback=#2!80!black,arc=1.5mm,boxrule=0pt},
+  before upper={\selectlanguage{arabic}},
+  before skip=8pt,after skip=8pt,breakable,#1}
+\newenvironment{BOX}[2]{\begin{otherlanguage}{english}\begin{arbox}{#1}{#2}}{\end{arbox}\end{otherlanguage}}
+\newenvironment{tarif}[1][تعريف]{\begin{BOX}{cDef}{#1}}{\end{BOX}}
+\newenvironment{khassia}[1][خاصية]{\begin{BOX}{cThm}{#1}}{\end{BOX}}
+\newenvironment{molahada}[1][ملاحظة]{\begin{BOX}{cRem}{#1}}{\end{BOX}}
+\newenvironment{mithal}[1][مثال]{\begin{BOX}{cEx}{#1}}{\end{BOX}}
+\newenvironment{tariqa}[1][طريقة]{\begin{BOX}{cMeth}{#1}}{\end{BOX}}
+
+\newcounter{exo}
+\newenvironment{tamrin}[1]{\stepcounter{exo}\begin{BOX}{cSec}{التمرين \theexo: #1}}{\end{BOX}}
+\newenvironment{hal}{\Needspace{12\baselineskip}\begin{otherlanguage}{english}\begin{arbox}[breakable]{cSol}{حل التمرين \theexo}}{\end{arbox}\end{otherlanguage}}
+
+\newenvironment{LTR}{\begin{otherlanguage}{english}}{\end{otherlanguage}}
+\newcommand{\ar}[1]{\foreignlanguage{arabic}{#1}}
+
+\renewcommand{\dots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\ldots}{\mathinner{\ldotp\ldotp\ldotp}}
+\renewcommand{\cdots}{\mathinner{\cdotp\cdotp\cdotp}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pgcd}{\operatorname{PGCD}}
+\newcommand{\ppcm}{\operatorname{PPCM}}
+
+% \NLseg{a}{b}{[}{]} ; \NLright{a}{[} ; \NLleft{b}{]}  (interval on a number line)
+\newcommand{\NLseg}[4]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.7,0)--(2.7,0);
+ \node[cThm!80!black,font=\LARGE] at (0.7,0){$#3$};
+ \node[cThm!80!black,font=\LARGE] at (2.7,0){$#4$};
+ \node[below=3pt,font=\footnotesize] at (0.7,0){$#1$};
+ \node[below=3pt,font=\footnotesize] at (2.7,0){$#2$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLright}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](1.3,0)--(3.3,0);
+ \node[cThm!80!black,font=\LARGE] at (1.3,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (1.3,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\NLleft}[2]{\begin{LTR}\begin{tikzpicture}[baseline=-0.6ex]
+ \draw[-{Stealth[length=2mm]},gray!70](0,0)--(3.4,0);
+ \draw[line width=2pt,cThm!80!black](0.05,0)--(2.1,0);
+ \node[cThm!80!black,font=\LARGE] at (2.1,0){$#2$};
+ \node[below=3pt,font=\footnotesize] at (2.1,0){$#1$};
+\end{tikzpicture}\end{LTR}}
+
+% ---------- social-media icons (pure TikZ) ----------
+\definecolor{cFB}{HTML}{1877F2}
+\definecolor{cTG}{HTML}{229ED9}
+\definecolor{cIG1}{HTML}{FEDA75}
+\definecolor{cIG2}{HTML}{D62976}
+\definecolor{cIG3}{HTML}{4F5BD5}
+\newcommand{\fbicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cFB] (0,0) circle (0.55);
+ \node[white,inner sep=0,font=\usefont{TU}{lmss}{bx}{n}\small] at (0.04,-0.02) {f};
+\end{tikzpicture}\end{LTR}}
+\newcommand{\igicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \shade[lower left=cIG1,lower right=cIG2,upper left=cIG2,upper right=cIG3,rounded corners=0.28em] (-0.55,-0.55) rectangle (0.55,0.55);
+ \draw[white,line width=0.09em,rounded corners=0.18em] (-0.36,-0.36) rectangle (0.36,0.36);
+ \draw[white,line width=0.09em] (0,0) circle (0.17);
+ \fill[white] (0.22,0.22) circle (0.05);
+\end{tikzpicture}\end{LTR}}
+\newcommand{\tgicon}{\begin{LTR}\begin{tikzpicture}[baseline=-0.75ex,x=1em,y=1em]
+ \fill[cTG] (0,0) circle (0.55);
+ \fill[white] (-0.33,0.0) -- (0.32,0.27) -- (0.2,-0.3) -- (0.0,-0.15) -- (-0.08,-0.28) -- (-0.08,-0.08) -- cycle;
+ \fill[cTG!70!black] (-0.08,-0.08) -- (0.25,0.2) -- (0.0,-0.15) -- (-0.08,-0.28) -- cycle;
+\end{tikzpicture}\end{LTR}}
+% page number: black box, white two-digit number, at the right of the social row
+\newcommand{\PageBox}{\begin{LTR}\tikz[baseline=(p.base)]\node[fill=black,text=white,inner sep=2.5pt,minimum width=1.6em,minimum height=1.3em,font=\usefont{TU}{lmss}{bx}{n}\small](p){\ifnum\value{page}<10 0\fi\arabic{page}};\end{LTR}}
+% visual left-to-right order: Telegram | Instagram | Facebook | page box
+\newcommand{\SocialRow}{\begin{otherlanguage}{english}%
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \tgicon\hfill
+ \textbf{prof\_hicham\_math}\ \igicon\hfill
+ \ar{\textbf{الأستاذ سوايسية هشام للرياضيات}}\ \fbicon\hspace{2.2em}\PageBox\end{otherlanguage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% \SetHeader{right head: document title}{left head: level -- stream}
+\newcommand{\SetHeader}[2]{%
+ \fancyhead[C]{\parbox{\textwidth}{\ar{#1\hfill #2}}}%
+ \fancyfoot[C]{\parbox{\textwidth}{\small\SocialRow}}}
+\usepackage{tkz-tab}
+\usepackage{multicol}
+% variation / sign table (LTR)
+\newenvironment{TAB}{\par\begin{center}\begin{LTR}\begin{tikzpicture}[scale=0.95,every node/.style={font=\small}]}{\end{tikzpicture}\end{LTR}\end{center}}
+% grid + axes, clipped: \begin{GR}{xmin}{xmax}{ymin}{ymax}{unit cm}
+\newenvironment{GR}[5]{\par\begin{center}\begin{LTR}\begin{tikzpicture}[x=#5cm,y=#5cm,font=\footnotesize]
+ \draw[gray!25,very thin] (#1,#3) grid (#2,#4);
+ \draw[-{Stealth[length=2mm]}] (#1,0)--(#2+0.3,0) node[below left]{$x$};
+ \draw[-{Stealth[length=2mm]}] (0,#3)--(0,#4+0.3) node[below left]{$y$};
+ \node[below left] at (0,0){$O$};
+ \begin{scope}\clip (#1,#3) rectangle (#2,#4);}
+{\end{scope}\end{tikzpicture}\end{LTR}\end{center}}
+\newcommand{\Ticks}[2]{\foreach \t in {#1} \node[below,font=\scriptsize] at (\t,0){$\t$}; \foreach \t in {#2} \node[left,font=\scriptsize] at (0,\t){$\t$};}
+\newcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle #1$}}}
+\newcommand{\TwoCol}[4]{\par\begin{LTR}\noindent\begin{minipage}[t]{#1\textwidth}\selectlanguage{arabic}#2\end{minipage}\hfill\begin{minipage}[t]{#3\textwidth}\selectlanguage{arabic}#4\end{minipage}\end{LTR}\par}
+\newcommand{\RL}[4]{\TwoCol{#3}{#4}{#1}{#2}}  % \RL{w1}{right content}{w2}{left content}
+\newcommand{\ok}{$\textcolor{cRem}{\checkmark}$}
+\newcommand{\limn}{\displaystyle\lim_{n\to+\infty}}
+% sub-questions, each on its own line
+\newenvironment{sq}{\begin{itemize}[leftmargin=2.4em,itemsep=3pt]}{\end{itemize}}
+\newcommand{\qa}{\item[(أ)]}\newcommand{\qb}{\item[(ب)]}\newcommand{\qc}{\item[(جـ)]}\newcommand{\qd}{\item[(د)]}\newcommand{\qe}{\item[(هـ)]}
+\newcommand{\pa}{\par\smallskip\textbf{(أ)} }\newcommand{\pb}{\par\smallskip\textbf{(ب)} }\newcommand{\pc}{\par\smallskip\textbf{(جـ)} }\newcommand{\pd}{\par\smallskip\textbf{(د)} }\newcommand{\pe}{\par\smallskip\textbf{(هـ)} }
+\newcommand{\QQ}[1]{\par\smallskip\textbf{#1.} }
+\newenvironment{tmr}{\stepcounter{exo}\begin{BOX}{cSec}{تمرين محلول \theexo}}{\end{BOX}}
+\newcommand{\ABC}[3]{\\[2pt]\begin{tabular}{p{0.28\textwidth}p{0.28\textwidth}p{0.28\textwidth}}(جـ) \ #3 & (ب) \ #2 & (أ) \ #1\end{tabular}}
+\pretocmd{\section}{\Needspace{24\baselineskip}}{}{}
+\newtcbox{\bxtbox}{on line,colback=cDef!12,colframe=cDef!12,boxrule=0pt,arc=1pt,boxsep=0pt,left=2pt,right=2pt,top=1pt,bottom=1pt}
+\newcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{#1}}}}
+\renewcommand{\bx}[1]{\ensuremath{\colorbox{cDef!12}{$\displaystyle\color{cThm}#1$}}}
+\renewcommand{\bxt}[1]{\foreignlanguage{english}{\bxtbox{\ar{\color{cThm}#1}}}}
+\newcommand{\LW}[1]{{\color{cDef}#1}}
+\newcommand{\Car}[1]{\left\{\begin{array}{l}#1\end{array}\right.}
+\newcommand{\Lm}[1]{\displaystyle\lim_{x\to#1}}
+\newcommand{\Lmm}[2]{\displaystyle\lim_{\substack{x\to#1\\#2}}}
+\newcommand{\LD}[3]{\par لدينا: $\Lm{#2}#1=\bx{#3}$ لأنّ: \quad}
+\newcommand{\LDy}[4]{\par لدينا: $\Lmm{#2}{#3}#1=\bx{#4}$ لأنّ: \quad}
+\newenvironment{FIG}{\par\begin{center}\begin{LTR}}{\end{LTR}\end{center}}
+\SetHeader{\small\bfseries\color{cSec}ملخص: التزايد المقارن ، قوى عدد حقيقي ، الجذر النوني}{\small\color{cSec}السنة الثالثة ثانوي -- الشعب العلمية}
+\begin{document}
+\begin{LTR}
+\begin{tcolorbox}[enhanced,colback=cSec!10,colframe=cSec!40,arc=3mm,halign=center,boxrule=0.6pt,top=12pt,bottom=12pt,before upper={\selectlanguage{arabic}}]
+{\color{cSec}\fontsize{26}{32}\selectfont\bfseries التزايد المقارن}\\[8pt]
+{\color{cSec!80!black}\large قوى عدد حقيقي موجب تمامًا -- الجذر النوني}\\[5pt]
+{\color{cSec!80!black}\large ملخص شامل مع أمثلة وأشكال وتمارين محلولة خطوة بخطوة}\\[4pt]
+{\color{cSec!80!black}\large السنة الثالثة ثانوي -- علوم تجريبية ، رياضيات ، تقني رياضي}
+\end{tcolorbox}
+\end{LTR}
+
+\begin{BOX}{cSec}{محتوى الملخص}
+\begin{multicols}{2}
+\begin{enumerate}[label=\textbf{\arabic*.}]
+\item التزايد المقارن للدالتين $x\mapsto e^x$ و $x\mapsto x$.
+\item التزايد المقارن للدالتين $x\mapsto\ln x$ و $x\mapsto x$.
+\item التعميم: الدوال $x\mapsto x^n$ ، والخلاصة.
+\item تطبيقات محلولة على النهايات.
+\item قوى عدد حقيقي موجب تمامًا.
+\item الدالة الأسية ذات الأساس $a$.
+\item معادلات ومتراجحات.
+\item الجذر النوني لعدد حقيقي موجب.
+\item تمرين محلول (مسألة).
+\item خلاصة الطرائق.
+\end{enumerate}
+\end{multicols}
+\end{BOX}
+
+\begin{molahada}[مكتسبات قبلية]
+خواص الدالتين الأسية واللوغاريتمية النيبيرية ، ونهايتاهما الشهيرتان عند $0$:
+\[\LW{\Lm{0}\frac{e^x-1}x=1}\qquad;\qquad\LW{\Lm{0}\frac{\ln(1+x)}x=1}\qquad;\qquad\LW{e^x\geqslant x+1}\quad(x\in\R)\]
+\end{molahada}
+
+%================================================================
+\section{التزايد المقارن للدالتين $x\mapsto e^x$ و $x\mapsto x$}
+\begin{mithal}[نشاط]
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=e^x-\dfrac{x^2}2$.
+\QQ{1} ادرس اتجاه تغير $f$ على $[0;+\infty[$.
+\QQ{2} احسب $f(0)$ ثم استنتج إشارة $f(x)$ على $[0;+\infty[$.
+\QQ{3} استنتج أنه من أجل كل $x\in\R_+$: \ $e^x\geqslant\dfrac{x^2}2$.
+\QQ{4} احسب $\Lm{+\infty}\dfrac{e^x}x$ و $\Lm{-\infty}xe^x$.
+\par\medskip\textbf{الحل:}
+\QQ{1} $f^{\prime}(x)=e^x-x$ ، ولدينا $e^x\geqslant x+1>x$ ، إذن $f^{\prime}(x)>0$: \bxt{$f$ متزايدة تمامًا على $[0;+\infty[$}.
+\QQ{2} $f(0)=e^0-0=\bx{1}$. \ $f$ متزايدة تمامًا ، إذن من أجل $x\geqslant0$: $f(x)\geqslant f(0)=1>0$.
+\QQ{3} $f(x)>0$ يعني $e^x-\dfrac{x^2}2>0$ ، أي \bx{e^x\geqslant\frac{x^2}2}.
+\QQ{4} من أجل $x>0$ نقسم على $x$: \quad $\dfrac{e^x}x\geqslant\dfrac x2$
+\LD{\dfrac{e^x}x}{+\infty}{+\infty} $\Car{\dfrac{e^x}x\geqslant\dfrac x2\\[2pt]\Lm{+\infty}\dfrac x2=+\infty}$ \quad (مبرهنة المقارنة)
+\par نضع $X=-x$ ، فيكون $xe^x=-Xe^{-X}=-\dfrac X{e^X}$:
+\LD{xe^x}{-\infty}{0} $\Car{\Lm{-\infty}X=+\infty\\[2pt]\displaystyle\lim_{X\to+\infty}\frac X{e^X}=0}$
+\end{mithal}
+
+\begin{khassia}[التزايد المقارن للدالتين $x\mapsto e^x$ و $x\mapsto x$]
+\[\bx{\lim_{x\to+\infty}\frac{e^x}x=+\infty}\qquad\qquad\bx{\lim_{x\to-\infty}xe^x=0}\]
+\end{khassia}
+
+\begin{molahada}[التفسير البياني]
+الدالتان $x\mapsto e^x$ و $x\mapsto x$ تؤولان إلى $+\infty$ لما $x\to+\infty$ ، لكن $e^x$ \textbf{أسرع بكثير}: المنحنى $(C)$ للدالة الأسية يبتعد عن المستقيم $y=x$ ويقع فوقه.
+\begin{GR}{-3}{5}{-1}{6}{0.8}
+\draw[cRem,very thick,domain=-3:5] plot(\x,\x) node[pos=0.95,right]{$y=x$};
+\draw[cThm,very thick,domain=-3:1.79,samples=80] plot(\x,{exp(\x)});
+\draw[cDef,very thick,domain=0:3.46,samples=80] plot(\x,{\x*\x/2});
+\node[cThm] at (1.2,5.5){$y=e^x$}; \node[cDef] at (4.1,5.2){$y=\frac{x^2}2$};
+\fill (0,1) circle(1.5pt) node[left]{$1$};
+\end{GR}
+\end{molahada}
+
+\begin{mithal}[تطبيق]
+\QQ{1} $\Lm{+\infty}\left(e^x-2x\right)$: حالة عدم تعيين من الشكل $+\infty-\infty$. نكتب: \ $e^x-2x=x\left(\dfrac{e^x}x-2\right)$
+\LD{\left(e^x-2x\right)}{+\infty}{+\infty} $\Car{\Lm{+\infty}x=+\infty\\[2pt]\Lm{+\infty}\left(\dfrac{e^x}x-2\right)=+\infty}$
+\QQ{2} $\Lm{-\infty}(2x+3)e^x$: حالة عدم تعيين من الشكل $\infty\times0$. نكتب: \ $(2x+3)e^x=2xe^x+3e^x$
+\LD{(2x+3)e^x}{-\infty}{0} $\Car{\Lm{-\infty}xe^x=0\\[2pt]\Lm{-\infty}e^x=0}$
+\end{mithal}
+
+%================================================================
+\section{التزايد المقارن للدالتين $x\mapsto\ln x$ و $x\mapsto x$}
+\begin{khassia}[التزايد المقارن للدالتين $x\mapsto\ln x$ و $x\mapsto x$]
+\[\bx{\lim_{x\to+\infty}\frac{\ln x}x=0}\qquad\qquad\bx{\lim_{\substack{x\to0\\x>0}}x\ln x=0}\]
+\end{khassia}
+\begin{BOX}{cSol}{البرهان}
+\QQ{1} من أجل $x>0$ نضع $X=\ln x$ ، أي $x=e^X$ ، ولما $x\to+\infty$ فإن $X\to+\infty$:
+\[\Lm{+\infty}\frac{\ln x}x=\lim_{X\to+\infty}\frac X{e^X}=\lim_{X\to+\infty}\frac1{\frac{e^X}X}=0\]
+\QQ{2} نضع $X=\dfrac1x$ ، ولما $x\to0$ بقيم أكبر فإن $X\to+\infty$:
+\[\Lmm{0}{x>0}x\ln x=\lim_{X\to+\infty}\frac1X\ln\left(\frac1X\right)=\lim_{X\to+\infty}\left(-\frac{\ln X}X\right)=0\]
+\end{BOX}
+
+\begin{molahada}[التفسير البياني]
+لما $x\to+\infty$: $\ln x\to+\infty$ لكن \textbf{ببطء شديد} مقارنة بـ $x$: المنحنى $(C)$ للدالة $\ln$ يقع تحت المستقيم $y=x$ ويبتعد عنه.
+\begin{GR}{-1}{7}{-2}{5}{0.75}
+\draw[cRem,very thick,domain=-1:5] plot(\x,\x) node[pos=0.97,right]{$y=x$};
+\draw[cThm,very thick,domain=0.14:7,samples=80] plot(\x,{ln(\x)});
+\node[cThm] at (6,1.4){$y=\ln x$};
+\fill (1,0) circle(1.5pt) node[below]{$1$};
+\end{GR}
+\end{molahada}
+
+\begin{mithal}[تطبيق]
+\QQ{1} $\Lm{+\infty}\left(x^2-\ln x\right)$: حالة عدم تعيين من الشكل $+\infty-\infty$. نكتب: \ $x^2-\ln x=x^2\left(1-\dfrac{\ln x}x\times\dfrac1x\right)$
+\LD{\left(x^2-\ln x\right)}{+\infty}{+\infty} $\Car{\Lm{+\infty}x^2=+\infty\\[2pt]\Lm{+\infty}\dfrac{\ln x}x\times\dfrac1x=0}$
+\QQ{2} $\Lmm{0}{x>0}\dfrac1{x\ln x}$: \ من أجل $0<x<1$ يكون $\ln x<0$ ، أي $x\ln x<0$.
+\LDy{\dfrac1{x\ln x}}{0}{x>0}{-\infty} $\Car{\Lmm{0}{x>0}x\ln x=0^-}$
+\end{mithal}
+
+%================================================================
+\section{التعميم: الدوال $x\mapsto x^n$}
+\begin{khassia}[من أجل كل عدد طبيعي $n\geqslant1$]
+\[\bx{\lim_{x\to+\infty}\frac{e^x}{x^n}=+\infty}\qquad\bx{\lim_{x\to-\infty}x^ne^x=0}\qquad\bx{\lim_{x\to+\infty}\frac{\ln x}{x^n}=0}\qquad\bx{\lim_{\substack{x\to0\\x>0}}x^n\ln x=0}\]
+\end{khassia}
+\begin{BOX}{cSol}{البرهان}
+\QQ{1} $\dfrac{e^x}{x^n}=\left(\dfrac{e^{\frac xn}}{x}\right)^n=\dfrac1{n^n}\left(\dfrac{e^{\frac xn}}{\frac xn}\right)^n$ ، ولما $x\to+\infty$ فإن $X=\dfrac xn\to+\infty$ و $\dfrac{e^X}X\to+\infty$ ، إذن النهاية $+\infty$.
+\QQ{2} نضع $X=-x$: \ $x^ne^x=(-1)^n\dfrac{X^n}{e^X}=(-1)^n\dfrac1{\frac{e^X}{X^n}}$ ، ولما $X\to+\infty$ فإن $\dfrac{e^X}{X^n}\to+\infty$ ، إذن النهاية $0$.
+\QQ{3} $\dfrac{\ln x}{x^n}=\dfrac1n\times\dfrac{\ln\left(x^n\right)}{x^n}$ ، ولما $x\to+\infty$ فإن $X=x^n\to+\infty$ و $\dfrac{\ln X}X\to0$ ، إذن النهاية $0$.
+\QQ{4} $x^n\ln x=\dfrac1n\times x^n\ln\left(x^n\right)$ ، ولما $x\to0^+$ فإن $X=x^n\to0^+$ و $X\ln X\to0$ ، إذن النهاية $0$.
+\end{BOX}
+
+\begin{tarif}[الخلاصة]
+الدوال $x\mapsto\ln x$ ، $x\mapsto x^n$ ($n\in\N^*$) ، $x\mapsto e^x$ كلها تؤول إلى $+\infty$ لما $x\to+\infty$ ، لكن سلوكها مختلف عند اللانهاية:
+\begin{center}\bxt{الدالة الأسية تتفوّق على الدالة قوة ، والدالة قوة تتفوّق على الدالة اللوغاريتمية النيبيرية}\end{center}
+في حالة عدم التعيين تكون الغلبة للدالة الأسرع: \quad $\LW{\ln x\ \ll\ x^n\ \ll\ e^x}$ \ (بجوار $+\infty$).
+\end{tarif}
+
+\begin{molahada}[التفسير البياني]
+\begin{GR}{-0.5}{6}{-1.5}{7}{0.75}
+\draw[cThm,very thick,domain=-0.5:1.95,samples=80] plot(\x,{exp(\x)}); \node[cThm] at (1.2,6.5){$e^x$};
+\draw[cDef,very thick,domain=0:2.64,samples=80] plot(\x,{\x*\x}); \node[cDef] at (2.9,6.5){$x^2$};
+\draw[cRem,very thick,domain=0:6] plot(\x,\x) node[above left]{$x$};
+\draw[cEx,very thick,domain=0.23:6,samples=80] plot(\x,{ln(\x)}) node[above left]{$\ln x$};
+\end{GR}
+\end{molahada}
+
+%================================================================
+\section{تطبيقات محلولة على النهايات}
+\begin{tariqa}[إزالة حالة عدم التعيين]
+\begin{enumerate}
+\item نخرج الحد الأسرع (الغالب) عاملًا مشتركًا.
+\item أو نكتب العبارة على شكل إحدى النهايات المرجعية ، أحيانًا بتغيير المتغير ($X=\dfrac1x$ ، $X=e^x$ ، $X=\sqrt x$ ، $X=ax$ ، $\ldots$).
+\end{enumerate}
+\end{tariqa}
+
+\begin{tmr}
+احسب النهايات التالية:
+\QQ{1} (أ) $\Lm{+\infty}\dfrac{\ln(x+2)}x$ \qquad (ب) $\Lm{+\infty}\dfrac{\ln x}{\sqrt x}$\par \qquad\ (جـ) $\Lm{+\infty}x\ln\left(1+\dfrac1x\right)$ \qquad (د) $\Lm{-\infty}\dfrac{\ln\left(e^x+1\right)}{e^x}$
+\QQ{2} (أ) $\Lm{+\infty}\dfrac{\ln\left(x^2+2\right)}x$ \qquad (ب) $\Lm{-\infty}\dfrac{\ln\left(x^2+2\right)}x$\par \qquad\ (جـ) $\Lm{0}\dfrac{\ln(4x+1)}x$ \qquad (د) $\Lm{0}\dfrac{e^{4x}-1}x$
+\QQ{3} (أ) $\Lm{+\infty}\dfrac{e^{x+3}}x$ \qquad (ب) $\Lm{+\infty}\dfrac{e^{2x}}{x^2+3x}$\par \qquad\ (جـ) $\Lm{-\infty}\left(xe^x-x^2\right)$ \qquad (د) $\Lm{-\infty}\left[\left(x^2-3x\right)e^x-3x\right]$
+\QQ{4} (أ) $\Lm{-\infty}\left(1+2xe^{4x-3}\right)$ \qquad (ب) $\Lm{+\infty}\left(x^2-2x+3\right)e^{-x}$\par \qquad\ (جـ) $\Lm{+\infty}\dfrac{\ln x+2x}{e^x+3}$ \qquad (د) $\Lm{+\infty}\dfrac{3e^{2x}-3e^x-3}{e^{3x}+4}$
+\end{tmr}
+\begin{hal}
+\QQ{1} \textbf{(أ)} نكتب: \ $\dfrac{\ln(x+2)}x=\dfrac{\ln(x+2)}{x+2}\times\dfrac{x+2}x$
+\LD{\dfrac{\ln(x+2)}x}{+\infty}{0} $\Car{\displaystyle\lim_{X\to+\infty}\frac{\ln X}X=0\quad(X=x+2)\\[2pt]\Lm{+\infty}\dfrac{x+2}x=1}$
+\par\textbf{(ب)} نضع $X=\sqrt x$ ، فيكون $\ln x=\ln\left(X^2\right)=2\ln X$ ، و $\dfrac{\ln x}{\sqrt x}=2\times\dfrac{\ln X}X$:
+\LD{\dfrac{\ln x}{\sqrt x}}{+\infty}{0} $\Car{\Lm{+\infty}\sqrt x=+\infty\\[2pt]\displaystyle\lim_{X\to+\infty}\frac{\ln X}X=0}$
+\par\textbf{(جـ)} نضع $X=\dfrac1x$: \ $x\ln\left(1+\dfrac1x\right)=\dfrac{\ln(1+X)}X$
+\LD{x\ln\left(1+\dfrac1x\right)}{+\infty}{1} $\Car{\Lm{+\infty}\dfrac1x=0\\[2pt]\displaystyle\lim_{X\to0}\frac{\ln(1+X)}X=1}$
+\par\textbf{(د)} نضع $X=e^x$: \ $\dfrac{\ln\left(e^x+1\right)}{e^x}=\dfrac{\ln(1+X)}X$
+\LD{\dfrac{\ln\left(e^x+1\right)}{e^x}}{-\infty}{1} $\Car{\Lm{-\infty}e^x=0\\[2pt]\displaystyle\lim_{X\to0}\frac{\ln(1+X)}X=1}$
+\QQ{2} \textbf{(أ)} من أجل $x\neq0$: \ $\ln\left(x^2+2\right)=\ln\left[x^2\left(1+\dfrac2{x^2}\right)\right]=2\ln|x|+\ln\left(1+\dfrac2{x^2}\right)$ ، ومن أجل $x>0$:
+\[\frac{\ln\left(x^2+2\right)}x=2\,\frac{\ln x}x+\frac1x\ln\left(1+\frac2{x^2}\right)\]
+\LD{\dfrac{\ln\left(x^2+2\right)}x}{+\infty}{0} $\Car{\Lm{+\infty}\dfrac{\ln x}x=0\\[2pt]\Lm{+\infty}\dfrac1x\ln\left(1+\dfrac2{x^2}\right)=0}$
+\par\textbf{(ب)} من أجل $x<0$: $|x|=-x$ ، و: \ $\dfrac{\ln\left(x^2+2\right)}x=-2\,\dfrac{\ln(-x)}{-x}+\dfrac1x\ln\left(1+\dfrac2{x^2}\right)$
+\LD{\dfrac{\ln\left(x^2+2\right)}x}{-\infty}{0} $\Car{\displaystyle\lim_{X\to+\infty}\frac{\ln X}X=0\quad(X=-x)\\[2pt]\Lm{-\infty}\dfrac1x\ln\left(1+\dfrac2{x^2}\right)=0}$
+\par\textbf{(جـ)} نكتب: \ $\dfrac{\ln(4x+1)}x=4\times\dfrac{\ln(1+4x)}{4x}$
+\LD{\dfrac{\ln(4x+1)}x}{0}{4} $\Car{\Lm{0}4x=0\\[2pt]\displaystyle\lim_{X\to0}\frac{\ln(1+X)}X=1}$
+\par\textbf{(د)} نكتب: \ $\dfrac{e^{4x}-1}x=4\times\dfrac{e^{4x}-1}{4x}$
+\LD{\dfrac{e^{4x}-1}x}{0}{4} $\Car{\Lm{0}4x=0\\[2pt]\displaystyle\lim_{X\to0}\frac{e^X-1}X=1}$
+\QQ{3} \textbf{(أ)} نكتب: \ $\dfrac{e^{x+3}}x=e^3\times\dfrac{e^x}x$
+\LD{\dfrac{e^{x+3}}x}{+\infty}{+\infty} $\Car{\Lm{+\infty}\dfrac{e^x}x=+\infty\\[2pt]e^3>0}$
+\par\textbf{(ب)} نكتب: \ $\dfrac{e^{2x}}{x^2+3x}=\left(\dfrac{e^x}x\right)^2\times\dfrac1{1+\frac3x}$
+\LD{\dfrac{e^{2x}}{x^2+3x}}{+\infty}{+\infty} $\Car{\Lm{+\infty}\left(\dfrac{e^x}x\right)^2=+\infty\\[2pt]\Lm{+\infty}\dfrac1{1+\frac3x}=1}$
+\par\textbf{(جـ)}
+\LD{\left(xe^x-x^2\right)}{-\infty}{-\infty} $\Car{\Lm{-\infty}xe^x=0\\[2pt]\Lm{-\infty}\left(-x^2\right)=-\infty}$
+\par\textbf{(د)} نكتب: \ $\left(x^2-3x\right)e^x-3x=x^2e^x-3xe^x-3x$
+\LD{\left[\left(x^2-3x\right)e^x-3x\right]}{-\infty}{+\infty} $\Car{\Lm{-\infty}x^2e^x=\Lm{-\infty}xe^x=0\\[2pt]\Lm{-\infty}(-3x)=+\infty}$
+\QQ{4} \textbf{(أ)} نكتب: \ $2xe^{4x-3}=\dfrac2{4e^3}\times(4x)e^{4x}=\dfrac1{2e^3}\times Xe^X$ \ مع $X=4x$:
+\LD{\left(1+2xe^{4x-3}\right)}{-\infty}{1} $\Car{\Lm{-\infty}4x=-\infty\\[2pt]\displaystyle\lim_{X\to-\infty}Xe^X=0}$
+\par\textbf{(ب)} نكتب: \ $\left(x^2-2x+3\right)e^{-x}=\dfrac{x^2}{e^x}-2\,\dfrac x{e^x}+\dfrac3{e^x}$
+\LD{\left(x^2-2x+3\right)e^{-x}}{+\infty}{0} $\Car{\Lm{+\infty}\dfrac{x^2}{e^x}=\Lm{+\infty}\dfrac x{e^x}=0\\[2pt]\Lm{+\infty}\dfrac3{e^x}=0}$
+\par\textbf{(جـ)} نكتب: \ $\dfrac{\ln x+2x}{e^x+3}=\dfrac x{e^x}\times\dfrac{\frac{\ln x}x+2}{1+3e^{-x}}$
+\LD{\dfrac{\ln x+2x}{e^x+3}}{+\infty}{0} $\Car{\Lm{+\infty}\dfrac x{e^x}=0\\[2pt]\Lm{+\infty}\dfrac{\frac{\ln x}x+2}{1+3e^{-x}}=2}$
+\par\textbf{(د)} نقسم البسط والمقام على $e^{3x}$: \ $\dfrac{3e^{2x}-3e^x-3}{e^{3x}+4}=\dfrac{3e^{-x}-3e^{-2x}-3e^{-3x}}{1+4e^{-3x}}$
+\LD{\dfrac{3e^{2x}-3e^x-3}{e^{3x}+4}}{+\infty}{0} $\Car{\Lm{+\infty}e^{-x}=\Lm{+\infty}e^{-2x}=\Lm{+\infty}e^{-3x}=0}$
+\end{hal}
+
+%================================================================
+\section{قوى عدد حقيقي موجب تمامًا}
+\begin{molahada}[تمهيد]
+ليكن $a$ عددًا حقيقيًا موجبًا تمامًا و $n$ عددًا طبيعيًا. نعلم أن $\ln\left(a^n\right)=n\ln a$ ، وبالتالي $a^n=e^{n\ln a}$.
+\par وبما أن $\ln e=1$ فإنه من أجل كل عدد حقيقي $x$: \ $e^x=e^{x\ln e}$.
+\end{molahada}
+\begin{tarif}
+من أجل كل عددين حقيقيين $a$ و $b$ حيث $a>0$ و $b$ كيفي ، نضع: \quad $\bx{a^b=e^{b\ln a}}$
+\par يُقرأ $a^b$: «$a$ أس $b$» أو «$a$ قوة $b$».
+\end{tarif}
+\begin{mithal}
+$2^{\sqrt2}=e^{\sqrt2\ln2}\approx\bx{2{,}665}$ \qquad ؛ \qquad $3^{\frac12}=e^{\frac12\ln3}=\sqrt3$ \qquad ؛ \qquad $\left(\dfrac12\right)^{-3}=e^{-3\ln\frac12}=e^{3\ln2}=8$.
+\end{mithal}
+\begin{khassia}[قواعد الحساب]
+من أجل كل عددين حقيقيين موجبين تمامًا $a$ و $b$ ، ومن أجل كل عددين حقيقيين $x$ و $y$:
+\[\LW{\ln\left(a^x\right)=x\ln a}\qquad\LW{a^xa^y=a^{x+y}}\qquad\LW{\frac1{a^y}=a^{-y}}\qquad\LW{\frac{a^x}{a^y}=a^{x-y}}\]
+\[\LW{\left(a^x\right)^y=a^{xy}}\qquad\LW{(ab)^x=a^xb^x}\qquad\LW{\left(\frac ab\right)^x=\frac{a^x}{b^x}}\]
+\end{khassia}
+
+%================================================================
+\section{الدالة الأسية ذات الأساس $a$}
+\begin{tarif}
+$a$ عدد حقيقي موجب تمامًا. نسمي \textbf{الدالة الأسية ذات الأساس $a$} الدالة $f$ المعرفة على $\R$ بـ: \quad $\bx{f(x)=a^x=e^{x\ln a}}$
+\end{tarif}
+\begin{tmr}
+$f$ الدالة المعرفة على $\R$ بـ: $f(x)=a^x$ حيث $a$ عدد حقيقي موجب تمامًا ($a\neq1$).
+\QQ{1} احسب نهايتي $f$ عند $+\infty$ وعند $-\infty$ من أجل $a\in\,]0;1[$ ، ثم من أجل $a>1$.
+\QQ{2} احسب $f^{\prime}(x)$ ، ثم شكّل جدول تغيرات $f$ من أجل $a\in\,]0;1[$ ومن أجل $a>1$.
+\QQ{3} استنتج أنه من أجل كل $x\in\R$: $f(x)>0$.
+\QQ{4} شكّل جدول تغيرات $f$ من أجل $a=5$.
+\end{tmr}
+\begin{hal}
+\QQ{1} $f(x)=e^{x\ln a}$. \quad \textbf{الحالة $a>1$:} $\ln a>0$.
+\LD{a^x}{+\infty}{+\infty} $\Car{\Lm{+\infty}x\ln a=+\infty\\[2pt]\displaystyle\lim_{X\to+\infty}e^X=+\infty}$
+\LD{a^x}{-\infty}{0} $\Car{\Lm{-\infty}x\ln a=-\infty\\[2pt]\displaystyle\lim_{X\to-\infty}e^X=0}$
+\par\textbf{الحالة $0<a<1$:} $\ln a<0$.
+\LD{a^x}{+\infty}{0} $\Car{\Lm{+\infty}x\ln a=-\infty\\[2pt]\displaystyle\lim_{X\to-\infty}e^X=0}$
+\LD{a^x}{-\infty}{+\infty} $\Car{\Lm{-\infty}x\ln a=+\infty\\[2pt]\displaystyle\lim_{X\to+\infty}e^X=+\infty}$
+\QQ{2} $f^{\prime}(x)=\ln a\times e^{x\ln a}$ ، أي \bx{f^{\prime}(x)=a^x\ln a} ، وإشارتها إشارة $\ln a$ لأن $e^{x\ln a}>0$.
+\RL{0.48}{%
+\centering\textbf{$a>1$}
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$/0.8,$f^{\prime}(x)$/0.8,$f(x)$/1.6}{$-\infty$,$+\infty$}
+\tkzTabLine{,+,}
+\tkzTabVar{-/$0$,+/$+\infty$}
+\end{TAB}}{0.48}{%
+\centering\textbf{$0<a<1$}
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=2.6]{$x$/0.8,$f^{\prime}(x)$/0.8,$f(x)$/1.6}{$-\infty$,$+\infty$}
+\tkzTabLine{,-,}
+\tkzTabVar{+/$+\infty$,-/$0$}
+\end{TAB}}
+\QQ{3} من أجل كل $x\in\R$: $f(x)=e^{x\ln a}$ و $e^X>0$ ، إذن \bx{a^x>0}.
+\QQ{4} $a=5>1$: $f^{\prime}(x)=5^x\ln5>0$ ، و $f(0)=1$:
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3.2]{$x$/0.8,$f^{\prime}(x)$/0.8,$5^x$/1.6}{$-\infty$,$0$,$+\infty$}
+\tkzTabLine{,+,t,+,}
+\tkzTabVar{-/$0$,R/,+/$+\infty$}
+\tkzTabIma{1}{3}{2}{$1$}
+\end{TAB}
+\end{hal}
+\begin{molahada}[التفسير البياني]
+كل المنحنيات تشمل النقطة $(0;1)$. منحنيا $x\mapsto a^x$ و $x\mapsto\left(\frac1a\right)^x$ متناظران بالنسبة إلى محور التراتيب لأن $\left(\frac1a\right)^x=a^{-x}$ ، ومحور الفواصل مستقيم مقارب عند $-\infty$ (لـ $a>1$) أو عند $+\infty$ (لـ $0<a<1$).
+\begin{GR}{-4}{4}{-0.5}{5}{0.8}
+\draw[cThm,very thick,domain=-4:2.3,samples=80] plot(\x,{pow(2,\x)}) node[above]{$2^x$};
+\draw[cDef,very thick,domain=-2.3:4,samples=80] plot(\x,{pow(0.5,\x)});
+\draw[cRem,very thick,domain=-4:1,samples=80] plot(\x,{pow(5,\x)}) node[right]{$5^x$};
+\node[cDef] at (-3.2,4.4){$\left(\frac12\right)^x$};
+\fill (0,1) circle(1.5pt) node[above left]{$1$};
+\end{GR}
+\end{molahada}
+
+%================================================================
+\section{معادلات ومتراجحات}
+\begin{tariqa}
+\begin{enumerate}
+\item $a^x=b$ ($b>0$): نُدخل الدالة $\ln$ على الطرفين: $x\ln a=\ln b$ ، أي $x=\dfrac{\ln b}{\ln a}$ ($a\neq1$).
+\item $a^x\geqslant b$: نفس الطريقة ، مع الانتباه إلى إشارة $\ln a$ عند القسمة.
+\item معادلة من الشكل $\alpha\,a^{2x}+\beta\,a^x+\gamma=0$: نضع $X=a^x$ ($X>0$) فنحصل على معادلة من الدرجة الثانية.
+\end{enumerate}
+\end{tariqa}
+\begin{tmr}
+حل في $\R$ المعادلات والمتراجحة التالية:
+\QQ{1} $6^x=6$ \qquad \QQ{2} $9^x=8$ \qquad \QQ{3} $5^{x-1}\geqslant9$
+\QQ{4} $2\times7^{2x}-10\times7^x+12=0$ \qquad \QQ{5} $3\times5^{2x}-9\times5^x-12=0$
+\end{tmr}
+\begin{hal}
+\QQ{1} $6^x=6^1\iff x\ln6=\ln6\iff\bx{x=1}$.
+\QQ{2} $9^x=8\iff x\ln9=\ln8\iff x=\dfrac{\ln8}{\ln9}=\bx{\frac{3\ln2}{2\ln3}}$ \ ($\approx0{,}946$).
+\QQ{3} $5^{x-1}\geqslant9\iff(x-1)\ln5\geqslant\ln9\iff x-1\geqslant\dfrac{\ln9}{\ln5}$ \ (لأن $\ln5>0$) ، ومنه: \ $S=\bx{\left[1+\frac{\ln9}{\ln5};+\infty\right[}$.
+\QQ{4} نقسم على $2$ ونضع $X=7^x$ ($X>0$): \ $X^2-5X+6=0$ ، $\Delta=25-24=1$ ، $X=2$ أو $X=3$ (مقبولان).
+\[7^x=2\iff x=\frac{\ln2}{\ln7}\qquad;\qquad7^x=3\iff x=\frac{\ln3}{\ln7}\qquad\qquad S=\bx{\left\{\frac{\ln2}{\ln7};\frac{\ln3}{\ln7}\right\}}\]
+\QQ{5} نقسم على $3$ ونضع $X=5^x$ ($X>0$): \ $X^2-3X-4=0$ ، $\Delta=9+16=25$ ، $X=-1$ (مرفوض لأن $X>0$) أو $X=4$.
+\[5^x=4\iff x=\frac{\ln4}{\ln5}\qquad\qquad S=\bx{\left\{\frac{2\ln2}{\ln5}\right\}}\]
+\end{hal}
+
+%================================================================
+\section{الجذر النوني لعدد حقيقي موجب}
+\begin{molahada}[تمهيد]
+الدالة $f_n:x\mapsto x^n$ ($n\in\N^*$) مستمرة ومتزايدة تمامًا على $[0;+\infty[$ ، و $f_n(0)=0$ و $\Lm{+\infty}f_n(x)=+\infty$.
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3.2]{$x$/0.8,$x^n$/1.6}{$0$,$+\infty$}
+\tkzTabVar{-/$0$,+/$+\infty$}
+\end{TAB}
+إذن (مبرهنة القيم المتوسطة) من أجل كل عدد حقيقي موجب $a$ ، المعادلة $x^n=a$ تقبل حلًا وحيدًا في المجال $[0;+\infty[$.
+\end{molahada}
+\begin{tarif}[مبرهنة وتعريف]
+من أجل كل عدد حقيقي موجب $a$ ومن أجل كل عدد طبيعي غير معدوم $n$ ، يوجد عدد حقيقي موجب وحيد $b$ يحقق $b^n=a$ ، يسمى \textbf{الجذر النوني} للعدد $a$ ونرمز له بالرمز $\bx{\sqrt[n]a}$.
+\par الدالة المعرفة على $[0;+\infty[$ بـ: $x\mapsto\sqrt[n]x$ تسمى \textbf{دالة الجذر النوني}.
+\end{tarif}
+\begin{mithal}
+$\sqrt[n]0=0$ \ ؛ \ $\sqrt[n]1=1$ \ ؛ \ $\sqrt[3]8=2$ لأن $2^3=8$ \ ؛ \ $\sqrt[4]{81}=3$ لأن $3^4=81$ \ ؛ \ $\sqrt[5]{32}=2$ لأن $2^5=32$ \ ؛ \ $\sqrt[2]a=\sqrt a$.
+\end{mithal}
+\begin{khassia}
+من أجل كل عدد حقيقي موجب تمامًا $a$ ومن أجل كل عدد طبيعي غير معدوم $n$: \quad $\bx{\sqrt[n]a=a^{\frac1n}}$
+\par لأن $\left(a^{\frac1n}\right)^n=a^{\frac nn}=a$ و $a^{\frac1n}>0$.
+\end{khassia}
+\begin{molahada}[التفسير البياني]
+$y=\sqrt[n]x\iff x=y^n$ ($x\geqslant0$ ، $y\geqslant0$): منحنى $x\mapsto\sqrt[n]x$ نظير منحنى $x\mapsto x^n$ (على $[0;+\infty[$) بالنسبة إلى المستقيم $y=x$.
+\begin{GR}{-0.5}{4}{-0.5}{4}{1}
+\draw[gray,dashed,domain=-0.5:4] plot(\x,\x) node[above right]{$y=x$};
+\draw[cThm,very thick,domain=0:2,samples=60] plot(\x,{\x*\x}); \node[cDef] at (2.9,6.5){$x^2$};
+\draw[cThm,very thick,domain=0:4,samples=60] plot(\x,{sqrt(\x)}) node[above]{$\sqrt x$};
+\draw[cDef,very thick,domain=0:1.58,samples=60] plot(\x,{\x*\x*\x}) node[left]{$x^3$};
+\draw[cDef,very thick,domain=0:4,samples=60] plot(\x,{pow(\x,1/3)}) node[below]{$\sqrt[3]x$};
+\fill (1,1) circle(1.5pt) node[below right]{$(1;1)$};
+\end{GR}
+\end{molahada}
+\begin{tmr}
+\QQ{1} عيّن الدالة المشتقة للدالة $f_n$ المعرفة على $]0;+\infty[$ بـ: $f_n(x)=\sqrt[n]x$ حيث $n$ عدد طبيعي غير معدوم.
+\QQ{2} ادرس تغيرات الدالة $g$ المعرفة على $]1;+\infty[$ بـ: $g(x)=\sqrt[4]{x^2-1}$.
+\end{tmr}
+\begin{hal}
+\QQ{1} $f_n(x)=x^{\frac1n}=e^{\frac1n\ln x}$ ، ومنه:
+\[f_n^{\prime}(x)=\frac1{nx}\,e^{\frac1n\ln x}=\frac1n\,x^{\frac1n-1}=\bx{\frac1{n\sqrt[n]{x^{n-1}}}}\]
+\QQ{2} $g(x)=\left(x^2-1\right)^{\frac14}=e^{\frac14\ln\left(x^2-1\right)}$ ، و $x^2-1>0$ على $]1;+\infty[$:
+\[g^{\prime}(x)=\frac14\times\frac{2x}{x^2-1}\times\left(x^2-1\right)^{\frac14}=\bx{\frac x{2\left(x^2-1\right)^{\frac34}}}>0\]
+\LDy{g(x)}{1}{x>1}{0} $\Car{\Lmm{1}{x>1}\left(x^2-1\right)=0^+}$
+\LD{g(x)}{+\infty}{+\infty} $\Car{\Lm{+\infty}\left(x^2-1\right)=+\infty}$
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3.2]{$x$/0.8,$g^{\prime}(x)$/0.8,$g(x)$/1.6}{$1$,$+\infty$}
+\tkzTabLine{d,+,}
+\tkzTabVar{D-/$0$,+/$+\infty$}
+\end{TAB}
+\bxt{$g$ متزايدة تمامًا على $]1;+\infty[$}.
+\end{hal}
+
+%================================================================
+\section{تمرين محلول (مسألة)}
+\begin{tmr}
+\textbf{الجزء الأول}
+\QQ{1} نعتبر الدالة $g$ المعرفة على $[0;+\infty[$ كما يلي: $g(x)=3^x-x\ln3-1$.
+\begin{sq}
+\qa بيّن أنه من أجل كل عدد حقيقي $x>0$ تكون $g^{\prime}(x)>0$ ، ثم استنتج اتجاه تغير $g$ على $[0;+\infty[$.
+\qb احسب $g(0)$ ، ثم استنتج أن $g(x)>0$ من أجل كل $x>0$.
+\end{sq}
+\QQ{2} نعتبر الدالة $h$ المعرفة على $[0;+\infty[$ بـ: $h(x)=(2-x\ln3)3^x-1$.
+\begin{sq}
+\qa ادرس تغيرات الدالة $h$ ، ثم شكّل جدول تغيراتها.
+\qb بيّن أن المعادلة $h(x)=0$ تقبل حلًا وحيدًا $\alpha$ حيث $1{,}6<\alpha<1{,}7$.
+\qc استنتج إشارة $h(x)$ على $[0;+\infty[$.
+\end{sq}
+\textbf{الجزء الثاني:} نعتبر الدالة $f$ المعرفة على $[0;+\infty[$ بـ: $f(x)=\dfrac{3^x-1}{3^x-x\ln3}$ ، و $(C_f)$ تمثيلها البياني في المستوي المنسوب إلى معلم متعامد ومتجانس $(O;\vec i,\vec j)$.
+\QQ{1}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x\geqslant0$: \ $f(x)=\dfrac{1-3^{-x}}{1-x\ln3\times3^{-x}}$.
+\qb استنتج نهاية $f$ عند $+\infty$ ، ثم فسّر النتيجة هندسيًا.
+\qc بيّن أنه من أجل كل $x\geqslant0$: \ $f^{\prime}(x)=\dfrac{h(x)\times\ln3}{\left(3^x-x\ln3\right)^2}$ ، ثم شكّل جدول تغيرات $f$.
+\end{sq}
+\QQ{2}
+\begin{sq}
+\qa بيّن أنه من أجل كل $x\geqslant0$: \ $f(x)-x\ln3=\dfrac{(1-x\ln3)\,g(x)}{3^x-x\ln3}$.
+\qb استنتج الوضع النسبي للمنحنى $(C_f)$ والمستقيم $(D)$ ذي المعادلة $y=x\ln3$.
+\end{sq}
+\QQ{3}
+\begin{sq}
+\qa حدد معادلة المماس $(T)$ للمنحنى $(C_f)$ عند النقطة ذات الفاصلة $0$.
+\qb أنشئ المماس $(T)$ والمنحنى $(C_f)$.
+\end{sq}
+\end{tmr}
+\begin{hal}
+\textbf{الجزء الأول}
+\QQ{1}
+\pa $3^x=e^{x\ln3}$ ، إذن $\left(3^x\right)^{\prime}=3^x\ln3$ ، و: \quad $g^{\prime}(x)=3^x\ln3-\ln3=\bx{\ln3\left(3^x-1\right)}$
+\par من أجل $x>0$: $x\ln3>0$ ، أي $3^x=e^{x\ln3}>1$ ، و $\ln3>0$: إذن $g^{\prime}(x)>0$ و \bxt{$g$ متزايدة تمامًا على $[0;+\infty[$}.
+\pb $g(0)=1-0-1=\bx{0}$. \ $g$ متزايدة تمامًا ، إذن من أجل $x>0$: $g(x)>g(0)=0$ ، أي \bx{g(x)>0}.
+\QQ{2}
+\pa $h^{\prime}(x)=-\ln3\times3^x+(2-x\ln3)\times3^x\ln3=\bx{3^x\ln3\,(1-x\ln3)}$
+\par إشارة $h^{\prime}(x)$ هي إشارة $1-x\ln3$ ، وتنعدم عند $x=\dfrac1{\ln3}\approx0{,}91$.
+\[h\left(\frac1{\ln3}\right)=(2-1)\times3^{\frac1{\ln3}}-1=e^{\frac1{\ln3}\ln3}-1=\bx{e-1}\qquad;\qquad h(0)=2-1=\bx{1}\]
+\LD{h(x)}{+\infty}{-\infty} $\Car{\Lm{+\infty}(2-x\ln3)=-\infty\\[2pt]\Lm{+\infty}3^x=+\infty}$
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3]{$x$/0.8,$h^{\prime}(x)$/0.8,$h(x)$/1.8}{$0$,$\frac1{\ln3}$,$+\infty$}
+\tkzTabLine{,+,z,-,}
+\tkzTabVar{-/$1$,+/$e-1$,-/$-\infty$}
+\end{TAB}
+\pb على $\left[0;\frac1{\ln3}\right]$: $h(x)\geqslant1>0$ ، فلا حل. \ على $\left[\frac1{\ln3};+\infty\right[$: $h$ مستمرة ومتناقصة تمامًا ، و $h(1{,}6)\approx0{,}405>0$ ، $h(1{,}7)\approx-0{,}143<0$ ، إذن \bxt{المعادلة $h(x)=0$ تقبل حلًا وحيدًا $\alpha$ حيث $1{,}6<\alpha<1{,}7$}.
+\pc \bxt{$h(x)>0$ على $[0;\alpha[$} \ ، \ $h(\alpha)=0$ \ ، \ \bxt{$h(x)<0$ على $]\alpha;+\infty[$}.
+\par\medskip\textbf{الجزء الثاني}
+\QQ{1}
+\pa نقسم البسط والمقام على $3^x>0$:
+\[f(x)=\frac{3^x\left(1-3^{-x}\right)}{3^x\left(1-x\ln3\times3^{-x}\right)}=\bx{\frac{1-3^{-x}}{1-x\ln3\times3^{-x}}}\]
+\pb $x\ln3\times3^{-x}=\ln3\times x\,e^{-x\ln3}=\dfrac{X}{e^X}$ مع $X=x\ln3$.
+\LD{f(x)}{+\infty}{1} $\Car{\Lm{+\infty}3^{-x}=0\\[2pt]\displaystyle\lim_{X\to+\infty}\frac X{e^X}=0}$
+\par التفسير: \bxt{المستقيم ذو المعادلة $y=1$ مقارب أفقي لـ $(C_f)$ بجوار $+\infty$}.
+\pc نضع $N(x)=3^x-1$ و $D(x)=3^x-x\ln3$ (و $D(x)=g(x)+1>0$):
+\[f^{\prime}(x)=\frac{3^x\ln3\left(3^x-x\ln3\right)-\left(3^x-1\right)\left(3^x\ln3-\ln3\right)}{\left(3^x-x\ln3\right)^2}\]
+\[f^{\prime}(x)=\frac{\ln3\left[3^{2x}-x\ln3\times3^x-3^{2x}+2\times3^x-1\right]}{\left(3^x-x\ln3\right)^2}=\bx{\frac{h(x)\times\ln3}{\left(3^x-x\ln3\right)^2}}\]
+إشارة $f^{\prime}(x)$ هي إشارة $h(x)$. \quad $f(0)=0$ ، ومن $h(\alpha)=0$: $3^\alpha=\dfrac1{2-\alpha\ln3}$ ، ومنه:
+\[f(\alpha)=\frac{\frac1{2-\alpha\ln3}-1}{\frac1{2-\alpha\ln3}-\alpha\ln3}=\frac{\alpha\ln3-1}{(\alpha\ln3-1)^2}=\bx{\frac1{\alpha\ln3-1}}\approx1{,}19\]
+\begin{TAB}
+\tkzTabInit[lgt=1.6,espcl=3]{$x$/0.8,$f^{\prime}(x)$/0.8,$f(x)$/1.8}{$0$,$\alpha$,$+\infty$}
+\tkzTabLine{,+,z,-,}
+\tkzTabVar{-/$0$,+/$f(\alpha)$,-/$1$}
+\end{TAB}
+\QQ{2}
+\pa نوحّد المقامات:
+\[f(x)-x\ln3=\frac{3^x-1-x\ln3\times3^x+x^2\ln^23}{3^x-x\ln3}\]
+وبنشر البسط المقترح: \ $(1-x\ln3)\left(3^x-x\ln3-1\right)=3^x-x\ln3-1-x\ln3\times3^x+x^2\ln^23+x\ln3=3^x-1-x\ln3\times3^x+x^2\ln^23$.
+\par إذن: \quad $f(x)-x\ln3=\bx{\frac{(1-x\ln3)\,g(x)}{3^x-x\ln3}}$
+\pb $g(x)\geqslant0$ و $3^x-x\ln3>0$: إشارة الفرق هي إشارة $1-x\ln3$ ، وينعدم عند $0$ وعند $\dfrac1{\ln3}$ ($f\left(\frac1{\ln3}\right)=1$):
+\begin{FIG}\begin{FIG}
+\begin{tikzpicture}[font=\normalsize]
+\fill[gray!12] (0,0) rectangle (2.6,-0.9);
+\fill[green!18] (2.6,0) rectangle (14,-0.9);
+\fill[orange!45] (0,-0.9) rectangle (2.6,-4.6);
+\fill[cyan!22] (2.6,-0.9) rectangle (14,-4.6);
+\draw[thick] (0,0) rectangle (14,-4.6); \draw (0,-0.9)--(14,-0.9) (0,-1.8)--(14,-1.8) (2.6,0)--(2.6,-4.6);
+\node at (1.3,-0.45){$x$};
+\node at (1.3,-1.35){$f(x)-x\ln3$};
+\node[align=center,font=\bfseries] at (1.3,-3.2){\ar{الوضع}\\ \ar{النسبي}};
+\node at (4.55,-0.45){$0$};
+\node at (9.63065,-0.45){$\frac1{\ln3}$};
+\node at (13.3,-0.45){$+\infty$};
+\node at (7.09032,-1.35){$+$};
+\node[align=center,font=\footnotesize] at (7.09032,-3.2){$(C_f)$\\ \ar{فوق}\\ $(D)$};
+\node at (12.0903,-1.35){$-$};
+\node[align=center,font=\footnotesize] at (12.0903,-3.2){$(C_f)$\\ \ar{تحت}\\ $(D)$};
+\node at (4.55,-1.35){$0$};
+\draw[densely dotted] (4.55,-0.9)--(4.55,-1.13) (4.55,-1.57)--(4.55,-1.8);
+\draw (3.3,-4.6) .. controls (3.3625,-3.06) and (4.175,-2.136) .. (4.55,-1.8) .. controls (4.925,-2.136) and (5.7375,-3.06) .. (5.8,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (4.55,-3.65){\ar{$(C_f)$ يمس}\\ $(D)$\\ \ar{في النقطة}\\ $O(0;0)$};
+\node at (9.63065,-1.35){$0$};
+\draw[densely dotted] (9.63065,-0.9)--(9.63065,-1.13) (9.63065,-1.57)--(9.63065,-1.8);
+\draw (8.38065,-4.6) .. controls (8.44315,-3.06) and (9.25565,-2.136) .. (9.63065,-1.8) .. controls (10.0056,-2.136) and (10.8181,-3.06) .. (10.8806,-4.6);
+\node[align=center,font=\scriptsize,inner sep=0pt] at (9.63065,-3.65){\ar{$(C_f)$ يقطع}\\ $(D)$\\ \ar{في النقطة}\\ $\left(\frac1{\ln3};1\right)$};
+\end{tikzpicture}
+\end{FIG}\end{FIG}
+\QQ{3}
+\pa $f(0)=0$ و $f^{\prime}(0)=\dfrac{h(0)\ln3}{1^2}=\ln3$: \quad $(T):\ y=\bx{x\ln3}$ \ (المماس هو المستقيم $(D)$).
+\pb
+\begin{GR}{-0.5}{6}{-0.5}{2}{1.5}
+\draw[dashed,cEx] (-0.5,1)--(6,1) node[above left]{$y=1$};
+\draw[cRem,thick,domain=-0.3:1.75] plot(\x,{1.0986*\x}) node[above]{$(T)=(D)$};
+\draw[cThm,very thick,domain=0:6,samples=120] plot(\x,{(pow(3,\x)-1)/(pow(3,\x)-1.0986*\x)});
+\draw[dashed] (1.676,0)--(1.676,1.188); \node[below] at (1.676,0){$\alpha$};
+\draw[dashed] (0.91,0)--(0.91,1); \node[below] at (0.91,0){$\frac1{\ln3}$};
+\fill (0.91,1) circle(1.5pt);
+\node[cThm] at (4,1.35){$(C_f)$};
+\Ticks{1,2,3,4,5}{1}
+\end{GR}
+\end{hal}
+
+%================================================================
+\clearpage
+\section{خلاصة الطرائق}
+\begin{BOX}{cMeth}{الطريقة حسب المطلوب}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|p{0.62\textwidth}|p{0.3\textwidth}|}\hline
+\rowcolor{cSec!12} \textbf{الطريقة} & \textbf{المطلوب}\\\hline
+نخرج الحد الأسرع عاملًا مشتركًا ، مع: $\ln x\ll x^n\ll e^x$ بجوار $+\infty$. & حالة عدم تعيين بين $e^x$ ، $x^n$ ، $\ln x$\\\hline
+$\dfrac{e^x}{x^n}\to+\infty$ ، \ $\dfrac{\ln x}{x^n}\to0$ (عند $+\infty$) ؛ \ $x^ne^x\to0$ (عند $-\infty$) ؛ \ $x^n\ln x\to0$ (عند $0^+$). & النهايات المرجعية\\\hline
+تغيير المتغير: $X=\dfrac1x$ ، $X=-x$ ، $X=e^x$ ، $X=\sqrt x$ ، $X=ax$ ، ثم نهاية مرجعية. & نهاية لا تظهر مباشرة\\\hline
+$\dfrac{\ln(1+X)}X\to1$ و $\dfrac{e^X-1}X\to1$ لما $X\to0$. & نهاية عند $0$ فيها $\ln(1+ax)$ أو $e^{ax}-1$\\\hline
+$a^b=e^{b\ln a}$ ثم قواعد الحساب على الأسس. & حساب أو تبسيط قوى\\\hline
+$\left(a^x\right)^{\prime}=a^x\ln a$ ؛ متزايدة إذا كان $a>1$ ومتناقصة إذا كان $0<a<1$. & دراسة $x\mapsto a^x$\\\hline
+نُدخل $\ln$: $x\ln a=\ln b$ ، أو نضع $X=a^x>0$ في معادلة من الدرجة الثانية. & معادلة أو متراجحة أسية ذات أساس $a$\\\hline
+$\sqrt[n]a=a^{\frac1n}=e^{\frac1n\ln a}$ ، و $\left(\sqrt[n]x\right)^{\prime}=\dfrac1n\,x^{\frac1n-1}$. & الجذر النوني ومشتقته\\\hline
+ندرس إشارة الفرق $f(x)-(ax+b)$ في جدول. & الوضع النسبي لمنحنى ومستقيم\\\hline
+\end{tabular}
+\end{center}
+\end{BOX}
+\end{document}
