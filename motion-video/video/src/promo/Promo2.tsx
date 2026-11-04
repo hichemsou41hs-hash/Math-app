@@ -11,7 +11,7 @@ type Line = { text: string; start: number; end: number; words: W[] };
 const RAW = (data as { lines: Line[] }).lines;
 /** Silence (seconds) inserted after a voice line so its scene can breathe: the 2AS and 1AS boards.
  *  When the voice is added, each line's audio is played from its shifted start (raw start + SHIFT[i]). */
-const PAD_AFTER: Record<number, number> = { 9: 4, 10: 2.5, 11: 3.5, 12: 3.5 };
+const PAD_AFTER: Record<number, number> = { 6: 1.5, 7: 2.5, 9: 3, 10: 2.5, 11: 3.5, 12: 3.5 };
 const SHIFT = RAW.map((_, i) => RAW.slice(0, i).reduce((q, __, k) => q + (PAD_AFTER[k] ?? 0), 0));
 const LINES: Line[] = RAW.map((l, i) => ({ ...l, start: l.start + SHIFT[i], end: l.end + SHIFT[i], words: l.words.map((w) => ({ ...w, start: w.start + SHIFT[i], end: w.end + SHIFT[i] })) }));
 const ASSETS = (data as { assets: Record<string, { pdf: string[]; pages: number }> }).assets;
@@ -749,7 +749,7 @@ export const Promo2: React.FC = () => {
     [13, 13, (sp) => <End {...sp} at={num ? Math.round((num.start - starts[13]) * fps) : Math.round(sp.d * 0.7)} />],
   ];
   // the 3AS board comes in before line 4, cutting the long "four files" scene short (it felt slow)
-  const gStart = (a: number) => (a === 4 ? starts[3] + 0.6 * (starts[4] - starts[3]) : starts[a]);
+  const gStart = (a: number) => (a === 4 ? starts[3] + 0.7 * (starts[4] - starts[3]) : starts[a]);
   const gi = Math.max(0, groups.findIndex(([a, b]) => sec >= gStart(a) && sec < (b + 1 < LINES.length ? gStart(b + 1) : Infinity)));
   const [ga, gb, scene] = groups[gi];
   const g0 = gStart(ga);
