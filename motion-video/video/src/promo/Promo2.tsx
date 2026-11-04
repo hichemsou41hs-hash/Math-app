@@ -188,7 +188,7 @@ const Library: React.FC<SP> = ({ t, d, frame }) => {
       <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', gap: 10, background: 'radial-gradient(ellipse at center, rgba(6,16,42,0.85) 0%, rgba(6,16,42,0.2) 60%)' }}>
         <Title size={56} o={ramp(t, 0, 14)}>مكتبة الأستاذ سوايسية هشام</Title>
         <div style={{ fontFamily: LATIN, fontWeight: 700, fontSize: 170, color: C.gold, textShadow: '0 10px 40px rgba(0,0,0,0.7)', direction: 'ltr' }}>+{n}</div>
-        <Title size={52} font={NASKH} o={ramp(t, d * 0.3, d * 0.42)}>ملفًا</Title>
+        <Title size={68} color={C.goldLight} o={ramp(t, d * 0.3, d * 0.42)} y={ramp(t, d * 0.3, d * 0.42, 20, 0)}>ملفًا</Title>
         <div style={{ display: 'flex', flexDirection: 'row-reverse', gap: 34, margin: '14px 0 18px' }}>
           {[['1', 'أولى ثانوي'], ['2', 'ثانية ثانوي'], ['3', 'ثالثة ثانوي']].map(([k, lb], i) => {
             const a = d * 0.56 + i * 7;
@@ -215,45 +215,47 @@ const Content: React.FC<SP> = ({ t, d }) => {
     { label: 'تمارين نموذجية مع الحلول', src: P('tamarin_exp_3as') },
     { label: 'تمارين البكالوريا مع الحلول', src: P('bac_ln_3as') },
   ];
-  // arrow tree: one stem from each file, splitting into three branches (PDF, Word, LaTeX)
-  const TW = 330, TH = 130, xs = [55, 165, 275];
+  // four cards (right to left), then one arrow from each file into a circle holding the three formats
+  const CW = 300, GAP = 60, top = 70;
+  const cxs = cards.map((_, i) => 960 + (1.5 - i) * (CW + GAP));
+  const yFrom = top + 400 + 60, O = { x: 960, y: 735 }, R = 128;
+  const a0 = d * 0.52;
+  const circ = interpolate(t, [a0 + 14, a0 + 28], [0, 1], { ...CL, easing: Easing.out(Easing.back(1.7)) });
+  const spin = t / 3;
   return (
-    <AbsoluteFill style={{ alignItems: 'center', paddingTop: 40 }}>
-      <Title size={44} font={NASKH} color={C.goldLight} o={ramp(t, d * 0.45, d * 0.55)}>جميعها بالحل المفصل</Title>
-      <div style={{ display: 'flex', flexDirection: 'row-reverse', gap: 40, marginTop: 14 }}>
-        {cards.map((c, i) => {
-          const s = t - i * d * 0.1;
-          const a0 = d * 0.6 + i * 10; // arrows start once the formats are said
-          const stem = ramp(t, a0, a0 + 8), br = ramp(t, a0 + 8, a0 + 18);
+    <AbsoluteFill>
+      {cards.map((c, i) => {
+        const s = t - i * d * 0.08;
+        return (
+          <div key={i} style={{ position: 'absolute', left: cxs[i] - CW / 2, top, width: CW, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, opacity: ramp(s, 0, 10), transform: `translateY(${ramp(s, 0, 14, 80, 0)}px)` }}>
+            <div style={{ width: 280, height: 392, position: 'relative', borderRadius: 10, overflow: 'hidden', border: `4px solid ${C.gold}`, boxShadow: '0 30px 60px rgba(0,0,0,0.6)' }}><Flipper pages={c.src} t={s} every={34} /></div>
+            <Chip size={26}>{c.label}</Chip>
+          </div>
+        );
+      })}
+      <svg width={1920} height={1080} style={{ position: 'absolute', inset: 0, overflow: 'visible' }}>
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill={C.gold} /></marker>
+        </defs>
+        {cxs.map((x, i) => {
+          const p = ramp(t, a0 + i * 3, a0 + i * 3 + 14);
+          const ang = Math.atan2(yFrom - O.y, x - O.x);
+          const ex = O.x + (R + 10) * Math.cos(ang), ey = O.y + (R + 10) * Math.sin(ang);
+          const qx = x, qy = (yFrom + ey) / 2 + 40;
+          const len = 700;
+          return p > 0 ? <path key={i} d={`M ${x} ${yFrom} Q ${qx} ${qy} ${ex} ${ey}`} fill="none" stroke={C.gold} strokeWidth={6} strokeLinecap="round" strokeDasharray={len} strokeDashoffset={len * (1 - p)} markerEnd={p > 0.95 ? 'url(#ah)' : undefined} style={{ filter: 'drop-shadow(0 0 8px rgba(245,181,74,0.7))' }} /> : null;
+        })}
+      </svg>
+      <div style={{ position: 'absolute', left: O.x - R, top: O.y - R, width: 2 * R, height: 2 * R, borderRadius: '50%', opacity: Math.min(1, circ * 1.4), transform: `scale(${0.3 + 0.7 * circ})`,
+        background: 'radial-gradient(circle at 50% 35%, #1F3F8F 0%, #0B1A40 75%)', border: '4px solid #FFE29A', boxShadow: `0 0 ${30 + 20 * Math.sin(t / 8)}px rgba(245,181,74,0.75), inset 0 0 30px rgba(0,0,0,0.5)`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, direction: 'ltr' }}>
+        <div style={{ position: 'absolute', inset: -14, borderRadius: '50%', border: '3px dashed rgba(255,226,154,0.55)', transform: `rotate(${spin}deg)` }} />
+        {FMT3.map((k, q) => {
+          const pq = ramp(t, a0 + 24 + q * 4, a0 + 32 + q * 4);
           return (
-            <div key={i} style={{ width: TW, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, opacity: ramp(s, 0, 10), transform: `translateY(${ramp(s, 0, 14, 80, 0)}px)` }}>
-              <div style={{ width: 250, height: 350, position: 'relative', borderRadius: 10, overflow: 'hidden', border: `4px solid ${C.gold}`, boxShadow: '0 30px 60px rgba(0,0,0,0.6)' }}><Flipper pages={c.src} t={s} every={34} /></div>
-              <Chip size={28}>{c.label}</Chip>
-              <svg width={TW} height={TH} viewBox={`0 0 ${TW} ${TH}`} style={{ overflow: 'visible' }}>
-                <line x1={TW / 2} y1={0} x2={TW / 2} y2={46 * stem} stroke={C.gold} strokeWidth={5} strokeLinecap="round" />
-                {xs.map((x, k) => {
-                  const ex = TW / 2 + (x - TW / 2) * br, ey = 46 + (TH - 18 - 46) * br;
-                  const ang = Math.atan2(TH - 18 - 46, x - TW / 2);
-                  const hd = (q: number) => `${ex - 16 * Math.cos(ang + q)},${ey - 16 * Math.sin(ang + q)}`;
-                  return br > 0 ? (
-                    <g key={k}>
-                      <line x1={TW / 2} y1={46} x2={ex} y2={ey} stroke={FMT[FMT3[k]].color} strokeWidth={5} strokeLinecap="round" />
-                      {br > 0.6 && <polygon points={`${ex},${ey} ${hd(0.45)} ${hd(-0.45)}`} fill={FMT[FMT3[k]].color} />}
-                    </g>
-                  ) : null;
-                })}
-              </svg>
-              <div style={{ width: TW, height: 70, position: 'relative', direction: 'ltr' }}>
-                {xs.map((x, k) => {
-                  const p = ramp(t, a0 + 16 + k * 3, a0 + 26 + k * 3);
-                  return (
-                    <div key={k} style={{ position: 'absolute', left: x - 44, width: 88, top: -8, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, opacity: p, transform: `scale(${0.4 + 0.6 * p})` }}>
-                      <FmtIcon kind={FMT3[k]} size={44} />
-                      <span style={{ fontFamily: LATIN, fontWeight: 700, fontSize: 17, color: C.text }}>{FMT[FMT3[k]].name}</span>
-                    </div>
-                  );
-                })}
-              </div>
+            <div key={k} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, opacity: pq, transform: `scale(${0.5 + 0.5 * pq})` }}>
+              <FmtIcon kind={k} size={52} />
+              <span style={{ fontFamily: LATIN, fontWeight: 700, fontSize: 19, color: '#fff' }}>{FMT[k].name}</span>
             </div>
           );
         })}
@@ -262,10 +264,10 @@ const Content: React.FC<SP> = ({ t, d }) => {
         const e0 = d * 0.78, p = interpolate(t, [e0, e0 + 14], [0, 1], { ...CL, easing: Easing.out(Easing.back(1.8)) });
         const glow = 0.5 + 0.5 * Math.sin(t / 7);
         return (
-          <div style={{ position: 'absolute', bottom: 70, left: 0, right: 0, display: 'flex', justifyContent: 'center', opacity: Math.min(1, p * 1.4), transform: `translateY(${(1 - p) * 60}px) scale(${0.7 + 0.3 * p})` }}>
-            <div style={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', gap: 18, padding: '12px 40px', borderRadius: 50, background: 'linear-gradient(90deg, #00C9A7, #12B5E8 50%, #6C5CE7)', boxShadow: `0 0 ${20 + 22 * glow}px rgba(18,181,232,0.7), 0 14px 30px rgba(0,0,0,0.5)`, border: '2px solid rgba(255,255,255,0.7)' }}>
-              <svg width={46} height={46} viewBox="0 0 24 24"><path fill="#fff" d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zm17.7-10.2a1 1 0 0 0 0-1.42l-2.33-2.33a1 1 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.83-1.83z" /></svg>
-              <span style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 50, color: '#fff', direction: 'rtl', textShadow: '0 3px 10px rgba(0,0,0,0.35)' }}>كل الملفات قابلة للتعديل</span>
+          <div style={{ position: 'absolute', bottom: 44, left: 0, right: 0, display: 'flex', justifyContent: 'center', opacity: Math.min(1, p * 1.4), transform: `translateY(${(1 - p) * 60}px) scale(${0.7 + 0.3 * p})` }}>
+            <div style={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', gap: 18, padding: '10px 40px', borderRadius: 50, background: 'linear-gradient(90deg, #00C9A7, #12B5E8 50%, #6C5CE7)', boxShadow: `0 0 ${20 + 22 * glow}px rgba(18,181,232,0.7), 0 14px 30px rgba(0,0,0,0.5)`, border: '2px solid rgba(255,255,255,0.7)' }}>
+              <svg width={44} height={44} viewBox="0 0 24 24"><path fill="#fff" d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zm17.7-10.2a1 1 0 0 0 0-1.42l-2.33-2.33a1 1 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.83-1.83z" /></svg>
+              <span style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 46, color: '#fff', direction: 'rtl', textShadow: '0 3px 10px rgba(0,0,0,0.35)' }}>كل الملفات قابلة للتعديل</span>
             </div>
           </div>
         );
@@ -524,7 +526,7 @@ const Board: React.FC<{ sec: number; fps: number; header: string; cols: Col[]; t
   const book = op && !op.formats && !op.hop;
   const fly = book ? Math.min(ramp(u, 0.2, 0.32), ramp(u, 0.86, 0.98, 1, 0)) : 0;
   const opened = book && u > 0.3 && u < 0.88;
-  const dim = book ? Math.min(ramp(u, 0.18, 0.3), ramp(u, 0.86, 0.98, 1, 0)) : 0;
+  const dim = book ? Math.min(ramp(u, 0.18, 0.3), ramp(u, 0.86, 0.98, 1, 0)) : op?.formats ? Math.min(ramp(u, 0, 0.1), ramp(u, 0.88, 1, 1, 0)) : 0;
   // lessons lit: the one being opened, and every lesson hovered so far in the current step
   const lit = new Set<number>();
   if (op) lit.add(op.c);
@@ -601,12 +603,16 @@ const Board: React.FC<{ sec: number; fps: number; header: string; cols: Col[]; t
         return <div style={{ position: 'absolute', left: x - w / 2, top: y - h / 2, width: w, height: h, boxShadow: '0 30px 70px rgba(0,0,0,0.6)', borderRadius: 4, overflow: 'hidden' }}><Paper src={BK(f0.name)[0]} /></div>;
       })()}
       {op && op.formats && (
-        <div style={{ position: 'absolute', left: 0, right: 0, top: 200, display: 'flex', justifyContent: 'center', gap: 26, direction: 'ltr', opacity: Math.min(ramp(u, 0, 0.12), ramp(u, 0.88, 1, 1, 0)) }}>
+        <div style={{ position: 'absolute', left: 0, right: 0, top: 150, display: 'flex', justifyContent: 'center', gap: 26, direction: 'ltr', opacity: Math.min(ramp(u, 0, 0.12), ramp(u, 0.88, 1, 1, 0)) }}>
           {FMT3.map((kk, i) => {
             const ss = (sec - op.a) * fps - i * 5;
             return (
               <div key={kk} style={{ transform: `translateY(${ramp(ss, 0, 14, 80, 0)}px)` }}>
-                <Win kind={kk} w={520} h={660} t={ss} pages={kk === 'word' ? WD('molakhas_exp_3as') : P('molakhas_exp_3as')} label="الدالة الأسية" every={14} />
+                <Win kind={kk} w={520} h={620} t={ss} pages={kk === 'word' ? WD('molakhas_exp_3as') : P('molakhas_exp_3as')} label="الدالة الأسية" every={14} />
+                <div style={{ marginTop: 14, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 14, opacity: ramp(ss, 8, 18) }}>
+                  <FmtIcon kind={kk} size={46} />
+                  <span style={{ fontFamily: LATIN, fontWeight: 800, fontSize: 48, color: FMT[kk].color === C.word ? '#7FA8FF' : FMT[kk].color, textShadow: '0 4px 14px rgba(0,0,0,0.6)' }}>{kk === 'tex' ? 'LaTeX' : kk === 'word' ? 'Word' : 'PDF'}</span>
+                </div>
               </div>
             );
           })}
@@ -691,6 +697,7 @@ export const Promo2: React.FC = () => {
         { title: 'الهندسة في الفضاء', files: [{ label: 'المذكرة', name: 'modhakira_wahda10_3as' }, { label: 'الملخص', name: 'molakhas_fadaa_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_fadaa_3as' }] },
       ]}
       steps={[
+        { line: 3, opens: [], hover: [0, 1, 2, 3, 4, 5] },
         { line: 4, opens: [[1, 0], [1, 1], [1, 2], [1, 3]], formats: true },
         { line: 5, opens: [[2, 0], [2, 1], [2, 2], [2, 3]] },
         { line: 6, opens: [[6, 0], [6, 1], [6, 2], [6, 3]] },
@@ -743,10 +750,12 @@ export const Promo2: React.FC = () => {
       ]} />],
     [15, 15, (sp) => <End {...sp} at={num ? Math.round((num.start - starts[15]) * fps) : Math.round(sp.d * 0.7)} />],
   ];
-  const gi = Math.max(0, groups.findIndex(([a, b]) => sec >= starts[a] && sec < (starts[b + 1] ?? Infinity)));
+  // the 3AS board comes in before line 4, cutting the long "four files" scene short (it felt slow)
+  const gStart = (a: number) => (a === 4 ? starts[3] + 0.6 * (starts[4] - starts[3]) : starts[a]);
+  const gi = Math.max(0, groups.findIndex(([a, b]) => sec >= gStart(a) && sec < (b + 1 < LINES.length ? gStart(b + 1) : Infinity)));
   const [ga, gb, scene] = groups[gi];
-  const g0 = starts[ga];
-  const g1 = starts[gb + 1] ?? END;
+  const g0 = gStart(ga);
+  const g1 = gb + 1 < LINES.length ? gStart(gb + 1) : END;
   const t = frame - Math.round(g0 * fps);
   const d = Math.round((g1 - g0) * fps);
   const fade = Math.min(ramp(t, 0, 9), gi === groups.length - 1 ? 1 : ramp(t, d - 7, d, 1, 0));
