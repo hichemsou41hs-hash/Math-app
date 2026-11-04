@@ -655,7 +655,7 @@ export const Promo2: React.FC = () => {
     [3, 3, (sp) => <ThirdYear {...sp} />],
     [4, 8, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header={L3} top={6}
       cols={[
-        { title: 'الاشتقاقية والاستمرارية', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_3as' }] },
+        { title: 'الاشتقاقية والاستمرارية', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_3as' }, { label: 'الملخص', name: 'molakhas_nihayat_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_nihayat_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_nihayat_3as' }] },
         { title: 'الدالة الأسية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2a_3as' }, { label: 'الملخص', name: 'molakhas_exp_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_exp_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_exp_3as' }] },
         { title: 'الدالة اللوغاريتمية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2b_3as' }, { label: 'الملخص', name: 'molakhas_ln_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_ln_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_ln_3as' }] },
         { title: 'النهايات', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_3as' }, { label: 'الملخص', name: 'molakhas_nihayat_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_nihayat_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_nihayat_3as' }] },
