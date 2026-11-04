@@ -705,6 +705,7 @@ const C2: Col[] = [
         { title: 'التحويلات النقطية', files: [{ label: 'المذكرة', name: 'modhakira_wahda7_2as' }, { label: 'الملخص', name: 'molakhas_tahaki_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_tahaki_2as' }] },
         { title: 'الجداء السلمي', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_2as' }, { label: 'الملخص', name: 'molakhas_jidaa_salmi_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_jidaa_salmi_2as' }] },
         { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda9_2as' }, { label: 'الملخص', name: 'molakhas_motataliat_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_motataliat_2as' }] },
+  { title: 'الهندسة في الفضاء', files: [{ label: 'المذكرة', name: 'modhakira_wahda10_2as' }] },
       ];
 const C1: Col[] = [
         { title: 'الأعداد والحساب', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_1as' }, { label: 'الملخص', name: 'molakhas_03_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_wahda1_1as' }] },
@@ -713,6 +714,8 @@ const C1: Col[] = [
         { title: 'الدوال المرجعية', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_1as' }, { label: 'الملخص', name: 'molakhas_dawal_marjiiya_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_dawal_marjiiya_1as' }] },
         { title: 'العبارات الجبرية', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_1as' }, { label: 'الملخص', name: 'molakhas_ibarat_jabriya_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_ibarat_jabriya_1as' }] },
         { title: 'الهندسة المستوية', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_1as' }, { label: 'الملخص', name: 'molakhas_handasa_mostawiya_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_handasa_mostawiya_1as' }] },
+  { title: 'الهندسة في الفضاء', files: [{ label: 'المذكرة', name: 'modhakira_wahda7_1as' }] },
+  { title: 'الإحصاء', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_ihsaa_1as' }] },
       ];
 
 export const Promo2: React.FC = () => {
@@ -760,7 +763,7 @@ export const Promo2: React.FC = () => {
     [starts[4] - LEAD_IN, starts[5] - LEAD_IN, (_, g0) => <Board sec={sec} fps={fps} g0={g0} header={L3} top={6} cols={C3} plan={P3} />],
     [starts[5] - LEAD_IN, starts[6] - LEAD_IN, (_, g0) => <Board sec={sec} fps={fps} g0={g0} header={GE} top={4} cols={CGE} plan={PGE} />],
     [starts[6] - LEAD_IN, starts[7] - LEAD_IN, (_, g0) => <Board sec={sec} fps={fps} g0={g0} header="السنة الثانية ثانوي -- الشعب العلمية" top={5} cols={C2} plan={P2} />],
-    [starts[7] - LEAD_IN, starts[8], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا" top={3} cols={C1} plan={P1} />],
+    [starts[7] - LEAD_IN, starts[8], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا" top={4} cols={C1} plan={P1} />],
     [starts[8], END, (sp) => <End {...sp} at={num ? Math.round((num.start - starts[8]) * fps) : Math.round(sp.d * 0.7)} />],
   ];
   const gi = Math.max(0, scenes.findIndex(([a, b]) => sec >= a && sec < b));
