@@ -686,8 +686,8 @@ export const Promo2: React.FC = () => {
         { title: 'الاحتمالات', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_3as_ge' }, { label: 'الملخص', name: 'molakhas_ihtimalat_3as_ge' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_ihtimalat_3as_ge' }] },
       ]}
       steps={[
-        { line: 9, opens: [], hover: [0] },
-        { line: 10, opens: [], hover: [3] },
+        { line: 9, opens: [[0, 0], [0, 1], [0, 2]] },
+        { line: 10, opens: [[3, 0], [3, 1], [3, 2]] },
         { line: 11, opens: [], hover: [4, 6, 7] },
       ]} />],
     [12, 13, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الثانية ثانوي -- الشعب العلمية" top={5}
