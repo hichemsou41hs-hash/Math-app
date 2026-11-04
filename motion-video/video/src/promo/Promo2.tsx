@@ -677,7 +677,7 @@ export const Promo2: React.FC = () => {
     [9, 11, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header={GE} top={4}
       cols={[
         { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_3as_ge' }, { label: 'الملخص', name: 'molakhas_mutataliyat_3as_ge' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_mutataliyat_3as_ge' }] },
-        { title: 'الاشتقاقية والاستمرارية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_3as_ge' }] },
+        { title: 'الاشتقاقية والاستمرارية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_3as_ge' }, { label: 'الملخص', name: 'molakhas_dawal_3as_ge' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_dawal_3as_ge' }] },
         { title: 'النهايات ودراسة الدوال', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_3as_ge' }, { label: 'الملخص', name: 'molakhas_dawal_3as_ge' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_dawal_3as_ge' }] },
         { title: 'الدوال الأصلية والحساب التكاملي', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_3as_ge' }, { label: 'الملخص', name: 'molakhas_takamol_3as_ge' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_takamol_3as_ge' }] },
         { title: 'الدالة اللوغاريتمية', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_3as_ge' }, { label: 'الملخص', name: 'molakhas_log_3as_ge' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_log_3as_ge' }] },
