@@ -760,6 +760,11 @@ export const Promo2: React.FC = () => {
       <AbsoluteFill style={{ background: C.bg0, overflow: 'hidden' }}>
         <Background frame={frame} />
         <AbsoluteFill style={{ opacity: fade }}>{scene({ t, d, frame }, g0, g1)}</AbsoluteFill>
+        {LINES.map((l, i) => (
+          <Sequence key={'v' + i} from={Math.round(l.start * fps)} durationInFrames={Math.ceil((l.end - l.start + 0.3) * fps)} layout="none">
+            <Html5Audio src={staticFile(`promo2/voice/${String(i + 1).padStart(2, '0')}.mp3`)} />
+          </Sequence>
+        ))}
       </AbsoluteFill>
     </FontGate>
   );
