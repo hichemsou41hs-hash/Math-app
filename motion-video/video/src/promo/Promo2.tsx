@@ -14,9 +14,9 @@ const RAW = (data as { lines: Line[] }).lines;
 const FLIP = 3.2; // seconds of silence for one opened file: fly to centre, 6 page turns, fly back
 const PAD_AFTER: Record<number, number> = {
   4: 0.3, 5: FLIP, 6: 1.0, 7: FLIP, 8: FLIP, 9: FLIP + 0.6,
-  10: 0.3, 11: FLIP, 12: FLIP, 13: FLIP, 14: FLIP, 15: FLIP, 16: FLIP, 17: FLIP + 0.6,
-  18: 0.3, 19: FLIP, 20: FLIP, 21: FLIP, 22: FLIP + 0.6,
-  23: 0.3, 24: FLIP, 25: FLIP, 26: FLIP, 27: FLIP + 0.6,
+  10: 0.3, 11: FLIP, 12: FLIP, 13: FLIP, 14: FLIP + 0.6,
+  15: 0.3, 16: FLIP, 17: FLIP, 18: FLIP, 19: FLIP + 0.6,
+  20: 0.3, 21: FLIP, 22: FLIP, 23: FLIP, 24: FLIP + 0.6,
 };
 const SHIFT = RAW.map((_, i) => RAW.slice(0, i).reduce((q, __, k) => q + (PAD_AFTER[k] ?? 0), 0));
 const LINES: Line[] = RAW.map((l, i) => ({ ...l, start: l.start + SHIFT[i], end: l.end + SHIFT[i], words: l.words.map((w) => ({ ...w, start: w.start + SHIFT[i], end: w.end + SHIFT[i] })) }));
@@ -742,9 +742,9 @@ export const Promo2: React.FC = () => {
   const open = (line: number, c: number, f: number): BOp => ({ c, f, a: LINES[line].start - 0.1, c0: ends[line] + 0.1, b: ends[line] + 0.1 + FLIP });
   const fmts = (line: number, c: number): BOp => ({ c, f: 1, a: LINES[line].start - 0.2, b: ends[line] + 0.9, formats: true });
   const P3 = [...sweep(4, 4, C3), open(5, 1, 3), fmts(6, 1), open(7, 8, 2), open(8, 5, 0), open(9, 9, 1)];
-  const PGE = [...sweep(10, 3, CGE), open(11, 0, 1), open(12, 1, 0), open(13, 3, 2), open(14, 2, 1), open(15, 4, 0), open(16, 5, 1), open(17, 6, 2)];
-  const P2 = [...sweep(18, 5, C2), open(19, 1, 1), open(20, 3, 0), open(21, 2, 2), open(22, 4, 1)];
-  const P1 = [...sweep(23, 7, C1), open(24, 4, 1), open(25, 3, 0), open(26, 2, 2), open(27, 5, 1)];
+  const PGE = [...sweep(10, 3, CGE), open(11, 0, 1), open(12, 3, 2), open(13, 4, 0), open(14, 6, 2)];
+  const P2 = [...sweep(15, 5, C2), open(16, 1, 1), open(17, 3, 0), open(18, 2, 2), open(19, 4, 1)];
+  const P1 = [...sweep(20, 7, C1), open(21, 4, 1), open(22, 3, 0), open(23, 2, 2), open(24, 5, 1)];
   type S = [number, number, (sp: SP, g0: number, g1: number) => React.ReactNode];
   const scenes: S[] = [
     [0, starts[1], (sp) => <Hook {...sp} />],
@@ -752,10 +752,10 @@ export const Promo2: React.FC = () => {
     [starts[2], starts[3], (sp) => <Content {...sp} />],
     [starts[3], starts[4], (sp) => <ThirdYear {...sp} />],
     [starts[4], starts[10], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header={L3} top={6} cols={C3} plan={P3} />],
-    [starts[10], starts[18], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header={GE} top={4} cols={CGE} plan={PGE} />],
-    [starts[18], starts[23], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header="السنة الثانية ثانوي -- الشعب العلمية" top={5} cols={C2} plan={P2} />],
-    [starts[23], starts[28], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا" top={3} cols={C1} plan={P1} />],
-    [starts[28], END, (sp) => <End {...sp} at={num ? Math.round((num.start - starts[28]) * fps) : Math.round(sp.d * 0.7)} />],
+    [starts[10], starts[15], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header={GE} top={4} cols={CGE} plan={PGE} />],
+    [starts[15], starts[20], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header="السنة الثانية ثانوي -- الشعب العلمية" top={5} cols={C2} plan={P2} />],
+    [starts[20], starts[25], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا" top={3} cols={C1} plan={P1} />],
+    [starts[25], END, (sp) => <End {...sp} at={num ? Math.round((num.start - starts[25]) * fps) : Math.round(sp.d * 0.7)} />],
   ];
   const gi = Math.max(0, scenes.findIndex(([a, b]) => sec >= a && sec < b));
   const [g0, g1, scene] = scenes[gi];
