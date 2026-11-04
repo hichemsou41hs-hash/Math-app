@@ -12,6 +12,7 @@ const FACES: [string, string, string][] = [
   ['ChalkHand', 'Kalam-Regular.ttf', '400'],
   ['ChalkHand', 'Kalam-Bold.ttf', '700'],
   ['ChalkSymbols', 'DejaVuSans.ttf', '400'],
+  ['ProDisplay', 'Tajawal-ExtraBold.ttf', '800'],
 ];
 
 /** Arabic handwriting (titles, sentences). */
@@ -21,6 +22,8 @@ export const NASKH = `'ChalkNaskh', 'ChalkSymbols'`;
 /** Latin chalk handwriting for formulas, with symbols from DejaVu. */
 export const HAND = `'ChalkHand', 'ChalkSymbols'`;
 export const SYM = `'ChalkSymbols'`;
+/** Modern Arabic display face (Tajawal ExtraBold, SIL OFL) for promo headlines. */
+export const CAIRO = `'ProDisplay', 'ChalkNaskh', 'ChalkSymbols'`;
 
 let loading: Promise<unknown> | null = null;
 function loadAll() {

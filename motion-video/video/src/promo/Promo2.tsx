@@ -4,7 +4,7 @@
 import React from 'react';
 import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import data from '../data/promo2.json';
-import { FontGate, NASKH, RUQAA } from '../lib/fonts';
+import { CAIRO, FontGate, NASKH, RUQAA } from '../lib/fonts';
 
 type W = { w: string; start: number; end: number };
 type Line = { text: string; start: number; end: number; words: W[] };
@@ -166,7 +166,7 @@ const Hook: React.FC<SP> = ({ t, d, frame }) => {
       <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', gap: 18, background: `rgba(6,16,42,${ramp(t, 0, d * 0.25, 0.2, 0.65)})` }}>
         <Title size={80} o={ramp(t, 4, 20)} y={ramp(t, 4, 20, 40, 0)}>لكل أستاذ تعليم ثانوي</Title>
         <Title size={58} font={NASKH} color="#9FE7FF" o={ramp(t, d * 0.2, d * 0.32)} y={ramp(t, d * 0.2, d * 0.32, 24, 0)}><span style={{ fontWeight: 700 }}>يدرّس في القسم أو في دروس الدعم</span></Title>
-        <Title size={80} color={C.gold} o={ramp(t, d * 0.45, d * 0.58)} y={ramp(t, d * 0.45, d * 0.58, 40, 0)}>ولكل تلميذ يدرس في الثانوية</Title>
+        <div style={{ fontFamily: CAIRO, fontWeight: 800, fontSize: 84, direction: 'rtl', lineHeight: 1.3, opacity: ramp(t, d * 0.45, d * 0.58), transform: `translateY(${ramp(t, d * 0.45, d * 0.58, 40, 0)}px)`, background: 'linear-gradient(180deg, #FFE29A 0%, #F5B54A 55%, #E08A1E 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent', filter: 'drop-shadow(0 6px 18px rgba(0,0,0,0.65))' }}>ولكل تلميذ يدرس في الثانوية</div>
         <Chip size={40} o={ramp(t, d * 0.7, d * 0.8)} s={ramp(t, d * 0.7, d * 0.8, 0.6, 1)}>خاصة تلاميذ البكالوريا</Chip>
       </AbsoluteFill>
     </>
@@ -258,6 +258,18 @@ const Content: React.FC<SP> = ({ t, d }) => {
           );
         })}
       </div>
+      {(() => {
+        const e0 = d * 0.78, p = interpolate(t, [e0, e0 + 14], [0, 1], { ...CL, easing: Easing.out(Easing.back(1.8)) });
+        const glow = 0.5 + 0.5 * Math.sin(t / 7);
+        return (
+          <div style={{ position: 'absolute', bottom: 70, left: 0, right: 0, display: 'flex', justifyContent: 'center', opacity: Math.min(1, p * 1.4), transform: `translateY(${(1 - p) * 60}px) scale(${0.7 + 0.3 * p})` }}>
+            <div style={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', gap: 18, padding: '12px 40px', borderRadius: 50, background: 'linear-gradient(90deg, #00C9A7, #12B5E8 50%, #6C5CE7)', boxShadow: `0 0 ${20 + 22 * glow}px rgba(18,181,232,0.7), 0 14px 30px rgba(0,0,0,0.5)`, border: '2px solid rgba(255,255,255,0.7)' }}>
+              <svg width={46} height={46} viewBox="0 0 24 24"><path fill="#fff" d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zm17.7-10.2a1 1 0 0 0 0-1.42l-2.33-2.33a1 1 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.83-1.83z" /></svg>
+              <span style={{ fontFamily: CAIRO, fontWeight: 800, fontSize: 50, color: '#fff', direction: 'rtl', textShadow: '0 3px 10px rgba(0,0,0,0.35)' }}>كل الملفات قابلة للتعديل</span>
+            </div>
+          </div>
+        );
+      })()}
     </AbsoluteFill>
   );
 };
