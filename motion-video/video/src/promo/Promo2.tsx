@@ -11,7 +11,7 @@ type Line = { text: string; start: number; end: number; words: W[] };
 const RAW = (data as { lines: Line[] }).lines;
 /** Silence (seconds) inserted after a voice line so its scene can breathe: the 2AS and 1AS boards.
  *  When the voice is added, each line's audio is played from its shifted start (raw start + SHIFT[i]). */
-const PAD_AFTER: Record<number, number> = { 12: 2.5, 13: 3.5, 14: 3.5 };
+const PAD_AFTER: Record<number, number> = { 11: 4, 12: 2.5, 13: 3.5, 14: 3.5 };
 const SHIFT = RAW.map((_, i) => RAW.slice(0, i).reduce((q, __, k) => q + (PAD_AFTER[k] ?? 0), 0));
 const LINES: Line[] = RAW.map((l, i) => ({ ...l, start: l.start + SHIFT[i], end: l.end + SHIFT[i], words: l.words.map((w) => ({ ...w, start: w.start + SHIFT[i], end: w.end + SHIFT[i] })) }));
 const ASSETS = (data as { assets: Record<string, { pdf: string[]; pages: number }> }).assets;
@@ -697,12 +697,12 @@ export const Promo2: React.FC = () => {
         { title: 'الهندسة في الفضاء', files: [{ label: 'المذكرة', name: 'modhakira_wahda10_3as' }, { label: 'الملخص', name: 'molakhas_fadaa_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_fadaa_3as' }] },
       ]}
       steps={[
-        { line: 3, opens: [], hover: [0, 1, 2, 3, 4, 5] },
-        { line: 4, opens: [[1, 0], [1, 1], [1, 2], [1, 3]], formats: true },
-        { line: 5, opens: [[2, 0], [2, 1], [2, 2], [2, 3]] },
-        { line: 6, opens: [[6, 0], [6, 1], [6, 2], [6, 3]] },
-        { line: 7, opens: [[8, 1], [8, 2], [8, 3]] },
-        { line: 8, opens: [], hover: [0, 3, 4, 5, 7, 9, 10] },
+        { line: 3, opens: [], hover: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+        { line: 4, opens: [[1, 3]], formats: true },
+        { line: 5, opens: [[2, 0], [0, 1]] },
+        { line: 6, opens: [[6, 3], [4, 1], [3, 2]] },
+        { line: 7, opens: [[8, 2], [7, 1]] },
+        { line: 8, opens: [[5, 0], [9, 1], [10, 2]] },
       ]} />],
     [9, 11, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header={GE} top={4}
       cols={[
@@ -716,9 +716,9 @@ export const Promo2: React.FC = () => {
         { title: 'الاحتمالات', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_3as_ge' }, { label: 'الملخص', name: 'molakhas_ihtimalat_3as_ge' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_ihtimalat_3as_ge' }] },
       ]}
       steps={[
-        { line: 9, opens: [[0, 0], [0, 1], [0, 2]] },
-        { line: 10, opens: [[3, 0], [3, 1], [3, 2]] },
-        { line: 11, opens: [], hover: [1, 2, 4, 5, 6, 7] },
+        { line: 9, opens: [[0, 1], [1, 0]], pre: [0, 1, 2, 3, 4, 5, 6, 7] },
+        { line: 10, opens: [[3, 2], [2, 1]] },
+        { line: 11, opens: [[4, 0], [5, 1], [6, 2]] },
       ]} />],
     [12, 13, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الثانية ثانوي -- الشعب العلمية" top={5}
       cols={[
@@ -733,8 +733,8 @@ export const Promo2: React.FC = () => {
         { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda9_2as' }, { label: 'الملخص', name: 'molakhas_motataliat_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_motataliat_2as' }] },
       ]}
       steps={[
-        { line: 12, opens: [[1, 0], [1, 1], [1, 2]], pre: [0] },
-        { line: 13, opens: [[3, 1], [2, 1], [4, 2]], hover: [5, 6, 7, 8] },
+        { line: 12, opens: [[1, 1]], pre: [0, 1, 2, 3, 4, 5, 6, 7, 8] },
+        { line: 13, opens: [[3, 0], [2, 2], [4, 1]] },
       ]} />],
     [14, 14, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا" top={3}
       cols={[
@@ -746,7 +746,7 @@ export const Promo2: React.FC = () => {
         { title: 'الهندسة المستوية', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_1as' }, { label: 'الملخص', name: 'molakhas_handasa_mostawiya_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_handasa_mostawiya_1as' }] },
       ]}
       steps={[
-        { line: 14, opens: [[4, 1], [3, 0], [2, 1], [5, 1]], pre: [0, 1] },
+        { line: 14, opens: [[4, 1], [3, 0], [2, 2], [5, 1]], pre: [0, 1, 2, 3, 4, 5] },
       ]} />],
     [15, 15, (sp) => <End {...sp} at={num ? Math.round((num.start - starts[15]) * fps) : Math.round(sp.d * 0.7)} />],
   ];
