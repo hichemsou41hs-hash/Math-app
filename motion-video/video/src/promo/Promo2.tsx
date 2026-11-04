@@ -630,11 +630,12 @@ export const Promo2: React.FC = () => {
       ]} />],
     [14, 14, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا"
       cols={[
+        { title: 'العبارات الجبرية', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_1as' }, { label: 'الملخص', name: 'molakhas_ibarat_jabriya_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_ibarat_jabriya_1as' }] },
         { title: 'الدوال المرجعية', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_1as' }, { label: 'الملخص', name: 'molakhas_dawal_marjiiya_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_dawal_marjiiya_1as' }] },
         { title: 'الحساب الشعاعي', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_1as' }, { label: 'الملخص', name: 'molakhas_hisab_shoaai_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_hisab_shoaai_1as' }] },
         { title: 'الهندسة المستوية', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_1as' }, { label: 'الملخص', name: 'molakhas_handasa_mostawiya_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_handasa_mostawiya_1as' }] },
       ]}
-      steps={[{ line: 14, opens: [[0, 0], [1, 1], [2, 1]] }]} />],
+      steps={[{ line: 14, opens: [[0, 1], [1, 0], [2, 1], [3, 1]] }]} />],
     [15, 15, (sp) => <End {...sp} at={num ? Math.round((num.start - starts[15]) * fps) : Math.round(sp.d * 0.7)} />],
   ];
   const gi = Math.max(0, groups.findIndex(([a, b]) => sec >= starts[a] && sec < (starts[b + 1] ?? Infinity)));
@@ -649,7 +650,6 @@ export const Promo2: React.FC = () => {
       <AbsoluteFill style={{ background: C.bg0, overflow: 'hidden' }}>
         <Background frame={frame} />
         <AbsoluteFill style={{ opacity: fade }}>{scene({ t, d, frame }, g0, g1)}</AbsoluteFill>
-        <Caption sec={sec} fps={fps} />
       </AbsoluteFill>
     </FontGate>
   );
