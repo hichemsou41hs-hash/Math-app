@@ -747,10 +747,10 @@ export const Promo2: React.FC = () => {
       const o: BOp = { c: x[0], f: x[1], a: t, c0: t + 0.9, b: t + 0.9 + FLIP }; t = o.b; return o;
     });
   };
-  const P3 = [...sweep(4, 0, C3), ...opens(4, [[1, 3], 'fmt', [8, 2], [5, 0], [9, 1]])];
-  const PGE = [...sweep(5, 0, CGE), ...opens(5, [[0, 1], [3, 2], [4, 0], [6, 2]])];
-  const P2 = [...sweep(6, 0, C2), ...opens(6, [[1, 1], [3, 0], [2, 2], [4, 1]])];
-  const P1 = [...sweep(7, 0, C1), ...opens(7, [[4, 1], [3, 0], [2, 2], [5, 1]])];
+  const P3 = [...sweep(4, 4, C3), ...opens(4, [[1, 3], 'fmt', [8, 2], [5, 0], [9, 1]])];
+  const PGE = [...sweep(5, 3, CGE), ...opens(5, [[0, 1], [3, 2], [4, 0], [6, 2]])];
+  const P2 = [...sweep(6, 5, C2), ...opens(6, [[1, 1], [3, 0], [2, 2], [4, 1]])];
+  const P1 = [...sweep(7, 7, C1), ...opens(7, [[4, 1], [3, 0], [2, 2], [5, 1]])];
   type S = [number, number, (sp: SP, g0: number, g1: number) => React.ReactNode];
   const scenes: S[] = [
     [0, starts[1], (sp) => <Hook {...sp} />],
