@@ -136,9 +136,9 @@ const Background: React.FC<{ frame: number }> = ({ frame }) => (
 );
 
 /** Small file card: cover + label (a tile of the open lesson folder). */
-const Tile: React.FC<{ src: string; label: string; active: boolean; o?: number; color?: string }> = ({ src, label, active, o = 1, color = C.gold }) => (
+const Tile: React.FC<{ src: string; label: string; active: boolean; o?: number; color?: string; pages?: string[]; t?: number }> = ({ src, label, active, o = 1, color = C.gold, pages, t = 0 }) => (
   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, opacity: o, transform: `scale(${active ? 1.1 : 1})` }}>
-    <div style={{ width: 150, height: 210, borderRadius: 8, overflow: 'hidden', border: `3px solid ${active ? color : 'rgba(255,255,255,0.25)'}`, boxShadow: active ? `0 0 30px ${color}` : '0 10px 25px rgba(0,0,0,0.5)' }}><Paper src={src} /></div>
+    <div style={{ width: 150, height: 210, borderRadius: 8, overflow: 'hidden', border: `3px solid ${active ? color : 'rgba(255,255,255,0.25)'}`, boxShadow: active ? `0 0 30px ${color}` : '0 10px 25px rgba(0,0,0,0.5)', position: 'relative' }}>{pages && pages.length > 1 ? <Flipper pages={pages} t={Math.max(0, t)} every={26} /> : <Paper src={src} />}</div>
     <Chip size={20} color={active ? color : 'rgba(255,255,255,0.15)'} fg={active ? '#10203F' : C.text}>{label}</Chip>
   </div>
 );
@@ -160,8 +160,8 @@ const Hook: React.FC<SP> = ({ t, d, frame }) => {
       </AbsoluteFill>
       <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', gap: 18, background: `rgba(6,16,42,${ramp(t, 0, d * 0.25, 0.2, 0.65)})` }}>
         <Title size={80} o={ramp(t, 4, 20)} y={ramp(t, 4, 20, 40, 0)}>لكل أستاذ تعليم ثانوي</Title>
-        <Title size={46} font={NASKH} color={C.dim} o={ramp(t, d * 0.2, d * 0.32)}>في القسم أو في دروس الدعم</Title>
-        <Title size={80} color={C.gold} o={ramp(t, d * 0.45, d * 0.58)} y={ramp(t, d * 0.45, d * 0.58, 40, 0)}>ولكل تلميذ في الثانوي</Title>
+        <Title size={58} font={NASKH} color="#9FE7FF" o={ramp(t, d * 0.2, d * 0.32)} y={ramp(t, d * 0.2, d * 0.32, 24, 0)}><span style={{ fontWeight: 700 }}>يدرّس في القسم أو في دروس الدعم</span></Title>
+        <Title size={80} color={C.gold} o={ramp(t, d * 0.45, d * 0.58)} y={ramp(t, d * 0.45, d * 0.58, 40, 0)}>ولكل تلميذ يدرس في الثانوية</Title>
         <Chip size={40} o={ramp(t, d * 0.7, d * 0.8)} s={ramp(t, d * 0.7, d * 0.8, 0.6, 1)}>خاصة تلاميذ البكالوريا</Chip>
       </AbsoluteFill>
     </>
@@ -266,24 +266,24 @@ const Banner: React.FC<{ t: number; level: string; sub?: string }> = ({ t, level
 
 const ThirdYear: React.FC<SP> = ({ t, d }) => {
   const four = [
-    { label: 'المذكرة', src: COVER('modhakira_wahda2a_3as') },
-    { label: 'ملخص الدرس', src: COVER('molakhas_exp_3as') },
-    { label: 'تمارين نموذجية مع الحلول', src: COVER('tamarin_exp_3as') },
-    { label: 'تمارين البكالوريا مع الحلول', src: COVER('bac_exp_3as') },
+    { label: 'المذكرة', src: COVER('modhakira_wahda2a_3as'), pages: P('modhakira_wahda2a_3as') },
+    { label: 'ملخص الدرس', src: COVER('molakhas_exp_3as'), pages: P('molakhas_exp_3as') },
+    { label: 'تمارين نموذجية مع الحلول', src: COVER('tamarin_exp_3as'), pages: P('tamarin_exp_3as') },
+    { label: 'تمارين البكالوريا مع الحلول', src: COVER('bac_exp_3as'), pages: P('bac_exp_3as') },
   ];
   const streams = ['علوم تجريبية', 'رياضيات', 'تقني رياضي', 'تسيير واقتصاد'];
   return (
     <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', gap: 30 }}>
       <Banner t={t} level="السنة الثالثة ثانوي" />
-      <Title size={44} font={NASKH} o={ramp(t, d * 0.12, d * 0.2)}>كل درس = أربعة ملفات</Title>
+      <Title size={44} font={NASKH} o={ramp(t, d * 0.05, d * 0.12)}>كل درس = أربعة ملفات</Title>
       <div style={{ display: 'flex', flexDirection: 'row-reverse', gap: 34 }}>
         {four.map((f, i) => {
-          const s = t - d * (0.2 + i * 0.1);
-          return <div key={i} style={{ opacity: ramp(s, 0, 10), transform: `translateY(${ramp(s, 0, 14, 60, 0)}px) rotate(${(i - 1.5) * 2}deg)` }}><Tile src={f.src} label={f.label} active={s > 0 && s < d * 0.1} /></div>;
+          const s = t - d * (0.1 + i * 0.07);
+          return <div key={i} style={{ opacity: ramp(s, 0, 10), transform: `translateY(${ramp(s, 0, 14, 60, 0)}px) rotate(${(i - 1.5) * 2}deg)` }}><Tile src={f.src} pages={f.pages} t={s} label={f.label} active={s > 0 && s < d * 0.08} /></div>;
         })}
       </div>
       <div style={{ display: 'flex', flexDirection: 'row-reverse', gap: 16 }}>
-        {streams.map((s, i) => <Chip key={s} size={28} color={i === 3 ? '#7FD1AE' : C.gold} o={ramp(t, d * (0.68 + i * 0.06), d * (0.68 + i * 0.06) + 10)}>{s}</Chip>)}
+        {streams.map((s, i) => <Chip key={s} size={28} color={i === 3 ? '#7FD1AE' : C.gold} o={ramp(t, d * (0.42 + i * 0.05), d * (0.42 + i * 0.05) + 10)} s={ramp(t, d * (0.42 + i * 0.05), d * (0.42 + i * 0.05) + 10, 0.5, 1)}>{s}</Chip>)}
       </div>
     </AbsoluteFill>
   );
@@ -456,7 +456,7 @@ const Cursor: React.FC<{ x: number; y: number; click: number }> = ({ x, y, click
 );
 
 type Col = { title: string; files: { label: string; name: string }[] };
-type Step = { line: number; opens: [number, number][]; formats?: boolean; hover?: number[] };
+type Step = { line: number; opens: [number, number][]; formats?: boolean; hover?: number[]; pre?: number[] };
 /** A level as a table filling the screen: every lesson of the year in two rows (right to left, in the order of the
  *  annual distribution), each lesson a column (title, then its files with their three formats).
  *  The cursor clicks a file, it flies to the centre as an open book, flips pages, flies back.
@@ -482,12 +482,15 @@ const Board: React.FC<{ sec: number; fps: number; header: string; cols: Col[]; t
   steps.forEach((s, k) => {
     const a = starts[s.line] - (k === 0 ? 0 : 0.3);
     const b = k + 1 < steps.length ? starts[steps[k + 1].line] - 0.3 : g1 - 0.4;
-    const items: Op[] = s.opens.map(([c, f]) => ({ c, f, a: 0, b: 0 }));
+    const items: Op[] = (s.pre ?? []).map((c) => ({ c, f: -1, a: 0, b: 0, hop: true }));
+    s.opens.forEach(([c, f]) => items.push({ c, f, a: 0, b: 0 }));
     if (s.formats) items.push({ c: s.opens[0][0], f: 1, a: 0, b: 0, formats: true });
     (s.hover ?? []).forEach((c) => items.push({ c, f: -1, a: 0, b: 0, hop: true }));
     const sa = k === 0 ? Math.max(a, g0 + 1.2) : a;
-    const len = (b - sa) / Math.max(1, items.length);
-    items.forEach((it, m) => ops.push({ ...it, a: sa + m * len, b: sa + (m + 1) * len }));
+    const wt = (o: Op) => (o.hop ? 0.45 : 1);
+    const unit = (b - sa) / Math.max(0.45, items.reduce((q, o) => q + wt(o), 0));
+    let x = sa;
+    items.forEach((it) => { ops.push({ ...it, a: x, b: x + wt(it) * unit }); x += wt(it) * unit; });
   });
   const cur = ops.findIndex((o) => sec >= o.a && sec < o.b);
   const op = cur >= 0 ? ops[cur] : undefined;
@@ -505,7 +508,7 @@ const Board: React.FC<{ sec: number; fps: number; header: string; cols: Col[]; t
   // lessons lit: the one being opened, and every lesson hovered so far in the current step
   const lit = new Set<number>();
   if (op) lit.add(op.c);
-  ops.forEach((o) => { if (o.hop && sec >= o.a + 0.35 * (o.b - o.a) && op?.hop && steps.some((s) => s.hover?.includes(o.c) && s.hover?.includes(op.c))) lit.add(o.c); });
+  ops.forEach((o) => { if (o.hop && op?.hop && sec >= o.a + 0.35 * (o.b - o.a) && sec - o.a < 4) lit.add(o.c); });
   const BW = 980, BH = 680, BX = W / 2, BY = 560;
   const f0 = book && op ? cols[op.c].files[op.f] : undefined;
   const flipT = (sec - (op ? op.a + 0.32 * (op.b - op.a) : 0)) * fps;
@@ -672,7 +675,7 @@ export const Promo2: React.FC = () => {
         { line: 5, opens: [[2, 0], [2, 1], [2, 2], [2, 3]] },
         { line: 6, opens: [[6, 0], [6, 1], [6, 2], [6, 3]] },
         { line: 7, opens: [[8, 1], [8, 2], [8, 3]] },
-        { line: 8, opens: [], hover: [3, 5, 9, 7, 10] },
+        { line: 8, opens: [], hover: [0, 3, 4, 5, 7, 9, 10] },
       ]} />],
     [9, 11, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header={GE} top={4}
       cols={[
@@ -688,7 +691,7 @@ export const Promo2: React.FC = () => {
       steps={[
         { line: 9, opens: [[0, 0], [0, 1], [0, 2]] },
         { line: 10, opens: [[3, 0], [3, 1], [3, 2]] },
-        { line: 11, opens: [], hover: [4, 6, 7] },
+        { line: 11, opens: [], hover: [1, 2, 4, 5, 6, 7] },
       ]} />],
     [12, 13, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الثانية ثانوي -- الشعب العلمية" top={5}
       cols={[
@@ -703,8 +706,8 @@ export const Promo2: React.FC = () => {
         { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda9_2as' }, { label: 'الملخص', name: 'molakhas_motataliat_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_motataliat_2as' }] },
       ]}
       steps={[
-        { line: 12, opens: [[1, 0], [1, 1], [1, 2]] },
-        { line: 13, opens: [[3, 1], [2, 1], [4, 2]] },
+        { line: 12, opens: [[1, 0], [1, 1], [1, 2]], pre: [0] },
+        { line: 13, opens: [[3, 1], [2, 1], [4, 2]], hover: [5, 6, 7, 8] },
       ]} />],
     [14, 14, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا" top={3}
       cols={[
@@ -716,7 +719,7 @@ export const Promo2: React.FC = () => {
         { title: 'الهندسة المستوية', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_1as' }, { label: 'الملخص', name: 'molakhas_handasa_mostawiya_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_handasa_mostawiya_1as' }] },
       ]}
       steps={[
-        { line: 14, opens: [[4, 1], [3, 0], [2, 1], [5, 1]] },
+        { line: 14, opens: [[4, 1], [3, 0], [2, 1], [5, 1]], pre: [0, 1] },
       ]} />],
     [15, 15, (sp) => <End {...sp} at={num ? Math.round((num.start - starts[15]) * fps) : Math.round(sp.d * 0.7)} />],
   ];
