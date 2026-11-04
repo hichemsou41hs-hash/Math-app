@@ -207,8 +207,8 @@ const Content: React.FC<SP> = ({ t, d }) => {
   const cards = [
     { label: 'ملخصات', src: P('molakhas_integ_3as') },
     { label: 'مذكرات', src: P('modhakira_wahda2a_3as') },
-    { label: 'سلاسل تمارين نموذجية', src: P('tamarin_exp_3as') },
-    { label: 'تمارين البكالوريا', src: P('bac_ln_3as') },
+    { label: 'تمارين نموذجية مع الحلول', src: P('tamarin_exp_3as') },
+    { label: 'تمارين البكالوريا مع الحلول', src: P('bac_ln_3as') },
   ];
   // arrow tree: one stem from each file, splitting into three branches (PDF, Word, LaTeX)
   const TW = 330, TH = 130, xs = [55, 165, 275];
@@ -268,8 +268,8 @@ const ThirdYear: React.FC<SP> = ({ t, d }) => {
   const four = [
     { label: 'المذكرة', src: COVER('modhakira_wahda2a_3as') },
     { label: 'ملخص الدرس', src: COVER('molakhas_exp_3as') },
-    { label: 'سلسلة تمارين نموذجية', src: COVER('tamarin_exp_3as') },
-    { label: 'حلول تمارين البكالوريا', src: COVER('bac_exp_3as') },
+    { label: 'تمارين نموذجية مع الحلول', src: COVER('tamarin_exp_3as') },
+    { label: 'تمارين البكالوريا مع الحلول', src: COVER('bac_exp_3as') },
   ];
   const streams = ['علوم تجريبية', 'رياضيات', 'تقني رياضي', 'تسيير واقتصاد'];
   return (
@@ -379,31 +379,48 @@ const WhatsApp: React.FC<{ size: number }> = ({ size }) => (
   </svg>
 );
 
-const Social: React.FC<{ icon: string; color: string; text: string; o: number }> = ({ icon, color, text, o }) => (
-  <div style={{ display: 'flex', alignItems: 'center', gap: 16, opacity: o, direction: 'ltr' }}>
-    <div style={{ width: 56, height: 56, borderRadius: 28, background: color, color: '#fff', fontFamily: `'DejaVu Sans', sans-serif`, fontWeight: 700, fontSize: 30, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</div>
-    <span style={{ fontFamily: text.includes('_') ? `'DejaVu Sans', sans-serif` : NASKH, fontWeight: 700, fontSize: 38, color: C.text }}>{text}</span>
+const Facebook: React.FC<{ size: number }> = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 32 32">
+    <circle cx="16" cy="16" r="16" fill="#1877F2" />
+    <path fill="#fff" d="M17.6 26V17.4h2.9l.4-3.4h-3.3v-2.1c0-1 .3-1.6 1.7-1.6h1.8v-3a24 24 0 0 0-2.6-.1c-2.6 0-4.3 1.6-4.3 4.4V14h-2.9v3.4h2.9V26z" />
+  </svg>
+);
+const Instagram: React.FC<{ size: number }> = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 32 32">
+    <defs><linearGradient id="igg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stopColor="#FEDA75" /><stop offset="0.35" stopColor="#FA7E1E" /><stop offset="0.6" stopColor="#D62976" /><stop offset="1" stopColor="#4F5BD5" /></linearGradient></defs>
+    <rect width="32" height="32" rx="9" fill="url(#igg)" />
+    <rect x="7.5" y="7.5" width="17" height="17" rx="5" fill="none" stroke="#fff" strokeWidth="2.2" />
+    <circle cx="16" cy="16" r="4.2" fill="none" stroke="#fff" strokeWidth="2.2" />
+    <circle cx="21.3" cy="10.7" r="1.3" fill="#fff" />
+  </svg>
+);
+
+/** One platform card: logo, platform name, and the page / handle / number. */
+const Platform: React.FC<{ logo: React.ReactNode; name: string; value: string; color: string; o: number; y: number; s?: number; latin?: boolean; vo?: number }> = ({ logo, name, value, color, o, y, s = 1, latin, vo = 1 }) => (
+  <div style={{ width: 520, padding: '26px 18px 24px', borderRadius: 26, background: 'rgba(255,255,255,0.07)', border: `3px solid ${color}`, boxShadow: `0 0 34px ${color}66, 0 20px 40px rgba(0,0,0,0.5)`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, opacity: o, transform: `translateY(${y}px) scale(${s})` }}>
+    {logo}
+    <span style={{ fontFamily: NASKH, fontWeight: 700, fontSize: 34, color, direction: 'rtl' }}>{name}</span>
+    <span style={{ fontFamily: latin ? `'DejaVu Sans', sans-serif` : NASKH, fontWeight: 700, fontSize: latin ? 38 : 32, color: '#fff', direction: latin ? 'ltr' : 'rtl', letterSpacing: latin ? 1 : 0, whiteSpace: 'nowrap', opacity: vo, transform: `scale(${0.6 + 0.4 * vo})` }}>{value}</span>
   </div>
 );
 
 const End: React.FC<SP & { at: number }> = ({ t, d, at }) => {
   const pop = ramp(t, at, at + 12);
+  const card = (k: number) => ({ o: ramp(t, d * 0.12 + k * 6, d * 0.12 + k * 6 + 12), y: ramp(t, d * 0.12 + k * 6, d * 0.12 + k * 6 + 14, 70, 0) });
+  const wa = card(1);
   return (
-    <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', gap: 26 }}>
-      <Title size={60} o={ramp(t, 0, 12)}>للحصول على جميع الملفات</Title>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'flex-start' }}>
-        <Social icon="f" color="#1877F2" text="الأستاذ سوايسية هشام للرياضيات" o={ramp(t, d * 0.15, d * 0.25)} />
-        <Social icon="✈" color="#229ED9" text="الأستاذ سوايسية هشام للرياضيات" o={ramp(t, d * 0.22, d * 0.32)} />
-        <Social icon="◎" color="#D62976" text="prof_hicham_math" o={ramp(t, d * 0.29, d * 0.39)} />
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 28, direction: 'ltr', padding: '18px 44px', borderRadius: 28, background: 'rgba(37,211,102,0.14)', border: `3px solid ${C.wa}`, opacity: pop, transform: `scale(${0.6 + 0.4 * pop + Math.sin(Math.max(0, t - at) / 8) * 0.015})`, boxShadow: `0 0 ${40 * pop}px rgba(37,211,102,0.5)` }}>
-        <WhatsApp size={110} />
-        <span style={{ fontFamily: `'DejaVu Sans', sans-serif`, fontWeight: 700, fontSize: 96, color: '#fff', letterSpacing: 4 }}>0699 92 80 24</span>
+    <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', gap: 22 }}>
+      <Title size={64} o={ramp(t, 0, 12)}>لمعرفة سعر جميع الملفات</Title>
+      <Title size={40} font={NASKH} color={C.goldLight} o={ramp(t, 6, 18)}>أرسل رسالة في إحدى المنصات الثلاث: فايسبوك، واتساب، إنستغرام</Title>
+      <div style={{ display: 'flex', flexDirection: 'row-reverse', gap: 34, marginTop: 26, alignItems: 'center' }}>
+        <Platform logo={<Facebook size={96} />} name="فايسبوك" value="الأستاذ سوايسية هشام للرياضيات" color="#4C8DFF" {...card(0)} />
+        <Platform logo={<WhatsApp size={96} />} name="واتساب" value="0699 92 80 24" color={C.wa} latin o={wa.o} y={wa.y} vo={pop}
+          s={1 + 0.1 * pop + Math.sin(Math.max(0, t - at) / 8) * 0.015 * pop} />
+        <Platform logo={<Instagram size={96} />} name="إنستغرام" value="prof_hicham_math" color="#E1306C" latin {...card(2)} />
       </div>
     </AbsoluteFill>
   );
 };
-
 
 // ---------- flip-book: open spread, leaves turn from left to right ----------
 const Book: React.FC<{ pages: string[]; t: number; flipF: number; flips: number; w: number; h: number }> = ({ pages, t, flipF, flips, w, h }) => {
@@ -504,17 +521,30 @@ const Board: React.FC<{ sec: number; fps: number; header: string; cols: Col[]; t
           const d0 = 4 + i * 2.5;
           return (
             <div key={i} style={{ position: 'absolute', left: cx(i) - colW / 2 + 8, top: colTop(i), width: colW - 16, opacity: ramp(tg, d0, d0 + 12), transform: `translateY(${ramp(tg, d0, d0 + 14, 50, 0)}px)` }}>
-              <div style={{ height: TH, borderRadius: 14, background: on ? C.gold : 'rgba(255,255,255,0.1)', border: '2px solid rgba(245,181,74,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 8px', boxShadow: on ? `0 0 26px rgba(245,181,74,0.55)` : 'none', transform: `scale(${on ? 1.04 : 1})` }}>
-                <span style={{ fontFamily: RUQAA, fontSize: col.title.length > 22 ? 24 : col.title.length > 15 ? 28 : 34, color: on ? '#10203F' : C.text, direction: 'rtl', textAlign: 'center', lineHeight: 1.15 }}>{col.title}</span>
-              </div>
+              {(() => {
+                const ph = sec * 2 * Math.PI * 0.33 + i * 0.9;
+                const fy = Math.sin(ph) * 5, rot = Math.sin(ph * 0.7) * 0.8;
+                const pulse = 0.5 + 0.5 * Math.sin(sec * 2 * Math.PI * 0.5 + i);
+                const shine = ((sec * 0.45 + i * 0.13) % 1.6) - 0.3;
+                return (
+                  <div style={{ position: 'relative', height: TH, borderRadius: 14, overflow: 'hidden', padding: '0 8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: on ? `linear-gradient(135deg, #FFD36E, ${C.gold} 55%, #E08A1E)` : 'linear-gradient(135deg, #12B5E8 0%, #4F6BFF 55%, #8B5CF6 100%)',
+                    border: `2px solid ${on ? '#FFF1C9' : 'rgba(170,230,255,0.85)'}`,
+                    boxShadow: on ? `0 0 ${26 + 14 * pulse}px rgba(245,181,74,0.75)` : `0 0 ${12 + 14 * pulse}px rgba(80,170,255,${0.45 + 0.25 * pulse}), 0 10px 20px rgba(0,0,0,0.45)`,
+                    transform: `translateY(${fy}px) rotate(${rot}deg) scale(${on ? 1.05 : 1})` }}>
+                    <div style={{ position: 'absolute', top: 0, bottom: 0, left: `${shine * 100}%`, width: '28%', background: 'linear-gradient(100deg, transparent, rgba(255,255,255,0.38), transparent)', transform: 'skewX(-20deg)' }} />
+                    <span style={{ position: 'relative', fontFamily: RUQAA, fontSize: col.title.length > 22 ? 24 : col.title.length > 15 ? 28 : 34, color: on ? '#10203F' : '#FFFFFF', direction: 'rtl', textAlign: 'center', lineHeight: 1.15, textShadow: on ? 'none' : '0 2px 6px rgba(10,20,60,0.6)' }}>{col.title}</span>
+                  </div>
+                );
+              })()}
               {col.files.map((f, j) => {
                 const active = book && op && op.c === i && op.f === j;
                 const e0 = d0 + 6 + j * 3;
                 return (
                   <div key={j} style={{ position: 'absolute', top: TH + 10 + j * (tileH + 8), left: 0, right: 0, height: tileH, display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', gap: 10, padding: '0 8px', borderRadius: 10, background: active ? 'rgba(245,181,74,0.22)' : 'rgba(255,255,255,0.06)', border: `2px solid ${active ? C.gold : 'rgba(255,255,255,0.12)'}`, opacity: ramp(tg, e0, e0 + 10) }}>
                     <div style={{ width: thW, height: thH, flex: 'none', borderRadius: 4, overflow: 'hidden', boxShadow: '0 6px 14px rgba(0,0,0,0.5)', opacity: active && fly > 0.02 ? 0 : 1 }}><Paper src={BK(f.name)[0]} /></div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
-                      <span style={{ fontFamily: NASKH, fontWeight: 700, fontSize: Math.min(28, tileH * 0.25), color: C.text, direction: 'rtl', lineHeight: 1.1, whiteSpace: 'nowrap' }}>{f.label}</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 5, minWidth: 0, flex: 1 }}>
+                      <span style={{ fontFamily: NASKH, fontWeight: 700, fontSize: Math.min(26, tileH * 0.21), color: C.text, direction: 'rtl', textAlign: 'right', lineHeight: 1.1 }}>{f.label}</span>
                       <div style={{ display: 'flex', gap: 6, direction: 'ltr' }}>
                         {FMT3.map((k, q) => {
                           const p = ramp(tg, e0 + 8 + q * 2, e0 + 16 + q * 2);
@@ -614,7 +644,7 @@ export const Promo2: React.FC = () => {
   const END = PROMO2_SECONDS;
   const L3 = 'السنة الثالثة ثانوي -- الشعب العلمية';
   const GE = 'السنة الثالثة ثانوي -- تسيير واقتصاد';
-  const f4 = (m: string, s: string, e: string, b: string) => [{ label: 'المذكرة', name: m }, { label: 'الملخص', name: s }, { label: 'سلسلة التمارين', name: e }, { label: 'البكالوريا', name: b }];
+  const f4 = (m: string, s: string, e: string, b: string) => [{ label: 'المذكرة', name: m }, { label: 'الملخص', name: s }, { label: 'تمارين نموذجية مع الحلول', name: e }, { label: 'تمارين البكالوريا مع الحلول', name: b }];
   const num = LINES[LINES.length - 1].words.find((w) => w.w.includes('الرقم'));
   // groups of voice lines that share one scene: [first line, last line, scene]
   type G = [number, number, (sp: SP, g0: number, g1: number) => React.ReactNode];
@@ -626,16 +656,16 @@ export const Promo2: React.FC = () => {
     [4, 8, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header={L3} top={6}
       cols={[
         { title: 'الاشتقاقية والاستمرارية', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_3as' }] },
-        { title: 'الدالة الأسية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2a_3as' }, { label: 'الملخص', name: 'molakhas_exp_3as' }, { label: 'سلسلة التمارين', name: 'tamarin_exp_3as' }, { label: 'البكالوريا', name: 'bac_exp_3as' }] },
-        { title: 'الدالة اللوغاريتمية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2b_3as' }, { label: 'الملخص', name: 'molakhas_ln_3as' }, { label: 'سلسلة التمارين', name: 'tamarin_ln_3as' }, { label: 'البكالوريا', name: 'bac_ln_3as' }] },
-        { title: 'النهايات', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_3as' }, { label: 'الملخص', name: 'molakhas_nihayat_3as' }, { label: 'سلسلة التمارين', name: 'tamarin_nihayat_3as' }, { label: 'البكالوريا', name: 'bac_nihayat_3as' }] },
+        { title: 'الدالة الأسية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2a_3as' }, { label: 'الملخص', name: 'molakhas_exp_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_exp_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_exp_3as' }] },
+        { title: 'الدالة اللوغاريتمية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2b_3as' }, { label: 'الملخص', name: 'molakhas_ln_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_ln_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_ln_3as' }] },
+        { title: 'النهايات', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_3as' }, { label: 'الملخص', name: 'molakhas_nihayat_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_nihayat_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_nihayat_3as' }] },
         { title: 'التزايد المقارن', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_3as' }, { label: 'الملخص', name: 'molakhas_tazayud_3as' }] },
-        { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_3as' }, { label: 'الملخص', name: 'molakhas_suites_3as' }, { label: 'سلسلة التمارين', name: 'tamarin_suites_3as' }, { label: 'البكالوريا', name: 'bac_suites_3as' }] },
-        { title: 'الدوال الأصلية والحساب التكاملي', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_3as' }, { label: 'الملخص', name: 'molakhas_integ_3as' }, { label: 'سلسلة التمارين', name: 'tamarin_integ_3as' }, { label: 'البكالوريا', name: 'bac_integ_3as' }] },
-        { title: 'الأعداد والحساب', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_3as_riyadiyat' }, { label: 'الملخص', name: 'molakhas_arith_3as' }, { label: 'سلسلة التمارين', name: 'tamarin_arith_3as' }, { label: 'البكالوريا', name: 'bac_arith_3as' }] },
-        { title: 'الاحتمالات', files: [{ label: 'المذكرة', name: 'modhakira_wahda7_3as' }, { label: 'الملخص', name: 'molakhas_proba_3as' }, { label: 'سلسلة التمارين', name: 'tamarin_proba_3as' }, { label: 'البكالوريا', name: 'bac_proba_3as' }] },
-        { title: 'الأعداد المركبة', files: [{ label: 'المذكرة', name: 'modhakira_wahda9_3as' }, { label: 'الملخص', name: 'molakhas_cplx_3as' }, { label: 'سلسلة التمارين', name: 'tamarin_cplx_3as' }, { label: 'البكالوريا', name: 'bac_cplx_3as' }] },
-        { title: 'الهندسة في الفضاء', files: [{ label: 'المذكرة', name: 'modhakira_wahda10_3as' }, { label: 'الملخص', name: 'molakhas_fadaa_3as' }, { label: 'البكالوريا', name: 'bac_fadaa_3as' }] },
+        { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_3as' }, { label: 'الملخص', name: 'molakhas_suites_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_suites_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_suites_3as' }] },
+        { title: 'الدوال الأصلية والحساب التكاملي', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_3as' }, { label: 'الملخص', name: 'molakhas_integ_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_integ_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_integ_3as' }] },
+        { title: 'الأعداد والحساب', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_3as_riyadiyat' }, { label: 'الملخص', name: 'molakhas_arith_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_arith_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_arith_3as' }] },
+        { title: 'الاحتمالات', files: [{ label: 'المذكرة', name: 'modhakira_wahda7_3as' }, { label: 'الملخص', name: 'molakhas_proba_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_proba_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_proba_3as' }] },
+        { title: 'الأعداد المركبة', files: [{ label: 'المذكرة', name: 'modhakira_wahda9_3as' }, { label: 'الملخص', name: 'molakhas_cplx_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_cplx_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_cplx_3as' }] },
+        { title: 'الهندسة في الفضاء', files: [{ label: 'المذكرة', name: 'modhakira_wahda10_3as' }, { label: 'الملخص', name: 'molakhas_fadaa_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_fadaa_3as' }] },
       ]}
       steps={[
         { line: 4, opens: [[1, 0], [1, 1], [1, 2], [1, 3]], formats: true },
@@ -646,14 +676,14 @@ export const Promo2: React.FC = () => {
       ]} />],
     [9, 11, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header={GE} top={4}
       cols={[
-        { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_3as_ge' }, { label: 'الملخص', name: 'molakhas_mutataliyat_3as_ge' }, { label: 'البكالوريا', name: 'bac_mutataliyat_3as_ge' }] },
+        { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_3as_ge' }, { label: 'الملخص', name: 'molakhas_mutataliyat_3as_ge' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_mutataliyat_3as_ge' }] },
         { title: 'الاشتقاقية والاستمرارية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_3as_ge' }] },
-        { title: 'النهايات ودراسة الدوال', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_3as_ge' }, { label: 'الملخص', name: 'molakhas_dawal_3as_ge' }, { label: 'سلسلة التمارين', name: 'tamarin_dawal_3as_ge' }] },
-        { title: 'الدوال الأصلية والحساب التكاملي', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_3as_ge' }, { label: 'الملخص', name: 'molakhas_takamol_3as_ge' }, { label: 'البكالوريا', name: 'bac_takamol_3as_ge' }] },
-        { title: 'الدالة اللوغاريتمية', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_3as_ge' }, { label: 'الملخص', name: 'molakhas_log_3as_ge' }, { label: 'سلسلة التمارين', name: 'tamarin_log_3as_ge' }] },
-        { title: 'الدالة الأسية', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_3as_ge' }, { label: 'الملخص', name: 'molakhas_exp_3as_ge' }, { label: 'سلسلة التمارين', name: 'tamarin_exp_3as_ge' }] },
-        { title: 'الإحصاء', files: [{ label: 'المذكرة', name: 'modhakira_wahda7_3as_ge' }, { label: 'الملخص', name: 'molakhas_ihsa_3as_ge' }, { label: 'سلسلة التمارين', name: 'tamarin_ihsa_3as_ge' }, { label: 'البكالوريا', name: 'bac_ihsa_3as_ge' }] },
-        { title: 'الاحتمالات', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_3as_ge' }, { label: 'الملخص', name: 'molakhas_ihtimalat_3as_ge' }, { label: 'البكالوريا', name: 'bac_ihtimalat_3as_ge' }] },
+        { title: 'النهايات ودراسة الدوال', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_3as_ge' }, { label: 'الملخص', name: 'molakhas_dawal_3as_ge' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_dawal_3as_ge' }] },
+        { title: 'الدوال الأصلية والحساب التكاملي', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_3as_ge' }, { label: 'الملخص', name: 'molakhas_takamol_3as_ge' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_takamol_3as_ge' }] },
+        { title: 'الدالة اللوغاريتمية', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_3as_ge' }, { label: 'الملخص', name: 'molakhas_log_3as_ge' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_log_3as_ge' }] },
+        { title: 'الدالة الأسية', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_3as_ge' }, { label: 'الملخص', name: 'molakhas_exp_3as_ge' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_exp_3as_ge' }] },
+        { title: 'الإحصاء', files: [{ label: 'المذكرة', name: 'modhakira_wahda7_3as_ge' }, { label: 'الملخص', name: 'molakhas_ihsa_3as_ge' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_ihsa_3as_ge' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_ihsa_3as_ge' }] },
+        { title: 'الاحتمالات', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_3as_ge' }, { label: 'الملخص', name: 'molakhas_ihtimalat_3as_ge' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_ihtimalat_3as_ge' }] },
       ]}
       steps={[
         { line: 9, opens: [], hover: [0] },
@@ -662,15 +692,15 @@ export const Promo2: React.FC = () => {
       ]} />],
     [12, 13, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الثانية ثانوي -- الشعب العلمية" top={5}
       cols={[
-        { title: 'الدوال', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_2as' }, { label: 'الملخص', name: 'molakhas_2as_wahda1' }, { label: 'سلسلة التمارين', name: 'tamarin_2as_wahda1' }] },
-        { title: 'الاشتقاقية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_2as' }, { label: 'الملخص', name: 'molakhas_ishtiqaq_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_ishtiqaq_2as' }] },
-        { title: 'الاحتمالات', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_2as' }, { label: 'الملخص', name: 'molakhas_ihtimalat_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_ihtimalat_2as' }] },
-        { title: 'المرجح', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_2as' }, { label: 'الملخص', name: 'molakhas_morajjih_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_morajjih_2as' }] },
-        { title: 'النهايات', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_2as' }, { label: 'الملخص', name: 'molakhas_nihayat_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_nihayat_2as' }] },
-        { title: 'الزوايا الموجهة وحساب المثلثات', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_2as' }, { label: 'الملخص', name: 'molakhas_zawaya_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_zawaya_2as' }] },
-        { title: 'التحويلات النقطية', files: [{ label: 'المذكرة', name: 'modhakira_wahda7_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_tahaki_2as' }] },
-        { title: 'الجداء السلمي', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_jidaa_salmi_2as' }] },
-        { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda9_2as' }, { label: 'الملخص', name: 'molakhas_motataliat_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_motataliat_2as' }] },
+        { title: 'الدوال', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_2as' }, { label: 'الملخص', name: 'molakhas_2as_wahda1' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_2as_wahda1' }] },
+        { title: 'الاشتقاقية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_2as' }, { label: 'الملخص', name: 'molakhas_ishtiqaq_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_ishtiqaq_2as' }] },
+        { title: 'الاحتمالات', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_2as' }, { label: 'الملخص', name: 'molakhas_ihtimalat_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_ihtimalat_2as' }] },
+        { title: 'المرجح', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_2as' }, { label: 'الملخص', name: 'molakhas_morajjih_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_morajjih_2as' }] },
+        { title: 'النهايات', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_2as' }, { label: 'الملخص', name: 'molakhas_nihayat_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_nihayat_2as' }] },
+        { title: 'الزوايا الموجهة وحساب المثلثات', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_2as' }, { label: 'الملخص', name: 'molakhas_zawaya_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_zawaya_2as' }] },
+        { title: 'التحويلات النقطية', files: [{ label: 'المذكرة', name: 'modhakira_wahda7_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_tahaki_2as' }] },
+        { title: 'الجداء السلمي', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_jidaa_salmi_2as' }] },
+        { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda9_2as' }, { label: 'الملخص', name: 'molakhas_motataliat_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_motataliat_2as' }] },
       ]}
       steps={[
         { line: 12, opens: [[1, 0], [1, 1], [1, 2]] },
@@ -678,12 +708,12 @@ export const Promo2: React.FC = () => {
       ]} />],
     [14, 14, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا" top={3}
       cols={[
-        { title: 'الأعداد والحساب', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_1as' }, { label: 'الملخص', name: 'molakhas_03_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_wahda1_1as' }] },
-        { title: 'عموميات على الدوال', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_1as' }, { label: 'الملخص', name: 'molakhas_omomiyat_dawal_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_omomiyat_dawal_1as' }] },
-        { title: 'الحساب الشعاعي', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_1as' }, { label: 'الملخص', name: 'molakhas_hisab_shoaai_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_hisab_shoaai_1as' }] },
-        { title: 'الدوال المرجعية', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_1as' }, { label: 'الملخص', name: 'molakhas_dawal_marjiiya_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_dawal_marjiiya_1as' }] },
-        { title: 'العبارات الجبرية', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_1as' }, { label: 'الملخص', name: 'molakhas_ibarat_jabriya_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_ibarat_jabriya_1as' }] },
-        { title: 'الهندسة المستوية', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_1as' }, { label: 'الملخص', name: 'molakhas_handasa_mostawiya_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_handasa_mostawiya_1as' }] },
+        { title: 'الأعداد والحساب', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_1as' }, { label: 'الملخص', name: 'molakhas_03_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_wahda1_1as' }] },
+        { title: 'عموميات على الدوال', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_1as' }, { label: 'الملخص', name: 'molakhas_omomiyat_dawal_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_omomiyat_dawal_1as' }] },
+        { title: 'الحساب الشعاعي', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_1as' }, { label: 'الملخص', name: 'molakhas_hisab_shoaai_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_hisab_shoaai_1as' }] },
+        { title: 'الدوال المرجعية', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_1as' }, { label: 'الملخص', name: 'molakhas_dawal_marjiiya_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_dawal_marjiiya_1as' }] },
+        { title: 'العبارات الجبرية', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_1as' }, { label: 'الملخص', name: 'molakhas_ibarat_jabriya_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_ibarat_jabriya_1as' }] },
+        { title: 'الهندسة المستوية', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_1as' }, { label: 'الملخص', name: 'molakhas_handasa_mostawiya_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_handasa_mostawiya_1as' }] },
       ]}
       steps={[
         { line: 14, opens: [[4, 1], [3, 0], [2, 1], [5, 1]] },
