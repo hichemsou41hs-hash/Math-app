@@ -11,6 +11,8 @@ type Line = { text: string; start: number; end: number; words: W[] };
 const LINES = (data as { lines: Line[] }).lines;
 const ASSETS = (data as { assets: Record<string, { pdf: string[]; pages: number }> }).assets;
 const TEX = (data as { tex: string[] }).tex;
+const BOOK = (data as unknown as { book: Record<string, string[]> }).book;
+const BK = (name: string) => (BOOK[name] ?? []).map((f) => staticFile('promo2/b/' + f));
 export const PROMO2_SECONDS = Math.ceil((data as { duration: number }).duration + 1.5);
 
 const C = {
@@ -43,7 +45,7 @@ const Flipper: React.FC<{ pages: string[]; t: number; every?: number }> = ({ pag
   return (
     <div style={{ position: 'absolute', inset: 0, perspective: 1600 }}>
       <Paper src={pages[(i + 1) % n]} style={{ position: 'absolute', inset: 0 }} />
-      <div style={{ position: 'absolute', inset: 0, transformOrigin: 'left center', transform: `rotateY(${-165 * turn}deg)`, backfaceVisibility: 'hidden', boxShadow: `${-30 * turn}px 0 40px rgba(0,0,0,${0.35 * turn})` }}>
+      <div style={{ position: 'absolute', inset: 0, transformOrigin: 'right center', transform: `rotateY(${165 * turn}deg)`, backfaceVisibility: 'hidden', boxShadow: `${30 * turn}px 0 40px rgba(0,0,0,${0.35 * turn})` }}>
         <Paper src={pages[i % n]} style={{ transform: `translateY(${-ramp(q, 0.05, 0.6, 0, 7)}%)` }} />
       </div>
     </div>
@@ -351,6 +353,137 @@ const End: React.FC<SP & { at: number }> = ({ t, d, at }) => {
   );
 };
 
+
+// ---------- flip-book: open spread, leaves turn from left to right ----------
+const Book: React.FC<{ pages: string[]; t: number; flipF: number; flips: number; w: number; h: number }> = ({ pages, t, flipF, flips, w, h }) => {
+  const n = pages.length;
+  const pg = (k: number) => pages[((k % n) + n) % n];
+  const i = Math.min(flips, Math.floor(Math.max(0, t) / flipF));
+  const q = i >= flips ? 0 : (Math.max(0, t) % flipF) / flipF;
+  const turn = ramp(q, 0.05, 0.95);
+  const half = w / 2;
+  const face = (src: string, st: React.CSSProperties = {}) => <Img src={src} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', background: '#fff', ...st }} />;
+  return (
+    <div style={{ position: 'relative', width: w, height: h, perspective: 2200 }}>
+      <div style={{ position: 'absolute', left: 0, top: 0, width: half, height: h, boxShadow: '0 30px 70px rgba(0,0,0,0.6)' }}>{face(pg(2 * i + (q > 0 ? 3 : 1)))}<div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(0,0,0,0) 80%, rgba(0,0,0,0.25))' }} /></div>
+      <div style={{ position: 'absolute', left: half, top: 0, width: half, height: h, boxShadow: '0 30px 70px rgba(0,0,0,0.6)' }}>{face(pg(2 * i))}<div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(270deg, rgba(0,0,0,0) 80%, rgba(0,0,0,0.25))' }} /></div>
+      {q > 0 && (
+        <div style={{ position: 'absolute', left: 0, top: 0, width: half, height: h, transformOrigin: 'right center', transformStyle: 'preserve-3d', transform: `rotateY(${180 * turn}deg)` }}>
+          <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden' }}>{face(pg(2 * i + 1))}<div style={{ position: 'absolute', inset: 0, background: `rgba(0,0,0,${0.3 * turn})` }} /></div>
+          <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>{face(pg(2 * i + 2))}<div style={{ position: 'absolute', inset: 0, background: `rgba(0,0,0,${0.3 * (1 - turn)})` }} /></div>
+        </div>
+      )}
+      <div style={{ position: 'absolute', left: half - 3, top: 0, width: 6, height: h, background: 'linear-gradient(90deg, rgba(0,0,0,0.35), rgba(255,255,255,0.4), rgba(0,0,0,0.35))' }} />
+    </div>
+  );
+};
+
+const Cursor: React.FC<{ x: number; y: number; click: number }> = ({ x, y, click }) => (
+  <div style={{ position: 'absolute', left: x, top: y, zIndex: 50, pointerEvents: 'none' }}>
+    {click > 0 && click < 1 && <div style={{ position: 'absolute', left: -30 * (0.4 + click), top: -30 * (0.4 + click), width: 60 * (0.4 + click), height: 60 * (0.4 + click), borderRadius: '50%', border: `4px solid ${C.gold}`, opacity: 1 - click }} />}
+    <svg width={44} height={44} viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.6))', transform: `scale(${1 - 0.15 * Math.sin(Math.PI * Math.min(1, Math.max(0, click * 2)))})`, transformOrigin: 'top left' }}>
+      <path d="M3 2 L3 19 L8 14.5 L11.5 22 L14.5 20.6 L11 13.4 L18 13.4 Z" fill="#fff" stroke="#111" strokeWidth={1.4} strokeLinejoin="round" />
+    </svg>
+  </div>
+);
+
+type Col = { title: string; files: { label: string; name: string }[] };
+type Step = { line: number; opens: [number, number][]; formats?: boolean; hover?: number[] };
+/** A level as a table filling the screen: one column per lesson (title, then its files).
+ *  The cursor clicks a file, it flies to the centre as an open book, flips pages, flies back. */
+const Board: React.FC<{ sec: number; fps: number; header: string; cols: Col[]; steps: Step[]; starts: number[]; g0: number; g1: number }> = ({ sec, fps, header, cols, steps, starts, g0, g1 }) => {
+  const W = 1920;
+  const ncol = cols.length;
+  const colW = Math.min(440, (W - 140) / ncol);
+  const cx = (i: number) => W / 2 + ((ncol - 1) / 2 - i) * colW;
+  const tileY = (j: number) => 250 + j * 178;
+  const tg = (sec - g0) * fps;
+  // which open is running
+  type Op = { c: number; f: number; a: number; b: number; formats?: boolean };
+  const ops: Op[] = [];
+  let hover: number[] = [];
+  steps.forEach((s, k) => {
+    const a = starts[s.line] - (k === 0 ? 0 : 0.3);
+    const b = k + 1 < steps.length ? starts[steps[k + 1].line] - 0.3 : g1;
+    const slots = s.opens.length + (s.formats ? 1 : 0);
+    const sa = k === 0 ? Math.max(a, g0 + 0.9) : a;
+    const len = (b - sa) / Math.max(1, slots);
+    s.opens.forEach(([c, f], m) => ops.push({ c, f, a: sa + m * len, b: sa + (m + 1) * len }));
+    if (s.formats) ops.push({ c: s.opens[0][0], f: 1, a: sa + s.opens.length * len, b: sa + slots * len, formats: true });
+    if (s.hover && sec >= a && sec < b) hover = s.hover;
+  });
+  const cur = ops.findIndex((o) => sec >= o.a && sec < o.b);
+  const op = cur >= 0 ? ops[cur] : undefined;
+  const u = op ? (sec - op.a) / (op.b - op.a) : 0;
+  const pos = (o?: Op) => (o ? { x: cx(o.c) + colW / 2 - 110, y: tileY(o.f) + 70 } : { x: W - 120, y: 900 });
+  const prev = cur > 0 ? pos(ops[cur - 1]) : { x: W / 2, y: 1000 };
+  const tgt = pos(op);
+  const mv = ramp(u, 0, 0.14);
+  const cursor = op ? { x: prev.x + (tgt.x - prev.x) * mv, y: prev.y + (tgt.y - prev.y) * mv } : prev;
+  const click = op ? (u - 0.14) / 0.08 : -1;
+  const fly = op && !op.formats ? Math.min(ramp(u, 0.2, 0.32), ramp(u, 0.86, 0.98, 1, 0)) : 0;
+  const opened = op && !op.formats && u > 0.3 && u < 0.88;
+  const dim = op ? Math.min(ramp(u, 0.18, 0.3), ramp(u, 0.86, 0.98, 1, 0)) : 0;
+  const BW = 980, BH = 680, BX = W / 2, BY = 500;
+  const f0 = op ? cols[op.c].files[op.f] : undefined;
+  const flipT = (sec - (op ? op.a + 0.32 * (op.b - op.a) : 0)) * fps;
+  const flipWindow = op ? 0.52 * (op.b - op.a) * fps : 1;
+  const flipF = Math.max(6, Math.floor(flipWindow / 6.5));
+  return (
+    <AbsoluteFill>
+      <div style={{ position: 'absolute', top: 24, width: '100%', textAlign: 'center' }}><Chip size={30} o={ramp(tg, 0, 12)}>{header}</Chip></div>
+      <AbsoluteFill style={{ opacity: 1 - 0.7 * dim, filter: dim > 0 ? `blur(${3 * dim}px)` : undefined }}>
+        {cols.map((col, i) => (
+          <div key={i} style={{ position: 'absolute', left: cx(i) - colW / 2 + 12, top: 100, width: colW - 24, opacity: ramp(tg, 4 + i * 4, 16 + i * 4), transform: `translateY(${ramp(tg, 4 + i * 4, 18 + i * 4, 60, 0)}px)` }}>
+            <div style={{ height: 120, borderRadius: 16, background: hover.includes(i) || (op && op.c === i) ? C.gold : 'rgba(255,255,255,0.1)', border: '2px solid rgba(245,181,74,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 12px' }}>
+              <span style={{ fontFamily: RUQAA, fontSize: col.title.length > 18 ? 34 : 42, color: hover.includes(i) || (op && op.c === i) ? '#10203F' : C.text, direction: 'rtl', textAlign: 'center', lineHeight: 1.2 }}>{col.title}</span>
+            </div>
+            {col.files.map((f, j) => {
+              const active = op && op.c === i && op.f === j;
+              return (
+                <div key={j} style={{ position: 'absolute', top: tileY(j) - 100, left: 0, right: 0, height: 160, display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', gap: 16, padding: '0 12px', borderRadius: 12, background: active ? 'rgba(245,181,74,0.22)' : 'rgba(255,255,255,0.06)', border: `2px solid ${active ? C.gold : 'rgba(255,255,255,0.12)'}`, opacity: ramp(tg, 10 + i * 4 + j * 3, 20 + i * 4 + j * 3) }}>
+                  <div style={{ width: 100, height: 140, flex: 'none', borderRadius: 6, overflow: 'hidden', boxShadow: '0 8px 18px rgba(0,0,0,0.5)', opacity: active && fly > 0.02 ? 0 : 1 }}><Paper src={BK(f.name)[0]} /></div>
+                  <span style={{ fontFamily: NASKH, fontWeight: 700, fontSize: 30, color: C.text, direction: 'rtl' }}>{f.label}</span>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </AbsoluteFill>
+      {op && !op.formats && f0 && fly > 0 && (() => {
+        const from = { x: cx(op.c) + colW / 2 - 12 - 12 - 50, y: tileY(op.f) + 80, w: 100, h: 140 };
+        const to = { x: BX + BW / 4, y: BY, w: BW / 2, h: BH };
+        const x = from.x + (to.x - from.x) * fly, y = from.y + (to.y - from.y) * fly, w = from.w + (to.w - from.w) * fly, h = from.h + (to.h - from.h) * fly;
+        if (opened) {
+          const openK = Math.min(ramp(u, 0.3, 0.36), ramp(u, 0.8, 0.86, 1, 0));
+          return (
+            <div style={{ position: 'absolute', left: BX - BW / 2, top: BY - BH / 2, width: BW, height: BH }}>
+              <div style={{ position: 'absolute', left: 0, top: 0, transformOrigin: '75% 50%', transform: `scale(${0.6 + 0.4 * openK})`, opacity: 0.4 + 0.6 * openK }}>
+                <Book pages={BK(f0.name)} t={flipT} flipF={flipF} flips={6} w={BW} h={BH} />
+              </div>
+              <div style={{ position: 'absolute', top: -58, width: '100%', textAlign: 'center' }}><Chip size={30}>{f0.label} · {cols[op.c].title}</Chip></div>
+            </div>
+          );
+        }
+        return <div style={{ position: 'absolute', left: x - w / 2, top: y - h / 2, width: w, height: h, boxShadow: '0 30px 70px rgba(0,0,0,0.6)', borderRadius: 4, overflow: 'hidden' }}><Paper src={BK(f0.name)[0]} /></div>;
+      })()}
+      {op && op.formats && (
+        <div style={{ position: 'absolute', left: 0, right: 0, top: 190, display: 'flex', justifyContent: 'center', gap: 26, direction: 'ltr', opacity: Math.min(ramp(u, 0, 0.12), ramp(u, 0.88, 1, 1, 0)) }}>
+          {(['pdf', 'word', 'tex'] as Kind[]).map((kk, i) => {
+            const ss = (sec - op.a) * fps - i * 5;
+            return (
+              <div key={kk} style={{ transform: `translateY(${ramp(ss, 0, 14, 80, 0)}px)` }}>
+                <Win kind={kk} w={520} h={660} t={ss} pages={kk === 'word' ? WD('molakhas_exp_3as') : P('molakhas_exp_3as')} label="الدالة الأسية" every={14} />
+              </div>
+            );
+          })}
+        </div>
+      )}
+      {op && !op.formats && <Cursor x={cursor.x} y={cursor.y} click={click} />}
+    </AbsoluteFill>
+  );
+};
+
 // ---------- captions (the line being said, words lit as they are spoken) ----------
 const Caption: React.FC<{ sec: number; line: Line | undefined }> = ({ sec, line }) => {
   if (!line) return null;
@@ -370,57 +503,79 @@ export const Promo2: React.FC = () => {
   const { fps } = useVideoConfig();
   const sec = frame / fps;
   const starts = LINES.map((l, i) => (i === 0 ? 0 : l.start - 0.3));
-  const idx = Math.max(0, starts.findIndex((s, k) => sec >= s && sec < (starts[k + 1] ?? Infinity)));
-  const t = frame - Math.round(starts[idx] * fps);
-  const d = Math.round(((starts[idx + 1] ?? PROMO2_SECONDS) - starts[idx]) * fps);
+  const END = PROMO2_SECONDS;
   const lineNow = LINES.find((l, k) => sec >= starts[k] && sec < (starts[k + 1] ?? Infinity));
-  const fade = Math.min(ramp(t, 0, 9), idx === LINES.length - 1 ? 1 : ramp(t, d - 7, d, 1, 0));
-  const sp = { t, d, frame };
   const L3 = 'السنة الثالثة ثانوي -- الشعب العلمية';
   const GE = 'السنة الثالثة ثانوي -- تسيير واقتصاد';
+  const f4 = (m: string, s: string, e: string, b: string) => [{ label: 'المذكرة', name: m }, { label: 'الملخص', name: s }, { label: 'سلسلة التمارين', name: e }, { label: 'البكالوريا', name: b }];
   const num = LINES[LINES.length - 1].words.find((w) => w.w.includes('الرقم'));
-  const scenes = [
-    <Hook {...sp} />,
-    <Library {...sp} />,
-    <Content {...sp} />,
-    <ThirdYear {...sp} />,
-    <Lesson {...sp} level={L3} title="الدالة الأسية" formats files={[
-      { label: 'المذكرة', kind: 'pdf', name: 'modhakira_wahda2a_3as' }, { label: 'الملخص', kind: 'pdf', name: 'molakhas_exp_3as' },
-      { label: 'سلسلة التمارين', kind: 'pdf', name: 'tamarin_exp_3as' }, { label: 'البكالوريا', kind: 'pdf', name: 'bac_exp_3as' }]} />,
-    <Lesson {...sp} level={L3} title="الدالة اللوغاريتمية" files={[
-      { label: 'المذكرة', kind: 'pdf', name: 'modhakira_wahda2b_3as' }, { label: 'الملخص', kind: 'word', name: 'molakhas_ln_3as' },
-      { label: 'سلسلة التمارين', kind: 'pdf', name: 'tamarin_ln_3as' }, { label: 'البكالوريا', kind: 'pdf', name: 'bac_ln_3as' }]} />,
-    <Lesson {...sp} level={L3} title="الدوال الأصلية والحساب التكاملي" files={[
-      { label: 'المذكرة', kind: 'pdf', name: 'modhakira_wahda6_3as' }, { label: 'الملخص', kind: 'pdf', name: 'molakhas_integ_3as' },
-      { label: 'سلسلة التمارين', kind: 'pdf', name: 'tamarin_integ_3as' }, { label: 'البكالوريا', kind: 'pdf', name: 'bac_integ_3as' }]} />,
-    <Lesson {...sp} level={L3} title="الاحتمالات" files={[
-      { label: 'الملخص', kind: 'pdf', name: 'molakhas_proba_3as' }, { label: 'سلسلة التمارين', kind: 'pdf', name: 'tamarin_proba_3as' },
-      { label: 'البكالوريا', kind: 'pdf', name: 'bac_proba_3as' }]} />,
-    <Carousel {...sp} level={L3} head="وبنفس الطريقة" items={[
+  // groups of voice lines that share one scene: [first line, last line, scene]
+  type G = [number, number, (sp: SP, g0: number, g1: number) => React.ReactNode];
+  const groups: G[] = [
+    [0, 0, (sp) => <Hook {...sp} />],
+    [1, 1, (sp) => <Library {...sp} />],
+    [2, 2, (sp) => <Content {...sp} />],
+    [3, 3, (sp) => <ThirdYear {...sp} />],
+    [4, 7, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header={L3}
+      cols={[
+        { title: 'الدالة الأسية', files: f4('modhakira_wahda2a_3as', 'molakhas_exp_3as', 'tamarin_exp_3as', 'bac_exp_3as') },
+        { title: 'الدالة اللوغاريتمية', files: f4('modhakira_wahda2b_3as', 'molakhas_ln_3as', 'tamarin_ln_3as', 'bac_ln_3as') },
+        { title: 'الدوال الأصلية والحساب التكاملي', files: f4('modhakira_wahda6_3as', 'molakhas_integ_3as', 'tamarin_integ_3as', 'bac_integ_3as') },
+        { title: 'الاحتمالات', files: f4('modhakira_wahda7_3as', 'molakhas_proba_3as', 'tamarin_proba_3as', 'bac_proba_3as') },
+      ]}
+      steps={[
+        { line: 4, opens: [[0, 0], [0, 1], [0, 2], [0, 3]], formats: true },
+        { line: 5, opens: [[1, 0], [1, 1], [1, 2], [1, 3]] },
+        { line: 6, opens: [[2, 0], [2, 1], [2, 2], [2, 3]] },
+        { line: 7, opens: [[3, 1], [3, 2], [3, 3]] },
+      ]} />],
+    [8, 8, (sp) => <Carousel {...sp} level={L3} head="وبنفس الطريقة" items={[
       { name: 'molakhas_nihayat_3as', label: 'النهايات' }, { name: 'molakhas_suites_3as', label: 'المتتاليات' }, { name: 'molakhas_cplx_3as', label: 'الأعداد المركبة' },
-      { name: 'molakhas_arith_3as', label: 'الأعداد والحساب' }, { name: 'molakhas_fadaa_3as', label: 'الهندسة في الفضاء' }]} />,
-    <Lesson {...sp} level={GE} title="المتتاليات العددية" files={[
-      { label: 'المذكرة', kind: 'pdf', name: 'modhakira_wahda1_3as_ge' }, { label: 'الملخص', kind: 'word', name: 'molakhas_mutataliyat_3as_ge' },
-      { label: 'البكالوريا', kind: 'pdf', name: 'bac_mutataliyat_3as_ge' }]} />,
-    <Lesson {...sp} level={GE} title="الدوال الأصلية والحساب التكاملي" files={[
-      { label: 'المذكرة', kind: 'pdf', name: 'modhakira_wahda4_3as_ge' }, { label: 'الملخص', kind: 'pdf', name: 'molakhas_takamol_3as_ge' },
-      { label: 'البكالوريا', kind: 'pdf', name: 'bac_takamol_3as_ge' }]} />,
-    <Carousel {...sp} level={GE} head="وبنفس الطريقة" items={[
-      { name: 'molakhas_log_3as_ge', label: 'الدالة اللوغاريتمية' }, { name: 'molakhas_ihsa_3as_ge', label: 'الإحصاء' }, { name: 'molakhas_exp_3as_ge', label: 'الدالة الأسية' }]} />,
-    <LevelIntro {...sp} level="السنة الثانية ثانوي" sub="الشعب العلمية" modh="modhakira_wahda2_2as" others={['molakhas_ihtimalat_2as', 'tamarin_ishtiqaq_2as']} />,
-    <Lesson {...sp} level="السنة الثانية ثانوي" title="الاشتقاقية ، المرجح ، الاحتمالات ، النهايات" files={[
-      { label: 'الاشتقاقية', kind: 'word', name: 'tamarin_ishtiqaq_2as' }, { label: 'المرجح', kind: 'pdf', name: 'tamarin_morajjih_2as' },
-      { label: 'الاحتمالات', kind: 'pdf', name: 'molakhas_ihtimalat_2as' }, { label: 'النهايات', kind: 'pdf', name: 'molakhas_nihayat_2as' }]} />,
-    <Lesson {...sp} level="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا" title="المذكرات ، الملخصات ، سلاسل التمارين" files={[
-      { label: 'الدوال المرجعية', kind: 'pdf', name: 'tamarin_dawal_marjiiya_1as' }, { label: 'الحساب الشعاعي', kind: 'pdf', name: 'tamarin_hisab_shoaai_1as' },
-      { label: 'الهندسة المستوية', kind: 'word', name: 'molakhas_handasa_mostawiya_1as' }, { label: 'المذكرات', kind: 'pdf', name: 'modhakira_wahda4_1as' }]} />,
-    <End {...sp} at={num ? Math.round((num.start - starts[LINES.length - 1]) * fps) : Math.round(d * 0.7)} />,
+      { name: 'molakhas_arith_3as', label: 'الأعداد والحساب' }, { name: 'molakhas_fadaa_3as', label: 'الهندسة في الفضاء' }]} />],
+    [9, 11, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header={GE}
+      cols={[
+        { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_3as_ge' }, { label: 'الملخص', name: 'molakhas_mutataliyat_3as_ge' }, { label: 'البكالوريا', name: 'bac_mutataliyat_3as_ge' }] },
+        { title: 'الدوال الأصلية والحساب التكاملي', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_3as_ge' }, { label: 'الملخص', name: 'molakhas_takamol_3as_ge' }, { label: 'البكالوريا', name: 'bac_takamol_3as_ge' }] },
+        { title: 'الدالة اللوغاريتمية', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_3as_ge' }, { label: 'الملخص', name: 'molakhas_log_3as_ge' }, { label: 'سلسلة التمارين', name: 'tamarin_log_3as_ge' }] },
+        { title: 'الإحصاء', files: [{ label: 'المذكرة', name: 'modhakira_wahda7_3as_ge' }, { label: 'الملخص', name: 'molakhas_ihsa_3as_ge' }, { label: 'البكالوريا', name: 'bac_ihsa_3as_ge' }] },
+      ]}
+      steps={[
+        { line: 9, opens: [[0, 0], [0, 1], [0, 2]] },
+        { line: 10, opens: [[1, 0], [1, 1], [1, 2]] },
+        { line: 11, opens: [], hover: [2, 3] },
+      ]} />],
+    [12, 13, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الثانية ثانوي -- الشعب العلمية"
+      cols={[
+        { title: 'الاشتقاقية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_ishtiqaq_2as' }] },
+        { title: 'المرجح', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_morajjih_2as' }] },
+        { title: 'الاحتمالات', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_2as' }, { label: 'الملخص', name: 'molakhas_ihtimalat_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_ihtimalat_2as' }] },
+        { title: 'النهايات', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_2as' }, { label: 'الملخص', name: 'molakhas_nihayat_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_nihayat_2as' }] },
+      ]}
+      steps={[
+        { line: 12, opens: [[0, 0], [0, 1]] },
+        { line: 13, opens: [[1, 1], [2, 1], [3, 2]] },
+      ]} />],
+    [14, 14, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا"
+      cols={[
+        { title: 'الدوال المرجعية', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_dawal_marjiiya_1as' }] },
+        { title: 'الحساب الشعاعي', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_hisab_shoaai_1as' }] },
+        { title: 'الهندسة المستوية', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_1as' }, { label: 'الملخص', name: 'molakhas_handasa_mostawiya_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_handasa_mostawiya_1as' }] },
+      ]}
+      steps={[{ line: 14, opens: [[0, 0], [1, 1], [2, 1]] }]} />],
+    [15, 15, (sp) => <End {...sp} at={num ? Math.round((num.start - starts[15]) * fps) : Math.round(sp.d * 0.7)} />],
   ];
+  const gi = Math.max(0, groups.findIndex(([a, b]) => sec >= starts[a] && sec < (starts[b + 1] ?? Infinity)));
+  const [ga, gb, scene] = groups[gi];
+  const g0 = starts[ga];
+  const g1 = starts[gb + 1] ?? END;
+  const t = frame - Math.round(g0 * fps);
+  const d = Math.round((g1 - g0) * fps);
+  const fade = Math.min(ramp(t, 0, 9), gi === groups.length - 1 ? 1 : ramp(t, d - 7, d, 1, 0));
   return (
     <FontGate>
       <AbsoluteFill style={{ background: C.bg0, overflow: 'hidden' }}>
         <Background frame={frame} />
-        <AbsoluteFill style={{ opacity: fade }}>{scenes[idx]}</AbsoluteFill>
+        <AbsoluteFill style={{ opacity: fade }}>{scene({ t, d, frame }, g0, g1)}</AbsoluteFill>
         <Caption sec={sec} line={lineNow} />
       </AbsoluteFill>
     </FontGate>
