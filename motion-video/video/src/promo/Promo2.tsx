@@ -11,7 +11,7 @@ type Line = { text: string; start: number; end: number; words: W[] };
 const RAW = (data as { lines: Line[] }).lines;
 /** Silence (seconds) inserted after a voice line so its scene can breathe: the 2AS and 1AS boards.
  *  When the voice is added, each line's audio is played from its shifted start (raw start + SHIFT[i]). */
-const PAD_AFTER: Record<number, number> = { 11: 4, 12: 2.5, 13: 3.5, 14: 3.5 };
+const PAD_AFTER: Record<number, number> = { 9: 4, 10: 2.5, 11: 3.5, 12: 3.5 };
 const SHIFT = RAW.map((_, i) => RAW.slice(0, i).reduce((q, __, k) => q + (PAD_AFTER[k] ?? 0), 0));
 const LINES: Line[] = RAW.map((l, i) => ({ ...l, start: l.start + SHIFT[i], end: l.end + SHIFT[i], words: l.words.map((w) => ({ ...w, start: w.start + SHIFT[i], end: w.end + SHIFT[i] })) }));
 const ASSETS = (data as { assets: Record<string, { pdf: string[]; pages: number }> }).assets;
@@ -122,8 +122,8 @@ const Win: React.FC<{ kind: Kind; w: number; h: number; t: number; pages?: strin
 const Title: React.FC<{ children: React.ReactNode; size?: number; color?: string; o?: number; y?: number; font?: string }> = ({ children, size = 72, color = C.text, o = 1, y = 0, font = DISPLAY }) => (
   <div style={{ fontFamily: font, fontWeight: font === NASKH ? undefined : 800, fontSize: size, color, direction: 'rtl', textAlign: 'center', opacity: o, transform: `translateY(${y}px)`, textShadow: '0 6px 30px rgba(0,0,0,0.6)', lineHeight: 1.35 }}>{children}</div>
 );
-const Chip: React.FC<{ children: React.ReactNode; color?: string; fg?: string; size?: number; o?: number; s?: number }> = ({ children, color = C.gold, fg = '#10203F', size = 30, o = 1, s = 1 }) => (
-  <span style={{ display: 'inline-block', padding: '6px 24px', borderRadius: 40, background: color, color: fg, fontFamily: NASKH, fontWeight: 700, fontSize: size, direction: 'rtl', opacity: o, transform: `scale(${s})` }}>{children}</span>
+const Chip: React.FC<{ children: React.ReactNode; color?: string; fg?: string; size?: number; o?: number; s?: number; font?: string }> = ({ children, color = C.gold, fg = '#10203F', size = 30, o = 1, s = 1, font = NASKH }) => (
+  <span style={{ display: 'inline-block', whiteSpace: 'nowrap', padding: font === NASKH ? '6px 24px' : '8px 22px 6px', borderRadius: 40, background: color, color: fg, fontFamily: font, fontWeight: font === NASKH ? 700 : 800, fontSize: size, direction: 'rtl', opacity: o, transform: `scale(${s})` }}>{children}</span>
 );
 
 const Background: React.FC<{ frame: number }> = ({ frame }) => (
@@ -229,7 +229,7 @@ const Content: React.FC<SP> = ({ t, d }) => {
         return (
           <div key={i} style={{ position: 'absolute', left: cxs[i] - CW / 2, top, width: CW, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, opacity: ramp(s, 0, 10), transform: `translateY(${ramp(s, 0, 14, 80, 0)}px)` }}>
             <div style={{ width: 280, height: 392, position: 'relative', borderRadius: 10, overflow: 'hidden', border: `4px solid ${C.gold}`, boxShadow: '0 30px 60px rgba(0,0,0,0.6)' }}><Flipper pages={c.src} t={s} every={34} /></div>
-            <Chip size={26}>{c.label}</Chip>
+            <span style={{ whiteSpace: 'nowrap' }}><Chip size={24} font={DISPLAY}>{c.label}</Chip></span>
           </div>
         );
       })}
@@ -682,7 +682,7 @@ export const Promo2: React.FC = () => {
     [1, 1, (sp) => <Library {...sp} />],
     [2, 2, (sp) => <Content {...sp} />],
     [3, 3, (sp) => <ThirdYear {...sp} />],
-    [4, 8, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header={L3} top={6}
+    [4, 6, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header={L3} top={6}
       cols={[
         { title: 'الاشتقاقية والاستمرارية', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_3as' }, { label: 'الملخص', name: 'molakhas_nihayat_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_nihayat_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_nihayat_3as' }] },
         { title: 'الدالة الأسية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2a_3as' }, { label: 'الملخص', name: 'molakhas_exp_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_exp_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_exp_3as' }] },
@@ -699,12 +699,10 @@ export const Promo2: React.FC = () => {
       steps={[
         { line: 3, opens: [], hover: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
         { line: 4, opens: [[1, 3]], formats: true },
-        { line: 5, opens: [[2, 0], [0, 1]] },
-        { line: 6, opens: [[6, 3], [4, 1], [3, 2]] },
-        { line: 7, opens: [[8, 2], [7, 1]] },
-        { line: 8, opens: [[5, 0], [9, 1], [10, 2]] },
+        { line: 5, opens: [[8, 2]] },
+        { line: 6, opens: [[5, 0], [9, 1]] },
       ]} />],
-    [9, 11, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header={GE} top={4}
+    [7, 9, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header={GE} top={4}
       cols={[
         { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_3as_ge' }, { label: 'الملخص', name: 'molakhas_mutataliyat_3as_ge' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_mutataliyat_3as_ge' }] },
         { title: 'الاشتقاقية والاستمرارية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_3as_ge' }, { label: 'الملخص', name: 'molakhas_dawal_3as_ge' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_dawal_3as_ge' }] },
@@ -716,11 +714,11 @@ export const Promo2: React.FC = () => {
         { title: 'الاحتمالات', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_3as_ge' }, { label: 'الملخص', name: 'molakhas_ihtimalat_3as_ge' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_ihtimalat_3as_ge' }] },
       ]}
       steps={[
-        { line: 9, opens: [[0, 1], [1, 0]], pre: [0, 1, 2, 3, 4, 5, 6, 7] },
-        { line: 10, opens: [[3, 2], [2, 1]] },
-        { line: 11, opens: [[4, 0], [5, 1], [6, 2]] },
+        { line: 7, opens: [[0, 1], [1, 0]], pre: [0, 1, 2, 3, 4, 5, 6, 7] },
+        { line: 8, opens: [[3, 2], [2, 1]] },
+        { line: 9, opens: [[4, 0], [5, 1], [6, 2]] },
       ]} />],
-    [12, 13, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الثانية ثانوي -- الشعب العلمية" top={5}
+    [10, 11, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الثانية ثانوي -- الشعب العلمية" top={5}
       cols={[
         { title: 'الدوال', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_2as' }, { label: 'الملخص', name: 'molakhas_2as_wahda1' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_2as_wahda1' }] },
         { title: 'الاشتقاقية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_2as' }, { label: 'الملخص', name: 'molakhas_ishtiqaq_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_ishtiqaq_2as' }] },
@@ -733,10 +731,10 @@ export const Promo2: React.FC = () => {
         { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda9_2as' }, { label: 'الملخص', name: 'molakhas_motataliat_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_motataliat_2as' }] },
       ]}
       steps={[
-        { line: 12, opens: [[1, 1]], pre: [0, 1, 2, 3, 4, 5, 6, 7, 8] },
-        { line: 13, opens: [[3, 0], [2, 2], [4, 1]] },
+        { line: 10, opens: [[1, 1]], pre: [0, 1, 2, 3, 4, 5, 6, 7, 8] },
+        { line: 11, opens: [[3, 0], [2, 2], [4, 1]] },
       ]} />],
-    [14, 14, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا" top={3}
+    [12, 12, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا" top={3}
       cols={[
         { title: 'الأعداد والحساب', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_1as' }, { label: 'الملخص', name: 'molakhas_03_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_wahda1_1as' }] },
         { title: 'عموميات على الدوال', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_1as' }, { label: 'الملخص', name: 'molakhas_omomiyat_dawal_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_omomiyat_dawal_1as' }] },
@@ -746,9 +744,9 @@ export const Promo2: React.FC = () => {
         { title: 'الهندسة المستوية', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_1as' }, { label: 'الملخص', name: 'molakhas_handasa_mostawiya_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_handasa_mostawiya_1as' }] },
       ]}
       steps={[
-        { line: 14, opens: [[4, 1], [3, 0], [2, 2], [5, 1]], pre: [0, 1, 2, 3, 4, 5] },
+        { line: 12, opens: [[4, 1], [3, 0], [2, 2], [5, 1]], pre: [0, 1, 2, 3, 4, 5] },
       ]} />],
-    [15, 15, (sp) => <End {...sp} at={num ? Math.round((num.start - starts[15]) * fps) : Math.round(sp.d * 0.7)} />],
+    [13, 13, (sp) => <End {...sp} at={num ? Math.round((num.start - starts[13]) * fps) : Math.round(sp.d * 0.7)} />],
   ];
   // the 3AS board comes in before line 4, cutting the long "four files" scene short (it felt slow)
   const gStart = (a: number) => (a === 4 ? starts[3] + 0.6 * (starts[4] - starts[3]) : starts[a]);
