@@ -12,12 +12,9 @@ const RAW = (data as { lines: Line[] }).lines;
 /** Silence (seconds) inserted after a voice line so its scene can breathe: the 2AS and 1AS boards.
  *  When the voice is added, each line's audio is played from its shifted start (raw start + SHIFT[i]). */
 const FLIP = 3.2; // seconds of silence for one opened file: fly to centre, 6 page turns, fly back
-const PAD_AFTER: Record<number, number> = {
-  4: 0.3, 5: FLIP, 6: 1.0, 7: FLIP, 8: FLIP, 9: FLIP + 0.6,
-  10: 0.3, 11: FLIP, 12: FLIP, 13: FLIP, 14: FLIP + 0.6,
-  15: 0.3, 16: FLIP, 17: FLIP, 18: FLIP, 19: FLIP + 0.6,
-  20: 0.3, 21: FLIP, 22: FLIP, 23: FLIP, 24: FLIP + 0.6,
-};
+const OPEN = 0.9 + FLIP; // cursor glides to the file (silent), click, page turns
+const FMTS = 3.0;
+const PAD_AFTER: Record<number, number> = { 4: 0.4 + 4 * OPEN + FMTS + 0.6, 5: 0.4 + 4 * OPEN + 0.6, 6: 0.4 + 4 * OPEN + 0.6, 7: 0.4 + 4 * OPEN + 0.6 };
 const SHIFT = RAW.map((_, i) => RAW.slice(0, i).reduce((q, __, k) => q + (PAD_AFTER[k] ?? 0), 0));
 const LINES: Line[] = RAW.map((l, i) => ({ ...l, start: l.start + SHIFT[i], end: l.end + SHIFT[i], words: l.words.map((w) => ({ ...w, start: w.start + SHIFT[i], end: w.end + SHIFT[i] })) }));
 const ASSETS = (data as { assets: Record<string, { pdf: string[]; pages: number }> }).assets;
@@ -739,23 +736,31 @@ export const Promo2: React.FC = () => {
       return { c: k, f: -1, a: t - 0.3, b: 0, hop: true };
     }).map((o, k, arr) => ({ ...o, b: k + 1 < arr.length ? arr[k + 1].a : ends[line] + 0.3 }));
   };
-  const open = (line: number, c: number, f: number): BOp => ({ c, f, a: LINES[line].start - 0.1, c0: ends[line] + 0.1, b: ends[line] + 0.1 + FLIP });
-  const fmts = (line: number, c: number): BOp => ({ c, f: 1, a: LINES[line].start - 0.2, b: ends[line] + 0.9, formats: true });
-  const P3 = [...sweep(4, 4, C3), open(5, 1, 3), fmts(6, 1), open(7, 8, 2), open(8, 5, 0), open(9, 9, 1)];
-  const PGE = [...sweep(10, 3, CGE), open(11, 0, 1), open(12, 3, 2), open(13, 4, 0), open(14, 6, 2)];
-  const P2 = [...sweep(15, 5, C2), open(16, 1, 1), open(17, 3, 0), open(18, 2, 2), open(19, 4, 1)];
-  const P1 = [...sweep(20, 7, C1), open(21, 4, 1), open(22, 3, 0), open(23, 2, 2), open(24, 5, 1)];
+  // after the voice has named every lesson, the cursor opens files in silence: glide, click, page turns
+  const opens = (line: number, list: ([number, number] | 'fmt')[]): BOp[] => {
+    let t = ends[line] + 0.4;
+    let lastC = 0;
+    return list.map((x) => {
+      if (x === 'fmt') { const o: BOp = { c: lastC, f: 1, a: t, b: t + FMTS, formats: true }; t += FMTS; return o; }
+      lastC = x[0];
+      const o: BOp = { c: x[0], f: x[1], a: t, c0: t + 0.9, b: t + 0.9 + FLIP }; t = o.b; return o;
+    });
+  };
+  const P3 = [...sweep(4, 4, C3), ...opens(4, [[1, 3], 'fmt', [8, 2], [5, 0], [9, 1]])];
+  const PGE = [...sweep(5, 3, CGE), ...opens(5, [[0, 1], [3, 2], [4, 0], [6, 2]])];
+  const P2 = [...sweep(6, 5, C2), ...opens(6, [[1, 1], [3, 0], [2, 2], [4, 1]])];
+  const P1 = [...sweep(7, 7, C1), ...opens(7, [[4, 1], [3, 0], [2, 2], [5, 1]])];
   type S = [number, number, (sp: SP, g0: number, g1: number) => React.ReactNode];
   const scenes: S[] = [
     [0, starts[1], (sp) => <Hook {...sp} />],
     [starts[1], starts[2], (sp) => <Library {...sp} />],
     [starts[2], starts[3], (sp) => <Content {...sp} />],
     [starts[3], starts[4], (sp) => <ThirdYear {...sp} />],
-    [starts[4], starts[10], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header={L3} top={6} cols={C3} plan={P3} />],
-    [starts[10], starts[15], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header={GE} top={4} cols={CGE} plan={PGE} />],
-    [starts[15], starts[20], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header="السنة الثانية ثانوي -- الشعب العلمية" top={5} cols={C2} plan={P2} />],
-    [starts[20], starts[25], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا" top={3} cols={C1} plan={P1} />],
-    [starts[25], END, (sp) => <End {...sp} at={num ? Math.round((num.start - starts[25]) * fps) : Math.round(sp.d * 0.7)} />],
+    [starts[4], starts[5], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header={L3} top={6} cols={C3} plan={P3} />],
+    [starts[5], starts[6], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header={GE} top={4} cols={CGE} plan={PGE} />],
+    [starts[6], starts[7], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header="السنة الثانية ثانوي -- الشعب العلمية" top={5} cols={C2} plan={P2} />],
+    [starts[7], starts[8], (_, g0) => <Board sec={sec} fps={fps} g0={g0} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا" top={3} cols={C1} plan={P1} />],
+    [starts[8], END, (sp) => <End {...sp} at={num ? Math.round((num.start - starts[8]) * fps) : Math.round(sp.d * 0.7)} />],
   ];
   const gi = Math.max(0, scenes.findIndex(([a, b]) => sec >= a && sec < b));
   const [g0, g1, scene] = scenes[gi];
