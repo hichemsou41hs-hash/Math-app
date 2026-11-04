@@ -714,7 +714,7 @@ const C1: Col[] = [
         { title: 'الدوال المرجعية', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_1as' }, { label: 'الملخص', name: 'molakhas_dawal_marjiiya_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_dawal_marjiiya_1as' }] },
         { title: 'العبارات الجبرية', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_1as' }, { label: 'الملخص', name: 'molakhas_ibarat_jabriya_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_ibarat_jabriya_1as' }] },
         { title: 'الهندسة المستوية', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_1as' }, { label: 'الملخص', name: 'molakhas_handasa_mostawiya_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_handasa_mostawiya_1as' }] },
-  { title: 'الهندسة في الفضاء', files: [{ label: 'المذكرة', name: 'modhakira_wahda7_1as' }] },
+  { title: 'الهندسة في الفضاء', files: [{ label: 'المذكرة', name: 'modhakira_wahda7_1as' }, { label: 'الملخص', name: 'molakhas_fadaa_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_fadaa_1as' }] },
   { title: 'الإحصاء', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_1as' }, { label: 'الملخص', name: 'molakhas_ihsaa_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_ihsaa_1as' }] },
       ];
 
