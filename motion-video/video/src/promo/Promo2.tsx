@@ -8,12 +8,17 @@ import { FontGate, NASKH, RUQAA } from '../lib/fonts';
 
 type W = { w: string; start: number; end: number };
 type Line = { text: string; start: number; end: number; words: W[] };
-const LINES = (data as { lines: Line[] }).lines;
+const RAW = (data as { lines: Line[] }).lines;
+/** Silence (seconds) inserted after a voice line so its scene can breathe: the 2AS and 1AS boards.
+ *  When the voice is added, each line's audio is played from its shifted start (raw start + SHIFT[i]). */
+const PAD_AFTER: Record<number, number> = { 12: 2.5, 13: 3.5, 14: 3.5 };
+const SHIFT = RAW.map((_, i) => RAW.slice(0, i).reduce((q, __, k) => q + (PAD_AFTER[k] ?? 0), 0));
+const LINES: Line[] = RAW.map((l, i) => ({ ...l, start: l.start + SHIFT[i], end: l.end + SHIFT[i], words: l.words.map((w) => ({ ...w, start: w.start + SHIFT[i], end: w.end + SHIFT[i] })) }));
 const ASSETS = (data as { assets: Record<string, { pdf: string[]; pages: number }> }).assets;
 const TEX = (data as { tex: string[] }).tex;
 const BOOK = (data as unknown as { book: Record<string, string[]> }).book;
 const BK = (name: string) => (BOOK[name] ?? []).map((f) => staticFile('promo2/b/' + f));
-export const PROMO2_SECONDS = Math.ceil((data as { duration: number }).duration + 1.5);
+export const PROMO2_SECONDS = Math.ceil((data as { duration: number }).duration + SHIFT[SHIFT.length - 1] + 1.5);
 
 const C = {
   bg0: '#06102A', bg1: '#123063', gold: '#F5B54A', goldLight: '#FFE3A3', text: '#F4F1EA', dim: '#9FB0CF',
@@ -273,17 +278,20 @@ const ThirdYear: React.FC<SP> = ({ t, d }) => {
   ];
   const streams = ['علوم تجريبية', 'رياضيات', 'تقني رياضي', 'تسيير واقتصاد'];
   return (
-    <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', gap: 30 }}>
+    <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', gap: 30, transform: `scale(${1 + 0.1 * ramp(t, d * 0.3, d, 0, 1)})` }}>
       <Banner t={t} level="السنة الثالثة ثانوي" />
       <Title size={44} font={NASKH} o={ramp(t, d * 0.05, d * 0.12)}>كل درس = أربعة ملفات</Title>
       <div style={{ display: 'flex', flexDirection: 'row-reverse', gap: 34 }}>
         {four.map((f, i) => {
           const s = t - d * (0.1 + i * 0.07);
-          return <div key={i} style={{ opacity: ramp(s, 0, 10), transform: `translateY(${ramp(s, 0, 14, 60, 0)}px) rotate(${(i - 1.5) * 2}deg)` }}><Tile src={f.src} pages={f.pages} t={s} label={f.label} active={s > 0 && s < d * 0.08} /></div>;
+          // once all four are shown, a spotlight keeps travelling from file to file (no frozen frame)
+          const cyc = t > d * 0.6 ? Math.floor((t - d * 0.6) / 22) % 4 === i : s > 0 && s < d * 0.08;
+          const fl = Math.sin(t / 14 + i * 1.3) * 8;
+          return <div key={i} style={{ opacity: ramp(s, 0, 10), transform: `translateY(${ramp(s, 0, 14, 60, 0) + fl}px) rotate(${(i - 1.5) * 2 + Math.sin(t / 20 + i) * 1.2}deg)` }}><Tile src={f.src} pages={f.pages} t={s} label={f.label} active={cyc} /></div>;
         })}
       </div>
       <div style={{ display: 'flex', flexDirection: 'row-reverse', gap: 16 }}>
-        {streams.map((s, i) => <Chip key={s} size={28} color={i === 3 ? '#7FD1AE' : C.gold} o={ramp(t, d * (0.42 + i * 0.05), d * (0.42 + i * 0.05) + 10)} s={ramp(t, d * (0.42 + i * 0.05), d * (0.42 + i * 0.05) + 10, 0.5, 1)}>{s}</Chip>)}
+        {streams.map((s, i) => <Chip key={s} size={28} color={i === 3 ? '#7FD1AE' : C.gold} o={ramp(t, d * (0.42 + i * 0.05), d * (0.42 + i * 0.05) + 10)} s={ramp(t, d * (0.42 + i * 0.05), d * (0.42 + i * 0.05) + 10, 0.5, 1) * (1 + 0.06 * Math.max(0, Math.sin(t / 9 - i * 0.9)) * ramp(t, d * 0.6, d * 0.65))}>{s}</Chip>)}
       </div>
     </AbsoluteFill>
   );
