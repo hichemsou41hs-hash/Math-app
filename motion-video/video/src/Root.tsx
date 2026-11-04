@@ -6,11 +6,13 @@ import { durationFrames, toFrame } from './timing';
 import { partEnd, partStart } from './parts';
 import { EPISODES } from './episodes';
 import { Promo, PROMO_SECONDS } from './promo/Promo';
+import { Promo2, PROMO2_SECONDS } from './promo/Promo2';
 
 // For every video: <Id> 16:9 (YouTube), <Id>V 9:16 whole, <Id>R1… 9:16 reels.
 // The lesson keeps its first names: Main, Vertical, Reel1..Reel5.
 export const Root: React.FC = () => (
   <>
+    <Composition id="Promo2" component={Promo2} durationInFrames={PROMO2_SECONDS * VIDEO.fps} fps={VIDEO.fps} width={1920} height={1080} />
     <Composition id="Promo" component={Promo} durationInFrames={PROMO_SECONDS * VIDEO.fps} fps={VIDEO.fps} width={1920} height={1080} />
     {Object.values(EPISODES).map((ep) => {
       const name = ep.id === 'lesson' ? { main: 'Main', vert: 'Vertical', reel: 'Reel' } : { main: cap(ep.id), vert: cap(ep.id) + 'V', reel: cap(ep.id) + 'R' };

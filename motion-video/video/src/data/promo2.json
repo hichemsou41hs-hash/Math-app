@@ -1,0 +1,1743 @@
+{
+"source": "estimate",
+"audio": null,
+"duration": 148.92,
+"lines": [
+{
+"text": "لكل أستاذ تعليم ثانوي يدرّس في القسم أو في دروس الدعم، ولكل تلميذ في الثانوي، خاصة تلاميذ البكالوريا.",
+"start": 0.5,
+"end": 9.39,
+"words": [
+{
+"w": "لكل",
+"start": 0.5,
+"end": 0.86
+},
+{
+"w": "أستاذ",
+"start": 0.91,
+"end": 1.39
+},
+{
+"w": "تعليم",
+"start": 1.44,
+"end": 1.92
+},
+{
+"w": "ثانوي",
+"start": 1.97,
+"end": 2.45
+},
+{
+"w": "يدرّس",
+"start": 2.5,
+"end": 2.92
+},
+{
+"w": "في",
+"start": 2.97,
+"end": 3.27
+},
+{
+"w": "القسم",
+"start": 3.32,
+"end": 3.8
+},
+{
+"w": "أو",
+"start": 3.85,
+"end": 4.15
+},
+{
+"w": "في",
+"start": 4.2,
+"end": 4.5
+},
+{
+"w": "دروس",
+"start": 4.55,
+"end": 4.97
+},
+{
+"w": "الدعم،",
+"start": 5.02,
+"end": 5.5
+},
+{
+"w": "ولكل",
+"start": 5.55,
+"end": 5.97
+},
+{
+"w": "تلميذ",
+"start": 6.02,
+"end": 6.5
+},
+{
+"w": "في",
+"start": 6.55,
+"end": 6.85
+},
+{
+"w": "الثانوي،",
+"start": 6.9,
+"end": 7.5
+},
+{
+"w": "خاصة",
+"start": 7.55,
+"end": 7.97
+},
+{
+"w": "تلاميذ",
+"start": 8.02,
+"end": 8.56
+},
+{
+"w": "البكالوريا.",
+"start": 8.61,
+"end": 9.39
+}
+]
+},
+{
+"text": "إليك مكتبة الأستاذ سوايسية هشام: أكثر من مئة وأربعين ملفًا، مطابقة للمنهاج وللتوزيع السنوي الجديد.",
+"start": 10.14,
+"end": 18.34,
+"words": [
+{
+"w": "إليك",
+"start": 10.14,
+"end": 10.56
+},
+{
+"w": "مكتبة",
+"start": 10.61,
+"end": 11.09
+},
+{
+"w": "الأستاذ",
+"start": 11.14,
+"end": 11.74
+},
+{
+"w": "سوايسية",
+"start": 11.79,
+"end": 12.39
+},
+{
+"w": "هشام:",
+"start": 12.44,
+"end": 12.86
+},
+{
+"w": "أكثر",
+"start": 12.91,
+"end": 13.33
+},
+{
+"w": "من",
+"start": 13.38,
+"end": 13.68
+},
+{
+"w": "مئة",
+"start": 13.73,
+"end": 14.09
+},
+{
+"w": "وأربعين",
+"start": 14.14,
+"end": 14.74
+},
+{
+"w": "ملفًا،",
+"start": 14.79,
+"end": 15.21
+},
+{
+"w": "مطابقة",
+"start": 15.26,
+"end": 15.8
+},
+{
+"w": "للمنهاج",
+"start": 15.85,
+"end": 16.45
+},
+{
+"w": "وللتوزيع",
+"start": 16.5,
+"end": 17.16
+},
+{
+"w": "السنوي",
+"start": 17.21,
+"end": 17.75
+},
+{
+"w": "الجديد.",
+"start": 17.8,
+"end": 18.34
+}
+]
+},
+{
+"text": "ملخصات، ومذكرات، وسلاسل تمارين نموذجية، وتمارين البكالوريا، جميعها بالحل المفصل، وبثلاث صيغ: بي دي إف ووورد ولاتاك.",
+"start": 19.09,
+"end": 28.47,
+"words": [
+{
+"w": "ملخصات،",
+"start": 19.09,
+"end": 19.63
+},
+{
+"w": "ومذكرات،",
+"start": 19.68,
+"end": 20.28
+},
+{
+"w": "وسلاسل",
+"start": 20.33,
+"end": 20.87
+},
+{
+"w": "تمارين",
+"start": 20.92,
+"end": 21.46
+},
+{
+"w": "نموذجية،",
+"start": 21.51,
+"end": 22.11
+},
+{
+"w": "وتمارين",
+"start": 22.16,
+"end": 22.76
+},
+{
+"w": "البكالوريا،",
+"start": 22.81,
+"end": 23.59
+},
+{
+"w": "جميعها",
+"start": 23.64,
+"end": 24.18
+},
+{
+"w": "بالحل",
+"start": 24.23,
+"end": 24.71
+},
+{
+"w": "المفصل،",
+"start": 24.76,
+"end": 25.3
+},
+{
+"w": "وبثلاث",
+"start": 25.35,
+"end": 25.89
+},
+{
+"w": "صيغ:",
+"start": 25.94,
+"end": 26.3
+},
+{
+"w": "بي",
+"start": 26.35,
+"end": 26.65
+},
+{
+"w": "دي",
+"start": 26.7,
+"end": 27.0
+},
+{
+"w": "إف",
+"start": 27.05,
+"end": 27.35
+},
+{
+"w": "ووورد",
+"start": 27.4,
+"end": 27.88
+},
+{
+"w": "ولاتاك.",
+"start": 27.93,
+"end": 28.47
+}
+]
+},
+{
+"text": "في السنة الثالثة ثانوي، كل درس يحتوي على أربعة ملفات: المذكرة، وملخص الدرس، وسلسلة تمارين نموذجية مرفقة بالحل، وحلول تمارين البكالوريا لجميع الشعب العلمية، وشعبة التسيير والاقتصاد.",
+"start": 29.22,
+"end": 44.2,
+"words": [
+{
+"w": "في",
+"start": 29.22,
+"end": 29.52
+},
+{
+"w": "السنة",
+"start": 29.57,
+"end": 30.05
+},
+{
+"w": "الثالثة",
+"start": 30.1,
+"end": 30.7
+},
+{
+"w": "ثانوي،",
+"start": 30.75,
+"end": 31.23
+},
+{
+"w": "كل",
+"start": 31.28,
+"end": 31.58
+},
+{
+"w": "درس",
+"start": 31.63,
+"end": 31.99
+},
+{
+"w": "يحتوي",
+"start": 32.04,
+"end": 32.52
+},
+{
+"w": "على",
+"start": 32.57,
+"end": 32.93
+},
+{
+"w": "أربعة",
+"start": 32.98,
+"end": 33.46
+},
+{
+"w": "ملفات:",
+"start": 33.51,
+"end": 33.99
+},
+{
+"w": "المذكرة،",
+"start": 34.04,
+"end": 34.64
+},
+{
+"w": "وملخص",
+"start": 34.69,
+"end": 35.17
+},
+{
+"w": "الدرس،",
+"start": 35.22,
+"end": 35.7
+},
+{
+"w": "وسلسلة",
+"start": 35.75,
+"end": 36.29
+},
+{
+"w": "تمارين",
+"start": 36.34,
+"end": 36.88
+},
+{
+"w": "نموذجية",
+"start": 36.93,
+"end": 37.53
+},
+{
+"w": "مرفقة",
+"start": 37.58,
+"end": 38.06
+},
+{
+"w": "بالحل،",
+"start": 38.11,
+"end": 38.59
+},
+{
+"w": "وحلول",
+"start": 38.64,
+"end": 39.12
+},
+{
+"w": "تمارين",
+"start": 39.17,
+"end": 39.71
+},
+{
+"w": "البكالوريا",
+"start": 39.76,
+"end": 40.54
+},
+{
+"w": "لجميع",
+"start": 40.59,
+"end": 41.07
+},
+{
+"w": "الشعب",
+"start": 41.12,
+"end": 41.6
+},
+{
+"w": "العلمية،",
+"start": 41.65,
+"end": 42.25
+},
+{
+"w": "وشعبة",
+"start": 42.3,
+"end": 42.78
+},
+{
+"w": "التسيير",
+"start": 42.83,
+"end": 43.43
+},
+{
+"w": "والاقتصاد.",
+"start": 43.48,
+"end": 44.2
+}
+]
+},
+{
+"text": "نأخذ مثال الدالة الأسية: مذكرة للدرس، وملخص شامل، وسلسلة تمارين نموذجية محلولة، وتمارين البكالوريا بالحل المفصل، بصيغ بي دي إف ووورد ولاتاك.",
+"start": 44.95,
+"end": 56.74,
+"words": [
+{
+"w": "نأخذ",
+"start": 44.95,
+"end": 45.37
+},
+{
+"w": "مثال",
+"start": 45.42,
+"end": 45.84
+},
+{
+"w": "الدالة",
+"start": 45.89,
+"end": 46.43
+},
+{
+"w": "الأسية:",
+"start": 46.48,
+"end": 47.02
+},
+{
+"w": "مذكرة",
+"start": 47.07,
+"end": 47.55
+},
+{
+"w": "للدرس،",
+"start": 47.6,
+"end": 48.08
+},
+{
+"w": "وملخص",
+"start": 48.13,
+"end": 48.61
+},
+{
+"w": "شامل،",
+"start": 48.66,
+"end": 49.08
+},
+{
+"w": "وسلسلة",
+"start": 49.13,
+"end": 49.67
+},
+{
+"w": "تمارين",
+"start": 49.72,
+"end": 50.26
+},
+{
+"w": "نموذجية",
+"start": 50.31,
+"end": 50.91
+},
+{
+"w": "محلولة،",
+"start": 50.96,
+"end": 51.5
+},
+{
+"w": "وتمارين",
+"start": 51.55,
+"end": 52.15
+},
+{
+"w": "البكالوريا",
+"start": 52.2,
+"end": 52.98
+},
+{
+"w": "بالحل",
+"start": 53.03,
+"end": 53.51
+},
+{
+"w": "المفصل،",
+"start": 53.56,
+"end": 54.1
+},
+{
+"w": "بصيغ",
+"start": 54.15,
+"end": 54.57
+},
+{
+"w": "بي",
+"start": 54.62,
+"end": 54.92
+},
+{
+"w": "دي",
+"start": 54.97,
+"end": 55.27
+},
+{
+"w": "إف",
+"start": 55.32,
+"end": 55.62
+},
+{
+"w": "ووورد",
+"start": 55.67,
+"end": 56.15
+},
+{
+"w": "ولاتاك.",
+"start": 56.2,
+"end": 56.74
+}
+]
+},
+{
+"text": "الدالة اللوغاريتمية: مذكرة للدرس، وملخص شامل، وسلسلة تمارين بالحلول، وأكثر من مئة وسبعين صفحة من تمارين البكالوريا المحلولة.",
+"start": 57.49,
+"end": 67.7,
+"words": [
+{
+"w": "الدالة",
+"start": 57.49,
+"end": 58.03
+},
+{
+"w": "اللوغاريتمية:",
+"start": 58.08,
+"end": 58.98
+},
+{
+"w": "مذكرة",
+"start": 59.03,
+"end": 59.51
+},
+{
+"w": "للدرس،",
+"start": 59.56,
+"end": 60.04
+},
+{
+"w": "وملخص",
+"start": 60.09,
+"end": 60.57
+},
+{
+"w": "شامل،",
+"start": 60.62,
+"end": 61.04
+},
+{
+"w": "وسلسلة",
+"start": 61.09,
+"end": 61.63
+},
+{
+"w": "تمارين",
+"start": 61.68,
+"end": 62.22
+},
+{
+"w": "بالحلول،",
+"start": 62.27,
+"end": 62.87
+},
+{
+"w": "وأكثر",
+"start": 62.92,
+"end": 63.4
+},
+{
+"w": "من",
+"start": 63.45,
+"end": 63.75
+},
+{
+"w": "مئة",
+"start": 63.8,
+"end": 64.16
+},
+{
+"w": "وسبعين",
+"start": 64.21,
+"end": 64.75
+},
+{
+"w": "صفحة",
+"start": 64.8,
+"end": 65.22
+},
+{
+"w": "من",
+"start": 65.27,
+"end": 65.57
+},
+{
+"w": "تمارين",
+"start": 65.62,
+"end": 66.16
+},
+{
+"w": "البكالوريا",
+"start": 66.21,
+"end": 66.99
+},
+{
+"w": "المحلولة.",
+"start": 67.04,
+"end": 67.7
+}
+]
+},
+{
+"text": "الدوال الأصلية والحساب التكاملي: مذكرة للدرس، وملخص شامل، وسلسلة تمارين نموذجية محلولة، وتمارين البكالوريا بالحل المفصل.",
+"start": 68.45,
+"end": 78.08,
+"words": [
+{
+"w": "الدوال",
+"start": 68.45,
+"end": 68.99
+},
+{
+"w": "الأصلية",
+"start": 69.04,
+"end": 69.64
+},
+{
+"w": "والحساب",
+"start": 69.69,
+"end": 70.29
+},
+{
+"w": "التكاملي:",
+"start": 70.34,
+"end": 71.0
+},
+{
+"w": "مذكرة",
+"start": 71.05,
+"end": 71.53
+},
+{
+"w": "للدرس،",
+"start": 71.58,
+"end": 72.06
+},
+{
+"w": "وملخص",
+"start": 72.11,
+"end": 72.59
+},
+{
+"w": "شامل،",
+"start": 72.64,
+"end": 73.06
+},
+{
+"w": "وسلسلة",
+"start": 73.11,
+"end": 73.65
+},
+{
+"w": "تمارين",
+"start": 73.7,
+"end": 74.24
+},
+{
+"w": "نموذجية",
+"start": 74.29,
+"end": 74.89
+},
+{
+"w": "محلولة،",
+"start": 74.94,
+"end": 75.48
+},
+{
+"w": "وتمارين",
+"start": 75.53,
+"end": 76.13
+},
+{
+"w": "البكالوريا",
+"start": 76.18,
+"end": 76.96
+},
+{
+"w": "بالحل",
+"start": 77.01,
+"end": 77.49
+},
+{
+"w": "المفصل.",
+"start": 77.54,
+"end": 78.08
+}
+]
+},
+{
+"text": "الاحتمالات: أشجار منسقة، وجداول قوانين الاحتمال، وتمارين البكالوريا بالحل المفصل.",
+"start": 78.83,
+"end": 85.16,
+"words": [
+{
+"w": "الاحتمالات:",
+"start": 78.83,
+"end": 79.61
+},
+{
+"w": "أشجار",
+"start": 79.66,
+"end": 80.14
+},
+{
+"w": "منسقة،",
+"start": 80.19,
+"end": 80.67
+},
+{
+"w": "وجداول",
+"start": 80.72,
+"end": 81.26
+},
+{
+"w": "قوانين",
+"start": 81.31,
+"end": 81.85
+},
+{
+"w": "الاحتمال،",
+"start": 81.9,
+"end": 82.56
+},
+{
+"w": "وتمارين",
+"start": 82.61,
+"end": 83.21
+},
+{
+"w": "البكالوريا",
+"start": 83.26,
+"end": 84.04
+},
+{
+"w": "بالحل",
+"start": 84.09,
+"end": 84.57
+},
+{
+"w": "المفصل.",
+"start": 84.62,
+"end": 85.16
+}
+]
+},
+{
+"text": "وبنفس الطريقة: النهايات، والمتتاليات، والأعداد المركبة، والأعداد والحساب، والهندسة في الفضاء.",
+"start": 85.91,
+"end": 93.01,
+"words": [
+{
+"w": "وبنفس",
+"start": 85.91,
+"end": 86.39
+},
+{
+"w": "الطريقة:",
+"start": 86.44,
+"end": 87.04
+},
+{
+"w": "النهايات،",
+"start": 87.09,
+"end": 87.75
+},
+{
+"w": "والمتتاليات،",
+"start": 87.8,
+"end": 88.64
+},
+{
+"w": "والأعداد",
+"start": 88.69,
+"end": 89.35
+},
+{
+"w": "المركبة،",
+"start": 89.4,
+"end": 90.0
+},
+{
+"w": "والأعداد",
+"start": 90.05,
+"end": 90.71
+},
+{
+"w": "والحساب،",
+"start": 90.76,
+"end": 91.36
+},
+{
+"w": "والهندسة",
+"start": 91.41,
+"end": 92.07
+},
+{
+"w": "في",
+"start": 92.12,
+"end": 92.42
+},
+{
+"w": "الفضاء.",
+"start": 92.47,
+"end": 93.01
+}
+]
+},
+{
+"text": "شعبة التسيير والاقتصاد: المتتاليات العددية، مذكرة وملخص للدرس، وتمارين البكالوريا بالحل المفصل.",
+"start": 93.76,
+"end": 101.27,
+"words": [
+{
+"w": "شعبة",
+"start": 93.76,
+"end": 94.18
+},
+{
+"w": "التسيير",
+"start": 94.23,
+"end": 94.83
+},
+{
+"w": "والاقتصاد:",
+"start": 94.88,
+"end": 95.6
+},
+{
+"w": "المتتاليات",
+"start": 95.65,
+"end": 96.43
+},
+{
+"w": "العددية،",
+"start": 96.48,
+"end": 97.08
+},
+{
+"w": "مذكرة",
+"start": 97.13,
+"end": 97.61
+},
+{
+"w": "وملخص",
+"start": 97.66,
+"end": 98.14
+},
+{
+"w": "للدرس،",
+"start": 98.19,
+"end": 98.67
+},
+{
+"w": "وتمارين",
+"start": 98.72,
+"end": 99.32
+},
+{
+"w": "البكالوريا",
+"start": 99.37,
+"end": 100.15
+},
+{
+"w": "بالحل",
+"start": 100.2,
+"end": 100.68
+},
+{
+"w": "المفصل.",
+"start": 100.73,
+"end": 101.27
+}
+]
+},
+{
+"text": "والدوال الأصلية والحساب التكاملي: مذكرة وملخص للدرس، وتمارين البكالوريا بالحل المفصل.",
+"start": 102.02,
+"end": 108.82,
+"words": [
+{
+"w": "والدوال",
+"start": 102.02,
+"end": 102.62
+},
+{
+"w": "الأصلية",
+"start": 102.67,
+"end": 103.27
+},
+{
+"w": "والحساب",
+"start": 103.32,
+"end": 103.92
+},
+{
+"w": "التكاملي:",
+"start": 103.97,
+"end": 104.63
+},
+{
+"w": "مذكرة",
+"start": 104.68,
+"end": 105.16
+},
+{
+"w": "وملخص",
+"start": 105.21,
+"end": 105.69
+},
+{
+"w": "للدرس،",
+"start": 105.74,
+"end": 106.22
+},
+{
+"w": "وتمارين",
+"start": 106.27,
+"end": 106.87
+},
+{
+"w": "البكالوريا",
+"start": 106.92,
+"end": 107.7
+},
+{
+"w": "بالحل",
+"start": 107.75,
+"end": 108.23
+},
+{
+"w": "المفصل.",
+"start": 108.28,
+"end": 108.82
+}
+]
+},
+{
+"text": "وبنفس الطريقة: الدالة اللوغاريتمية، والإحصاء، والاحتمالات.",
+"start": 109.57,
+"end": 113.84,
+"words": [
+{
+"w": "وبنفس",
+"start": 109.57,
+"end": 110.05
+},
+{
+"w": "الطريقة:",
+"start": 110.1,
+"end": 110.7
+},
+{
+"w": "الدالة",
+"start": 110.75,
+"end": 111.29
+},
+{
+"w": "اللوغاريتمية،",
+"start": 111.34,
+"end": 112.24
+},
+{
+"w": "والإحصاء،",
+"start": 112.29,
+"end": 112.95
+},
+{
+"w": "والاحتمالات.",
+"start": 113.0,
+"end": 113.84
+}
+]
+},
+{
+"text": "ننتقل إلى السنة الثانية ثانوي، الشعب العلمية: المذكرات، والملخصات، وسلاسل التمارين بالحلول.",
+"start": 114.59,
+"end": 121.8,
+"words": [
+{
+"w": "ننتقل",
+"start": 114.59,
+"end": 115.07
+},
+{
+"w": "إلى",
+"start": 115.12,
+"end": 115.48
+},
+{
+"w": "السنة",
+"start": 115.53,
+"end": 116.01
+},
+{
+"w": "الثانية",
+"start": 116.06,
+"end": 116.66
+},
+{
+"w": "ثانوي،",
+"start": 116.71,
+"end": 117.19
+},
+{
+"w": "الشعب",
+"start": 117.24,
+"end": 117.72
+},
+{
+"w": "العلمية:",
+"start": 117.77,
+"end": 118.37
+},
+{
+"w": "المذكرات،",
+"start": 118.42,
+"end": 119.08
+},
+{
+"w": "والملخصات،",
+"start": 119.13,
+"end": 119.85
+},
+{
+"w": "وسلاسل",
+"start": 119.9,
+"end": 120.44
+},
+{
+"w": "التمارين",
+"start": 120.49,
+"end": 121.15
+},
+{
+"w": "بالحلول.",
+"start": 121.2,
+"end": 121.8
+}
+]
+},
+{
+"text": "الاشتقاقية، والمرجح، والاحتمالات، والنهايات: ملخصات وتمارين بالحلول المفصلة.",
+"start": 122.55,
+"end": 128.18,
+"words": [
+{
+"w": "الاشتقاقية،",
+"start": 122.55,
+"end": 123.33
+},
+{
+"w": "والمرجح،",
+"start": 123.38,
+"end": 123.98
+},
+{
+"w": "والاحتمالات،",
+"start": 124.03,
+"end": 124.87
+},
+{
+"w": "والنهايات:",
+"start": 124.92,
+"end": 125.64
+},
+{
+"w": "ملخصات",
+"start": 125.69,
+"end": 126.23
+},
+{
+"w": "وتمارين",
+"start": 126.28,
+"end": 126.88
+},
+{
+"w": "بالحلول",
+"start": 126.93,
+"end": 127.53
+},
+{
+"w": "المفصلة.",
+"start": 127.58,
+"end": 128.18
+}
+]
+},
+{
+"text": "ثم السنة الأولى ثانوي، جذع مشترك علوم وتكنولوجيا: المذكرات، والملخصات، وسلاسل التمارين بالحلول.",
+"start": 128.93,
+"end": 136.55,
+"words": [
+{
+"w": "ثم",
+"start": 128.93,
+"end": 129.23
+},
+{
+"w": "السنة",
+"start": 129.28,
+"end": 129.76
+},
+{
+"w": "الأولى",
+"start": 129.81,
+"end": 130.35
+},
+{
+"w": "ثانوي،",
+"start": 130.4,
+"end": 130.88
+},
+{
+"w": "جذع",
+"start": 130.93,
+"end": 131.29
+},
+{
+"w": "مشترك",
+"start": 131.34,
+"end": 131.82
+},
+{
+"w": "علوم",
+"start": 131.87,
+"end": 132.29
+},
+{
+"w": "وتكنولوجيا:",
+"start": 132.34,
+"end": 133.12
+},
+{
+"w": "المذكرات،",
+"start": 133.17,
+"end": 133.83
+},
+{
+"w": "والملخصات،",
+"start": 133.88,
+"end": 134.6
+},
+{
+"w": "وسلاسل",
+"start": 134.65,
+"end": 135.19
+},
+{
+"w": "التمارين",
+"start": 135.24,
+"end": 135.9
+},
+{
+"w": "بالحلول.",
+"start": 135.95,
+"end": 136.55
+}
+]
+},
+{
+"text": "للحصول على جميع الملفات، أرسل رسالة في الخاص على صفحة الأستاذ سوايسية هشام للرياضيات، أو على واتساب عبر هذا الرقم.",
+"start": 137.3,
+"end": 147.37,
+"words": [
+{
+"w": "للحصول",
+"start": 137.3,
+"end": 137.84
+},
+{
+"w": "على",
+"start": 137.89,
+"end": 138.25
+},
+{
+"w": "جميع",
+"start": 138.3,
+"end": 138.72
+},
+{
+"w": "الملفات،",
+"start": 138.77,
+"end": 139.37
+},
+{
+"w": "أرسل",
+"start": 139.42,
+"end": 139.84
+},
+{
+"w": "رسالة",
+"start": 139.89,
+"end": 140.37
+},
+{
+"w": "في",
+"start": 140.42,
+"end": 140.72
+},
+{
+"w": "الخاص",
+"start": 140.77,
+"end": 141.25
+},
+{
+"w": "على",
+"start": 141.3,
+"end": 141.66
+},
+{
+"w": "صفحة",
+"start": 141.71,
+"end": 142.13
+},
+{
+"w": "الأستاذ",
+"start": 142.18,
+"end": 142.78
+},
+{
+"w": "سوايسية",
+"start": 142.83,
+"end": 143.43
+},
+{
+"w": "هشام",
+"start": 143.48,
+"end": 143.9
+},
+{
+"w": "للرياضيات،",
+"start": 143.95,
+"end": 144.67
+},
+{
+"w": "أو",
+"start": 144.72,
+"end": 145.02
+},
+{
+"w": "على",
+"start": 145.07,
+"end": 145.43
+},
+{
+"w": "واتساب",
+"start": 145.48,
+"end": 146.02
+},
+{
+"w": "عبر",
+"start": 146.07,
+"end": 146.43
+},
+{
+"w": "هذا",
+"start": 146.48,
+"end": 146.84
+},
+{
+"w": "الرقم.",
+"start": 146.89,
+"end": 147.37
+}
+]
+}
+],
+"assets": {
+"modhakira_wahda2a_3as": {
+"pdf": [
+"modhakira_wahda2a_3as-1.png",
+"modhakira_wahda2a_3as-6.png",
+"modhakira_wahda2a_3as-9.png",
+"modhakira_wahda2a_3as-12.png"
+],
+"pages": 12
+},
+"molakhas_exp_3as": {
+"pdf": [
+"molakhas_exp_3as-1.png",
+"molakhas_exp_3as-5.png",
+"molakhas_exp_3as-19.png",
+"molakhas_exp_3as-25.png"
+],
+"pages": 38
+},
+"tamarin_exp_3as": {
+"pdf": [
+"tamarin_exp_3as-1.png",
+"tamarin_exp_3as-16.png",
+"tamarin_exp_3as-18.png",
+"tamarin_exp_3as-22.png"
+],
+"pages": 92
+},
+"bac_exp_3as": {
+"pdf": [
+"bac_exp_3as-1.png",
+"bac_exp_3as-5.png",
+"bac_exp_3as-22.png",
+"bac_exp_3as-29.png"
+],
+"pages": 163
+},
+"modhakira_wahda2b_3as": {
+"pdf": [
+"modhakira_wahda2b_3as-1.png",
+"modhakira_wahda2b_3as-8.png",
+"modhakira_wahda2b_3as-9.png",
+"modhakira_wahda2b_3as-10.png"
+],
+"pages": 11
+},
+"molakhas_ln_3as": {
+"pdf": [
+"molakhas_ln_3as-1.png",
+"molakhas_ln_3as-8.png",
+"molakhas_ln_3as-12.png",
+"molakhas_ln_3as-13.png"
+],
+"pages": 15
+},
+"tamarin_ln_3as": {
+"pdf": [
+"tamarin_ln_3as-1.png",
+"tamarin_ln_3as-21.png",
+"tamarin_ln_3as-24.png",
+"tamarin_ln_3as-30.png"
+],
+"pages": 47
+},
+"bac_ln_3as": {
+"pdf": [
+"bac_ln_3as-1.png",
+"bac_ln_3as-3.png",
+"bac_ln_3as-8.png",
+"bac_ln_3as-21.png"
+],
+"pages": 174
+},
+"modhakira_wahda6_3as": {
+"pdf": [
+"modhakira_wahda6_3as-1.png",
+"modhakira_wahda6_3as-13.png",
+"modhakira_wahda6_3as-15.png",
+"modhakira_wahda6_3as-20.png"
+],
+"pages": 25
+},
+"molakhas_integ_3as": {
+"pdf": [
+"molakhas_integ_3as-1.png",
+"molakhas_integ_3as-2.png",
+"molakhas_integ_3as-12.png",
+"molakhas_integ_3as-16.png"
+],
+"pages": 18
+},
+"tamarin_integ_3as": {
+"pdf": [
+"tamarin_integ_3as-1.png",
+"tamarin_integ_3as-14.png",
+"tamarin_integ_3as-16.png",
+"tamarin_integ_3as-18.png"
+],
+"pages": 25
+},
+"bac_integ_3as": {
+"pdf": [
+"bac_integ_3as-1.png",
+"bac_integ_3as-4.png",
+"bac_integ_3as-37.png",
+"bac_integ_3as-39.png"
+],
+"pages": 103
+},
+"modhakira_wahda7_3as": {
+"pdf": [
+"modhakira_wahda7_3as-1.png",
+"modhakira_wahda7_3as-9.png",
+"modhakira_wahda7_3as-21.png",
+"modhakira_wahda7_3as-23.png"
+],
+"pages": 24
+},
+"molakhas_proba_3as": {
+"pdf": [
+"molakhas_proba_3as-1.png",
+"molakhas_proba_3as-5.png",
+"molakhas_proba_3as-8.png",
+"molakhas_proba_3as-13.png"
+],
+"pages": 17
+},
+"tamarin_proba_3as": {
+"pdf": [
+"tamarin_proba_3as-1.png",
+"tamarin_proba_3as-16.png",
+"tamarin_proba_3as-18.png",
+"tamarin_proba_3as-19.png"
+],
+"pages": 22
+},
+"bac_proba_3as": {
+"pdf": [
+"bac_proba_3as-1.png",
+"bac_proba_3as-20.png",
+"bac_proba_3as-23.png",
+"bac_proba_3as-27.png"
+],
+"pages": 75
+},
+"molakhas_nihayat_3as": {
+"pdf": [
+"molakhas_nihayat_3as-1.png",
+"molakhas_nihayat_3as-14.png",
+"molakhas_nihayat_3as-15.png",
+"molakhas_nihayat_3as-36.png"
+],
+"pages": 38
+},
+"molakhas_suites_3as": {
+"pdf": [
+"molakhas_suites_3as-1.png",
+"molakhas_suites_3as-3.png",
+"molakhas_suites_3as-5.png",
+"molakhas_suites_3as-18.png"
+],
+"pages": 18
+},
+"molakhas_cplx_3as": {
+"pdf": [
+"molakhas_cplx_3as-1.png",
+"molakhas_cplx_3as-2.png",
+"molakhas_cplx_3as-8.png",
+"molakhas_cplx_3as-10.png"
+],
+"pages": 26
+},
+"molakhas_arith_3as": {
+"pdf": [
+"molakhas_arith_3as-1.png",
+"molakhas_arith_3as-5.png",
+"molakhas_arith_3as-14.png",
+"molakhas_arith_3as-18.png"
+],
+"pages": 18
+},
+"molakhas_fadaa_3as": {
+"pdf": [
+"molakhas_fadaa_3as-1.png",
+"molakhas_fadaa_3as-3.png",
+"molakhas_fadaa_3as-8.png",
+"molakhas_fadaa_3as-9.png"
+],
+"pages": 11
+},
+"modhakira_wahda1_3as_ge": {
+"pdf": [
+"modhakira_wahda1_3as_ge-1.png",
+"modhakira_wahda1_3as_ge-4.png",
+"modhakira_wahda1_3as_ge-6.png",
+"modhakira_wahda1_3as_ge-12.png"
+],
+"pages": 17
+},
+"molakhas_mutataliyat_3as_ge": {
+"pdf": [
+"molakhas_mutataliyat_3as_ge-1.png",
+"molakhas_mutataliyat_3as_ge-7.png",
+"molakhas_mutataliyat_3as_ge-9.png",
+"molakhas_mutataliyat_3as_ge-11.png"
+],
+"pages": 12
+},
+"bac_mutataliyat_3as_ge": {
+"pdf": [
+"bac_mutataliyat_3as_ge-1.png",
+"bac_mutataliyat_3as_ge-6.png",
+"bac_mutataliyat_3as_ge-24.png",
+"bac_mutataliyat_3as_ge-33.png"
+],
+"pages": 51
+},
+"modhakira_wahda4_3as_ge": {
+"pdf": [
+"modhakira_wahda4_3as_ge-1.png",
+"modhakira_wahda4_3as_ge-11.png",
+"modhakira_wahda4_3as_ge-12.png",
+"modhakira_wahda4_3as_ge-14.png"
+],
+"pages": 15
+},
+"molakhas_takamol_3as_ge": {
+"pdf": [
+"molakhas_takamol_3as_ge-1.png",
+"molakhas_takamol_3as_ge-9.png",
+"molakhas_takamol_3as_ge-11.png",
+"molakhas_takamol_3as_ge-12.png"
+],
+"pages": 13
+},
+"bac_takamol_3as_ge": {
+"pdf": [
+"bac_takamol_3as_ge-1.png",
+"bac_takamol_3as_ge-8.png",
+"bac_takamol_3as_ge-10.png",
+"bac_takamol_3as_ge-15.png"
+],
+"pages": 28
+},
+"molakhas_log_3as_ge": {
+"pdf": [
+"molakhas_log_3as_ge-1.png",
+"molakhas_log_3as_ge-2.png",
+"molakhas_log_3as_ge-13.png",
+"molakhas_log_3as_ge-14.png"
+],
+"pages": 14
+},
+"molakhas_ihsa_3as_ge": {
+"pdf": [
+"molakhas_ihsa_3as_ge-1.png",
+"molakhas_ihsa_3as_ge-2.png",
+"molakhas_ihsa_3as_ge-5.png",
+"molakhas_ihsa_3as_ge-9.png"
+],
+"pages": 12
+},
+"molakhas_ihtimalat_3as_ge": {
+"pdf": [
+"molakhas_ihtimalat_3as_ge-1.png",
+"molakhas_ihtimalat_3as_ge-3.png",
+"molakhas_ihtimalat_3as_ge-5.png",
+"molakhas_ihtimalat_3as_ge-6.png"
+],
+"pages": 11
+},
+"modhakira_wahda2_2as": {
+"pdf": [
+"modhakira_wahda2_2as-1.png",
+"modhakira_wahda2_2as-8.png",
+"modhakira_wahda2_2as-14.png",
+"modhakira_wahda2_2as-16.png"
+],
+"pages": 17
+},
+"tamarin_ishtiqaq_2as": {
+"pdf": [
+"tamarin_ishtiqaq_2as-1.png",
+"tamarin_ishtiqaq_2as-3.png",
+"tamarin_ishtiqaq_2as-10.png",
+"tamarin_ishtiqaq_2as-34.png"
+],
+"pages": 35
+},
+"tamarin_morajjih_2as": {
+"pdf": [
+"tamarin_morajjih_2as-1.png",
+"tamarin_morajjih_2as-3.png",
+"tamarin_morajjih_2as-6.png",
+"tamarin_morajjih_2as-16.png"
+],
+"pages": 17
+},
+"molakhas_ihtimalat_2as": {
+"pdf": [
+"molakhas_ihtimalat_2as-1.png",
+"molakhas_ihtimalat_2as-2.png",
+"molakhas_ihtimalat_2as-5.png",
+"molakhas_ihtimalat_2as-6.png"
+],
+"pages": 11
+},
+"molakhas_nihayat_2as": {
+"pdf": [
+"molakhas_nihayat_2as-1.png",
+"molakhas_nihayat_2as-4.png",
+"molakhas_nihayat_2as-6.png",
+"molakhas_nihayat_2as-11.png"
+],
+"pages": 12
+},
+"modhakira_wahda4_1as": {
+"pdf": [
+"modhakira_wahda4_1as-1.png",
+"modhakira_wahda4_1as-4.png",
+"modhakira_wahda4_1as-8.png",
+"modhakira_wahda4_1as-12.png"
+],
+"pages": 13
+},
+"tamarin_dawal_marjiiya_1as": {
+"pdf": [
+"tamarin_dawal_marjiiya_1as-1.png",
+"tamarin_dawal_marjiiya_1as-3.png",
+"tamarin_dawal_marjiiya_1as-6.png",
+"tamarin_dawal_marjiiya_1as-10.png"
+],
+"pages": 15
+},
+"tamarin_hisab_shoaai_1as": {
+"pdf": [
+"tamarin_hisab_shoaai_1as-1.png",
+"tamarin_hisab_shoaai_1as-4.png",
+"tamarin_hisab_shoaai_1as-5.png",
+"tamarin_hisab_shoaai_1as-6.png"
+],
+"pages": 16
+},
+"molakhas_handasa_mostawiya_1as": {
+"pdf": [
+"molakhas_handasa_mostawiya_1as-1.png",
+"molakhas_handasa_mostawiya_1as-2.png",
+"molakhas_handasa_mostawiya_1as-4.png",
+"molakhas_handasa_mostawiya_1as-5.png"
+],
+"pages": 8
+},
+"modhakira_wahda1_3as": {
+"pdf": [
+"modhakira_wahda1_3as-1.png",
+"modhakira_wahda1_3as-10.png",
+"modhakira_wahda1_3as-22.png",
+"modhakira_wahda1_3as-38.png"
+],
+"pages": 46
+},
+"bac_cplx_3as": {
+"pdf": [
+"bac_cplx_3as-1.png",
+"bac_cplx_3as-17.png",
+"bac_cplx_3as-19.png",
+"bac_cplx_3as-20.png"
+],
+"pages": 147
+},
+"bac_suites_3as": {
+"pdf": [
+"bac_suites_3as-1.png",
+"bac_suites_3as-24.png",
+"bac_suites_3as-27.png",
+"bac_suites_3as-36.png"
+],
+"pages": 172
+},
+"bac_nihayat_3as": {
+"pdf": [
+"bac_nihayat_3as-1.png",
+"bac_nihayat_3as-3.png",
+"bac_nihayat_3as-26.png",
+"bac_nihayat_3as-39.png"
+],
+"pages": 77
+},
+"tamarin_log_3as_ge": {
+"pdf": [
+"tamarin_log_3as_ge-1.png",
+"tamarin_log_3as_ge-6.png",
+"tamarin_log_3as_ge-15.png",
+"tamarin_log_3as_ge-17.png"
+],
+"pages": 31
+},
+"molakhas_exp_3as_ge": {
+"pdf": [
+"molakhas_exp_3as_ge-1.png",
+"molakhas_exp_3as_ge-2.png",
+"molakhas_exp_3as_ge-13.png",
+"molakhas_exp_3as_ge-14.png"
+],
+"pages": 14
+},
+"molakhas_dawal_3as_ge": {
+"pdf": [
+"molakhas_dawal_3as_ge-1.png",
+"molakhas_dawal_3as_ge-8.png",
+"molakhas_dawal_3as_ge-10.png",
+"molakhas_dawal_3as_ge-19.png"
+],
+"pages": 22
+}
+},
+"tex": [
+"\\begin{document}",
+"\\begin{LTR}",
+"\\begin{tcolorbox}[enhanced,colback=cSec,colframe=cSec,arc=3mm,halign=center,boxrule=0pt,top=12pt,bottom=12pt,before upper={\\selectlanguage{arabic}}]",
+"{\\color{white}\\fontsize{28}{34}\\selectfont\\bfseries الدالة الأسية}\\\\[8pt]",
+"{\\color{white}\\large ملخص شامل مع أمثلة وأشكال وتمارين محلولة خطوة بخطوة}\\\\[5pt]",
+"{\\color{white}\\large السنة الثالثة ثانوي -- علوم تجريبية، رياضيات، تقني رياضي}",
+"\\end{tcolorbox}",
+"\\end{LTR}",
+"\\begin{BOX}{cSec}{محتوى الملخص}",
+"\\begin{enumerate}[label=\\textbf{\\arabic*.}]",
+"\\item التعريف، العدد $e$ والترميز $e^{x}$.",
+"\\item الخواص الجبرية، التبسيط والمطابقة.",
+"\\item دراسة الدالة الأسية: الإشارة، الاتجاه، النهايات، الجدول، المماس عند $0$ والتمثيل البياني.",
+"\\item المعادلات والمتراجحات والجمل.",
+"\\item إشارة عبارات أسية: $u(x)e^{v(x)}$ ، $ae^{\\alpha x+\\beta}+b$ ، $ae^{2x}+be^{x}+c$.",
+"\\item النهايات الشهيرة (التزايد المقارن) وإزالة حالات عدم التعيين.",
+"\\item مقارنات: $e^{x}\\geqslant x+1$ ، $e^{x}>x$ ، $e^{x}>\\frac{x^{2}}{2}$.",
+"\\item الدالة $e^{u}$: الاشتقاق والنهايات.",
+"\\item دوال مرجعية: $e^{-x}$ ، $xe^{x}$ ، $e^{ax+b}$.",
+"\\item المعادلات التفاضلية $y'=ay$ و $y'=ay+b$.",
+"\\item تمارين شاملة محلولة (نمط البكالوريا): دراسة دوال كاملة، مقاربات ونقط انعطاف، مراكز تناظر، دوال مساعدة، مناقشة بيانية، عائلة دوال $f_m$.",
+"\\item تمارين محلولة في المعادلات التفاضلية، ثم خلاصة الطرائق.",
+"\\end{enumerate}",
+"\\end{BOX}",
+"\\section{التعريف والعدد $e$}",
+"\\begin{tarif}[الدالة الأسية]"
+]
+}
