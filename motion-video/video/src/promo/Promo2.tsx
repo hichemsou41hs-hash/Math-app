@@ -699,7 +699,7 @@ export const Promo2: React.FC = () => {
         { title: 'النهايات', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_2as' }, { label: 'الملخص', name: 'molakhas_nihayat_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_nihayat_2as' }] },
         { title: 'الزوايا الموجهة وحساب المثلثات', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_2as' }, { label: 'الملخص', name: 'molakhas_zawaya_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_zawaya_2as' }] },
         { title: 'التحويلات النقطية', files: [{ label: 'المذكرة', name: 'modhakira_wahda7_2as' }, { label: 'الملخص', name: 'molakhas_tahaki_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_tahaki_2as' }] },
-        { title: 'الجداء السلمي', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_jidaa_salmi_2as' }] },
+        { title: 'الجداء السلمي', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_2as' }, { label: 'الملخص', name: 'molakhas_jidaa_salmi_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_jidaa_salmi_2as' }] },
         { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda9_2as' }, { label: 'الملخص', name: 'molakhas_motataliat_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_motataliat_2as' }] },
       ]}
       steps={[
