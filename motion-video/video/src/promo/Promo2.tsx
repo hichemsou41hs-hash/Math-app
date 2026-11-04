@@ -4,7 +4,7 @@
 import React from 'react';
 import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import data from '../data/promo2.json';
-import { CAIRO, FontGate, NASKH, RUQAA } from '../lib/fonts';
+import { DISPLAY, FontGate, LATIN, NASKH } from '../lib/fonts';
 
 type W = { w: string; start: number; end: number };
 type Line = { text: string; start: number; end: number; words: W[] };
@@ -98,7 +98,7 @@ const FmtIcon: React.FC<{ kind: Kind; size: number }> = ({ kind, size }) => {
       <path d="M4 2 H27 L38 13 V44 a2 2 0 0 1 -2 2 H4 a2 2 0 0 1 -2 -2 V4 a2 2 0 0 1 2 -2 Z" fill={f.color} />
       <path d="M27 2 V11 a2 2 0 0 0 2 2 H38 Z" fill="rgba(255,255,255,0.45)" />
       <rect x="7" y="18" width="18" height="2.4" rx="1.2" fill="rgba(255,255,255,0.5)" />
-      <text x="20" y={kind === 'word' ? 41 : 39} textAnchor="middle" fill="#fff" fontFamily="'DejaVu Sans', sans-serif" fontWeight={700} fontSize={kind === 'word' ? 20 : kind === 'pdf' ? 12 : 13}>{mark}</text>
+      <text x="20" y={kind === 'word' ? 41 : 39} textAnchor="middle" fill="#fff" fontFamily={LATIN} fontWeight={700} fontSize={kind === 'word' ? 20 : kind === 'pdf' ? 12 : 13}>{mark}</text>
     </svg>
   );
 };
@@ -112,15 +112,15 @@ const Win: React.FC<{ kind: Kind; w: number; h: number; t: number; pages?: strin
       <div style={{ height: 50, background: f.color, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', color: '#fff' }}>
         <div style={{ display: 'flex', gap: 8 }}>{['#FF5F57', '#FEBC2E', '#28C840'].map((c) => <div key={c} style={{ width: 14, height: 14, borderRadius: 7, background: c }} />)}</div>
         <span style={{ fontFamily: NASKH, fontSize: 24, direction: 'rtl' }}>{label}</span>
-        <span style={{ fontFamily: `'DejaVu Sans', sans-serif`, fontWeight: 700, fontSize: 22, letterSpacing: 1 }}>{f.name}</span>
+        <span style={{ fontFamily: LATIN, fontWeight: 700, fontSize: 22, letterSpacing: 1 }}>{f.name}</span>
       </div>
       <div style={{ position: 'relative', height: h - 50 }}>{kind === 'tex' ? <Code t={t} /> : <Flipper pages={pages} t={t} every={every} />}</div>
     </div>
   );
 };
 
-const Title: React.FC<{ children: React.ReactNode; size?: number; color?: string; o?: number; y?: number; font?: string }> = ({ children, size = 72, color = C.text, o = 1, y = 0, font = RUQAA }) => (
-  <div style={{ fontFamily: font, fontSize: size, color, direction: 'rtl', textAlign: 'center', opacity: o, transform: `translateY(${y}px)`, textShadow: '0 6px 30px rgba(0,0,0,0.6)', lineHeight: 1.35 }}>{children}</div>
+const Title: React.FC<{ children: React.ReactNode; size?: number; color?: string; o?: number; y?: number; font?: string }> = ({ children, size = 72, color = C.text, o = 1, y = 0, font = DISPLAY }) => (
+  <div style={{ fontFamily: font, fontWeight: font === NASKH ? undefined : 800, fontSize: size, color, direction: 'rtl', textAlign: 'center', opacity: o, transform: `translateY(${y}px)`, textShadow: '0 6px 30px rgba(0,0,0,0.6)', lineHeight: 1.35 }}>{children}</div>
 );
 const Chip: React.FC<{ children: React.ReactNode; color?: string; fg?: string; size?: number; o?: number; s?: number }> = ({ children, color = C.gold, fg = '#10203F', size = 30, o = 1, s = 1 }) => (
   <span style={{ display: 'inline-block', padding: '6px 24px', borderRadius: 40, background: color, color: fg, fontFamily: NASKH, fontWeight: 700, fontSize: size, direction: 'rtl', opacity: o, transform: `scale(${s})` }}>{children}</span>
@@ -143,8 +143,8 @@ const Background: React.FC<{ frame: number }> = ({ frame }) => (
 /** Small file card: cover + label (a tile of the open lesson folder). */
 const Tile: React.FC<{ src: string; label: string; active: boolean; o?: number; color?: string; pages?: string[]; t?: number }> = ({ src, label, active, o = 1, color = C.gold, pages, t = 0 }) => (
   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, opacity: o, transform: `scale(${active ? 1.1 : 1})` }}>
-    <div style={{ width: 150, height: 210, borderRadius: 8, overflow: 'hidden', border: `3px solid ${active ? color : 'rgba(255,255,255,0.25)'}`, boxShadow: active ? `0 0 30px ${color}` : '0 10px 25px rgba(0,0,0,0.5)', position: 'relative' }}>{pages && pages.length > 1 ? <Flipper pages={pages} t={Math.max(0, t)} every={26} /> : <Paper src={src} />}</div>
-    <Chip size={20} color={active ? color : 'rgba(255,255,255,0.15)'} fg={active ? '#10203F' : C.text}>{label}</Chip>
+    <div style={{ width: 236, height: 330, borderRadius: 10, overflow: 'hidden', border: `3px solid ${active ? color : 'rgba(255,255,255,0.25)'}`, boxShadow: active ? `0 0 30px ${color}` : '0 10px 25px rgba(0,0,0,0.5)', position: 'relative' }}>{pages && pages.length > 1 ? <Flipper pages={pages} t={Math.max(0, t)} every={26} /> : <Paper src={src} />}</div>
+    <Chip size={28} color={active ? color : 'rgba(255,255,255,0.15)'} fg={active ? '#10203F' : C.text}>{label}</Chip>
   </div>
 );
 
@@ -166,7 +166,7 @@ const Hook: React.FC<SP> = ({ t, d, frame }) => {
       <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', gap: 18, background: `rgba(6,16,42,${ramp(t, 0, d * 0.25, 0.2, 0.65)})` }}>
         <Title size={80} o={ramp(t, 4, 20)} y={ramp(t, 4, 20, 40, 0)}>لكل أستاذ تعليم ثانوي</Title>
         <Title size={58} font={NASKH} color="#9FE7FF" o={ramp(t, d * 0.2, d * 0.32)} y={ramp(t, d * 0.2, d * 0.32, 24, 0)}><span style={{ fontWeight: 700 }}>يدرّس في القسم أو في دروس الدعم</span></Title>
-        <div style={{ fontFamily: CAIRO, fontWeight: 800, fontSize: 84, direction: 'rtl', lineHeight: 1.3, opacity: ramp(t, d * 0.45, d * 0.58), transform: `translateY(${ramp(t, d * 0.45, d * 0.58, 40, 0)}px)`, background: 'linear-gradient(180deg, #FFE29A 0%, #F5B54A 55%, #E08A1E 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent', filter: 'drop-shadow(0 6px 18px rgba(0,0,0,0.65))' }}>ولكل تلميذ يدرس في الثانوية</div>
+        <div style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 64, direction: 'rtl', lineHeight: 1.3, opacity: ramp(t, d * 0.45, d * 0.58), transform: `translateY(${ramp(t, d * 0.45, d * 0.58, 40, 0)}px)`, background: 'linear-gradient(180deg, #FFE29A 0%, #F5B54A 55%, #E08A1E 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent', filter: 'drop-shadow(0 6px 18px rgba(0,0,0,0.65))' }}>ولكل تلميذ يدرس في الثانوية</div>
         <Chip size={40} o={ramp(t, d * 0.7, d * 0.8)} s={ramp(t, d * 0.7, d * 0.8, 0.6, 1)}>خاصة تلاميذ البكالوريا</Chip>
       </AbsoluteFill>
     </>
@@ -187,7 +187,7 @@ const Library: React.FC<SP> = ({ t, d, frame }) => {
       </AbsoluteFill>
       <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', gap: 10, background: 'radial-gradient(ellipse at center, rgba(6,16,42,0.85) 0%, rgba(6,16,42,0.2) 60%)' }}>
         <Title size={56} o={ramp(t, 0, 14)}>مكتبة الأستاذ سوايسية هشام</Title>
-        <div style={{ fontFamily: `'DejaVu Sans', sans-serif`, fontWeight: 700, fontSize: 170, color: C.gold, textShadow: '0 10px 40px rgba(0,0,0,0.7)', direction: 'ltr' }}>+{n}</div>
+        <div style={{ fontFamily: LATIN, fontWeight: 700, fontSize: 170, color: C.gold, textShadow: '0 10px 40px rgba(0,0,0,0.7)', direction: 'ltr' }}>+{n}</div>
         <Title size={52} font={NASKH} o={ramp(t, d * 0.3, d * 0.42)}>ملفًا</Title>
         <div style={{ display: 'flex', flexDirection: 'row-reverse', gap: 34, margin: '14px 0 18px' }}>
           {[['1', 'أولى ثانوي'], ['2', 'ثانية ثانوي'], ['3', 'ثالثة ثانوي']].map(([k, lb], i) => {
@@ -195,9 +195,9 @@ const Library: React.FC<SP> = ({ t, d, frame }) => {
             const p = interpolate(t, [a, a + 14], [0, 1], { ...CL, easing: Easing.out(Easing.back(2.2)) });
             const glow = ramp(t, a + 10, a + 20) * (1 - ramp(t, a + 20, a + 34));
             return (
-              <div key={k} style={{ width: 250, height: 128, borderRadius: 22, background: `linear-gradient(160deg, ${C.gold}, #E08A1E)`, display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'center', gap: 14, opacity: Math.min(1, p * 1.5), transform: `translateY(${(1 - p) * 90}px) scale(${0.3 + 0.7 * p}) rotate(${(1 - p) * (i - 1) * 12}deg)`, boxShadow: `0 18px 40px rgba(0,0,0,0.55), 0 0 ${10 + 40 * glow}px rgba(255,214,120,${0.3 + 0.5 * glow})` }}>
-                <div style={{ width: 74, height: 74, borderRadius: 37, background: '#10203F', color: C.gold, fontFamily: `'DejaVu Sans', sans-serif`, fontWeight: 700, fontSize: 46, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{k}</div>
-                <span style={{ fontFamily: RUQAA, fontSize: 40, color: '#10203F', direction: 'rtl' }}>{lb}</span>
+              <div key={k} style={{ width: 300, height: 128, borderRadius: 22, background: `linear-gradient(160deg, ${C.gold}, #E08A1E)`, display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'center', gap: 14, opacity: Math.min(1, p * 1.5), transform: `translateY(${(1 - p) * 90}px) scale(${0.3 + 0.7 * p}) rotate(${(1 - p) * (i - 1) * 12}deg)`, boxShadow: `0 18px 40px rgba(0,0,0,0.55), 0 0 ${10 + 40 * glow}px rgba(255,214,120,${0.3 + 0.5 * glow})` }}>
+                <div style={{ width: 74, height: 74, borderRadius: 37, background: '#10203F', color: C.gold, fontFamily: LATIN, fontWeight: 700, fontSize: 46, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{k}</div>
+                <span style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 38, color: '#10203F', direction: 'rtl', whiteSpace: 'nowrap' }}>{lb}</span>
               </div>
             );
           })}
@@ -249,7 +249,7 @@ const Content: React.FC<SP> = ({ t, d }) => {
                   return (
                     <div key={k} style={{ position: 'absolute', left: x - 44, width: 88, top: -8, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, opacity: p, transform: `scale(${0.4 + 0.6 * p})` }}>
                       <FmtIcon kind={FMT3[k]} size={44} />
-                      <span style={{ fontFamily: `'DejaVu Sans', sans-serif`, fontWeight: 700, fontSize: 17, color: C.text }}>{FMT[FMT3[k]].name}</span>
+                      <span style={{ fontFamily: LATIN, fontWeight: 700, fontSize: 17, color: C.text }}>{FMT[FMT3[k]].name}</span>
                     </div>
                   );
                 })}
@@ -265,7 +265,7 @@ const Content: React.FC<SP> = ({ t, d }) => {
           <div style={{ position: 'absolute', bottom: 70, left: 0, right: 0, display: 'flex', justifyContent: 'center', opacity: Math.min(1, p * 1.4), transform: `translateY(${(1 - p) * 60}px) scale(${0.7 + 0.3 * p})` }}>
             <div style={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', gap: 18, padding: '12px 40px', borderRadius: 50, background: 'linear-gradient(90deg, #00C9A7, #12B5E8 50%, #6C5CE7)', boxShadow: `0 0 ${20 + 22 * glow}px rgba(18,181,232,0.7), 0 14px 30px rgba(0,0,0,0.5)`, border: '2px solid rgba(255,255,255,0.7)' }}>
               <svg width={46} height={46} viewBox="0 0 24 24"><path fill="#fff" d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zm17.7-10.2a1 1 0 0 0 0-1.42l-2.33-2.33a1 1 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.83-1.83z" /></svg>
-              <span style={{ fontFamily: CAIRO, fontWeight: 800, fontSize: 50, color: '#fff', direction: 'rtl', textShadow: '0 3px 10px rgba(0,0,0,0.35)' }}>كل الملفات قابلة للتعديل</span>
+              <span style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 50, color: '#fff', direction: 'rtl', textShadow: '0 3px 10px rgba(0,0,0,0.35)' }}>كل الملفات قابلة للتعديل</span>
             </div>
           </div>
         );
@@ -292,7 +292,7 @@ const ThirdYear: React.FC<SP> = ({ t, d }) => {
   return (
     <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', gap: 30, transform: `scale(${1 + 0.1 * ramp(t, d * 0.3, d, 0, 1)})` }}>
       <Banner t={t} level="السنة الثالثة ثانوي" />
-      <Title size={44} font={NASKH} o={ramp(t, d * 0.05, d * 0.12)}>كل درس = أربعة ملفات</Title>
+      <Title size={56} font={NASKH} o={ramp(t, d * 0.05, d * 0.12)}>كل درس = أربعة ملفات</Title>
       <div style={{ display: 'flex', flexDirection: 'row-reverse', gap: 34 }}>
         {four.map((f, i) => {
           const s = t - d * (0.1 + i * 0.07);
@@ -303,7 +303,7 @@ const ThirdYear: React.FC<SP> = ({ t, d }) => {
         })}
       </div>
       <div style={{ display: 'flex', flexDirection: 'row-reverse', gap: 16 }}>
-        {streams.map((s, i) => <Chip key={s} size={28} color={i === 3 ? '#7FD1AE' : C.gold} o={ramp(t, d * (0.42 + i * 0.05), d * (0.42 + i * 0.05) + 10)} s={ramp(t, d * (0.42 + i * 0.05), d * (0.42 + i * 0.05) + 10, 0.5, 1) * (1 + 0.06 * Math.max(0, Math.sin(t / 9 - i * 0.9)) * ramp(t, d * 0.6, d * 0.65))}>{s}</Chip>)}
+        {streams.map((s, i) => <Chip key={s} size={36} color={i === 3 ? '#7FD1AE' : C.gold} o={ramp(t, d * (0.42 + i * 0.05), d * (0.42 + i * 0.05) + 10)} s={ramp(t, d * (0.42 + i * 0.05), d * (0.42 + i * 0.05) + 10, 0.5, 1) * (1 + 0.06 * Math.max(0, Math.sin(t / 9 - i * 0.9)) * ramp(t, d * 0.6, d * 0.65))}>{s}</Chip>)}
       </div>
     </AbsoluteFill>
   );
@@ -420,7 +420,7 @@ const Platform: React.FC<{ logo: React.ReactNode; name: string; value: string; c
   <div style={{ width: 520, padding: '26px 18px 24px', borderRadius: 26, background: 'rgba(255,255,255,0.07)', border: `3px solid ${color}`, boxShadow: `0 0 34px ${color}66, 0 20px 40px rgba(0,0,0,0.5)`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, opacity: o, transform: `translateY(${y}px) scale(${s})` }}>
     {logo}
     <span style={{ fontFamily: NASKH, fontWeight: 700, fontSize: 34, color, direction: 'rtl' }}>{name}</span>
-    <span style={{ fontFamily: latin ? `'DejaVu Sans', sans-serif` : NASKH, fontWeight: 700, fontSize: latin ? 38 : 32, color: '#fff', direction: latin ? 'ltr' : 'rtl', letterSpacing: latin ? 1 : 0, whiteSpace: 'nowrap', opacity: vo, transform: `scale(${0.6 + 0.4 * vo})` }}>{value}</span>
+    <span style={{ fontFamily: latin ? LATIN : NASKH, fontWeight: 700, fontSize: latin ? 38 : 32, color: '#fff', direction: latin ? 'ltr' : 'rtl', letterSpacing: latin ? 1 : 0, whiteSpace: 'nowrap', opacity: vo, transform: `scale(${0.6 + 0.4 * vo})` }}>{value}</span>
   </div>
 );
 
@@ -430,7 +430,7 @@ const End: React.FC<SP & { at: number }> = ({ t, d, at }) => {
   const wa = card(1);
   return (
     <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', gap: 22 }}>
-      <Title size={64} o={ramp(t, 0, 12)}>لمعرفة سعر جميع الملفات</Title>
+      <Title size={66} color={C.gold} o={ramp(t, 0, 12)}>لمعرفة كيفية اقتناء جميع الملفات</Title>
       <Title size={40} font={NASKH} color={C.goldLight} o={ramp(t, 6, 18)}>أرسل رسالة في إحدى المنصات الثلاث: فايسبوك، واتساب، إنستغرام</Title>
       <div style={{ display: 'flex', flexDirection: 'row-reverse', gap: 34, marginTop: 26, alignItems: 'center' }}>
         <Platform logo={<Facebook size={96} />} name="فايسبوك" value="الأستاذ سوايسية هشام للرياضيات" color="#4C8DFF" {...card(0)} />
@@ -556,7 +556,7 @@ const Board: React.FC<{ sec: number; fps: number; header: string; cols: Col[]; t
                     boxShadow: on ? `0 0 ${26 + 14 * pulse}px rgba(245,181,74,0.75)` : `0 0 ${12 + 14 * pulse}px rgba(80,170,255,${0.45 + 0.25 * pulse}), 0 10px 20px rgba(0,0,0,0.45)`,
                     transform: `translateY(${fy}px) rotate(${rot}deg) scale(${on ? 1.05 : 1})` }}>
                     <div style={{ position: 'absolute', top: 0, bottom: 0, left: `${shine * 100}%`, width: '28%', background: 'linear-gradient(100deg, transparent, rgba(255,255,255,0.38), transparent)', transform: 'skewX(-20deg)' }} />
-                    <span style={{ position: 'relative', fontFamily: RUQAA, fontSize: col.title.length > 22 ? 24 : col.title.length > 15 ? 28 : 34, color: on ? '#10203F' : '#FFFFFF', direction: 'rtl', textAlign: 'center', lineHeight: 1.15, textShadow: on ? 'none' : '0 2px 6px rgba(10,20,60,0.6)' }}>{col.title}</span>
+                    <span style={{ position: 'relative', fontFamily: DISPLAY, fontWeight: 700, fontSize: col.title.length > 22 ? 21 : col.title.length > 15 ? 25 : 30, color: on ? '#10203F' : '#FFFFFF', direction: 'rtl', textAlign: 'center', lineHeight: 1.15, textShadow: on ? 'none' : '0 2px 6px rgba(10,20,60,0.6)' }}>{col.title}</span>
                   </div>
                 );
               })()}

@@ -12,7 +12,12 @@ const FACES: [string, string, string][] = [
   ['ChalkHand', 'Kalam-Regular.ttf', '400'],
   ['ChalkHand', 'Kalam-Bold.ttf', '700'],
   ['ChalkSymbols', 'DejaVuSans.ttf', '400'],
+  ['ProDisplay', 'Tajawal-Medium.ttf', '500'],
+  ['ProDisplay', 'Tajawal-Bold.ttf', '700'],
   ['ProDisplay', 'Tajawal-ExtraBold.ttf', '800'],
+  ['ProLatin', 'Poppins-SemiBold.ttf', '600'],
+  ['ProLatin', 'Poppins-Bold.ttf', '700'],
+  ['ProLatin', 'Poppins-ExtraBold.ttf', '800'],
 ];
 
 /** Arabic handwriting (titles, sentences). */
@@ -22,8 +27,10 @@ export const NASKH = `'ChalkNaskh', 'ChalkSymbols'`;
 /** Latin chalk handwriting for formulas, with symbols from DejaVu. */
 export const HAND = `'ChalkHand', 'ChalkSymbols'`;
 export const SYM = `'ChalkSymbols'`;
-/** Modern Arabic display face (Tajawal ExtraBold, SIL OFL) for promo headlines. */
-export const CAIRO = `'ProDisplay', 'ChalkNaskh', 'ChalkSymbols'`;
+/** Modern Arabic display face (Tajawal, SIL OFL) for promo titles. */
+export const DISPLAY = `'ProDisplay', 'ProLatin', 'ChalkNaskh', 'ChalkSymbols'`;
+/** Latin UI face (Poppins, SIL OFL): numbers, format names, handles. */
+export const LATIN = `'ProLatin', 'ProDisplay', 'ChalkSymbols'`;
 
 let loading: Promise<unknown> | null = null;
 function loadAll() {
