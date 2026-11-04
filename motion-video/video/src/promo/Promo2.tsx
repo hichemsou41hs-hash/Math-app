@@ -2,7 +2,7 @@
 // Every scene opens real files (PDF pages, Word pages, LaTeX source) and closes them again.
 // Timing comes from data/promo2.json (estimated now, replaced by the ElevenLabs word timings later).
 import React from 'react';
-import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, Easing, Html5Audio, Img, interpolate, Sequence, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import data from '../data/promo2.json';
 import { DISPLAY, FontGate, LATIN, NASKH } from '../lib/fonts';
 
@@ -11,7 +11,7 @@ type Line = { text: string; start: number; end: number; words: W[] };
 const RAW = (data as { lines: Line[] }).lines;
 /** Silence (seconds) inserted after a voice line so its scene can breathe: the 2AS and 1AS boards.
  *  When the voice is added, each line's audio is played from its shifted start (raw start + SHIFT[i]). */
-const PAD_AFTER: Record<number, number> = { 6: 1.5, 7: 2.5, 9: 3, 10: 2.5, 11: 3.5, 12: 3.5 };
+const PAD_AFTER: Record<number, number> = { 3: 29, 4: 29, 5: 20, 6: 18 };
 const SHIFT = RAW.map((_, i) => RAW.slice(0, i).reduce((q, __, k) => q + (PAD_AFTER[k] ?? 0), 0));
 const LINES: Line[] = RAW.map((l, i) => ({ ...l, start: l.start + SHIFT[i], end: l.end + SHIFT[i], words: l.words.map((w) => ({ ...w, start: w.start + SHIFT[i], end: w.end + SHIFT[i] })) }));
 const ASSETS = (data as { assets: Record<string, { pdf: string[]; pages: number }> }).assets;
@@ -483,7 +483,7 @@ type Step = { line: number; opens: [number, number][]; formats?: boolean; hover?
  *  annual distribution), each lesson a column (title, then its files with their three formats).
  *  The cursor clicks a file, it flies to the centre as an open book, flips pages, flies back.
  *  A step with only `hover` moves the cursor slowly from lesson to lesson, lighting each title. */
-const Board: React.FC<{ sec: number; fps: number; header: string; cols: Col[]; top: number; steps: Step[]; starts: number[]; g0: number; g1: number }> = ({ sec, fps, header, cols, top, steps, starts, g0, g1 }) => {
+const Board: React.FC<{ sec: number; fps: number; header: string; cols: Col[]; top: number; steps: Step[]; starts: number[]; g0: number; g1: number; t0: number }> = ({ sec, fps, header, cols, top, steps, starts, g0, g1, t0 }) => {
   const W = 1920;
   const per = Math.max(top, cols.length - top);
   const colW = Math.min(440, (W - 90) / per);
@@ -505,10 +505,12 @@ const Board: React.FC<{ sec: number; fps: number; header: string; cols: Col[]; t
     const a = starts[s.line] - (k === 0 ? 0 : 0.3);
     const b = k + 1 < steps.length ? starts[steps[k + 1].line] - 0.3 : g1 - 0.4;
     const items: Op[] = (s.pre ?? []).map((c) => ({ c, f: -1, a: 0, b: 0, hop: true }));
-    s.opens.forEach(([c, f]) => items.push({ c, f, a: 0, b: 0 }));
-    if (s.formats) items.push({ c: s.opens[0][0], f: 1, a: 0, b: 0, formats: true });
+    s.opens.forEach(([c, f], m) => {
+      items.push({ c, f, a: 0, b: 0 });
+      if (m === 0 && s.formats) items.push({ c, f: 1, a: 0, b: 0, formats: true });
+    });
     (s.hover ?? []).forEach((c) => items.push({ c, f: -1, a: 0, b: 0, hop: true }));
-    const sa = k === 0 ? Math.max(a, g0 + 1.2) : a;
+    const sa = k === 0 ? Math.max(a, t0) : a;
     const wt = (o: Op) => (o.hop ? 0.45 : 1);
     const unit = (b - sa) / Math.max(0.45, items.reduce((q, o) => q + wt(o), 0));
     let x = sa;
@@ -537,8 +539,19 @@ const Board: React.FC<{ sec: number; fps: number; header: string; cols: Col[]; t
   const flipWindow = op ? 0.52 * (op.b - op.a) * fps : 1;
   const flipF = Math.max(6, Math.floor(flipWindow / 6.5));
   const ic = Math.max(20, Math.min(32, tileH * 0.27));
+  // sound: a mouse click on every opened file, a page-turn for every flip of the book
+  const sfx: { f: number; src: string; v: number }[] = [];
+  ops.forEach((o) => {
+    if (o.hop || o.formats) return;
+    const len = o.b - o.a;
+    sfx.push({ f: Math.round((o.a + 0.145 * len) * fps), src: 'promo2/sfx/click.wav', v: 0.9 });
+    const fF = Math.max(6, Math.floor((0.52 * len * fps) / 6.5));
+    const f0 = Math.round((o.a + 0.32 * len) * fps);
+    for (let i = 0; i < 6; i++) sfx.push({ f: f0 + i * fF + Math.round(0.05 * fF), src: 'promo2/sfx/flip.wav', v: 0.75 });
+  });
   return (
     <AbsoluteFill>
+      {sfx.map((x, i) => <Sequence key={'s' + i} from={x.f} durationInFrames={Math.round(0.5 * fps)} layout="none"><Html5Audio src={staticFile(x.src)} volume={x.v} /></Sequence>)}
       <div style={{ position: 'absolute', top: 22, width: '100%', textAlign: 'center' }}><Chip size={30} o={ramp(tg, 0, 12)}>{header}</Chip></div>
       <AbsoluteFill style={{ opacity: 1 - 0.7 * dim, filter: dim > 0 ? `blur(${3 * dim}px)` : undefined }}>
         {cols.map((col, i) => {
@@ -675,14 +688,16 @@ export const Promo2: React.FC = () => {
   const GE = 'السنة الثالثة ثانوي -- تسيير واقتصاد';
   const f4 = (m: string, s: string, e: string, b: string) => [{ label: 'المذكرة', name: m }, { label: 'الملخص', name: s }, { label: 'تمارين نموذجية مع الحلول', name: e }, { label: 'تمارين البكالوريا مع الحلول', name: b }];
   const num = LINES[LINES.length - 1].words.find((w) => w.w.includes('الرقم'));
-  // groups of voice lines that share one scene: [first line, last line, scene]
-  type G = [number, number, (sp: SP, g0: number, g1: number) => React.ReactNode];
-  const groups: G[] = [
-    [0, 0, (sp) => <Hook {...sp} />],
-    [1, 1, (sp) => <Library {...sp} />],
-    [2, 2, (sp) => <Content {...sp} />],
-    [3, 3, (sp) => <ThirdYear {...sp} />],
-    [4, 6, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header={L3} top={6}
+  const ends = LINES.map((l) => l.end);
+  // scenes on the time line: the voice only names each level; the cursor then works in silence (clicks and page turns)
+  type S = [number, number, (sp: SP, g0: number, g1: number) => React.ReactNode];
+  const b3 = ends[3] + 0.6;
+  const scenes: S[] = [
+    [0, starts[1], (sp) => <Hook {...sp} />],
+    [starts[1], starts[2], (sp) => <Library {...sp} />],
+    [starts[2], starts[3], (sp) => <Content {...sp} />],
+    [starts[3], b3, (sp) => <ThirdYear {...sp} />],
+    [b3, starts[4], (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} t0={g0 + 0.6} header={L3} top={6}
       cols={[
         { title: 'الاشتقاقية والاستمرارية', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_3as' }, { label: 'الملخص', name: 'molakhas_nihayat_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_nihayat_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_nihayat_3as' }] },
         { title: 'الدالة الأسية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2a_3as' }, { label: 'الملخص', name: 'molakhas_exp_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_exp_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_exp_3as' }] },
@@ -696,13 +711,8 @@ export const Promo2: React.FC = () => {
         { title: 'الأعداد المركبة', files: [{ label: 'المذكرة', name: 'modhakira_wahda9_3as' }, { label: 'الملخص', name: 'molakhas_cplx_3as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_cplx_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_cplx_3as' }] },
         { title: 'الهندسة في الفضاء', files: [{ label: 'المذكرة', name: 'modhakira_wahda10_3as' }, { label: 'الملخص', name: 'molakhas_fadaa_3as' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_fadaa_3as' }] },
       ]}
-      steps={[
-        { line: 3, opens: [], hover: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
-        { line: 4, opens: [[1, 3]], formats: true },
-        { line: 5, opens: [[8, 2]] },
-        { line: 6, opens: [[5, 0], [9, 1]] },
-      ]} />],
-    [7, 9, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header={GE} top={4}
+      steps={[{ line: 3, opens: [[1, 3], [8, 2], [5, 0], [9, 1]], formats: true, pre: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }]} />],
+    [starts[4], starts[5], (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} t0={ends[4] + 0.3} header={GE} top={4}
       cols={[
         { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_3as_ge' }, { label: 'الملخص', name: 'molakhas_mutataliyat_3as_ge' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_mutataliyat_3as_ge' }] },
         { title: 'الاشتقاقية والاستمرارية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_3as_ge' }, { label: 'الملخص', name: 'molakhas_dawal_3as_ge' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_dawal_3as_ge' }] },
@@ -713,12 +723,8 @@ export const Promo2: React.FC = () => {
         { title: 'الإحصاء', files: [{ label: 'المذكرة', name: 'modhakira_wahda7_3as_ge' }, { label: 'الملخص', name: 'molakhas_ihsa_3as_ge' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_ihsa_3as_ge' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_ihsa_3as_ge' }] },
         { title: 'الاحتمالات', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_3as_ge' }, { label: 'الملخص', name: 'molakhas_ihtimalat_3as_ge' }, { label: 'تمارين البكالوريا مع الحلول', name: 'bac_ihtimalat_3as_ge' }] },
       ]}
-      steps={[
-        { line: 7, opens: [[0, 1], [1, 0]], pre: [0, 1, 2, 3, 4, 5, 6, 7] },
-        { line: 8, opens: [[3, 2], [2, 1]] },
-        { line: 9, opens: [[4, 0], [5, 1], [6, 2]] },
-      ]} />],
-    [10, 11, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الثانية ثانوي -- الشعب العلمية" top={5}
+      steps={[{ line: 4, opens: [[0, 1], [1, 0], [3, 2], [2, 1], [4, 0], [5, 1], [6, 2]], pre: [0, 1, 2, 3, 4, 5, 6, 7] }]} />],
+    [starts[5], starts[6], (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} t0={ends[5] + 0.3} header="السنة الثانية ثانوي -- الشعب العلمية" top={5}
       cols={[
         { title: 'الدوال', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_2as' }, { label: 'الملخص', name: 'molakhas_2as_wahda1' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_2as_wahda1' }] },
         { title: 'الاشتقاقية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_2as' }, { label: 'الملخص', name: 'molakhas_ishtiqaq_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_ishtiqaq_2as' }] },
@@ -730,11 +736,8 @@ export const Promo2: React.FC = () => {
         { title: 'الجداء السلمي', files: [{ label: 'المذكرة', name: 'modhakira_wahda8_2as' }, { label: 'الملخص', name: 'molakhas_jidaa_salmi_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_jidaa_salmi_2as' }] },
         { title: 'المتتاليات العددية', files: [{ label: 'المذكرة', name: 'modhakira_wahda9_2as' }, { label: 'الملخص', name: 'molakhas_motataliat_2as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_motataliat_2as' }] },
       ]}
-      steps={[
-        { line: 10, opens: [[1, 1]], pre: [0, 1, 2, 3, 4, 5, 6, 7, 8] },
-        { line: 11, opens: [[3, 0], [2, 2], [4, 1]] },
-      ]} />],
-    [12, 12, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا" top={3}
+      steps={[{ line: 5, opens: [[1, 1], [3, 0], [2, 2], [4, 1]], pre: [0, 1, 2, 3, 4, 5, 6, 7, 8] }]} />],
+    [starts[6], starts[7], (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} t0={ends[6] + 0.3} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا" top={3}
       cols={[
         { title: 'الأعداد والحساب', files: [{ label: 'المذكرة', name: 'modhakira_wahda1_1as' }, { label: 'الملخص', name: 'molakhas_03_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_wahda1_1as' }] },
         { title: 'عموميات على الدوال', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_1as' }, { label: 'الملخص', name: 'molakhas_omomiyat_dawal_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_omomiyat_dawal_1as' }] },
@@ -743,17 +746,12 @@ export const Promo2: React.FC = () => {
         { title: 'العبارات الجبرية', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_1as' }, { label: 'الملخص', name: 'molakhas_ibarat_jabriya_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_ibarat_jabriya_1as' }] },
         { title: 'الهندسة المستوية', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_1as' }, { label: 'الملخص', name: 'molakhas_handasa_mostawiya_1as' }, { label: 'تمارين نموذجية مع الحلول', name: 'tamarin_handasa_mostawiya_1as' }] },
       ]}
-      steps={[
-        { line: 12, opens: [[4, 1], [3, 0], [2, 2], [5, 1]], pre: [0, 1, 2, 3, 4, 5] },
-      ]} />],
-    [13, 13, (sp) => <End {...sp} at={num ? Math.round((num.start - starts[13]) * fps) : Math.round(sp.d * 0.7)} />],
+      steps={[{ line: 6, opens: [[4, 1], [3, 0], [2, 2], [5, 1]], pre: [0, 1, 2, 3, 4, 5] }]} />],
+    [starts[7], END, (sp) => <End {...sp} at={num ? Math.round((num.start - starts[7]) * fps) : Math.round(sp.d * 0.7)} />],
   ];
-  // the 3AS board comes in before line 4, cutting the long "four files" scene short (it felt slow)
-  const gStart = (a: number) => (a === 4 ? starts[3] + 0.7 * (starts[4] - starts[3]) : starts[a]);
-  const gi = Math.max(0, groups.findIndex(([a, b]) => sec >= gStart(a) && sec < (b + 1 < LINES.length ? gStart(b + 1) : Infinity)));
-  const [ga, gb, scene] = groups[gi];
-  const g0 = gStart(ga);
-  const g1 = gb + 1 < LINES.length ? gStart(gb + 1) : END;
+  const gi = Math.max(0, scenes.findIndex(([a, b]) => sec >= a && sec < b));
+  const [g0, g1, scene] = scenes[gi];
+  const groups = scenes;
   const t = frame - Math.round(g0 * fps);
   const d = Math.round((g1 - g0) * fps);
   const fade = Math.min(ramp(t, 0, 9), gi === groups.length - 1 ? 1 : ramp(t, d - 7, d, 1, 0));
