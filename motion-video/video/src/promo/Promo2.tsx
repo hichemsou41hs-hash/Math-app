@@ -84,6 +84,21 @@ const FMT: Record<Kind, { name: string; color: string }> = {
   tex: { name: 'LaTeX', color: C.tex },
 };
 
+/** File-type icon: a coloured sheet with a folded corner and the format mark. */
+const FmtIcon: React.FC<{ kind: Kind; size: number }> = ({ kind, size }) => {
+  const f = FMT[kind];
+  const mark = kind === 'pdf' ? 'PDF' : kind === 'word' ? 'W' : 'TeX';
+  return (
+    <svg width={size} height={size * 1.2} viewBox="0 0 40 48" style={{ flex: 'none', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.45))' }}>
+      <path d="M4 2 H27 L38 13 V44 a2 2 0 0 1 -2 2 H4 a2 2 0 0 1 -2 -2 V4 a2 2 0 0 1 2 -2 Z" fill={f.color} />
+      <path d="M27 2 V11 a2 2 0 0 0 2 2 H38 Z" fill="rgba(255,255,255,0.45)" />
+      <rect x="7" y="18" width="18" height="2.4" rx="1.2" fill="rgba(255,255,255,0.5)" />
+      <text x="20" y={kind === 'word' ? 41 : 39} textAnchor="middle" fill="#fff" fontFamily="'DejaVu Sans', sans-serif" fontWeight={700} fontSize={kind === 'word' ? 20 : kind === 'pdf' ? 12 : 13}>{mark}</text>
+    </svg>
+  );
+};
+const FMT3: Kind[] = ['pdf', 'word', 'tex'];
+
 /** A document window: coloured title bar (format + file label), pages or code inside. */
 const Win: React.FC<{ kind: Kind; w: number; h: number; t: number; pages?: string[]; label: string; every?: number }> = ({ kind, w, h, t, pages = [], label, every }) => {
   const f = FMT[kind];
@@ -182,25 +197,48 @@ const Content: React.FC<SP> = ({ t, d }) => {
     { label: 'سلاسل تمارين نموذجية', src: P('tamarin_exp_3as') },
     { label: 'تمارين البكالوريا', src: P('bac_ln_3as') },
   ];
-  const fmts: Kind[] = ['pdf', 'word', 'tex'];
+  // arrow tree: one stem from each file, splitting into three branches (PDF, Word, LaTeX)
+  const TW = 330, TH = 130, xs = [55, 165, 275];
   return (
-    <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', gap: 34 }}>
-      <div style={{ display: 'flex', flexDirection: 'row-reverse', gap: 36 }}>
+    <AbsoluteFill style={{ alignItems: 'center', paddingTop: 40 }}>
+      <Title size={44} font={NASKH} color={C.goldLight} o={ramp(t, d * 0.45, d * 0.55)}>جميعها بالحل المفصل</Title>
+      <div style={{ display: 'flex', flexDirection: 'row-reverse', gap: 40, marginTop: 14 }}>
         {cards.map((c, i) => {
-          const s = t - i * d * 0.12;
+          const s = t - i * d * 0.1;
+          const a0 = d * 0.6 + i * 10; // arrows start once the formats are said
+          const stem = ramp(t, a0, a0 + 8), br = ramp(t, a0 + 8, a0 + 18);
           return (
-            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, opacity: ramp(s, 0, 10), transform: `translateY(${ramp(s, 0, 14, 80, 0)}px)` }}>
-              <div style={{ width: 300, height: 420, position: 'relative', borderRadius: 10, overflow: 'hidden', border: `4px solid ${C.gold}`, boxShadow: '0 30px 60px rgba(0,0,0,0.6)' }}><Flipper pages={c.src} t={s} every={34} /></div>
-              <Chip size={30}>{c.label}</Chip>
+            <div key={i} style={{ width: TW, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, opacity: ramp(s, 0, 10), transform: `translateY(${ramp(s, 0, 14, 80, 0)}px)` }}>
+              <div style={{ width: 250, height: 350, position: 'relative', borderRadius: 10, overflow: 'hidden', border: `4px solid ${C.gold}`, boxShadow: '0 30px 60px rgba(0,0,0,0.6)' }}><Flipper pages={c.src} t={s} every={34} /></div>
+              <Chip size={28}>{c.label}</Chip>
+              <svg width={TW} height={TH} viewBox={`0 0 ${TW} ${TH}`} style={{ overflow: 'visible' }}>
+                <line x1={TW / 2} y1={0} x2={TW / 2} y2={46 * stem} stroke={C.gold} strokeWidth={5} strokeLinecap="round" />
+                {xs.map((x, k) => {
+                  const ex = TW / 2 + (x - TW / 2) * br, ey = 46 + (TH - 18 - 46) * br;
+                  const ang = Math.atan2(TH - 18 - 46, x - TW / 2);
+                  const hd = (q: number) => `${ex - 16 * Math.cos(ang + q)},${ey - 16 * Math.sin(ang + q)}`;
+                  return br > 0 ? (
+                    <g key={k}>
+                      <line x1={TW / 2} y1={46} x2={ex} y2={ey} stroke={FMT[FMT3[k]].color} strokeWidth={5} strokeLinecap="round" />
+                      {br > 0.6 && <polygon points={`${ex},${ey} ${hd(0.45)} ${hd(-0.45)}`} fill={FMT[FMT3[k]].color} />}
+                    </g>
+                  ) : null;
+                })}
+              </svg>
+              <div style={{ width: TW, height: 70, position: 'relative', direction: 'ltr' }}>
+                {xs.map((x, k) => {
+                  const p = ramp(t, a0 + 16 + k * 3, a0 + 26 + k * 3);
+                  return (
+                    <div key={k} style={{ position: 'absolute', left: x - 44, width: 88, top: -8, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, opacity: p, transform: `scale(${0.4 + 0.6 * p})` }}>
+                      <FmtIcon kind={FMT3[k]} size={44} />
+                      <span style={{ fontFamily: `'DejaVu Sans', sans-serif`, fontWeight: 700, fontSize: 17, color: C.text }}>{FMT[FMT3[k]].name}</span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           );
         })}
-      </div>
-      <Title size={44} font={NASKH} color={C.goldLight} o={ramp(t, d * 0.5, d * 0.6)}>جميعها بالحل المفصل</Title>
-      <div style={{ display: 'flex', gap: 24, direction: 'ltr' }}>
-        {fmts.map((k, i) => (
-          <div key={k} style={{ padding: '10px 34px', borderRadius: 12, background: FMT[k].color, color: '#fff', fontFamily: `'DejaVu Sans', sans-serif`, fontWeight: 700, fontSize: 38, opacity: ramp(t, d * 0.68 + i * 8, d * 0.68 + i * 8 + 10), transform: `scale(${ramp(t, d * 0.68 + i * 8, d * 0.68 + i * 8 + 10, 0.4, 1)})` }}>{FMT[k].name}</div>
-        ))}
       </div>
     </AbsoluteFill>
   );
@@ -443,7 +481,15 @@ const Board: React.FC<{ sec: number; fps: number; header: string; cols: Col[]; s
               return (
                 <div key={j} style={{ position: 'absolute', top: tileY(j) - 100, left: 0, right: 0, height: 160, display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', gap: 16, padding: '0 12px', borderRadius: 12, background: active ? 'rgba(245,181,74,0.22)' : 'rgba(255,255,255,0.06)', border: `2px solid ${active ? C.gold : 'rgba(255,255,255,0.12)'}`, opacity: ramp(tg, 10 + i * 4 + j * 3, 20 + i * 4 + j * 3) }}>
                   <div style={{ width: 100, height: 140, flex: 'none', borderRadius: 6, overflow: 'hidden', boxShadow: '0 8px 18px rgba(0,0,0,0.5)', opacity: active && fly > 0.02 ? 0 : 1 }}><Paper src={BK(f.name)[0]} /></div>
-                  <span style={{ fontFamily: NASKH, fontWeight: 700, fontSize: 30, color: C.text, direction: 'rtl' }}>{f.label}</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10 }}>
+                    <span style={{ fontFamily: NASKH, fontWeight: 700, fontSize: 30, color: C.text, direction: 'rtl', lineHeight: 1.1 }}>{f.label}</span>
+                    <div style={{ display: 'flex', gap: 8, direction: 'ltr' }}>
+                      {FMT3.map((k, q) => {
+                        const p = ramp(tg, 18 + i * 4 + j * 3 + q * 2, 26 + i * 4 + j * 3 + q * 2);
+                        return <div key={k} style={{ opacity: p, transform: `scale(${0.5 + 0.5 * p})` }}><FmtIcon kind={k} size={34} /></div>;
+                      })}
+                    </div>
+                  </div>
                 </div>
               );
             })}
@@ -484,15 +530,43 @@ const Board: React.FC<{ sec: number; fps: number; header: string; cols: Col[]; s
   );
 };
 
-// ---------- captions (the line being said, words lit as they are spoken) ----------
-const Caption: React.FC<{ sec: number; line: Line | undefined }> = ({ sec, line }) => {
-  if (!line) return null;
-  const o = Math.min(ramp(sec, line.start - 0.25, line.start), ramp(sec, line.end + 0.4, line.end + 0.8, 1, 0));
+// ---------- captions: short phrases, the spoken word lit in gold; gone as soon as the voice stops ----------
+type Chunk = { words: W[]; start: number; end: number };
+const CHUNKS: Chunk[] = (() => {
+  const out: Chunk[] = [];
+  LINES.forEach((l) => {
+    let cur: W[] = [];
+    const push = () => { if (cur.length) out.push({ words: cur, start: cur[0].start, end: cur[cur.length - 1].end }); cur = []; };
+    l.words.forEach((w, i) => {
+      cur.push(w);
+      const left = l.words.length - 1 - i;
+      if ((/[،,:؛.]$/.test(w.w) && cur.length >= 3 && left >= 2) || cur.length >= 7) push();
+    });
+    push();
+  });
+  return out;
+})();
+const Caption: React.FC<{ sec: number; fps: number }> = ({ sec, fps }) => {
+  const k = CHUNKS.findIndex((c) => sec >= c.start - 0.12 && sec < c.end + 0.22);
+  if (k < 0) return null;
+  const c = CHUNKS[k];
+  const inT = (sec - (c.start - 0.12)) * fps;
+  const o = Math.min(ramp(inT, 0, 5), ramp(sec, c.end + 0.06, c.end + 0.22, 1, 0));
   return (
-    <div style={{ position: 'absolute', left: 120, right: 120, bottom: 26, padding: '12px 30px', borderRadius: 18, background: 'rgba(4,10,28,0.78)', border: '1px solid rgba(245,181,74,0.35)', direction: 'rtl', textAlign: 'center', fontFamily: NASKH, fontSize: 33, lineHeight: 1.55, opacity: o }}>
-      {line.words.map((w, i) => (
-        <span key={i} style={{ color: sec >= w.start ? C.text : 'rgba(244,241,234,0.35)', textShadow: sec >= w.start && sec < w.end + 0.1 ? `0 0 16px ${C.gold}` : 'none' }}>{w.w} </span>
-      ))}
+    <div style={{ position: 'absolute', left: 0, right: 0, bottom: 38, display: 'flex', justifyContent: 'center', opacity: o, transform: `translateY(${ramp(inT, 0, 7, 26, 0)}px) scale(${ramp(inT, 0, 7, 0.94, 1)})` }}>
+      <div style={{ padding: '12px 38px 16px', borderRadius: 22, background: 'linear-gradient(180deg, rgba(10,18,44,0.88), rgba(4,8,24,0.92))', border: '2px solid rgba(245,181,74,0.55)', boxShadow: '0 18px 40px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08)', direction: 'rtl', fontFamily: NASKH, fontWeight: 700, fontSize: 46, lineHeight: 1.45, whiteSpace: 'nowrap', display: 'flex', gap: 14 }}>
+        {c.words.map((w, i) => {
+          const on = sec >= w.start && sec < w.end + 0.05;
+          const done = sec >= w.start;
+          const pop = ramp((sec - w.start) * fps, 0, 4);
+          return (
+            <span key={i} style={{ position: 'relative', color: on ? C.gold : done ? '#FFFFFF' : 'rgba(244,241,234,0.45)', transform: `scale(${on ? 1 + 0.08 * pop : 1})`, display: 'inline-block', textShadow: on ? '0 0 18px rgba(245,181,74,0.55)' : '0 2px 6px rgba(0,0,0,0.6)' }}>
+              {w.w}
+              {on && <span style={{ position: 'absolute', left: 0, right: 0, bottom: 2, height: 4, borderRadius: 2, background: C.gold, transformOrigin: 'right', transform: `scaleX(${ramp((sec - w.start) / Math.max(0.05, w.end - w.start), 0, 1)})`, boxShadow: `0 0 10px ${C.gold}` }} />}
+            </span>
+          );
+        })}
+      </div>
     </div>
   );
 };
@@ -504,7 +578,6 @@ export const Promo2: React.FC = () => {
   const sec = frame / fps;
   const starts = LINES.map((l, i) => (i === 0 ? 0 : l.start - 0.3));
   const END = PROMO2_SECONDS;
-  const lineNow = LINES.find((l, k) => sec >= starts[k] && sec < (starts[k + 1] ?? Infinity));
   const L3 = 'السنة الثالثة ثانوي -- الشعب العلمية';
   const GE = 'السنة الثالثة ثانوي -- تسيير واقتصاد';
   const f4 = (m: string, s: string, e: string, b: string) => [{ label: 'المذكرة', name: m }, { label: 'الملخص', name: s }, { label: 'سلسلة التمارين', name: e }, { label: 'البكالوريا', name: b }];
@@ -546,19 +619,19 @@ export const Promo2: React.FC = () => {
       ]} />],
     [12, 13, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الثانية ثانوي -- الشعب العلمية"
       cols={[
-        { title: 'الاشتقاقية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_ishtiqaq_2as' }] },
-        { title: 'المرجح', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_morajjih_2as' }] },
+        { title: 'الاشتقاقية', files: [{ label: 'المذكرة', name: 'modhakira_wahda2_2as' }, { label: 'الملخص', name: 'molakhas_ishtiqaq_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_ishtiqaq_2as' }] },
+        { title: 'المرجح', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_2as' }, { label: 'الملخص', name: 'molakhas_morajjih_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_morajjih_2as' }] },
         { title: 'الاحتمالات', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_2as' }, { label: 'الملخص', name: 'molakhas_ihtimalat_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_ihtimalat_2as' }] },
         { title: 'النهايات', files: [{ label: 'المذكرة', name: 'modhakira_wahda5_2as' }, { label: 'الملخص', name: 'molakhas_nihayat_2as' }, { label: 'سلسلة التمارين', name: 'tamarin_nihayat_2as' }] },
       ]}
       steps={[
-        { line: 12, opens: [[0, 0], [0, 1]] },
+        { line: 12, opens: [[0, 0], [0, 1], [0, 2]] },
         { line: 13, opens: [[1, 1], [2, 1], [3, 2]] },
       ]} />],
     [14, 14, (_, g0, g1) => <Board sec={sec} fps={fps} starts={starts} g0={g0} g1={g1} header="السنة الأولى ثانوي -- جذع مشترك علوم وتكنولوجيا"
       cols={[
-        { title: 'الدوال المرجعية', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_dawal_marjiiya_1as' }] },
-        { title: 'الحساب الشعاعي', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_hisab_shoaai_1as' }] },
+        { title: 'الدوال المرجعية', files: [{ label: 'المذكرة', name: 'modhakira_wahda4_1as' }, { label: 'الملخص', name: 'molakhas_dawal_marjiiya_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_dawal_marjiiya_1as' }] },
+        { title: 'الحساب الشعاعي', files: [{ label: 'المذكرة', name: 'modhakira_wahda3_1as' }, { label: 'الملخص', name: 'molakhas_hisab_shoaai_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_hisab_shoaai_1as' }] },
         { title: 'الهندسة المستوية', files: [{ label: 'المذكرة', name: 'modhakira_wahda6_1as' }, { label: 'الملخص', name: 'molakhas_handasa_mostawiya_1as' }, { label: 'سلسلة التمارين', name: 'tamarin_handasa_mostawiya_1as' }] },
       ]}
       steps={[{ line: 14, opens: [[0, 0], [1, 1], [2, 1]] }]} />],
@@ -576,7 +649,7 @@ export const Promo2: React.FC = () => {
       <AbsoluteFill style={{ background: C.bg0, overflow: 'hidden' }}>
         <Background frame={frame} />
         <AbsoluteFill style={{ opacity: fade }}>{scene({ t, d, frame }, g0, g1)}</AbsoluteFill>
-        <Caption sec={sec} line={lineNow} />
+        <Caption sec={sec} fps={fps} />
       </AbsoluteFill>
     </FontGate>
   );
