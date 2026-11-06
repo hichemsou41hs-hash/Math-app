@@ -41,6 +41,7 @@ const fC = (x: number) => 1 + (5 - 4 * e(x)) / (e(2 * x) - 1);
 const fF = (x: number) => (x * x * e(x)) / (e(x) + 1);
 const fG = (x: number) => e(2 * x) - e(x) - x - 2;
 const fH = (x: number) => -2 * x + 3 - x * e(-x + 1);
+const fK = (x: number) => x + (x * x + 1) * e(-x);
 const fJ = (x: number) => 1 + (1 - x - x * x) * e(-x);
 const fM = (x: number) => x - (x + 1) * e(-x - 1);
 
@@ -77,10 +78,10 @@ const ITEMS: Item[] = [
     { line: 23, at: 0.7, kind: 'note', tex: '\\infty-\\infty', text: 'حالة عدم تعيين' },
     { line: 24, tex: 'f(x)=e^{2x}\\left(1-e^{-x}-xe^{-2x}-2e^{-2x}\\right)' },
     { line: 24, at: 0.6, kind: 'result', tex: LIM('+\\infty', '+\\infty') }] },
-  { from: 25, to: 27, bac: 'بكالوريا 2024 — علوم تجريبية', f: 'f(x)=-2x+3-xe^{-x+1}', g: { f: fH, xr: [-2.2, 4], yr: [-6, 6], end: 'm' }, steps: [
-    { line: 25, at: 0.6, tex: '-2x+3\\to+\\infty \\quad;\\quad -xe^{-x+1}\\to-\\infty' },
-    { line: 26, kind: 'wrong', tex: '(+\\infty)-(+\\infty)=0' },
-    { line: 27, tex: 'f(x)=x\\left(-2-e^{-x+1}\\right)+3' },
+  { from: 25, to: 27, bac: 'بكالوريا 2025 — تقني رياضي', f: 'f(x)=x+\\left(x^{2}+1\\right)e^{-x}', g: { f: fK, xr: [-1.6, 3], yr: [-1, 8], end: 'm' }, steps: [
+    { line: 25, at: 0.6, tex: 'x\\to-\\infty \\quad;\\quad \\left(x^{2}+1\\right)e^{-x}\\to+\\infty' },
+    { line: 26, kind: 'wrong', tex: '(-\\infty)+(+\\infty)=0' },
+    { line: 27, tex: 'f(x)=e^{-x}\\left(xe^{x}+x^{2}+1\\right)' },
     { line: 27, at: 0.6, kind: 'result', tex: LIM('-\\infty', '+\\infty') }] },
   { from: 29, to: 29, bac: 'بكالوريا 2024 — علوم تجريبية', f: 'f(x)=-2x+3-xe^{-x+1}', g: { f: fH, xr: [-1, 6], yr: [-8, 4], end: 'p', asym: [{ a: -2, b: 3 }] }, steps: [
     { line: 29, at: 0.15, tex: 'xe^{-x+1}=e\\cdot xe^{-x}\\to0' },
