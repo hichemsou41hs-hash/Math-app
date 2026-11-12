@@ -280,9 +280,12 @@ def abs_curves_png(f, x, x_bound=6.0, y_lim=None, dark=True):
     fig.patch.set_facecolor(bg)
     axs = fig.subplots(1, 2)
     if y_lim is None:
-        fin = y[np.isfinite(y)]
-        hi = float(np.nanpercentile(np.abs(fin), 90)) if fin.size else 5.0
-        y_lim = (-max(2.0, hi * 1.3), max(2.0, hi * 1.3))
+        # robust window: exponential functions reach 1e9 at the edges, which flattened both curves
+        fin = np.abs(y[np.isfinite(y)])
+        q = float(np.percentile(fin, 60)) if fin.size else 4.0
+        h = min(max(4.0, 1.6 * q), 30.0)
+        y_lim = (-h, h)
+    y_lim = (min(y_lim[0], -1.0), max(y_lim[1], -y_lim[0], 1.0))   # room for |f(x)| above the axis
     for ax, yt, title, col in ((axs[0], y_abs, "|f(x)|", "#F97316"), (axs[1], y_even, "f(|x|)", "#22C55E")):
         ax.set_facecolor(bg)
         ax.axhline(0, color=fg, lw=0.8)

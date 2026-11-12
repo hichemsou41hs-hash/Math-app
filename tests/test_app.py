@@ -9,7 +9,7 @@ APP = os.path.join(os.path.dirname(__file__), "..", "app.py")
 BAC_FUNCTIONS = [
     "(x^2+1)/(x-1)", "x+1-exp(x)", "x*ln(x)", "sqrt(x^2-4)", "(2x+1)/(x+1)",
     "x^3-3x+1", "(x-1)*exp(2x)", "x-1+ln(x)/x", "exp(x)/x", "x+exp(-x)",
-    "(x^2-3x+3)/(x-1)", "ln(x^2+1)", "(x^2+m*x+1)/(x-1)", "x^2*exp(-x)",
+    "(x^2-3x+3)/(x-1)", "ln(x^2+1)", "(x^2+m*x+1)/(x-1)", "x^2*exp(-x)", "(x+1)*exp(-x)+x",
 ]
 REJECTED = ["9^9^9", "x^1000000000", "abc", "__import__"]
 
