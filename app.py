@@ -37,6 +37,7 @@ import urllib.request
 import urllib.error
 import tempfile
 from PIL import Image, ImageOps, ImageEnhance
+import extras
 from sympy.parsing.sympy_parser import parse_expr as _raw_parse_expr, standard_transformations, implicit_multiplication_application
 
 # ---- طبقة أمان موسعة: تشمل الدوال المثلثية العكسية والجذر التكعيبي ----
@@ -2947,7 +2948,7 @@ else:
         pdf.ln(2)
 
     @st.cache_data(show_spinner=False, max_entries=5)
-    def get_cached_pdf_bytes(f_key, g_key, m_sub_k=None, ver_key="v37"):
+    def get_cached_pdf_bytes(f_key, g_key, m_sub_k=None, ver_key="v37", x0_k=None):
         if not PDF_ENABLED:
             return None
         try:
@@ -2970,6 +2971,11 @@ else:
             if not font_path:
                 return None
             pdf.add_font("Amiri", "", font_path, uni=True)
+            # Amiri ليس فيه α ω ∞ ≤ ≥ ≈ ∈ : نأخذها من DejaVu Sans (مرفق في fonts/)
+            _dj = os.path.join(_APP_DIR, "fonts", "DejaVuSans.ttf")
+            if os.path.exists(_dj):
+                pdf.add_font("DejaVu", "", _dj)
+                pdf.set_fallback_fonts(["DejaVu"])
             pdf.add_page()
             pdf.set_font("Amiri", size=24)
             pdf.set_text_color(31, 58, 95)
@@ -3062,6 +3068,43 @@ else:
             if disc_img:
                 pdf_add_bytes_image(pdf, disc_img, x=15, w=180)
 
+            # أسئلة البكالوريا المكمّلة ومنحنيا |f(x)| و f(|x|) (extras.py)
+            try:
+                vas_p = tuple(sorted({round(a_v['val'], 6) for a_v in cache['unique_asymptotes'] if a_v['type'] == 'v' and a_v['val'] is not None}))
+                ex_secs = get_extras(sp.srepr(cache['f_expr']), cache['f_expr'], x0_k, vas_p)
+                if ex_secs and not isinstance(ex_secs, dict):
+                    for i_s, (title_s, items_s) in enumerate(ex_secs, start=disc_sec_num + 1):
+                        if pdf.get_y() > 250:
+                            pdf.add_page()
+                        pdf_section_title(pdf, f"{i_s}. " + extras.latex_to_plain(title_s) + ":")
+                        for kind_k, content_k in items_s:
+                            if kind_k == 'text' or '\\text' in content_k:
+                                pdf.set_font("Amiri", size=13)
+                                pdf.set_text_color(15, 94, 107 if kind_k == 'text' else 60)
+                                pdf.multi_cell(180, 7.5, fix_arabic_pdf(extras.latex_to_plain(content_k)), align='R')
+                            else:
+                                png_k = extras.math_png(content_k, '#9B2226' if kind_k == 'result' else '#1F3A5F')
+                                if png_k:
+                                    w_px, _h_px = Image.open(io.BytesIO(png_k)).size
+                                    w_mm = min(180.0, w_px / 170 * 25.4)
+                                    if pdf.get_y() + 14 > 282:
+                                        pdf.add_page()
+                                    pdf_add_bytes_image(pdf, png_k, x=105 - w_mm / 2, w=w_mm)
+                            pdf.ln(1)
+                    abs_sec = disc_sec_num + 1 + len(ex_secs)
+                    abs_png_p = get_abs_png(sp.srepr(cache['f_expr']), cache['f_expr'], float(min(cache.get('plot_x_bound', 6.0) or 6.0, 12.0)), False)
+                    if abs_png_p:
+                        pdf.add_page()
+                        pdf_section_title(pdf, f"{abs_sec}. " + extras.latex_to_plain("منحنيا الدالتين $|f(x)|$ و $f(|x|)$") + ":")
+                        for _k, t_k in extras.ABS_EXPLAIN:
+                            pdf.set_font("Amiri", size=13)
+                            pdf.set_text_color(15, 94, 107)
+                            pdf.multi_cell(180, 7.5, fix_arabic_pdf(extras.latex_to_plain(t_k)), align='R')
+                        pdf.ln(2)
+                        pdf_add_bytes_image(pdf, abs_png_p, x=15, w=180)
+            except Exception:
+                pass   # الأقسام الإضافية اختيارية: لا تُفشل ملف PDF
+
             pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
             pdf_file.close()
             pdf.output(pdf_file.name)
@@ -3141,11 +3184,50 @@ else:
                 if od.get('rel_pos_bytes'):
                     st.image(od['rel_pos_bytes'], width='stretch')
 
+    @st.cache_data(show_spinner=False, max_entries=60)
+    def get_extras(key_k, _f_expr_k, x0_k, vas_k):
+        """أسئلة البكالوريا المكمّلة (extras.py)، بمهلة قصوى حتى لا يتجمّد التطبيق."""
+        x_k = [s_k for s_k in _f_expr_k.free_symbols if s_k.name == 'x']
+        if not x_k:
+            return None
+        return _run_with_deadline(extras.complete_study, (_f_expr_k, x_k[0], x0_k, vas_k), 25)
+
+    @st.cache_data(show_spinner=False, max_entries=30)
+    def get_abs_png(key_k, _f_expr_k, bound_k, dark_k=True):
+        x_k = [s_k for s_k in _f_expr_k.free_symbols if s_k.name == 'x']
+        return extras.abs_curves_png(_f_expr_k, x_k[0], x_bound=bound_k, dark=dark_k) if x_k else None
+
+    def show_extra_items(items_k):
+        for kind_k, content_k in items_k:
+            if kind_k == 'text':
+                st.markdown(f"<div dir='rtl' style='text-align:right'>\n\n{content_k}\n\n</div>", unsafe_allow_html=True)
+            elif kind_k == 'math':
+                st.latex(content_k)
+            else:
+                st.latex(r"\color{#4ADE80}{" + content_k + "}")
+
+    if not st.session_state.auto_play:
+        _vas = tuple(sorted({round(a_v['val'], 6) for a_v in cache['unique_asymptotes'] if a_v['type'] == 'v' and a_v['val'] is not None}))
+        with st.expander("🧭 أسئلة البكالوريا المكمّلة: التقاطع مع المحورين، القيم المتوسطة، المماس، التناظر، الانعطاف", expanded=False):
+            x0_user = st.number_input("فاصلة نقطة التماس $x_0$ (اتركها فارغة لاختيار آلي):", value=None, step=0.5, format="%g", key="tan_x0")
+            extra_sections = get_extras(sp.srepr(cache['f_expr']), cache['f_expr'], None if x0_user is None else float(x0_user), _vas)
+            if not extra_sections or isinstance(extra_sections, dict):
+                st.warning("⚠️ تعذّر إكمال هذه الأسئلة لهذه الدالة (حساب طويل جداً).")
+            else:
+                for i_s, (title_s, items_s) in enumerate(extra_sections, start=6):
+                    st.markdown(f"<div dir='rtl' style='text-align:right; color:#00E5FF'>\n\n#### {i_s}. {title_s}\n\n</div>", unsafe_allow_html=True)
+                    show_extra_items(items_s)
+        with st.expander("🪞 منحنيا الدالتين |f(x)| و f(|x|)", expanded=False):
+            show_extra_items(extras.ABS_EXPLAIN)
+            abs_png = get_abs_png(sp.srepr(cache['f_expr']), cache['f_expr'], float(min(cache.get('plot_x_bound', 6.0) or 6.0, 12.0)))
+            if abs_png:
+                st.image(abs_png, width='stretch')
+
     if PDF_ENABLED and not st.session_state.auto_play:
-        pdf_key = (current_f, current_g, m_val_param_selected)
+        pdf_key = (current_f, current_g, m_val_param_selected, st.session_state.get("tan_x0"))
         if st.button("📄 تجهيز ملف PDF", width='stretch'):
             with st.spinner("جاري إنشاء ملف الـ PDF..."):
-                st.session_state.pdf_data = (pdf_key, get_cached_pdf_bytes(current_f, current_g, m_val_param_selected, "v37"))
+                st.session_state.pdf_data = (pdf_key, get_cached_pdf_bytes(current_f, current_g, m_val_param_selected, "v37", st.session_state.get("tan_x0")))
         _pd = st.session_state.get("pdf_data")
         pdf_bytes = _pd[1] if (_pd and _pd[0] == pdf_key) else None
         if pdf_bytes:
