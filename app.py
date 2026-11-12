@@ -3092,7 +3092,7 @@ else:
                                     pdf_add_bytes_image(pdf, png_k, x=105 - w_mm / 2, w=w_mm)
                             pdf.ln(1)
                     abs_sec = disc_sec_num + 1 + len(ex_secs)
-                    abs_png_p = get_abs_png(sp.srepr(cache['f_expr']), cache['f_expr'], float(min(cache.get('plot_x_bound', 6.0) or 6.0, 12.0)), False)
+                    abs_png_p = get_abs_png(sp.srepr(cache['f_expr']), cache['f_expr'], float(min(cache.get('plot_x_bound', 6.0) or 6.0, 12.0)), False, (cache.get('plot_y_min', -8.0), cache.get('plot_y_max', 8.0)))
                     if abs_png_p:
                         pdf.add_page()
                         pdf_section_title(pdf, f"{abs_sec}. " + extras.latex_to_plain("منحنيا الدالتين $|f(x)|$ و $f(|x|)$") + ":")
@@ -3193,9 +3193,9 @@ else:
         return _run_with_deadline(extras.complete_study, (_f_expr_k, x_k[0], x0_k, vas_k), 25)
 
     @st.cache_data(show_spinner=False, max_entries=30)
-    def get_abs_png(key_k, _f_expr_k, bound_k, dark_k=True):
+    def get_abs_png(key_k, _f_expr_k, bound_k, dark_k=True, ylim_k=None):
         x_k = [s_k for s_k in _f_expr_k.free_symbols if s_k.name == 'x']
-        return extras.abs_curves_png(_f_expr_k, x_k[0], x_bound=bound_k, dark=dark_k) if x_k else None
+        return extras.abs_curves_png(_f_expr_k, x_k[0], x_bound=bound_k, y_lim=ylim_k, dark=dark_k) if x_k else None
 
     def show_extra_items(items_k):
         for kind_k, content_k in items_k:
@@ -3219,7 +3219,7 @@ else:
                     show_extra_items(items_s)
         with st.expander("🪞 منحنيا الدالتين |f(x)| و f(|x|)", expanded=False):
             show_extra_items(extras.ABS_EXPLAIN)
-            abs_png = get_abs_png(sp.srepr(cache['f_expr']), cache['f_expr'], float(min(cache.get('plot_x_bound', 6.0) or 6.0, 12.0)))
+            abs_png = get_abs_png(sp.srepr(cache['f_expr']), cache['f_expr'], float(min(cache.get('plot_x_bound', 6.0) or 6.0, 12.0)), True, (cache.get('plot_y_min', -8.0), cache.get('plot_y_max', 8.0)))
             if abs_png:
                 st.image(abs_png, width='stretch')
 

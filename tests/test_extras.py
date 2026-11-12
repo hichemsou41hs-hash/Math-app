@@ -55,3 +55,15 @@ def test_abs_curves_png():
 
 def test_latex_to_plain():
     assert extras.latex_to_plain(r"\omega\left(1\,;\,2\right) \text{ مركز } (C_f)") == "ω (1 ; 2 ) مركز (Cf)"
+
+
+def test_abs_curves_window_not_flattened_by_exponentials():
+    # regression: exp(-x) reaches 1e5 at x=-12; the y window must stay readable (it was ±2e9)
+    import matplotlib.image as mpimg, io
+    png = extras.abs_curves_png((x + 1) * sp.exp(-x) + x, x, x_bound=12)
+    assert mpimg.imread(io.BytesIO(png)).shape[0] > 100
+    fn = extras._num((x + 1) * sp.exp(-x) + x, x)
+    import numpy as np
+    y = fn(np.linspace(-12, 12, 2400))
+    q = float(np.percentile(np.abs(y[np.isfinite(y)]), 60))
+    assert min(max(4.0, 1.6 * q), 30.0) <= 30.0
