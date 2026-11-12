@@ -1,0 +1,9 @@
+streamlit>=1.50,<2
+numpy
+matplotlib
+sympy
+scipy
+fpdf2
+arabic-reshaper
+python-bidi
+Pillow
