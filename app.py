@@ -424,7 +424,7 @@ def fix_implicit_mult(expr_str):
     expr_str = re.sub(r'cbrt\s*([xym0-9])', r'cbrt(\1)', expr_str)
     expr_str = re.sub(r'([xym0-9\)])\s*(exp|ln|log|cos|sin|tan|asin|acos|atan|sqrt|cbrt|abs|pi)\b', r'\1*\2', expr_str)
     expr_str = re.sub(r'([xym0-9\)])\s*(e)\b(?![a-zA-Z])', r'\1*\2', expr_str)
-    expr_str = re.sub(r'\b(e|pi)\s*([xym0-9\(])', r'\1*\2', expr_str)
+    expr_str = re.sub(r'\b(e(?!xp)|pi)\s*([xym0-9\(])', r'\1*\2', expr_str)   # e·x but never the e of exp
     expr_str = re.sub(r'(\))\s*(\()', r'\1*\2', expr_str)
     expr_str = re.sub(r'([0-9])\s*([xym\(])', r'\1*\2', expr_str)
     expr_str = re.sub(r'([xym\)])\s*([0-9])', r'\1*\2', expr_str)
@@ -3078,6 +3078,8 @@ else:
                             pdf.add_page()
                         pdf_section_title(pdf, f"{i_s}. " + extras.latex_to_plain(title_s) + ":")
                         for kind_k, content_k in items_s:
+                            if kind_k == 'data':
+                                continue
                             if kind_k == 'text' or '\\text' in content_k:
                                 pdf.set_font("Amiri", size=13)
                                 pdf.set_text_color(15, 94, 107 if kind_k == 'text' else 60)
@@ -3199,6 +3201,8 @@ else:
 
     def show_extra_items(items_k):
         for kind_k, content_k in items_k:
+            if kind_k == 'data':
+                continue
             if kind_k == 'text':
                 st.markdown(f"<div dir='rtl' style='text-align:right'>\n\n{content_k}\n\n</div>", unsafe_allow_html=True)
             elif kind_k == 'math':
