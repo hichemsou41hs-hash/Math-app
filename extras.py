@@ -20,11 +20,20 @@ N_SCAN = 4001
 
 # ----------------------------------------------------------------- helpers
 def _num(f, x):
+    """Vectorised numeric f. Distributions from |x| (DiracDelta) count as 0, an infinite value as NaN,
+    a constant result is broadcast to the input shape."""
+    f = sp.sympify(f).replace(sp.DiracDelta, lambda *a: sp.S.Zero)
+    f = f.subs({sp.zoo: sp.nan, sp.oo: sp.nan, -sp.oo: sp.nan})
     g = sp.lambdify(x, f, modules=["numpy"])
 
     def ev(v):
+        v = np.asarray(v, dtype=float)
         with np.errstate(all="ignore"):
-            r = np.asarray(g(np.asarray(v, dtype=float)), dtype=complex)
+            try:
+                r = np.asarray(g(v), dtype=complex)
+            except (TypeError, ValueError, ZeroDivisionError, NameError):
+                r = np.full(v.shape, np.nan, dtype=complex)
+        r = np.broadcast_to(r, v.shape)
         out = np.where(np.abs(r.imag) < 1e-9, r.real, np.nan)
         return out if out.shape else float(out)
     return ev
@@ -32,6 +41,8 @@ def _num(f, x):
 
 def _fmt(v, nd=2):
     v = float(v)
+    if not math.isfinite(v):
+        return "?"
     if abs(v - round(v)) < 1e-9:
         return str(int(round(v)))
     return ("%.*f" % (nd, v)).rstrip("0").rstrip(".").replace(".", "{,}")
@@ -67,9 +78,10 @@ def _roots(fn, xs=None, ys=None):
     if xs is None:
         xs, ys = _grid(fn)
     out = []
+    flat = _zero_runs(xs, ys)
     for i in range(len(xs) - 1):
         a, b, fa, fb = xs[i], xs[i + 1], ys[i], ys[i + 1]
-        if not (np.isfinite(fa) and np.isfinite(fb)):
+        if not (np.isfinite(fa) and np.isfinite(fb)) or any(lo - 1e-9 <= a <= hi + 1e-9 for lo, hi in flat):
             continue
         if fa == 0:
             out.append(float(a))
@@ -78,13 +90,41 @@ def _roots(fn, xs=None, ys=None):
                 r = brentq(lambda t: float(fn(t)), a, b, xtol=1e-12)
             except Exception:
                 continue
-            if abs(float(fn(r))) < 1e-6:            # not a pole (sign change across an asymptote)
+            d = 1e-7 * max(1.0, abs(r))
+            # a real zero: f small at r and on both sides (not a pole, not a jump like (x-1)/|x-1|)
+            fl, f0, fr = fn(r - d), fn(r), fn(r + d)
+            if np.isfinite(fl) and np.isfinite(f0) and np.isfinite(fr) and abs(f0) < 1e-6 and abs(fr - fl) < 1e-3:
                 out.append(float(r))
     res = []
     for r in sorted(out):
         if not res or abs(r - res[-1]) > 1e-6:
             res.append(r)
     return res
+
+
+def _zero_runs(xs, ys, min_len=4):
+    """Intervals where f is identically 0 (|x+1|+x on ]-inf;-1]): [(lo, hi)]."""
+    z = np.isfinite(ys) & (np.abs(ys) < 1e-12)
+    runs, i = [], 0
+    while i < len(z):
+        if z[i]:
+            j = i
+            while j + 1 < len(z) and z[j + 1]:
+                j += 1
+            if j - i + 1 >= min_len:
+                runs.append((float(xs[i]), float(xs[j])))
+            i = j + 1
+        else:
+            i += 1
+    return runs
+
+
+def _bound(v, lo_edge, hi_edge):
+    if v <= lo_edge + 1e-6:
+        return r"-\infty"
+    if v >= hi_edge - 1e-6:
+        return r"+\infty"
+    return _fmt(round(v, 2))
 
 
 def _sign_changes(fn, xs, ys):
@@ -123,8 +163,18 @@ def axes_intersections(f, x, fn):
                   ("result", r"(C_f) \cap (y'y) = \left\{ \left(0\,;\,%s\right) \right\}" % (_lat(v) if v is not None else _fmt(y0)))]
     else:
         items.append(("text", "العدد $0$ لا ينتمي إلى $D_f$ ، إذن $(C_f)$ لا يقطع حامل محور التراتيب."))
-    roots = _roots(fn)
+    xs, ys = _grid(fn)
+    flat = _zero_runs(xs, ys)
+    roots = _roots(fn, xs, ys)
     items.append(("text", "مع حامل محور الفواصل: نحل المعادلة $f(x)=0$ :"))
+    for lo, hi in flat:
+        lb, hb = _bound(lo, xs[0], xs[-1]), _bound(hi, xs[0], xs[-1])
+        items.append(("result", r"f(x) = 0 \text{ على المجال } %s%s\,;\,%s%s" % (
+            "]" if lb.endswith("infty") else "[", lb, hb, "[" if hb.endswith("infty") else "]")))
+        items.append(("text", "على هذا المجال المنحنى $(C_f)$ ينطبق على حامل محور الفواصل."))
+    if flat and not roots:
+        items.append(("data", {"roots": [], "flat": flat}))
+        return items, []
     if not roots:
         items.append(("result", r"\text{المعادلة لا تقبل حلولاً: } (C_f) \text{ لا يقطع } (x'x)"))
         return items, []
@@ -137,6 +187,7 @@ def axes_intersections(f, x, fn):
             approx.append(r)
             pts.append(r"\left(\alpha_{%d}\,;\,0\right)" % len(approx) if len(roots) > 1 else r"\left(\alpha\,;\,0\right)")
     items.append(("result", r"(C_f) \cap (x'x) = \left\{ %s \right\}" % r" \,;\, ".join(pts)))
+    items.append(("data", {"roots": roots}))
     if approx:
         items.append(("text", "الحلول غير الصريحة نحصرها بمبرهنة القيم المتوسطة (الفقرة الموالية)."))
     return items, approx
@@ -165,6 +216,7 @@ def ivt(f, x, fn, dfn, approx_roots):
             ("math", r"f(%s) \approx %s \quad ; \quad f(%s) \approx %s" % (_fmt(a, 1), _fmt(fa, 3), _fmt(b, 1), _fmt(fb, 3))),
             ("text", "إذن $f(%s)\\times f(%s)<0$ ، وحسب مبرهنة القيم المتوسطة المعادلة $f(x)=0$ تقبل حلاً وحيدًا $%s$ حيث:" % (_fmt(a, 1), _fmt(b, 1), name)),
             ("result", r"%s < %s < %s \qquad (%s \approx %s)" % (_fmt(a, 1), name, _fmt(b, 1), name, _fmt(r, 3))),
+            ("data", {"alpha": (a, b, r)}),
         ]
     return items
 
@@ -183,6 +235,7 @@ def tangent(f, x, x0):
             ("math", r"(T):\ y = f'(x_0)(x-x_0) + f(x_0)"),
             ("math", r"f(%s) = %s \quad ; \quad f'(%s) = %s" % (_lat(x0), _lat(y0), _lat(x0), _lat(s0))),
             ("result", r"(T):\ y = %s" % _lat(line)),
+            ("data", {"tangent": (float(x0), float(s0), float(y0))}),
         ]
     except Exception:
         return [("text", "تعذّر حساب المماس عند هذه النقطة.")]
@@ -209,7 +262,8 @@ def symmetry(f, x, fn, candidates):
             if sp.simplify(f.subs(x, 2 * a - x) - f) == 0:
                 return [("text", "من أجل كل $x$ من $D_f$ : $(2\\times%s - x) \\in D_f$ و" % _lat(a)),
                         ("math", r"f(%s - x) = f(x)" % _lat(2 * a)),
-                        ("result", r"\text{المستقيم } x = %s \text{ محور تناظر للمنحنى } (C_f)" % _lat(a))]
+                        ("result", r"\text{المستقيم } x = %s \text{ محور تناظر للمنحنى } (C_f)" % _lat(a)),
+                        ("data", {"axis": af})]
         sm = (u + v)[ok]
         if np.allclose(sm, sm[0], atol=1e-7):
             s = sp.simplify(f.subs(x, 2 * a - x) + f)
@@ -217,7 +271,8 @@ def symmetry(f, x, fn, candidates):
                 b = sp.simplify(s / 2)
                 return [("text", "من أجل كل $x$ من $D_f$ : $(2\\times%s - x) \\in D_f$ و" % _lat(a)),
                         ("math", r"f(%s - x) + f(x) = %s = 2\times %s" % (_lat(2 * a), _lat(s), _lat(b))),
-                        ("result", r"\omega\left(%s\,;\,%s\right) \text{ مركز تناظر للمنحنى } (C_f)" % (_lat(a), _lat(b)))]
+                        ("result", r"\omega\left(%s\,;\,%s\right) \text{ مركز تناظر للمنحنى } (C_f)" % (_lat(a), _lat(b))),
+                        ("data", {"centre": (af, float(b))})]
     return [("text", "لم نجد مركز تناظر ولا محور تناظر بسيطًا للمنحنى $(C_f)$ (نختبر $x=0$ والمقاربات العمودية والقيم الحدية ونقط الانعطاف).")]
 
 
@@ -228,7 +283,8 @@ def inflection(f, x):
         return [("text", "تعذّر حساب المشتقة الثانية.")], []
     fn2 = _num(d2, x)
     xs, ys = _grid(fn2)
-    roots = _sign_changes(fn2, xs, ys)
+    fn = _num(f, x)
+    roots = [r for r in _sign_changes(fn2, xs, ys) if np.isfinite(fn(r))]   # only points of D_f
     items = [("math", r"f''(x) = %s" % LATEX(d2))]
     if not roots:
         items.append(("result", r"f'' \text{ لا تنعدم مغيّرة إشارتها: } (C_f) \text{ لا يقبل نقطة انعطاف}"))
@@ -243,6 +299,7 @@ def inflection(f, x):
         pts.append(r"I\left(%s\,;\,%s\right)" % (xv, yv))
     items.append(("text", "$f''$ تنعدم عند الفواصل التالية مغيّرة إشارتها، إذن $(C_f)$ يقبل نقطة انعطاف:"))
     items.append(("result", r" \quad ; \quad ".join(pts)))
+    items.append(("data", {"inflection": roots}))
     return items, roots
 
 

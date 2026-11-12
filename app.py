@@ -220,10 +220,6 @@ st.markdown("""
     label, div[data-testid="stRadio"] p, div[data-testid="stTextInput"] label p { font-weight: bold !important; font-size: 17px !important; color: #00E5FF !important; }
     .stTextInput label { direction: rtl !important; text-align: right !important; display: block;}
     .stTextInput > div > div > input { background-color: #1E293B; color: white; border: 1px solid #00E5FF; font-size: 18px; direction: ltr !important; }
-    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) { display: grid !important; grid-template-columns: repeat(6, 1fr) !important; gap: 5px !important; background-color: #1E293B !important; padding: 5px !important; border-radius: 8px !important; margin-bottom: 2px !important; }
-    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) > div[data-testid="column"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; flex: none !important; padding: 0 !important; display: block !important; }
-    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button { width: 100% !important; height: 48px !important; padding: 0px !important; margin: 0 !important; border-radius: 6px !important; background-color: #334155 !important; color: #00E5FF !important; border: 1px solid #475569 !important; box-shadow: 0 4px 0 #090e1a !important; transition: all 0.1s !important; }
-    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)) button:active { transform: translateY(4px) !important; box-shadow: 0 0 0 #090e1a !important; background-color: #00E5FF !important; color: #0F172A !important; }
     
     div[data-testid="stHorizontalBlock"] button * { 
         font-size: 17px !important; 
@@ -424,7 +420,7 @@ def fix_implicit_mult(expr_str):
     expr_str = re.sub(r'cbrt\s*([xym0-9])', r'cbrt(\1)', expr_str)
     expr_str = re.sub(r'([xym0-9\)])\s*(exp|ln|log|cos|sin|tan|asin|acos|atan|sqrt|cbrt|abs|pi)\b', r'\1*\2', expr_str)
     expr_str = re.sub(r'([xym0-9\)])\s*(e)\b(?![a-zA-Z])', r'\1*\2', expr_str)
-    expr_str = re.sub(r'\b(e|pi)\s*([xym0-9\(])', r'\1*\2', expr_str)
+    expr_str = re.sub(r'\b(e(?!xp)|pi)\s*([xym0-9\(])', r'\1*\2', expr_str)   # e·x but never the e of exp
     expr_str = re.sub(r'(\))\s*(\()', r'\1*\2', expr_str)
     expr_str = re.sub(r'([0-9])\s*([xym\(])', r'\1*\2', expr_str)
     expr_str = re.sub(r'([xym\)])\s*([0-9])', r'\1*\2', expr_str)
@@ -718,6 +714,7 @@ def safe_solve_real(expr, x_sym, scan_limit=30.0):
         if np.isscalar(ys):
             ys = np.full_like(xs, float(ys), dtype=float)
         ys = np.array(ys, dtype=float)
+        roots_fl = [safe_float(er) for er in roots]   # numeric copy: no symbolic evaluation inside the loop
         for i in range(len(ys) - 1):
             if np.isfinite(ys[i]) and np.isfinite(ys[i+1]):
                 if abs(ys[i]) < 1e-9:
@@ -726,9 +723,12 @@ def safe_solve_real(expr, x_sym, scan_limit=30.0):
                             continue
                     elif not (abs(ys[i]) <= abs(ys[i+1]) and abs(ys[i]) <= abs(ys[i-1])):
                         continue
+                    if 0 < i and abs(ys[i-1]) < 1e-9 and abs(ys[i+1]) < 1e-9:
+                        continue   # inside an interval where the expression is identically 0 (|x+1|+x): only its ends count
                     r_num = float(xs[i])
-                    if not any(abs(safe_float(er) - r_num) < 1e-3 for er in roots):
+                    if not any(abs(er_f - r_num) < 1e-3 for er_f in roots_fl):
                         roots.append(sp.Integer(int(round(r_num))) if abs(r_num - round(r_num)) < 1e-5 else sp.nsimplify(round(r_num, 4), tolerance=1e-3))
+                        roots_fl.append(r_num)
                 elif ys[i] * ys[i+1] < 0 and abs(ys[i+1] - ys[i]) < 25.0:
                     a_b, b_b = float(xs[i]), float(xs[i+1])
                     fa_b = float(ys[i])
@@ -750,7 +750,8 @@ def safe_solve_real(expr, x_sym, scan_limit=30.0):
                     with np.errstate(all='ignore'):
                         f_chk = float(f_num(r_num))
                     if np.isfinite(f_chk) and abs(f_chk) < 1e-3:
-                        if not any(abs(safe_float(er) - r_num) < 1e-3 for er in roots):
+                        if not any(abs(er_f - r_num) < 1e-3 for er_f in roots_fl):
+                            roots_fl.append(r_num)
                             if abs(r_num - round(r_num)) < 1e-5:
                                 roots.append(sp.Integer(int(round(r_num))))
                             elif abs(r_num - 0.5) < 1e-4:
@@ -1027,30 +1028,103 @@ def apply_current_inputs():
     st.session_state.active_f = st.session_state.f_val.strip()
     st.session_state.active_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() else "m"
 
-with st.expander("⌨ لوحة المفاتيح المساعدة", expanded=False):
-    t_sel = st.radio("🎯 تحديد خانة الكتابة:", ["f(x) الدالة", "m المستقيم بدلالة"], horizontal=True, key="kbd_radio")
-    st.session_state.kbd_target = "f" if t_sel == "f(x) الدالة" else "g"
-    def k_click(char):
-        target = "f_val" if st.session_state.kbd_target == "f" else "g_val"
-        if char == 'DEL':
-            st.session_state[target] = st.session_state[target][:-1]
-        elif char == 'CLR':
-            st.session_state[target] = "" if target == "f_val" else "m"
-        else:
+KBD_CSS = """
+<style>
+/* لوحة مفاتيح رياضية بأسلوب GeoGebra: لوحة فاتحة، مفاتيح بيضاء، دوال بنفسجية، أزرار تحكم داكنة */
+.st-key-kbd { background: #E9ECF2; border-radius: 16px; padding: 10px 8px 12px 8px; box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+.st-key-kbd [role="tablist"] { gap: 8px; justify-content: center; border-bottom: none !important; box-shadow: none !important; }
+.st-key-kbd .react-aria-SelectionIndicator { display: none !important; }   /* red underline of the selected tab */
+.st-key-kbd [data-testid="stTab"] { background: #D7DCE6 !important; border-radius: 999px !important; padding: 4px 24px !important; height: 34px; border: none !important; }
+.st-key-kbd [data-testid="stTab"] p { color: #334155 !important; font-weight: 700 !important; font-size: 16px !important; }
+.st-key-kbd [data-testid="stTab"][aria-selected="true"] { background: #6557D2 !important; }
+.st-key-kbd [data-testid="stTab"][aria-selected="true"] p { color: #FFFFFF !important; }
+.st-key-kbd [data-testid="stHorizontalBlock"] { flex-wrap: nowrap !important; gap: 6px !important; margin-bottom: 6px; }
+.st-key-kbd [data-testid="stColumn"], .st-key-kbd [data-testid="column"] { min-width: 0 !important; width: auto !important; flex: 1 1 0 !important; }
+.st-key-kbd button { width: 100% !important; height: 46px !important; min-height: 46px !important; padding: 0 !important; border: none !important;
+  border-radius: 10px !important; box-shadow: 0 2px 0 rgba(15,23,42,.30) !important; transition: transform .05s, filter .1s !important; }
+.st-key-kbd button:hover { filter: brightness(0.96); }
+.st-key-kbd button:active { transform: translateY(2px) !important; box-shadow: none !important; }
+.st-key-kbd button p, .st-key-kbd button * { font-size: 19px !important; letter-spacing: 0 !important; font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif !important; }
+[class*="st-key-kbn_"] button { background: #FFFFFF !important; color: #0F172A !important; }
+[class*="st-key-kbo_"] button { background: #F4F5F9 !important; color: #4338CA !important; font-weight: 700 !important; }
+[class*="st-key-kbv_"] button { background: #FFFFFF !important; color: #6557D2 !important; font-style: italic !important; font-weight: 700 !important; }
+[class*="st-key-kbf_"] button { background: #ECE9FB !important; color: #5141B8 !important; }
+[class*="st-key-kba_"] button { background: #5B6475 !important; color: #FFFFFF !important; }
+[class*="st-key-kbg_"] button { background: #6557D2 !important; color: #FFFFFF !important; }
+.st-key-kbd [data-testid="stButton"], .st-key-kbd .stButton, .st-key-kbd [class*="st-key-kb"] { width: 100% !important; }
+.st-key-kbd [data-testid="stButtonGroup"] { width: 100% !important; }
+.st-key-kbd [data-testid="stButtonGroup"] > div { width: 100% !important; display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; justify-content: center !important; gap: 6px !important; }
+.st-key-kbd [data-testid="stButtonGroup"] button { height: 38px !important; min-height: 38px !important; min-width: 120px !important; width: auto !important; flex: 1 1 0 !important; padding: 0 10px !important; white-space: nowrap !important;
+  background: #FFFFFF !important; color: #334155 !important; box-shadow: none !important; border: 1px solid #C7CCD8 !important; }
+.st-key-kbd [data-testid="stButtonGroup"] button[aria-checked="true"] { background: #6557D2 !important; color: #FFFFFF !important; border-color: #6557D2 !important; }
+.st-key-kbd [data-testid="stButtonGroup"] button p, .st-key-kbd [data-testid="stButtonGroup"] button * { font-size: 15px !important; font-family: inherit !important; color: inherit !important; }
+.st-key-kbdpv { background: #FFFFFF; border: 2px solid #6557D2; border-radius: 12px; padding: 0 8px; margin: 4px 0 8px 0; }
+</style>
+"""
+st.markdown(KBD_CSS, unsafe_allow_html=True)
+
+# (التسمية، ما يُكتب، النوع) — n رقم، o عملية، v متغير/ثابت، f دالة، a تحكم، g رسم
+KBD_LAYOUT = {
+    "123": [
+        [("x", "x", "v"), ("m", "m", "v"), ("(", "(", "o"), (")", ")", "o"), ("7", "7", "n"), ("8", "8", "n"), ("9", "9", "n"), ("÷", "/", "o")],
+        [("x²", "^2", "f"), ("xⁿ", "^(", "f"), ("√", "sqrt(", "f"), ("|□|", "abs(", "f"), ("4", "4", "n"), ("5", "5", "n"), ("6", "6", "n"), ("×", "*", "o")],
+        [("eˣ", "e^(", "f"), ("ln", "ln(", "f"), ("e", "e", "v"), ("π", "pi", "v"), ("1", "1", "n"), ("2", "2", "n"), ("3", "3", "n"), ("−", "-", "o")],
+        [("⌫", "DEL", "a"), ("C", "CLR", "a"), ("⟲ m", "RESET_G", "a"), (".", ".", "n"), ("0", "0", "n"), ("+", "+", "o"), ("⏎", "GO", "g")],
+    ],
+    "f(x)": [
+        [("eˣ", "e^(", "f"), ("e⁻ˣ", "e^(-x)", "f"), ("e²ˣ", "e^(2x)", "f"), ("ln", "ln(", "f"), ("ln x/x", "ln(x)/x", "f")],
+        [("√", "sqrt(", "f"), ("∛", "cbrt(", "f"), ("|□|", "abs(", "f"), ("1/□", "1/(", "f"), ("x³", "^3", "f")],
+        [("sin", "sin(", "f"), ("cos", "cos(", "f"), ("tan", "tan(", "f"), ("(", "(", "o"), (")", ")", "o")],
+        [("⌫", "DEL", "a"), ("C", "CLR", "a"), ("x", "x", "v"), ("m", "m", "v"), ("⏎", "GO", "g")],
+    ],
+}
+
+def k_click(char):
+    target = "f_val" if st.session_state.get("kbd_target", "f") == "f" else "g_val"
+    if char == 'DEL':
+        st.session_state[target] = st.session_state[target][:-1]
+    elif char == 'CLR':
+        st.session_state[target] = "" if target == "f_val" else "m"
+    elif char == 'RESET_G':
+        st.session_state.g_val = "m"
+    elif char == 'GO':
+        apply_current_inputs()
+    else:
+        if len(st.session_state[target]) < 200:
             st.session_state[target] += char
 
-    keys = [
-        [("x", "x"), ("cos", "cos("), ("sin", "sin("), ("7", "7"), ("8", "8"), ("9", "9")],
-        [("m", "m"), ("π", "pi"), ("ln", "ln("), ("4", "4"), ("5", "5"), ("6", "6")],
-        [("■/■", "/"), ("√", "sqrt("), ("xⁿ", "^"), ("1", "1"), ("2", "2"), ("3", "3")],
-        [("eˣ", "e^("), ("|x|", "abs("), ("=", "="), ("0", "0"), (".", "."), ("⌫", "DEL")],
-        [("(", "("), (")", ")"), ("+", "+"), ("-", "-"), ("×", "*"), ("÷", "/")]
-    ]
-    for r_idx, row in enumerate(keys):
-        cols = st.columns(6)
-        for c_idx, (label, val) in enumerate(row):
-            cols[c_idx].button(label, key=f"kb_{r_idx}_{c_idx}", on_click=k_click, args=(val,))
-    st.button("مسح الكل (Clear)", on_click=k_click, args=("CLR",), width='stretch', type="primary")
+def kbd_preview(text):
+    """معاينة رياضية حيّة لما كُتب (مثل GeoGebra)؛ عبارة ناقصة لا توقف شيئاً."""
+    if not text or not text.strip():
+        return None
+    try:
+        x_p, m_p = sp.symbols('x m', real=True)
+        ld = {'x': x_p, 'm': m_p, 'e': sp.E, 'E': sp.E, 'pi': sp.pi, 'ln': sp.log, 'log': sp.log, 'exp': sp.exp,
+              'sqrt': sp.sqrt, 'cbrt': lambda a_p: sp.Pow(a_p, sp.Rational(1, 3)), 'abs': sp.Abs, 'Abs': sp.Abs,
+              'cos': sp.cos, 'sin': sp.sin, 'tan': sp.tan}
+        e_p = parse_expr(fix_implicit_mult(text), local_dict=ld, evaluate=False,
+                         transformations=(standard_transformations + (implicit_multiplication_application,)))
+        return sp.latex(e_p, ln_notation=True, order='none')   # keep the pupil's order
+    except Exception:
+        return None
+
+with st.expander("⌨️ لوحة المفاتيح الرياضية", expanded=False):
+    with st.container(key="kbd"):
+        tgt = st.segmented_control("الكتابة في:", ["✎ f(x)", "✎ y"], default="✎ f(x)",
+                                   key="kbd_seg", label_visibility="collapsed")
+        st.session_state.kbd_target = "g" if tgt and tgt.endswith("y") else "f"
+        cur_txt = st.session_state.f_val if st.session_state.kbd_target == "f" else st.session_state.g_val
+        pv = kbd_preview(cur_txt)
+        lhs = "f(x) =" if st.session_state.kbd_target == "f" else "y ="
+        with st.container(key="kbdpv"):
+            st.latex(r"\color{#1E1B4B}{" + lhs + " " + (pv if pv else r"\ldots") + "}")
+        for t_i, (tab, rows) in enumerate(zip(st.tabs(list(KBD_LAYOUT)), KBD_LAYOUT.values())):
+            with tab:
+                for r_idx, row in enumerate(rows):
+                    cols = st.columns(len(row))
+                    for c_idx, (label, val, kind) in enumerate(row):
+                        cols[c_idx].button(label, key=f"kb{kind}_{t_i}_{r_idx}_{c_idx}", on_click=k_click, args=(val,),
+                                           help="رسم الدالة" if val == "GO" else None)
 
 api_key = None
 try:
@@ -3078,6 +3152,8 @@ else:
                             pdf.add_page()
                         pdf_section_title(pdf, f"{i_s}. " + extras.latex_to_plain(title_s) + ":")
                         for kind_k, content_k in items_s:
+                            if kind_k == 'data':
+                                continue
                             if kind_k == 'text' or '\\text' in content_k:
                                 pdf.set_font("Amiri", size=13)
                                 pdf.set_text_color(15, 94, 107 if kind_k == 'text' else 60)
@@ -3199,6 +3275,8 @@ else:
 
     def show_extra_items(items_k):
         for kind_k, content_k in items_k:
+            if kind_k == 'data':
+                continue
             if kind_k == 'text':
                 st.markdown(f"<div dir='rtl' style='text-align:right'>\n\n{content_k}\n\n</div>", unsafe_allow_html=True)
             elif kind_k == 'math':
@@ -3211,7 +3289,10 @@ else:
         with st.expander("🧭 أسئلة البكالوريا المكمّلة: التقاطع مع المحورين، القيم المتوسطة، المماس، التناظر، الانعطاف", expanded=False):
             x0_user = st.number_input("فاصلة نقطة التماس $x_0$ (اتركها فارغة لاختيار آلي):", value=None, step=0.5, format="%g", key="tan_x0")
             extra_sections = get_extras(sp.srepr(cache['f_expr']), cache['f_expr'], None if x0_user is None else float(x0_user), _vas)
-            if not extra_sections or isinstance(extra_sections, dict):
+            if not any(s_c.name == 'x' for s_c in cache['f_expr'].free_symbols):
+                st.info("ℹ️ الدالة ثابتة: منحناها مستقيم يوازي حامل محور الفواصل، فلا توجد مماسات مائلة ولا قيم متوسطة ولا انعطاف.")
+                st.latex(r"f(x) = " + sp.latex(cache['f_expr']))
+            elif not extra_sections or isinstance(extra_sections, dict):
                 st.warning("⚠️ تعذّر إكمال هذه الأسئلة لهذه الدالة (حساب طويل جداً).")
             else:
                 for i_s, (title_s, items_s) in enumerate(extra_sections, start=6):

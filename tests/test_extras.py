@@ -44,7 +44,8 @@ def test_even_function_axis_and_ln_notation():
 
 
 def test_tangent():
-    assert extras.tangent(x**3 - 3 * x + 1, x, 2)[-1][1] == r"(T):\ y = 9 x - 15"
+    res = [c for k, c in extras.tangent(x**3 - 3 * x + 1, x, 2) if k == "result"]
+    assert res == [r"(T):\ y = 9 x - 15"]
     assert "غير قابلة" in extras.tangent(1 / x, x, 0)[0][1]
 
 
