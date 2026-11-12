@@ -3289,7 +3289,10 @@ else:
         with st.expander("🧭 أسئلة البكالوريا المكمّلة: التقاطع مع المحورين، القيم المتوسطة، المماس، التناظر، الانعطاف", expanded=False):
             x0_user = st.number_input("فاصلة نقطة التماس $x_0$ (اتركها فارغة لاختيار آلي):", value=None, step=0.5, format="%g", key="tan_x0")
             extra_sections = get_extras(sp.srepr(cache['f_expr']), cache['f_expr'], None if x0_user is None else float(x0_user), _vas)
-            if not extra_sections or isinstance(extra_sections, dict):
+            if not any(s_c.name == 'x' for s_c in cache['f_expr'].free_symbols):
+                st.info("ℹ️ الدالة ثابتة: منحناها مستقيم يوازي حامل محور الفواصل، فلا توجد مماسات مائلة ولا قيم متوسطة ولا انعطاف.")
+                st.latex(r"f(x) = " + sp.latex(cache['f_expr']))
+            elif not extra_sections or isinstance(extra_sections, dict):
                 st.warning("⚠️ تعذّر إكمال هذه الأسئلة لهذه الدالة (حساب طويل جداً).")
             else:
                 for i_s, (title_s, items_s) in enumerate(extra_sections, start=6):
