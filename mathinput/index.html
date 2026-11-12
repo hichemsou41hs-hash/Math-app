@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- MathLive: maths editor with real fractions/roots and a virtual maths keyboard (MIT licence) -->
+<script src="https://cdn.jsdelivr.net/npm/mathlive@0.103.0/dist/mathlive.min.js"></script>
+<style>
+  html, body { margin: 0; background: transparent; font-family: "Segoe UI", Roboto, sans-serif; }
+  .screen { background: #FFFFFF; border: 2px solid #6557D2; border-radius: 14px; margin: 4px 6px 8px 6px; padding: 4px 10px;
+            display: flex; align-items: center; gap: 8px; direction: ltr; }
+  .screen.active { box-shadow: 0 0 0 3px rgba(101,87,210,.25); }
+  .screen.small { border-color: #A9A3E6; }
+  .lbl { font: italic 24px "Times New Roman", serif; color: #1E1B4B; white-space: nowrap; }
+  math-field { flex: 1; min-width: 0; font-size: 30px; border: none; outline: none; background: transparent; color: #0F172A;
+               --caret-color: #6557D2; --selection-background-color: #E4E0FB; --contains-highlight-background-color: #F3F1FD; }
+  math-field::part(virtual-keyboard-toggle), math-field::part(menu-toggle) { display: none; }
+  .screen.small math-field { font-size: 22px; }
+  .bar { display: flex; gap: 8px; margin: 0 6px 8px 6px; direction: rtl; }
+  .bar button { height: 46px; border: none; border-radius: 12px; font-size: 17px; font-weight: 700; cursor: pointer; }
+  #go { flex: 1; background: #6557D2; color: #FFFFFF; box-shadow: 0 2px 0 #3F33A0; }
+  #go:active { transform: translateY(2px); box-shadow: none; }
+  #clr { width: 92px; background: #5B6475; color: #FFFFFF; }
+  #kb { background: #E9ECF2; border-radius: 16px; margin: 0 6px 6px 6px; padding: 8px 6px 10px 6px; direction: ltr; }
+  .tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 8px; }
+  .tab { border: none; border-radius: 999px; padding: 6px 24px; font-weight: 700; font-size: 16px; background: #D7DCE6; color: #334155; }
+  .tab.on { background: #6557D2; color: #FFFFFF; }
+  .row { display: flex; gap: 6px; margin-bottom: 6px; }
+  .k { flex: 1 1 0; min-width: 0; height: 46px; border: none; border-radius: 10px; box-shadow: 0 2px 0 rgba(15,23,42,.30);
+       font: 21px "Times New Roman", "STIX Two Math", serif; background: #FFFFFF; color: #0F172A; padding: 0; -webkit-tap-highlight-color: transparent; }
+  .k:active { transform: translateY(2px); box-shadow: none; }
+  .k.o { background: #F4F5F9; color: #4338CA; font-weight: 700; }
+  .k.v { color: #6557D2; font-style: italic; font-weight: 700; }
+  .k.f { background: #ECE9FB; color: #5141B8; }
+  .k.a { background: #5B6475; color: #FFFFFF; font-family: "Segoe UI", Roboto, sans-serif; }
+  .k.g { background: #6557D2; color: #FFFFFF; }
+  .k.sp { flex: .25; visibility: hidden; }
+  :root { --keyboard-zindex: 1; --keyboard-background: #E9ECF2; --keycap-background: #FFFFFF; --keycap-text: #0F172A;
+          --keycap-secondary-background: #ECE9FB; --keycap-secondary-text: #5141B8; --keycap-primary-background: #6557D2;
+          --keycap-primary-text: #FFFFFF; --keycap-border-radius: 10px; --keycap-height: 46px; --keycap-font-size: 21px;
+          --keyboard-toolbar-text-active: #6557D2; }
+</style>
+</head>
+<body>
+  <div class="screen active" id="sf"><span class="lbl">f(x) =</span><math-field id="f"></math-field></div>
+  <div class="screen small" id="sg"><span class="lbl">y =</span><math-field id="g"></math-field></div>
+  <div class="bar"><button id="go">⏎ رسم الدالة</button><button id="clr">مسح</button></div>
+  <div id="kb"><div class="tabs"><button class="tab on" data-t="0">123</button><button class="tab" data-t="1">f(x)</button></div><div id="keys"></div></div>
+<script>
+const send = (type, data) => window.parent.postMessage(Object.assign({ isStreamlitMessage: true, type }, data || {}), "*");
+const f = document.getElementById("f"), g = document.getElementById("g");
+let count = 0, lastSync = null, current = f;
+
+// [label, action, class]: action = LaTeX template inserted at the caret (#0 = selection or empty box, #? = empty box),
+// or a command: "<", ">", "del", "clr", "go"
+const PAGES = [
+  [
+    [["x","x","v"],["m","m","v"],["(","(","o"],[")",")","o"],["","","sp"],["7","7"],["8","8"],["9","9"],["÷","\\div","o"]],
+    [["x²","#@^{2}","f"],["xⁿ","#@^{#?}","f"],["√","\\sqrt{#0}","f"],["|□|","\\left|#0\\right|","f"],["","","sp"],["4","4"],["5","5"],["6","6"],["×","\\times","o"]],
+    [["▭⁄▭","\\frac{#@}{#?}","f"],["eˣ","e^{#0}","f"],["ln","\\ln\\left(#0\\right)","f"],["e","e","v"],["","","sp"],["1","1"],["2","2"],["3","3"],["−","-","o"]],
+    [["◀","<","a"],["▶",">","a"],["⌫","del","a"],["π","\\pi","v"],["","","sp"],["0","0"],[".","."],["+","+","o"],["⏎","go","g"]],
+  ],
+  [
+    [["eˣ","e^{#0}","f"],["e⁻ˣ","e^{-x}","f"],["e²ˣ","e^{2x}","f"],["ln","\\ln\\left(#0\\right)","f"],["ln x/x","\\frac{\\ln x}{x}","f"]],
+    [["√","\\sqrt{#0}","f"],["∛","\\sqrt[3]{#0}","f"],["|□|","\\left|#0\\right|","f"],["1/□","\\frac{1}{#0}","f"],["x³","#@^{3}","f"]],
+    [["sin","\\sin\\left(#0\\right)","f"],["cos","\\cos\\left(#0\\right)","f"],["tan","\\tan\\left(#0\\right)","f"],["(","(","o"],[")",")","o"]],
+    [["◀","<","a"],["▶",">","a"],["⌫","del","a"],["x","x","v"],["m","m","v"],["⏎","go","g"]],
+  ],
+];
+function press(act) {
+  const mf = current;
+  if (act === "<") mf.executeCommand("moveToPreviousChar");
+  else if (act === ">") mf.executeCommand("moveToNextChar");
+  else if (act === "del") mf.executeCommand("deleteBackward");
+  else if (act === "go") { submit(); return; }
+  else mf.insert(act, { selectionMode: "placeholder", focus: false });
+  mf.focus();
+}
+function drawPage(i) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("on", +t.dataset.t === i));
+  const box = document.getElementById("keys"); box.innerHTML = "";
+  for (const row of PAGES[i]) {
+    const r = document.createElement("div"); r.className = "row";
+    for (const [label, act, cls] of row) {
+      const k = document.createElement("button"); k.className = "k " + (cls || ""); k.textContent = label;
+      k.addEventListener("pointerdown", ev => { ev.preventDefault(); if (act) press(act); });   // keep the caret in the field
+      r.appendChild(k);
+    }
+    box.appendChild(r);
+  }
+  height();
+}
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("pointerdown", ev => { ev.preventDefault(); drawPage(+t.dataset.t); }));
+
+function height() {
+  const h = document.body.scrollHeight + 24;
+  send("streamlit:setFrameHeight", { height: Math.ceil(h) });
+}
+function submit() {
+  send("streamlit:setComponentValue", { dataType: "json",
+    value: { f: f.getValue("ascii-math"), g: g.getValue("ascii-math") || "m", n: ++count } });
+}
+function focusField(mf) {
+  current = mf;
+  document.getElementById("sf").classList.toggle("active", mf === f);
+  document.getElementById("sg").classList.toggle("active", mf === g);
+}
+
+customElements.whenDefined("math-field").then(() => {
+  for (const mf of [f, g]) {
+    mf.mathVirtualKeyboardPolicy = "manual";        // our keyboard below; no phone keyboard
+    mf.smartFence = true;
+    mf.addEventListener("focusin", () => focusField(mf));
+    mf.addEventListener("change", submit);           // Enter
+    const sink = mf.shadowRoot && mf.shadowRoot.querySelector("[part=keyboard-sink], [contenteditable], textarea");
+    if (sink) sink.setAttribute("inputmode", "none");
+  }
+  document.getElementById("go").onclick = submit;
+  document.getElementById("clr").onclick = () => { current.value = current === g ? "m" : ""; current.focus(); };
+  drawPage(0);
+  f.focus();
+  setTimeout(height, 150);
+});
+
+window.addEventListener("message", (e) => {
+  if (!e.data || e.data.type !== "streamlit:render") return;
+  const a = e.data.args || {};
+  if (a.sync !== lastSync) {               // set from Python only when the function changed elsewhere (text box, photo)
+    lastSync = a.sync;
+    customElements.whenDefined("math-field").then(() => { f.value = a.f_latex || ""; g.value = a.g_latex || "m"; height(); });
+  }
+  height();
+});
+send("streamlit:componentReady", { apiVersion: 1 });
+window.addEventListener("resize", height);
+</script>
+</body>
+</html>

@@ -1021,80 +1021,19 @@ if 'active_f' not in st.session_state:
     st.session_state.active_f = st.session_state.f_val
 if 'active_g' not in st.session_state:
     st.session_state.active_g = st.session_state.g_val
-if 'kbd_target' not in st.session_state:
-    st.session_state.kbd_target = "f"
 
-def apply_current_inputs():
+def apply_current_inputs(from_mathfield=False):
     st.session_state.active_f = st.session_state.f_val.strip()
     st.session_state.active_g = st.session_state.g_val.strip() if st.session_state.g_val.strip() else "m"
+    if not from_mathfield:   # changed by the text box or the photo: refresh the maths display
+        st.session_state.mi_sync = st.session_state.get("mi_sync", 0) + 1
 
-KBD_CSS = """
-<style>
-/* لوحة مفاتيح رياضية بأسلوب GeoGebra: لوحة فاتحة، مفاتيح بيضاء، دوال بنفسجية، أزرار تحكم داكنة */
-.st-key-kbd { background: #E9ECF2; border-radius: 16px; padding: 10px 8px 12px 8px; box-shadow: 0 6px 18px rgba(0,0,0,.35); }
-.st-key-kbd [role="tablist"] { gap: 8px; justify-content: center; border-bottom: none !important; box-shadow: none !important; }
-.st-key-kbd .react-aria-SelectionIndicator { display: none !important; }   /* red underline of the selected tab */
-.st-key-kbd [data-testid="stTab"] { background: #D7DCE6 !important; border-radius: 999px !important; padding: 4px 24px !important; height: 34px; border: none !important; }
-.st-key-kbd [data-testid="stTab"] p { color: #334155 !important; font-weight: 700 !important; font-size: 16px !important; }
-.st-key-kbd [data-testid="stTab"][aria-selected="true"] { background: #6557D2 !important; }
-.st-key-kbd [data-testid="stTab"][aria-selected="true"] p { color: #FFFFFF !important; }
-.st-key-kbd [data-testid="stHorizontalBlock"] { flex-wrap: nowrap !important; gap: 6px !important; margin-bottom: 6px; }
-.st-key-kbd [data-testid="stColumn"], .st-key-kbd [data-testid="column"] { min-width: 0 !important; width: auto !important; flex: 1 1 0 !important; }
-.st-key-kbd button { width: 100% !important; height: 46px !important; min-height: 46px !important; padding: 0 !important; border: none !important;
-  border-radius: 10px !important; box-shadow: 0 2px 0 rgba(15,23,42,.30) !important; transition: transform .05s, filter .1s !important; }
-.st-key-kbd button:hover { filter: brightness(0.96); }
-.st-key-kbd button:active { transform: translateY(2px) !important; box-shadow: none !important; }
-.st-key-kbd button p, .st-key-kbd button * { font-size: 19px !important; letter-spacing: 0 !important; font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif !important; }
-[class*="st-key-kbn_"] button { background: #FFFFFF !important; color: #0F172A !important; }
-[class*="st-key-kbo_"] button { background: #F4F5F9 !important; color: #4338CA !important; font-weight: 700 !important; }
-[class*="st-key-kbv_"] button { background: #FFFFFF !important; color: #6557D2 !important; font-style: italic !important; font-weight: 700 !important; }
-[class*="st-key-kbf_"] button { background: #ECE9FB !important; color: #5141B8 !important; }
-[class*="st-key-kba_"] button { background: #5B6475 !important; color: #FFFFFF !important; }
-[class*="st-key-kbg_"] button { background: #6557D2 !important; color: #FFFFFF !important; }
-.st-key-kbd [data-testid="stButton"], .st-key-kbd .stButton, .st-key-kbd [class*="st-key-kb"] { width: 100% !important; }
-.st-key-kbd [data-testid="stButtonGroup"] { width: 100% !important; }
-.st-key-kbd [data-testid="stButtonGroup"] > div { width: 100% !important; display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; justify-content: center !important; gap: 6px !important; }
-.st-key-kbd [data-testid="stButtonGroup"] button { height: 38px !important; min-height: 38px !important; min-width: 120px !important; width: auto !important; flex: 1 1 0 !important; padding: 0 10px !important; white-space: nowrap !important;
-  background: #FFFFFF !important; color: #334155 !important; box-shadow: none !important; border: 1px solid #C7CCD8 !important; }
-.st-key-kbd [data-testid="stButtonGroup"] button[aria-checked="true"] { background: #6557D2 !important; color: #FFFFFF !important; border-color: #6557D2 !important; }
-.st-key-kbd [data-testid="stButtonGroup"] button p, .st-key-kbd [data-testid="stButtonGroup"] button * { font-size: 15px !important; font-family: inherit !important; color: inherit !important; }
-.st-key-kbdpv { background: #FFFFFF; border: 2px solid #6557D2; border-radius: 12px; padding: 0 8px; margin: 4px 0 8px 0; }
-</style>
-"""
-st.markdown(KBD_CSS, unsafe_allow_html=True)
-
-# (التسمية، ما يُكتب، النوع) — n رقم، o عملية، v متغير/ثابت، f دالة، a تحكم، g رسم
-KBD_LAYOUT = {
-    "123": [
-        [("x", "x", "v"), ("m", "m", "v"), ("(", "(", "o"), (")", ")", "o"), ("7", "7", "n"), ("8", "8", "n"), ("9", "9", "n"), ("÷", "/", "o")],
-        [("x²", "^2", "f"), ("xⁿ", "^(", "f"), ("√", "sqrt(", "f"), ("|□|", "abs(", "f"), ("4", "4", "n"), ("5", "5", "n"), ("6", "6", "n"), ("×", "*", "o")],
-        [("eˣ", "e^(", "f"), ("ln", "ln(", "f"), ("e", "e", "v"), ("π", "pi", "v"), ("1", "1", "n"), ("2", "2", "n"), ("3", "3", "n"), ("−", "-", "o")],
-        [("⌫", "DEL", "a"), ("C", "CLR", "a"), ("⟲ m", "RESET_G", "a"), (".", ".", "n"), ("0", "0", "n"), ("+", "+", "o"), ("⏎", "GO", "g")],
-    ],
-    "f(x)": [
-        [("eˣ", "e^(", "f"), ("e⁻ˣ", "e^(-x)", "f"), ("e²ˣ", "e^(2x)", "f"), ("ln", "ln(", "f"), ("ln x/x", "ln(x)/x", "f")],
-        [("√", "sqrt(", "f"), ("∛", "cbrt(", "f"), ("|□|", "abs(", "f"), ("1/□", "1/(", "f"), ("x³", "^3", "f")],
-        [("sin", "sin(", "f"), ("cos", "cos(", "f"), ("tan", "tan(", "f"), ("(", "(", "o"), (")", ")", "o")],
-        [("⌫", "DEL", "a"), ("C", "CLR", "a"), ("x", "x", "v"), ("m", "m", "v"), ("⏎", "GO", "g")],
-    ],
-}
-
-def k_click(char):
-    target = "f_val" if st.session_state.get("kbd_target", "f") == "f" else "g_val"
-    if char == 'DEL':
-        st.session_state[target] = st.session_state[target][:-1]
-    elif char == 'CLR':
-        st.session_state[target] = "" if target == "f_val" else "m"
-    elif char == 'RESET_G':
-        st.session_state.g_val = "m"
-    elif char == 'GO':
-        apply_current_inputs()
-    else:
-        if len(st.session_state[target]) < 200:
-            st.session_state[target] += char
+import streamlit.components.v1 as components
+from mathinput_convert import ascii_to_app
+_mathinput = components.declare_component("mathinput", path=os.path.join(_APP_DIR, "mathinput"))
 
 def kbd_preview(text):
-    """معاينة رياضية حيّة لما كُتب (مثل GeoGebra)؛ عبارة ناقصة لا توقف شيئاً."""
+    """LaTeX of what is typed (to show it in the maths display); None if incomplete."""
     if not text or not text.strip():
         return None
     try:
@@ -1104,27 +1043,20 @@ def kbd_preview(text):
               'cos': sp.cos, 'sin': sp.sin, 'tan': sp.tan}
         e_p = parse_expr(fix_implicit_mult(text), local_dict=ld, evaluate=False,
                          transformations=(standard_transformations + (implicit_multiplication_application,)))
-        return sp.latex(e_p, ln_notation=True, order='none')   # keep the pupil's order
+        return sp.latex(e_p, ln_notation=True, order='none')
     except Exception:
         return None
 
-with st.expander("⌨️ لوحة المفاتيح الرياضية", expanded=False):
-    with st.container(key="kbd"):
-        tgt = st.segmented_control("الكتابة في:", ["✎ f(x)", "✎ y"], default="✎ f(x)",
-                                   key="kbd_seg", label_visibility="collapsed")
-        st.session_state.kbd_target = "g" if tgt and tgt.endswith("y") else "f"
-        cur_txt = st.session_state.f_val if st.session_state.kbd_target == "f" else st.session_state.g_val
-        pv = kbd_preview(cur_txt)
-        lhs = "f(x) =" if st.session_state.kbd_target == "f" else "y ="
-        with st.container(key="kbdpv"):
-            st.latex(r"\color{#1E1B4B}{" + lhs + " " + (pv if pv else r"\ldots") + "}")
-        for t_i, (tab, rows) in enumerate(zip(st.tabs(list(KBD_LAYOUT)), KBD_LAYOUT.values())):
-            with tab:
-                for r_idx, row in enumerate(rows):
-                    cols = st.columns(len(row))
-                    for c_idx, (label, val, kind) in enumerate(row):
-                        cols[c_idx].button(label, key=f"kb{kind}_{t_i}_{r_idx}_{c_idx}", on_click=k_click, args=(val,),
-                                           help="رسم الدالة" if val == "GO" else None)
+st.markdown("<div style='text-align:right; direction:rtl; color:#00E5FF; font-weight:bold; font-size:17px;'>✍️ اكتب الدالة في الشاشة (الكسر بخانة للبسط وخانة للمقام) ثم اضغط «رسم الدالة»:</div>", unsafe_allow_html=True)
+mi_val = _mathinput(f_latex=kbd_preview(st.session_state.active_f) or "", g_latex=kbd_preview(st.session_state.active_g) or "m",
+                    sync=st.session_state.get("mi_sync", 0), key="mathinput", default=None)
+if mi_val and mi_val.get("n") != st.session_state.get("mi_n"):
+    st.session_state.mi_n = mi_val.get("n")
+    f_new = ascii_to_app(mi_val.get("f", ""))
+    if f_new:
+        st.session_state.f_val = f_new[:200]
+        st.session_state.g_val = (ascii_to_app(mi_val.get("g", "")) or "m")[:200]
+        apply_current_inputs(from_mathfield=True)
 
 api_key = None
 try:
@@ -1154,7 +1086,7 @@ with col_img:
                     else:
                         st.error(f"❌ تعذر استخراج الدالة حالياً: {err_msg}")
 
-with col_text:
+with col_text, st.expander("⌨ الكتابة النصية (اختياري)", expanded=False):
     st.text_input("أدخل عبارة الدالة f(x) أو الدالة الوسيطية f_m(x):", key="f_val", max_chars=200, placeholder="مثال: (x^2+m*x+1)/(x-1)", on_change=apply_current_inputs)
     st.text_input("أدخل معادلة المستقيم بدلالة m (تُترك m للمناقشة الأفقية):", key="g_val", max_chars=200, placeholder="m", on_change=apply_current_inputs)
     if st.button("✅ تأكيد ورسم الدالة", width='stretch'):
