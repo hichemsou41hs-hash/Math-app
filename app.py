@@ -718,6 +718,7 @@ def safe_solve_real(expr, x_sym, scan_limit=30.0):
         if np.isscalar(ys):
             ys = np.full_like(xs, float(ys), dtype=float)
         ys = np.array(ys, dtype=float)
+        roots_fl = [safe_float(er) for er in roots]   # numeric copy: no symbolic evaluation inside the loop
         for i in range(len(ys) - 1):
             if np.isfinite(ys[i]) and np.isfinite(ys[i+1]):
                 if abs(ys[i]) < 1e-9:
@@ -726,9 +727,12 @@ def safe_solve_real(expr, x_sym, scan_limit=30.0):
                             continue
                     elif not (abs(ys[i]) <= abs(ys[i+1]) and abs(ys[i]) <= abs(ys[i-1])):
                         continue
+                    if 0 < i and abs(ys[i-1]) < 1e-9 and abs(ys[i+1]) < 1e-9:
+                        continue   # inside an interval where the expression is identically 0 (|x+1|+x): only its ends count
                     r_num = float(xs[i])
-                    if not any(abs(safe_float(er) - r_num) < 1e-3 for er in roots):
+                    if not any(abs(er_f - r_num) < 1e-3 for er_f in roots_fl):
                         roots.append(sp.Integer(int(round(r_num))) if abs(r_num - round(r_num)) < 1e-5 else sp.nsimplify(round(r_num, 4), tolerance=1e-3))
+                        roots_fl.append(r_num)
                 elif ys[i] * ys[i+1] < 0 and abs(ys[i+1] - ys[i]) < 25.0:
                     a_b, b_b = float(xs[i]), float(xs[i+1])
                     fa_b = float(ys[i])
@@ -750,7 +754,8 @@ def safe_solve_real(expr, x_sym, scan_limit=30.0):
                     with np.errstate(all='ignore'):
                         f_chk = float(f_num(r_num))
                     if np.isfinite(f_chk) and abs(f_chk) < 1e-3:
-                        if not any(abs(safe_float(er) - r_num) < 1e-3 for er in roots):
+                        if not any(abs(er_f - r_num) < 1e-3 for er_f in roots_fl):
+                            roots_fl.append(r_num)
                             if abs(r_num - round(r_num)) < 1e-5:
                                 roots.append(sp.Integer(int(round(r_num))))
                             elif abs(r_num - 0.5) < 1e-4:

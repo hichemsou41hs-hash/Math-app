@@ -31,7 +31,9 @@ def isolated(f, limit=200):
     code = "import sys,json;sys.path.insert(0,%r);from run_app import one;print('@@'+json.dumps(one(%r),ensure_ascii=False))" % (os.path.dirname(os.path.abspath(__file__)), f)
     t = time.time()
     try:
-        out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=limit).stdout
+        import resource
+        cap = lambda: resource.setrlimit(resource.RLIMIT_AS, (3 * 1024**3, 3 * 1024**3))   # 3 GB per function
+        out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=limit, preexec_fn=cap).stdout
         line = [l for l in out.splitlines() if l.startswith("@@")]
         return json.loads(line[-1][2:]) if line else {"f": f, "harness": "no result (crash)", "sec": round(time.time() - t, 1)}
     except subprocess.TimeoutExpired:
