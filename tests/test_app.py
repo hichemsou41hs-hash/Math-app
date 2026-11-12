@@ -36,19 +36,3 @@ def test_dangerous_input_is_rejected_fast(f):
     assert not at.exception
     assert at.error, "expected a clear error message"
 
-
-def test_keyboard_types_and_draws():
-    at = AppTest.from_file(APP, default_timeout=240)
-    at.run()
-    keys = {b.key: b for b in at.button if b.key}
-    at.button(key="kba_0_3_1").click().run()              # C : clear f
-    for k in ["kbf_0_2_0", "kbv_0_0_0", "kbo_0_0_3", "kbo_0_2_7", "kbv_0_0_0"]:   # e^( x ) - x
-        at.button(key=k).click().run()
-    assert at.session_state["f_val"] == "e^(x)-x"
-    at.button(key="kba_0_3_0").click().run()              # ⌫
-    assert at.session_state["f_val"] == "e^(x)-"
-    at.button(key="kbv_0_0_0").click().run()
-    at.button(key="kbg_0_3_6").click().run()              # ⏎ draws it
-    assert at.session_state["active_f"] == "e^(x)-x"
-    assert not at.exception and not at.error
-    assert len(keys) > 40

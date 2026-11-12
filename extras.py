@@ -333,9 +333,9 @@ def abs_curves_png(f, x, x_bound=6.0, y_lim=None, dark=True):
     y_abs = np.abs(y)
     y_even = fn(np.abs(xs))
     bg, fg, grid = ("#0F172A", "#E2E8F0", "#334155") if dark else ("white", "#1F3A5F", "#CBD5E1")
-    fig = Figure(figsize=(10, 4.2))
+    fig = Figure(figsize=(7.5, 10.5))     # one under the other: each curve uses the full width on a phone
     fig.patch.set_facecolor(bg)
-    axs = fig.subplots(1, 2)
+    axs = fig.subplots(2, 1)
     if y_lim is None:
         # robust window: exponential functions reach 1e9 at the edges, which flattened both curves
         fin = np.abs(y[np.isfinite(y)])
@@ -355,8 +355,9 @@ def abs_curves_png(f, x, x_bound=6.0, y_lim=None, dark=True):
         ax.tick_params(colors=fg, labelsize=8)
         for s in ax.spines.values():
             s.set_color(grid)
-        ax.legend(loc="upper left", fontsize=9, facecolor=bg, edgecolor=grid, labelcolor=fg)
-        ax.set_title("y = " + title, color=col, fontsize=13)
+        ax.legend(loc="upper left", fontsize=12, facecolor=bg, edgecolor=grid, labelcolor=fg)
+        ax.tick_params(colors=fg, labelsize=11)
+        ax.set_title("y = " + title, color=col, fontsize=17)
     fig.tight_layout()
     buf = io.BytesIO()
     fig.savefig(buf, format="png", dpi=150, facecolor=bg)
