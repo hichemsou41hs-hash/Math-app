@@ -243,6 +243,9 @@ st.markdown("""
 st.markdown("<div class='title-dis'>المناقشة البيانية ودراسة تغيرات دالة</div>", unsafe_allow_html=True)
 st.markdown("<div class='title-hes'>الأستاذ سوايسية هشام</div>", unsafe_allow_html=True)
 
+import bac
+bac.render()
+
 NUMPY_MATH_MAP = {
     'E': np.e, 'e': np.e, 'pi': np.pi,
     'Abs': np.abs, 'abs': np.abs, 'sign': np.sign,
