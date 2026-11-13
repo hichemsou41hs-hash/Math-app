@@ -39,8 +39,8 @@
   .fr i, .ab i, .ep i { display: block; width: 13px; height: 11px; border: 1.6px solid currentColor; border-radius: 2px; }
   .fr b { display: block; width: 19px; height: 0; border-top: 2px solid currentColor; }
   .fr .one { font-size: 15px; line-height: 13px; white-space: nowrap; }
-  .ab { display: inline-flex; align-items: center; gap: 1px; font-size: 22px; }
-  .ab i { display: inline-block; }
+  .ab { display: inline-block; vertical-align: middle; border-left: 2px solid currentColor; border-right: 2px solid currentColor; padding: 2px 3px; }
+  .ab i { display: block; width: 10px; height: 13px; }   /* |□| drawn as one narrow block: fits a 360 px phone */
   .ep { font-size: 21px; } .ep sup { display: inline-block; vertical-align: 9px; margin-left: 1px; } .ep i { width: 9px; height: 8px; }
   :root { --keyboard-zindex: 1; --keyboard-background: #E9ECF2; --keycap-background: #FFFFFF; --keycap-text: #0F172A;
           --keycap-secondary-background: #ECE9FB; --keycap-secondary-text: #5141B8; --keycap-primary-background: #6557D2;
@@ -77,7 +77,7 @@ const PAGES = [
 // labels drawn in HTML so they stay inside the key on narrow phones
 const ICON = {
   "@frac": '<span class="fr"><i></i><b></b><i></i></span>',
-  "@abs": '<span class="ab">|<i></i>|</span>',
+  "@abs": '<span class="ab"><i></i></span>',
   "@epow": '<span class="ep">e<sup><i></i></sup></span>',
   "@lnx": '<span class="fr"><span class="one">ln x</span><b></b><span class="one">x</span></span>',
   "@inv": '<span class="fr"><span class="one">1</span><b></b><i></i></span>',
