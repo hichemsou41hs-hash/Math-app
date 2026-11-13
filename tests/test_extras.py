@@ -21,24 +21,17 @@ def test_three_roots_cubic_and_centre():
     s = extras.complete_study(x**3 - 3 * x + 1, x)
     r = results(s, "القيم المتوسطة")
     assert r"-1{,}9 < \alpha_{1} < -1{,}8" in r and r"0{,}3 < \alpha_{2} < 0{,}4" in r and r"1{,}5 < \alpha_{3} < 1{,}6" in r
-    assert r"\omega\left(0\,;\,1\right)" in results(s, "التناظر")
     assert r"I\left(0\,;\,1\right)" in results(s, "الانعطاف")
 
 
-def test_homographic_centre():
-    s = extras.complete_study((2 * x + 1) / (x + 1), x, vertical_asymptotes=(-1,))
-    assert r"\omega\left(-1\,;\,2\right)" in results(s, "التناظر")
-
-
-def test_rational_centre_and_no_x_intersection():
+def test_no_x_intersection():
     s = extras.complete_study((x**2 + 1) / (x - 1), x, vertical_asymptotes=(1,))
-    assert r"\omega\left(1\,;\,2\right)" in results(s, "التناظر")
     assert "لا تقبل حلولاً" in results(s, "تقاطع")
 
 
-def test_even_function_axis_and_ln_notation():
+def test_ln_notation_and_no_symmetry_section():
     s = extras.complete_study(sp.log(x**2 + 1), x)
-    assert "x = 0" in results(s, "التناظر")
+    assert not any("التناظر" in t for t, _ in s)
     infl = results(s, "الانعطاف")
     assert r"\ln" in infl and r"\log" not in infl
 

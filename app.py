@@ -1096,6 +1096,79 @@ current_f = st.session_state.active_f
 current_g = st.session_state.active_g
 # ==================== نهاية الجزء (2/4) ====================
 # ==================== بداية الجزء (3/4) ====================
+def k_rows_to_m_rows(items, g_m, m_sym, m_dom, known=()):
+    """Discussion rows computed for f(x) = k  ->  rows in m, with k = g(m): {m in D_g : g(m) in [L;H]}."""
+    def exact(v):
+        for sm in known:   # exact critical value already found by the analysis (2-2*sqrt(2), e, ...)
+            try:
+                if abs(float(sm) - v) < 1e-6:
+                    return sm
+            except Exception:
+                pass
+        try:
+            return sp.nsimplify(v, [sp.E, sp.pi, sp.sqrt(2), sp.sqrt(3), sp.sqrt(5)], tolerance=1e-9)
+        except Exception:
+            return sp.Float(v)
+    rows, m_exacts = [], []
+    for it in items:
+        kL, kH = it['L'], it['H']
+        try:
+            if kL == kH:
+                sol = sp.solveset(sp.Eq(g_m, exact(kL)), m_sym, m_dom)
+            else:
+                sol = m_dom
+                if kL != float('-inf'):
+                    sol = sol.intersect(sp.solveset(g_m >= exact(kL) if it['l_closed'] else g_m > exact(kL), m_sym, sp.S.Reals))
+                if kH != float('inf'):
+                    sol = sol.intersect(sp.solveset(g_m <= exact(kH) if it['r_closed'] else g_m < exact(kH), m_sym, sp.S.Reals))
+        except Exception:
+            continue
+        for piece in (sol.args if isinstance(sol, sp.Union) else [sol]):
+            if piece.is_empty:
+                continue
+            if isinstance(piece, sp.FiniteSet):
+                for v in piece:
+                    if v.is_real:
+                        m_exacts.append(v)
+                        rows.append(dict(it, type='point', L=float(v), H=float(v), l_closed=True, r_closed=True))
+            elif isinstance(piece, sp.Interval):
+                m_exacts += [b for b in (piece.start, piece.end) if b.is_finite]
+                rows.append(dict(it, type='interval',
+                                 L=float('-inf') if piece.start == -sp.oo else float(piece.start),
+                                 H=float('inf') if piece.end == sp.oo else float(piece.end),
+                                 l_closed=not piece.left_open, r_closed=not piece.right_open))
+    rows.sort(key=lambda r: (r['L'], r['H']))
+    crit = sorted({v for r in rows for v in (r['L'], r['H']) if np.isfinite(v)})
+    lo = (crit[0] - 2.5) if crit else -6.0
+    hi = (crit[-1] + 2.5) if crit else 6.0
+    try:
+        if np.isfinite(float(m_dom.inf)):
+            lo = max(lo, float(m_dom.inf) + (0.05 if m_dom.left_open else 0.0))
+        if np.isfinite(float(m_dom.sup)):
+            hi = min(hi, float(m_dom.sup) - (0.05 if m_dom.right_open else 0.0))
+    except Exception:
+        pass
+    lo, hi = float(max(-35.0, lo)), float(min(35.0, hi))
+    if lo >= hi:
+        hi = lo + 6.0
+    return rows, crit, lo, hi, m_exacts
+
+
+def interval_latex_dz(dom):
+    """]0;+\\infty[ in Algerian notation (None for all of R)."""
+    if dom == sp.S.Reals:
+        return None
+    parts = []
+    for p_d in (dom.args if isinstance(dom, sp.Union) else [dom]):
+        if isinstance(p_d, sp.Interval):
+            lo = r"-\infty" if p_d.start == -sp.oo else sp.latex(p_d.start)
+            hi = r"+\infty" if p_d.end == sp.oo else sp.latex(p_d.end)
+            parts.append(("]" if p_d.left_open else "[") + lo + ";" + hi + ("[" if p_d.right_open else "]"))
+        else:
+            parts.append(sp.latex(p_d))
+    return r" \cup ".join(parts)
+
+
 def build_math_context(f_str, g_str, version_tag="v36", m_sub_val=None):
     cache = {'valid': False, 'error': ''}
     try:
@@ -1130,6 +1203,13 @@ def build_math_context(f_str, g_str, version_tag="v36", m_sub_val=None):
         
         f_func = safe_lambdify(x_sym, f_expr)
         g_func = safe_lambdify((x_sym, m_sym), g_expr)
+        # y = g(m) without x (ln m, e^m, sqrt m, m^2, 2m+1 ...): discuss f(x) = k with k = g(m), then turn each
+        # k-interval into the m-interval {m in D_g : g(m) in it}. Solving m from f(x) = g(m) directly gave wrong
+        # tables (sqrt(m) = f(x) -> m = f(x)^2 also counted the x where f(x) < 0).
+        g_orig = g_expr
+        g_k_mode = bool(g_expr.has(m_sym) and not g_expr.has(x_sym) and g_expr != m_sym)
+        if g_k_mode:
+            g_expr = m_sym
         is_periodic_f = hasattr(f_expr, 'has') and f_expr.has(sp.sin, sp.cos, sp.tan)
         
         candidate_v_asymptotes = []
@@ -2343,6 +2423,48 @@ def build_math_context(f_str, g_str, version_tag="v36", m_sub_val=None):
                 else:
                     merged_items.append(item)
 
+        # m must stay where the line's expression is defined (y = ln(m): m > 0, never ]-inf;0])
+        m_dom = sp.S.Reals
+        try:
+            if g_orig.has(m_sym) and not g_orig.has(x_sym):
+                from sympy.calculus.util import continuous_domain
+                m_dom = continuous_domain(g_orig, m_sym, sp.S.Reals)
+        except Exception:
+            m_dom = sp.S.Reals
+        if g_k_mode:
+            merged_items, m_critical_num, m_min_val, m_max_val, m_ex = k_rows_to_m_rows(merged_items, g_orig, m_sym, m_dom, list(sym_m_critical))
+            sym_m_critical[:0] = m_ex   # so the table shows m exactly (e, (1-2√2)/2 ...)
+        elif m_dom != sp.S.Reals:
+            clipped = []
+            for it in merged_items:
+                lo = -sp.oo if it['L'] == float('-inf') else sp.Float(it['L'])
+                hi = sp.oo if it['H'] == float('inf') else sp.Float(it['H'])
+                seg = sp.FiniteSet(lo) if it['L'] == it['H'] else sp.Interval(lo, hi, left_open=not it['l_closed'] or lo == -sp.oo,
+                                                                               right_open=not it['r_closed'] or hi == sp.oo)
+                inter = seg.intersect(m_dom)
+                for piece in (inter.args if isinstance(inter, sp.Union) else [inter]):
+                    if piece.is_empty:
+                        continue
+                    if isinstance(piece, sp.FiniteSet):
+                        for v in piece:
+                            clipped.append(dict(it, type='point', L=float(v), H=float(v), l_closed=True, r_closed=True))
+                    elif isinstance(piece, sp.Interval):
+                        clipped.append(dict(it, type='interval',
+                                            L=float('-inf') if piece.start == -sp.oo else float(piece.start),
+                                            H=float('inf') if piece.end == sp.oo else float(piece.end),
+                                            l_closed=not piece.left_open, r_closed=not piece.right_open))
+            if clipped:
+                merged_items = clipped
+            try:
+                if np.isfinite(float(m_dom.inf)):
+                    m_min_val = max(m_min_val, float(m_dom.inf) + (0.05 if m_dom.left_open else 0.0))
+                if np.isfinite(float(m_dom.sup)):
+                    m_max_val = min(m_max_val, float(m_dom.sup) - (0.05 if m_dom.right_open else 0.0))
+            except Exception:
+                pass
+            if m_min_val >= m_max_val:
+                m_max_val = m_min_val + 6.0
+
         final_table = []
         for it in merged_items:
             L, H, sol_text = it['L'], it['H'], it['sol']
@@ -2653,7 +2775,8 @@ def build_math_context(f_str, g_str, version_tag="v36", m_sub_val=None):
             'deriv_chunks_bytes': deriv_chunks_bytes,
             'eq_bytes': eq_bytes,
             'disc_table_bytes': disc_table_bytes, 'rel_pos_tables_info': rel_pos_tables_info,
-            'm_min_val': m_min_val, 'm_max_val': m_max_val, 'f_expr': f_expr, 'g_expr': g_expr,
+            'm_min_val': m_min_val, 'm_max_val': m_max_val, 'f_expr': f_expr, 'g_expr': g_orig,
+            'm_dom_latex': interval_latex_dz(m_dom),
         })
     except Exception as e:
         cache['error'] = str(e)
@@ -2738,47 +2861,58 @@ else:
 
     m_min_val, m_max_val, m_critical_num = cache['m_min_val'], cache['m_max_val'], cache['m_critical_num']
 
-    if not is_param_mode:
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("تشغيل المناقشة آلياً ▶", disabled=st.session_state.auto_play):
-                st.session_state.auto_play = True
-                st.session_state.m_anim = m_min_val
-                st.rerun()
-        with col2:
-            if st.button("إيقاف ⏹", disabled=not st.session_state.auto_play):
-                st.session_state.auto_play = False
-                st.rerun()
-        m_val_manual = st.slider("تحكم يدوي:", m_min_val, m_max_val, m_min_val, 0.05, format="%g", key="manual_m", disabled=st.session_state.auto_play)
-    else:
-        m_val_manual = m_val_param_selected
+    # display order of the answer (teacher): study (limits, derivative, variations, asymptotes) -> Bac questions -> discussion
+    study_box = st.container()
+    extras_box = st.container()
+    disc_box = st.container()
 
-    anim_placeholder = st.empty()
+    with study_box:
+        if is_param_mode:
+            st.markdown("<h3 style='color:#FFD700; text-align:center; direction:rtl; margin-top:15px; margin-bottom:5px;'>📌 دراسة تغيرات الدالة الوسيطية f_m(x) حسب قيم المعلمة m</h3>", unsafe_allow_html=True)
+            st.info("🔹 عبارة الدالة المشتقة بدلالة المعلمة الحقيقية $m$:")
+            st.latex(fr"\color{{#4ADE80}}{{f'_m(x) = {param_family_info['dfm_latex']}}}")
+            if param_family_info.get('delta_latex'):
+                st.markdown("<div class='step-box-deriv'>🔸 إشارة المشتقة من إشارة البسط، نحسب المميز Δ_m بدلالة m:</div>", unsafe_allow_html=True)
+                st.latex(fr"\color{{#FDE68A}}{{{param_family_info['delta_latex']}}}")
+            md_param = "| اتجاه التغير ووجود القيم الحدية (العظمى أو الصغرى) | مجال / قيم المعلمة $m$ |\n| :---: | :---: |\n"
+            for m_lat_p, desc_p, Lp, Hp in param_family_info.get('extrema_table', []):
+                c_p = get_sol_color_html(desc_p)
+                is_act_p = (Lp == Hp and abs(m_val_param_selected - Lp) <= 0.1) or (Lp < m_val_param_selected < Hp)
+                if is_act_p:
+                    t_c = f"<span style='display:inline-block; width:92%; background-color:#334155; border:2px solid #FFD700; padding:4px; border-radius:6px; color:{c_p}; font-weight:bold; font-size:16px;'>{desc_p}</span>"
+                    m_c = f"<span style='display:inline-block; width:92%; background-color:#334155; border:2px solid #FFD700; padding:4px; border-radius:6px; white-space:nowrap; font-size:16px;'>**${m_lat_p}$**</span>"
+                else:
+                    t_c = f"<span style='color:{c_p}; font-weight:bold; font-size:16px;'>{desc_p}</span>"
+                    m_c = f"<span style='white-space:nowrap; font-size:16px;'>${m_lat_p}$</span>"
+                md_param += f"| {t_c} | {m_c} |\n"
+            st.markdown(md_param, unsafe_allow_html=True)
 
-    if is_param_mode:
-        st.markdown("<h3 style='color:#FFD700; text-align:center; direction:rtl; margin-top:15px; margin-bottom:5px;'>📌 دراسة تغيرات الدالة الوسيطية f_m(x) حسب قيم المعلمة m</h3>", unsafe_allow_html=True)
-        st.info("🔹 عبارة الدالة المشتقة بدلالة المعلمة الحقيقية $m$:")
-        st.latex(fr"\color{{#4ADE80}}{{f'_m(x) = {param_family_info['dfm_latex']}}}")
-        if param_family_info.get('delta_latex'):
-            st.markdown("<div class='step-box-deriv'>🔸 إشارة المشتقة من إشارة البسط، نحسب المميز Δ_m بدلالة m:</div>", unsafe_allow_html=True)
-            st.latex(fr"\color{{#FDE68A}}{{{param_family_info['delta_latex']}}}")
-        md_param = "| اتجاه التغير ووجود القيم الحدية (العظمى أو الصغرى) | مجال / قيم المعلمة $m$ |\n| :---: | :---: |\n"
-        for m_lat_p, desc_p, Lp, Hp in param_family_info.get('extrema_table', []):
-            c_p = get_sol_color_html(desc_p)
-            is_act_p = (Lp == Hp and abs(m_val_param_selected - Lp) <= 0.1) or (Lp < m_val_param_selected < Hp)
-            if is_act_p:
-                t_c = f"<span style='display:inline-block; width:92%; background-color:#334155; border:2px solid #FFD700; padding:4px; border-radius:6px; color:{c_p}; font-weight:bold; font-size:16px;'>{desc_p}</span>"
-                m_c = f"<span style='display:inline-block; width:92%; background-color:#334155; border:2px solid #FFD700; padding:4px; border-radius:6px; white-space:nowrap; font-size:16px;'>**${m_lat_p}$**</span>"
-            else:
-                t_c = f"<span style='color:{c_p}; font-weight:bold; font-size:16px;'>{desc_p}</span>"
-                m_c = f"<span style='white-space:nowrap; font-size:16px;'>${m_lat_p}$</span>"
-            md_param += f"| {t_c} | {m_c} |\n"
-        st.markdown(md_param, unsafe_allow_html=True)
 
-    st.markdown("<h3 style='color:#FFD700; text-align:center; direction:rtl; margin-top:15px; margin-bottom:5px;'>📌 المناقشة البيانية</h3>", unsafe_allow_html=True)
-    st.info(fr"🔹 حلول المعادلة $f(x) = {g_latex_disp}$ هي فواصل نقط تقاطع منحنى الدالة $f$ مع المستقيم ذو المعادلة: $y = {g_latex_disp}$")
+    with disc_box:
+        st.markdown("<h3 style='color:#FFD700; text-align:center; direction:rtl; margin-top:15px; margin-bottom:5px;'>📌 المناقشة البيانية</h3>", unsafe_allow_html=True)
+        st.info(fr"🔹 حلول المعادلة $f(x) = {g_latex_disp}$ هي فواصل نقط تقاطع منحنى الدالة $f$ مع المستقيم ذو المعادلة: $y = {g_latex_disp}$")
+        if cache.get('m_dom_latex'):
+            st.info(fr"🔹 العبارة ${g_latex_disp}$ معرّفة من أجل $m \\in {cache['m_dom_latex']}$ ، فالمناقشة على هذا المجال فقط.")
 
-    table_placeholder = st.empty()
+
+        if not is_param_mode:
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("تشغيل المناقشة آلياً ▶", disabled=st.session_state.auto_play):
+                    st.session_state.auto_play = True
+                    st.session_state.m_anim = m_min_val
+                    st.rerun()
+            with col2:
+                if st.button("إيقاف ⏹", disabled=not st.session_state.auto_play):
+                    st.session_state.auto_play = False
+                    st.rerun()
+            m_val_manual = st.slider("تحكم يدوي:", m_min_val, m_max_val, m_min_val, 0.05, format="%g", key="manual_m", disabled=st.session_state.auto_play)
+        else:
+            m_val_manual = m_val_param_selected
+
+        anim_placeholder = st.empty()
+
+        table_placeholder = st.empty()
 
     def generate_st_markdown_table(current_m):
         md = "| عدد و إشارة حلول المعادلة | المجال / القيمة المضبوطة |\n| :---: | :---: |\n"
@@ -3150,47 +3284,48 @@ else:
         table_placeholder.markdown(generate_st_markdown_table(m_val), unsafe_allow_html=True)
         plt.close(fig_dark)
         
-    with st.expander("📊 عرض دراسة الدالة الشاملة بالترتيب المنهجي", expanded=True):
-        st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. حساب النهايات واستنتاج المقارب العمودي أو الأفقي:</h4>", unsafe_allow_html=True)
-        st.latex(cache['domain_latex_st'])
-        for lim_item in cache['limits_data_detailed']:
-            st.latex(lim_item['main'])
-            if lim_item['steps']:
-                st.markdown("<div class='step-box-lim'>🔹 التعليل (خطوات الحساب):</div>", unsafe_allow_html=True)
-                for stp in lim_item['steps']:
-                    st.latex(fr"\color{{#C4B5FD}}{{{stp}}}")
-                if lim_item.get('step_note'):
-                    st.markdown(f"<div style='text-align:center; direction:rtl; color:#FDE047; font-size:15px; font-weight:bold;'>💡 ({lim_item['step_note']})</div>", unsafe_allow_html=True)
-            if lim_item.get('geo_txt'):
-                st.success(lim_item['geo_txt'])
+    with study_box:
+        with st.expander("📊 عرض دراسة الدالة الشاملة بالترتيب المنهجي", expanded=True):
+            st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. حساب النهايات واستنتاج المقارب العمودي أو الأفقي:</h4>", unsafe_allow_html=True)
+            st.latex(cache['domain_latex_st'])
+            for lim_item in cache['limits_data_detailed']:
+                st.latex(lim_item['main'])
+                if lim_item['steps']:
+                    st.markdown("<div class='step-box-lim'>🔹 التعليل (خطوات الحساب):</div>", unsafe_allow_html=True)
+                    for stp in lim_item['steps']:
+                        st.latex(fr"\color{{#C4B5FD}}{{{stp}}}")
+                    if lim_item.get('step_note'):
+                        st.markdown(f"<div style='text-align:center; direction:rtl; color:#FDE047; font-size:15px; font-weight:bold;'>💡 ({lim_item['step_note']})</div>", unsafe_allow_html=True)
+                if lim_item.get('geo_txt'):
+                    st.success(lim_item['geo_txt'])
                 
-        st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
-        for d_step in cache.get('deriv_steps_detailed', []):
-            st.markdown(f"<div class='step-box-deriv'>🔸 {d_step['label']}</div>", unsafe_allow_html=True)
-            for m_str in d_step['math_list']:
-                st.latex(fr"\color{{#FDE68A}}{{{m_str}}}")
-        st.markdown("<div class='step-box-final'>✅ العبارة النهائية للمشتقة:</div>", unsafe_allow_html=True)
-        st.latex(fr"\color{{#4ADE80}}{{f'(x) = {cache['df_latex_str_safe']}}}")
+            st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
+            for d_step in cache.get('deriv_steps_detailed', []):
+                st.markdown(f"<div class='step-box-deriv'>🔸 {d_step['label']}</div>", unsafe_allow_html=True)
+                for m_str in d_step['math_list']:
+                    st.latex(fr"\color{{#FDE68A}}{{{m_str}}}")
+            st.markdown("<div class='step-box-final'>✅ العبارة النهائية للمشتقة:</div>", unsafe_allow_html=True)
+            st.latex(fr"\color{{#4ADE80}}{{f'(x) = {cache['df_latex_str_safe']}}}")
         
-        st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
-        if cache.get('var_table_bytes'):
-            st.image(cache['var_table_bytes'], width='stretch')
+            st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
+            if cache.get('var_table_bytes'):
+                st.image(cache['var_table_bytes'], width='stretch')
 
-        if cache.get('rel_pos_tables_info'):
-            st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>4. استنتاج معادلة المستقيم المقارب المائل (Δ) وشرح طريقة استنتاجها:</h4>", unsafe_allow_html=True)
-            for od in cache['rel_pos_tables_info']:
-                st.info(fr"🔹 بما أن $\lim_{{x \to {od['target_latex']}}} f(x) = \pm\infty$، نبحث عن معامل التوجيه $a$ ثم $b$ بجوار ${od['target_latex']}$:")
-                st.latex(fr"\color{{#FDE68A}}{{a = \lim_{{x \to {od['target_latex']}}} \frac{{f(x)}}{{x}} = {od['a_lat']}}}")
-                st.latex(fr"\color{{#FDE68A}}{{b = \lim_{{x \to {od['target_latex']}}} [f(x) - ({od['a_lat']})x] = {od['b_lat']}}}")
-                st.latex(fr"\color{{#34D399}}{{\lim_{{x \to {od['target_latex']}}} \left[ f(x) - ({od['line_lat']}) \right] = \lim_{{x \to {od['target_latex']}}} \left( {od['rem_lat']} \right) = 0}}")
-                st.success(fr"📐 ومنه المنحنى $(C_f)$ يقبل مستقيماً مقارباً مائلاً $(\Delta)$ بجوار ${od['target_latex']}$ معادلته: $y = {od['line_lat']}$")
+            if cache.get('rel_pos_tables_info'):
+                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>4. استنتاج معادلة المستقيم المقارب المائل (Δ) وشرح طريقة استنتاجها:</h4>", unsafe_allow_html=True)
+                for od in cache['rel_pos_tables_info']:
+                    st.info(fr"🔹 بما أن $\lim_{{x \to {od['target_latex']}}} f(x) = \pm\infty$، نبحث عن معامل التوجيه $a$ ثم $b$ بجوار ${od['target_latex']}$:")
+                    st.latex(fr"\color{{#FDE68A}}{{a = \lim_{{x \to {od['target_latex']}}} \frac{{f(x)}}{{x}} = {od['a_lat']}}}")
+                    st.latex(fr"\color{{#FDE68A}}{{b = \lim_{{x \to {od['target_latex']}}} [f(x) - ({od['a_lat']})x] = {od['b_lat']}}}")
+                    st.latex(fr"\color{{#34D399}}{{\lim_{{x \to {od['target_latex']}}} \left[ f(x) - ({od['line_lat']}) \right] = \lim_{{x \to {od['target_latex']}}} \left( {od['rem_lat']} \right) = 0}}")
+                    st.success(fr"📐 ومنه المنحنى $(C_f)$ يقبل مستقيماً مقارباً مائلاً $(\Delta)$ بجوار ${od['target_latex']}$ معادلته: $y = {od['line_lat']}$")
 
-            st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>5. جدول الوضع النسبي بين المقارب المائل (Δ) والمنحنى (Cf):</h4>", unsafe_allow_html=True)
-            for od in cache['rel_pos_tables_info']:
-                st.markdown("<div class='step-box-deriv'>🔸 ندرس إشارة الفرق بين عبارة الدالة ومعادلة المستقيم المقارب المائل:</div>", unsafe_allow_html=True)
-                st.latex(fr"\color{{#FDE68A}}{{f(x) - y = {od['rem_lat']}}}")
-                if od.get('rel_pos_bytes'):
-                    st.image(od['rel_pos_bytes'], width='stretch')
+                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>5. جدول الوضع النسبي بين المقارب المائل (Δ) والمنحنى (Cf):</h4>", unsafe_allow_html=True)
+                for od in cache['rel_pos_tables_info']:
+                    st.markdown("<div class='step-box-deriv'>🔸 ندرس إشارة الفرق بين عبارة الدالة ومعادلة المستقيم المقارب المائل:</div>", unsafe_allow_html=True)
+                    st.latex(fr"\color{{#FDE68A}}{{f(x) - y = {od['rem_lat']}}}")
+                    if od.get('rel_pos_bytes'):
+                        st.image(od['rel_pos_bytes'], width='stretch')
 
     @st.cache_data(show_spinner=False, max_entries=60)
     def get_extras(key_k, _f_expr_k, x0_k, vas_k):
@@ -3216,25 +3351,26 @@ else:
             else:
                 st.latex(r"\color{#4ADE80}{" + content_k + "}")
 
-    if not st.session_state.auto_play:
-        _vas = tuple(sorted({round(a_v['val'], 6) for a_v in cache['unique_asymptotes'] if a_v['type'] == 'v' and a_v['val'] is not None}))
-        with st.expander("🧭 أسئلة البكالوريا المكمّلة: التقاطع مع المحورين، القيم المتوسطة، المماس، التناظر، الانعطاف", expanded=False):
-            x0_user = st.number_input("فاصلة نقطة التماس $x_0$ (اتركها فارغة لاختيار آلي):", value=None, step=0.5, format="%g", key="tan_x0")
-            extra_sections = get_extras(sp.srepr(cache['f_expr']), cache['f_expr'], None if x0_user is None else float(x0_user), _vas)
-            if not any(s_c.name == 'x' for s_c in cache['f_expr'].free_symbols):
-                st.info("ℹ️ الدالة ثابتة: منحناها مستقيم يوازي حامل محور الفواصل، فلا توجد مماسات مائلة ولا قيم متوسطة ولا انعطاف.")
-                st.latex(r"f(x) = " + sp.latex(cache['f_expr']))
-            elif not extra_sections or isinstance(extra_sections, dict):
-                st.warning("⚠️ تعذّر إكمال هذه الأسئلة لهذه الدالة (حساب طويل جداً).")
-            else:
-                for i_s, (title_s, items_s) in enumerate(extra_sections, start=6):
-                    st.markdown(f"<div dir='rtl' style='text-align:right; color:#00E5FF'>\n\n#### {i_s}. {title_s}\n\n</div>", unsafe_allow_html=True)
-                    show_extra_items(items_s)
-        with st.expander("🪞 منحنيا الدالتين |f(x)| و f(|x|)", expanded=False):
-            show_extra_items(extras.ABS_EXPLAIN)
-            abs_png = get_abs_png(sp.srepr(cache['f_expr']), cache['f_expr'], float(min(cache.get('plot_x_bound', 6.0) or 6.0, 12.0)), True, (cache.get('plot_y_min', -8.0), cache.get('plot_y_max', 8.0)))
-            if abs_png:
-                st.image(abs_png, width='stretch')
+    with extras_box:
+        if not st.session_state.auto_play:
+            _vas = tuple(sorted({round(a_v['val'], 6) for a_v in cache['unique_asymptotes'] if a_v['type'] == 'v' and a_v['val'] is not None}))
+            with st.expander("🧭 أسئلة البكالوريا المكمّلة: التقاطع مع المحورين، القيم المتوسطة، المماس، الانعطاف", expanded=False):
+                x0_user = st.number_input("فاصلة نقطة التماس $x_0$ (اتركها فارغة لاختيار آلي):", value=None, step=0.5, format="%g", key="tan_x0")
+                extra_sections = get_extras(sp.srepr(cache['f_expr']), cache['f_expr'], None if x0_user is None else float(x0_user), _vas)
+                if not any(s_c.name == 'x' for s_c in cache['f_expr'].free_symbols):
+                    st.info("ℹ️ الدالة ثابتة: منحناها مستقيم يوازي حامل محور الفواصل، فلا توجد مماسات مائلة ولا قيم متوسطة ولا انعطاف.")
+                    st.latex(r"f(x) = " + sp.latex(cache['f_expr']))
+                elif not extra_sections or isinstance(extra_sections, dict):
+                    st.warning("⚠️ تعذّر إكمال هذه الأسئلة لهذه الدالة (حساب طويل جداً).")
+                else:
+                    for i_s, (title_s, items_s) in enumerate(extra_sections, start=6):
+                        st.markdown(f"<div dir='rtl' style='text-align:right; color:#00E5FF'>\n\n#### {i_s}. {title_s}\n\n</div>", unsafe_allow_html=True)
+                        show_extra_items(items_s)
+            with st.expander("🪞 منحنيا الدالتين |f(x)| و f(|x|)", expanded=False):
+                show_extra_items(extras.ABS_EXPLAIN)
+                abs_png = get_abs_png(sp.srepr(cache['f_expr']), cache['f_expr'], float(min(cache.get('plot_x_bound', 6.0) or 6.0, 12.0)), True, (cache.get('plot_y_min', -8.0), cache.get('plot_y_max', 8.0)))
+                if abs_png:
+                    st.image(abs_png, width='stretch')
 
     if PDF_ENABLED and not st.session_state.auto_play:
         pdf_key = (current_f, current_g, m_val_param_selected, st.session_state.get("tan_x0"))

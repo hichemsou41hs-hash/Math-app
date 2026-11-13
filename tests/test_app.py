@@ -36,3 +36,25 @@ def test_dangerous_input_is_rejected_fast(f):
     assert not at.exception
     assert at.error, "expected a clear error message"
 
+
+
+def test_answer_order_and_ln_m_discussion():
+    """Teacher's order: study (limits, derivative, variations, asymptotes) -> Bac questions -> discussion.
+    With y = ln(m) the discussion starts at m > 0 (no ]-inf;0] row)."""
+    at = AppTest.from_file(APP, default_timeout=240)
+    at.run()
+    at.text_input(key="f_val").set_value("-x*ln(x)+x")
+    at.text_input(key="g_val").set_value("ln(m)")
+    at.button[[b.label for b in at.button].index("✅ تأكيد ورسم الدالة")].click()
+    at.run()
+    assert not at.exception and not at.error
+    labels = [e.label for e in at.expander]
+    study = next(i for i, l in enumerate(labels) if "دراسة الدالة الشاملة" in l)
+    bac = next(i for i, l in enumerate(labels) if "أسئلة البكالوريا" in l)
+    assert study < bac
+    md = " ".join(m.value for m in at.markdown)
+    assert r"\infty ; 0]" not in md and "]0 ; 1]" in md
+    texts = [m.value for m in at.markdown]
+    disc = next(i for i, t in enumerate(texts) if "📌 المناقشة البيانية" in t)
+    limits = next(i for i, t in enumerate(texts) if "حساب النهايات" in t)
+    assert limits < disc
