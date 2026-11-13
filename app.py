@@ -3188,40 +3188,24 @@ else:
                     x=10, w=190
                 )
 
-            plot_sec_num = 6 if has_oblique else 4
-            fig_light, _ = draw_plot(0, mode='light')
-            light_bytes = fig_to_bytes(fig_light)
-            plot_h = get_img_height_mm(light_bytes, 165)
+            sec_n = 6 if has_oblique else 4
 
-            if pdf.get_y() + 10 + plot_h > 280 and pdf.get_y() > 35:
-                pdf.add_page()
-            pdf_section_title(pdf, f"{plot_sec_num}. التمثيل البياني للدالة (Cf):")
-            pdf_add_bytes_image(pdf, light_bytes, x=22, w=165)
-            pdf.ln(3)
-
-            disc_sec_num = plot_sec_num + 1
-            eq_img = cache['eq_bytes']()
-            disc_img = cache['disc_table_bytes']()
-            eq_h = get_img_height_mm(eq_img, 180)
-            disc_h = get_img_height_mm(disc_img, 180)
-            if pdf.get_y() + 10 + eq_h + disc_h > 282 and pdf.get_y() > 35:
-                pdf.add_page()
-            pdf_section_title(pdf, f"{disc_sec_num}. المناقشة البيانية:")
-            if eq_img:
-                pdf_add_bytes_image(pdf, eq_img, x=15, w=180)
-                pdf.ln(1)
-            if disc_img:
-                pdf_add_bytes_image(pdf, disc_img, x=15, w=180)
-
-            # أسئلة البكالوريا المكمّلة ومنحنيا |f(x)| و f(|x|) (extras.py)
+            # Bac order: axes, IVT, tangent, inflection -> graph -> discussion -> |f(x)| and f(|x|)
+            ex_secs = None
             try:
                 vas_p = tuple(sorted({round(a_v['val'], 6) for a_v in cache['unique_asymptotes'] if a_v['type'] == 'v' and a_v['val'] is not None}))
                 ex_secs = get_extras(sp.srepr(cache['f_expr']), cache['f_expr'], x0_k, vas_p)
-                if ex_secs and not isinstance(ex_secs, dict):
-                    for i_s, (title_s, items_s) in enumerate(ex_secs, start=disc_sec_num + 1):
+                if not ex_secs or isinstance(ex_secs, dict):
+                    ex_secs = None
+            except Exception:
+                ex_secs = None
+            if ex_secs:
+                try:
+                    for title_s, items_s in ex_secs:
                         if pdf.get_y() > 250:
                             pdf.add_page()
-                        pdf_section_title(pdf, f"{i_s}. " + extras.latex_to_plain(title_s) + ":")
+                        pdf_section_title(pdf, f"{sec_n}. " + extras.latex_to_plain(title_s) + ":")
+                        sec_n += 1
                         for kind_k, content_k in items_s:
                             if kind_k == 'data':
                                 continue
@@ -3238,9 +3222,38 @@ else:
                                         pdf.add_page()
                                     pdf_add_bytes_image(pdf, png_k, x=105 - w_mm / 2, w=w_mm)
                             pdf.ln(1)
-                    abs_sec = disc_sec_num + 1 + len(ex_secs)
+                except Exception:
+                    pass   # الأقسام الإضافية اختيارية: لا تُفشل ملف PDF
+
+            fig_light, _ = draw_plot(0, mode='light')
+            light_bytes = fig_to_bytes(fig_light)
+            plot_h = get_img_height_mm(light_bytes, 165)
+
+            if pdf.get_y() + 10 + plot_h > 280 and pdf.get_y() > 35:
+                pdf.add_page()
+            pdf_section_title(pdf, f"{sec_n}. التمثيل البياني للدالة (Cf):")
+            sec_n += 1
+            pdf_add_bytes_image(pdf, light_bytes, x=22, w=165)
+            pdf.ln(3)
+
+            eq_img = cache['eq_bytes']()
+            disc_img = cache['disc_table_bytes']()
+            eq_h = get_img_height_mm(eq_img, 180)
+            disc_h = get_img_height_mm(disc_img, 180)
+            if pdf.get_y() + 10 + eq_h + disc_h > 282 and pdf.get_y() > 35:
+                pdf.add_page()
+            pdf_section_title(pdf, f"{sec_n}. المناقشة البيانية:")
+            sec_n += 1
+            if eq_img:
+                pdf_add_bytes_image(pdf, eq_img, x=15, w=180)
+                pdf.ln(1)
+            if disc_img:
+                pdf_add_bytes_image(pdf, disc_img, x=15, w=180)
+
+            if ex_secs:
+                try:
                     pdf.add_page()
-                    pdf_section_title(pdf, f"{abs_sec}. " + extras.latex_to_plain("منحنيا الدالتين $|f(x)|$ و $f(|x|)$") + ":")
+                    pdf_section_title(pdf, f"{sec_n}. " + extras.latex_to_plain("استنتاج منحنيي الدالتين $|f(x)|$ و $f(|x|)$") + ":")
                     for (case_k, rgb_k), (_k, t_k) in zip((("abs", (194, 85, 12)), ("even", (21, 128, 61))), extras.ABS_EXPLAIN):
                         png_k = get_abs_png(sp.srepr(cache['f_expr']), cache['f_expr'], float(min(cache.get('plot_x_bound', 6.0) or 6.0, 12.0)), False,
                                             (cache.get('plot_y_min', -8.0), cache.get('plot_y_max', 8.0)), case_k)
@@ -3250,8 +3263,8 @@ else:
                         if png_k:
                             pdf_add_bytes_image(pdf, png_k, x=30, w=150)                               # then its curve
                         pdf.ln(3)
-            except Exception:
-                pass   # الأقسام الإضافية اختيارية: لا تُفشل ملف PDF
+                except Exception:
+                    pass
 
             pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
             pdf_file.close()
@@ -3394,7 +3407,7 @@ else:
         pdf_key = (current_f, current_g, m_val_param_selected, st.session_state.get("tan_x0"))
         if st.button("📄 تجهيز ملف PDF", width='stretch'):
             with st.spinner("جاري إنشاء ملف الـ PDF..."):
-                st.session_state.pdf_data = (pdf_key, get_cached_pdf_bytes(current_f, current_g, m_val_param_selected, "v37", st.session_state.get("tan_x0")))
+                st.session_state.pdf_data = (pdf_key, get_cached_pdf_bytes(current_f, current_g, m_val_param_selected, "v38", st.session_state.get("tan_x0")))
         _pd = st.session_state.get("pdf_data")
         pdf_bytes = _pd[1] if (_pd and _pd[0] == pdf_key) else None
         if pdf_bytes:
