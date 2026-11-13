@@ -27,7 +27,7 @@
   .tab.on { background: #6557D2; color: #FFFFFF; }
   .row { display: flex; gap: 6px; margin-bottom: 6px; }
   .k { flex: 1 1 0; min-width: 0; height: 46px; border: none; border-radius: 10px; box-shadow: 0 2px 0 rgba(15,23,42,.30);
-       font: 21px "Times New Roman", "STIX Two Math", serif; background: #FFFFFF; color: #0F172A; padding: 0; -webkit-tap-highlight-color: transparent; }
+       font: 21px "Times New Roman", "STIX Two Math", serif; white-space: nowrap; overflow: hidden; background: #FFFFFF; color: #0F172A; padding: 0; -webkit-tap-highlight-color: transparent; }
   .k:active { transform: translateY(2px); box-shadow: none; }
   .k.o { background: #F4F5F9; color: #4338CA; font-weight: 700; }
   .k.v { color: #6557D2; font-style: italic; font-weight: 700; }
@@ -35,6 +35,13 @@
   .k.a { background: #5B6475; color: #FFFFFF; font-family: "Segoe UI", Roboto, sans-serif; }
   .k.g { background: #6557D2; color: #FFFFFF; }
   .k.sp { flex: .25; visibility: hidden; }
+  .fr { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; vertical-align: middle; }
+  .fr i, .ab i, .ep i { display: block; width: 13px; height: 11px; border: 1.6px solid currentColor; border-radius: 2px; }
+  .fr b { display: block; width: 19px; height: 0; border-top: 2px solid currentColor; }
+  .fr .one { font-size: 15px; line-height: 13px; white-space: nowrap; }
+  .ab { display: inline-flex; align-items: center; gap: 1px; font-size: 22px; }
+  .ab i { display: inline-block; }
+  .ep { font-size: 21px; } .ep sup { display: inline-block; vertical-align: 9px; margin-left: 1px; } .ep i { width: 9px; height: 8px; }
   :root { --keyboard-zindex: 1; --keyboard-background: #E9ECF2; --keycap-background: #FFFFFF; --keycap-text: #0F172A;
           --keycap-secondary-background: #ECE9FB; --keycap-secondary-text: #5141B8; --keycap-primary-background: #6557D2;
           --keycap-primary-text: #FFFFFF; --keycap-border-radius: 10px; --keycap-height: 46px; --keycap-font-size: 21px;
@@ -56,17 +63,25 @@ let count = 0, lastSync = null, current = f;
 const PAGES = [
   [
     [["x","x","v"],["m","m","v"],["(","(","o"],[")",")","o"],["","","sp"],["7","7"],["8","8"],["9","9"],["÷","\\div","o"]],
-    [["x²","#@^{2}","f"],["xⁿ","#@^{#?}","f"],["√","\\sqrt{#0}","f"],["|□|","\\left|#0\\right|","f"],["","","sp"],["4","4"],["5","5"],["6","6"],["×","\\times","o"]],
-    [["▭⁄▭","\\frac{#@}{#?}","f"],["eˣ","e^{#0}","f"],["ln","\\ln\\left(#0\\right)","f"],["e","e","v"],["","","sp"],["1","1"],["2","2"],["3","3"],["−","-","o"]],
+    [["x²","#@^{2}","f"],["xⁿ","#@^{#?}","f"],["√","\\sqrt{#0}","f"],["@abs","\\left|#0\\right|","f"],["","","sp"],["4","4"],["5","5"],["6","6"],["×","\\times","o"]],
+    [["@frac","\\frac{#@}{#?}","f"],["eˣ","e^{x}","f"],["ln","\\ln\\left(#0\\right)","f"],["e","e","v"],["","","sp"],["1","1"],["2","2"],["3","3"],["−","-","o"]],
     [["◀","<","a"],["▶",">","a"],["⌫","del","a"],["π","\\pi","v"],["","","sp"],["0","0"],[".","."],["+","+","o"],["⏎","go","g"]],
   ],
   [
-    [["eˣ","e^{#0}","f"],["e⁻ˣ","e^{-x}","f"],["e²ˣ","e^{2x}","f"],["ln","\\ln\\left(#0\\right)","f"],["ln x/x","\\frac{\\ln x}{x}","f"]],
-    [["√","\\sqrt{#0}","f"],["∛","\\sqrt[3]{#0}","f"],["|□|","\\left|#0\\right|","f"],["1/□","\\frac{1}{#0}","f"],["x³","#@^{3}","f"]],
-    [["sin","\\sin\\left(#0\\right)","f"],["cos","\\cos\\left(#0\\right)","f"],["tan","\\tan\\left(#0\\right)","f"],["(","(","o"],[")",")","o"]],
+    [["eˣ","e^{x}","f"],["@epow","e^{#0}","f"],["e⁻ˣ","e^{-x}","f"],["e²ˣ","e^{2x}","f"],["ln","\\ln\\left(#0\\right)","f"],["@lnx","\\frac{\\ln x}{x}","f"]],
+    [["√","\\sqrt{#0}","f"],["∛","\\sqrt[3]{#0}","f"],["@abs","\\left|#0\\right|","f"],["@inv","\\frac{1}{#0}","f"],["x³","#@^{3}","f"],["@frac","\\frac{#@}{#?}","f"]],
+    [["sin","\\sin\\left(#0\\right)","f"],["cos","\\cos\\left(#0\\right)","f"],["tan","\\tan\\left(#0\\right)","f"],["π","\\pi","v"],["(","(","o"],[")",")","o"]],
     [["◀","<","a"],["▶",">","a"],["⌫","del","a"],["x","x","v"],["m","m","v"],["⏎","go","g"]],
   ],
 ];
+// labels drawn in HTML so they stay inside the key on narrow phones
+const ICON = {
+  "@frac": '<span class="fr"><i></i><b></b><i></i></span>',
+  "@abs": '<span class="ab">|<i></i>|</span>',
+  "@epow": '<span class="ep">e<sup><i></i></sup></span>',
+  "@lnx": '<span class="fr"><span class="one">ln x</span><b></b><span class="one">x</span></span>',
+  "@inv": '<span class="fr"><span class="one">1</span><b></b><i></i></span>',
+};
 function press(act) {
   const mf = current;
   if (act === "<") mf.executeCommand("moveToPreviousChar");
@@ -82,7 +97,8 @@ function drawPage(i) {
   for (const row of PAGES[i]) {
     const r = document.createElement("div"); r.className = "row";
     for (const [label, act, cls] of row) {
-      const k = document.createElement("button"); k.className = "k " + (cls || ""); k.textContent = label;
+      const k = document.createElement("button"); k.className = "k " + (cls || "");
+      if (ICON[label]) k.innerHTML = ICON[label]; else k.textContent = label;
       k.addEventListener("pointerdown", ev => { ev.preventDefault(); if (act) press(act); });   // keep the caret in the field
       r.appendChild(k);
     }
