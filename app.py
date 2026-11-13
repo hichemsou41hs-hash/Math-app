@@ -3341,14 +3341,18 @@ else:
         x_k = [s_k for s_k in _f_expr_k.free_symbols if s_k.name == 'x']
         return extras.abs_curves_png(_f_expr_k, x_k[0], x_bound=bound_k, y_lim=ylim_k, dark=dark_k, which=case_k) if x_k else None
 
+    def colour_math(text_c, colour_c):
+        """Arabic words stay white, every $...$ takes the colour (teacher's rule)."""
+        return re.sub(r"(?<!\\)\$([^$]+)\$", lambda m_c: "$\\color{" + colour_c + "}{" + m_c.group(1) + "}$", text_c)
+
     def show_extra_items(items_k):
         for kind_k, content_k in items_k:
             if kind_k == 'data':
                 continue
             if kind_k == 'text':
-                st.markdown(f"<div dir='rtl' style='text-align:right'>\n\n{content_k}\n\n</div>", unsafe_allow_html=True)
-            elif kind_k == 'ok':   # Arabic conclusion: text that wraps on a phone, maths inline, in green
-                st.markdown(f"<div dir='rtl' style='text-align:right; color:#4ADE80; font-weight:bold'>\n\n{content_k}\n\n</div>", unsafe_allow_html=True)
+                st.markdown(f"<div dir='rtl' style='text-align:right; color:#F8FAFC'>\n\n{colour_math(content_k, '#38BDF8')}\n\n</div>", unsafe_allow_html=True)
+            elif kind_k == 'ok':   # Arabic conclusion: white text that wraps on a phone, maths in green
+                st.markdown(f"<div dir='rtl' style='text-align:right; color:#F8FAFC; font-weight:bold'>\n\n{colour_math(content_k, '#4ADE80')}\n\n</div>", unsafe_allow_html=True)
             elif kind_k == 'math':
                 st.latex(content_k)
             else:
@@ -3373,7 +3377,7 @@ else:
                         show_extra_items(items_s)
             with st.expander("🪞 منحنيا الدالتين |f(x)| و f(|x|)", expanded=False):
                 for (case_k, colour_k), (_, text_k) in zip((("abs", "#F97316"), ("even", "#22C55E")), extras.ABS_EXPLAIN):
-                    st.markdown(f"<div dir='rtl' style='text-align:right; color:{colour_k}; font-weight:bold'>\n\n{text_k}\n\n</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div dir='rtl' style='text-align:right; color:#F8FAFC; font-weight:bold'>\n\n{colour_math(text_k, colour_k)}\n\n</div>", unsafe_allow_html=True)
                     png_k = get_abs_png(sp.srepr(cache['f_expr']), cache['f_expr'], float(min(cache.get('plot_x_bound', 6.0) or 6.0, 12.0)), True,
                                         (cache.get('plot_y_min', -8.0), cache.get('plot_y_max', 8.0)), case_k)
                     if png_k:
