@@ -201,6 +201,13 @@ st.markdown("""
     .step-box-deriv { text-align: right; direction: rtl; color: #94A3B8 !important; font-size: 15px !important; font-weight: 600 !important; margin-top: 8px; margin-bottom: -8px; }
     .step-box-final { text-align: right; direction: rtl; color: #4ADE80 !important; font-size: 17px !important; font-weight: bold !important; margin-top: 10px; margin-bottom: -8px; }
 
+    div[data-testid="stExpander"] details summary, div[data-testid="stExpander"] details[open] summary { background-color: #1E293B !important; color: #F8FAFC !important; border-radius: 8px !important; }
+    div[data-testid="stExpander"] details summary p, div[data-testid="stExpander"] details summary span { color: #F8FAFC !important; }
+    div[data-testid="stExpander"] details summary:hover p { color: #38BDF8 !important; }
+    div[data-testid="stDownloadButton"] button { background-color: #16A34A !important; border: none !important; width: 100% !important; }
+    div[data-testid="stDownloadButton"] button p, div[data-testid="stDownloadButton"] button span { color: #FFFFFF !important; font-weight: bold !important; font-size: 17px !important; }
+    div[data-testid="stButton"] button[kind="secondary"] { background-color: #1E293B !important; border: 1px solid #38BDF8 !important; }
+    div[data-testid="stButton"] button[kind="secondary"] p { color: #F8FAFC !important; font-weight: bold !important; }
     div[data-testid="stAlert"] { direction: rtl !important; text-align: right !important; border-radius: 8px !important; }
     div[data-testid="stAlert"] p { font-size: 16px !important; font-weight: bold !important; line-height: 1.8 !important; }
     
