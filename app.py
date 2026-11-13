@@ -195,8 +195,10 @@ st.markdown("""
     .fb-btn { background: #1877F2; border: 1px solid #3b82f6; }
     .ig-btn { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); border: 1px solid #ec4899; }
 
-    .step-box-lim { text-align: right; direction: rtl; color: #FBBF24 !important; font-size: 16px !important; font-weight: bold !important; margin-top: 5px; margin-bottom: -8px; }
-    .step-box-deriv { text-align: right; direction: rtl; color: #FB923C !important; font-size: 16px !important; font-weight: bold !important; margin-top: 8px; margin-bottom: -8px; }
+    .katex-display { overflow-x: auto; overflow-y: hidden; padding: 2px 0 6px 0; }
+    @media (max-width: 640px) { .katex-display > .katex { font-size: 1.02em; } }
+    .step-box-lim { text-align: right; direction: rtl; color: #94A3B8 !important; font-size: 15px !important; font-weight: 600 !important; margin-top: 5px; margin-bottom: -8px; }
+    .step-box-deriv { text-align: right; direction: rtl; color: #94A3B8 !important; font-size: 15px !important; font-weight: 600 !important; margin-top: 8px; margin-bottom: -8px; }
     .step-box-final { text-align: right; direction: rtl; color: #4ADE80 !important; font-size: 17px !important; font-weight: bold !important; margin-top: 10px; margin-bottom: -8px; }
 
     div[data-testid="stAlert"] { direction: rtl !important; text-align: right !important; border-radius: 8px !important; }
@@ -1584,7 +1586,7 @@ def build_math_context(f_str, g_str, version_tag="v36", m_sub_val=None):
                 domain_intervals_str.append(fr"{l_br}{l_b}; {r_b}{r_br}")
             i += 1
                 
-        domain_latex_st = r"D_f = \color{#FFD700}{" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset") + r"}"
+        domain_latex_st = r"D_f = \color{#38BDF8}{" + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset") + r"}"
         domain_latex_mpl = r"D_f = " + (r" \cup ".join(domain_intervals_str) if domain_intervals_str else r"\emptyset")
 
         limits_data_detailed = []
@@ -3287,44 +3289,46 @@ else:
         
     with study_box:
         with st.expander("📊 عرض دراسة الدالة الشاملة بالترتيب المنهجي", expanded=True):
-            st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>1. حساب النهايات واستنتاج المقارب العمودي أو الأفقي:</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='color:#38BDF8; text-align:right; direction:rtl;'>1. حساب النهايات واستنتاج المقارب العمودي أو الأفقي:</h4>", unsafe_allow_html=True)
             st.latex(cache['domain_latex_st'])
             for lim_item in cache['limits_data_detailed']:
                 st.latex(lim_item['main'])
                 if lim_item['steps']:
-                    st.markdown("<div class='step-box-lim'>🔹 التعليل (خطوات الحساب):</div>", unsafe_allow_html=True)
+                    st.markdown("<div class='step-box-lim'>التعليل (خطوات الحساب):</div>", unsafe_allow_html=True)
                     for stp in lim_item['steps']:
-                        st.latex(fr"\color{{#C4B5FD}}{{{stp}}}")
+                        st.latex(fr"\color{{#CBD5E1}}{{{stp}}}")
                     if lim_item.get('step_note'):
-                        st.markdown(f"<div style='text-align:center; direction:rtl; color:#FDE047; font-size:15px; font-weight:bold;'>💡 ({lim_item['step_note']})</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div style='text-align:center; direction:rtl; color:#94A3B8; font-size:14px; font-style:italic;'>({lim_item['step_note']})</div>", unsafe_allow_html=True)
                 if lim_item.get('geo_txt'):
                     st.success(lim_item['geo_txt'])
                 
-            st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='color:#38BDF8; text-align:right; direction:rtl;'>2. حساب الدالة المشتقة:</h4>", unsafe_allow_html=True)
             for d_step in cache.get('deriv_steps_detailed', []):
-                st.markdown(f"<div class='step-box-deriv'>🔸 {d_step['label']}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='step-box-deriv'>{d_step['label']}</div>", unsafe_allow_html=True)
                 for m_str in d_step['math_list']:
-                    st.latex(fr"\color{{#FDE68A}}{{{m_str}}}")
-            st.markdown("<div class='step-box-final'>✅ العبارة النهائية للمشتقة:</div>", unsafe_allow_html=True)
+                    st.latex(fr"\color{{#F1F5F9}}{{{m_str}}}")
+            st.markdown("<div class='step-box-final'>العبارة النهائية للمشتقة:</div>", unsafe_allow_html=True)
             st.latex(fr"\color{{#4ADE80}}{{f'(x) = {cache['df_latex_str_safe']}}}")
         
-            st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='color:#38BDF8; text-align:right; direction:rtl;'>3. جدول التغيرات:</h4>", unsafe_allow_html=True)
             if cache.get('var_table_bytes'):
                 st.image(cache['var_table_bytes'], width='stretch')
 
             if cache.get('rel_pos_tables_info'):
-                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>4. استنتاج معادلة المستقيم المقارب المائل (Δ) وشرح طريقة استنتاجها:</h4>", unsafe_allow_html=True)
+                st.markdown("<h4 style='color:#38BDF8; text-align:right; direction:rtl;'>4. استنتاج معادلة المستقيم المقارب المائل (Δ) وشرح طريقة استنتاجها:</h4>", unsafe_allow_html=True)
                 for od in cache['rel_pos_tables_info']:
-                    st.info(fr"🔹 بما أن $\lim_{{x \to {od['target_latex']}}} f(x) = \pm\infty$، نبحث عن معامل التوجيه $a$ ثم $b$ بجوار ${od['target_latex']}$:")
-                    st.latex(fr"\color{{#FDE68A}}{{a = \lim_{{x \to {od['target_latex']}}} \frac{{f(x)}}{{x}} = {od['a_lat']}}}")
-                    st.latex(fr"\color{{#FDE68A}}{{b = \lim_{{x \to {od['target_latex']}}} [f(x) - ({od['a_lat']})x] = {od['b_lat']}}}")
-                    st.latex(fr"\color{{#34D399}}{{\lim_{{x \to {od['target_latex']}}} \left[ f(x) - ({od['line_lat']}) \right] = \lim_{{x \to {od['target_latex']}}} \left( {od['rem_lat']} \right) = 0}}")
-                    st.success(fr"📐 ومنه المنحنى $(C_f)$ يقبل مستقيماً مقارباً مائلاً $(\Delta)$ بجوار ${od['target_latex']}$ معادلته: $y = {od['line_lat']}$")
+                    st.markdown("<div dir='rtl' style='text-align:right; color:#CBD5E1'>\n\n"   # \n must be real line breaks (not in a raw string)
+                                + fr"بما أن $\lim_{{x \to {od['target_latex']}}} f(x) = \pm\infty$، نبحث عن معامل التوجيه $a$ ثم $b$ بجوار ${od['target_latex']}$:"
+                                + "\n\n</div>", unsafe_allow_html=True)
+                    st.latex(fr"\color{{#F1F5F9}}{{a = \lim_{{x \to {od['target_latex']}}} \frac{{f(x)}}{{x}} = {od['a_lat']}}}")
+                    st.latex(fr"\color{{#F1F5F9}}{{b = \lim_{{x \to {od['target_latex']}}} [f(x) - ({od['a_lat']})x] = {od['b_lat']}}}")
+                    st.latex(fr"\color{{#F1F5F9}}{{\lim_{{x \to {od['target_latex']}}} \left[ f(x) - ({od['line_lat']}) \right] = \lim_{{x \to {od['target_latex']}}} \left( {od['rem_lat']} \right) = 0}}")
+                    st.success(fr"ومنه المنحنى $(C_f)$ يقبل مستقيماً مقارباً مائلاً $(\Delta)$ بجوار ${od['target_latex']}$ معادلته: $y = {od['line_lat']}$")
 
-                st.markdown("<h4 style='color:#00E5FF; text-align:right; direction:rtl;'>5. جدول الوضع النسبي بين المقارب المائل (Δ) والمنحنى (Cf):</h4>", unsafe_allow_html=True)
+                st.markdown("<h4 style='color:#38BDF8; text-align:right; direction:rtl;'>5. جدول الوضع النسبي بين المقارب المائل (Δ) والمنحنى (Cf):</h4>", unsafe_allow_html=True)
                 for od in cache['rel_pos_tables_info']:
-                    st.markdown("<div class='step-box-deriv'>🔸 ندرس إشارة الفرق بين عبارة الدالة ومعادلة المستقيم المقارب المائل:</div>", unsafe_allow_html=True)
-                    st.latex(fr"\color{{#FDE68A}}{{f(x) - y = {od['rem_lat']}}}")
+                    st.markdown("<div class='step-box-deriv'>ندرس إشارة الفرق بين عبارة الدالة ومعادلة المستقيم المقارب المائل:</div>", unsafe_allow_html=True)
+                    st.latex(fr"\color{{#F1F5F9}}{{f(x) - y = {od['rem_lat']}}}")
                     if od.get('rel_pos_bytes'):
                         st.image(od['rel_pos_bytes'], width='stretch')
 
@@ -3373,7 +3377,7 @@ else:
                     for i_s, (title_s, items_s) in enumerate(extra_sections, start=6):
                         if "المماس" in title_s:
                             st.number_input("فاصلة نقطة التماس $x_0$ (اتركها فارغة لاختيار آلي):", value=None, step=0.5, format="%g", key="tan_x0")
-                        st.markdown(f"<div dir='rtl' style='text-align:right; color:#00E5FF'>\n\n#### {i_s}. {title_s}\n\n</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div dir='rtl' style='text-align:right; color:#38BDF8'>\n\n#### {i_s}. {title_s}\n\n</div>", unsafe_allow_html=True)
                         show_extra_items(items_s)
             with st.expander("🪞 منحنيا الدالتين |f(x)| و f(|x|)", expanded=False):
                 for (case_k, colour_k), (_, text_k) in zip((("abs", "#F97316"), ("even", "#22C55E")), extras.ABS_EXPLAIN):
