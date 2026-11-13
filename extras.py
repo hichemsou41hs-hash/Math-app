@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Bac-style complements to the function study (teacher's request):
 intersections with the axes, intermediate value theorem with a bracket for alpha,
-tangent at a point, symmetry (centre / axis), inflection points, and the curves of
+tangent at a point, inflection points, and the curves of
 |f(x)| and f(|x|).  Pure functions: they take a SymPy expression and return sections
 of ('text' | 'math' | 'result', content) items that the app shows on screen and in the PDF."""
 import io
@@ -241,41 +241,6 @@ def tangent(f, x, x0):
         return [("text", "تعذّر حساب المماس عند هذه النقطة.")]
 
 
-def symmetry(f, x, fn, candidates):
-    """Centre w(a;b): f(2a-x)+f(x)=2b ; axis x=a: f(2a-x)=f(x). Checked numerically, then symbolically."""
-    pts = np.array([-3.7, -2.2, -1.3, -0.4, 0.6, 1.9, 2.8, 4.1])
-    seen = set()
-    for a in candidates:
-        try:
-            a = sp.nsimplify(a)
-            af = float(a)
-        except Exception:
-            continue
-        if a in seen:
-            continue
-        seen.add(a)
-        u, v = fn(2 * af - pts), fn(pts)
-        ok = np.isfinite(u) & np.isfinite(v)
-        if ok.sum() < 4:
-            continue
-        if np.allclose((u - v)[ok], 0, atol=1e-7):
-            if sp.simplify(f.subs(x, 2 * a - x) - f) == 0:
-                return [("text", "من أجل كل $x$ من $D_f$ : $(2\\times%s - x) \\in D_f$ و" % _lat(a)),
-                        ("math", r"f(%s - x) = f(x)" % _lat(2 * a)),
-                        ("result", r"\text{المستقيم } x = %s \text{ محور تناظر للمنحنى } (C_f)" % _lat(a)),
-                        ("data", {"axis": af})]
-        sm = (u + v)[ok]
-        if np.allclose(sm, sm[0], atol=1e-7):
-            s = sp.simplify(f.subs(x, 2 * a - x) + f)
-            if s.free_symbols == set():
-                b = sp.simplify(s / 2)
-                return [("text", "من أجل كل $x$ من $D_f$ : $(2\\times%s - x) \\in D_f$ و" % _lat(a)),
-                        ("math", r"f(%s - x) + f(x) = %s = 2\times %s" % (_lat(2 * a), _lat(s), _lat(b))),
-                        ("result", r"\omega\left(%s\,;\,%s\right) \text{ مركز تناظر للمنحنى } (C_f)" % (_lat(a), _lat(b))),
-                        ("data", {"centre": (af, float(b))})]
-    return [("text", "لم نجد مركز تناظر ولا محور تناظر بسيطًا للمنحنى $(C_f)$ (نختبر $x=0$ والمقاربات العمودية والقيم الحدية ونقط الانعطاف).")]
-
-
 def inflection(f, x):
     try:
         d2 = sp.simplify(sp.diff(f, x, 2))
@@ -314,12 +279,8 @@ def complete_study(f, x, x0=None, vertical_asymptotes=()):
     if x0 is None:
         x0 = next((c for c in (0, 1, -1, 2, 3) if np.isfinite(fn(float(c))) and np.isfinite(dfn(float(c)))), 1)
     sections.append(("معادلة المماس $(T)$", tangent(f, x, x0)))
-    infl_items, infl_roots = inflection(f, x)
-    xs, ys = _grid(dfn)
-    crit = [round(r, 6) for r in _roots(dfn, xs, ys)]
-    cands = [0] + list(vertical_asymptotes) + crit + [round(r, 6) for r in infl_roots]
-    sections.append(("التناظر", symmetry(f, x, fn, cands)))
-    sections.append(("نقطة الانعطاف", infl_items))
+    infl_items, _infl_roots = inflection(f, x)
+    sections.append(("نقطة الانعطاف", infl_items))   # (symmetry centre/axis removed at the teacher's request)
     return sections
 
 
