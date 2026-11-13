@@ -8,7 +8,7 @@ x = sp.symbols("x", real=True)
 def results(sections, title_part):
     for title, items in sections:
         if title_part in title:
-            return " | ".join(c for k, c in items if k == "result")
+            return " | ".join(c for k, c in items if k in ("result", "ok"))
     raise AssertionError(title_part)
 
 

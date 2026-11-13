@@ -3,7 +3,7 @@
 intersections with the axes, intermediate value theorem with a bracket for alpha,
 tangent at a point, inflection points, and the curves of
 |f(x)| and f(|x|).  Pure functions: they take a SymPy expression and return sections
-of ('text' | 'math' | 'result', content) items that the app shows on screen and in the PDF."""
+of ('text' | 'math' | 'result' | 'ok', content); 'ok' = conclusion sentence in Arabic (green text) items that the app shows on screen and in the PDF."""
 import io
 import math
 from functools import partial
@@ -169,14 +169,14 @@ def axes_intersections(f, x, fn):
     items.append(("text", "مع حامل محور الفواصل: نحل المعادلة $f(x)=0$ :"))
     for lo, hi in flat:
         lb, hb = _bound(lo, xs[0], xs[-1]), _bound(hi, xs[0], xs[-1])
-        items.append(("result", r"f(x) = 0 \text{ على المجال } %s%s\,;\,%s%s" % (
+        items.append(("ok", r"$f(x) = 0$ على المجال $%s%s\,;\,%s%s$" % (
             "]" if lb.endswith("infty") else "[", lb, hb, "[" if hb.endswith("infty") else "]")))
         items.append(("text", "على هذا المجال المنحنى $(C_f)$ ينطبق على حامل محور الفواصل."))
     if flat and not roots:
         items.append(("data", {"roots": [], "flat": flat}))
         return items, []
     if not roots:
-        items.append(("result", r"\text{المعادلة لا تقبل حلولاً: } (C_f) \text{ لا يقطع } (x'x)"))
+        items.append(("ok", r"المعادلة لا تقبل حلولاً، إذن $(C_f)$ لا يقطع حامل محور الفواصل."))
         return items, []
     pts, approx = [], []
     for r in roots:
@@ -252,7 +252,7 @@ def inflection(f, x):
     roots = [r for r in _sign_changes(fn2, xs, ys) if np.isfinite(fn(r))]   # only points of D_f
     items = [("math", r"f''(x) = %s" % LATEX(d2))]
     if not roots:
-        items.append(("result", r"f'' \text{ لا تنعدم مغيّرة إشارتها: } (C_f) \text{ لا يقبل نقطة انعطاف}"))
+        items.append(("ok", r"$f''$ لا تنعدم مغيّرة إشارتها، إذن $(C_f)$ لا يقبل نقطة انعطاف."))
         return items, []
     fn = _num(f, x)
     pts = []
@@ -285,7 +285,7 @@ def complete_study(f, x, x0=None, vertical_asymptotes=()):
 
 
 # ----------------------------------------------------------------- |f| and f(|x|)
-def abs_curves_png(f, x, x_bound=6.0, y_lim=None, dark=True):
+def abs_curves_png(f, x, x_bound=6.0, y_lim=None, dark=True, which="both"):
     """Two panels: (C_f) dashed with |f(x)|, and with f(|x|).  Returns PNG bytes."""
     from matplotlib.figure import Figure
     fn = _num(f, x)
@@ -294,9 +294,12 @@ def abs_curves_png(f, x, x_bound=6.0, y_lim=None, dark=True):
     y_abs = np.abs(y)
     y_even = fn(np.abs(xs))
     bg, fg, grid = ("#0F172A", "#E2E8F0", "#334155") if dark else ("white", "#1F3A5F", "#CBD5E1")
-    fig = Figure(figsize=(7.5, 10.5))     # one under the other: each curve uses the full width on a phone
+    cases = {"abs": [(y_abs, "|f(x)|", "#F97316")], "even": [(y_even, "f(|x|)", "#22C55E")]}
+    panels = cases.get(which) or (cases["abs"] + cases["even"])
+    fig = Figure(figsize=(7.5, 5.4 * len(panels)))     # one under the other: each curve uses the full phone width
     fig.patch.set_facecolor(bg)
-    axs = fig.subplots(2, 1)
+    axs = fig.subplots(len(panels), 1)
+    axs = list(axs) if len(panels) > 1 else [axs]
     if y_lim is None:
         # robust window: exponential functions reach 1e9 at the edges, which flattened both curves
         fin = np.abs(y[np.isfinite(y)])
@@ -304,7 +307,7 @@ def abs_curves_png(f, x, x_bound=6.0, y_lim=None, dark=True):
         h = min(max(4.0, 1.6 * q), 30.0)
         y_lim = (-h, h)
     y_lim = (min(y_lim[0], -1.0), max(y_lim[1], -y_lim[0], 1.0))   # room for |f(x)| above the axis
-    for ax, yt, title, col in ((axs[0], y_abs, "|f(x)|", "#F97316"), (axs[1], y_even, "f(|x|)", "#22C55E")):
+    for ax, (yt, title, col) in zip(axs, panels):
         ax.set_facecolor(bg)
         ax.axhline(0, color=fg, lw=0.8)
         ax.axvline(0, color=fg, lw=0.8)
