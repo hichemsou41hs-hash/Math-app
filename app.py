@@ -1865,7 +1865,7 @@ def build_math_context(f_str, g_str, version_tag="v36", m_sub_val=None):
             seg_w_rp = 3.6
             x_st_rp = 2.5
             x_max_rp = x_st_rp + n_intervals_rp * seg_w_rp
-            tri_half_w = min(0.78, seg_w_rp * 0.22)
+            tri_half_w = min(1.05, seg_w_rp * 0.29)
 
             def get_rp_xc(idx_pt):
                 return x_st_rp + idx_pt * seg_w_rp
@@ -1876,7 +1876,7 @@ def build_math_context(f_str, g_str, version_tag="v36", m_sub_val=None):
                     return x_max_rp - 0.50
                 return x_st_rp + idx_pt * seg_w_rp
 
-            y_pos_top = 2.2
+            y_pos_top = 2.2 if not any(p_q['type'] == 'root' for p_q in rp_pts) else 2.9
             row_h = 0.95
             y_rem_top = y_pos_top + row_h
             y_factors_top = y_rem_top + n_f_rows * row_h
@@ -1929,9 +1929,19 @@ def build_math_context(f_str, g_str, version_tag="v36", m_sub_val=None):
                     ax_rp.plot(xc_line, y_pos_top + row_h/2, marker='o', markersize=9, markerfacecolor='none', markeredgecolor='k', markeredgewidth=1.6)
                     ax_rp.plot([xc_line, xc_line - tri_half_w], [y_pos_top, 0.0], 'k-', lw=1.4)
                     ax_rp.plot([xc_line, xc_line + tri_half_w], [y_pos_top, 0.0], 'k-', lw=1.4)
-                    ax_rp.text(xc_line, y_pos_top * 0.58, "$(C_f)$", ha='center', va='center', fontsize=11.5, color='#1F2937', fontweight='bold')
-                    ax_rp.text(xc_line, y_pos_top * 0.35, fix_arabic_mpl("يقطع"), ha='center', va='center', fontsize=11.5, color='#1F2937', fontweight='bold')
-                    ax_rp.text(xc_line, y_pos_top * 0.14, "$(\\Delta)$", ha='center', va='center', fontsize=11.5, color='#1F2937', fontweight='bold')
+                    # (Cf) يقطع (Δ) في النقطة: الإحداثيات داخل الجدول (طلب الأستاذ)
+                    try:
+                        y_cut = sanitize_latex(sp.simplify(od['line_expr'].subs(x_sym, p_rp['sym'])))
+                        cut_lbl = "ABCDE"[min(4, sum(1 for q in rp_pts[:idx_rp] if q['type'] == 'root'))]
+                        cut_txt = fr"${cut_lbl}\left({p_rp['latex_x']} ; {y_cut}\right)$"
+                    except Exception:
+                        cut_txt = None
+                    ax_rp.text(xc_line, y_pos_top * 0.72, "$(C_f)$", ha='center', va='center', fontsize=11.5, color='#1F2937', fontweight='bold')
+                    ax_rp.text(xc_line, y_pos_top * 0.54, fix_arabic_mpl("يقطع"), ha='center', va='center', fontsize=11.5, color='#1F2937', fontweight='bold')
+                    ax_rp.text(xc_line, y_pos_top * 0.37, "$(\\Delta)$", ha='center', va='center', fontsize=11.5, color='#1F2937', fontweight='bold')
+                    if cut_txt:
+                        ax_rp.text(xc_line, y_pos_top * 0.22, fix_arabic_mpl("في النقطة"), ha='center', va='center', fontsize=10.5, color='#1F2937', fontweight='bold')
+                        ax_rp.text(xc_line, y_pos_top * 0.08, cut_txt, ha='center', va='center', fontsize=11.5, color='#9B2226', fontweight='bold')
 
                 if idx_rp < N_rp - 1:
                     xc_left, xc_right = get_rp_xc(idx_rp), get_rp_xc(idx_rp + 1)
@@ -1980,32 +1990,6 @@ def build_math_context(f_str, g_str, version_tag="v36", m_sub_val=None):
                 pass
             od['oblique_steps_bytes'] = fig_to_bytes(fig_ob)
 
-            # نقط تقاطع (Cf) مع المقارب المائل: حلول f(x) - y = 0، والترتيب من معادلة المستقيم
-            od['cross_pts'] = []
-            for p_r in rp_pts:
-                if p_r['type'] != 'root':
-                    continue
-                try:
-                    y_r = sp.nsimplify(sp.simplify(od['line_expr'].subs(x_sym, p_r['sym'])), rational=False)
-                    od['cross_pts'].append((p_r['latex_x'], sanitize_latex(sp.simplify(y_r))))
-                except Exception:
-                    pass
-            if od['cross_pts']:
-                names_cp = "ABCDE"
-                pts_lat = " , ".join(f"{names_cp[i_cp]}\\left({xl} ; {yl}\\right)" for i_cp, (xl, yl) in enumerate(od['cross_pts'][:5]))
-                od['cross_lat'] = pts_lat
-                fig_cp, ax_cp = new_fig(figsize=(9.5, 1.9))
-                fig_cp.patch.set_facecolor('white')
-                ax_cp.set_facecolor('white')
-                ax_cp.axis('off')
-                ax_cp.set_xlim(0, 10)
-                ax_cp.set_ylim(0, 2.6)
-                ax_cp.text(9.7, 2.0, fix_arabic_mpl("نقط تقاطع المنحنى مع المقارب المائل:"), fontsize=13, ha='right', va='center', color='#0F5E6B', fontweight='bold')
-                try:
-                    ax_cp.text(5.0, 0.8, fr"$f(x) - y = 0 \ \Rightarrow \ (C_f) \cap (\Delta) : \ {pts_lat}$", fontsize=16, ha='center', va='center', color='#9B2226')
-                except Exception:
-                    pass
-                od['cross_bytes'] = fig_to_bytes(fig_cp)
             rel_pos_tables_info.append(od)
 # ==================== نهاية الجزء (3/4) ================≈===
 # ==================== بداية الجزء (4/4) ====================
@@ -2875,14 +2859,14 @@ if ('math_cache' not in st.session_state or
     st.session_state.get('last_f') != current_f or
     st.session_state.get('last_g') != current_g or
     st.session_state.get('last_m_sub') != m_val_param_selected or
-    st.session_state.get('cache_ver') != "v39"):
+    st.session_state.get('cache_ver') != "v40"):
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_with_timeout(current_f, current_g, "v39", m_sub_val=m_val_param_selected)
+        st.session_state.math_cache = build_with_timeout(current_f, current_g, "v40", m_sub_val=m_val_param_selected)
         st.session_state.pdf_data = None
         st.session_state.last_f = current_f
         st.session_state.last_g = current_g
         st.session_state.last_m_sub = m_val_param_selected
-        st.session_state.cache_ver = "v39"
+        st.session_state.cache_ver = "v40"
 
 cache = st.session_state.math_cache
 
@@ -3218,8 +3202,6 @@ else:
                 for od in cache['rel_pos_tables_info']:
                     if od.get('rel_pos_bytes'):
                         rp_chunks.append(od['rel_pos_bytes'])
-                    if od.get('cross_bytes'):
-                        rp_chunks.append(od['cross_bytes'])
                 pdf_add_section_with_chunks(
                     pdf,
                     "5. جدول الوضع النسبي بين المقارب المائل والمنحنى (Cf):",
@@ -3386,9 +3368,6 @@ else:
                     st.latex(fr"\color{{#F1F5F9}}{{f(x) - y = {od['rem_lat']}}}")
                     if od.get('rel_pos_bytes'):
                         st.image(od['rel_pos_bytes'], width='stretch')
-                    if od.get('cross_lat'):
-                        st.markdown("<div class='step-box-deriv'>نقط تقاطع المنحنى مع المقارب المائل: نحل المعادلة f(x) − y = 0 ثم نعوّض في معادلة المستقيم:</div>", unsafe_allow_html=True)
-                        st.success(fr"ومنه $(C_f)$ يقطع $(\Delta)$ في: ${od['cross_lat']}$")
 
     @st.cache_data(show_spinner=False, max_entries=60)
     def get_extras(key_k, _f_expr_k, x0_k, vas_k):
@@ -3449,7 +3428,7 @@ else:
         pdf_key = (current_f, current_g, m_val_param_selected, st.session_state.get("tan_x0"))
         if st.button("📄 تجهيز ملف PDF", width='stretch'):
             with st.spinner("جاري إنشاء ملف الـ PDF..."):
-                st.session_state.pdf_data = (pdf_key, get_cached_pdf_bytes(current_f, current_g, m_val_param_selected, "v39", st.session_state.get("tan_x0")))
+                st.session_state.pdf_data = (pdf_key, get_cached_pdf_bytes(current_f, current_g, m_val_param_selected, "v40", st.session_state.get("tan_x0")))
         _pd = st.session_state.get("pdf_data")
         pdf_bytes = _pd[1] if (_pd and _pd[0] == pdf_key) else None
         if pdf_bytes:
