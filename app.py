@@ -201,6 +201,13 @@ st.markdown("""
     .step-box-deriv { text-align: right; direction: rtl; color: #94A3B8 !important; font-size: 15px !important; font-weight: 600 !important; margin-top: 8px; margin-bottom: -8px; }
     .step-box-final { text-align: right; direction: rtl; color: #4ADE80 !important; font-size: 17px !important; font-weight: bold !important; margin-top: 10px; margin-bottom: -8px; }
 
+    div[data-testid="stExpander"] details summary, div[data-testid="stExpander"] details[open] summary { background-color: #1E293B !important; color: #F8FAFC !important; border-radius: 8px !important; }
+    div[data-testid="stExpander"] details summary p, div[data-testid="stExpander"] details summary span { color: #F8FAFC !important; }
+    div[data-testid="stExpander"] details summary:hover p { color: #38BDF8 !important; }
+    div[data-testid="stDownloadButton"] button { background-color: #16A34A !important; border: none !important; width: 100% !important; }
+    div[data-testid="stDownloadButton"] button p, div[data-testid="stDownloadButton"] button span { color: #FFFFFF !important; font-weight: bold !important; font-size: 17px !important; }
+    div[data-testid="stButton"] button[kind="secondary"] { background-color: #1E293B !important; border: 1px solid #38BDF8 !important; }
+    div[data-testid="stButton"] button[kind="secondary"] p { color: #F8FAFC !important; font-weight: bold !important; }
     div[data-testid="stAlert"] { direction: rtl !important; text-align: right !important; border-radius: 8px !important; }
     div[data-testid="stAlert"] p { font-size: 16px !important; font-weight: bold !important; line-height: 1.8 !important; }
     
@@ -1972,6 +1979,33 @@ def build_math_context(f_str, g_str, version_tag="v36", m_sub_val=None):
             except Exception:
                 pass
             od['oblique_steps_bytes'] = fig_to_bytes(fig_ob)
+
+            # نقط تقاطع (Cf) مع المقارب المائل: حلول f(x) - y = 0، والترتيب من معادلة المستقيم
+            od['cross_pts'] = []
+            for p_r in rp_pts:
+                if p_r['type'] != 'root':
+                    continue
+                try:
+                    y_r = sp.nsimplify(sp.simplify(od['line_expr'].subs(x_sym, p_r['sym'])), rational=False)
+                    od['cross_pts'].append((p_r['latex_x'], sanitize_latex(sp.simplify(y_r))))
+                except Exception:
+                    pass
+            if od['cross_pts']:
+                names_cp = "ABCDE"
+                pts_lat = " , ".join(f"{names_cp[i_cp]}\\left({xl} ; {yl}\\right)" for i_cp, (xl, yl) in enumerate(od['cross_pts'][:5]))
+                od['cross_lat'] = pts_lat
+                fig_cp, ax_cp = new_fig(figsize=(9.5, 1.9))
+                fig_cp.patch.set_facecolor('white')
+                ax_cp.set_facecolor('white')
+                ax_cp.axis('off')
+                ax_cp.set_xlim(0, 10)
+                ax_cp.set_ylim(0, 2.6)
+                ax_cp.text(9.7, 2.0, fix_arabic_mpl("نقط تقاطع المنحنى مع المقارب المائل:"), fontsize=13, ha='right', va='center', color='#0F5E6B', fontweight='bold')
+                try:
+                    ax_cp.text(5.0, 0.8, fr"$f(x) - y = 0 \ \Rightarrow \ (C_f) \cap (\Delta) : \ {pts_lat}$", fontsize=16, ha='center', va='center', color='#9B2226')
+                except Exception:
+                    pass
+                od['cross_bytes'] = fig_to_bytes(fig_cp)
             rel_pos_tables_info.append(od)
 # ==================== نهاية الجزء (3/4) ================≈===
 # ==================== بداية الجزء (4/4) ====================
@@ -2841,14 +2875,14 @@ if ('math_cache' not in st.session_state or
     st.session_state.get('last_f') != current_f or
     st.session_state.get('last_g') != current_g or
     st.session_state.get('last_m_sub') != m_val_param_selected or
-    st.session_state.get('cache_ver') != "v37"):
+    st.session_state.get('cache_ver') != "v39"):
     with st.spinner("جاري التحليل الرياضي الدقيق..."):
-        st.session_state.math_cache = build_with_timeout(current_f, current_g, "v37", m_sub_val=m_val_param_selected)
+        st.session_state.math_cache = build_with_timeout(current_f, current_g, "v39", m_sub_val=m_val_param_selected)
         st.session_state.pdf_data = None
         st.session_state.last_f = current_f
         st.session_state.last_g = current_g
         st.session_state.last_m_sub = m_val_param_selected
-        st.session_state.cache_ver = "v37"
+        st.session_state.cache_ver = "v39"
 
 cache = st.session_state.math_cache
 
@@ -3180,7 +3214,12 @@ else:
                     ob_chunks,
                     x=15, w=180
                 )
-                rp_chunks = [od['rel_pos_bytes'] for od in cache['rel_pos_tables_info'] if od.get('rel_pos_bytes')]
+                rp_chunks = []
+                for od in cache['rel_pos_tables_info']:
+                    if od.get('rel_pos_bytes'):
+                        rp_chunks.append(od['rel_pos_bytes'])
+                    if od.get('cross_bytes'):
+                        rp_chunks.append(od['cross_bytes'])
                 pdf_add_section_with_chunks(
                     pdf,
                     "5. جدول الوضع النسبي بين المقارب المائل والمنحنى (Cf):",
@@ -3188,40 +3227,24 @@ else:
                     x=10, w=190
                 )
 
-            plot_sec_num = 6 if has_oblique else 4
-            fig_light, _ = draw_plot(0, mode='light')
-            light_bytes = fig_to_bytes(fig_light)
-            plot_h = get_img_height_mm(light_bytes, 165)
+            sec_n = 6 if has_oblique else 4
 
-            if pdf.get_y() + 10 + plot_h > 280 and pdf.get_y() > 35:
-                pdf.add_page()
-            pdf_section_title(pdf, f"{plot_sec_num}. التمثيل البياني للدالة (Cf):")
-            pdf_add_bytes_image(pdf, light_bytes, x=22, w=165)
-            pdf.ln(3)
-
-            disc_sec_num = plot_sec_num + 1
-            eq_img = cache['eq_bytes']()
-            disc_img = cache['disc_table_bytes']()
-            eq_h = get_img_height_mm(eq_img, 180)
-            disc_h = get_img_height_mm(disc_img, 180)
-            if pdf.get_y() + 10 + eq_h + disc_h > 282 and pdf.get_y() > 35:
-                pdf.add_page()
-            pdf_section_title(pdf, f"{disc_sec_num}. المناقشة البيانية:")
-            if eq_img:
-                pdf_add_bytes_image(pdf, eq_img, x=15, w=180)
-                pdf.ln(1)
-            if disc_img:
-                pdf_add_bytes_image(pdf, disc_img, x=15, w=180)
-
-            # أسئلة البكالوريا المكمّلة ومنحنيا |f(x)| و f(|x|) (extras.py)
+            # Bac order: axes, IVT, tangent, inflection -> graph -> discussion -> |f(x)| and f(|x|)
+            ex_secs = None
             try:
                 vas_p = tuple(sorted({round(a_v['val'], 6) for a_v in cache['unique_asymptotes'] if a_v['type'] == 'v' and a_v['val'] is not None}))
                 ex_secs = get_extras(sp.srepr(cache['f_expr']), cache['f_expr'], x0_k, vas_p)
-                if ex_secs and not isinstance(ex_secs, dict):
-                    for i_s, (title_s, items_s) in enumerate(ex_secs, start=disc_sec_num + 1):
+                if not ex_secs or isinstance(ex_secs, dict):
+                    ex_secs = None
+            except Exception:
+                ex_secs = None
+            if ex_secs:
+                try:
+                    for title_s, items_s in ex_secs:
                         if pdf.get_y() > 250:
                             pdf.add_page()
-                        pdf_section_title(pdf, f"{i_s}. " + extras.latex_to_plain(title_s) + ":")
+                        pdf_section_title(pdf, f"{sec_n}. " + extras.latex_to_plain(title_s) + ":")
+                        sec_n += 1
                         for kind_k, content_k in items_s:
                             if kind_k == 'data':
                                 continue
@@ -3238,9 +3261,38 @@ else:
                                         pdf.add_page()
                                     pdf_add_bytes_image(pdf, png_k, x=105 - w_mm / 2, w=w_mm)
                             pdf.ln(1)
-                    abs_sec = disc_sec_num + 1 + len(ex_secs)
+                except Exception:
+                    pass   # الأقسام الإضافية اختيارية: لا تُفشل ملف PDF
+
+            fig_light, _ = draw_plot(0, mode='light')
+            light_bytes = fig_to_bytes(fig_light)
+            plot_h = get_img_height_mm(light_bytes, 165)
+
+            if pdf.get_y() + 10 + plot_h > 280 and pdf.get_y() > 35:
+                pdf.add_page()
+            pdf_section_title(pdf, f"{sec_n}. التمثيل البياني للدالة (Cf):")
+            sec_n += 1
+            pdf_add_bytes_image(pdf, light_bytes, x=22, w=165)
+            pdf.ln(3)
+
+            eq_img = cache['eq_bytes']()
+            disc_img = cache['disc_table_bytes']()
+            eq_h = get_img_height_mm(eq_img, 180)
+            disc_h = get_img_height_mm(disc_img, 180)
+            if pdf.get_y() + 10 + eq_h + disc_h > 282 and pdf.get_y() > 35:
+                pdf.add_page()
+            pdf_section_title(pdf, f"{sec_n}. المناقشة البيانية:")
+            sec_n += 1
+            if eq_img:
+                pdf_add_bytes_image(pdf, eq_img, x=15, w=180)
+                pdf.ln(1)
+            if disc_img:
+                pdf_add_bytes_image(pdf, disc_img, x=15, w=180)
+
+            if ex_secs:
+                try:
                     pdf.add_page()
-                    pdf_section_title(pdf, f"{abs_sec}. " + extras.latex_to_plain("منحنيا الدالتين $|f(x)|$ و $f(|x|)$") + ":")
+                    pdf_section_title(pdf, f"{sec_n}. " + extras.latex_to_plain("استنتاج منحنيي الدالتين $|f(x)|$ و $f(|x|)$") + ":")
                     for (case_k, rgb_k), (_k, t_k) in zip((("abs", (194, 85, 12)), ("even", (21, 128, 61))), extras.ABS_EXPLAIN):
                         png_k = get_abs_png(sp.srepr(cache['f_expr']), cache['f_expr'], float(min(cache.get('plot_x_bound', 6.0) or 6.0, 12.0)), False,
                                             (cache.get('plot_y_min', -8.0), cache.get('plot_y_max', 8.0)), case_k)
@@ -3250,8 +3302,8 @@ else:
                         if png_k:
                             pdf_add_bytes_image(pdf, png_k, x=30, w=150)                               # then its curve
                         pdf.ln(3)
-            except Exception:
-                pass   # الأقسام الإضافية اختيارية: لا تُفشل ملف PDF
+                except Exception:
+                    pass
 
             pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
             pdf_file.close()
@@ -3334,6 +3386,9 @@ else:
                     st.latex(fr"\color{{#F1F5F9}}{{f(x) - y = {od['rem_lat']}}}")
                     if od.get('rel_pos_bytes'):
                         st.image(od['rel_pos_bytes'], width='stretch')
+                    if od.get('cross_lat'):
+                        st.markdown("<div class='step-box-deriv'>نقط تقاطع المنحنى مع المقارب المائل: نحل المعادلة f(x) − y = 0 ثم نعوّض في معادلة المستقيم:</div>", unsafe_allow_html=True)
+                        st.success(fr"ومنه $(C_f)$ يقطع $(\Delta)$ في: ${od['cross_lat']}$")
 
     @st.cache_data(show_spinner=False, max_entries=60)
     def get_extras(key_k, _f_expr_k, x0_k, vas_k):
@@ -3394,7 +3449,7 @@ else:
         pdf_key = (current_f, current_g, m_val_param_selected, st.session_state.get("tan_x0"))
         if st.button("📄 تجهيز ملف PDF", width='stretch'):
             with st.spinner("جاري إنشاء ملف الـ PDF..."):
-                st.session_state.pdf_data = (pdf_key, get_cached_pdf_bytes(current_f, current_g, m_val_param_selected, "v37", st.session_state.get("tan_x0")))
+                st.session_state.pdf_data = (pdf_key, get_cached_pdf_bytes(current_f, current_g, m_val_param_selected, "v39", st.session_state.get("tan_x0")))
         _pd = st.session_state.get("pdf_data")
         pdf_bytes = _pd[1] if (_pd and _pd[0] == pdf_key) else None
         if pdf_bytes:
